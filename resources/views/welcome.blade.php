@@ -1,179 +1,96 @@
-@extends('templates._page')
-
-@push('head')
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,200&display=swap" rel="stylesheet">
-    <style>
-        section.jumbotron {
-            background-image: linear-gradient(to right, hsl(150 48% 35% / 0.2), hsl(150 48% 35% / 0.2)), url({{ asset('resources/jumbotron_bg.jpg') }}), linear-gradient(to right, hsl(150 48% 25% / 1), hsl(150 48% 25% / 1));
-            background-size: cover;
-            background-position: center center;
-            min-height: 50vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        section.jumbotron .container {
-            background-color: rgba(255, 255, 255, 0.65);
-            padding: 80px 25px;
-        }
-
-        section.jumbotron .herotext {
-            text-align: center;
-            font-size: 64px;
-            color: #323232;
-        }
-
-        section.jumbotron .herotext .lead {
-            font-size: 18px;
-            margin: 0;
-        }
-
-        section.promos {
-            margin: 72px 0;
-        }
-
-        section.promos i {
-            font-size: 32px;
-        }
-
-        section.promos h3 {
-            font-size: 25px;
-            min-height: 66px;
-            line-height: 66px;
-        }
-
-        section.promos h3.lower-height {
-            line-height: initial;
-        }
-
-        section.promos .small {
-            font-size: 17px;
-            font-family: 'Open Sans', sans-serif;
-        }
-
-        section.quoteblock {
-            background-color: #2f855a;
-            color: white;
-            font-style: italic;
-            text-align: center;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 21px;
-            padding: 65px 0;
-            overflow: hidden;
-        }
-
-        section.quoteblock .container:before {
-            content: "\f10d";
-            position: absolute;
-            font-size: 420px;
-            left: -270px;
-            bottom: -260px;
-            color: white;
-            font-family: 'Font Awesome 5 Free';
-            font-style: initial;
-            opacity: 0.13;
-        }
-
-        section.quoteblock .container:after {
-            content: "\f10e";
-            position: absolute;
-            font-size: 420px;
-            right: -270px;
-            top: -260px;
-            color: white;
-            font-family: 'Font Awesome 5 Free';
-            font-style: initial;
-            opacity: 0.13;
-        }
-
-        section.quoteblock .container {
-            position: relative;
-        }
-
-        section.quoteblock .quote {
-            padding-bottom: 70px;
-        }
-
-        section.quoteblock .name {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            font-weight: bold;
-            font-size: 32px;
-        }
-
-        @media screen and (max-width: 768px) {
-            section.quoteblock .name {
-                right: 40px;
-            }
-        }
-    </style>
-@endpush
-
-@section('content')
-    <section class="jumbotron jumbotron-fluid">
-        <div class="container rounded">
-            <div class="row align-items-center">
-                <div class="col-12 col-md-3 d-none d-md-block logo text-center">
-                    <img class="w-100" src="{{ asset('resources/jumbotron_logo.png') }}">
-                </div>
-                <div class="col-12 col-md-9 herotext text-md-center">
-                    <h1>Fantasy Calendar</h1>
-                    <p class="lead">Whether you're a GM just looking to track the events of a long-running Forgotten Realms campaign, or a fanciful world-builder who likes to have wacky celestial configurations (such as Eberron's 12 moons) with zany timekeeping systems to match, you need Fantasy Calendar!</p>
-                    @unless(Auth::check() && Auth::user()->calendars()->count())
-                        <a href="{{ route('calendars.create') }}" class="btn btn-primary btn-accent btn-lg">Create your first calendar</a>
-                    @else
-                        <a href="{{ route('calendars.index') }}" class="btn btn-primary btn-accent btn-lg">View your calendars</a>
-                    @endunless
-                </div>
-            </div>
+<x-app-guest-layout body-class="bg-gray-900">
+    <div class="my-16 mx-auto max-w-7xl px-4 sm:mt-24 sm:px-6">
+        <div class="text-center">
+            <h1 class="text-4xl tracking-tight font-extrabold text-gray-300 sm:text-5xl md:text-6xl">
+                <span class="block">Build a calendar that</span>
+                <span class="block text-primary-600">fits your world</span>
+            </h1>
+            <p class="mt-3 max-w-md mx-auto text-base text-gray-400 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">Whether you're a GM just here to track your Forgotten Realms campaign with a preset world, or a fanciful world-builder with 12 moons (Like Eberron's) and zany timekeeping systems to match, we've got you covered.</p>
         </div>
-    </section>
+    </div>
 
+    <div class="relative pb-32">
+        <div class="absolute inset-0 flex flex-col" aria-hidden="true">
+            <div class="flex-1"></div>
+            <div class="flex-1 w-full bg-gray-800"></div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <img class="relative rounded-lg shadow-lg shadow-slate-700" src="{{ asset('/resources/screenshots/forgotten-realms-homepage-screenshot.png') }}" alt="App screenshot">
+        </div>
+    </div>
 
-    <section class="promos">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 col-md-3 py-3 py-md-0 px-2 ml-md-0 pl-md-0 pr-md-1">
-                    <div class="rounded inner text-center">
-                        <p class="pt-2"><i class="fa fa-check-circle"></i></p>
-                        <h3>Easy to Use</h3>
-                        <p class="small">Fantasy Calendar has been lovingly hand-crafted to make sense. With a detailed wiki to make up for the parts that don’t.</p>
+    <!-- This example requires Tailwind CSS v2.0+ -->
+    <div class="relative bg-gray-800 pb-32 overflow-hidden">
+        <div class="relative">
+            <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
+                <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-16 lg:max-w-none lg:mx-0 lg:px-0">
+                    <div>
+                        <div>
+                        <span class="h-12 w-12 rounded-md flex items-center justify-center bg-primary-600">
+                          <!-- Heroicon name: outline/inbox -->
+                          <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                          </svg>
+                        </span>
+                        </div>
+                        <div class="mt-6">
+                            <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">Stay on top of customer support</h2>
+                            <p class="mt-4 text-lg text-gray-500">Semper curabitur ullamcorper posuere nunc sed. Ornare iaculis bibendum malesuada faucibus lacinia porttitor. Pulvinar laoreet sagittis viverra duis. In venenatis sem arcu pretium pharetra at. Lectus viverra dui tellus ornare pharetra.</p>
+                            <div class="mt-6">
+                                <a href="#" class="inline-flex px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700"> Get started </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 border-t border-gray-200 pt-6">
+                        <blockquote>
+                            <div>
+                                <p class="text-base text-gray-500">&ldquo;Cras velit quis eros eget rhoncus lacus ultrices sed diam. Sit orci risus aenean curabitur donec aliquet. Mi venenatis in euismod ut.&rdquo;</p>
+                            </div>
+                            <footer class="mt-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="flex-shrink-0">
+                                        <img class="h-6 w-6 rounded-full" src="https://images.unsplash.com/photo-1509783236416-c9ad59bae472?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80" alt="">
+                                    </div>
+                                    <div class="text-base font-medium text-gray-700">Marcia Hill, Digital Marketing Manager</div>
+                                </div>
+                            </footer>
+                        </blockquote>
                     </div>
                 </div>
-                <div class="col-12 col-md-3 py-3 py-md-0 px-2 px-md-1">
-                    <div class="rounded inner text-center">
-                        <p class="pt-2"><i class="fa fa-mobile"></i></p>
-                        <h3>Mobile-Friendly</h3>
-                        <p class="small">Because you never know when you might have a great idea for a calendar system, or want to track events in that pick-up D&D game at the games store.</p>
-                    </div>
-                </div>
-                <div class="col-12 col-md-3 py-3 py-md-0 px-2 px-md-1">
-                    <div class="rounded inner text-center">
-                        <p class="pt-2"><i class="fa fa-rocket"></i></p>
-                        <h3>Light &amp; Responsive</h3>
-                        <p class="small">Your fantasy world’s calendar should help you keep time, not waste yours. Keep game time even on low-end computers, netbooks, or chromebooks.</p>
-                    </div>
-                </div>
-                <div class="col-12 col-md-3 py-3 py-md-0 px-2 mr-md-0 pr-md-0 pl-md-1">
-                    <div class="rounded inner text-center">
-                        <p class="pt-2"><i class="fa fa-calendar-day"></i></p>
-                        <h3 class="lower-height">Powerful Calendar Engine</h3>
-                        <p class="small">This flexible calendar engine can accommodate whatever your world needs — intercalaries, leap days, moons cycles, seasons, eras, and more!</p>
+                <div class="mt-12 sm:mt-16 lg:mt-0">
+                    <div class="pl-4 -mr-48 sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
+                        <img class="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none" src="https://tailwindui.com/img/component-images/inbox-app-screenshot-1.jpg" alt="Inbox user interface">
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-
-
-    <section class="quoteblock">
-        <div class="container">
-            <div class="quote">
-                “Game time is of utmost importance. Failure to keep careful track of time expenditure by player characters will result in many anomalies in the game. The stricture of time is what makes recovery of hit points meaningful. [...] All of these demands upon game time force choices upon player characters and likewise number their days of game life… You can not have a meaningful campaign if strict time records are not kept.”
+        <div class="mt-24">
+            <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
+                <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-32 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
+                    <div>
+                        <div>
+            <span class="h-12 w-12 rounded-md flex items-center justify-center bg-primary-600">
+              <!-- Heroicon name: outline/sparkles -->
+              <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+              </svg>
+            </span>
+                        </div>
+                        <div class="mt-6">
+                            <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">Better understand your customers</h2>
+                            <p class="mt-4 text-lg text-gray-500">Semper curabitur ullamcorper posuere nunc sed. Ornare iaculis bibendum malesuada faucibus lacinia porttitor. Pulvinar laoreet sagittis viverra duis. In venenatis sem arcu pretium pharetra at. Lectus viverra dui tellus ornare pharetra.</p>
+                            <div class="mt-6">
+                                <a href="#" class="inline-flex px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700"> Get started </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1">
+                    <div class="pr-4 -ml-48 sm:pr-6 md:-ml-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
+                        <img class="w-full rounded-xl shadow-xl ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none" src="https://tailwindui.com/img/component-images/inbox-app-screenshot-2.jpg" alt="Customer profile user interface">
+                    </div>
+                </div>
             </div>
-            <div class="name">Gary Gygax</div>
         </div>
-    </section>
-@endsection
+    </div>
+</x-app-guest-layout>
