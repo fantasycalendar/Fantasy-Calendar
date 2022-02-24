@@ -44,7 +44,8 @@
                                 'moon_popup': day.moons.length > 0,
                                 'day_title_popup': day.text != '',
                                 'has_weather_popup': day.weather_icon != '',
-                                'has_event': day.events.length > 0
+                                'has_event': day.events.length > 0,
+                                'minimalistic_odd_even_colored': day.type === 'day' && !day.season_color
                             }"
                             :epoch="day.epoch"
                             @click="weather_click(day, $event)"
@@ -52,7 +53,7 @@
                             @mouseleave="weather_mouse_leave"
                             >
                                 <div class="number" x-text="day.number" style="z-index: 10;"></div>
-                                <div class="w-100 h-100" :style="`opacity: 0.2;position: absolute;top: 0;bottom: 0;right: 0;left: 0; background-color: ${day.season_color};`"></div>
+                                <div class="w-100 h-100" x-show="day.type !== 'overflow'" :style="`opacity: 0.2; position:absolute; flex:1; background-color: ${day.season_color};`"></div>
                             </div>
                         </template>
                     </div>
