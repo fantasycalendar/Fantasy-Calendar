@@ -2,8 +2,8 @@
     <div class="my-16 mx-auto max-w-7xl px-4 sm:mt-24 sm:px-6">
         <div class="text-center">
             <h1 class="text-4xl tracking-tight font-extrabold text-gray-100 sm:text-5xl md:text-6xl">
-                <span class="whitespace-nowrap">Level up</span>
-                <span class="whitespace-nowrap text-primary-500">your narrative</span>
+                <span class="block">Build a calendar that</span>
+                <span class="block text-primary-500">fits your world</span>
             </h1>
             <p class="mt-3 max-w-md mx-auto text-base text-gray-400 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">Whether you're a GM just here to track your Forgotten Realms campaign with a preset calendar, or a fanciful world-builder with 12 moons (Like Eberron's) and zany timekeeping systems to match, we've got you covered.</p>
         </div>
