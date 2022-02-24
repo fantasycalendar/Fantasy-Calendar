@@ -213,7 +213,7 @@
             <div>
                 <h2 class="text-base font-semibold tracking-wider text-primary-600 uppercase">Powerful Event Conditions</h2>
                 <p class="mt-2 text-3xl font-extrabold text-gray-200 tracking-tight sm:text-4xl">A better way to schedule in-world events</p>
-                <p class="mt-5 max-w-prose mx-auto text-xl text-gray-300">Character birthdays? Easy. Monthly meeting with the queen? Track it. A moon that turns purple during summer, on Fridays, only when the other two moons are new moons, and the sky is clear? Yep, <strong>you can do that, too</strong>.</p>
+                <p class="mt-5 max-w-prose mx-auto text-xl text-gray-300">Character birthdays? Easy. Monthly meeting with the queen? Track it. A moon that turns purple during summer, on Fridays, only when the other two moons are new moons? <br>Yep, <strong>you can do that, too</strong>.</p>
             </div>
             <div class="mt-12 -mb-10 sm:-mb-24 lg:-mb-56">
                 <img class="rounded-lg shadow-xl ring-1 ring-black ring-opacity-5" src="{{ asset('/resources/screenshots/event-conditions.png') }}" alt="">
