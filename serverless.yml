@@ -104,6 +104,7 @@ package:
     - .git/**
     - .idea/**
     - setup/**
+    - dist/**
     - cache/**
     - node_modules/**
     - public/storage/**
@@ -305,7 +306,7 @@ resources:
             # Assets will be served under the `/assets/` prefix
             - PathPattern: '/.well-known/apple-developer-merchantid-domain-association'
               AllowedMethods: [GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE]
-              TargetOriginId: Website # the PHP application
+              TargetOriginId: Assets # the PHP application
               # Disable caching for the PHP application https://aws.amazon.com/premiumsupport/knowledge-center/prevent-cloudfront-from-caching-files/
               DefaultTTL: 0
               MinTTL: 0

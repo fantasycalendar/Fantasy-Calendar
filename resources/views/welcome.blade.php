@@ -19,9 +19,7 @@
         </div>
     </div>
 
-    <!-- This example requires Tailwind CSS v2.0+ -->
     <div class="bg-gray-900">
-        <!-- Header -->
         <div class="relative pb-32 bg-gray-800">
             <div class="absolute inset-0">
                 <img class="w-full h-full object-cover" src="{{ asset('/resources/homepage/castle.jpg') }}" alt="">
@@ -33,7 +31,6 @@
             </div>
         </div>
 
-        <!-- Overlapping cards -->
         <section class="-mt-32 max-w-7xl mx-auto relative z-10 pb-32 px-4 sm:px-6 lg:px-8" aria-labelledby="contact-heading">
             <h2 class="sr-only" id="contact-heading">Powerful Calendar Engine</h2>
             <div class="grid grid-cols-1 gap-y-20 lg:grid-cols-3 lg:gap-y-0 lg:gap-x-8">
@@ -77,7 +74,6 @@
     </div>
 
 
-    <!-- This example requires Tailwind CSS v2.0+ -->
     <div class="relative bg-gray-900 pb-32 overflow-hidden">
         <div class="relative">
             <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
@@ -85,7 +81,6 @@
                     <div>
                         <div>
                         <span class="h-12 w-12 rounded-md flex items-center justify-center bg-primary-600">
-                          <!-- Heroicon name: outline/inbox -->
                           <i class="fa fa-history w-6 h-6 text-white text-center text-xl"></i>
                         </span>
                         </div>
@@ -151,7 +146,6 @@
         </div>
     </div>
 
-    <!-- This example requires Tailwind CSS v2.0+ -->
     <div class="py-12 bg-gray-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="lg:text-center">
@@ -165,7 +159,6 @@
                     <div class="relative">
                         <dt>
                             <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-primary-500 text-white">
-                                <!-- Heroicon name: outline/globe-alt -->
                                 <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                                 </svg>
@@ -178,7 +171,6 @@
                     <div class="relative">
                         <dt>
                             <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-primary-500 text-white">
-                                <!-- Heroicon name: outline/scale -->
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
                                 </svg>
@@ -191,7 +183,6 @@
                     <div class="relative">
                         <dt>
                             <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-primary-500 text-white">
-                                <!-- Heroicon name: outline/lightning-bolt -->
                                 <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                                 </svg>
@@ -204,7 +195,6 @@
                     <div class="relative">
                         <dt>
                             <div class="absolute flex items-center justify-center h-12 w-12 rounded-md bg-primary-500 text-white">
-                                <!-- Heroicon name: outline/annotation -->
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
@@ -218,7 +208,6 @@
         </div>
     </div>
 
-    <!-- This example requires Tailwind CSS v2.0+ -->
     <div class="relative bg-gray-800 pt-16 overflow-hidden sm:pt-24 lg:pt-32">
         <div class="mx-auto max-w-md px-4 text-center sm:px-6 sm:max-w-3xl lg:px-8 lg:max-w-7xl">
             <div>
@@ -232,7 +221,6 @@
         </div>
     </div>
 
-    <!-- This example requires Tailwind CSS v2.0+ -->
     <div class="bg-primary-700">
         <div class="max-w-4xl mx-auto px-4 py-16 sm:px-6 sm:pt-20 sm:pb-24 lg:max-w-7xl lg:pt-24 lg:px-8">
             <h2 class="text-3xl font-extrabold text-white tracking-tight">Still not convinced?</h2>
@@ -241,7 +229,6 @@
                 <div>
                     <div>
           <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
-            <!-- Heroicon name: outline/inbox -->
             <i class="fab fa-discord w-6 h-6 text-center text-white text-xl"></i>
           </span>
                     </div>
@@ -254,7 +241,6 @@
                 <div>
                     <div>
           <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
-            <!-- Heroicon name: outline/users -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
@@ -269,7 +255,6 @@
                 <div>
                     <div>
           <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
-            <!-- Heroicon name: outline/trash -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
 </svg>
@@ -284,7 +269,6 @@
                 <div>
                     <div>
           <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
-            <!-- Heroicon name: outline/pencil-alt -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
 </svg>
@@ -299,7 +283,6 @@
                 <div>
                     <div>
           <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
-            <!-- Heroicon name: outline/document-report -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
 </svg>
@@ -314,7 +297,6 @@
                 <div>
                     <div>
           <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
-            <!-- Heroicon name: outline/reply -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
 </svg>
@@ -329,7 +311,6 @@
                 <div>
                     <div>
           <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
-            <!-- Heroicon name: outline/heart -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
 </svg>
@@ -343,7 +324,6 @@
                 <div>
                     <div>
           <span class="flex items-center justify-center h-12 w-12 rounded-md bg-white bg-opacity-10">
-            <!-- Heroicon name: outline/chat-alt -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 21h7a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v11m0 5l4.879-4.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242z" />
 </svg>
