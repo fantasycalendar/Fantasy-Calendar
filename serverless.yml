@@ -108,6 +108,7 @@ package:
     - cache/**
     - node_modules/**
     - public/storage/**
+    - public/resources/**
     - public/vendor/sharp/fonts/*
     - public/vendor/sharp/vendor.js
     - resources/images/**
