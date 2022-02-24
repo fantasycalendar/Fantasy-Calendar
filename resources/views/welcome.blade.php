@@ -2,10 +2,10 @@
     <div class="my-16 mx-auto max-w-7xl px-4 sm:mt-24 sm:px-6">
         <div class="text-center">
             <h1 class="text-4xl tracking-tight font-extrabold text-gray-100 sm:text-5xl md:text-6xl">
-                <span class="block">Build a calendar that</span>
-                <span class="block text-primary-500">fits your world</span>
+                <span class="whitespace-nowrap">Level up</span>
+                <span class="whitespace-nowrap text-primary-500">your narrative</span>
             </h1>
-            <p class="mt-3 max-w-md mx-auto text-base text-gray-400 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">Whether you're a GM just here to track your Forgotten Realms campaign with a preset world, or a fanciful world-builder with 12 moons (Like Eberron's) and zany timekeeping systems to match, we've got you covered.</p>
+            <p class="mt-3 max-w-md mx-auto text-base text-gray-400 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">Whether you're a GM just here to track your Forgotten Realms campaign with a preset calendar, or a fanciful world-builder with 12 moons (Like Eberron's) and zany timekeeping systems to match, we've got you covered.</p>
         </div>
     </div>
 
@@ -100,7 +100,7 @@
                     <div class="mt-8 border-t border-gray-600 pt-6">
                         <blockquote>
                             <div>
-                                <p class="text-base text-gray-400">&ldquo;If you adventurers take care of those threats to our livelihood, we'll build you a keep. It'll take 100 days.&rdquo;</p>
+                                <p class="text-base text-gray-400">&ldquo;If you adventurers take care of those threats to our livelihood, we'll build you a keep. It'll take 100 days. Good luck keeping track of that.&rdquo;</p>
                             </div>
                             <footer class="mt-3">
                                 <div class="flex items-center space-x-3">
