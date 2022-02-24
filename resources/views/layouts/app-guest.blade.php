@@ -23,7 +23,7 @@
                         <x-nav-link href="{{ route('discord') }}">Discord Integration</x-nav-link>
                     </div>
                 </div>
-                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
                     <x-nav-link href="{{ route('subscription.pricing') }}">Pricing</x-nav-link>
                     <x-nav-link href="{{ route('login') }}">Login</x-nav-link>
                     <x-nav-link href="{{ route('register') }}">Register</x-nav-link>

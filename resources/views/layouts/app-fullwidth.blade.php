@@ -35,7 +35,7 @@
                         <x-nav-link href="{{ route('discord') }}">Discord Integration</x-nav-link>
                     </div>
                 </div>
-                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
                     @can('administer-app', auth()->user())
                         <x-nav-link href="{{ route('code16.sharp.home') }}">Admin Panel</x-nav-link>
                     @endcan
