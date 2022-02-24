@@ -4,22 +4,10 @@
 
 @include('templates._head_content_tw')
 
-<body class="scrollbar page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class') @setting('dark_theme') dark @endsetting">
-
-@if(auth()->check() && request()->session()->has('admin.id'))
-    <div class="w-full py-1 bg-red-200 dark:bg-red-900 text-red-800 dark:text-red-200 text-center flex justify-center items-center">
-        You are impersonating the user <strong class="ml-1">{{ Auth::user()->username }}</strong>. <a class="rounded-full ml-1 px-1.5 py-0.5 bg-red-600 text-red-200 dark:bg-red-200 dark:text-red-900 text-xs" href="{{ route('admin.reverse_impersonate') }}">Reverse Impersonate</a>
-    </div>
-@endif
-
-@env('development')
-    <div class="w-full py-1 bg-red-200 dark:bg-red-900 text-red-800 dark:text-red-200 text-center">
-        This is the beta deployment of Fantasy Calendar. Use with caution.
-    </div>
-@endenv
+<body class="scrollbar page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class')">
 
 <div class="min-h-screen flex flex-col justify-between {{ $attributes->get('body-class') ?? 'bg-gray-100 dark:bg-gray-900' }}" x-data="{ menu: true }">
-    <nav class="bg-primary-700 dark:bg-primary-900 border-b border-gray-200 dark:border-gray-800">
+    <nav class="bg-primary-700 dark:bg-primary-900">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 w-full">
                 <div class="flex">
@@ -36,17 +24,9 @@
                     </div>
                 </div>
                 <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
-                    @can('administer-app', auth()->user())
-                        <x-nav-link href="{{ route('code16.sharp.home') }}">Admin Panel</x-nav-link>
-                    @endcan
-                    @auth
-                        <x-nav-link href="{{ route('profile') }}">Profile</x-nav-link>
-                        <x-nav-link href="{{ route('logout') }}">Logout</x-nav-link>
-                    @else
-                        <x-nav-link href="{{ route('subscription.pricing') }}">Pricing</x-nav-link>
-                        <x-nav-link href="{{ route('login') }}">Login</x-nav-link>
-                        <x-nav-link href="{{ route('register') }}">Register</x-nav-link>
-                    @endauth
+                    <x-nav-link href="{{ route('subscription.pricing') }}">Pricing</x-nav-link>
+                    <x-nav-link href="{{ route('login') }}">Login</x-nav-link>
+                    <x-nav-link href="{{ route('register') }}">Register</x-nav-link>
                 </div>
                 <div class="-mr-2 flex items-center sm:hidden">
                     <!-- Mobile menu button -->
@@ -85,18 +65,9 @@
                 <x-mobile-nav-link href="{{ route('whats-new') }}">What's new in 2.0</x-mobile-nav-link>
                 <x-mobile-nav-link href="{{ route('faq') }}">FAQs</x-mobile-nav-link>
 
-                @can('administer-app', auth()->user())
-                    <x-mobile-nav-link href="{{ route('code16.sharp.home') }}">Admin Panel</x-mobile-nav-link>
-                @endcan
-
-                @auth
-                    <x-mobile-nav-link href="{{ route('profile') }}">Profile</x-mobile-nav-link>
-                    <x-mobile-nav-link href="{{ route('logout') }}">Logout</x-mobile-nav-link>
-                @else
-                    <x-mobile-nav-link href="{{ route('subscription.pricing') }}">Pricing</x-mobile-nav-link>
-                    <x-mobile-nav-link href="{{ route('login') }}">Login</x-mobile-nav-link>
-                    <x-mobile-nav-link href="{{ route('register') }}">Register</x-mobile-nav-link>
-                @endauth
+                <x-mobile-nav-link href="{{ route('subscription.pricing') }}">Pricing</x-mobile-nav-link>
+                <x-mobile-nav-link href="{{ route('login') }}">Login</x-mobile-nav-link>
+                <x-mobile-nav-link href="{{ route('register') }}">Register</x-mobile-nav-link>
             </div>
         </div>
     </nav>
@@ -138,7 +109,7 @@
                     <p class="text-base text-gray-400 dark:text-gray-500">&copy; {{ date('Y') }} Fantasy Computerworks Ltd.</p>
                     <p class="text-base text-gray-400 dark:text-gray-500">
                         <a class="text-gray-400 dark:text-gray-500 dark:hover:text-gray-400 hover:text-gray-500" href="{{ route('terms-and-conditions') }}">Terms and Conditions</a>
-                            - <a class="text-gray-400 dark:text-gray-500 dark:hover:text-gray-400 hover:text-gray-500" href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</a>
+                        - <a class="text-gray-400 dark:text-gray-500 dark:hover:text-gray-400 hover:text-gray-500" href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</a>
                     </p>
                 </div>
             </div>

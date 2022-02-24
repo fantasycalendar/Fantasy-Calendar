@@ -11,10 +11,6 @@
     <meta property="og:image" content="{{ url('/resources/logo_discord.jpg') }}">
     <meta property="og:description" content="All-in-One Fantasy Calendar Generator - Creation of calendars and time-tracking in your homebrew or pre-made campaign worlds has never been easier!">
 
-    @if(Auth::check())
-        <meta name='api-token' content="{{ Auth::user()->api_token }}">
-    @endif
-
     <title>
         {!! ($title ?? $calendar->name ?? "Fantasy Calendar") . ' -' !!} Fantasy Calendar
     </title>
