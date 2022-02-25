@@ -54,26 +54,30 @@
         @endif
 
         @if($calendars->hasPages() || $search)
-            <div class="flex flex-col md:flex-row justify-between">
-                <form action="{{ route('calendars.index') }}" class="calendar-search" method="get">
+            <div class="flex flex-col md:flex-row justify-between mb-4">
+                <form action="{{ route('calendars.index') }}" class="md:w-80 md:max-w-full mb-4 md:mb-0" method="get" x-data="{ search: `{{ $search }}` }">
                     @csrf
                     <div class="relative">
-                        <x-text-input name="search" placeholder="Search..." :value="$search ?? ''"></x-text-input>
-                        <span class='search-clear'><i class="fa fa-times"></i></span>
-                        <div class="absolute inset-y-0 right-0">
-                            <button class="btn btn-outline-secondary">
+                        <x-text-input x-ref="searchbox" x-model="search" name="search" placeholder="Search..."></x-text-input>
+                        <div class="absolute inset-y-0 right-0 flex items-center justify-center">
+                            <span class="h-full inline-flex items-center px-2 text-sm font-sans font-medium text-gray-400" x-show="!search" @click="$refs.searchbox.focus()">
                                 <i class="fa fa-search"></i>
+                            </span>
+
+                            <button @click="search = ''; $dispatch('submit')" class="h-full inline-flex items-center px-2 text-sm font-sans font-medium text-gray-400" x-cloak x-show="search">
+                                <i class="fa fa-times"></i>
                             </button>
                         </div>
                     </div>
                 </form>
 
-                <span class="hidden md:block">{{ $calendars->onEachSide(1)->links() }}</span><span class="block md:hidden">{{ $calendar_pagination->links() }}</span>
+                <div class="hidden md:block">{{ $calendars->onEachSide(1)->links() }}</div>
+                <div class="md:hidden">{{ $calendar_pagination->links() }}</div>
             </div>
         @endif
 
         @if(!count($shared_calendars) && !count($calendars) && $search)
-            <h2 class="text-center border py-4" style="opacity: 0.7;">No calendars match '{{ $search }}'</h2>
+            <h2 class="text-center border border-gray-300 dark:border-gray-700 rounded py-4">No calendars match '{{ $search }}'</h2>
         @endif
 
         @if(count($calendars) > 0 || count($shared_calendars) > 0)
