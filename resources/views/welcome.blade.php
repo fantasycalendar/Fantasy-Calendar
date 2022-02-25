@@ -14,8 +14,8 @@
             <div class="flex-1"></div>
             <div class="flex-1 w-full bg-gray-900"></div>
         </div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6">
-            <img class="relative rounded-lg shadow-lg shadow-slate-800" src="{{ asset('/resources/screenshots/forgotten-realms-homepage-screenshot.png') }}" alt="App screenshot">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <img class="relative rounded-lg shadow-lg shadow-slate-800" src="{{ asset('/resources/screenshots/taldorei-never-lose-track.png') }}" alt="App screenshot">
         </div>
     </div>
 
@@ -110,7 +110,7 @@
                 </div>
                 <div class="mt-12 sm:mt-16 lg:mt-0">
                     <div class="pl-4 -mr-48 sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
-                        <img class="w-full rounded-xl shadow-xl shadow-slate-800 ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none" src="{{ asset('/resources/screenshots/taldorei-never-lose-track.png') }}" alt="Inbox user interface">
+                        <img class="w-full rounded-xl shadow-xl shadow-slate-800 ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none" src="{{ asset('/resources/screenshots/forgotten-realms-homepage-screenshot.png') }}" alt="Inbox user interface">
                     </div>
                 </div>
             </div>
