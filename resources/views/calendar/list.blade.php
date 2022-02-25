@@ -57,10 +57,10 @@
             <div class="flex flex-col md:flex-row justify-between">
                 <form action="{{ route('calendars.index') }}" class="calendar-search" method="get">
                     @csrf
-                    <div class="form-group input-group">
-                        <input type="text" class="form-control calendar-search-input" name="search" placeholder="Search..." @if($search) value="{{ $search }}" @endif>
+                    <div class="relative">
+                        <x-text-input name="search" placeholder="Search..." :value="$search ?? ''"></x-text-input>
                         <span class='search-clear'><i class="fa fa-times"></i></span>
-                        <div class="input-group-append">
+                        <div class="absolute inset-y-0 right-0">
                             <button class="btn btn-outline-secondary">
                                 <i class="fa fa-search"></i>
                             </button>
