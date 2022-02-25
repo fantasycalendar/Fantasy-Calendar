@@ -93,7 +93,7 @@
                 <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
                     <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach($calendars as $index => $calendar)
-                            <li>
+                            <li class="relative">
                                 <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}" class="block hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <div class="flex items-center px-4 py-4 sm:px-6">
                                         <div class="min-w-0 flex-1 md:grid md:grid-cols-2 md:gap-4">
@@ -104,7 +104,12 @@
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 mr-1.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
                                                     </svg>
-                                                    <span class="truncate">{{ $calendar->user->username }}</span>
+                                                    <span class="truncate">
+                                                        {{ $calendar->user->username }}
+                                                        @if($calendar->users_count)
+                                                            <i class="fa fa-user ml-4"></i> {{ $calendar->users_count }}
+                                                        @endif
+                                                    </span>
                                                 </p>
                                             </div>
                                             <div class="hidden md:block">
@@ -128,14 +133,43 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </div>
-                                        <div class="ml-4">
-                                            <!-- Heroicon name: solid/dots-vertical -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                            </svg>
-                                        </div>
                                     </div>
                                 </a>
+                                <div class="absolute inset-y-0 right-0 inline-flex items-center" x-data="{open: false}" @click.prevent @click.outside="open = false">
+                                    <div>
+                                        <button @click="open = ! open" type="button" class="bg-gray-100 rounded-full flex items-center text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500" id="menu-button" aria-expanded="true" aria-haspopup="true">
+                                            <span class="sr-only">Open options</span>
+                                            <!-- Heroicon name: solid/dots-vertical -->
+                                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                         role="menu"
+                                         aria-orientation="vertical"
+                                         aria-labelledby="menu-button"
+                                         tabindex="-1"
+                                         x-transition:enter="transition ease-out duration-100"
+                                         x-transition:enter-start="transform opacity-0 scale-95"
+                                         x-transition:enter-end="transform opacity-100 scale-100"
+                                         x-transition:leave="transition ease-in duration-75"
+                                         x-transition:leave-start="transform opacity-100 scale-100"
+                                         x-transition:leave-end="transform opacity-0 scale-95"
+                                         x-show="open"
+                                    >
+                                        <div class="py-1" role="none">
+                                            <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
+                                            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Account settings</a>
+                                            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">Support</a>
+                                            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">License</a>
+                                            <form method="POST" action="#" role="none">
+                                                <button type="submit" class="text-gray-700 block w-full text-left px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-3">Sign out</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </li>
                         @endforeach
                     </ul>
@@ -143,27 +177,8 @@
 
             @foreach($calendars as $index => $calendar)
                 <div class="row border-top py-3 calendar-entry list-group-item-action w-auto @if($calendar->disabled) calendar-disabled protip @endif" @if($calendar->disabled) data-pt-title="Free accounts are limited to two calendars. You'll need to re-subscribe to use this one." @endif>
-                    <div class="col-6 col-md-4 col-lg-5">
-                        <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
-                    </div>
-                    <div style="padding-left: 33px;" class="hidden md:block col-md-4 col-lg-3">
-
-                    </div>
-                    <div class="hidden d-lg-block col-lg-1 protip">
-                        <i class="fa fa-calendar-check"></i> {{ $calendar->events_count }} <br>
-                        @if($calendar->users_count)
-                            <i class="fa fa-user"></i> {{ $calendar->users_count }}
-                        @endif
-                    </div>
                     <div class="col-6 col-md-4 col-lg-3 text-right">
                         <div class="btn-group">
-                            <a class='calendar_action btn btn-outline-secondary action-edit protip' data-pt-delay-in="500" data-pt-title="Edit '{{ $calendar->name }}'" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
-                                <i class="fa fa-edit"></i> <span class="hidden md:inline">Edit</span>
-                            </a>
-                            <a class='calendar_action btn btn-outline-secondary action-show protip' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
-                                <i class="fa fa-eye"></i> <span class="hidden md:inline">View</span>
-                            </a>
-
                             <button class="calendar_action btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" id="dropdownButton-{{ $calendar->hash }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                             <div class="calendar_action dropdown-menu dropdown-menu-right" aria-labelledby="dropdownButton-{{ $calendar->hash }}">
                                 <a class='dropdown-item action-edit protip md:hidden' data-pt-delay-in="500" data-pt-title="Edit '{{ $calendar->name }}'" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
