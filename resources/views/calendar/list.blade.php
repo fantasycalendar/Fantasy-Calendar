@@ -1,73 +1,35 @@
-@extends('templates._page')
-
-@push('head')
-    <script>
-        $(document).ready(function() {
-            if($('.calendar-search-input').length && $('.calendar-search-input').val().length == 0) {
-                $('.search-clear').addClass('d-none');
-            }
-
-            $('.delete_button').click(function() {
-                let calendar_hash = $(this).attr('data-hash');
-                let calendar_name = $(this).attr('data-name');
-
-                delete_calendar(calendar_hash, calendar_name, function() {location.reload();});
-            });
-
-            $('.copy_button').click(function() {
-                let calendar_hash = $(this).attr('data-hash');
-                let calendar_name = $(this).attr('data-name');
-
-                copy_calendar(calendar_hash, calendar_name, function() {location.reload();});
-            });
-
-            $('.calendar-search-input').keyup(function(){
-                $('.search-clear').toggleClass('d-none', $(this).val().length == 0);
-            })
-
-            $('.search-clear').click(function() {
-                $('.calendar-search-input').val('');
-                $('.search-clear').addClass('d-none');
-
-                let searchParams = new URLSearchParams(window.location.search);
-
-                if(searchParams.has('search') && searchParams.get('search').length > 0) {
-                    $('.calendar-search').submit();
-                }
-            });
-        });
-    </script>
-@endpush
-
-
-@section('content')
+<x-app-layout>
     <div class="container py-5">
 
         @if(session()->has('alert-warning'))
-            <div class="alert alert-warning py-3">{{ session('alert-warning') }}</div>
+            <x-alert type="warning">{{ session('alert-warning') }}</x-alert>
         @endif
 
         @if(!auth()->user()->acknowledged_discord_announcement)
-            <div class="alert alert-info"><a href="{{ route('discord-announcement-acknowledge') }}" class="alert-link" style="float: right;"><i class="fa fa-times"></i></a>
-                <h4><i class="fab fa-discord"></i> <strong>Fantasy-Calendar's Discord Integration</strong> has just landed!</h4>
+            <x-alert type="notice" icon="fab fa-discord" class="relative mb-4">
+                <a href="{{ route('discord-announcement-acknowledge') }}" class="alert-link" style="float: right;"><i class="fa fa-times"></i></a>
+                <h4 class="font-semibold">Fantasy Calendar integrates with Discord!</h4>
+
                 @if(!auth()->user()->isPremium())
-                    All the information about this subscriber feature (<a class="alert-link" href="{{ route('subscription.pricing') }}">only $2.49/month!</a>) can be found <a class="alert-link" href="{{ route('discord') }}">on this page</a>!
+                    <div>All the information about this subscriber feature (<a class="font-semibold underline hover:text-white" href="{{ route('subscription.pricing') }}">only $2.49/month!</a>) can be found <a class="font-semibold underline hover:text-white" href="{{ route('discord') }}">on this page</a>!</div>
                 @else
-                    All the information can be found <a class="alert-link" href="{{ route('discord') }}">on this page</a> - as a subscriber, you have immediate <a class="alert-link" href="{{ route('discord.index') }}">access</a>!
+                    <div>All the information can be found <a class="font-semibold underline hover:text-white" href="{{ route('discord') }}">on this page</a> - as a subscriber, you have immediate <a class="font-semibold underline hover:text-white" href="{{ route('discord.index') }}">access</a>!</div>
                 @endif
-            </div>
+            </x-alert>
         @endif
 
         @if(count($invitations))
             @foreach($invitations as $invitation)
-                <div class="alert alert-primary d-md-flex justify-content-between align-content-center">
-                    <span class="py-2">You've been invited to '{{ $invitation->calendar->name }}' created by '{{ $invitation->calendar->user->username }}'.</span>
-                    <hr class="d-md-none">
-                    <div class="text-right text-md-left">
-                        <a class="btn btn-primary" href="{{ route('invite.accept', ['token' => $invitation->invite_token]) }}">Accept invitation</a>
-                        <a class="btn btn-outline-secondary" href="{{ route('invite.reject-confirm', ['token' => $invitation->invite_token]) }}"><i class="fa fa-trash"></i></a>
+                <x-alert type="success" icon="">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center">
+                        <div class="py-2 -ml-2"><i class="fa fa-envelope-open-text pr-2 w-6 text-md"></i> You've been invited to '{{ $invitation->calendar->name }}' created by '{{ $invitation->calendar->user->username }}'.</div>
+                        <hr class="md:hidden mb-2 border-green-100 dark:border-green-700">
+                        <div class="text-right space-x-2">
+                            <x-button-link custom-role="text-red-500 dark:text-gray-200 focus:ring-red-500 hover:text-white dark:hover:text-white dark:hover:bg-red-900 hover:bg-red-600 border-0 focus:border-0 shadow-none" href="{{ route('invite.reject-confirm', ['token' => $invitation->invite_token]) }}">Reject <span class="hidden md:inline-block md:ml-1">invitation</span></x-button-link>
+                            <x-button-link custom-role="text-white bg-primary-600 disabled:hover:bg-primary-600 hover:bg-primary-700 dark:bg-primary-800 disabled:dark:hover:bg-primary-900 dark:hover:bg-primary-700 focus:ring-primary-500 border-transparent shadow-sm" href="{{ route('invite.accept', ['token' => $invitation->invite_token]) }}">Accept <span class="hidden md:inline-block md:ml-1">invitation</span></x-button-link>
+                        </div>
                     </div>
-                </div>
+                </x-alert>
             @endforeach
         @endif
 
@@ -209,5 +171,4 @@
             @endif
         @endif
     </div>
-
-@endsection
+</x-app-layout>

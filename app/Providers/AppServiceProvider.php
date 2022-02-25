@@ -65,7 +65,7 @@ class AppServiceProvider extends ServiceProvider
             URL::forceRootUrl(config('app.url'));
         }
 
-        Paginator::useBootstrap();
+//        Paginator::useBootstrap();
 
         \Illuminate\Pagination\AbstractPaginator::currentPathResolver(function () {
             /** @var \Illuminate\Routing\UrlGenerator $url */
