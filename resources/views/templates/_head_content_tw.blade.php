@@ -1,7 +1,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="description" content="All-in-One Fantasy Calendar Generator - Creation of calendars and time-tracking in your homebrew or pre-made campaign worlds has never been easier!">
+    <meta name="description" content="Level up your narrative - Track time in your homebrew or pre-made campaign world with the Internet's best fantasy world calendaring tool!">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -9,10 +9,14 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->full() }}">
     <meta property="og:image" content="{{ url('/resources/logo_discord.jpg') }}">
-    <meta property="og:description" content="All-in-One Fantasy Calendar Generator - Creation of calendars and time-tracking in your homebrew or pre-made campaign worlds has never been easier!">
+    <meta property="og:description" content="Level up your narrative - Track time in your homebrew or pre-made campaign world with the Internet's best fantasy world calendaring tool!">
 
     <title>
-        {!! ($title ?? $calendar->name ?? "Fantasy Calendar") . ' -' !!} Fantasy Calendar
+        @if($title ?? $calendar->name ?? null)
+            {{ ($title ?? $calendar->name) . ' -' }} Fantasy Calendar
+        @else
+            Fantasy Calendar - Level up your narrative
+        @endif
     </title>
 
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/resources/apple-touch-icon.png') }}">
