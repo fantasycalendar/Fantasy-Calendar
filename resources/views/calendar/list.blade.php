@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="container py-5">
+    <div class="flex flex-col">
 
         @if(session()->has('alert-warning'))
             <x-alert type="warning">{{ session('alert-warning') }}</x-alert>
@@ -20,7 +20,7 @@
 
         @if(count($invitations))
             @foreach($invitations as $invitation)
-                <x-alert type="success" icon="">
+                <x-alert type="success" icon="" class="mb-10">
                     <div class="flex flex-col md:flex-row justify-between md:items-center">
                         <div class="py-2 -ml-2"><i class="fa fa-envelope-open-text pr-2 w-6 text-md"></i> You've been invited to '{{ $invitation->calendar->name }}' created by '{{ $invitation->calendar->user->username }}'.</div>
                         <hr class="md:hidden mb-2 border-green-100 dark:border-green-700">
@@ -34,13 +34,21 @@
         @endif
 
         @if(count($calendars) == 0 && !$search)
-            <div class="row text-center my-5 py-4">
-                <div class="col-12 col-md-6 py-5 text-left">
-                    <h2>Create Your Own Calendar</h2>
-                    <p class="mt-4">From zero to tracking your story in just a few easy steps.</p>
-                    <a href="{{ route('calendars.create') }}" class="btn btn-primary my-5">Create a Calendar</a>
-                </div>
-                <div class="d-none d-md-block col-md-6 py-5" style="min-height: 100%; background-image: url({{ asset('resources/calendar_list_empty.svg') }}); background-repeat: no-repeat; background-size: contain; background-position: right center;">
+            <div class="text-center flex-grow mt-24">
+                <svg class="mx-auto h-12 w-12 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 5V1M14 5V1M6 11H10M14 11H10M10 11V7V15M3 19H17C18.1046 19 19 18.1046 19 17V5C19 3.89543 18.1046 3 17 3H3C1.89543 3 1 3.89543 1 5V17C1 18.1046 1.89543 19 3 19Z"/>
+                </svg>
+
+                <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-200">No calendars</h3>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating a new one.</p>
+                <div class="mt-6">
+                    <x-button>
+                        <!-- Heroicon name: solid/plus -->
+                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        New calendar
+                    </x-button>
                 </div>
             </div>
         @endif
