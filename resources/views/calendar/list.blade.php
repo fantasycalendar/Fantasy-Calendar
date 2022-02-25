@@ -53,9 +53,17 @@
             </div>
         @endif
 
+        @if(count($calendars) > 0 && !$search)
+            <div class="flex items-center justify-between w-full mb-4">
+                <h1 class="text-gray-900 dark:text-gray-200 text-xl">My Calendars</h1>
+
+                <x-button-link role="primary" href="{{ route('calendars.create') }}"><i class="fa fa-plus mr-2"></i> Create New</x-button-link>
+            </div>
+        @endif
+
         @if($calendars->hasPages() || $search)
             <div class="flex flex-col md:flex-row justify-between mb-4">
-                <form action="{{ route('calendars.index') }}" class="md:w-80 md:max-w-full mb-4 md:mb-0" method="get" x-data="{ search: `{{ $search }}` }">
+                <form action="{{ route('calendars.index') }}" class="md:w-80 md:max-w-full mb-4 md:mb-0" method="get" x-data="{ search: `{{ $search }}` }" x-ref="searchform">
                     @csrf
                     <div class="relative">
                         <x-text-input x-ref="searchbox" x-model="search" name="search" placeholder="Search..." value="{{ $search ?? '' }}"></x-text-input>
@@ -64,7 +72,7 @@
                                 <i class="fa fa-search"></i>
                             </span>
 
-                            <button type="button" @click="search = ''; $dispatch('submit')" class="cursor-pointer h-full inline-flex items-center px-2 text-sm font-sans font-medium text-gray-400" x-cloak x-show="search">
+                            <button type="button" @click="search = ''; $nextTick(() => $refs.searchform.submit())" class="cursor-pointer h-full inline-flex items-center px-2 text-sm font-sans font-medium text-gray-400" x-cloak x-show="search">
                                 <i class="fa fa-times"></i>
                             </button>
                         </div>
@@ -77,33 +85,69 @@
         @endif
 
         @if(!count($shared_calendars) && !count($calendars) && $search)
-            <h2 class="text-center border border-gray-300 dark:border-gray-700 rounded py-4">No calendars match '{{ $search }}'</h2>
+            <h2 class="text-center border border-gray-300 dark:border-gray-700 rounded py-4 h-32 grid place-items-center">No calendars match '{{ $search }}'</h2>
         @endif
 
         @if(count($calendars) > 0 || count($shared_calendars) > 0)
-
-            @if(count($calendars) > 0 && !$search)
-                <div class="flex items-center justify-between w-full">
-                    <h1 class="text-gray-900 dark:text-gray-200 text-xl">My Calendars</h1>
-
-                    <x-button-link role="primary" href="{{ route('calendars.create') }}"><i class="fa fa-plus"></i> Create New</x-button-link>
+            <!-- This example requires Tailwind CSS v2.0+ -->
+                <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
+                    <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+                        @foreach($calendars as $index => $calendar)
+                            <li>
+                                <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}" class="block hover:bg-gray-50 dark:hover:bg-gray-700">
+                                    <div class="flex items-center px-4 py-4 sm:px-6">
+                                        <div class="min-w-0 flex-1 md:grid md:grid-cols-2 md:gap-4">
+                                            <div>
+                                                <p class="text-sm font-medium text-primary-600 dark:text-primary-500 truncate">{{ $calendar->name }}</p>
+                                                <p class="mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400">
+                                                    <!-- Heroicon name: solid/user-circle -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 mr-1.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    <span class="truncate">{{ $calendar->user->username }}</span>
+                                                </p>
+                                            </div>
+                                            <div class="hidden md:block">
+                                                <div>
+                                                    <p class="text-sm text-gray-900 dark:text-gray-400">
+                                                        <i class="w-6 text-center fa fa-calendar"></i> {{ $calendar->current_date }}
+                                                        @if($calendar->current_era_valid)
+                                                            <i class="w-6 text-center fa fa-infinity"></i> {{ $calendar->current_era }}
+                                                        @endif
+                                                        <br>
+                                                        @if($calendar->clock_enabled)
+                                                            <i class="w-6 text-center fa fa-clock"></i> {{ $calendar->current_time }} <br>
+                                                        @endif
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <!-- Heroicon name: solid/dots-vertical -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
+                                        </div>
+                                        <div class="ml-4">
+                                            <!-- Heroicon name: solid/dots-vertical -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
-            @endif
 
             @foreach($calendars as $index => $calendar)
-
                 <div class="row border-top py-3 calendar-entry list-group-item-action w-auto @if($calendar->disabled) calendar-disabled protip @endif" @if($calendar->disabled) data-pt-title="Free accounts are limited to two calendars. You'll need to re-subscribe to use this one." @endif>
                     <div class="col-6 col-md-4 col-lg-5">
                         <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
                     </div>
                     <div style="padding-left: 33px;" class="hidden md:block col-md-4 col-lg-3">
-                        <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date }} <br>
-                        @if($calendar->clock_enabled)
-                            <i class="fa fa-clock" style="margin-left: -20px;"></i> {{ $calendar->current_time }} <br>
-                        @endif
-                        @if($calendar->current_era_valid)
-                            <i class="fa fa-infinity" style="margin-left: -20px;"></i> {{ $calendar->current_era }}
-                        @endif
+
                     </div>
                     <div class="hidden d-lg-block col-lg-1 protip">
                         <i class="fa fa-calendar-check"></i> {{ $calendar->events_count }} <br>
