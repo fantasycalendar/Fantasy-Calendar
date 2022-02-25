@@ -54,7 +54,7 @@
         @endif
 
         @if($calendars->hasPages() || $search)
-            <div class="d-flex flex-column flex-md-row justify-content-between">
+            <div class="flex flex-col md:flex-row justify-between">
                 <form action="{{ route('calendars.index') }}" class="calendar-search" method="get">
                     @csrf
                     <div class="form-group input-group">
@@ -68,7 +68,7 @@
                     </div>
                 </form>
 
-                <span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span>
+                <span class="hidden md:block">{{ $calendars->onEachSide(1)->links() }}</span><span class="block md:hidden">{{ $calendar_pagination->links() }}</span>
             </div>
         @endif
 
@@ -79,7 +79,11 @@
         @if(count($calendars) > 0 || count($shared_calendars) > 0)
 
             @if(count($calendars) > 0 && !$search)
-                <h1 class="d-inline-flex align-items-center justify-content-between w-100 calendars-list-title">My Calendars <a href="{{ route('calendars.create') }}" class="btn btn-accent text-white"><i class="fa fa-plus"></i> Create New</a></h1>
+                <div class="flex items-center justify-between w-full">
+                    <h1 class="text-gray-900 dark:text-gray-200 text-xl">My Calendars</h1>
+
+                    <x-button-link role="primary" href="{{ route('calendars.create') }}"><i class="fa fa-plus"></i> Create New</x-button-link>
+                </div>
             @endif
 
             @foreach($calendars as $index => $calendar)
@@ -88,7 +92,7 @@
                     <div class="col-6 col-md-4 col-lg-5">
                         <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
                     </div>
-                    <div style="padding-left: 33px;" class="d-none d-md-block col-md-4 col-lg-3">
+                    <div style="padding-left: 33px;" class="hidden md:block col-md-4 col-lg-3">
                         <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date }} <br>
                         @if($calendar->clock_enabled)
                             <i class="fa fa-clock" style="margin-left: -20px;"></i> {{ $calendar->current_time }} <br>
@@ -97,7 +101,7 @@
                             <i class="fa fa-infinity" style="margin-left: -20px;"></i> {{ $calendar->current_era }}
                         @endif
                     </div>
-                    <div class="d-none d-lg-block col-lg-1 protip">
+                    <div class="hidden d-lg-block col-lg-1 protip">
                         <i class="fa fa-calendar-check"></i> {{ $calendar->events_count }} <br>
                         @if($calendar->users_count)
                             <i class="fa fa-user"></i> {{ $calendar->users_count }}
@@ -106,18 +110,18 @@
                     <div class="col-6 col-md-4 col-lg-3 text-right">
                         <div class="btn-group">
                             <a class='calendar_action btn btn-outline-secondary action-edit protip' data-pt-delay-in="500" data-pt-title="Edit '{{ $calendar->name }}'" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
-                                <i class="fa fa-edit"></i> <span class="d-none d-md-inline">Edit</span>
+                                <i class="fa fa-edit"></i> <span class="hidden md:inline">Edit</span>
                             </a>
                             <a class='calendar_action btn btn-outline-secondary action-show protip' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
-                                <i class="fa fa-eye"></i> <span class="d-none d-md-inline">View</span>
+                                <i class="fa fa-eye"></i> <span class="hidden md:inline">View</span>
                             </a>
 
                             <button class="calendar_action btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" id="dropdownButton-{{ $calendar->hash }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                             <div class="calendar_action dropdown-menu dropdown-menu-right" aria-labelledby="dropdownButton-{{ $calendar->hash }}">
-                                <a class='dropdown-item action-edit protip d-md-none' data-pt-delay-in="500" data-pt-title="Edit '{{ $calendar->name }}'" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
+                                <a class='dropdown-item action-edit protip md:hidden' data-pt-delay-in="500" data-pt-title="Edit '{{ $calendar->name }}'" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
                                     <i class="fa fa-edit"></i> Edit
                                 </a>
-                                <a class='dropdown-item action-show protip d-md-none' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
+                                <a class='dropdown-item action-show protip md:hidden' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
                                     <i class="fa fa-eye"></i> View
                                 </a>
                                 <a class="dropdown-item copy_button action-copy protip" data-pt-delay-in="500" data-pt-title="Copy '{{ $calendar->name }}'" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
@@ -148,7 +152,7 @@
             @endforeach
 
             @if(count($shared_calendars))
-                <div class="row d-flex justify-content-end pt-3"><span class="d-none d-md-block">{{ $calendars->onEachSide(1)->links() }}</span><span class="d-block d-md-none">{{ $calendar_pagination->links() }}</span></div>
+                <div class="row flex justify-content-end pt-3"><span class="hidden md:block">{{ $calendars->onEachSide(1)->links() }}</span><span class="block md:hidden">{{ $calendar_pagination->links() }}</span></div>
                 <h2>Calendars shared with me</h2>
 
                 @foreach($shared_calendars as $index => $calendar)
@@ -156,13 +160,13 @@
                         <div class="col-6 col-md-4 col-lg-5">
                             <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <small class="badge badge-secondary" style="font-size: 44%; position: relative; top: -4px; margin-left: 4px;">{{ $calendar->pivot->user_role }}</small> <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
                         </div>
-                        <div style="padding-left: 33px;" class="d-none d-md-block col-md-4 col-lg-3">
+                        <div style="padding-left: 33px;" class="hidden md:block col-md-4 col-lg-3">
                             <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date }} <br>
                             @if($calendar->clock_enabled)
                                 <i class="fa fa-clock" style="margin-left: -20px;"></i> {{ $calendar->current_time }}
                             @endif
                         </div>
-                        <div class="d-none d-lg-block col-lg-1 protip">
+                        <div class="hidden d-lg-block col-lg-1 protip">
                         <span class="protip" data-pt-delay-in="200" data-pt-title="{{ $calendar->name }} has {{ $calendar->events_count }} events.">
                             <i class="fa fa-calendar-check"></i> {{ $calendar->events_count }}
                         </span>
@@ -170,7 +174,7 @@
                         <div class="col-6 col-md-4 col-lg-3 text-right">
                             <div class="btn-group">
                                 <a class='calendar_action btn btn-outline-secondary action-show protip' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
-                                    <i class="fa fa-eye"></i> <span class="d-none d-md-inline">View</span>
+                                    <i class="fa fa-eye"></i> <span class="hidden md:inline">View</span>
                                 </a>
                             </div>
                         </div>
