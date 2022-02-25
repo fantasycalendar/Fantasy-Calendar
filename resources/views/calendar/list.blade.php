@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="flex flex-col">
+    <div class="flex flex-col max-w-5xl mx-auto">
 
         @if(session()->has('alert-warning'))
             <x-alert type="warning">{{ session('alert-warning') }}</x-alert>
@@ -90,16 +90,16 @@
 
         @if(count($calendars) > 0 || count($shared_calendars) > 0)
             <!-- This example requires Tailwind CSS v2.0+ -->
-                <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
+                <div class="bg-white dark:bg-gray-800 shadow sm:rounded-md">
                     <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach($calendars as $index => $calendar)
-                            <li class="relative">
-                                <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}" class="block hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <li class="relative flex items-center">
+                                <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}" class="block flex-grow hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <div class="flex items-center px-4 py-4 sm:px-6">
                                         <div class="min-w-0 flex-1 md:grid md:grid-cols-2 md:gap-4">
                                             <div>
-                                                <p class="text-sm font-medium text-primary-600 dark:text-primary-500 truncate">{{ $calendar->name }}</p>
-                                                <p class="mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400">
+                                                <p class="text-md font-medium text-primary-600 dark:text-primary-500 truncate">{{ $calendar->name }}</p>
+                                                <p class="mt-2 flex items-center text-md text-gray-500 dark:text-gray-400">
                                                     <!-- Heroicon name: solid/user-circle -->
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 mr-1.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
@@ -112,9 +112,9 @@
                                                     </span>
                                                 </p>
                                             </div>
-                                            <div class="hidden md:block">
+                                            <div class="hidden md:block flex-grow">
                                                 <div>
-                                                    <p class="text-sm text-gray-900 dark:text-gray-400">
+                                                    <p class="text-md text-gray-900 dark:text-gray-400">
                                                         <i class="w-6 text-center fa fa-calendar"></i> {{ $calendar->current_date }}
                                                         @if($calendar->current_era_valid)
                                                             <i class="w-6 text-center fa fa-infinity"></i> {{ $calendar->current_era }}
@@ -127,7 +127,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="ml-4">
+                                        <div class="mr-8">
                                             <!-- Heroicon name: solid/dots-vertical -->
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -135,18 +135,18 @@
                                         </div>
                                     </div>
                                 </a>
-                                <div class="absolute inset-y-0 right-0 inline-flex items-center" x-data="{open: false}" @click.prevent @click.outside="open = false">
-                                    <div>
-                                        <button @click="open = ! open" type="button" class="bg-gray-100 rounded-full flex items-center text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500" id="menu-button" aria-expanded="true" aria-haspopup="true">
+                                <div class="absolute right-4" x-data="{open: false}" @click.prevent @click.outside="open = false">
+                                    <div class="h-full flex items-center">
+                                        <button @click="open = ! open" type="button" class="flex rounded-full dark:text-gray-400 items-center text-gray-400 hover:text-gray-600 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-700 focus:ring-primary-500" id="menu-button" aria-expanded="true" aria-haspopup="true">
                                             <span class="sr-only">Open options</span>
                                             <!-- Heroicon name: solid/dots-vertical -->
-                                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                 <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                                             </svg>
                                         </button>
                                     </div>
 
-                                    <div class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                    <div class="origin-top-right absolute z-20 right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none divide-y divide-gray-200 dark:divide-gray-800"
                                          role="menu"
                                          aria-orientation="vertical"
                                          aria-labelledby="menu-button"
@@ -158,15 +158,35 @@
                                          x-transition:leave-start="transform opacity-100 scale-100"
                                          x-transition:leave-end="transform opacity-0 scale-95"
                                          x-show="open"
+                                         x-cloak
                                     >
                                         <div class="py-1" role="none">
                                             <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-                                            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-0">Account settings</a>
-                                            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-1">Support</a>
-                                            <a href="#" class="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-2">License</a>
-                                            <form method="POST" action="#" role="none">
-                                                <button type="submit" class="text-gray-700 block w-full text-left px-4 py-2 text-sm" role="menuitem" tabindex="-1" id="menu-item-3">Sign out</button>
-                                            </form>
+                                            <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}' role="menuitem" tabindex="-1">
+                                                <i class="fa fa-edit"></i> Edit
+                                            </a>
+                                            <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}' role="menuitem" tabindex="-1">
+                                                <i class="fa fa-eye"></i> View
+                                            </a>
+                                            <span class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}" role="menuitem">
+                                                <i class="fa fa-copy"></i> Copy
+                                            </span>
+                                        </div>
+                                        <div class="py-1" role="none">
+                                            <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.guided_embed', ['calendar' => $calendar->hash]) }}" role="menuitem" tabindex="-1">
+                                                <i class="fa fa-share-square"></i> Embed
+                                            </a>
+                                            <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.show', ['calendar' => $calendar->hash, 'print' => 1]) }}"  >
+                                                <i class="fa fa-print"></i> Print
+                                            </a>
+                                            <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}"  >
+                                                <i class="fa fa-file-export"></i> Export
+                                            </a>
+                                        </div>
+                                        <div class="py-1">
+                                            <a class="text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-800 block px-4 py-2 text-md" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}" >
+                                                <i class="fa fa-calendar-times"></i> Delete
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -181,33 +201,19 @@
                         <div class="btn-group">
                             <button class="calendar_action btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" id="dropdownButton-{{ $calendar->hash }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                             <div class="calendar_action dropdown-menu dropdown-menu-right" aria-labelledby="dropdownButton-{{ $calendar->hash }}">
-                                <a class='dropdown-item action-edit protip md:hidden' data-pt-delay-in="500" data-pt-title="Edit '{{ $calendar->name }}'" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}'>
-                                    <i class="fa fa-edit"></i> Edit
-                                </a>
-                                <a class='dropdown-item action-show protip md:hidden' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
-                                    <i class="fa fa-eye"></i> View
-                                </a>
-                                <a class="dropdown-item copy_button action-copy protip" data-pt-delay-in="500" data-pt-title="Copy '{{ $calendar->name }}'" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
-                                    <i class="fa fa-copy"></i> Copy
-                                </a>
+
+
+
 
                                 <div class="dropdown-divider"></div>
 
-                                <a class="dropdown-item action-export protip" data-pt-delay-in="500" data-pt-title="Embed '{{ $calendar->name }}'" href="{{ route('calendars.guided_embed', ['calendar' => $calendar->hash]) }}">
-                                    <i class="fa fa-share-square"></i> Embed
-                                </a>
-                                <a class="dropdown-item action-print protip" data-pt-delay-in="500" data-pt-title="Print '{{ $calendar->name }}'" href="{{ route('calendars.show', ['calendar' => $calendar->hash, 'print' => 1]) }}" >
-                                    <i class="fa fa-print"></i> Print
-                                </a>
-                                <a class="dropdown-item action-export protip" data-pt-delay-in="500" data-pt-title="Export '{{ $calendar->name }}'" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}" >
-                                    <i class="fa fa-file-export"></i> Export
-                                </a>
+
+
+
 
                                 <div class="dropdown-divider"></div>
 
-                                <a class="dropdown-item delete_button action-delete protip" data-pt-delay-in="500" data-pt-title="Delete '{{ $calendar->name }}'" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}">
-                                    <i class="fa fa-calendar-times"></i> Delete
-                                </a>
+
                             </div>
                         </div>
                     </div>
