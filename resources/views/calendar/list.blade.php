@@ -58,13 +58,13 @@
                 <form action="{{ route('calendars.index') }}" class="md:w-80 md:max-w-full mb-4 md:mb-0" method="get" x-data="{ search: `{{ $search }}` }">
                     @csrf
                     <div class="relative">
-                        <x-text-input x-ref="searchbox" x-model="search" name="search" placeholder="Search..."></x-text-input>
+                        <x-text-input x-ref="searchbox" x-model="search" name="search" placeholder="Search..." value="{{ $search ?? '' }}"></x-text-input>
                         <div class="absolute inset-y-0 right-0 flex items-center justify-center">
                             <span class="h-full inline-flex items-center px-2 text-sm font-sans font-medium text-gray-400" x-show="!search" @click="$refs.searchbox.focus()">
                                 <i class="fa fa-search"></i>
                             </span>
 
-                            <button @click="search = ''; $dispatch('submit')" class="h-full inline-flex items-center px-2 text-sm font-sans font-medium text-gray-400" x-cloak x-show="search">
+                            <button type="button" @click="search = ''; $dispatch('submit')" class="cursor-pointer h-full inline-flex items-center px-2 text-sm font-sans font-medium text-gray-400" x-cloak x-show="search">
                                 <i class="fa fa-times"></i>
                             </button>
                         </div>
