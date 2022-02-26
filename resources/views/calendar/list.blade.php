@@ -88,7 +88,7 @@
                     <div class="text-center flex-col sm:flex-row flex-grow border border-gray-300 dark:border-gray-700 rounded-md p-6 flex justify-between sm:space-x-4">
                         <div class="flex space-x-2 items-center justify-start text-left">
                             <div>
-                                <svg class="mx-auto h-12 w-12 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" viewBox="0 0 20 20" fill="none" stroke="currentColor">
                                     <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 5V1M14 5V1M6 11H10M14 11H10M10 11V7V15M3 19H17C18.1046 19 19 18.1046 19 17V5C19 3.89543 18.1046 3 17 3H3C1.89543 3 1 3.89543 1 5V17C1 18.1046 1.89543 19 3 19Z"/>
                                 </svg>
                             </div>
@@ -109,8 +109,8 @@
                         </div>
                     </div>
             @else
-                    <div class="text-center flex-grow mt-24">
-                        <svg class="mx-auto h-12 w-12 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <div class="text-center flex-grow py-20 sm:border border-gray-300 dark:border-gray-700 rounded-md">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" viewBox="0 0 20 20" fill="none" stroke="currentColor">
                             <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 5V1M14 5V1M6 11H10M14 11H10M10 11V7V15M3 19H17C18.1046 19 19 18.1046 19 17V5C19 3.89543 18.1046 3 17 3H3C1.89543 3 1 3.89543 1 5V17C1 18.1046 1.89543 19 3 19Z"/>
                         </svg>
 

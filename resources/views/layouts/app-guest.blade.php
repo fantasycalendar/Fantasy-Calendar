@@ -13,7 +13,7 @@
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
                         <a href="{{ config('app.website_url') }}" class="flex items-center text-white dark:text-primary-400">
-                            <x-app-logo class="h-8 w-auto" alt="Fantasy Calendar"></x-app-logo> <span class="hidden md:inline pl-2 text-lg font-bold">Fantasy Calendar</span>
+                            <x-app-logo class="h-8 w-auto" alt="Fantasy Calendar"></x-app-logo> <span class="hidden lg:inline pl-2 text-lg font-bold">Fantasy Calendar</span>
                         </a>
                     </div>
                     <div class="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
@@ -62,12 +62,12 @@
             <div class="pt-2 pb-3 space-y-1">
                 <x-mobile-nav-link href="{{ route('calendars.index') }}">My Calendars</x-mobile-nav-link>
                 <x-mobile-nav-link href="{{ route('calendars.create') }}">New Calendar</x-mobile-nav-link>
-                <x-mobile-nav-link href="{{ route('whats-new') }}">What's new in 2.0</x-mobile-nav-link>
                 <x-mobile-nav-link href="{{ route('faq') }}">FAQs</x-mobile-nav-link>
 
                 <x-mobile-nav-link href="{{ route('subscription.pricing') }}">Pricing</x-mobile-nav-link>
                 <x-mobile-nav-link href="{{ route('login') }}">Login</x-mobile-nav-link>
                 <x-mobile-nav-link href="{{ route('register') }}">Register</x-mobile-nav-link>
+                <x-mobile-nav-link href="{{ route('discord') }}">Discord Integration</x-mobile-nav-link>
             </div>
         </div>
     </nav>
