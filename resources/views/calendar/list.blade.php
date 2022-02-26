@@ -251,34 +251,54 @@
                 </div>
 
             @if(count($shared_calendars))
-                <div class="row flex justify-content-end pt-3"><span class="hidden md:block">{{ $calendars->onEachSide(1)->links() }}</span><span class="block md:hidden">{{ $calendar_pagination->links() }}</span></div>
-                <h2>Calendars shared with me</h2>
+                <div class="row flex justify-content-end pt-3">
+                    <span class="hidden md:block">{{ $calendars->onEachSide(1)->links() }}</span><span class="block md:hidden">{{ $calendar_pagination->links() }}</span>
+                </div>
+                <h1 class="text-gray-900 dark:text-gray-200 text-xl">Calendars shared with me</h1>
 
-                @foreach($shared_calendars as $index => $calendar)
-                    <div class="row border-top py-3 calendar-entry list-group-item-action w-auto">
-                        <div class="col-6 col-md-4 col-lg-5">
-                            <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}"><h4 class="calendar-name">{{ $calendar->name }} <small class="badge badge-secondary" style="font-size: 44%; position: relative; top: -4px; margin-left: 4px;">{{ $calendar->pivot->user_role }}</small> <br><span class="creator_name">{{ $calendar->user->username }}</span></h4></a>
-                        </div>
-                        <div style="padding-left: 33px;" class="hidden md:block col-md-4 col-lg-3">
-                            <i class="fa fa-calendar" style="margin-left: -20px;"></i> {{ $calendar->current_date }} <br>
-                            @if($calendar->clock_enabled)
-                                <i class="fa fa-clock" style="margin-left: -20px;"></i> {{ $calendar->current_time }}
-                            @endif
-                        </div>
-                        <div class="hidden d-lg-block col-lg-1 protip">
-                        <span class="protip" data-pt-delay-in="200" data-pt-title="{{ $calendar->name }} has {{ $calendar->events_count }} events.">
-                            <i class="fa fa-calendar-check"></i> {{ $calendar->events_count }}
-                        </span>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 text-right">
-                            <div class="btn-group">
-                                <a class='calendar_action btn btn-outline-secondary action-show protip' data-pt-delay-in="500" data-pt-title="View '{{ $calendar->name }}'" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}'>
-                                    <i class="fa fa-eye"></i> <span class="hidden md:inline">View</span>
-                                </a>
-                            </div>
-                        </div>
+                    <div class="bg-white dark:bg-gray-800 shadow sm:rounded-md">
+                        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+                            @foreach($shared_calendars as $index => $calendar)
+                                <li class="relative flex items-center">
+                                    <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}" class="block flex-grow hover:bg-gray-50 dark:hover:bg-gray-700">
+                                        <div class="flex items-center px-4 py-4 sm:px-6">
+                                            <div class="min-w-0 flex-1 md:grid md:grid-cols-2 md:gap-4">
+                                                <div>
+                                                    <p class="text-md font-medium text-primary-600 dark:text-primary-500 truncate">{{ $calendar->name }}</p>
+                                                    <p class="mt-2 flex items-center text-md text-gray-500 dark:text-gray-400">
+                                                        <!-- Heroicon name: solid/user-circle -->
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 mr-1.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
+                                                        </svg>
+                                                        <span class="truncate">
+                                                        {{ $calendar->user->username }}
+                                                            @if($calendar->users_count)
+                                                                <i class="fa fa-user ml-4"></i> {{ $calendar->users_count }}
+                                                            @endif
+                                                    </span>
+                                                    </p>
+                                                </div>
+                                                <div class="hidden md:block flex-grow">
+                                                    <div>
+                                                        <p class="text-md text-gray-900 dark:text-gray-400">
+                                                            <i class="w-6 text-center fa fa-calendar"></i> {{ $calendar->current_date }}
+                                                            @if($calendar->current_era_valid)
+                                                                <i class="w-6 text-center fa fa-infinity"></i> {{ $calendar->current_era }}
+                                                            @endif
+                                                            <br>
+                                                            @if($calendar->clock_enabled)
+                                                                <i class="w-6 text-center fa fa-clock"></i> {{ $calendar->current_time }} <br>
+                                                            @endif
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
                     </div>
-                @endforeach
             @endif
         @endif
 
