@@ -37,6 +37,9 @@ module.exports = {
                 }
             }
         },
+        fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+        }
     },
     plugins: [
         require('@tailwindcss/forms'),

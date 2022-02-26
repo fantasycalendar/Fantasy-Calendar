@@ -61,9 +61,9 @@
                 <h4 class="font-semibold">Fantasy Calendar integrates with Discord!</h4>
 
                 @if(!auth()->user()->isPremium())
-                    <div>All the information about this subscriber feature (<a class="font-semibold underline hover:text-white" href="{{ route('subscription.pricing') }}">only $2.49/month!</a>) can be found <a class="font-semibold underline hover:text-white" href="{{ route('discord') }}">on this page</a>!</div>
+                    <div>All the information about this subscriber feature (<a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('subscription.pricing') }}">only $2.49/month!</a>) can be found <a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('discord') }}">on this page</a>!</div>
                 @else
-                    <div>All the information can be found <a class="font-semibold underline hover:text-white" href="{{ route('discord') }}">on this page</a> - as a subscriber, you have immediate <a class="font-semibold underline hover:text-white" href="{{ route('discord.index') }}">access</a>!</div>
+                    <div>All the information can be found <a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('discord') }}">on this page</a> - as a subscriber, you have immediate <a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('discord.index') }}">access</a>!</div>
                 @endif
             </x-alert>
         @endif
@@ -114,8 +114,8 @@
                             <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 5V1M14 5V1M6 11H10M14 11H10M10 11V7V15M3 19H17C18.1046 19 19 18.1046 19 17V5C19 3.89543 18.1046 3 17 3H3C1.89543 3 1 3.89543 1 5V17C1 18.1046 1.89543 19 3 19Z"/>
                         </svg>
 
-                        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-200">No calendars</h3>
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating a new one.</p>
+                        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-200">You don't have any calendars yet!</h3>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Getting started is easy, create one to start tracking your story in just a few minutes.</p>
                         <div class="mt-6">
                             <x-button>
                                 <!-- Heroicon name: solid/plus -->
@@ -173,7 +173,7 @@
                                 <div class="flex items-center px-4 py-4 sm:px-6">
                                     <div class="min-w-0 flex-1 md:grid md:grid-cols-2 md:gap-4">
                                         <div>
-                                            <p class="text-md font-medium text-primary-600 dark:text-primary-500 truncate">{{ $calendar->name }}</p>
+                                            <p class="text-md font-medium text-primary-700 dark:text-primary-500 truncate">{{ $calendar->name }}</p>
                                             <p class="mt-2 flex items-center text-md text-gray-500 dark:text-gray-400">
                                                 <!-- Heroicon name: solid/user-circle -->
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 mr-1.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -189,14 +189,14 @@
                                         </div>
                                         <div class="hidden md:block flex-grow">
                                             <div>
-                                                <p class="text-md text-gray-900 dark:text-gray-400">
-                                                    <i class="w-6 text-center fa fa-calendar"></i> {{ $calendar->current_date }}
+                                                <p class="text-md text-gray-600 dark:text-gray-400">
+                                                    <i class="text-gray-400 w-6 text-center fa fa-calendar"></i> {{ $calendar->current_date }}
                                                     @if($calendar->current_era_valid)
-                                                        <i class="w-6 text-center fa fa-infinity"></i> {{ $calendar->current_era }}
+                                                        <i class="text-gray-400 w-6 text-center fa fa-infinity"></i> {{ $calendar->current_era }}
                                                     @endif
                                                     <br>
                                                     @if($calendar->clock_enabled)
-                                                        <i class="w-6 text-center fa fa-clock"></i> {{ $calendar->current_time }} <br>
+                                                        <i class="text-gray-400 w-6 text-center fa fa-clock"></i> {{ $calendar->current_time }} <br>
                                                     @endif
                                                 </p>
                                             </div>
@@ -292,7 +292,7 @@
                                     <div class="flex items-start md:items-center px-4 py-4 sm:px-6">
                                         <div class="min-w-0 flex-1 grid md:grid-cols-2 gap-2 md:gap-4">
                                             <div>
-                                                <p class="text-md font-medium text-primary-600 dark:text-primary-500 truncate">{{ $calendar->name }}</p>
+                                                <p class="text-md font-medium text-primary-700 dark:text-primary-500 truncate">{{ $calendar->name }}</p>
                                                 <p class="mt-2 flex items-center text-md text-gray-500 dark:text-gray-400">
                                                     <!-- Heroicon name: solid/user-circle -->
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 mr-1.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -308,14 +308,14 @@
                                             </div>
                                             <div class="flex-grow">
                                                 <div>
-                                                    <p class="text-md text-gray-900 dark:text-gray-400">
-                                                        <i class="w-6 text-center fa fa-calendar"></i> {{ $calendar->current_date }}
+                                                    <p class="text-md text-gray-600 dark:text-gray-400">
+                                                        <i class="text-gray-400 w-6 text-center fa fa-calendar"></i> {{ $calendar->current_date }}
                                                         @if($calendar->current_era_valid)
-                                                            <i class="w-6 text-center fa fa-infinity"></i> {{ $calendar->current_era }}
+                                                            <i class="text-gray-400 w-6 text-center fa fa-infinity"></i> {{ $calendar->current_era }}
                                                         @endif
                                                         <br>
                                                         @if($calendar->clock_enabled)
-                                                            <i class="w-6 text-center fa fa-clock"></i> {{ $calendar->current_time }} <br>
+                                                            <i class="text-gray-400 w-6 text-center fa fa-clock"></i> {{ $calendar->current_time }} <br>
                                                         @endif
                                                     </p>
                                                 </div>
