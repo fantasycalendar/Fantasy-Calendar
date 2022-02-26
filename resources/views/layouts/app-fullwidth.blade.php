@@ -25,7 +25,7 @@
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
                         <a href="{{ config('app.website_url') }}" class="flex items-center text-white dark:text-primary-400">
-                            <x-app-logo class="h-8 w-auto" alt="Fantasy Calendar"></x-app-logo> <span class="hidden lg:inline pl-2 text-lg font-light">Fantasy Calendar</span>
+                            <x-app-logo class="h-8 w-auto" alt="Fantasy Calendar"></x-app-logo> <span class="hidden lg:inline pl-2 text-lg">Fantasy Calendar</span>
                         </a>
                     </div>
                     <div class="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
