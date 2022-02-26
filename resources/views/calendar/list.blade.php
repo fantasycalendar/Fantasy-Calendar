@@ -1,5 +1,55 @@
+@push('head')
+    <script>
+        CalendarList = function () {
+            return {
+                modal_ok($event) {
+                    switch($event.detail.name) {
+                        case 'delete_confirmation':
+                            this.delete_calendar($event.detail.hash);
+                            break;
+                        case 'copy_confirmation':
+                            this.copy_calendar($event.detail.hash);
+                            break;
+                        case 'delete_confirm':
+                            location.reload();
+                            break;
+                    }
+                },
+                delete_calendar(hash) {
+                    axios
+                        .delete('/api/calendar/' + hash)
+                        .then(results => {
+                            if(results.data.error) {
+                                throw "Error: " + results.data.message;
+                            }
+
+                            this.dispatch('modal', {
+                                name: 'delete_confirm',
+                            });
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                },
+                // Yea replicating $dispatch here, like this, is sorta a hack
+                // However, it's easier (and cleaner, imho) than just passing
+                // $dispatch around through various layers of function scopes
+                dispatch(name, event) {
+                    this.$el.dispatchEvent(new CustomEvent(name, {
+                        bubbles: true,
+                        detail: event
+                    }));
+                }
+            }
+        }
+    </script>
+@endpush
+
 <x-app-layout>
-    <div class="flex flex-col max-w-5xl mx-auto">
+    <div class="flex flex-col max-w-5xl mx-auto"
+         x-data="CalendarList()"
+         @modal-ok.window="modal_ok"
+    >
 
         @if(session()->has('alert-warning'))
             <x-alert type="warning">{{ session('alert-warning') }}</x-alert>
@@ -161,7 +211,6 @@
                                          x-cloak
                                     >
                                         <div class="py-1" role="none">
-                                            <!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
                                             <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}' role="menuitem" tabindex="-1">
                                                 <i class="fa fa-edit"></i> Edit
                                             </a>
@@ -184,9 +233,15 @@
                                             </a>
                                         </div>
                                         <div class="py-1">
-                                            <a class="text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-800 block px-4 py-2 text-md" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}" >
+                                            <span class="cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-800 block px-4 py-2 text-md" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}"
+                                                  @click="$dispatch('modal', {
+                                                        name: 'delete_confirmation',
+                                                        title: 'Are you sure?',
+                                                        body: 'Are you sure you want to delete <strong>{{ $calendar->name }}</strong>?',
+                                                        ok_event: { hash: '{{ $calendar->hash }}' },
+                                                    })">
                                                 <i class="fa fa-calendar-times"></i> Delete
-                                            </a>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -194,31 +249,6 @@
                         @endforeach
                     </ul>
                 </div>
-
-            @foreach($calendars as $index => $calendar)
-                <div class="row border-top py-3 calendar-entry list-group-item-action w-auto @if($calendar->disabled) calendar-disabled protip @endif" @if($calendar->disabled) data-pt-title="Free accounts are limited to two calendars. You'll need to re-subscribe to use this one." @endif>
-                    <div class="col-6 col-md-4 col-lg-3 text-right">
-                        <div class="btn-group">
-                            <button class="calendar_action btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" type="button" id="dropdownButton-{{ $calendar->hash }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                            <div class="calendar_action dropdown-menu dropdown-menu-right" aria-labelledby="dropdownButton-{{ $calendar->hash }}">
-
-
-
-
-                                <div class="dropdown-divider"></div>
-
-
-
-
-
-                                <div class="dropdown-divider"></div>
-
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
 
             @if(count($shared_calendars))
                 <div class="row flex justify-content-end pt-3"><span class="hidden md:block">{{ $calendars->onEachSide(1)->links() }}</span><span class="block md:hidden">{{ $calendar_pagination->links() }}</span></div>
@@ -251,5 +281,17 @@
                 @endforeach
             @endif
         @endif
+
+        <x-modal name="delete_confirmation"
+                 icon="exclamation-triangle"
+                 icon-color="red"
+                 affirmative-color="red"
+                 affirmative-label="Yep, delete it."
+        ></x-modal>
+
+        <x-modal name="delete_confirm" title="Calendar deleted"></x-modal>
+        <x-modal name="delete_error"></x-modal>
+
+        <x-modal name="copy_confirmation"></x-modal>
     </div>
 </x-app-layout>

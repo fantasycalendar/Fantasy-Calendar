@@ -31,6 +31,9 @@
     <meta name="msapplication-config" content="{{ asset("/resources/browserconfig.xml") }}">
     <meta name="theme-color" content="#2f855a">
 
+    @auth
+        <meta name='api-token' content="{{ auth()->user()->api_token }}">
+    @endauth
 
     @if(getenv('APP_ENV') == "production")
         <script src="//d2wy8f7a9ursnm.cloudfront.net/v6/bugsnag.min.js"></script>
