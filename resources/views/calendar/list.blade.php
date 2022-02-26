@@ -84,23 +84,49 @@
         @endif
 
         @if(count($calendars) == 0 && !$search)
-            <div class="text-center flex-grow mt-24">
-                <svg class="mx-auto h-12 w-12 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 5V1M14 5V1M6 11H10M14 11H10M10 11V7V15M3 19H17C18.1046 19 19 18.1046 19 17V5C19 3.89543 18.1046 3 17 3H3C1.89543 3 1 3.89543 1 5V17C1 18.1046 1.89543 19 3 19Z"/>
-                </svg>
+            @if(count($shared_calendars))
+                    <div class="text-center flex-col sm:flex-row flex-grow border border-gray-300 dark:border-gray-700 rounded-md p-6 flex justify-between sm:space-x-4">
+                        <div class="flex space-x-2 items-center justify-start text-left">
+                            <div>
+                                <svg class="mx-auto h-12 w-12 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 5V1M14 5V1M6 11H10M14 11H10M10 11V7V15M3 19H17C18.1046 19 19 18.1046 19 17V5C19 3.89543 18.1046 3 17 3H3C1.89543 3 1 3.89543 1 5V17C1 18.1046 1.89543 19 3 19Z"/>
+                                </svg>
+                            </div>
 
-                <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-200">No calendars</h3>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating a new one.</p>
-                <div class="mt-6">
-                    <x-button>
-                        <!-- Heroicon name: solid/plus -->
-                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-900 dark:text-gray-200">You don't have any calendars of your own.</h3>
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">If you'd like to change that, creating a new one is the easiest way to get started.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center w-full sm:w-auto mt-4 sm:mt-0">
+                            <x-button role="secondary" class="w-full justify-center whitespace-nowrap">
+                                <!-- Heroicon name: solid/plus -->
+                                <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                                </svg>
+                                New calendar
+                            </x-button>
+                        </div>
+                    </div>
+            @else
+                    <div class="text-center flex-grow mt-24">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 5V1M14 5V1M6 11H10M14 11H10M10 11V7V15M3 19H17C18.1046 19 19 18.1046 19 17V5C19 3.89543 18.1046 3 17 3H3C1.89543 3 1 3.89543 1 5V17C1 18.1046 1.89543 19 3 19Z"/>
                         </svg>
-                        New calendar
-                    </x-button>
-                </div>
-            </div>
+
+                        <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-200">No calendars</h3>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Get started by creating a new one.</p>
+                        <div class="mt-6">
+                            <x-button>
+                                <!-- Heroicon name: solid/plus -->
+                                <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                                </svg>
+                                New calendar
+                            </x-button>
+                        </div>
+                    </div>
+            @endif
         @endif
 
         @if(count($calendars) > 0 && !$search)
@@ -129,8 +155,7 @@
                     </div>
                 </form>
 
-                <div class="hidden md:block">{{ $calendars->onEachSide(1)->links() }}</div>
-                <div class="md:hidden">{{ $calendar_pagination->links() }}</div>
+                <div>{{ $calendars->onEachSide(1)->links() }}</div>
             </div>
         @endif
 
@@ -140,13 +165,132 @@
 
         @if(count($calendars) > 0 || count($shared_calendars) > 0)
             <!-- This example requires Tailwind CSS v2.0+ -->
-                <div class="bg-white dark:bg-gray-800 shadow sm:rounded-md">
+            <div class="bg-white dark:bg-gray-800 shadow sm:rounded-md">
+                <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
+                    @foreach($calendars as $index => $calendar)
+                        <li class="relative flex items-center">
+                            <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}" class="block flex-grow hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <div class="flex items-center px-4 py-4 sm:px-6">
+                                    <div class="min-w-0 flex-1 md:grid md:grid-cols-2 md:gap-4">
+                                        <div>
+                                            <p class="text-md font-medium text-primary-600 dark:text-primary-500 truncate">{{ $calendar->name }}</p>
+                                            <p class="mt-2 flex items-center text-md text-gray-500 dark:text-gray-400">
+                                                <!-- Heroicon name: solid/user-circle -->
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 mr-1.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
+                                                </svg>
+                                                <span class="truncate">
+                                                    {{ $calendar->user->username }}
+                                                    @if($calendar->users_count)
+                                                        <i class="fa fa-user ml-4"></i> {{ $calendar->users_count }}
+                                                    @endif
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="hidden md:block flex-grow">
+                                            <div>
+                                                <p class="text-md text-gray-900 dark:text-gray-400">
+                                                    <i class="w-6 text-center fa fa-calendar"></i> {{ $calendar->current_date }}
+                                                    @if($calendar->current_era_valid)
+                                                        <i class="w-6 text-center fa fa-infinity"></i> {{ $calendar->current_era }}
+                                                    @endif
+                                                    <br>
+                                                    @if($calendar->clock_enabled)
+                                                        <i class="w-6 text-center fa fa-clock"></i> {{ $calendar->current_time }} <br>
+                                                    @endif
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mr-8">
+                                        <!-- Heroicon name: solid/dots-vertical -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="absolute right-4" x-data="{open: false}" @click.prevent @click.outside="open = false">
+                                <div class="h-full flex items-center">
+                                    <button @click="open = ! open" type="button" class="flex rounded-full dark:text-gray-400 items-center text-gray-400 hover:text-gray-600 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-700 focus:ring-primary-500" id="menu-button" aria-expanded="true" aria-haspopup="true">
+                                        <span class="sr-only">Open options</span>
+                                        <!-- Heroicon name: solid/dots-vertical -->
+                                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                            <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div class="origin-top-right absolute z-20 right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none divide-y divide-gray-200 dark:divide-gray-800"
+                                     role="menu"
+                                     aria-orientation="vertical"
+                                     aria-labelledby="menu-button"
+                                     tabindex="-1"
+                                     x-transition:enter="transition ease-out duration-100"
+                                     x-transition:enter-start="transform opacity-0 scale-95"
+                                     x-transition:enter-end="transform opacity-100 scale-100"
+                                     x-transition:leave="transition ease-in duration-75"
+                                     x-transition:leave-start="transform opacity-100 scale-100"
+                                     x-transition:leave-end="transform opacity-0 scale-95"
+                                     x-show="open"
+                                     x-cloak
+                                >
+                                    <div class="py-1" role="none">
+                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}' role="menuitem" tabindex="-1">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </a>
+                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}' role="menuitem" tabindex="-1">
+                                            <i class="fa fa-eye"></i> View
+                                        </a>
+                                        <span class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}" role="menuitem">
+                                            <i class="fa fa-copy"></i> Copy
+                                        </span>
+                                    </div>
+                                    <div class="py-1" role="none">
+                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.guided_embed', ['calendar' => $calendar->hash]) }}" role="menuitem" tabindex="-1">
+                                            <i class="fa fa-share-square"></i> Embed
+                                        </a>
+                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.show', ['calendar' => $calendar->hash, 'print' => 1]) }}"  >
+                                            <i class="fa fa-print"></i> Print
+                                        </a>
+                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}"  >
+                                            <i class="fa fa-file-export"></i> Export
+                                        </a>
+                                    </div>
+                                    <div class="py-1">
+                                        <span class="cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-800 block px-4 py-2 text-md" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}"
+                                              @click="$dispatch('modal', {
+                                                    name: 'delete_confirmation',
+                                                    title: 'Are you sure?',
+                                                    body: 'Are you sure you want to delete <strong>{{ $calendar->name }}</strong>?',
+                                                    ok_event: { hash: '{{ $calendar->hash }}' },
+                                                })">
+                                            <i class="fa fa-calendar-times"></i> Delete
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+
+            @if(count($shared_calendars))
+                <div class="flex flex-col md:flex-row justify-between items-center mt-8 mb-4">
+                    <h1 class="text-gray-900 dark:text-gray-200 text-xl mb-2 md:mb-0">Calendars shared with me</h1>
+
+                    @if($shared_calendars->hasPages())
+                        <div class="">{{ $shared_calendars->onEachSide(1)->links() }}</div>
+                    @endif
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-md mb-8">
                     <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
-                        @foreach($calendars as $index => $calendar)
+                        @foreach($shared_calendars as $index => $calendar)
                             <li class="relative flex items-center">
                                 <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}" class="block flex-grow hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <div class="flex items-center px-4 py-4 sm:px-6">
-                                        <div class="min-w-0 flex-1 md:grid md:grid-cols-2 md:gap-4">
+                                    <div class="flex items-start md:items-center px-4 py-4 sm:px-6">
+                                        <div class="min-w-0 flex-1 grid md:grid-cols-2 gap-2 md:gap-4">
                                             <div>
                                                 <p class="text-md font-medium text-primary-600 dark:text-primary-500 truncate">{{ $calendar->name }}</p>
                                                 <p class="mt-2 flex items-center text-md text-gray-500 dark:text-gray-400">
@@ -155,14 +299,14 @@
                                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
                                                     </svg>
                                                     <span class="truncate">
-                                                        {{ $calendar->user->username }}
+                                                    {{ $calendar->user->username }}
                                                         @if($calendar->users_count)
                                                             <i class="fa fa-user ml-4"></i> {{ $calendar->users_count }}
                                                         @endif
-                                                    </span>
+                                                </span>
                                                 </p>
                                             </div>
-                                            <div class="hidden md:block flex-grow">
+                                            <div class="flex-grow">
                                                 <div>
                                                     <p class="text-md text-gray-900 dark:text-gray-400">
                                                         <i class="w-6 text-center fa fa-calendar"></i> {{ $calendar->current_date }}
@@ -177,128 +321,12 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="mr-8">
-                                            <!-- Heroicon name: solid/dots-vertical -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                            </svg>
-                                        </div>
                                     </div>
                                 </a>
-                                <div class="absolute right-4" x-data="{open: false}" @click.prevent @click.outside="open = false">
-                                    <div class="h-full flex items-center">
-                                        <button @click="open = ! open" type="button" class="flex rounded-full dark:text-gray-400 items-center text-gray-400 hover:text-gray-600 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-700 focus:ring-primary-500" id="menu-button" aria-expanded="true" aria-haspopup="true">
-                                            <span class="sr-only">Open options</span>
-                                            <!-- Heroicon name: solid/dots-vertical -->
-                                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                                            </svg>
-                                        </button>
-                                    </div>
-
-                                    <div class="origin-top-right absolute z-20 right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-700 ring-1 ring-black ring-opacity-5 focus:outline-none divide-y divide-gray-200 dark:divide-gray-800"
-                                         role="menu"
-                                         aria-orientation="vertical"
-                                         aria-labelledby="menu-button"
-                                         tabindex="-1"
-                                         x-transition:enter="transition ease-out duration-100"
-                                         x-transition:enter-start="transform opacity-0 scale-95"
-                                         x-transition:enter-end="transform opacity-100 scale-100"
-                                         x-transition:leave="transition ease-in duration-75"
-                                         x-transition:leave-start="transform opacity-100 scale-100"
-                                         x-transition:leave-end="transform opacity-0 scale-95"
-                                         x-show="open"
-                                         x-cloak
-                                    >
-                                        <div class="py-1" role="none">
-                                            <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}' role="menuitem" tabindex="-1">
-                                                <i class="fa fa-edit"></i> Edit
-                                            </a>
-                                            <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}' role="menuitem" tabindex="-1">
-                                                <i class="fa fa-eye"></i> View
-                                            </a>
-                                            <span class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}" role="menuitem">
-                                                <i class="fa fa-copy"></i> Copy
-                                            </span>
-                                        </div>
-                                        <div class="py-1" role="none">
-                                            <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.guided_embed', ['calendar' => $calendar->hash]) }}" role="menuitem" tabindex="-1">
-                                                <i class="fa fa-share-square"></i> Embed
-                                            </a>
-                                            <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.show', ['calendar' => $calendar->hash, 'print' => 1]) }}"  >
-                                                <i class="fa fa-print"></i> Print
-                                            </a>
-                                            <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}"  >
-                                                <i class="fa fa-file-export"></i> Export
-                                            </a>
-                                        </div>
-                                        <div class="py-1">
-                                            <span class="cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-800 block px-4 py-2 text-md" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}"
-                                                  @click="$dispatch('modal', {
-                                                        name: 'delete_confirmation',
-                                                        title: 'Are you sure?',
-                                                        body: 'Are you sure you want to delete <strong>{{ $calendar->name }}</strong>?',
-                                                        ok_event: { hash: '{{ $calendar->hash }}' },
-                                                    })">
-                                                <i class="fa fa-calendar-times"></i> Delete
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
                             </li>
                         @endforeach
                     </ul>
                 </div>
-
-            @if(count($shared_calendars))
-                <div class="row flex justify-content-end pt-3">
-                    <span class="hidden md:block">{{ $calendars->onEachSide(1)->links() }}</span><span class="block md:hidden">{{ $calendar_pagination->links() }}</span>
-                </div>
-                <h1 class="text-gray-900 dark:text-gray-200 text-xl">Calendars shared with me</h1>
-
-                    <div class="bg-white dark:bg-gray-800 shadow sm:rounded-md">
-                        <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
-                            @foreach($shared_calendars as $index => $calendar)
-                                <li class="relative flex items-center">
-                                    <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}" class="block flex-grow hover:bg-gray-50 dark:hover:bg-gray-700">
-                                        <div class="flex items-center px-4 py-4 sm:px-6">
-                                            <div class="min-w-0 flex-1 md:grid md:grid-cols-2 md:gap-4">
-                                                <div>
-                                                    <p class="text-md font-medium text-primary-600 dark:text-primary-500 truncate">{{ $calendar->name }}</p>
-                                                    <p class="mt-2 flex items-center text-md text-gray-500 dark:text-gray-400">
-                                                        <!-- Heroicon name: solid/user-circle -->
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 mr-1.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
-                                                        </svg>
-                                                        <span class="truncate">
-                                                        {{ $calendar->user->username }}
-                                                            @if($calendar->users_count)
-                                                                <i class="fa fa-user ml-4"></i> {{ $calendar->users_count }}
-                                                            @endif
-                                                    </span>
-                                                    </p>
-                                                </div>
-                                                <div class="hidden md:block flex-grow">
-                                                    <div>
-                                                        <p class="text-md text-gray-900 dark:text-gray-400">
-                                                            <i class="w-6 text-center fa fa-calendar"></i> {{ $calendar->current_date }}
-                                                            @if($calendar->current_era_valid)
-                                                                <i class="w-6 text-center fa fa-infinity"></i> {{ $calendar->current_era }}
-                                                            @endif
-                                                            <br>
-                                                            @if($calendar->clock_enabled)
-                                                                <i class="w-6 text-center fa fa-clock"></i> {{ $calendar->current_time }} <br>
-                                                            @endif
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
             @endif
         @endif
 
