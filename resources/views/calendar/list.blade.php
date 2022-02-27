@@ -219,7 +219,7 @@
                                                     </div>
                                                 @endif
                                                 <div class="flex text-md text-gray-600 dark:text-gray-400 mb-1 md:pt-0">
-                                                    <i class="flex-shrink-0 pt-1 w-8 text-center fa fa-calendar-alt"></i> <div>{{ $calendar->events_count }} {{ \Illuminate\Support\Str::plural('Event', $calendar->events_count) }}</div>
+                                                    <i class="flex-shrink-0 pt-1 w-8 text-gray-400 text-center fa fa-calendar-alt"></i> <div>{{ $calendar->events_count }} {{ \Illuminate\Support\Str::plural('Event', $calendar->events_count) }}</div>
                                                 </div>
                                             </div>
                                         </div>
