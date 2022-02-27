@@ -159,8 +159,6 @@
 
     </script>
 
-    <script src="{{ asset("/js/login.js") }}"></script>
-
     <script src="{{ asset("/js/vendor/sortable/jquery-sortable-min.js") }}"></script>
     <script src="{{ asset("/js/vendor/spectrum/spectrum.js") }}"></script>
 
