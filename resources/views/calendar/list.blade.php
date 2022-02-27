@@ -297,7 +297,7 @@
                                                   @click="$dispatch('modal', {
                                                         name: 'delete_confirmation',
                                                         title: 'Are you sure?',
-                                                        body: 'Are you sure you want to delete <strong>{{ $calendar->name }}</strong>?',
+                                                        body: 'Are you sure you want to delete <strong>{{ addslashes($calendar->name) }}</strong>?',
                                                         ok_event: { hash: '{{ $calendar->hash }}' },
                                                     })">
                                                 Delete
