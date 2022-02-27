@@ -171,50 +171,51 @@
                                 <div class="flex items-center px-4 py-4 sm:px-6">
                                     <div class="min-w-0 flex-1 md:grid md:grid-cols-3 md:gap-4">
                                         <div>
-                                            <p class="text-md font-medium text-primary-700 dark:text-primary-500 truncate">{{ $calendar->name }}</p>
+                                            <p class="text-md font-medium text-primary-700 dark:text-primary-500 pr-24">{{ $calendar->name }}</p>
                                             <p class="mt-2 flex items-center text-md text-gray-500 dark:text-gray-400">
                                                 <!-- Heroicon name: solid/user-circle -->
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 mr-1.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-8 flex-shrink-0 md:mr-1.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
                                                 </svg>
                                                 <span class="truncate">
                                                     {{ $calendar->user->username }}
                                                     @if($calendar->users_count)
-                                                        <i class="fa fa-user ml-4"></i> {{ $calendar->users_count }}
+                                                        <i class="fa fa-user pl-4"></i> {{ $calendar->users_count }}
                                                     @endif
                                                 </span>
                                             </p>
                                         </div>
-                                        <div class="hidden md:block flex-grow">
-                                            <div class="flex text-md text-gray-600 dark:text-gray-400 relative">
+                                        <div class="flex-grow">
+                                            <div class="flex text-md text-gray-600 dark:text-gray-400 pt-1 md:pt-0">
                                                 <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-calendar"></i> <div>{{ $calendar->current_date }}</div>
                                             </div>
                                             @if($calendar->current_era_valid)
-                                                <div class="flex text-md text-gray-600 dark:text-gray-400 relative">
+                                                <div class="flex text-md text-gray-600 dark:text-gray-400 pt-1 md:pt-0">
                                                     <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-infinity"></i> <div>{{ $calendar->current_era }}</div>
                                                 </div>
                                             @endif
                                         </div>
                                         <div class="text-gray-900 dark:text-gray-400 text-md">
                                             @if($calendar->clock_enabled)
-                                                <div class="flex text-md text-gray-600 dark:text-gray-400 relative">
+                                                <div class="flex text-md text-gray-600 dark:text-gray-400 pt-1 md:pt-0">
                                                     <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-clock"></i> <div>{{ $calendar->current_time }}</div>
                                                 </div>
                                             @endif
-                                            <div class="flex text-md text-gray-600 dark:text-gray-400 relative">
+                                            <div class="flex text-md text-gray-600 dark:text-gray-400 pt-1 md:pt-0">
                                                 <i class="flex-shrink-0 pt-1 w-8 text-center fa fa-calendar-alt"></i> <div>{{ $calendar->events_count }} {{ \Illuminate\Support\Str::plural('Event', $calendar->events_count) }}</div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="mr-8">
-                                        <!-- Heroicon name: solid/dots-vertical -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                        </svg>
-                                    </div>
                                 </div>
                             </a>
-                            <div class="absolute right-4" x-data="{open: false}" @click.prevent @click.outside="open = false">
+
+                            <div class="absolute top-4 md:top-auto right-16">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                            </div>
+
+                            <div class="absolute top-4 md:top-auto right-4" x-data="{open: false}" @click.prevent @click.outside="open = false">
                                 <div class="h-full flex items-center">
                                     <button @click="open = ! open" type="button" class="flex rounded-full dark:text-gray-400 items-center text-gray-400 hover:text-gray-600 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-700 focus:ring-primary-500" id="menu-button" aria-expanded="true" aria-haspopup="true">
                                         <span class="sr-only">Open options</span>
@@ -299,13 +300,13 @@
                                                 <p class="text-md font-medium text-primary-700 dark:text-primary-500 truncate">{{ $calendar->name }}</p>
                                                 <p class="mt-2 flex items-center text-md text-gray-500 dark:text-gray-400">
                                                     <!-- Heroicon name: solid/user-circle -->
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 mr-1.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-8 flex-shrink-0 mr-1.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
                                                     </svg>
                                                     <span class="truncate">
                                                     {{ $calendar->user->username }}
                                                         @if($calendar->users_count)
-                                                            <i class="fa fa-user ml-4"></i> {{ $calendar->users_count }}
+                                                            <i class="fa fa-user"></i> {{ $calendar->users_count }}
                                                         @endif
                                                 </span>
                                                 </p>
