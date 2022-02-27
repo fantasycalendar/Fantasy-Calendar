@@ -1,3 +1,36 @@
+### 2.2.5 - Cozy Couatl
+#### February 27th, 2022
+- Updated: Reworked the calendar list into our new visual style
+
+### 2.2.4 - Charismatic Couatl
+#### February 25th, 2022
+- Added official support for spanning on the Microsoft Surface Duo and Surface Duo 2 (Improvements will come later ... for now I just wanted the gap to not cover things with the sidebar open)
+- Updated landing page and launch of https://fantasy-calendar.com/ separate from the primary app
+- Rewrote Discord feature page into using the new style/theming system
+- Fixed season colors looking odd in minimalistic layout
+- Fixed hex color generator sometimes generating invalid colors
+- Fixed `'on' is not defined` error on login page in specific scenarios
+
+### 2.2.3 - Captivating Couatl
+#### February 16th, 2022
+- Beautified the login and registration pages
+- Improved the readability and looks of the T&C and Privacy Policy pages
+- Added beautified footer to all reworked pages
+
+### 2.2.2 - Prismatic Couatl
+#### February 13th, 2022
+- App theme rebuilt from the ground up
+- Improved dark theme event coloration
+- Made season colors vivid
+- Added season colors to minimalistic layout
+- General edit input improvements
+- Fixed images overflowing event window
+
+### 2.2.1 - Concise Couatl
+#### February 11th, 2022
+- Updated - Fully reworked Profile, Pricing and Billing pages
+- Added - Support for the Stripe billing portal
+
 ### 2.2.0 - Compatible Couatl
 #### January 29th, 2022 
 * Added - Calendar Embedding!
