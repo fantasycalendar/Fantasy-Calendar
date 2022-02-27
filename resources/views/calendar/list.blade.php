@@ -167,7 +167,7 @@
                 <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
                     @foreach($calendars as $index => $calendar)
                         <li class="relative flex items-center">
-                            <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}" class="block flex-grow hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <a href="{{ route('calendars.show', ['calendar'=> $calendar]) }}" class="block flex-grow hover:bg-gray-50 dark:hover:bg-gray-700">
                                 <div class="flex items-center px-4 py-4 sm:px-6">
                                     <div class="min-w-0 flex-1 md:grid md:grid-cols-3 md:gap-4">
                                         <div>
@@ -210,14 +210,18 @@
                             </a>
 
                             <div class="absolute top-4 md:top-auto right-16">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                </svg>
+                                <a href="{{ route('calendars.edit', ['calendar' => $calendar]) }}" class="cursor-pointer dark:hover:bg-gray-700 flex rounded-full dark:text-gray-400 dark:hover:text-gray-300 p-2 items-center text-gray-400 hover:text-gray-600 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-700 focus:ring-primary-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none"
+                                         viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </a>
                             </div>
 
                             <div class="absolute top-4 md:top-auto right-4" x-data="{open: false}" @click.prevent @click.outside="open = false">
                                 <div class="h-full flex items-center">
-                                    <button @click="open = ! open" type="button" class="flex rounded-full dark:text-gray-400 items-center text-gray-400 hover:text-gray-600 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-700 focus:ring-primary-500" id="menu-button" aria-expanded="true" aria-haspopup="true">
+                                    <button @click="open = ! open" type="button" class="dark:hover:bg-gray-700 flex rounded-full dark:text-gray-400 dark:hover:text-gray-300 p-2 items-center text-gray-400 hover:text-gray-600 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-700 focus:ring-primary-500" id="menu-button" aria-expanded="true" aria-haspopup="true">
                                         <span class="sr-only">Open options</span>
                                         <!-- Heroicon name: solid/dots-vertical -->
                                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -241,10 +245,10 @@
                                      x-cloak
                                 >
                                     <div class="py-1" role="none">
-                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href='{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}' role="menuitem" tabindex="-1">
+                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href='{{ route('calendars.edit', ['calendar'=> $calendar ]) }}' role="menuitem" tabindex="-1">
                                             <i class="fa fa-edit"></i> Edit
                                         </a>
-                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href='{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}' role="menuitem" tabindex="-1">
+                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href='{{ route('calendars.show', ['calendar'=> $calendar ]) }}' role="menuitem" tabindex="-1">
                                             <i class="fa fa-eye"></i> View
                                         </a>
                                         <span class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}" role="menuitem">
@@ -293,7 +297,7 @@
                     <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach($shared_calendars as $index => $calendar)
                             <li class="relative flex items-center">
-                                <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}" class="block flex-grow hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <a href="{{ route('calendars.show', ['calendar'=> $calendar]) }}" class="block flex-grow hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <div class="flex items-center px-4 py-4 sm:px-6">
                                         <div class="min-w-0 flex-1 md:grid md:grid-cols-3 md:gap-4">
                                             <div>
