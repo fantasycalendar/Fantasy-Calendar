@@ -184,7 +184,7 @@
                     <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach($calendars as $index => $calendar)
                             <li class="relative flex items-center">
-                                <a href="{{ route('calendars.show', ['calendar'=> $calendar]) }}" class="block flex-grow hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <a href="{{ route('calendars.show', ['calendar'=> $calendar]) }}" class="block flex-grow hover:bg-gray-50 dark:hover:bg-gray-700 @if($loop->first) rounded-t-md @endif @if($loop->last) rounded-b-md @endif">
                                     <div class="flex items-center px-4 py-4 sm:px-6">
                                         <div class="min-w-0 flex-1 md:grid md:grid-cols-3 md:gap-4">
                                             <div>
