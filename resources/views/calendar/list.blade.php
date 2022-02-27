@@ -8,13 +8,28 @@
                             this.delete_calendar($event.detail.hash);
                             break;
                         case 'copy_confirmation':
-                            this.copy_calendar($event.detail.hash);
+                            this.copy_calendar($event.detail.hash, $event.detail.form_info.new_name);
                             break;
                         case 'delete_confirm':
                         case 'copy_confirm':
                             location.reload();
                             break;
                     }
+                },
+                copy_calendar(hash, new_name) {
+                    axios.post('/api/calendar/' + hash + "/clone", {
+                        new_calendar_name: new_name
+                    }).then(results => {
+                        if(results.data.error) {
+                            throw "Error: " + results.data.message;
+                        }
+
+                        this.dispatch('modal', {
+                            name: 'copy_confirm',
+                        });
+                    }).catch(err => {
+                        console.error(err);
+                    });
                 },
                 delete_calendar(hash) {
                     axios
@@ -47,7 +62,7 @@
 @endpush
 
 <x-app-layout>
-    <div class="flex flex-col mx-auto"
+    <div class="flex flex-col mx-auto pb-32"
          x-data="CalendarList()"
          @modal-ok.window="modal_ok"
     >
@@ -98,13 +113,13 @@
                             </div>
                         </div>
                         <div class="flex items-center w-full sm:w-auto mt-4 sm:mt-0">
-                            <x-button role="secondary" class="w-full justify-center whitespace-nowrap">
+                            <x-button-link href="{{ route('calendars.create') }}" role="secondary" class="w-full justify-center whitespace-nowrap">
                                 <!-- Heroicon name: solid/plus -->
                                 <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                     <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
                                 </svg>
                                 New calendar
-                            </x-button>
+                            </x-button-link>
                         </div>
                     </div>
             @else
@@ -116,13 +131,13 @@
                         <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-gray-200">You don't have any calendars yet!</h3>
                         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Getting started is easy, create one to start tracking your story in just a few minutes.</p>
                         <div class="mt-6">
-                            <x-button>
+                            <x-button-link href="{{ route('calendars.create') }}">
                                 <!-- Heroicon name: solid/plus -->
                                 <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                     <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
                                 </svg>
                                 New calendar
-                            </x-button>
+                            </x-button-link>
                         </div>
                     </div>
             @endif
@@ -165,7 +180,7 @@
         @if(count($calendars) > 0 || count($shared_calendars) > 0)
             <!-- This example requires Tailwind CSS v2.0+ -->
             @if(count($calendars))
-                <div class="bg-white dark:bg-gray-800 shadow sm:rounded-md mb-32">
+                <div class="bg-white dark:bg-gray-800 shadow sm:rounded-md">
                     <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
                         @foreach($calendars as $index => $calendar)
                             <li class="relative flex items-center">
@@ -248,24 +263,33 @@
                                     >
                                         <div class="py-1" role="none">
                                             <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href='{{ route('calendars.edit', ['calendar'=> $calendar ]) }}' role="menuitem" tabindex="-1">
-                                                <i class="fa fa-edit"></i> Edit
+                                                Edit
                                             </a>
                                             <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href='{{ route('calendars.show', ['calendar'=> $calendar ]) }}' role="menuitem" tabindex="-1">
-                                                <i class="fa fa-eye"></i> View
+                                                View
                                             </a>
-                                            <span class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}" role="menuitem">
-                                                <i class="fa fa-copy"></i> Copy
+                                            <span class="cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}" role="menuitem"
+                                                  @click="$dispatch('modal', {
+                                                        name: 'copy_confirmation',
+                                                        title: `Copying {{ addslashes($calendar->name) }}`,
+                                                        form_prefill: {
+                                                            new_name: `{{ addslashes($calendar->name) }} (clone)`
+                                                        },
+                                                        ok_event: { hash: '{{ $calendar->hash }}' }
+                                                    })"
+                                            >
+                                                Copy
                                             </span>
                                         </div>
                                         <div class="py-1" role="none">
                                             <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.guided_embed', ['calendar' => $calendar->hash]) }}" role="menuitem" tabindex="-1">
-                                                <i class="fa fa-share-square"></i> Embed
+                                                Embed
                                             </a>
                                             <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.show', ['calendar' => $calendar->hash, 'print' => 1]) }}"  >
-                                                <i class="fa fa-print"></i> Print
+                                                Print
                                             </a>
                                             <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}"  >
-                                                <i class="fa fa-file-export"></i> Export
+                                                Export
                                             </a>
                                         </div>
                                         <div class="py-1">
@@ -276,7 +300,7 @@
                                                         body: 'Are you sure you want to delete <strong>{{ $calendar->name }}</strong>?',
                                                         ok_event: { hash: '{{ $calendar->hash }}' },
                                                     })">
-                                                <i class="fa fa-calendar-times"></i> Delete
+                                                Delete
                                             </span>
                                         </div>
                                     </div>
@@ -358,6 +382,15 @@
         <x-modal name="delete_confirm" title="Calendar deleted"></x-modal>
         <x-modal name="delete_error"></x-modal>
 
-        <x-modal name="copy_confirmation"></x-modal>
+        <x-modal name="copy_confirm" title="Calendar cloned"></x-modal>
+        <x-modal name="copy_confirmation" required-fields="{
+            new_name: 'We need to know what to name your new calendar!'
+        }">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-50 mb-2" x-html="title"></h3>
+
+            <x-slot name="form">
+                <x-text-input required x-model="form_info.new_name" name="new_name" label="Name for the clone" placeholder="Cloned calendar name here"></x-text-input>
+            </x-slot>
+        </x-modal>
     </div>
 </x-app-layout>
