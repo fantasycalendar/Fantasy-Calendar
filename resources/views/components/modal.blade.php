@@ -44,7 +44,6 @@
                 }
             }"
          @modal.window="if($event.detail.name === '{{ $attributes->get('name') }}') {
-                console.log($event.detail);
                 show = true;
                 title = $event.detail.title ?? '{{ $attributes->get('title') }}';
                 body = $event.detail.body ?? '{{ $attributes->get('body') }}';
