@@ -46,7 +46,7 @@
 @endpush
 
 <x-app-layout>
-    <div class="flex flex-col max-w-5xl mx-auto"
+    <div class="flex flex-col mx-auto"
          x-data="CalendarList()"
          @modal-ok.window="modal_ok"
     >
@@ -68,20 +68,18 @@
             </x-alert>
         @endif
 
-        @if(count($invitations))
-            @foreach($invitations as $invitation)
-                <x-alert type="success" icon="" class="mb-10">
-                    <div class="flex flex-col md:flex-row justify-between md:items-center">
-                        <div class="py-2 -ml-2"><i class="fa fa-envelope-open-text pr-2 w-6 text-md"></i> You've been invited to '{{ $invitation->calendar->name }}' created by '{{ $invitation->calendar->user->username }}'.</div>
-                        <hr class="md:hidden mb-2 border-green-100 dark:border-green-700">
-                        <div class="text-right space-x-2">
-                            <x-button-link custom-role="text-red-500 dark:text-gray-200 focus:ring-red-500 hover:text-white dark:hover:text-white dark:hover:bg-red-900 hover:bg-red-600 border-0 focus:border-0 shadow-none" href="{{ route('invite.reject-confirm', ['token' => $invitation->invite_token]) }}">Reject <span class="hidden md:inline-block md:ml-1">invitation</span></x-button-link>
-                            <x-button-link custom-role="text-white bg-primary-600 disabled:hover:bg-primary-600 hover:bg-primary-700 dark:bg-primary-800 disabled:dark:hover:bg-primary-900 dark:hover:bg-primary-700 focus:ring-primary-500 border-transparent shadow-sm" href="{{ route('invite.accept', ['token' => $invitation->invite_token]) }}">Accept <span class="hidden md:inline-block md:ml-1">invitation</span></x-button-link>
-                        </div>
+        @foreach($invitations as $invitation)
+            <x-alert type="success" icon="" class="mb-10">
+                <div class="flex flex-col md:flex-row justify-between md:items-center">
+                    <div class="py-2 -ml-2"><i class="fa fa-envelope-open-text pr-2 w-6 text-md"></i> You've been invited to '{{ $invitation->calendar->name }}' created by '{{ $invitation->calendar->user->username }}'.</div>
+                    <hr class="md:hidden mb-2 border-green-100 dark:border-green-700">
+                    <div class="text-right space-x-2">
+                        <x-button-link custom-role="text-red-500 dark:text-gray-200 focus:ring-red-500 hover:text-white dark:hover:text-white dark:hover:bg-red-900 hover:bg-red-600 border-0 focus:border-0 shadow-none" href="{{ route('invite.reject-confirm', ['token' => $invitation->invite_token]) }}">Reject <span class="hidden md:inline-block md:ml-1">invitation</span></x-button-link>
+                        <x-button-link custom-role="text-white bg-primary-600 disabled:hover:bg-primary-600 hover:bg-primary-700 dark:bg-primary-800 disabled:dark:hover:bg-primary-900 dark:hover:bg-primary-700 focus:ring-primary-500 border-transparent shadow-sm" href="{{ route('invite.accept', ['token' => $invitation->invite_token]) }}">Accept <span class="hidden md:inline-block md:ml-1">invitation</span></x-button-link>
                     </div>
-                </x-alert>
-            @endforeach
-        @endif
+                </div>
+            </x-alert>
+        @endforeach
 
         @if(count($calendars) == 0 && !$search)
             @if(count($shared_calendars))
@@ -171,7 +169,7 @@
                         <li class="relative flex items-center">
                             <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}" class="block flex-grow hover:bg-gray-50 dark:hover:bg-gray-700">
                                 <div class="flex items-center px-4 py-4 sm:px-6">
-                                    <div class="min-w-0 flex-1 md:grid md:grid-cols-2 md:gap-4">
+                                    <div class="min-w-0 flex-1 md:grid md:grid-cols-3 md:gap-4">
                                         <div>
                                             <p class="text-md font-medium text-primary-700 dark:text-primary-500 truncate">{{ $calendar->name }}</p>
                                             <p class="mt-2 flex items-center text-md text-gray-500 dark:text-gray-400">
@@ -188,17 +186,23 @@
                                             </p>
                                         </div>
                                         <div class="hidden md:block flex-grow">
-                                            <div>
-                                                <p class="text-md text-gray-600 dark:text-gray-400">
-                                                    <i class="text-gray-400 w-6 text-center fa fa-calendar"></i> {{ $calendar->current_date }}
-                                                    @if($calendar->current_era_valid)
-                                                        <i class="text-gray-400 w-6 text-center fa fa-infinity"></i> {{ $calendar->current_era }}
-                                                    @endif
-                                                    <br>
-                                                    @if($calendar->clock_enabled)
-                                                        <i class="text-gray-400 w-6 text-center fa fa-clock"></i> {{ $calendar->current_time }} <br>
-                                                    @endif
-                                                </p>
+                                            <div class="flex text-md text-gray-600 dark:text-gray-400 relative">
+                                                <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-calendar"></i> <div>{{ $calendar->current_date }}</div>
+                                            </div>
+                                            @if($calendar->current_era_valid)
+                                                <div class="flex text-md text-gray-600 dark:text-gray-400 relative">
+                                                    <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-infinity"></i> <div>{{ $calendar->current_era }}</div>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="text-gray-900 dark:text-gray-400 text-md">
+                                            @if($calendar->clock_enabled)
+                                                <div class="flex text-md text-gray-600 dark:text-gray-400 relative">
+                                                    <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-clock"></i> <div>{{ $calendar->current_time }}</div>
+                                                </div>
+                                            @endif
+                                            <div class="flex text-md text-gray-600 dark:text-gray-400 relative">
+                                                <i class="flex-shrink-0 pt-1 w-8 text-center fa fa-calendar-alt"></i> <div>{{ $calendar->events_count }} {{ \Illuminate\Support\Str::plural('Event', $calendar->events_count) }}</div>
                                             </div>
                                         </div>
                                     </div>
@@ -289,8 +293,8 @@
                         @foreach($shared_calendars as $index => $calendar)
                             <li class="relative flex items-center">
                                 <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash]) }}" class="block flex-grow hover:bg-gray-50 dark:hover:bg-gray-700">
-                                    <div class="flex items-start md:items-center px-4 py-4 sm:px-6">
-                                        <div class="min-w-0 flex-1 grid md:grid-cols-2 gap-2 md:gap-4">
+                                    <div class="flex items-center px-4 py-4 sm:px-6">
+                                        <div class="min-w-0 flex-1 md:grid md:grid-cols-3 md:gap-4">
                                             <div>
                                                 <p class="text-md font-medium text-primary-700 dark:text-primary-500 truncate">{{ $calendar->name }}</p>
                                                 <p class="mt-2 flex items-center text-md text-gray-500 dark:text-gray-400">
@@ -306,18 +310,24 @@
                                                 </span>
                                                 </p>
                                             </div>
-                                            <div class="flex-grow">
-                                                <div>
-                                                    <p class="text-md text-gray-600 dark:text-gray-400">
-                                                        <i class="text-gray-400 w-6 text-center fa fa-calendar"></i> {{ $calendar->current_date }}
-                                                        @if($calendar->current_era_valid)
-                                                            <i class="text-gray-400 w-6 text-center fa fa-infinity"></i> {{ $calendar->current_era }}
-                                                        @endif
-                                                        <br>
-                                                        @if($calendar->clock_enabled)
-                                                            <i class="text-gray-400 w-6 text-center fa fa-clock"></i> {{ $calendar->current_time }} <br>
-                                                        @endif
-                                                    </p>
+                                            <div class="hidden md:block flex-grow">
+                                                <div class="flex text-md text-gray-600 dark:text-gray-400 relative">
+                                                    <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-calendar"></i> <div>{{ $calendar->current_date }}</div>
+                                                </div>
+                                                @if($calendar->current_era_valid)
+                                                    <div class="flex text-md text-gray-600 dark:text-gray-400 relative">
+                                                        <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-infinity"></i> <div>{{ $calendar->current_era }}</div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="text-gray-900 dark:text-gray-400 text-md">
+                                                @if($calendar->clock_enabled)
+                                                    <div class="flex text-md text-gray-600 dark:text-gray-400 relative">
+                                                        <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-clock"></i> <div>{{ $calendar->current_time }}</div>
+                                                    </div>
+                                                @endif
+                                                <div class="flex text-md text-gray-600 dark:text-gray-400 relative">
+                                                    <i class="flex-shrink-0 pt-1 w-8 text-center fa fa-calendar-alt"></i> <div>{{ $calendar->events_count }} {{ \Illuminate\Support\Str::plural('Event', $calendar->events_count) }}</div>
                                                 </div>
                                             </div>
                                         </div>
