@@ -31,6 +31,13 @@
     <meta name="msapplication-config" content="{{ asset("/resources/browserconfig.xml") }}">
     <meta name="theme-color" content="#2f855a">
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    @auth
+        <meta name='api-token' content="{{ auth()->user()->api_token }}">
+    @endauth
 
     @if(getenv('APP_ENV') == "production")
         <script src="//d2wy8f7a9ursnm.cloudfront.net/v6/bugsnag.min.js"></script>
@@ -38,11 +45,7 @@
     @endif
 
     <script src="{{ mix('/js/app-tw.js') }}" defer></script>
-    <script src="{{ mix('js/calendar/calendar_functions.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>
     <script src="https://js.stripe.com/v3/"></script>
-
-{{--    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.6.0/dist/alpine.min.js" defer></script>--}}
 
     <script>
 

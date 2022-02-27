@@ -61,6 +61,10 @@ class CloneCalendar implements ShouldQueue
             $newEvent->push();
         }
 
-        return ['success' => true, 'message' => 'Calendar cloned successfully'];
+        return [
+            'success' => true,
+            'message' => 'Calendar cloned successfully',
+            'hash' => $newCalendar->hash,
+        ];
     }
 }

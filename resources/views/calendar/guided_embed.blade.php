@@ -62,7 +62,7 @@
                     return code;
                 },
                 init: function() {
-                    this.theme_editing = clone(this.theme_originals[this.theme])
+                    this.theme_editing = _.cloneDeep(this.theme_originals[this.theme])
 
                     this.$nextTick(function() {
                         let hash = '{{ $calendar->hash }}';

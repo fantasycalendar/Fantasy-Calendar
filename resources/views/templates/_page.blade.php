@@ -75,8 +75,6 @@
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 
-    <script src="{{ asset('js/login.js') }}"></script>
-
     <script src="{{ mix('js/calendar/header.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>
 
