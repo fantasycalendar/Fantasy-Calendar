@@ -163,7 +163,7 @@
 
         @if(count($calendars) > 0 || count($shared_calendars) > 0)
             <!-- This example requires Tailwind CSS v2.0+ -->
-            <div class="bg-white dark:bg-gray-800 shadow sm:rounded-md">
+            <div class="bg-white dark:bg-gray-800 shadow sm:rounded-md mb-32">
                 <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
                     @foreach($calendars as $index => $calendar)
                         <li class="relative flex items-center">
@@ -171,7 +171,7 @@
                                 <div class="flex items-center px-4 py-4 sm:px-6">
                                     <div class="min-w-0 flex-1 md:grid md:grid-cols-3 md:gap-4">
                                         <div>
-                                            <p class="text-md font-medium text-primary-700 dark:text-primary-500 pr-24">{{ $calendar->name }}</p>
+                                            <p class="text-md font-medium text-primary-700 dark:text-primary-500 pr-24 md:pr-0">{{ $calendar->name }}</p>
                                             <p class="mt-2 flex items-center text-md text-gray-500 dark:text-gray-400">
                                                 <!-- Heroicon name: solid/user-circle -->
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-8 flex-shrink-0 md:mr-1.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
