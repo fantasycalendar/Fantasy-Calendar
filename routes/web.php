@@ -15,21 +15,7 @@ use Intervention\Image\Facades\Image;
 |
 */
 
-//Route::post('/requestTest', function(Request $request){
-//    dd($request->all());
-//
-//    return '';
-//});
-
 Route::get('/embed/{calendar}', 'EmbedController@embedCalendar');
-
-Route::get('/imagetest', function(){
-    return view('pages.imagetest');
-});
-
-Route::get('/integrationtest', function(){
-    return view('pages.integrationtest');
-})->name("integrationtest");
 
 Route::get('/', 'WelcomeController@welcome')->name('home');
 Route::view('/welcome', 'welcome')->name('welcome');
