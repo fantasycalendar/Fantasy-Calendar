@@ -192,7 +192,8 @@ class CalendarController extends Controller
     public function export(Calendar $calendar)
     {
         return view('calendar.export', [
-            'exportdata' => PrepCalendarForExport::dispatchNow($calendar)
+            'exportdata' => PrepCalendarForExport::dispatchNow($calendar),
+            'calendar' => $calendar
         ]);
     }
 
