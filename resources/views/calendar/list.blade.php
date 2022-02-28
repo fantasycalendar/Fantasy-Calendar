@@ -79,7 +79,7 @@
     >
 
         @if(session()->has('alert-warning'))
-            <x-alert type="warning">{{ session('alert-warning') }}</x-alert>
+            <x-alert type="warning" class="mb-4">{{ session('alert-warning') }}</x-alert>
         @endif
 
         @if(!auth()->user()->acknowledged_discord_announcement)

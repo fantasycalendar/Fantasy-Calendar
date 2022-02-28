@@ -66,11 +66,11 @@ class CalendarInvite extends Model
     }
 
     public function reject() {
-        $this->expires_on = now();
-        $this->handled = true;
-        $this->save();
-
-        $this->delete();
+        $this->update([
+            'expires_on' => now(),
+            'handled' => true,
+            'deleted_at' => now()
+        ]);
 
         return $this;
     }
