@@ -77,7 +77,7 @@
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 
     <style>
-        @import url('https://fonts.googleapis.com/css?family=Cabin+Sketch|Montserrat:300,500');
+
 
         .bd-callout {
             padding: 0.65rem 1.25rem 0.65rem 2rem;
@@ -92,9 +92,7 @@
             border-left-color: #f0ad4e;
         }
 
-        h1, h2 {
-            font-family: 'Cabin Sketch', cursive;
-        }
+
 
         #content {
             display: flex;
@@ -115,126 +113,7 @@
             display: block;
         }
 
-        .sketch {
-            height: 400px;
-            min-width: 400px;
-        }
 
-        .bee-sketch {
-            height: 100%;
-            width: 100%;
-            position: absolute;
-            top: 30px;
-            left: 0;
-        }
-
-        .red {
-            background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-1.png) no-repeat center center;
-            opacity: 1;
-            animation: red 3.5s linear infinite, opacityRed 5s linear alternate infinite;
-        }
-
-        .blue {
-            background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-1.png) no-repeat center center;
-            opacity: 0;
-            animation: blue 3.5s linear infinite, opacityBlue 5s linear alternate infinite;
-        }
-
-        @keyframes blue {
-            0% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-1.png)
-            }
-            9.09% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-2.png)
-            }
-            27.27% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-3.png)
-            }
-            36.36% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-4.png)
-            }
-            45.45% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-5.png)
-            }
-            54.54% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-6.png)
-            }
-            63.63% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-7.png)
-            }
-            72.72% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-8.png)
-            }
-            81.81% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-9.png)
-            }
-            100% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/blue-1.png)
-            }
-        }
-
-        @keyframes red {
-            0% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-1.png)
-            }
-            9.09% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-2.png)
-            }
-            27.27% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-3.png)
-            }
-            36.36% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-4.png)
-            }
-            45.45% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-5.png)
-            }
-            54.54% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-6.png)
-            }
-            63.63% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-7.png)
-            }
-            72.72% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-8.png)
-            }
-            81.81% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-9.png)
-            }
-            100% {
-                background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/198554/red-1.png)
-            }
-        }
-
-        @keyframes opacityBlue {
-            from {
-                opacity: 0
-            }
-            25% {
-                opacity: 0
-            }
-            75% {
-                opacity: 1
-            }
-            to {
-                opacity: 1
-            }
-        }
-
-        @keyframes opacityRed {
-            from {
-                opacity: 1
-            }
-            25% {
-                opacity: 1
-            }
-            75% {
-                opacity: .3
-            }
-            to {
-                opacity: .3
-            }
-        }
     </style>
 
     @stack('head')
@@ -264,7 +143,6 @@
                     <li class="nav-item new-calendar">
                         <a class="nav-link" href="{{ route('calendars.create', [], false) }}">New Calendar</a>
                     </li>
-                    <li class="nav-item"><a href="{{ route('whats-new', [], false) }}" class="nav-link">What's New in 2.0</a></li>
                     <li class="nav-item"><a href="{{ route('faq', [], false) }}" class="nav-link">FAQs</a></li>
                 </ul>
                 <ul class="navbar-nav">
