@@ -1,6 +1,5 @@
 <div
 	x-data='moon_tooltip'
-	x-init="init"
 	@moon-mouse-enter.window="
 		element = $event.detail.element;
 		title = $event.detail.title;
@@ -19,6 +18,7 @@
 	"
 	id='moon_tooltip_box'
 	x-show="show"
+    x-cloak
 >
 	<div x-text='title'></div>
 </div>
