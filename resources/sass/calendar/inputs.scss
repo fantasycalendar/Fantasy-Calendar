@@ -314,7 +314,6 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 
 .remove-container-text{
     text-align: center;
-    display:none;
     margin:auto;
     font-size:11pt;
     order: 2;
@@ -322,7 +321,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     line-height: 46px;
 }
 
-.remove-container > .btn_remove, .remove-container > .btn_cancel, .remove-container > .btn_accept{
+.remove-container > .btn {
     pointer-events: auto;
     height:40px;
     width:40px;
@@ -338,14 +337,12 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
 }
 
 .remove-container > .btn_cancel{
-    display:none;
     order: 3;
     margin-right: 2px;
 }
 
 .remove-container > .btn_accept{
     left:0;
-    display:none;
     order: 1;
     margin-left: 2px;
 }

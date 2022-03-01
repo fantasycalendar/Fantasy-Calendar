@@ -1355,218 +1355,218 @@ function set_up_edit_inputs(){
 		window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id, epoch: epoch } }));
 	});
 
-	$(document).on('click', '.btn_remove', function(){
-
-		if(!$(this).hasClass('disabled')){
-
-			var parent = $(this).parent().parent().parent();
-
-			if($(this).parent().parent().hasClass('expanded')){
-				$(this).parent().prev().find('.expand').click();
-			}
-
-			if(removing !== null){
-				removing.click();
-			}
-			removing = $(this).next();
-			$(this).parent().parent().find('.main-container').addClass('hidden');
-			$(this).parent().parent().find('.collapse-container').addClass('hidden');
-			$(this).css('display', 'none');
-			$(this).prev().css('display', 'block');
-			$(this).next().css('display', 'block');
-			$(this).next().next().css('display', 'block');
-
-		}
-
-	});
-
-	$(document).on('click', '.btn_cancel', function(){
-		$(this).parent().parent().find('.main-container').removeClass('hidden');
-		$(this).parent().parent().find('.collapse-container').removeClass('hidden');
-		$(this).css('display', 'none');
-		$(this).prev().prev().css('display', 'none');
-		$(this).prev().css('display', 'block');
-		$(this).next().css('display', 'none');
-		removing = null;
-	});
-
-	$(document).on('click', '.btn_accept', function(){
-
-		var parent = $(this).closest('.sortable-container').parent();
-		var type = parent.attr('id');
-		var index = $(this).closest('.sortable-container').attr('index')|0;
-
-		var callback = false;
-
-		switch(type){
-			case "timespan_sortable":
-				$(this).closest('.sortable-container').remove();
-				$(this).closest('.sortable-container').parent().sortable('refresh');
-				reindex_timespan_sortable();
-				dynamic_date_manager.cap_timespan();
-				dynamic_data.timespan = dynamic_date_manager.timespan;
-				dynamic_data.epoch = dynamic_date_manager.epoch;
-				recalc_stats();
-				break;
-
-			case "global_week_sortable":
-				$(this).closest('.sortable-container').remove();
-				$(this).closest('.sortable-container').parent().sortable('refresh');
-				reindex_weekday_sortable();
-				break;
-
-			case "season_sortable":
-				$(this).closest('.sortable-container').remove();
-				$(this).closest('.sortable-container').parent().sortable('refresh');
-				type = 'seasons';
-				reindex_season_sortable(index);
-				reindex_location_list();
-				$('#season_color_enabled').prop("disabled", static_data.seasons.data.length == 0);
-				if(static_data.seasons.data.length == 0){
-					$('#season_color_enabled').prop("checked", false).change();
-				}
-				break;
-
-			case "location_list":
-				$(this).closest('.sortable-container').remove();
-				$(this).closest('.sortable-container').parent().sortable('refresh');
-				type = 'seasons';
-				reindex_location_list();
-				break;
-
-			case "cycle_sortable":
-				$(this).closest('.sortable-container').remove();
-				$(this).closest('.sortable-container').parent().sortable('refresh');
-				reindex_cycle_sortable();
-				break;
-
-			case "moon_list":
-				$(this).closest('.sortable-container').remove();
-				$(this).closest('.sortable-container').parent().sortable('refresh');
-				reindex_moon_list();
-				break;
-
-			case "era_list":
-				$(this).closest('.sortable-container').remove();
-				$(this).closest('.sortable-container').parent().sortable('refresh');
-				reindex_era_list();
-				dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
-				break;
-
-			case "event_category_list":
-				$(this).closest('.sortable-container').remove();
-				$(this).closest('.sortable-container').parent().sortable('refresh');
-
-				var category = event_categories[index];
-
-				for(var event in events){
-					if(events[event].category == category.id){
-						events[event].category = -1;
-					}
-				}
-
-				for(var era in static_data.eras){
-					if(static_data.eras[era].settings.event_category_id == index){
-						static_data.eras[era].settings.event_category_id = -1;
-					}
-				}
-
-				reindex_event_category_list();
-				event_categories = event_categories.filter(function(category) { return category; });
-				repopulate_event_category_lists();
-
-				break;
-
-			case "events_sortable":
-
-				var warnings = [];
-
-				for(var eventId in events){
-					if(events[eventId].data.connected_events !== undefined){
-						var connected_events = events[eventId].data.connected_events;
-						if(connected_events.includes(String(index)) || connected_events.includes(index)){
-							warnings.push(eventId);
-						}
-					}
-				}
-
-				if(warnings.length > 0){
-
-					callback = true;
-
-					var html = [];
-					html.push(`<div class='text-left'>`)
-					html.push(`<h5>You are trying to delete "${events[index].name}" which referenced in the following events:</h5>`)
-					html.push(`<ul>`);
-					for(var i = 0; i < warnings.length; i++){
-						var event_id = warnings[i];
-						html.push(`<li>• ${events[event_id].name}</li>`);
-					}
-					html.push(`</ul>`);
-					html.push(`<p>Please remove the conditions referencing "${events[index].name}" in these events before deleting.</p>`)
-					html.push(`</div>`)
-
-					swal.fire({
-						title: "Warning!",
-						html: html.join(''),
-						showCancelButton: false,
-						confirmButtonColor: '#3085d6',
-						confirmButtonText: 'OK',
-						icon: "warning",
-					})
-
-					$(this).closest('.sortable-container').find('.btn_cancel').click();
-
-				}else{
-
-					events_sortable.children("[index='"+index+"']").remove();
-
-					for(var eventId in events){
-						if(events[eventId].data.connected_events !== undefined){
-							for(connectedId in events[eventId].data.connected_events){
-								var number = Number(events[eventId].data.connected_events[connectedId])
-								if(Number(events[eventId].data.connected_events[connectedId]) > index){
-									events[eventId].data.connected_events[connectedId] = String(number-1)
-								}
-							}
-						}
-					}
-
-					events.splice(index, 1);
-
-					events_sortable.children().each(function(i){
-						events[i].sort_by = i;
-						$(this).attr('index', i);
-					});
-
-				}
-
-				break;
-
-			case "leap_day_list":
-				$(this).closest('.sortable-container').remove();
-				$(this).closest('.sortable-container').parent().sortable('refresh');
-				static_data.year_data.leap_days.splice(index, 1)
-				dynamic_data.epoch = dynamic_date_manager.epoch;
-				reindex_leap_day_list();
-				recalc_stats();
-				break;
-
-		}
-
-		if(!callback){
-
-			evaluate_remove_buttons();
-
-			do_error_check(type);
-
-			removing = null;
-
-			input_container.change();
-
-		}
-
-	});
+	// $(document).on('click', '.btn_remove', function(){
+    //
+	// 	if(!$(this).hasClass('disabled')){
+    //
+	// 		var parent = $(this).parent().parent().parent();
+    //
+	// 		if($(this).parent().parent().hasClass('expanded')){
+	// 			$(this).parent().prev().find('.expand').click();
+	// 		}
+    //
+	// 		if(removing !== null){
+	// 			removing.click();
+	// 		}
+	// 		removing = $(this).next();
+	// 		$(this).parent().parent().find('.main-container').addClass('hidden');
+	// 		$(this).parent().parent().find('.collapse-container').addClass('hidden');
+	// 		$(this).css('display', 'none');
+	// 		$(this).prev().css('display', 'block');
+	// 		$(this).next().css('display', 'block');
+	// 		$(this).next().next().css('display', 'block');
+    //
+	// 	}
+    //
+	// });
+    //
+	// $(document).on('click', '.btn_cancel', function(){
+	// 	$(this).parent().parent().find('.main-container').removeClass('hidden');
+	// 	$(this).parent().parent().find('.collapse-container').removeClass('hidden');
+	// 	$(this).css('display', 'none');
+	// 	$(this).prev().prev().css('display', 'none');
+	// 	$(this).prev().css('display', 'block');
+	// 	$(this).next().css('display', 'none');
+	// 	removing = null;
+	// });
+    //
+	// $(document).on('click', '.btn_accept', function(){
+    //
+	// 	var parent = $(this).closest('.sortable-container').parent();
+	// 	var type = parent.attr('id');
+	// 	var index = $(this).closest('.sortable-container').attr('index')|0;
+    //
+	// 	var callback = false;
+    //
+	// 	switch(type){
+	// 		case "timespan_sortable":
+	// 			$(this).closest('.sortable-container').remove();
+	// 			$(this).closest('.sortable-container').parent().sortable('refresh');
+	// 			reindex_timespan_sortable();
+	// 			dynamic_date_manager.cap_timespan();
+	// 			dynamic_data.timespan = dynamic_date_manager.timespan;
+	// 			dynamic_data.epoch = dynamic_date_manager.epoch;
+	// 			recalc_stats();
+	// 			break;
+    //
+	// 		case "global_week_sortable":
+	// 			$(this).closest('.sortable-container').remove();
+	// 			$(this).closest('.sortable-container').parent().sortable('refresh');
+	// 			reindex_weekday_sortable();
+	// 			break;
+    //
+	// 		case "season_sortable":
+	// 			$(this).closest('.sortable-container').remove();
+	// 			$(this).closest('.sortable-container').parent().sortable('refresh');
+	// 			type = 'seasons';
+	// 			reindex_season_sortable(index);
+	// 			reindex_location_list();
+	// 			$('#season_color_enabled').prop("disabled", static_data.seasons.data.length == 0);
+	// 			if(static_data.seasons.data.length == 0){
+	// 				$('#season_color_enabled').prop("checked", false).change();
+	// 			}
+	// 			break;
+    //
+	// 		case "location_list":
+	// 			$(this).closest('.sortable-container').remove();
+	// 			$(this).closest('.sortable-container').parent().sortable('refresh');
+	// 			type = 'seasons';
+	// 			reindex_location_list();
+	// 			break;
+    //
+	// 		case "cycle_sortable":
+	// 			$(this).closest('.sortable-container').remove();
+	// 			$(this).closest('.sortable-container').parent().sortable('refresh');
+	// 			reindex_cycle_sortable();
+	// 			break;
+    //
+	// 		case "moon_list":
+	// 			$(this).closest('.sortable-container').remove();
+	// 			$(this).closest('.sortable-container').parent().sortable('refresh');
+	// 			reindex_moon_list();
+	// 			break;
+    //
+	// 		case "era_list":
+	// 			$(this).closest('.sortable-container').remove();
+	// 			$(this).closest('.sortable-container').parent().sortable('refresh');
+	// 			reindex_era_list();
+	// 			dynamic_data.current_era = get_current_era(static_data, dynamic_data.epoch);
+	// 			break;
+    //
+	// 		case "event_category_list":
+	// 			$(this).closest('.sortable-container').remove();
+	// 			$(this).closest('.sortable-container').parent().sortable('refresh');
+    //
+	// 			var category = event_categories[index];
+    //
+	// 			for(var event in events){
+	// 				if(events[event].category == category.id){
+	// 					events[event].category = -1;
+	// 				}
+	// 			}
+    //
+	// 			for(var era in static_data.eras){
+	// 				if(static_data.eras[era].settings.event_category_id == index){
+	// 					static_data.eras[era].settings.event_category_id = -1;
+	// 				}
+	// 			}
+    //
+	// 			reindex_event_category_list();
+	// 			event_categories = event_categories.filter(function(category) { return category; });
+	// 			repopulate_event_category_lists();
+    //
+	// 			break;
+    //
+	// 		case "events_sortable":
+    //
+	// 			var warnings = [];
+    //
+	// 			for(var eventId in events){
+	// 				if(events[eventId].data.connected_events !== undefined){
+	// 					var connected_events = events[eventId].data.connected_events;
+	// 					if(connected_events.includes(String(index)) || connected_events.includes(index)){
+	// 						warnings.push(eventId);
+	// 					}
+	// 				}
+	// 			}
+    //
+	// 			if(warnings.length > 0){
+    //
+	// 				callback = true;
+    //
+	// 				var html = [];
+	// 				html.push(`<div class='text-left'>`)
+	// 				html.push(`<h5>You are trying to delete "${events[index].name}" which referenced in the following events:</h5>`)
+	// 				html.push(`<ul>`);
+	// 				for(var i = 0; i < warnings.length; i++){
+	// 					var event_id = warnings[i];
+	// 					html.push(`<li>• ${events[event_id].name}</li>`);
+	// 				}
+	// 				html.push(`</ul>`);
+	// 				html.push(`<p>Please remove the conditions referencing "${events[index].name}" in these events before deleting.</p>`)
+	// 				html.push(`</div>`)
+    //
+	// 				swal.fire({
+	// 					title: "Warning!",
+	// 					html: html.join(''),
+	// 					showCancelButton: false,
+	// 					confirmButtonColor: '#3085d6',
+	// 					confirmButtonText: 'OK',
+	// 					icon: "warning",
+	// 				})
+    //
+	// 				$(this).closest('.sortable-container').find('.btn_cancel').click();
+    //
+	// 			}else{
+    //
+	// 				events_sortable.children("[index='"+index+"']").remove();
+    //
+	// 				for(var eventId in events){
+	// 					if(events[eventId].data.connected_events !== undefined){
+	// 						for(connectedId in events[eventId].data.connected_events){
+	// 							var number = Number(events[eventId].data.connected_events[connectedId])
+	// 							if(Number(events[eventId].data.connected_events[connectedId]) > index){
+	// 								events[eventId].data.connected_events[connectedId] = String(number-1)
+	// 							}
+	// 						}
+	// 					}
+	// 				}
+    //
+	// 				events.splice(index, 1);
+    //
+	// 				events_sortable.children().each(function(i){
+	// 					events[i].sort_by = i;
+	// 					$(this).attr('index', i);
+	// 				});
+    //
+	// 			}
+    //
+	// 			break;
+    //
+	// 		case "leap_day_list":
+	// 			$(this).closest('.sortable-container').remove();
+	// 			$(this).closest('.sortable-container').parent().sortable('refresh');
+	// 			static_data.year_data.leap_days.splice(index, 1)
+	// 			dynamic_data.epoch = dynamic_date_manager.epoch;
+	// 			reindex_leap_day_list();
+	// 			recalc_stats();
+	// 			break;
+    //
+	// 	}
+    //
+	// 	if(!callback){
+    //
+	// 		evaluate_remove_buttons();
+    //
+	// 		do_error_check(type);
+    //
+	// 		removing = null;
+    //
+	// 		input_container.change();
+    //
+	// 	}
+    //
+	// });
 
 	/* ------------------- Custom callbacks ------------------- */
 

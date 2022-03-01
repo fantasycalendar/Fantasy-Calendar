@@ -541,7 +541,9 @@
 						<div class='col-6' style="padding-left:20%;">Length</div>
 					</div>
 
-					<div class='sortable list-group' id='timespan_sortable'></div>
+					{{--<div class='sortable list-group' id='timespan_sortable'></div>--}}
+
+                    <x-months-list months="{{ Illuminate\Support\Js::from(Arr::get($calendar->static_data, 'year_data.timespans')) }}"></x-months-list>
 
 				@endif
 
