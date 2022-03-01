@@ -2,9 +2,9 @@
 
 @push('head')
     <script>
-    $(document).ready(function(){
+    /*$(document).ready(function(){
 
-        @include('calendar._loadcalendar')
+        {{--@include('calendar._loadcalendar')--}}
 
         preview_date = clone(dynamic_data);
         preview_date.follow = true;
@@ -114,13 +114,27 @@
 
         set_up_view_values();
 
+    }*/
+
+    $(document).ready(function() {
+        @include('calendar._loadcalendar')
+        // preview_date = clone(dynamic_data);
+        // preview_date.follow = true;
+        // rebuild_calendar('calendar', dynamic_data);
+    });
+
+    function sidebar() {
+        return {
+            static_data: {{ Illuminate\Support\Js::from($calendar->static_data) }},
+            dynamic_data: {{ Illuminate\Support\Js::from($calendar->dynamic_data) }},
+        }
     }
 
     </script>
 @endpush
 
 @section('content')
-    <div id="generator_container">
+    <div id="generator_container" x-data="sidebar()">
         @include('layouts.layouts')
         @include('layouts.weather_tooltip')
         @include('layouts.day_data_tooltip')

@@ -543,7 +543,7 @@
 
 					{{--<div class='sortable list-group' id='timespan_sortable'></div>--}}
 
-                    <x-months-list months="{{ Illuminate\Support\Js::from(Arr::get($calendar->static_data, 'year_data.timespans')) }}"></x-months-list>
+                    <x-sidebar.timespan-list timespans="{{ Illuminate\Support\Js::from(Arr::get($calendar->static_data, 'year_data.timespans')) }}"></x-sidebar.timespan-list>
 
 				@endif
 

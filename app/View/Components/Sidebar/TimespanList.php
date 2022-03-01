@@ -4,7 +4,7 @@ namespace App\View\Components;
 
 use Illuminate\View\Component;
 
-class MonthsList extends Component
+class TimespanList extends Component
 {
     /**
      * Create a new component instance.
@@ -23,6 +23,6 @@ class MonthsList extends Component
      */
     public function render()
     {
-        return view('components.months-list');
+        return view('components.sidebar.timespan-list');
     }
 }
