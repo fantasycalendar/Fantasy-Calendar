@@ -155,8 +155,6 @@
                 @else
                     {{ $slot }}
                 @endunless
-
-                <x-slot name="footer"></x-slot>
             </x-panel>
         </div>
     </div>
