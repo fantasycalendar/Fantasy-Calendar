@@ -12,6 +12,8 @@
     <meta property="og:description" content="Level up your narrative - Track time in your homebrew or pre-made campaign world with the Internet's best fantasy world calendaring tool!">
 
     <title>
+        @yield('title')
+
         @if($title ?? $calendar->name ?? null)
             {{ ($title ?? $calendar->name) . ' -' }} Fantasy Calendar
         @else
