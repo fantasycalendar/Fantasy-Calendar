@@ -1,78 +1,28 @@
-@extends('templates._page')
+<x-app-layout>
+    <x-panel>
+        <div class='grid md:grid-cols-12 max-w-4xl mx-auto my-12 gap-6'>
+            <div class='col-span-1 md:col-span-7'>
+                <div class='prose dark:prose-invert'>
+                    <h2>Thank you for considering supporting us!</h2>
 
-@push('head')
-    <style>
-    .donate-background{
-        height: 100%;
-        padding: 0;
-        margin: 0;
-        display: -webkit-box;
-        display: -moz-box;
-        display: -ms-flexbox;
-        display: -webkit-flex;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-    }
+                    <p>It's only through your generosity and willingness to throw money at us that we can keep Fantasy Calendar running.</p>
 
-    .thank-you{
-        width:100%;
-    }
-
-    .donate-background .detail-column{
-        padding:10px;
-    }
-
-    .donate-background .detail-row{
-        padding:10px;
-    }
-
-    .float-rights{
-        display: -webkit-box;
-        display: -moz-box;
-        display: -ms-flexbox;
-        display: -webkit-flex;
-        display: inline-flex;
-        align-self: flex-end;
-        flex-direction: column;
-    }
-
-    .spacing{
-        padding-left:1.5em;
-    }
-    </style>
-@endpush
-
-@section('content')
-    <div class='donate-background'>
-        <div class='detail-row'>
-            <div class='thank-you center-text bold-text'>Thank you for considering supporting the site! It's only through your generous donations I can keep this site up and running!</div>
-        </div>
-        <div class='detail-row'>
-            <div class='detail-column half'>
-                <div class='float-rights'>
-                    <div class='detail-row'>
-                        <h4>Paypal:</h4>
-                    </div>
-                    <div class='detail-row'>
-                        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-                        <input type="hidden" name="cmd" value="_s-xclick" />
-                        <input type="hidden" name="hosted_button_id" value="HWFW78AYHS4HQ" />
-                        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-                        <img alt="" border="0" src="https://www.paypal.com/en_CZ/i/scr/pixel.gif" width="1" height="1" />
-                        </form>
-                    </div>
+                    <p>We usually prefer to get our money in exchange for the services we provide, but you're going above and beyond. We greatly appreciate it.</p>
                 </div>
             </div>
-            <div class='detail-column half'>
-                <div class='detail-row'>
-                    <h4>Ko-fi:</h4>
-                </div>
-                <div class='detail-row'>
-                    <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#46b798', 'H2H2LCCQ');kofiwidget2.draw();</script> 
+            <div class='col-span-1 md:col-span-5 text-center md:text-right flex flex-col justify-center'>
+                <div>
+                    <h4 class="text-lg font-bold mb-2">Direct via Stripe:</h4>
+
+                    <div class="mb-6">
+                        <x-button-link href="https://buy.stripe.com/28o01O18heRx5nGeUU">Donate directly via Stripe</x-button-link>
+                    </div>
+
+                    <h4 class="text-lg font-bold mb-2">Ko-fi:</h4>
+
+                    <script type='text/javascript' src='https://ko-fi.com/widgets/widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#46b798', 'H2H2LCCQ');kofiwidget2.draw();</script>
                 </div>
             </div>
         </div>
-    </div>
-@endsection
+    </x-panel>
+</x-app-layout>

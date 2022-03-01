@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 class InviteController extends Controller
 {
     public function accept(AcceptCalendarInviteRequest $request) {
-        if($request->invitation->calendar->users->contains(Auth::user())) {
+        if($request->invitation->calendar->users->contains($request->user())) {
             return view('invite.already-accepted', [
                 'calendar' => $request->invitation->calendar
             ]);
@@ -24,10 +24,8 @@ class InviteController extends Controller
             throw new AuthorizationException("Invitation invalid.");
         }
 
-        $request->invitation->accept();
-
         return view('invite.accepted', [
-            'calendar' => $request->invitation->calendar
+            'calendar' => $request->invitation->accept()->calendar
         ]);
     }
 

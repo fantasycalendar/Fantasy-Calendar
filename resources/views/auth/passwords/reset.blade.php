@@ -26,7 +26,6 @@
                 <x-button type="submit" class="w-full justify-center">
                     {{ __('Reset Password') }}
                 </x-button>
-                <x-slot name="footer"></x-slot>
             </form>
         </x-panel>
 

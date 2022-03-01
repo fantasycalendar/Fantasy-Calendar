@@ -55,6 +55,12 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'website_url' => env('WEBSITE_URL', [
+        'production' => 'https://fantasy-calendar.com/',
+        'development' => 'https://beta.fantasy-calendar.com/',
+        'local' => '/'
+    ][env('APP_ENV')] ?? '/'),
+
     'asset_url' => env('ASSET_URL', null),
 
     'mix_url' => env('MIX_ASSET_URL', null),

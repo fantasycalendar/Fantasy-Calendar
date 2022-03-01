@@ -572,11 +572,13 @@
     }
 
     .timespan_row{
-        &:nth-child(even) .timespan_day{
+
+
+        &:nth-child(even) .minimalistic_odd_even_colored{
             background-color: $m-even-bg;
         }
 
-        &:nth-child(odd) .timespan_day{
+        &:nth-child(odd) .minimalistic_odd_even_colored{
             background-color: $m-odd-bg;
         }
 

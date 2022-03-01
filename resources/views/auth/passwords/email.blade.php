@@ -28,8 +28,6 @@
                     </x-button>
                 </div>
             </form>
-
-            <x-slot name="footer"></x-slot>
         </x-panel>
     </div>
 </x-app-fullwidth-layout>

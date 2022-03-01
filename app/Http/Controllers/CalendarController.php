@@ -33,32 +33,28 @@ class CalendarController extends Controller
      */
     public function index(Request $request)
     {
-        $userCalendars = auth()->user()->calendars()->without(['events', 'event_categories'])->with(['user'])->withCount(['events', 'event_categories', 'users']);
-        $sharedCalendars = auth()->user()->related_calendars()->where('disabled', '=', 0)->without(['events', 'event_categories'])->with(['user'])->withCount(['events', 'event_categories', 'users']);
-
-        if($request->has('search')) {
-            $userCalendars = $userCalendars->search($request->input('search'));
-            $sharedCalendars = $sharedCalendars->search($request->input('search'));
-        }
-
-        // Laravel's built-in pagination isn't great on mobile, so we (unfortunately) tell it to paginate twice.
-        // We also create two paginations: One for a desktop view and one for a mobile view.
-        // Yeah, I know. There is probably a better way to do this.
-        $calendarSimplePagination = $userCalendars->simplePaginate(10);
-        $userCalendars = $userCalendars->paginate(10);
-
-        $sharedCalendarSimplePagination = $sharedCalendars->simplePaginate(10);
-        $sharedCalendars = $sharedCalendars->paginate(10);
-
-        $invitations = auth()->user()->getInvitations();
-
         return view('calendar.list', [
             'title' => "Fantasy Calendar",
-            'invitations' => $invitations,
-            'calendars' => $userCalendars,
-            'calendar_pagination' => $calendarSimplePagination,
-            'shared_calendars' => $sharedCalendars,
-            'shared_pagination' => $sharedCalendarSimplePagination,
+            'invitations' => $request->user()->getInvitations(),
+            'calendars' => $request->user()
+                ->calendars()
+                ->without(['events', 'event_categories'])
+                ->with(['user'])
+                ->withCount(['events', 'event_categories', 'users'])
+                ->when($request->get('search'), function($query, $search) {
+                    $query->search($search);
+                })
+                ->paginate(10),
+            'shared_calendars' => $request->user()
+                ->related_calendars()
+                ->where('disabled', '=', 0)
+                ->without(['events', 'event_categories'])
+                ->with(['user'])
+                ->withCount(['events', 'event_categories', 'users'])
+                ->when($request->get('search'), function($query, $search) {
+                    $query->search($search);
+                })
+                ->paginate(10, ['*'], 'shared_page'),
             'search' => $request->input('search'),
         ]);
     }
@@ -196,7 +192,8 @@ class CalendarController extends Controller
     public function export(Calendar $calendar)
     {
         return view('calendar.export', [
-            'exportdata' => PrepCalendarForExport::dispatchNow($calendar)
+            'exportdata' => PrepCalendarForExport::dispatchNow($calendar),
+            'calendar' => $calendar
         ]);
     }
 

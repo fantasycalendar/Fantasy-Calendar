@@ -26,9 +26,6 @@
                     {{ __('Resend Verification Email') }}
                 </x-button>
             </form>
-
-            <x-slot name="footer">
-            </x-slot>
         </x-panel>
     </div>
 </x-app-layout>

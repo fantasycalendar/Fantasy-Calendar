@@ -93,8 +93,6 @@
                         {{ __('Register') }}
                     </x-button>
                 </form>
-
-                <x-slot name="footer"></x-slot>
             </x-panel>
 
             <div class="text-xs mt-6 px-10 text-center text-gray-400 dark:text-gray-600">You can withdraw marketing consent at any time on your profile. Residents of the EU are legally entitled to a 14-day cool off period, as explained in the T&Cs.</div>

@@ -15,25 +15,10 @@ use Intervention\Image\Facades\Image;
 |
 */
 
-//Route::post('/requestTest', function(Request $request){
-//    dd($request->all());
-//
-//    return '';
-//});
-
 Route::get('/embed/{calendar}', 'EmbedController@embedCalendar');
-
-Route::get('/imagetest', function(){
-    return view('pages.imagetest');
-});
-
-Route::get('/integrationtest', function(){
-    return view('pages.integrationtest');
-})->name("integrationtest");
 
 Route::get('/', 'WelcomeController@welcome')->name('home');
 Route::view('/welcome', 'welcome')->name('welcome');
-Route::view('/whats-new', 'pages.whats-new')->name('whats-new');
 Route::view('/changelog', 'pages.changelog')->name('changelog');
 Route::view('/faq', 'pages.faq')->name('faq');
 Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);
@@ -45,7 +30,7 @@ Route::get('/privacy-policy', 'PolicyController@view')->name('privacy-policy');
 Route::get('/prompt-tos', 'AgreementController@show')->name('prompt-tos');
 
 Route::middleware('auth')->group(function(){
-    Route::get('/account-migrated', 'WelcomeController@account_migrated')->name('account-migrated');
+    Route::get('/account-migrated', fn() => redirect(route('account-migrated-acknowledge')))->name('account-migrated');
     Route::get('/account-migrated-acknowledge', 'WelcomeController@account_migrated_acknowledge')->name('account-migrated-acknowledge');
     Route::get('/agreement-accepted', 'AgreementController@accept')->name('agreement-accepted');
 
