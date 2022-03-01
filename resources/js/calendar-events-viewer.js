@@ -92,6 +92,7 @@ const calendar_events_viewer = {
 		for(let index in comments){
 			let comment = comments[index];
 			this.comments.push({
+                index: index,
 				id: comment.id,
 				date: comment.date,
 				comment_owner: comment.comment_owner,
@@ -108,6 +109,7 @@ const calendar_events_viewer = {
 	add_comment($event) {
 		let comment = $event.detail.comment;
 		this.comments.push({
+            index: this.comments.length,
 			id: comment.id,
 			date: comment.date,
 			comment_owner: comment.comment_owner,
@@ -130,8 +132,8 @@ const calendar_events_viewer = {
 	start_edit_comment(comment) {
 		this.cancel_edit_comment();
 		comment.editing = true;
-		comment.editor = $(this.$refs[`trumbowyg_comment_${comment.id}`]).children().eq(0);
-		comment.editor.trumbowyg({
+        const element = $(document.getElementById(`comment-editor-${comment.index}`))
+		element.trumbowyg({
 			btns: [
 				['strong', 'em', 'del'],
 				['superscript', 'subscript'],
@@ -141,7 +143,8 @@ const calendar_events_viewer = {
 				['removeformat']
 			]
 		}).trumbowyg('html', comment.content);
-	},
+        comment.editor = element;
+    },
 
 	submit_edit_comment(comment) {
 
