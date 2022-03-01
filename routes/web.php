@@ -30,7 +30,7 @@ Route::get('/privacy-policy', 'PolicyController@view')->name('privacy-policy');
 Route::get('/prompt-tos', 'AgreementController@show')->name('prompt-tos');
 
 Route::middleware('auth')->group(function(){
-    Route::get('/account-migrated', 'WelcomeController@account_migrated')->name('account-migrated');
+    Route::get('/account-migrated', fn() => redirect(route('account-migrated-acknowledge')))->name('account-migrated');
     Route::get('/account-migrated-acknowledge', 'WelcomeController@account_migrated_acknowledge')->name('account-migrated-acknowledge');
     Route::get('/agreement-accepted', 'AgreementController@accept')->name('agreement-accepted');
 

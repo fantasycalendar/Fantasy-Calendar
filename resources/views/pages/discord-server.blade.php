@@ -8,8 +8,6 @@
             <div class="pt-5 text-center md:text-right mx-auto">
                 <iframe class="mx-auto mb-4" src="https://discord.com/widget?id=399974878134140939&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
             </div>
-
-            <x-slot name="footer"></x-slot>
         </x-panel>
     </div>
 </x-app-layout>

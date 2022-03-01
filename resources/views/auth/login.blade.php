@@ -38,8 +38,6 @@
                     </x-app-link>
                 @endif
             </form>
-
-            <x-slot name="footer"></x-slot>
         </x-panel>
     </div>
 </x-app-fullwidth-layout>

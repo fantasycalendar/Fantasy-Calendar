@@ -40,6 +40,5 @@
                 <x-button role="danger" class="w-full justify-center" type="submit">Request Account Deletion</x-button>
 
             </form>
-        <x-slot name="footer"></x-slot>
     </x-panel>
 </x-app-layout>

@@ -24,7 +24,5 @@
                 </div>
             </div>
         </div>
-
-        <x-slot name="footer"></x-slot>
     </x-panel>
 </x-app-layout>
