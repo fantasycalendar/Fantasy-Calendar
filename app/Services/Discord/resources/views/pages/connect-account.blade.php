@@ -1,5 +1,3 @@
-@extends('templates._page')
-
 @push('head')
     <style>
         h1 {
@@ -111,18 +109,18 @@
     </script>
 @endpush
 
-@section('content')
-    <div class="container py-5">
+<x-app-layout>
+    <div class="py-5 max-w-none">
         @if(session()->has('message'))
-            <div class="alert alert-success py-3 my-4">{{ session('message') }}</div>
+            <x-alert role="success" class="py-3 my-4">{{ session('message') }}</x-alert>
         @endif
 
         @if(session()->has('alert'))
-            <div class="alert alert-info py-3 my-4">{{ session('alert') }}</div>
+            <x-alert role="info" class="py-3 my-4">{{ session('alert') }}</x-alert>
         @endif
 
         @if(session()->has('error'))
-            <div class="alert alert-danger py-3 my-4">{{ session('error') }}</div>
+            <x-alert role="danger" class="py-3 my-4">{{ session('error') }}</x-alert>
         @endif
 
         @unless(Auth::user()->hasDiscord())
@@ -130,9 +128,9 @@
             <h4 class="lead" style="opacity: 0.65;">Don't worry, we only use the minimum necessary to make integrations work. As Discord will tell you, neither of the options below lets us read your messages or anything like that.</h4>
         @endunless
 
-        <div class="row">
+        <div class="grid grid-cols-12 gap-4">
             @unless(Auth::user()->hasDiscord())
-                <div class="col-12 flex align-items-center mb-3">
+                <div class="col-span-12 flex items-center mb-3">
                     <div class="connect-box py-4 w-100 border rounded my-4">
 
                         <div class="logo-wrapper">
@@ -149,75 +147,79 @@
                     </div>
                 </div>
 
-                <div class="col-12 text-center mt-5 pb-2">
+                <div class="col-span-12 text-center mt-5 pb-2">
                     <h2>There are two different ways to connect, depending on what you need.</h2>
                 </div>
             @else
-                <div class="col-12">
+                <div class="col-span-12">
                     <h1>Account connected!</h1>
                 </div>
             @endunless
 
-            <div class="col-12 col-lg-6 mb-3">
                 @unless(Auth::user()->hasDiscord())
-                    <div class="inner h-100 border rounded w-100 p-3 text-center">
-                        <h4>To use an <strong>existing</strong> Fantasy Calendar integration <p class="lead small pt-1" style="opacity: 0.7;">in someone else's Discord server</p></h4>
+                    <div class="col-span-12 md:col-span-6 mb-3">
+                        <div class="inner h-full border rounded w-100 p-3 text-center">
+                            <h4>To use an <strong>existing</strong> Fantasy Calendar integration <p class="lead small pt-1" style="opacity: 0.7;">in someone else's Discord server</p></h4>
 
-                        <a href="{{ route('discord.auth.user') }}" class="btn btn-lg btn-discord my-3">Connect to Use With Discord</a>
+                            <a href="{{ route('discord.auth.user') }}" class="btn btn-lg btn-discord my-3">Connect to Use With Discord</a>
+                        </div>
                     </div>
                 @else
-                    <div class="inner h-100 alert alert-success bg-accent p-3 d-flex flex-column flex-md-row align-items-md-center justify-content-between">
-                        <div class="d-flex justify-content-start align-items-center">
-                            <img class="mr-2 rounded-circle" style="max-height: 5rem;" src="{{ Auth::user()->discord_auth->avatar ?? asset('resources/logo-white.png') }}" alt="{{ Auth::user()->discord_auth->discord_username }}'s Discord avatar">
+                    <x-panel class="col-span-12 md:col-span-6 mb-3">
+                        <div class="flex w-full justify-start items-center">
+                            <img class="mr-2 rounded-full" style="max-height: 5rem;" src="{{ Auth::user()->discord_auth->avatar ?? asset('resources/logo-white.png') }}" alt="{{ Auth::user()->discord_auth->discord_username }}'s Discord avatar">
                             <h4 class="mb-0">
                                 {{ Auth::user()->discord_auth->discord_username }}
                             </h4>
                         </div>
-                        <hr class="d-md-none w-100 my-3" style="border-top-color: #246645;">
-                        <a href="javascript:" onclick="confirmDisconnect()" class="btn btn-outline-danger alert-link">Disconnect</a>
-                    </div>
+
+                        <x-slot name="footer_buttons">
+                            <x-button-link href="javascript:" onclick="confirmDisconnect()" class="btn btn-outline-danger alert-link">Disconnect</x-button-link>
+                        </x-slot>
+                    </x-panel>
                 @endunless
-            </div>
 
-            <div class="col-12 col-lg-6 mb-3">
-                <div class="inner h-100 border rounded w-100 p-3 text-center">
-                    <h4>To setup a <strong>new</strong> Fantasy Calendar integration <p class="lead small pt-1" style="opacity: 0.7;">in a Discord server you own or admin</p></h4>
+            <x-panel class="col-span-12 md:col-span-6 mb-3">
+                <h4>To setup a <strong>new</strong> Fantasy Calendar integration <p class="lead small pt-1" style="opacity: 0.7;">in a Discord server you own or admin</p></h4>
 
+                <x-slot name="footer_buttons">
                     @unless(Auth::user()->hasDiscord())
-                        <a href="{{ route('discord.auth.admin') }}" class="btn btn-lg btn-discord my-3">Connect to Your Discord Server</a>
+                        <x-button-link href="{{ route('discord.auth.admin') }}" class="btn btn-lg btn-discord my-3">Connect to Your Discord Server</x-button-link>
                     @else
-                        <a href="{{ route('discord.auth.admin') }}" class="btn btn-lg btn-discord my-3">Add Fantasy Calendar to a Server</a>
+                        <x-button-link href="{{ route('discord.auth.admin') }}" class="btn btn-lg btn-discord my-3">Add Fantasy Calendar to a Server</x-button-link>
                     @endunless
-                </div>
-            </div>
+                </x-slot>
+            </x-panel>
 
             @if(Auth::user()->hasDiscord())
-                <div class="col-12 pt-4">
-                    <h3 class="text-center">Discord Command Quick Reference</h3>
-                </div>
+                <div class="col-span-12 prose dark:prose-invert max-w-none">
+                    <div class="col-span-12 pt-4">
+                        <h3 class="text-center">Discord Command Quick Reference</h3>
+                    </div>
 
-                <div class="col-12">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col" class="pl-3">Command</th>
-                                <th scope="col" class="pl-4 pl-md-0">Description</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach(discord_help() as $command)
+                    <div class="col-span-12">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
                                 <tr>
-                                    <td style="font-family: monospace;" class="font-weight-bold pl-3">{{ $command['command'] }}</td>
-                                    <td class="italics-text pl-4 pl-md-0">{{ $command['description'] }}</td>
+                                    <th scope="col" class="pl-3">Command</th>
+                                    <th scope="col" class="pl-4 pl-md-0">Description</th>
                                 </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                @foreach(discord_help() as $command)
+                                    <tr>
+                                        <td style="font-family: monospace;" class="font-weight-bold pl-3">{{ $command['command'] }}</td>
+                                        <td class="italics-text pl-4 pl-md-0">{{ $command['description'] }}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             @else
-                <div class="col-12">
+                <div class="col-span-12">
                     <div class="inner">
                         <div class="table-responsive">
                             <table class="table">
@@ -252,4 +254,4 @@
             @endif
         </div>
     </div>
-@endsection
+</x-app-layout>
