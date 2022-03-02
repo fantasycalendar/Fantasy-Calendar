@@ -37,13 +37,14 @@
                         delete timespan.week;
                     }else{
                         timespan.week = clone(this.global_week);
-                        timespan.num_weekdays = timespan.week.length;
                     }
                 },
 
                 numberWeekdaysChanged($event, timespan){
                     const numWeekdays = Number($event.target.value);
+
                     if(!timespan.week) return;
+
                     if(numWeekdays > timespan.week.length){
                         // Create an array
                         const newWeekdays = Array.from(Array(numWeekdays - timespan.week.length).keys())
@@ -89,11 +90,6 @@
 
                     })
                 },
-
-                timespansChanged(){
-
-                }
-
             }
         }
 
@@ -184,7 +180,7 @@
                 <div class='col-6' style="padding-left:15%;">Length</div>
             </div>
 
-            <div class="sortable list-group" @change="timespansChanged">
+            <div class="sortable list-group">
                 <template x-for="(timespan, index) in timespans">
                     <div class='sortable-container list-group-item' :class="timespan.type">
 
@@ -282,13 +278,9 @@
                                         </div>
 
                                     </div>
-
                                 </div>
-
                             </template>
-
                         </div>
-
                     </div>
                 </template>
             </div>

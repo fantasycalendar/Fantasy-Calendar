@@ -26,12 +26,12 @@
 
 
 <x-sidebar.collapsible
-        class="settings-weekdays step-2-step"
-        name="globalweek"
-        title="Weekdays"
-        icon="fas fa-calendar-week"
-        tooltip-title="More Info: Weekdays"
-        helplink="weekdays"
+    class="settings-weekdays step-2-step"
+    name="globalweek"
+    title="Weekdays"
+    icon="fas fa-calendar-week"
+    tooltip-title="More Info: Weekdays"
+    helplink="weekdays"
 >
 
     <div class='row center-text hidden' id='overflow_explanation'>
