@@ -46,7 +46,7 @@
 
                 sortErasByDate(){
                     // Map each expanded index to the era it represents
-                    const expanded = Object.entries(clone(this.expanded)).map(entry => [entry[0], this.eras[entry[0]]])
+                    const expanded = Object.entries(clone(this.expanded)).filter(entry => entry[1]).map(entry => [entry[0], this.eras[entry[0]]])
 
                     // Sort the eras by year, month, and day, with starting eras always coming first
                     this.eras.sort((a, b) => {
