@@ -28,6 +28,34 @@
 
                 return Array.from(Array(numDays).keys()).map(num => `Day ${num+1}`);
 
+            },
+
+            getNonLeapingDaysInTimespan(timespan_index){
+
+                const timespan = this.static_data.year_data.timespans[timespan_index];
+
+                const numDays = this.static_data.year_data.leap_days.reduce((acc, leap_day) => {
+                    return acc + (leap_day.interval === "1")
+                }, timespan.length);
+
+                return Array.from(Array(numDays).keys()).map(num => `Day ${num+1}`);
+
+            },
+
+            getAverageYearLength(){
+
+                let avg_length = 0;
+
+                for(let timespan of this.static_data.year_data.timespans){
+                    avg_length += timespan.length * IntervalsCollection.make(timespan).totalFraction;
+                }
+
+                for(let leap_day of this.static_data.year_data.leap_days){
+                    avg_length += IntervalsCollection.make(leap_day).totalFraction;
+                }
+
+                return precisionRound(avg_length, 10);
+
             }
         }
     }

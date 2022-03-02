@@ -51,7 +51,7 @@
                     // Sort the eras by year, month, and day, with starting eras always coming first
                     this.eras.sort((a, b) => {
                         if(a.settings.starting_era) return -1;
-                        return ((a.date.year+1000) - (b.date.year+1000)) - ((a.date.timespan+100) - (b.date.timespan+100)) - (a.date.day - b.date.day);
+                        return ((a.date.year+100000) - (b.date.year+100000)) - ((a.date.timespan+1000) - (b.date.timespan+1000)) - (a.date.day - b.date.day);
                     });
 
                     // Map each era back to its new index so that the right era remains expanded
@@ -132,7 +132,7 @@
 
             <div class="sortable list-group">
                 <template x-for="(era, index) in eras">
-                    <div class='sortable-container list-group-item' :class="era.type">
+                    <div class='sortable-container list-group-item'>
 
                         <div class='main-container' x-show="deleting !== era">
                             <i class='expand' :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
