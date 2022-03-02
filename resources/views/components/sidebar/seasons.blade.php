@@ -3,7 +3,7 @@
 @push("head")
     <script lang="js">
 
-        function seasonsList($data){
+        function seasonSection($data){
 
             return {
 
@@ -153,7 +153,7 @@
     helplink="seasons"
 >
 
-    <div x-data="seasonsList($data)">
+    <div x-data="seasonSection($data)">
 
         <div class='row bold-text'>
             <div class='col'>

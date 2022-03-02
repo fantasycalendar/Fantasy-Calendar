@@ -3,7 +3,7 @@
 @push('head')
     <script lang="js">
 
-        function weekdayList($data){
+        function weekdaySection($data){
 
             return {
 
@@ -95,7 +95,7 @@
     @endif
 
 
-    <div x-data="weekdayList($data)">
+    <div x-data="weekdaySection($data)">
 
         <div class='row no-gutters mt-2 bold-text'>
             <div class="col">

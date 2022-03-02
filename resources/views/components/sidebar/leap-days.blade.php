@@ -3,7 +3,7 @@
 @push('head')
     <script lang="js">
 
-        function leapdayList($data){
+        function leapdaySection($data){
 
             return {
 
@@ -122,7 +122,7 @@
     @else
 
         <div
-            x-data="leapdayList($data)"
+            x-data="leapdaySection($data)"
             @add-leapday.window="add($event.detail)"
             @remove-leapday.window="remove($event.detail.index)"
         >

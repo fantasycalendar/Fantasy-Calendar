@@ -4,7 +4,7 @@
 
     <script lang="js">
 
-        function moonList($data){
+        function moonSection($data){
 
             return {
 
@@ -125,8 +125,7 @@
         helplink="moons"
 >
 
-    <div x-data="moonList($data)">
-
+    <div x-data="moonSection($data)">
 
         <div class='row bold-text'>
             <div class="col">

@@ -3,7 +3,7 @@
 @push("head")
     <script lang="js">
 
-        function eraList($data){
+        function eraSection($data){
 
             return {
 
@@ -113,7 +113,7 @@
 
     @else
 
-        <div x-data="eraList($data)">
+        <div x-data="eraSection($data)">
 
             <div class='row no-gutters bold-text'>
                 <div class='col'>

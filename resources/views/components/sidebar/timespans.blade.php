@@ -3,7 +3,7 @@
 @push('head')
     <script lang="js">
 
-        function monthList($data){
+        function monthSection($data){
 
             return {
 
@@ -145,7 +145,7 @@
     @else
 
         <div
-            x-data="monthList($data)"
+            x-data="monthSection($data)"
             @add-timespan.window="add($event.detail)"
             @remove-timespan.window="remove($event.detail.index)"
             @set-timespan-weekdays.window="setWeekdays"
