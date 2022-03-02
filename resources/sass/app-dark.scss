@@ -211,7 +211,7 @@ body {
     border-color: $gray-600;
 }
 
-body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):not(#btn_delete):not(.btn-stock):not(#go_to_preview_date):not(#preview_date_btn) {
+body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):not(#btn_delete):not(.btn-stock):not(#go_to_preview_date):not(#preview_date_btn):not(.btn-outline-secondary) {
     background-color: $btn-color;
     border-color: $btn-border;
 

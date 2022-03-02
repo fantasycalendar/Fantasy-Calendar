@@ -15,6 +15,7 @@
                 timespans: $data.static_data.year_data.timespans,
                 global_week: $data.static_data.year_data.global_week,
                 deleting: null,
+                reordering: false,
                 expanded: {},
 
                 add({ name, type, length = false, interval = 1, offset = 0 }={}){
@@ -157,27 +158,24 @@
                 </div>
             </div>
 
-            <div class='add_inputs timespan row no-gutters mb-2'>
+            <div class='add_inputs timespan row no-gutters mb-2 input-group'>
+                <input type='text' class='form-control name' x-model="newTimespan.name" placeholder='Name'>
 
-                <div class='col-md-6'>
-                    <input type='text' class='form-control name' x-model="newTimespan.name" placeholder='Name'>
-                </div>
+                <select class='custom-select form-control' x-model="newTimespan.type">
+                    <option selected value='month'>Month</option>
+                    <option value='intercalary'>Intercalary</option>
+                </select>
 
-                <div class='col'>
-                    <select class='custom-select form-control' x-model="newTimespan.type">
-                        <option selected value='month'>Month</option>
-                        <option value='intercalary'>Intercalary</option>
-                    </select>
-                </div>
-
-                <div class='col-auto'>
+                <div class='col-auto input-group-append'>
                     <button type='button' class='btn btn-primary add full' @click="add(newTimespan)"><i class="fa fa-plus"></i></button>
                 </div>
             </div>
 
-            <div class="row sortable-header timespan_sortable_header">
-                <div class='col-6' style="padding-left:25%;">Name</div>
-                <div class='col-6' style="padding-left:15%;">Length</div>
+            <div class="row sortable-header timespan_sortable_header no-gutters align-items-center">
+                <div x-show="!reordering" @click="reordering = true" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
+                <div x-show="reordering" @click="reordering = false" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
+                <div class='py-2 col-6 text-center'>Name</div>
+                <div class='py-2 col-5 text-center'>Length</div>
             </div>
 
             <div class="sortable list-group">
@@ -185,21 +183,20 @@
                     <div class='sortable-container list-group-item' :class="timespan.type">
 
                         <div class='main-container' x-show="deleting !== timespan">
-                            <div class='handle icon-reorder'></div>
-                            <div class='expand' :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></div>
-                            <div class="name-container">
+                            <i class='handle icon-reorder' x-show="reordering"></i>
+                            <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
+                            <div class="input-group">
                                 <input class='name-input small-input form-control' x-model="timespan.name">
+                                <input type='number' min='1' class='length-input form-control' x-model='timespan.length' style="max-width: 50px;"/>
+                                <div class="input-group-append">
+                                    <div class='btn btn-danger icon-trash' @click="deleting = timespan" x-show="deleting !== timespan"></div>
+                                </div>
                             </div>
-                            <div class='length_input'>
-                                <input type='number' min='1' class='length-input form-control' x-model='timespan.length'/>
-                            </div>
-                            <div class="remove-spacer"></div>
                         </div>
 
-                        <div class='remove-container'>
-                            <div class='remove-container-text' x-show="deleting === timespan">Are you sure you want to remove this?</div>
-                            <div class='btn_remove btn btn-danger icon-trash' @click="deleting = timespan" x-show="deleting !== timespan"></div>
+                        <div class='d-flex justify-content-between align-items-center w-100 px-1'>
                             <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === timespan"></div>
+                            <div class='remove-container-text' x-show="deleting === timespan">Are you sure?</div>
                             <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === timespan"></div>
                         </div>
 

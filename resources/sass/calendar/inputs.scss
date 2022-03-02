@@ -310,13 +310,13 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     pointer-events: none;
     display: flex;
     align-items: center;
+    padding: 0px 4px;
 }
 
 .remove-container-text{
     text-align: center;
     margin:auto;
     font-size:11pt;
-    order: 2;
     flex-grow: 1;
     line-height: 46px;
 }
@@ -328,23 +328,6 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     padding: 2px 0 0;
     font-size: 22px;
     cursor: pointer;
-}
-
-.remove-container > .btn_remove {
-    position: absolute;
-    right: 2px;
-    top: 3px;
-}
-
-.remove-container > .btn_cancel{
-    order: 3;
-    margin-right: 2px;
-}
-
-.remove-container > .btn_accept{
-    left:0;
-    order: 1;
-    margin-left: 2px;
 }
 
 .remove-container > .handle{
