@@ -6,25 +6,31 @@
 
             return {
 
+                newTimespan: {
+                    name: "",
+                    type: "month"
+                },
+
                 timespans: $data.static_data.year_data.timespans,
                 global_week: $data.static_data.year_data.global_week,
-                show: {},
+                deleting: null,
+                expanded: {},
 
-                addTimespan($event){
+                add({ name, type, length = false, interval = 1, offset = 0 }={}){
                     this.timespans.push({
-                        'name': $event.detail.name || (`Month ${this.timespans.length}`),
-                        'type': $event.detail.type,
-                        'length': this.timespans?.[this.timespans.length-1]?.length || this.global_week.length,
-                        'interval': 1,
-                        'offset': 0
+                        'name': name || (`Month ${this.timespans.length}`),
+                        'type': type,
+                        'length': length || this.timespans?.[this.timespans.length-1]?.length || this.global_week.length,
+                        'interval': interval,
+                        'offset': offset
                     })
                 },
 
-                removeTimespan($event){
-                    this.timespans.splice($event.detail.index, 1);
+                remove(index){
+                    this.timespans.splice(index, 1);
                 },
 
-                toggleTimespanWeek(timespan){
+                toggleWeek(timespan){
 
                     if(timespan.week){
                         delete timespan.week;
@@ -47,7 +53,7 @@
                     }
                 },
 
-                setTimespanWeekdays($event){
+                setWeekdays($event){
                     this.timespans[$event.detail.timespanIndex].week = $event.detail.newWeekdays;
                 },
 
@@ -94,17 +100,47 @@
 
     <div
         x-data="monthList($data)"
-        @add-timespan.window="addTimespan"
-        @remove-timespan.window="removeTimespan"
-        @set-timespan-weekdays.window="setTimespanWeekdays"
+        @add-timespan.window="add($event.detail)"
+        @remove-timespan.window="remove($event.detail.index)"
+        @set-timespan-weekdays.window="setWeekdays"
     >
+
+        <div class='row bold-text'>
+            <div class="col">
+                New month:
+            </div>
+        </div>
+
+        <div class='add_inputs timespan row no-gutters mb-2'>
+
+            <div class='col-md-6'>
+                <input type='text' class='form-control name' x-model="newTimespan.name" placeholder='Name'>
+            </div>
+
+            <div class='col'>
+                <select class='custom-select form-control' x-model="newTimespan.type">
+                    <option selected value='month'>Month</option>
+                    <option value='intercalary'>Intercalary</option>
+                </select>
+            </div>
+
+            <div class='col-auto'>
+                <button type='button' class='btn btn-primary add full' @click="add(newTimespan)"><i class="fa fa-plus"></i></button>
+            </div>
+        </div>
+
+        <div class="row sortable-header timespan_sortable_header">
+            <div class='col-6' style="padding-left:25%;">Name</div>
+            <div class='col-6' style="padding-left:15%;">Length</div>
+        </div>
+
         <div class="sortable list-group" @change="timespansChanged">
             <template x-for="(timespan, index) in timespans">
                 <div class='sortable-container list-group-item' :class="timespan.type">
 
-                    <div class='main-container' x-show="!timespan.deleting">
+                    <div class='main-container' x-show="deleting !== timespan">
                         <div class='handle icon-reorder'></div>
-                        <div class='expand' :class="show[index] ? 'icon-collapse' : 'icon-expand'" @click="show[index] = !show[index]"></div>
+                        <div class='expand' :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></div>
                         <div class="name-container">
                             <input class='name-input small-input form-control' x-model="timespan.name">
                         </div>
@@ -115,13 +151,13 @@
                     </div>
 
                     <div class='remove-container'>
-                        <div class='remove-container-text' x-show="timespan.deleting">Are you sure you want to remove this?</div>
-                        <div class='btn_remove btn btn-danger icon-trash' @click="timespan.deleting = true" x-show="!timespan.deleting"></div>
-                        <div class='btn_cancel btn btn-danger icon-remove' @click="timespan.deleting = false" x-show="timespan.deleting"></div>
-                        <div class='btn_accept btn btn-success icon-ok' @click="$dispatch('remove-timespan', { index })" x-show="timespan.deleting"></div>
+                        <div class='remove-container-text' x-show="deleting === timespan">Are you sure you want to remove this?</div>
+                        <div class='btn_remove btn btn-danger icon-trash' @click="deleting = timespan" x-show="deleting !== timespan"></div>
+                        <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === timespan"></div>
+                        <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === timespan"></div>
                     </div>
 
-                    <div class='container pb-2' x-show="show[index] && !timespan.deleting">
+                    <div class='container pb-2' x-show="expanded[index] && deleting === null">
 
                         <div class='row no-gutters bold-text big-text italics-text'>
                             <div class='col-12' x-text='timespan.type === "month" ? "Month" : "Intercalary month"'></div>
@@ -163,7 +199,7 @@
 
                                 <div class='row no-gutters my-1'>
                                     <div class='form-check col-12 py-2 border rounded'>
-                                        <input type='checkbox' class='form-check-input' :checked="timespan.week?.length > 0" @click="toggleTimespanWeek(timespan)"/>
+                                        <input type='checkbox' class='form-check-input' :checked="timespan.week?.length > 0" @click="toggleWeek(timespan)"/>
                                         <label for='${key}_custom_week' class='form-check-label ml-1'>
                                             Use custom week
                                         </label>

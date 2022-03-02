@@ -387,7 +387,7 @@
 					@else
 						<div class='col-4'>
 							<label class="custom-control custom-checkbox right-text">
-								<input type="checkbox" class="custom-control-input static_input" data='year_data' fc-index='overflow' id='month_overflow'>
+								<input type="checkbox" class="custom-control-input" x-model='static_data.year_data.overflow'>
 								<span class="custom-control-indicator"></span>
 							</label>
 						</div>
@@ -401,35 +401,14 @@
 				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 
 					<ul class="list-group">
-
-						@php
-						$weekdays = Arr::get($calendar->static_data, 'year_data.global_week');
-						@endphp
-
-						@foreach ($weekdays as $weekday)
-							<li class="list-group-item">{{ $weekday }}</li>
-						@endforeach
-
+                        <template x-for="weekday in static_data.year_data.global_week">
+							<li class="list-group-item" x-text="weekday"></li>
+                        </template>
 					</ul>
 
 				@else
 
-					<div class='row no-gutters mt-2 bold-text'>
-						<div class="col">
-							New weekday:
-						</div>
-					</div>
-
-					<div class='row no-gutters add_inputs global_week'>
-						<div class='col'>
-							<input type='text' class='form-control name' id='weekday_name_input' placeholder='Weekday name'>
-						</div>
-						<div class='col-auto'>
-							<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
-						</div>
-					</div>
-
-					<div class='sortable list-group' id='global_week_sortable'></div>
+                    <x-sidebar.weekdays></x-sidebar.weekdays>
 
 				@endif
 
@@ -512,38 +491,7 @@
 
 				@else
 
-					<div class='row bold-text'>
-						<div class="col">
-							New month:
-						</div>
-					</div>
-
-					<div class='add_inputs timespan row no-gutters mb-2'>
-
-						<div class='col-md-6'>
-							<input type='text' id='timespan_name_input' class='form-control name' placeholder='Name'>
-						</div>
-
-						<div class='col'>
-							<select id='timespan_type_input' class='custom-select form-control type'>
-								<option selected value='month'>Month</option>
-								<option value='intercalary'>Intercalary</option>
-							</select>
-						</div>
-
-						<div class='col-auto'>
-							<button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
-						</div>
-					</div>
-
-					<div class="row sortable-header timespan_sortable_header hidden">
-						<div class='col-6' style="padding-left:25%;">Name</div>
-						<div class='col-6' style="padding-left:20%;">Length</div>
-					</div>
-
-					{{--<div class='sortable list-group' id='timespan_sortable'></div>--}}
-
-                    <x-sidebar.timespan-list timespans="{{ Illuminate\Support\Js::from(Arr::get($calendar->static_data, 'year_data.timespans')) }}"></x-sidebar.timespan-list>
+                    <x-sidebar.timespans></x-sidebar.timespans>
 
 				@endif
 
