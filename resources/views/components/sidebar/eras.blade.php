@@ -47,8 +47,8 @@
                 sortErasByDate(){
                     this.eras.sort((a, b) => {
                         if(a.settings.starting_era) return -1;
-                        return ((a.year+1000) - (b.year+1000)) - ((a.timespan+100) - (b.timespan+100)) - (a.day - b.day);
-                    })
+                        return ((a.date.year+1000) - (b.date.year+1000)) - ((a.date.timespan+100) - (b.date.timespan+100)) - (a.date.day - b.date.day);
+                    });
                 },
 
                 editEventDescription(era){
@@ -219,13 +219,13 @@
                                         <div class='date_control'>
                                             <div class='row my-2'>
                                                 <div class='col'>
-                                                    <input type='number' step="1.0" class='date form-control small-input' x-model='era.date.year'/>
+                                                    <input type='number' step="1.0" class='date form-control small-input' x-model='era.date.year' @change="sortErasByDate()"/>
                                                 </div>
                                             </div>
 
                                             <div class='row my-2'>
                                                 <div class='col'>
-                                                    <select type='number' class='date custom-select form-control' x-model='era.date.timespan'>
+                                                    <select type='number' class='date custom-select form-control' x-model='era.date.timespan' @change="sortErasByDate()">
                                                         <template x-for="(timespan, index) in getTimespansInYear(era.date.year)">
                                                             <option :value="index" x-text="timespan.name"></option>
                                                         </template>
@@ -236,7 +236,7 @@
                                             <div class='row my-2'>
                                                 <div class='col'>
                                                     <select type='number' class='date custom-select form-control' x-model='era.date.day'>
-                                                        <template x-for="(day, index) in getDaysForTimespanInYear(era.date.timespan, era.date.year)">
+                                                        <template x-for="(day, index) in getDaysForTimespanInYear(era.date.timespan, era.date.year)" @change="sortErasByDate()">
                                                             <option :value="index+1" x-text="day"></option>
                                                         </template>
                                                     </select>
