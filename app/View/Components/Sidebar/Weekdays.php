@@ -2,6 +2,7 @@
 
 namespace App\View\Components\Sidebar;
 
+use App\Calendar;
 use Illuminate\View\Component;
 
 class Weekdays extends Component
@@ -11,10 +12,9 @@ class Weekdays extends Component
      *
      * @return void
      */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct(
+        public Calendar $calendar
+    ){}
 
     /**
      * Get the view / contents that represent the component.
