@@ -1,14 +1,14 @@
 <x-profile-layout>
     @if(config('services.discord.enabled'))
         <x-panel>
-            <div class="px-4 sm:px-6">
+            <div class=>
                 <h2 id="billing-history-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Discord Integration</h2>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Connect your Discord account to Fantasy Calendar, for quick access to some common features.</p>
 
-                <div class="border-t border-gray-100 dark:border-gray-700 w-full px-4 sm:px-6 mt-6"></div>
+                <div class="border-t border-gray-100 dark:border-gray-700 w-full mt-6"></div>
             </div>
 
-            <div class="flex items-center justify-between px-4 sm:px-6">
+            <div class="flex items-center justify-between">
                 @if(auth()->user()->hasDiscord())
                     <div class="flex items-center">
                         <div class="h-12 w-12 rounded-full overflow-hidden mr-3 bg-gray-900 dark:bg-gray-500 border-2 border-gray-900 dark:border-gray-500">
@@ -20,8 +20,14 @@
                         </div>
                     </div>
                     <x-slot name="footer">
-                        <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 dark:border-t dark:border-gray-600 text-right sm:px-6">
-                            <x-button-link role="secondary" href="{{ route('discord.index') }}">Manage Integration</x-button-link>
+                        <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 dark:border-t dark:border-gray-600 text-right sm:px-6 flex flex-col-reverse md:flex-row justify-between">
+                            <div class="flex flex-col md:items-center md:flex-row mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-none border-gray-300 dark:border-gray-700">
+                                <x-button-link class="justify-center" role="danger-subtle" href="{{ route('discord.index') }}">Disconnect Integration</x-button-link>
+                            </div>
+                            <div class="md:space-x-2 flex flex-col md:items-center md:flex-row space-y-2 md:space-y-0">
+                                <x-button-link class="justify-center" role="secondary" href="{{ route('discord.index') }}">Quick Reference</x-button-link>
+                                <x-button-link class="justify-center" role="primary" href="{{ route('discord.index') }}">Add to another server</x-button-link>
+                            </div>
                         </div>
                     </x-slot>
                 @elseif(auth()->user()->isPremium())
