@@ -1413,3 +1413,22 @@ body .sp-preview {
 .form-control .color {
     padding: 2px 4px;
 }
+
+.vertical-input-group .form-control {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.vertical-input-group .form-control:first-of-type {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.vertical-input-group .form-control:last-of-type {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.vertical-input-group .form-control:not(:last-of-type):not(:first-of-type) {
+    border-radius: 0;
+}
+.vertical-input-group .form-control:not(:first-of-type) {
+    border-top: 0;
+}

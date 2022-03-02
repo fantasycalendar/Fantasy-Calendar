@@ -260,7 +260,7 @@
                                             </div>
                                         </div>
 
-                                        <div class='row no-gutters mb-1'>
+                                        <div class='row no-gutters mb-2'>
                                             <div class='col-6 pr-1'>
                                                 <input type='number' min='1' step="1" class='form-control small-input' :disabled="!timespan.week" :value="timespan.week?.length" @change="numberWeekdaysChanged($event, timespan)"/>
                                             </div>
@@ -269,8 +269,8 @@
                                             </div>
                                         </div>
 
-                                        <div class='row no-gutters border'>
-                                            <div class='week_list col-12 p-1'>
+                                        <div class='row no-gutters mb-2'>
+                                            <div class='col-12 vertical-input-group'>
                                                 <template x-for="weekday in (timespan.week ?? [])">
                                                     <input type='text' class='form-control internal-list-name' x-model="weekday"/>
                                                 </template>
