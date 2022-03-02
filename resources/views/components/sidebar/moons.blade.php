@@ -24,7 +24,6 @@
                 init(){
                     this.moons.forEach(moon => {
                         moon.cycle_rounding = moon.cycle_rounding || 'round';
-                        console.log(moon.custom_cycle)
                     })
                 },
 
