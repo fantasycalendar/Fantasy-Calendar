@@ -2,27 +2,27 @@
 
     <script lang="js">
 
-        function weekdayList($data){
+        function moonList($data){
 
             return {
 
                 weekdayName: "",
-                weekdays: $data.static_data.year_data.global_week,
+                moons: $data.static_data.moons,
                 deleting: null,
 
-                add(name){
-                    this.weekdays.push(name || `Weekday ${this.weekdays.length}`);
+                add(){
+
                 },
 
                 remove(index){
-                    this.weekdays.splice(index, 1);
+
                 }
             }
         }
 
     </script>
 
-    <div x-data="weekdayList($data)">
+    <div x-data="moonList($data)">
 
         <div class='row no-gutters mt-2 bold-text'>
             <div class="col">
