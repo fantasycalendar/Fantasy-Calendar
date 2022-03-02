@@ -33,7 +33,6 @@
                 },
 
                 toggleWeek(timespan){
-
                     if(timespan.week){
                         delete timespan.week;
                     }else{
