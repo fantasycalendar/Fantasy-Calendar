@@ -2,19 +2,19 @@
 
 namespace App\View\Components\Sidebar;
 
-use App\Calendar;
 use Illuminate\View\Component;
 
-class Timespans extends Component
+class Moons extends Component
 {
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct(
-        public Calendar $calendar
-    ){}
+    public function __construct()
+    {
+        //
+    }
 
     /**
      * Get the view / contents that represent the component.
@@ -23,6 +23,6 @@ class Timespans extends Component
      */
     public function render()
     {
-        return view('components.sidebar.timespans');
+        return view('components.sidebar.moons');
     }
 }

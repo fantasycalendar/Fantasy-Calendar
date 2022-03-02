@@ -443,62 +443,9 @@
 		<!----------------- TIMESPANS ------------------>
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card settings-timespans step-3-step'>
-
-			<input id="collapsible_timespans" class="toggle" type="checkbox">
-			<label for="collapsible_timespans" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-calendar-alt"></i> Months <a target="_blank" data-pt-position="right" data-pt-title='More Info: Months & Intercalaries' href='{{ helplink('months') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-			<div class="collapsible-content card-body">
-
-				@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-
-					<ul class="list-group">
-
-						@php
-						$timespans = Arr::get($calendar->static_data, 'year_data.timespans');
-						@endphp
-
-						@foreach ($timespans as $timespan)
-							<li class="list-group-item">
-								<div class="d-flex justify-content-between align-items-center">
-									<strong>{{ $timespan['name'] }}</strong>
-								</div>
-								@if($timespan['interval'] > 1)
-								<div class="d-flex justify-content-start align-items-center mt-2">
-									<div class='mr-4'>
-										Interval: {{ $timespan['interval'] }}
-									</div>
-									<div>
-										Offset: {{ $timespan['offset'] }}
-									</div>
-								</div>
-								@endif
-								@if(Arr::get($timespan, 'week'))
-								<div class="mt-2">
-									Custom week:
-									<ul>
-									@foreach ($timespan['week'] as $weekday)
-										<li style="list-style-type: circle; font-size:0.8rem;">{{ $weekday }}</li>
-									@endforeach
-									</ul>
-								</div>
-								@endif
-							</li>
-						@endforeach
-
-					</ul>
-
-					<p class="mb-0 mt-3"><a onclick="linked_popup();" href='#'>Why can't I edit the months?</a></p>
-
-				@else
-
-                    <x-sidebar.timespans></x-sidebar.timespans>
-
-				@endif
-
-			</div>
+        <x-sidebar.timespans :calendar="$calendar"></x-sidebar.timespans>
 
 
-		</div>
 
 
 
