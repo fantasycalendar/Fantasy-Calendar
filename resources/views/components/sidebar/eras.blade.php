@@ -45,10 +45,17 @@
                 },
 
                 sortErasByDate(){
+                    // Map each expanded index to the era it represents
+                    const expanded = Object.entries(clone(this.expanded)).map(entry => [entry[0], this.eras[entry[0]]])
+
+                    // Sort the eras by year, month, and day, with starting eras always coming first
                     this.eras.sort((a, b) => {
                         if(a.settings.starting_era) return -1;
                         return ((a.date.year+1000) - (b.date.year+1000)) - ((a.date.timespan+100) - (b.date.timespan+100)) - (a.date.day - b.date.day);
                     });
+
+                    // Map each era back to its new index so that the right era remains expanded
+                    this.expanded = Object.fromEntries(expanded.map(entry => [this.eras.indexOf(entry[1]), true]));
                 },
 
                 editEventDescription(era){
