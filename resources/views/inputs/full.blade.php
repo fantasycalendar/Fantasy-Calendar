@@ -533,39 +533,7 @@
 		<!------------------- MOONS -------------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card settings-moons'>
-			<input id="collapsible_moon" class="toggle" type="checkbox">
-			<label for="collapsible_moon" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-moon"></i> Moons <a target="_blank" data-pt-position="right" data-pt-title='More Info: Moons' href='{{ helplink('moons') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-			<div class="collapsible-content card-body">
-
-				<div class='row bold-text'>
-					<div class="col">
-						New moon:
-					</div>
-				</div>
-
-				<div class='add_inputs moon'>
-					<div class='row no-gutters'>
-						<div class='col'>
-							<input type='text' class='form-control name protip' data-pt-position="top" data-pt-title="The moon's name." id='moon_name_input' placeholder='Moon name'>
-						</div>
-						<div class='col-auto'>
-							<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
-						</div>
-					</div>
-					<div class='row no-gutters'>
-						<div class='col-6'>
-							<input type='number' class='form-control cycle protip' data-pt-position="top" data-pt-title='How many days it takes for this moon go from Full Moon to the next Full Moon.'  min='1' id='moon_cycle_input' placeholder='Cycle'>
-						</div>
-						<div class='col-6'>
-							<input type='number' class='form-control shift protip' data-pt-position="top" data-pt-title='This is how many days the cycle is offset by.' id='moon_shift_input' placeholder='Shift'>
-						</div>
-					</div>
-				</div>
-				<div class='sortable' id='moon_list'></div>
-			</div>
-		</div>
-
+        <x-sidebar.moons :calendar="$calendar"></x-sidebar.moons>
 
 
 		<!---------------------------------------------->

@@ -127,6 +127,7 @@
         return {
             static_data: {{ Illuminate\Support\Js::from($calendar->static_data) }},
             dynamic_data: {{ Illuminate\Support\Js::from($calendar->dynamic_data) }},
+            error_messages: [],
         }
     }
 
