@@ -20,26 +20,30 @@
                         offset: 0,
                         names: [ "Name 1" ]
                     })
+                    window.dispatchEvent(new CustomEvent('added-cycle', { detail: { cycle: this.cycles[this.cycles.length-1] } }));
                 },
 
                 remove(index){
                     this.cycles.splice(index, 1);
+                    window.dispatchEvent(new CustomEvent('removed-cycle', { detail: { index } }));
                 },
 
-                numberCycleNamesChanged($event, cycle){
+                numberCycleNamesChanged($event, cycle, index){
                     const numNames = Number($event.target.value);
+
                     if(numNames > cycle.names.length){
                         // Create an array
                         const newWeekdays = Array.from(Array(numNames - cycle.names.length).keys())
                             .map(num => `Name ${cycle.names.length + num + 1}`);
-                        cycle.names = cycle.names.concat(newWeekdays);
-                    }else{
-                        cycle.names = cycle.names.slice(0, (cycle.names.length - numNames)*-1);
+                        return this.setCycleNames({ index, names: cycle.names.concat(newWeekdays) });
                     }
+
+                    return this.setCycleNames({ index, names: cycle.names.slice(0, (cycle.names.length - numNames)*-1) });
                 },
 
                 setCycleNames({ index, names }={}){
                     this.cycles[index].names = names;
+                    window.dispatchEvent(new CustomEvent('updated-cycle-names', { detail: { cycle: this.cycles[index] } }));
                 },
 
                 quickAddNames(cycle){
@@ -93,6 +97,8 @@
 
     <div
         x-data="cycleSection($data)"
+        @add-cycle.window="add($event.detail)"
+        @remove-cycle.window="add($event.detail.index)"
         @set-cycle-names.window="setCycleNames($event.detail)"
     >
 
@@ -178,7 +184,7 @@
 
                         <div class='row no-gutters my-2'>
                             <div class='col-6 pl-0 pr-1'>
-                                <input type='number' step="1.0" class='form-control' :value='cycle.names.length' @input="numberCycleNamesChanged($event, cycle)"/>
+                                <input type='number' step="1.0" class='form-control' :value='cycle.names.length' @input="numberCycleNamesChanged($event, cycle, index)"/>
                             </div>
                             <div class='col-6 pl-1 pr-0'>
                                 <button type='button' class='full btn btn-primary' @click="quickAddNames(cycle)">Quick add</button>

@@ -47,12 +47,12 @@
                 </div>
             </div>
 
-            <div class='weather_inputs'>
+            <div x-show="settings.enable_weather">
 
-                <div class='row no-gutters my-2 small-text'>
-                    Custom weather can be configured in locations.
+                <div class='row no-gutters my-2 small-text warning'>
+                    <i class="col-auto px-0 mr-2 fas fa-exclamation-circle" style="line-height:1.5;"></i>
+                    <div class='col px-0'>Custom weather can be configured in locations.</div>
                 </div>
-
 
                 <div class='row my-2'>
                     <div class='col'>
