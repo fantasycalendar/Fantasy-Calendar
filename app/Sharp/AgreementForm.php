@@ -52,7 +52,7 @@ class AgreementForm extends SharpForm
      *
      * @return void
      */
-    public function buildFormFields(): void
+    public function buildFormFields(FieldsContainer $formFields): void
     {
         $this->addField(
             SharpFormMarkdownField::make('content')
@@ -68,7 +68,7 @@ class AgreementForm extends SharpForm
      *
      * @return void
      */
-    public function buildFormLayout(): void
+    public function buildFormLayout(FormLayout $formLayout): void
     {
         $this->addColumn(9, function(FormLayoutColumn $column) {
             $column->withSingleField('content');

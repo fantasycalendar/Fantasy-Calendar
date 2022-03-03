@@ -3,10 +3,11 @@
 namespace App\Sharp;
 
 use App\User;
-use App\Sharp\UserMigratedFilter;
-use Code16\Sharp\EntityList\Containers\EntityListDataContainer;
-use Code16\Sharp\EntityList\EntityListQueryParams;
+use Code16\Sharp\EntityList\Fields\EntityListField;
+use Code16\Sharp\EntityList\Fields\EntityListFieldsContainer;
+use Code16\Sharp\EntityList\Fields\EntityListFieldsLayout;
 use Code16\Sharp\EntityList\SharpEntityList;
+use Illuminate\Contracts\Support\Arrayable;
 
 class UserList extends SharpEntityList
 {
@@ -15,29 +16,29 @@ class UserList extends SharpEntityList
     *
     * @return void
     */
-    public function buildListDataContainers(): void
+    public function buildListFields(EntityListFieldsContainer $fieldsContainer): void
     {
-        $this->addDataContainer(
-            EntityListDataContainer::make('username')
+        $fieldsContainer->addField(
+            EntityListField::make('username')
                 ->setLabel('Username')
                 ->setSortable()
-        )->addDataContainer(
-            EntityListDataContainer::make('email')
+        )->addField(
+            EntityListField::make('email')
                 ->setLabel('Email Address')
                 ->setSortable()
-        )->addDataContainer(
-            EntityListDataContainer::make('permissions')
+        )->addField(
+            EntityListField::make('permissions')
                 ->setLabel('User permissions')
-        )->addDataContainer(
-            EntityListDataContainer::make('beta_authorised')
+        )->addField(
+            EntityListField::make('beta_authorised')
                 ->setLabel('Beta Access')
                 ->setSortable()
-        )->addDataContainer(
-            EntityListDataContainer::make('created_at')
+        )->addField(
+            EntityListField::make('created_at')
                 ->setLabel('Created At')
                 ->setSortable()
-        )->addDataContainer(
-            EntityListDataContainer::make('email_verified_at')
+        )->addField(
+            EntityListField::make('email_verified_at')
                 ->setLabel("Email verified")
         );
     }
@@ -48,14 +49,29 @@ class UserList extends SharpEntityList
     * @return void
     */
 
-    public function buildListLayout(): void
+    public function buildListLayout(EntityListFieldsLayout $fieldsLayout): void
     {
-        $this->addColumn('username', 2, 6);
-        $this->addColumn('email', 4, 6);
-        $this->addColumn('permissions', 1, 6);
-        $this->addColumn('beta_authorised', 1,6);
-        $this->addColumn('created_at', 2,6);
-        $this->addColumn('email_verified_at', 2, 6);
+        $fieldsLayout->addColumn('username', 2)
+                     ->addColumn('email', 4)
+                     ->addColumn('permissions', 1)
+                     ->addColumn('beta_authorised', 1)
+                     ->addColumn('created_at', 2)
+                     ->addColumn('email_verified_at', 2);
+    }
+
+    public function getInstanceCommands(): ?array
+    {
+        return [
+            LoginAsUser::class,
+            SendUserResetPassword::class,
+        ];
+    }
+
+    public function getFilters(): ?array
+    {
+        return [
+            UserMigratedFilter::class,
+        ];
     }
 
     /**
@@ -65,38 +81,34 @@ class UserList extends SharpEntityList
     */
     public function buildListConfig(): void
     {
-        $this->setInstanceIdAttribute('id')
-            ->setSearchable()
-            ->setDefaultSort('created_at', 'desc')
-            ->setPaginated()
-            ->addInstanceCommand("impersonate", LoginAsUser::class)
-            ->addInstanceCommand("reset_password", SendUserResetPassword::class)
-            ->addFilter("migrated", UserMigratedFilter::class);
+        $this->configureInstanceIdAttribute('id')
+            ->configureSearchable()
+            ->configureDefaultSort('created_at', 'desc')
+            ->configurePaginated();
     }
 
     /**
     * Retrieve all rows data as array.
     *
-    * @param EntityListQueryParams $params
     * @return array
     */
-    public function getListData(EntityListQueryParams $params)
+    public function getListData(): array|Arrayable
     {
         $user_model = User::query();
 
-        if ($params->hasSearch()) {
-            foreach ($params->searchWords() as $word) {
+        if ($this->queryParams->hasSearch()) {
+            foreach ($this->queryParams->searchWords() as $word) {
                 $user_model->where('username', 'like', $word)
                         ->orWhere('email', 'like', $word);
             }
         }
 
-        if($params->filterFor("migrated")) {
+        if($this->queryParams->filterFor("migrated")) {
             $user_model->whereNotNull('agreed_at');
         }
 
-        if($params->sortedBy()) {
-            $user_model->orderBy($params->sortedBy(), $params->sortedDir());
+        if($this->queryParams->sortedBy()) {
+            $user_model->orderBy($this->queryParams->sortedBy(), $this->queryParams->sortedDir());
         }
 
         return $this->setCustomTransformer(

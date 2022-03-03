@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Policy;
-use GrahamCampbell\Markdown\Facades\Markdown;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
 
 class PolicyController extends Controller
 {
@@ -16,7 +16,7 @@ class PolicyController extends Controller
             'title' => "Privacy and Cookies Policy",
             'date' => sprintf("Effective date: %s", $policy->in_effect_at->format('jS \\of F, Y')),
             'version' => $policy->id,
-            'markdown' => Markdown::convertToHtml($policy->content),
+            'markdown' => (new GithubFlavoredMarkdownConverter())->convert($policy->content),
         ]);
     }
 }

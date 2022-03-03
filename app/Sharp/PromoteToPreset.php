@@ -26,6 +26,6 @@ class PromoteToPreset extends InstanceCommand
     {
         $results = ConvertCalendarToPreset::dispatchNow(Calendar::find($instanceId));
 
-        return $this->link('/sharp/form/presets/' . $results->id);
+        return $this->link('/sharp/s-list/presets/s-show/presets/' . $results->id . '/s-form/presets/' . $results->id);
     }
 }

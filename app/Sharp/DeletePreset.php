@@ -24,6 +24,6 @@ class DeletePreset extends InstanceCommand
     {
         $preset = Preset::findOrFail($instanceId);
         $preset->delete();
-        return $this->link('/sharp/list/presets');
+        return $this->link('/sharp/s-list/presets');
     }
 }

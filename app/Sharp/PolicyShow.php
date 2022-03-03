@@ -34,7 +34,7 @@ class PolicyShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowFields(): void
+    public function buildShowFields(FieldsContainer $showFields): void
     {
          $this->addField(
             SharpShowTextField::make("content")
@@ -46,7 +46,7 @@ class PolicyShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowLayout(): void
+    public function buildShowLayout(ShowLayout $showLayout): void
     {
          $this->addSection('content', function(ShowLayoutSection $section) {
               $section->addColumn(12, function(ShowLayoutColumn $column) {
