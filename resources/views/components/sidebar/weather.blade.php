@@ -92,7 +92,6 @@
                     </div>
                 </div>
 
-
                 <div class='row no-gutters'>
                     <div class='col-auto'>Weather generation seed:</div>
                 </div>

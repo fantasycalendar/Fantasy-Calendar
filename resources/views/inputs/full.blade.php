@@ -473,31 +473,7 @@
 		<!------------------- CYCLES ------------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card settings-cycles'>
-			<input id="collapsible_cycles" class="toggle" type="checkbox">
-			<label for="collapsible_cycles" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-redo"></i> Cycles <a target="_blank" data-pt-position="right" data-pt-title='More Info: Cycles' href='{{ helplink('cycles') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-			<div class="collapsible-content card-body">
-
-				<div class='row no-gutters bold-text'>
-					Cycle format:
-				</div>
-				<div class="row no-gutters">
-					<input type='text' id='cycle_format' class='form-control name static_input protip' data='cycles' fc-index='format' placeholder='Cycle &lcub;&lcub;1&rcub;&rcub;' data-pt-position="right" data-pt-title="This is the template for the cycles you have. Each cycle part has a set of names which you can add to the top of the calendar. Add one with this field empty to see how this works!">
-				</div>
-
-				<div class='row no-gutters my-2'>
-					<div class='separator'></div>
-				</div>
-
-				<div class='add_inputs cycle row no-gutters'>
-					<input type='button' value='Add new cycle' class='btn btn-primary full add'>
-				</div>
-
-				<div class='sortable' id='cycle_sortable'></div>
-
-			</div>
-
-		</div>
+        <x-sidebar.cycles :calendar="$calendar"></x-sidebar.cycles>
 
 		<!---------------------------------------------->
 		<!----------------- CATEGORIES ----------------->
