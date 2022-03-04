@@ -49,7 +49,7 @@
     title="Event Categories"
     icon="fas fa-th-list"
     tooltip-title="More Info: Event Categories"
-    helplink="cycles"
+    helplink="event_categories"
 >
 
     <div x-data="eventCategorySection($data)">
@@ -67,7 +67,6 @@
                 <button type='button' class='btn btn-primary' @click="add(newCategoryName)"><i class="fa fa-plus"></i></button>
             </div>
         </div>
-
 
         <div class="row sortable-header no-gutters align-items-center">
             <div x-show="!reordering" @click="reordering = true" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>

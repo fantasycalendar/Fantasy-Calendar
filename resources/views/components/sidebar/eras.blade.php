@@ -185,7 +185,7 @@
 
                             <div class='row my-2' x-show="era.settings.show_as_event">
                                 <div class='col'>
-                                    <div class='btn btn-outline-primary full era_description html_edit' @click="editEventDescription(era)">Edit event description</div>
+                                    <div class='btn btn-outline-accent full era_description html_edit' @click="editEventDescription(era)">Edit event description</div>
                                 </div>
                             </div>
 

@@ -123,29 +123,7 @@
 		<!------------------- EVENTS ------------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card settings-events'>
-			<input id="collapsible_events" class="toggle" type="checkbox">
-			<label for="collapsible_events" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-calendar-check"></i> Events <a target="_blank" data-pt-position="right" data-pt-title='More Info: Events' href='{{ helplink('events') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-			<div class="collapsible-content card-body">
-
-				<div class='row no-gutters bold-text'>
-					<div class='col'>
-						New event:
-					</div>
-				</div>
-
-				<div class='add_inputs events row no-gutters'>
-					<div class="col">
-						<input type='text' class='form-control name' id='event_name_input' placeholder='Event name'>
-					</div>
-					<div class="col-auto">
-						<button type='button' class='btn btn-primary add' @click="$dispatch('event-editor-modal-new-event', { epoch: dynamic_data.epoch })"><i class="fa fa-plus"></i></button>
-					</div>
-				</div>
-
-				<div class='sortable list-group' id='events_sortable'></div>
-			</div>
-		</div>
+        <x-sidebar.events></x-sidebar.events>
 
 
 		<!---------------------------------------------->
