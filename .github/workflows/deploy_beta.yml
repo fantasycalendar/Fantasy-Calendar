@@ -10,6 +10,18 @@ jobs:
     name: Deploy commit to Beta
     if: ${{ (github.event_name != 'release' && github.event.action != 'created') && (github.event_name == 'push' && contains(github.event.head_commit.message, '--BETA') && (github.event.head_commit.author.username == 'V13Axel' || github.event.head_commit.author.username == 'Haxxer')) || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_DATABASE: test_database
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_USER: admin
+          MYSQL_PASSWORD: rootpass
+          MYSQL_ROOT_PASSWORD: rootpass
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@main
@@ -22,6 +34,13 @@ jobs:
       - uses: "shivammathur/setup-php@v2"
         with:
           php-version: "latest"
+      - name: Create env file
+        run: |
+          php -r "file_exists('.env') || copy('.env.github', '.env');"
+      - name: Generate app_key
+        run: php artisan key:generate
+      - name: Run unit tests
+        run: php artisan test
       - uses: "ramsey/composer-install@v2"
         with:
           composer-options: "--prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs"
@@ -31,11 +50,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - name: Create env file
-        run: |
-          cat > .env << EOF
-          APP_ENV=production
-          EOF
       - name: Install NPM dependencies
         run: npm install
       - name: Build production assets

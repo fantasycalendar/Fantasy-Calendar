@@ -66,6 +66,27 @@ return [
             ]) : [],
         ],
 
+        'testing' => [
+            'driver' => 'mysql',
+            'host' => env('TESTING_DB_HOST', '127.0.0.1'),
+            'port' => env('TESTING_DB_PORT', env('DB_PORT', '3306')),
+            'database' => env('TESTING_DB_DATABASE', 'fantasy-calendar-testing'),
+            'username' => env('TESTING_DB_USERNAME', env('DB_USERNAME','forge')),
+            'password' => env('TESTING_DB_PASSWORD', env('DB_PASSWORD','')),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'wait_timeout'  =>  '10',
+            'interactive_timeout'   => '10',
+            'net_read_timeout'  => '10',
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),

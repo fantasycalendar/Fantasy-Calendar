@@ -1,6 +1,7 @@
 <?php
 namespace App\Console\Commands;
 
+use App\Calendar;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -37,15 +38,21 @@ class DbCreate extends Command
      */
     public function handle()
     {
-        $schemaName = $this->argument('name') ?: config("database.connections.mysql.database");
+        if(config('database.default') !== 'mysql') {
+            file_exists(database_path('schema/' . config('database.default') . '-schema.dump')) && unlink(database_path('schema/' . config('database.default') . '-schema.dump'));
+            copy(database_path('schema/mysql-schema.dump'), database_path('schema/' . config('database.default') . '-schema.dump'));
+        }
 
-        config(["database.connections.mysql.database" => null]);
+
+        $schemaName = $this->argument('name') ?: config("database.connections.".config('database.default').".database");
+
+        config(["database.connections.".config('database.default').".database" => null]);
 
         $query = "CREATE OR REPLACE DATABASE `$schemaName`;";
 
         DB::statement($query);
 
-        config(["database.connections.mysql.database" => $schemaName]);
+        config(["database.connections.".config('database.default').".database" => $schemaName]);
 
     }
 }
