@@ -137,47 +137,7 @@
 			<!---------------------------------------------->
 			<!--------------- User Management -------------->
 			<!---------------------------------------------->
-			<div class='wrap-collapsible card settings-users'>
-				<input id="collapsible_users" class="toggle" type="checkbox">
-				<label for="collapsible_users" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-user"></i> User Management <a target="_blank" data-pt-position="right" data-pt-title='More Info: User Management' href='{{ helplink('user_management') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-				<div class="collapsible-content card-body">
-
-					@if(Auth::user()->can('add-users', $calendar))
-
-						<div class='row no-gutters'>
-							<p class='m-0'>Invite your friends to collaborate!</p>
-                            <p><small>Once they accept your invite, you'll be able to assign them a role.</small></p>
-						</div>
-
-						<div class='row no-gutters my-1'>
-							<div class="col-md">
-								<input type='text' class='form-control' id='email_input' placeholder='Email'>
-							</div>
-							<div class="col-md-auto">
-								<button type='button' class='btn full btn-primary' id='btn_send_invite'>Send Invite</button>
-							</div>
-						</div>
-						<div class='row no-gutters mb-2 hidden'>
-							<p class='m-0 email_text alert alert-success'></p>
-						</div>
-
-						<div class='sortable' id='calendar_user_list'></div>
-
-						<div class='row no-gutters my-1'>
-							<button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_users'>Refresh</button>
-						</div>
-
-					@else
-
-						<div class='row no-gutters my-1'>
-							<p>Invite your friends to collaborate on this calendar!</p>
-							<p class='m-0'><a href="{{ route('subscription.pricing') }}" target="_blank">Subscribe now</a> to unlock this feature!</p>
-						</div>
-
-					@endif
-
-				</div>
-			</div>
+            <x-sidebar.user-management :calendar="$calendar"></x-sidebar.user-management>
 
 		@endif
 
