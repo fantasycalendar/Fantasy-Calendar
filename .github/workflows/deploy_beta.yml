@@ -37,6 +37,7 @@ jobs:
       - uses: "shivammathur/setup-php@v2"
         with:
           php-version: "latest"
+      - uses: "ramsey/composer-install@v2"
       - name: Create env file
         run: |
           php -r "file_exists('.env') || copy('.env.github', '.env');"
