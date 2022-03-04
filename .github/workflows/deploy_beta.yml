@@ -47,19 +47,19 @@ jobs:
           php -r "file_exists('.env') || copy('.env.github', '.env');"
       - name: Generate app_key
         run: php artisan key:generate
-#      - name: Run unit tests
-#        run: php artisan test
-#      - name: Actions Status Discord
-#        if: ${{ failure() }}
-#        uses: sarisia/actions-status-discord@v1.5.2
-#        with:
-#          webhook: ${{ secrets.DISCORD_FC_BETA_WEBHOOK }}
-#          description: 'Beta deployment unit tests failed'
-#          username: "Github"
-#          avatar_url: "https://beta.fantasy-calendar.com//resources/header_logo.png"
-#          title: "Deploy failure"
-#          color: 0xdc2626
-#          nodetail: true
+      - name: Run unit tests
+        run: php artisan test
+      - name: Actions Status Discord
+        if: ${{ failure() }}
+        uses: sarisia/actions-status-discord@v1.5.2
+        with:
+          webhook: ${{ secrets.DISCORD_FC_BETA_WEBHOOK }}
+          description: 'Beta deployment unit tests failed'
+          username: "Github"
+          avatar_url: "https://beta.fantasy-calendar.com//resources/header_logo.png"
+          title: "Deploy failure"
+          color: 0xdc2626
+          nodetail: true
       - uses: "ramsey/composer-install@v2"
         with:
           composer-options: "--prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs"
