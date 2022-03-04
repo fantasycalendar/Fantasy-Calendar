@@ -22,7 +22,7 @@ jobs:
       - name: Run composer
         uses: php-actions/composer@v6
         with:
-          action: 'install -oa --ignore-platform-reqs --no-dev'
+          command: 'install -oa --ignore-platform-reqs --no-dev'
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
