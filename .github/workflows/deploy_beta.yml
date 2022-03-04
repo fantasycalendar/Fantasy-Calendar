@@ -19,10 +19,12 @@ jobs:
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
-      - name: Run composer
-        uses: php-actions/composer@v6
+      - uses: "shivammathur/setup-php@v2"
         with:
-          command: 'install -oa --ignore-platform-reqs --no-dev'
+          php-version: "latest"
+      - uses: "ramsey/composer-install@v2"
+        with:
+          composer-options: "--prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs"
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
