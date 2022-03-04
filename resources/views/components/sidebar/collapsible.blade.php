@@ -8,9 +8,9 @@
 
 <div {{ $attributes->merge([
     'class' => 'wrap-collapsible card'
-]) }}>
+]) }} x-data="{ opened: false }">
 
-    <input id="collapsible_{{ $name }}" class="toggle" type="checkbox">
+    <input id="collapsible_{{ $name }}" class="toggle" type="checkbox" x-model="opened">
     <label for="collapsible_{{ $name }}" class="lbl-toggle py-2 px-3 card-header">
         <i class="mr-2 {{ $icon }}"></i>
         {{ $title }}

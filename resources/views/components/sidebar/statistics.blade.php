@@ -35,17 +35,19 @@
             <div class='col-7 bold-text'>
                 Avg. year length:
             </div>
-            <div class='col-5 align-left'>
+            <div class='col-5 text-right'>
                 <div class='detail-text' x-text="averageYearLength">
                 </div>
             </div>
         </div>
 
+        <hr class="my-1">
+
         <div class='row no-gutters'>
             <div class='col-7 bold-text'>
                 Avg. month length:
             </div>
-            <div class='col-5 align-left'>
+            <div class='col-5 text-right'>
                 <div class='detail-text' x-text="averageMonthLength">
                 </div>
             </div>
