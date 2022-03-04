@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mysql:
-        image: mysql:latest
+        image: mariadb:10.3
         env:
           MYSQL_DATABASE: test_database
           MYSQL_HOST: 127.0.0.1
