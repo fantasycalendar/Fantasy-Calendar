@@ -3,6 +3,8 @@
 @push('head')
     <script>
 
+    @include('calendar._loadcalendar');
+
     function sidebar() {
         return {
             static_data: {{ Illuminate\Support\Js::from($calendar->static_data) }},
@@ -69,7 +71,6 @@
     }
 
     $(document).ready(function() {
-        @include('calendar._loadcalendar')
         // preview_date = clone(dynamic_data);
         // preview_date.follow = true;
         // rebuild_calendar('calendar', dynamic_data);

@@ -90,7 +90,7 @@
     class="settings-cycles"
     name="cycles"
     title="Cycles"
-    icon="fas fas fa-redo"
+    icon="fas fa-redo"
     tooltip-title="More Info: Cycles"
     helplink="cycles"
 >
@@ -118,7 +118,7 @@
         </div>
 
 
-        <div class="row sortable-header timespan_sortable_header no-gutters align-items-center">
+        <div class="row sortable-header no-gutters align-items-center">
             <div x-show="!reordering" @click="reordering = true" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
             <div x-show="reordering" @click="reordering = false" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
         </div>
@@ -126,7 +126,7 @@
         <div class="sortable list-group">
             <template x-for="(cycle, index) in cycles">
 
-                <div class='sortable-container list-group-item cycle_inputs collapsed collapsible' x-bind:class="cycle.intercalary ? 'intercalary' : ''">
+                <div class='sortable-container list-group-item cycle_inputs collapsed collapsible'>
 
                     <div class='main-container' x-show="deleting !== cycle">
                         <i class='handle icon-reorder' x-show="reordering"></i>

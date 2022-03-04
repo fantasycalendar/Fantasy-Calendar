@@ -48,11 +48,13 @@
         <x-sidebar.clock :calendar="$calendar"></x-sidebar.clock>
 
 
+
 		<!---------------------------------------------->
 		<!------------------- WEEKDAYS ----------------->
 		<!---------------------------------------------->
 
         <x-sidebar.weekdays :calendar="$calendar"></x-sidebar.weekdays>
+
 
 		<!---------------------------------------------->
 		<!----------------- TIMESPANS ------------------>
@@ -67,11 +69,13 @@
 
         <x-sidebar.leap-days :calendar="$calendar"></x-sidebar.leap-days>
 
+
 		<!---------------------------------------------->
 		<!-------------------- ERAS -------------------->
 		<!---------------------------------------------->
 
         <x-sidebar.eras :calendar="$calendar"></x-sidebar.eras>
+
 
 		<!---------------------------------------------->
 		<!------------------- MOONS -------------------->
@@ -93,11 +97,13 @@
 
 		<x-sidebar.weather :calendar="$calendar"></x-sidebar.weather>
 
+
 		<!---------------------------------------------->
 		<!------------------ LOCATIONS ----------------->
 		<!---------------------------------------------->
 
         <x-sidebar.locations :calendar="$calendar"></x-sidebar.locations>
+
 
 		<!---------------------------------------------->
 		<!------------------- CYCLES ------------------->
@@ -105,43 +111,13 @@
 
         <x-sidebar.cycles :calendar="$calendar"></x-sidebar.cycles>
 
+
 		<!---------------------------------------------->
 		<!----------------- CATEGORIES ----------------->
 		<!---------------------------------------------->
 
-		<div class='wrap-collapsible card settings-categories'>
-			<input id="collapsible_categories" class="toggle" type="checkbox">
-			<label for="collapsible_categories" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-th-list"></i> Event Categories <a target="_blank" data-pt-position="right" data-pt-title='More Info: Event Categories' href='{{ helplink('event_categories') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-			<div class="collapsible-content card-body">
+        <x-sidebar.event-categories></x-sidebar.event-categories>
 
-				<div class='row no-gutters bold-text'>
-					<div class='col'>
-						New event category:
-					</div>
-				</div>
-				<div class='add_inputs event_categories row no-gutters'>
-					<div class="col">
-						<input type='text' class='form-control name' id='event_category_name_input' placeholder='Event category name'>
-					</div>
-					<div class="col-auto">
-						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
-					</div>
-				</div>
-
-                <div class='sortable list-group' id='event_category_list'></div>
-
-                <div class='row no-gutters my-2'>
-                    <div class='separator'></div>
-                </div>
-
-                <div class='row no-gutters bold-text'>
-                    <div class='col'>
-                       Default category:
-                        <select class='form-control event-category-list protip' data-pt-position="right" data-pt-title="This sets the category to be selected by default when a new event is created" id='default_event_category'></select>
-    		      	</div>
-                </div>
-            </div>
-		</div>
 
 		<!---------------------------------------------->
 		<!------------------- EVENTS ------------------->

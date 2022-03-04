@@ -30,7 +30,7 @@
                 },
 
                 get renderClock(){
-                    return this.clock.enabled && this.clock.render && Perms.user_can_see_clock();
+                    return this.clock.enabled && this.clock.render && window.Perms.user_can_see_clock();
                 },
 
                 init(){
