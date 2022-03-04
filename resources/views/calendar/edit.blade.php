@@ -7,11 +7,19 @@
         return {
             static_data: {{ Illuminate\Support\Js::from($calendar->static_data) }},
             dynamic_data: {{ Illuminate\Support\Js::from($calendar->dynamic_data) }},
+            preview_date: {{ Illuminate\Support\Js::from($calendar->dynamic_data) }},
             event_categories: {{ Illuminate\Support\Js::from($calendar->event_categories) }},
+
+            init(){
+                this.preview_date.follow = true;
+            },
 
             // I know, these should be on a calendar class - but we ain't got one.
             getTimespansInYear(year){
-                return this.static_data.year_data.timespans.filter(timespan => {
+                return this.static_data.year_data.timespans.map((timespan, index) => {
+                    timespan.index = index;
+                    return timespan;
+                }).filter(timespan => {
                     return IntervalsCollection.make(timespan).intersectsYear(year);
                 });
             },
