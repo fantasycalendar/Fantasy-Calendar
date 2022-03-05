@@ -20,13 +20,13 @@ export default class Calendar{
         });
     }
 
-    getDaysForTimespanInYear(timespan_index, year){
+    getDaysForTimespanInYear(year, timespan_index){
 
         const timespan = this.static_data.year_data.timespans[timespan_index];
 
         const timespanOccurrences = IntervalsCollection.make(timespan).occurrences(year, this.static_data.settings.year_zero_exists);
 
-        const numDays = this.static_data.year_data.leap_days.reduce((acc, leap_day) => {
+        const numDays = this.getLeapDaysForTimespan(timespan_index).reduce((acc, leap_day) => {
             return acc + IntervalsCollection.make(leap_day).intersectsYear(timespanOccurrences);
         }, timespan.length);
 
@@ -38,12 +38,17 @@ export default class Calendar{
 
         const timespan = this.static_data.year_data.timespans[timespan_index];
 
-        const numDays = this.static_data.year_data.leap_days.reduce((acc, leap_day) => {
+        const numDays = this.getLeapDaysForTimespan(timespan_index).reduce((acc, leap_day) => {
             return acc + (leap_day.interval === "1")
         }, timespan.length);
 
         return Array.from(Array(numDays).keys()).map(num => `Day ${num+1}`);
 
+    }
+
+    getLeapDaysForTimespan(index){
+        return this.static_data.year_data.leap_days
+            .filter(leap_day => leap_day.timespan === index || leap_day.timespan === index.toString());
     }
 
     getAverageYearLength(){

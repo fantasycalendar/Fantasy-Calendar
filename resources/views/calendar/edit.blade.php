@@ -15,7 +15,6 @@
     function sidebar() {
         return {
 
-            calendar: window.calendar,
             static_data: window.calendar.static_data,
             dynamic_data: window.calendar.dynamic_data,
             preview_date: window.calendar.preview_date,
