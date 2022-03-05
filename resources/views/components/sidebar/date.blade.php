@@ -168,6 +168,7 @@
     icon="fas fa-hourglass-half"
     tooltip-title="More Info: Date"
     helplink="current_date_and_time"
+    checked="true"
 >
 
     <div
@@ -203,64 +204,46 @@
 
             >
 
-                <div class='row'>
-                    <div class='input-group protip' data-pt-position='right' data-pt-title="The current year">
-                        <div class='input-group-prepend' x-show="hasButtons">
-                            <button type='button' class='btn btn-danger' @click="setYear(date.year-1)"><i class="icon-minus"></i></button>
+                <div class="row my-2 divide-x divide-gray-500">
+                    <div class="col-2">
+                        <div class="row text-center py-1">
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setDay(date.day - 1)" x-text="date.day - 1"></span>
                         </div>
-                        <input class='form-control' type='number' x-model="date.year">
-                        <div class='input-group-append' x-show="hasButtons">
-                            <button type='button' class='btn btn-success' @click="setYear(date.year+1)"><i class="icon-plus"></i></button>
+                        <div class="row text-center py-1">
+                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="date.day">
+                                <template x-for="(day, index) in days">
+                                    <option :selected="date.day === (index+1)" :value="index+1" x-text="day"></option>
+                                </template>
+                            </select>
                         </div>
-                    </div>
-                </div>
-
-                <div class='row mt-2'>
-                    <div class='input-group protip' data-pt-position='right' data-pt-title="The current month in the year">
-                        <div class='input-group-prepend' x-show="hasButtons">
-                            <button type='button' class='btn btn-danger' @click="setMonth(date.timespan-1)"><i class="icon-minus"></i></button>
-                        </div>
-                        <select class='form-control' x-model.number="date.timespan">
-                            <template x-for="(timespan, index) in timespans">
-                                <option :selected="date.timespan === index" :value="index" x-text="timespan.name"></option>
-                            </template>
-                        </select>
-                        <div class='input-group-append' x-show="hasButtons">
-                            <button type='button' class='btn btn-success' @click="setMonth(date.timespan+1)"><i class="icon-plus"></i></button>
+                        <div class="row text-center py-1">
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setDay(date.day + 1)" x-text="date.day + 1"></span>
                         </div>
                     </div>
-                </div>
-
-                <div class='row mt-2'>
-                    <div class='input-group protip' data-pt-position='right' data-pt-title="The current day in the month">
-                        <div class='input-group-prepend' x-show="hasButtons">
-                            <button type='button' class='btn btn-danger' @click="setDay(date.day-1)"><i class="icon-minus"></i></button>
+                    <div class="col-8">
+                        <div class="row text-center py-1">
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(date.timespan - 1)">Prev. month</span>
                         </div>
-                        <select class='form-control' x-model.number="date.day">
-                            <template x-for="(day, index) in days">
-                                <option :selected="date.day === (index+1)" :value="index+1" x-text="day"></option>
-                            </template>
-                        </select>
-                        <div class='input-group-append' x-show="hasButtons">
-                            <button type='button' class='btn btn-success' @click="setDay(date.day+1)"><i class="icon-plus"></i></button>
+                        <div class="row text-center py-1">
+                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="date.timespan">
+                                <template x-for="(timespan, index) in timespans">
+                                    <option :selected="date.timespan === index" :value="index" x-text="timespan.name"></option>
+                                </template>
+                            </select>
+                        </div>
+                        <div class="row text-center py-1">
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(date.timespan + 1)">Next month</span>
                         </div>
                     </div>
-                </div>
-
-                <div class='row mt-2 clock_inputs' x-show="static_data.clock.enabled">
-                    <div class='input-group protip'>
-                        <div class='input-group-prepend' x-show="hasButtons">
-                            <button type='button' class='btn small-text btn-danger' @click="setHour(date.hour-1)">1hr</button>
-                            <button type='button' class='btn small-text border-left btn-danger' @click="setMinute(date.minute-30)">30m</button>
+                    <div class="col-2">
+                        <div class="row text-center py-1">
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setYear(date.year - 1)" x-text="date.year - 1"></span>
                         </div>
-
-                        <input class='form-control form-control-sm text-right protip' type='number' x-model.number="date.hour" min="0" :max="clock.hours" @change="$dispatch('time-changed')" data-pt-position='top' data-pt-title="The current hour of day">
-                        <span class="px-1">:</span>
-                        <input class='form-control form-control-sm protip' type='number' x-model.number="date.minute" min="0" :max="clock.minutes" @change="$dispatch('time-changed')" data-pt-position='top' data-pt-title="The current minute of the hour">
-
-                        <div class='input-group-append' x-show="hasButtons">
-                            <button type='button' class='btn small-text btn-success' @click="setMinute(date.minute+30)">30m</button>
-                            <button type='button' class='btn small-text border-left btn-success' @click="setHour(date.hour+1)">1h</button>
+                        <div class="row text-center py-1">
+                            <input type="number" class='no-spinner appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center' x-model.number="date.year">
+                        </div>
+                        <div class="row text-center py-1">
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setYear(date.year + 1)" x-text="date.year + 1"></span>
                         </div>
                     </div>
                 </div>
@@ -279,53 +262,48 @@
                 @add-to-preview-date.window="addToDate($event.detail.data)"
             >
 
-                <div class='row mt-2'>
-
-                    <div class='input-group protip' data-pt-position='right' data-pt-title="The preview year">
-                        <div class='input-group-prepend' x-show="hasButtons">
-                            <button type='button' class='btn btn-danger' @click="setYear(date.year-1)"><i class="icon-minus"></i></button>
+                <div class="row my-2 divide-x divide-gray-500">
+                    <div class="col-2">
+                        <div class="row text-center py-1">
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setDay(date.day - 1)" x-text="date.day - 1"></span>
                         </div>
-                        <input class='form-control' type='number' x-model="date.year">
-                        <div class='input-group-append' x-show="hasButtons">
-                            <button type='button' class='btn btn-success' @click="setYear(date.year+1)"><i class="icon-plus"></i></button>
+                        <div class="row text-center py-1">
+                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="date.day">
+                                <template x-for="(day, index) in days">
+                                    <option :selected="date.day === (index+1)" :value="index+1" x-text="day"></option>
+                                </template>
+                            </select>
                         </div>
-                    </div>
-                </div>
-
-                <div class='row mt-2'>
-
-                    <div class='input-group protip' data-pt-position='right' data-pt-title="The preview month of the preview year">
-                        <div class='input-group-prepend' x-show="hasButtons">
-                            <button type='button' class='btn btn-danger' @click="setMonth(date.timespan-1)"><i class="icon-minus"></i></button>
-                        </div>
-                        <select class='form-control' x-model.number="date.timespan">
-                            <template x-for="(timespan, index) in timespans">
-                                <option :selected="date.timespan === index" :value="index" x-text="timespan.name"></option>
-                            </template>
-                        </select>
-                        <div class='input-group-append' x-show="hasButtons">
-                            <button type='button' class='btn btn-success' @click="setMonth(date.timespan+1)"><i class="icon-plus"></i></button>
+                        <div class="row text-center py-1">
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setDay(date.day + 1)" x-text="date.day + 1"></span>
                         </div>
                     </div>
-
-                </div>
-
-                <div class='row mt-2'>
-
-                    <div class='input-group protip' data-pt-position='right' data-pt-title="The current day of the preview month">
-                        <div class='input-group-prepend' x-show="hasButtons">
-                            <button type='button' class='btn btn-danger' @click="setDay(date.day-1)"><i class="icon-minus"></i></button>
+                    <div class="col-8">
+                        <div class="row text-center py-1">
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(date.timespan - 1)">Prev. month</span>
                         </div>
-                        <select class='form-control' x-model.number="date.day">
-                            <template x-for="(day, index) in days">
-                                <option :selected="date.day === (index+1)" :value="index+1" x-text="day"></option>
-                            </template>
-                        </select>
-                        <div class='input-group-append' x-show="hasButtons">
-                            <button type='button' class='btn btn-success' @click="setDay(date.day+1)"><i class="icon-plus"></i></button>
+                        <div class="row text-center py-1">
+                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="date.timespan">
+                                <template x-for="(timespan, index) in timespans">
+                                    <option :selected="date.timespan === index" :value="index" x-text="timespan.name"></option>
+                                </template>
+                            </select>
+                        </div>
+                        <div class="row text-center py-1">
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(date.timespan + 1)">Next month</span>
                         </div>
                     </div>
-
+                    <div class="col-2">
+                        <div class="row text-center py-1">
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setYear(date.year - 1)" x-text="date.year - 1"></span>
+                        </div>
+                        <div class="row text-center py-1">
+                            <input type="number" class='no-spinner appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center' x-model.number="date.year">
+                        </div>
+                        <div class="row text-center py-1">
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setYear(date.year + 1)" x-text="date.year + 1"></span>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -342,28 +320,30 @@
 
         <div class='wrap-collapsible card full date_inputs'>
             <input class="toggle" type="checkbox" id="collapsible_add_units">
-            <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed units to calendar dates</label>
+            <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed datetime units</label>
             <div class="collapsible-content container card-body">
 
-                <div class='row no-gutters mx-0'>
-                    <input type='number' class="form-control form-control-sm full" x-model.number="fixedUnits.years" placeholder="Years">
-                    <input type='number' class="form-control form-control-sm full" x-model.number="fixedUnits.months" placeholder="Months">
-                    <input type='number' class="form-control form-control-sm full" x-model.number="fixedUnits.days" placeholder="Days">
+                <div class='input-group no-gutters mx-0'>
+                    <input type='number' class="form-control form-control-sm" x-model.number="fixedUnits.years" placeholder="Years">
+                    <input type='number' class="form-control form-control-sm" x-model.number="fixedUnits.months" placeholder="Months">
+                    <input type='number' class="form-control form-control-sm" x-model.number="fixedUnits.days" placeholder="Days">
                 </div>
-                <div class='row no-gutters mx-0 my-2' x-show="static_data.clock.enabled">
-                    <div class='col-md-6 col-sm-12'>
-                        <input type='number' class="form-control form-control-sm full" x-model.number="fixedUnits.hours" placeholder="Hours">
-                    </div>
-                    <div class='col-md-6 col-sm-12'>
-                        <input type='number' class="form-control form-control-sm full" x-model.number="fixedUnits.minutes" placeholder="Minutes">
-                    </div>
+                <div class='input-group no-gutters mx-0 my-2' x-show="static_data.clock.enabled">
+                    <input type='number' class="form-control form-control-sm" x-model.number="fixedUnits.hours" placeholder="Hours">
+                    <input type='number' class="form-control form-control-sm" x-model.number="fixedUnits.minutes" placeholder="Minutes">
                 </div>
 
-                @if(request()->is('calendars/*/edit') && $calendar->parent == null)
-                    <button type="button" step="1.0" class="btn btn-primary btn-block my-2" @click="$dispatch('add-to-current-date', { data: fixedUnits })">To current date</button>
-                @endif
-                <button type="button" step="1.0" class="btn btn-secondary btn-block my-2" @click="$dispatch('add-to-preview-date', { data: fixedUnits })">To preview date</button>
+                <div class="grid grid-cols-2 gap-2">
+                    @if(request()->is('calendars/*/edit') && $calendar->parent == null)
+                        <div>
+                            <button type="button" step="1.0" class="btn btn-primary btn-block my-2" @click="$dispatch('add-to-current-date', { data: fixedUnits })">To current</button>
+                        </div>
+                    @endif
+                    <div>
+                        <button type="button" step="1.0" class="btn btn-secondary btn-block my-2" @click="$dispatch('add-to-preview-date', { data: fixedUnits })">To preview</button>
+                    </div>
 
+                </div>
             </div>
 
         </div>

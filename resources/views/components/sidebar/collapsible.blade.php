@@ -4,11 +4,12 @@
     "icon" => "fas fa-calendar-alt",
     "tooltipTitle" => "",
     "helplink" => "",
+    "checked" => "false"
 ])
 
 <div {{ $attributes->merge([
     'class' => 'wrap-collapsible card'
-]) }} x-data="{ opened: false }">
+]) }} x-data="{ opened: {{ $checked }} }">
 
     <input id="collapsible_{{ $name }}" class="toggle" type="checkbox" x-model="opened">
     <label for="collapsible_{{ $name }}" class="lbl-toggle py-2 px-3 card-header">

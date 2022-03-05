@@ -37,7 +37,7 @@
                     return acc + IntervalsCollection.make(leap_day).intersectsYear(timespanOccurrences);
                 }, timespan.length);
 
-                return Array.from(Array(numDays).keys()).map(num => `Day ${num+1}`);
+                return Array.from(Array(numDays).keys()).map(num => `${num+1}`);
 
             },
 
