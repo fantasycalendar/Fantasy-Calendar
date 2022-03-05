@@ -75,7 +75,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('add-users', function($user, $calendar) {
-            return $user->is($calendar->user) && $calendar->isPremium();
+            return $user->isAdmin() || ($user->is($calendar->user) && $calendar->isPremium());
         });
 
         Gate::define('update-settings', function($user, $calendar) {
@@ -83,7 +83,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('link', function($user, $calendar) {
-            return $user->is($calendar->user) && $calendar->isPremium();
+            return $user->isAdmin() || ($user->is($calendar->user) && $calendar->isPremium());
         });
 
         Gate::define('view-image', function(?User $user, $calendar) {

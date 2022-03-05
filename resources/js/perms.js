@@ -38,7 +38,7 @@ class Perms {
     }
 
     user_can_comment(){
-        if(!static_data.settings.comments){
+        if(!window.calendar.static_data.settings.comments){
             return this.owner;
         }
         return this.player_at_least('player');
@@ -49,7 +49,12 @@ class Perms {
     }
 
     user_can_see_clock(){
-        return static_data.clock.enabled && static_data.clock.render && !isNaN(static_data.clock.hours) && !isNaN(static_data.clock.minutes) && !isNaN(static_data.clock.offset) && (this.player_at_least('co-owner') || !static_data.settings.hide_clock);
+        return window.calendar.static_data.clock.enabled
+            && window.calendar.static_data.clock.render
+            && !isNaN(window.calendar.static_data.clock.hours)
+            && !isNaN(window.calendar.static_data.clock.minutes)
+            && !isNaN(window.calendar.static_data.clock.offset)
+            && (this.player_at_least('co-owner') || !window.calendar.static_data.settings.hide_clock);
     }
 }
 

@@ -258,7 +258,6 @@
     icon="fas fa-hourglass-half"
     tooltip-title="More Info: Date"
     helplink="current_date_and_time"
-    checked="true"
 >
 
     <div

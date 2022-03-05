@@ -213,7 +213,7 @@ class User extends Authenticatable implements
     }
 
     public function isPremium() {
-        return $this->paymentLevel() !== 'Free';
+        return $this->isAdmin() || $this->paymentLevel() !== 'Free';
     }
 
     public function subscriptionPrice($interval) {

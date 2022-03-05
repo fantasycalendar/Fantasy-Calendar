@@ -2396,7 +2396,7 @@ function set_up_edit_inputs(){
 				calendar_link_select.prop('disabled', false);
 			}
 
-		})
+		});
 
 	});
 

@@ -2,13 +2,24 @@ import IntervalsCollection from "./Collections/IntervalsCollection.js";
 
 export default class Calendar{
 
-    constructor(static_data, dynamic_data, events, event_categories) {
+    constructor(hash, static_data, dynamic_data, events, event_categories, link_data) {
+        this.hash = hash;
         this.static_data = static_data;
         this.dynamic_data = dynamic_data;
         this.preview_date = clone(dynamic_data);
         this.preview_date.follow = false;
-        this.event_categories = event_categories;
         this.events = events;
+        this.event_categories = event_categories;
+        this.link_data = link_data;
+    }
+
+    getEpochForDate(year, timespan = 0, day = 1){
+        return evaluate_calendar_start(
+            this.static_data,
+            convert_year(this.static_data, year),
+            timespan,
+            day
+        );
     }
 
     getTimespansInYear(year){

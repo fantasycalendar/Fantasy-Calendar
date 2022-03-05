@@ -76,7 +76,6 @@
     icon="fas fa-calendar-day"
     tooltip-title="More Info: Leap Days"
     helplink="leap_days"
-    checked="true"
 >
 
     @if(request()->is('calendars/*/edit') && $calendar->isLinked())

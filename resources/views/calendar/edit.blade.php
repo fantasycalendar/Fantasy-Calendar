@@ -3,14 +3,37 @@
 @push('head')
     <script>
 
-    @include('calendar._loadcalendar');
+    @if(Auth::check())
+        let userData = [
+            {{ Auth::user()->id }},
+            {{ $calendar ? ($calendar->owned ? "true" : "false") : "true" }},
+            '{{ strtolower(Auth::user()->paymentLevel()) }}',
+            '{{ $calendar->users->contains(Auth::user()) ? $calendar->users->find(Auth::user())->pivot->user_role : null }}'
+        ]
+    @else
+        let userData = [
+            {{ Auth::user() ? Auth::user()->id : "null" }},
+            {{ $calendar ? ($calendar->owned ? "true" : "false") : "true" }},
+            'free',
+            'guest'
+        ];
+    @endif
 
     window.calendar = new window.FantasyCalendar(
+        `{{ $calendar->hash }}`,
         {{ Illuminate\Support\Js::from($calendar->static_data) }},
         {{ Illuminate\Support\Js::from($calendar->dynamic_data) }},
         {{ Illuminate\Support\Js::from($calendar->events) }},
-        {{ Illuminate\Support\Js::from($calendar->event_categories) }}
+        {{ Illuminate\Support\Js::from($calendar->event_categories) }},
+        {
+            is_linked: {!! $calendar->isLinked() ? "true" : "false" !!},
+            has_parent: {!! $calendar->parent != null ? "true" : "false" !!},
+            parent_hash: {!! $calendar->parent != null ? '"'.$calendar->parent->hash.'"' : "null" !!},
+            parent_offset: {!! $calendar->parent != null ? $calendar->parent_offset : "null" !!}
+        }
     )
+
+    window.Perms = new Perms(...userData);
 
     function sidebar() {
         return {
@@ -19,7 +42,8 @@
             dynamic_data: window.calendar.dynamic_data,
             preview_date: window.calendar.preview_date,
             events: window.calendar.events,
-            event_categories: window.calendar.event_categories
+            event_categories: window.calendar.event_categories,
+            link_data: window.calendar.link_data
 
         }
     }

@@ -15,15 +15,23 @@
                 opened: false,
 
                 refreshUserList(){
-                    get_calendar_users((userList) => {
-                        this.users = clone(userList).map(user => {
-                            user.alertText = "";
-                            user.alertSuccess = true;
-                            user.previous_role = user.user_role;
-                            return user;
-                        });
-                        this.opened = true;
-                    });
+                    $.ajax({
+                        url: window.baseurl+"api/calendar/"+window.calendar.hash+"/users",
+                        type: "get",
+                        dataType: "json",
+                        success: (result) => {
+                            this.users = clone(result).map(user => {
+                                user.alertText = "";
+                                user.alertSuccess = true;
+                                user.previous_role = user.user_role;
+                                return user;
+                            });
+                            this.opened = true;
+                        },
+                        error: (error) => {
+                            $.notify(error)
+                        }
+                    })
                 },
 
                 remove(user){
@@ -45,9 +53,13 @@
                         })
                         .then((result) => {
                             if (!result.dismiss) {
-                                let remove_all = result.value === 1;
-                                remove_calendar_user(user.id, remove_all, function () {
+                                axios.post(window.baseurl+"api/calendar/"+window.calendar.hash+"/removeUser", {
+                                    user_id: user.id,
+                                    remove_all: result.value === 1
+                                }).then(() => {
                                     window.dispatchEvent(new CustomEvent('refresh-user-list'));
+                                }).catch((error) => {
+                                    $.notify(error);
                                 });
                             }
                         });
@@ -68,9 +80,14 @@
                     })
                     .then((result) => {
                         if(!result.dismiss) {
-                            remove_calendar_user(user.id, false, function(){
+                            axios.post(window.baseurl+"api/calendar/"+window.calendar.hash+"/removeUser", {
+                                user_id: user.id,
+                                email: user.username,
+                            }).then(() => {
                                 window.dispatchEvent(new CustomEvent('refresh-user-list'));
-                            }, user.username);
+                            }).catch((error) => {
+                                $.notify(error);
+                            });
                         }
                     });
 
@@ -81,7 +98,7 @@
                     user.alertSuccess = true;
                     user.alertText = "Updating user permissions...";
 
-                    update_calendar_user(user.id, user.user_role, (success, text) => {
+                    const output = (success, text) => {
 
                         user.alertSuccess = success;
                         user.alertText = text;
@@ -91,21 +108,32 @@
                             user.alertText = "";
                         }, 5000);
 
+                    };
+
+                    axios.post(window.baseurl+"api/calendar/"+window.calendar.hash+"/changeUserRole", {
+                        user_id: user.id,
+                        user_role: user.user_role
+                    }).then(function(result) {
+                        output(true, 'Updated permissions!');
+                    }).catch(function(error){
+                        output(false, error.response.data.message);
                     });
 
                 },
 
                 resendInvite(user){
 
-                    resend_calendar_invite(user.username, (success, text) => {
-
-                        this.alertSuccess = success;
-                        this.alertText = text;
+                    axios.post(window.apiurl+"/calendar/"+window.calendar.hash+"/resend_invite", {
+                        email: user.username
+                    }).then(() => {
+                        this.alertSuccess = true;
+                        this.alertText = 'Resent invitation';
 
                         setTimeout(() => {
                             this.alertText = "";
                         }, 5000);
-
+                    }).catch(function(error){
+                        $.notify(error.response.data.message);
                     });
 
                 },
@@ -134,20 +162,21 @@
                     this.alertSuccess = true;
                     this.alertText = "Sending invitation...";
 
-                    add_calendar_user(email, (success, text) => {
+                    const output = (success, message) => {
 
                         this.disableSendButton = false;
                         this.alertSuccess = success;
-                        this.alertText = text;
+                        this.alertText = message;
+                        this.refreshUserList();
 
                         setTimeout(() => {
                             this.alertText = "";
                         }, 5000);
+                    }
 
-                        if(success){
-                            this.refreshUserList();
-                        }
-                    });
+                    axios.post(window.baseurl+"api/calendar/"+window.calendar.hash+"/inviteUser", { email: email })
+                        .then(() => output(true, `Sent email to ${email}!`))
+                        .catch((error) => output(false, error.response.data.errors.email[0]));
 
                 }
             }
@@ -166,7 +195,7 @@
     @click.once="$dispatch('refresh-user-list')"
 >
 
-    @if(!Auth::user()->can('add-users', $calendar))
+    @if(Auth::user()->can('add-users', $calendar))
 
         <div
             x-data="userSection($data)"
