@@ -308,14 +308,15 @@
 
             </div>
 
-            <div class='row my-2'>
-                <div class='btn btn-success full' @click="preview_date.follow = false">Go To Preview date</div>
-            </div>
+            <div class="grid grid-cols-2">
+                <div class='col-span-2 my-2' :class="{'col-span-2': preview_date.follow}">
+                    <div class='btn btn-success full' @click="preview_date.follow = false">Go To Preview date</div>
+                </div>
 
-            <div class='row my-2'>
-                <div class='btn btn-info full' x-show="!preview_date.follow" @click="preview_date.follow = true">Go To Current Date</div>
+                <div class='my-2'>
+                    <div class='btn btn-info full' x-show="!preview_date.follow" @click="preview_date.follow = true">Go To Current Date</div>
+                </div>
             </div>
-
         </div>
 
         <div class='wrap-collapsible card full date_inputs'>
@@ -334,14 +335,14 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <button type="button" step="1.0" class="btn btn-secondary btn-block my-2" @click="$dispatch('add-to-preview-date', { data: fixedUnits })">To preview</button>
+                    </div>
                     @if(request()->is('calendars/*/edit') && $calendar->parent == null)
                         <div>
                             <button type="button" step="1.0" class="btn btn-primary btn-block my-2" @click="$dispatch('add-to-current-date', { data: fixedUnits })">To current</button>
                         </div>
                     @endif
-                    <div>
-                        <button type="button" step="1.0" class="btn btn-secondary btn-block my-2" @click="$dispatch('add-to-preview-date', { data: fixedUnits })">To preview</button>
-                    </div>
 
                 </div>
             </div>
