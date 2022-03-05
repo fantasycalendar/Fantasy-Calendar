@@ -320,7 +320,7 @@
 
         <div class='wrap-collapsible card full date_inputs'>
             <input class="toggle" type="checkbox" id="collapsible_add_units">
-            <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed datetime units</label>
+            <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed datetime amounts</label>
             <div class="collapsible-content container card-body">
 
                 <div class='input-group no-gutters mx-0'>
