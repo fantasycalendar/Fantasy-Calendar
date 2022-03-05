@@ -7,8 +7,8 @@
 
             return {
 
-                getTimespansInYear: $data.getTimespansInYear,
-                getDaysForTimespanInYear: $data.getDaysForTimespanInYear,
+                getTimespansInYear: $data.calendar.getTimespansInYear,
+                getDaysForTimespanInYear: $data.calendar.getDaysForTimespanInYear,
 
                 static_data: $data.static_data,
                 current_date: $data.dynamic_data,
@@ -79,8 +79,8 @@
 
                 hasButtons: hasButtons,
 
-                getTimespansInYear: $data.getTimespansInYear,
-                getDaysForTimespanInYear: $data.getDaysForTimespanInYear,
+                getTimespansInYear: $data.calendar.getTimespansInYear,
+                getDaysForTimespanInYear: $data.calendar.getDaysForTimespanInYear,
 
                 calendarTimespans: $data.static_data.year_data.timespans,
                 clock: $data.static_data.clock,

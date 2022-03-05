@@ -28,7 +28,7 @@
                 },
 
                 get averageYearLengthEqualToSeasonLength(){
-                    return $data.getAverageYearLength() === this.seasonLength;
+                    return $data.calendar.getAverageYearLength() === this.seasonLength;
                 },
 
                 /*
@@ -68,7 +68,7 @@
 
                     if(this.settings.periodic_seasons){
 
-                        const averageYearLength = $data.getAverageYearLength();
+                        const averageYearLength = $data.calendar.getAverageYearLength();
 
                         if(this.seasons.length){
                             data.transition_length = averageYearLength / (this.seasons.length+1);
@@ -268,7 +268,7 @@
                                 <div class='col-4 pt-1'>Day:</div>
                                 <div class='col-8'>
                                     <select type='number' class='date form-control full' x-model.number='season.day' @change="sortSeasonsByDate()">
-                                        <template x-for="(day, index) in getNonLeapingDaysInTimespan(season.timespan ?? 0)">
+                                        <template x-for="(day, index) in calendar.getNonLeapingDaysInTimespan(season.timespan ?? 0)">
                                             <option :value="index+1" x-text="day"></option>
                                         </template>
                                     </select>
@@ -349,7 +349,7 @@
            <div class='container'>
                <div class='row py-1'>
                <i class="col-auto px-0 mr-1 fas" style="line-height:1.5;" :class="averageYearLengthEqualToSeasonLength ? 'fa-check-circle' : 'fa-exclamation-circle'"></i>
-               <div class='col px-0' x-text="`Season length: ${seasonLength} / ${getAverageYearLength()} (year length)`"></div></div>
+               <div class='col px-0' x-text="`Season length: ${seasonLength} / ${calendar.getAverageYearLength()} (year length)`"></div></div>
                <div class='col px-0' x-text='averageYearLengthEqualToSeasonLength ? "The season length and year length are the same, and will not drift away from each other." : "The season length and year length at not the same, and will diverge over time. Use with caution."'></div>
            </div>
 
