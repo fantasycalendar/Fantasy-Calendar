@@ -83,12 +83,8 @@
                     return this.static_data.year_data.timespans[this.date.timespan];
                 },
 
-                get timespanYearIndex(){
+                get timespanInYearIndex(){
                     return this.timespans.indexOf(this.currentTimespan);
-                },
-
-                get currentMonth(){
-                    return this.timespans[thistimespanYearIndex];
                 },
 
                 _next_year_timespans: false,
@@ -114,11 +110,11 @@
                 _next_month_days: false,
                 get next_month_days(){
                     if(!this._next_month_days) {
-                        if ((this.timespanYearIndex + 1) > this.timespans.length - 1) {
+                        if ((this.timespanInYearIndex + 1) > this.timespans.length - 1) {
                             const firstMonthNextYear = this.next_year_timespans[0];
                             this._next_month_days = window.calendar.getDaysForTimespanInYear(this.date.year + 1, firstMonthNextYear.index);
                         }else{
-                            const nextMonth = this.timespans[this.timespanYearIndex + 1];
+                            const nextMonth = this.timespans[this.timespanInYearIndex + 1];
                             this._next_month_days = window.calendar.getDaysForTimespanInYear(this.date.year, nextMonth.index);
                         }
                     }
@@ -128,11 +124,11 @@
                 _prev_month_days: false,
                 get prev_month_days() {
                     if(!this._prev_month_days){
-                        if ((this.timespanYearIndex - 1) < 0) {
+                        if ((this.timespanInYearIndex - 1) < 0) {
                             const lastMonthNextYear = this.prev_year_timespans[this.prev_year_timespans.length - 1];
                             this._prev_month_days = window.calendar.getDaysForTimespanInYear(this.date.year - 1, lastMonthNextYear.index);
                         } else {
-                            const lastMonthIndex = this.timespans[this.timespanYearIndex - 1].index;
+                            const lastMonthIndex = this.timespans[this.timespanInYearIndex - 1].index;
                             this._prev_month_days = window.calendar.getDaysForTimespanInYear(this.date.year, lastMonthIndex);
                         }
                     }
@@ -152,16 +148,16 @@
 
                 updatePrevNextTimespans(){
 
-                    if((this.timespanYearIndex+1) >= this.timespans.length){
+                    if((this.timespanInYearIndex+1) >= this.timespans.length){
                         this.next_timespan = this.next_year_timespans[0].name;
                     }else{
-                        this.next_timespan = this.timespans[this.timespanYearIndex+1].name;
+                        this.next_timespan = this.timespans[this.timespanInYearIndex+1].name;
                     }
 
-                    if((this.timespanYearIndex-1) < 0){
+                    if((this.timespanInYearIndex-1) < 0){
                         this.prev_timespan = this.prev_year_timespans[this.prev_year_timespans.length-1].name;
                     }else{
-                        this.prev_timespan = this.timespans[this.timespanYearIndex-1].name;
+                        this.prev_timespan = this.timespans[this.timespanInYearIndex-1].name;
                     }
 
                 },
@@ -218,10 +214,10 @@
                 setDay(target){
 
                     if(target > this.days.length){
-                        this.setMonth(this.timespanYearIndex+1);
+                        this.setMonth(this.timespanInYearIndex+1);
                         this.date.day = 1;
                     }else if(target <= 0){
-                        this.setMonth(this.timespanYearIndex-1);
+                        this.setMonth(this.timespanInYearIndex-1);
                         this.date.day = this.days.length;
                     }else{
                         this.date.day = target;
@@ -316,7 +312,7 @@
                     </div>
                     <div class="col-8">
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(timespanYearIndex - 1)" x-text="prev_timespan"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(timespanInYearIndex - 1)" x-text="prev_timespan"></span>
                         </div>
                         <div class="row text-center py-1">
                             <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="date.timespan">
@@ -326,7 +322,7 @@
                             </select>
                         </div>
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(timespanYearIndex + 1)" x-text="next_timespan"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(timespanInYearIndex + 1)" x-text="next_timespan"></span>
                         </div>
                     </div>
                     <div class="col-2">
@@ -374,7 +370,7 @@
                     </div>
                     <div class="col-8">
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(date.timespan - 1)">Prev. month</span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(date.timespan - 1)" x-text="prev_timespan"></span>
                         </div>
                         <div class="row text-center py-1">
                             <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="date.timespan">
@@ -384,7 +380,7 @@
                             </select>
                         </div>
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(date.timespan + 1)">Next month</span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(date.timespan + 1)" x-text="next_timespan"></span>
                         </div>
                     </div>
                     <div class="col-2">
