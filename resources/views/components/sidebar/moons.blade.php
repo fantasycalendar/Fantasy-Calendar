@@ -123,6 +123,7 @@
         icon="fas fa-moon"
         tooltip-title="More Info: Moons"
         helplink="moons"
+        checked="true"
 >
 
     <div x-data="moonSection($data)">
@@ -134,28 +135,22 @@
         </div>
 
         <div class='add_inputs moon'>
-            <div class='row no-gutters'>
-                <div class='col'>
-                    <input type='text' class='form-control protip' x-model="newMoon.name" data-pt-position="top" data-pt-title="The moon's name." placeholder='Moon name'>
-                </div>
-                <div class='col-auto'>
+            <div class='input-group mb-2'>
+                <input type='text' class='form-control protip' x-model="newMoon.name" data-pt-position="top" data-pt-title="The moon's name." placeholder='Moon name'>
+                <div class='input-group-append'>
                     <button type='button' class='btn btn-primary' @click="add(newMoon)"><i class="fa fa-plus"></i></button>
                 </div>
             </div>
-            <div class='row no-gutters'>
-                <div class='col-6'>
-                    <input type='number' class='form-control protip' x-model="newMoon.cycle" data-pt-position="top" data-pt-title='How many days it takes for this moon go from Full Moon to the next Full Moon.' min='1' placeholder='Cycle'>
-                </div>
-                <div class='col-6'>
-                    <input type='number' class='form-control protip' x-model="newMoon.shift" data-pt-position="top" data-pt-title='This is how many days the cycle is offset by.' placeholder='Shift'>
-                </div>
+            <div class='input-group'>
+                <input type='number' class='form-control protip' x-model="newMoon.cycle" data-pt-position="top" data-pt-title='How many days it takes for this moon go from Full Moon to the next Full Moon.' min='1' placeholder='Cycle'>
+                <input type='number' class='form-control protip' x-model="newMoon.shift" data-pt-position="top" data-pt-title='This is how many days the cycle is offset by.' placeholder='Shift'>
             </div>
         </div>
 
         <div class="row sortable-header timespan_sortable_header no-gutters align-items-center">
             <div x-show="!reordering" @click="reordering = true" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
             <div x-show="reordering" @click="reordering = false" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
-            <div class='py-2 col-8 text-center'>Name</div>
+            <div class='py-2 col-8 text-left pl-2'>Name</div>
         </div>
 
         <div class="sortable list-group">
@@ -197,24 +192,16 @@
                                 <div class='col-5'>Shift:</div>
                             </div>
 
-                            <div class='row no-gutters mb-1'>
-
-                                <div class='col-7 pr-1'>
-                                    <input type='number' min='1' step="any" class='form-control protip' x-model="moon.cycle" @change="cycleChanged(moon)" data-pt-position="top" data-pt-title='How many days it takes for this moon go from Full Moon to the next Full Moon.'/>
-                                </div>
-
-                                <div class='col-5 pl-1'>
-                                    <input type='number' step="any" class='form-control protip' x-model="moon.shift" data-pt-position="top" data-pt-title='This is how many days the cycle is offset by.'/>
-                                </div>
-
+                            <div class='row input-group no-gutters mb-1'>
+                                <input type='number' min='1' step="any" class='col-7 form-control protip' x-model="moon.cycle" @change="cycleChanged(moon)" data-pt-position="top" data-pt-title='How many days it takes for this moon go from Full Moon to the next Full Moon.'/>
+                                <input type='number' step="any" class='col-5 form-control protip' x-model="moon.shift" data-pt-position="top" data-pt-title='This is how many days the cycle is offset by.'/>
                             </div>
 
                             <div class='row no-gutters mb-1'>
-
                                 <select class='form-control protip' x-model="moon.cycle_rounding" data-pt-position="top" data-pt-title='This determines the way this moon calculates its phases, as in which way it rounds the phase value to the closest sprite.'>
-                                    <option value='floor'>Floor (0.7 becomes 0.0)</option>
-                                    <option value='round'>Round (< 0.49 becomes 0.0, 0.5 > becomes 1.0)</option>
-                                    <option value='ceil'>Ceiling (0.3 becomes 1.0)</option>
+                                    <option value='floor'>Always round down</option>
+                                    <option value='round'>Std. round</option>
+                                    <option value='ceil'>Always round up</option>
                                 </select>
 
                             </div>
@@ -259,15 +246,13 @@
                         </div>
 
                         <div class='row no-gutters mb-1'>
-
                             <div class='col-6 pr-1'>
-                                <input type='color' x-model="moon.color"/>
+                                <x-color-picker input-class="form-control" model="moon.color" name="Moon color"></x-color-picker>
                             </div>
 
                             <div class='col-6 pl-1'>
-                                <input type='color' x-model="moon.shadow_color"/>
+                                <x-color-picker input-class="form-control" model="moon.shadow_color" name="Shadow color"></x-color-picker>
                             </div>
-
                         </div>
 
                         <div class='row no-gutters my-1'>
