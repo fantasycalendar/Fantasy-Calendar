@@ -15,7 +15,6 @@
                 timespans: $data.static_data.year_data.timespans,
                 global_week: $data.static_data.year_data.global_week,
                 deleting: null,
-                reordering: false,
                 expanded: {},
 
                 add({ name, type, length = false, interval = 1, offset = 0 }={}){
@@ -93,6 +92,53 @@
             }
         }
 
+        function sortableList(data, dataKey, eventName){
+
+            return {
+
+                reordering: false,
+                dragging: null,
+                dropping: null,
+
+                swapArrayElements(array, x, y) {
+                    if (array.length === 1) return array;
+                    array.splice(y, 1, array.splice(x, 1, array[y])[0]);
+                    return array;
+                },
+
+                dropped(){
+
+                    if(this.dragging === this.dropping || this.dragging === null || this.dropping === null){
+                        this.dragging = null;
+                        this.dropping = null;
+                        return;
+                    }
+
+                    if (this.dragging < this.dropping) {
+                        data[dataKey] = [
+                            ...data[dataKey].slice(0, this.dragging),
+                            ...data[dataKey].slice(this.dragging + 1, this.dropping + 1),
+                            data[dataKey][this.dragging],
+                            ...data[dataKey].slice(this.dropping + 1)];
+                    }else{
+                        data[dataKey] = [
+                            ...data[dataKey].slice(0, this.dropping),
+                            data[dataKey][this.dragging],
+                            ...data[dataKey].slice(this.dropping, this.dragging),
+                            ...data[dataKey].slice(this.dragging + 1)];
+                    }
+
+                    window.dispatchEvent(new CustomEvent(eventName));
+
+                    this.dragging = null;
+                    this.dropping = null;
+
+                }
+
+            }
+
+        }
+
     </script>
 
 @endpush
@@ -149,6 +195,8 @@
             @add-timespan.window="add($event.detail)"
             @remove-timespan.window="remove($event.detail.index)"
             @set-timespan-weekdays.window="setWeekdays"
+            @dragover.prevent="$event.dataTransfer.dropEffect = 'move';"
+            @timespan-order-changed.window="timespans = $data.static_data.year_data.timespans;"
         >
 
             <div class='row bold-text'>
@@ -170,114 +218,120 @@
                 </div>
             </div>
 
-            <div class="row sortable-header timespan_sortable_header no-gutters align-items-center">
-                <div x-show="!reordering" @click="reordering = true" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
-                <div x-show="reordering" @click="reordering = false" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
-                <div class='py-2 col-6 text-center'>Name</div>
-                <div class='py-2 col-5 text-center'>Length</div>
-            </div>
+            <div
+                x-data="sortableList($data.static_data.year_data, 'timespans', 'timespan-order-changed')"
+                @drop.prevent="dropped"
+            >
 
-            <div class="sortable list-group">
-                <template x-for="(timespan, index) in timespans">
-                    <div class='sortable-container list-group-item' :class="timespan.type">
+                <div class="row sortable-header timespan_sortable_header no-gutters align-items-center">
+                    <div x-show="!reordering" @click="reordering = true" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
+                    <div x-show="reordering" @click="reordering = false" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
+                    <div class='py-2 col-6 text-center'>Name</div>
+                    <div class='py-2 col-5 text-center'>Length</div>
+                </div>
 
-                        <div class='main-container' x-show="deleting !== timespan">
-                            <i class='handle icon-reorder' x-show="reordering"></i>
-                            <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
-                            <div class="input-group">
-                                <input class='name-input small-input form-control' x-model="timespan.name">
-                                <input type='number' min='1' class='length-input form-control' x-model='timespan.length' style="max-width: 50px;"/>
-                                <div class="input-group-append">
-                                    <div class='btn btn-danger icon-trash' @click="deleting = timespan" x-show="deleting !== timespan"></div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="sortable list-group">
+                    <template x-for="(timespan, index) in timespans">
+                        <div class='sortable-container list-group-item' :class="timespan.type">
 
-                        <div class='d-flex justify-content-between align-items-center w-100 px-1'>
-                            <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === timespan"></div>
-                            <div class='remove-container-text' x-show="deleting === timespan">Are you sure?</div>
-                            <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === timespan"></div>
-                        </div>
-
-                        <div class='container pb-2' x-show="expanded[index] && deleting !== timespan">
-
-                            <div class='row no-gutters bold-text big-text italics-text'>
-                                <div class='col-12' x-text='timespan.type === "month" ? "Month" : "Intercalary month"'></div>
-                            </div>
-
-                            <div class='row no-gutters my-1 bold-text'><div class='col-12'>Leaping settings</div></div>
-
-                            <div class='row no-gutters mt-1'>
-                                <div class='col-6 pr-1'>
-                                    <div>Interval:</div>
-                                </div>
-
-                                <div class='col-6 pl-1'>
-                                    <div>Offset:</div>
+                            <div class='main-container' x-show="deleting !== timespan" @dragenter.prevent="dropping = index" @dragstart="dragging = index" @dragend="dragging = null">
+                                <i class='handle icon-reorder' draggable="true" x-show="reordering"></i>
+                                <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
+                                <div class="input-group">
+                                    <input class='name-input small-input form-control' x-model="timespan.name" @change="$dispatch('timespan-name-changed')"/>
+                                    <input type='number' min='1' class='length-input form-control' x-model='timespan.length' style="max-width: 50px;" />
+                                    <div class="input-group-append">
+                                        <div class='btn btn-danger icon-trash' @click="deleting = timespan" x-show="deleting !== timespan"></div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class='row no-gutters mb-1'>
-                                <div class='col-6 pr-1'>
-                                    <input type='number' step="1" min='1' class='form-control small-input' x-model='timespan.interval'/>
-                                </div>
-
-                                <div class='col-6 pl-1'>
-                                    <input type='number' step="1" min='0' class='form-control small-input' x-model='timespan.offset'/>
-                                </div>
+                            <div class='d-flex justify-content-between align-items-center w-100 px-1'>
+                                <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === timespan"></div>
+                                <div class='remove-container-text' x-show="deleting === timespan">Are you sure?</div>
+                                <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === timespan"></div>
                             </div>
 
-                            <template x-if="timespan.type === 'month'">
+                            <div class='container pb-2' x-show="expanded[index] && deleting !== timespan">
 
-                                <div>
+                                <div class='row no-gutters bold-text big-text italics-text'>
+                                    <div class='col-12' x-text='timespan.type === "month" ? "Month" : "Intercalary month"'></div>
+                                </div>
 
-                                    <div class='row no-gutters my-1'>
-                                        <div class='col-12'><div class='separator'></div></div>
+                                <div class='row no-gutters my-1 bold-text'><div class='col-12'>Leaping settings</div></div>
+
+                                <div class='row no-gutters mt-1'>
+                                    <div class='col-6 pr-1'>
+                                        <div>Interval:</div>
                                     </div>
 
-                                    <div class='row no-gutters my-1'>
-                                        <div class='col-12 bold-text'>Week settings</div>
+                                    <div class='col-6 pl-1'>
+                                        <div>Offset:</div>
+                                    </div>
+                                </div>
+
+                                <div class='row no-gutters mb-1'>
+                                    <div class='col-6 pr-1'>
+                                        <input type='number' step="1" min='1' class='form-control small-input' x-model='timespan.interval'/>
                                     </div>
 
-                                    <div class='row no-gutters my-1'>
-                                        <div class='form-check col-12 py-2 border rounded'>
-                                            <input type='checkbox' class='form-check-input' :checked="timespan.week?.length > 0" @click="toggleWeek(timespan)"/>
-                                            <label for='${key}_custom_week' class='form-check-label ml-1'>
-                                                Use custom week
-                                            </label>
-                                        </div>
+                                    <div class='col-6 pl-1'>
+                                        <input type='number' step="1" min='0' class='form-control small-input' x-model='timespan.offset'/>
                                     </div>
+                                </div>
 
-                                    <div x-show="timespan.week?.length">
+                                <template x-if="timespan.type === 'month'">
+
+                                    <div>
 
                                         <div class='row no-gutters my-1'>
-                                            <div class='col-12'>
-                                                Length:
+                                            <div class='col-12'><div class='separator'></div></div>
+                                        </div>
+
+                                        <div class='row no-gutters my-1'>
+                                            <div class='col-12 bold-text'>Week settings</div>
+                                        </div>
+
+                                        <div class='row no-gutters my-1'>
+                                            <div class='form-check col-12 py-2 border rounded'>
+                                                <input type='checkbox' class='form-check-input' :checked="timespan.week?.length > 0" @click="toggleWeek(timespan)"/>
+                                                <label for='${key}_custom_week' class='form-check-label ml-1'>
+                                                    Use custom week
+                                                </label>
                                             </div>
                                         </div>
 
-                                        <div class='row no-gutters mb-2'>
-                                            <div class='col-6 pr-1'>
-                                                <input type='number' min='1' step="1" class='form-control small-input' :disabled="!timespan.week" :value="timespan.week?.length" @change="numberWeekdaysChanged($event, timespan)"/>
-                                            </div>
-                                            <div class='col-6 pl-1'>
-                                                <button type='button' class='full btn btn-primary' :disabled="!timespan.week" @click="quickAddWeekdays(index)">Quick add</button>
-                                            </div>
-                                        </div>
+                                        <div x-show="timespan.week?.length">
 
-                                        <div class='row no-gutters mb-2'>
-                                            <div class='col-12 vertical-input-group'>
-                                                <template x-for="weekday in (timespan.week ?? [])">
-                                                    <input type='text' class='form-control internal-list-name' x-model="weekday"/>
-                                                </template>
+                                            <div class='row no-gutters my-1'>
+                                                <div class='col-12'>
+                                                    Length:
+                                                </div>
+                                            </div>
+
+                                            <div class='row no-gutters mb-2'>
+                                                <div class='col-6 pr-1'>
+                                                    <input type='number' min='1' step="1" class='form-control small-input' :disabled="!timespan.week" :value="timespan.week?.length" @change="numberWeekdaysChanged($event, timespan)"/>
+                                                </div>
+                                                <div class='col-6 pl-1'>
+                                                    <button type='button' class='full btn btn-primary' :disabled="!timespan.week" @click="quickAddWeekdays(index)">Quick add</button>
+                                                </div>
+                                            </div>
+
+                                            <div class='row no-gutters mb-2'>
+                                                <div class='col-12 vertical-input-group'>
+                                                    <template x-for="weekday in (timespan.week ?? [])">
+                                                        <input type='text' class='form-control internal-list-name' x-model="weekday"/>
+                                                    </template>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </template>
+                                </template>
+                            </div>
                         </div>
-                    </div>
-                </template>
+                    </template>
+                </div>
             </div>
         </div>
 

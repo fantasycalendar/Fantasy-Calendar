@@ -142,6 +142,14 @@
                 init(){
                     this.timespans = window.calendar.getTimespansInYear(this.date.year);
                     this.days = window.calendar.getDaysForTimespanInYear(this.date.year, this.date.timespan);
+                    this.clearCache();
+                },
+
+                clearCache(){
+                    this._next_month_days = false;
+                    this._prev_month_days = false;
+                    this._next_year_timespans = false;
+                    this._prev_year_timespans = false;
                     this.updatePrevNextTimespans();
                     this.updatePrevNextDays();
                 },
@@ -180,10 +188,7 @@
 
                 setYear(target){
                     this.date.year = target;
-                    this._next_month_days = false;
-                    this._prev_month_days = false;
-                    this._next_year_timespans = false;
-                    this._prev_year_timespans = false;
+                    this.clearCache();
                 },
 
                 setMonth(target){
@@ -290,7 +295,8 @@
             <div
                 x-data="dateSelector($data, dynamic_data, { hasTime: true, hasButtons: true })"
                 @add-to-current-date.window="addToDate($event.detail.data)"
-
+                @timespan-order-changed.window="clearCache()"
+                @timespan-name-changed.window="clearCache()"
             >
 
                 <div class="row my-2 divide-x divide-gray-500">
@@ -349,6 +355,8 @@
             <div
                 x-data="dateSelector($data, preview_date, { hasTime: true, hasButtons: true })"
                 @add-to-preview-date.window="addToDate($event.detail.data)"
+                @timespan-order-changed.window="clearCache()"
+                @timespan-name-changed.window="clearCache()"
             >
 
                 <div class="row my-2 divide-x divide-gray-500">
