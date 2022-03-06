@@ -1283,6 +1283,22 @@ ol.example li.placeholder:before {
     }
 }
 
+.errors_background{
+
+    width:100%;
+    height:100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 11;
+    position:fixed;
+    align-items: center;
+    text-align:center;
+    overflow:hidden;
+
+    &.transparent{
+       background-color: rgba(0, 0, 0, 0.0);
+    }
+}
+
 .blurred_background{
     backdrop-filter: blur(3px);
 }

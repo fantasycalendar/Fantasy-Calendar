@@ -8,7 +8,7 @@
     <div class='wrap-collapsible content'>
         <div class='col-12 mb-2'>
             <div class='row'>
-                <input type='text' class='form-control form-control-lg full' id='calendar_name' placeholder='Calendar name' />
+                <input type='text' class='form-control form-control-lg full' x-model="name" placeholder='Calendar name' />
             </div>
         </div>
     </div>
@@ -16,7 +16,13 @@
     <div class='wrap-collapsible content'>
         <div class='col-12 my-2'>
             <div class='row'>
-                <button type="button" disabled id='btn_save' class='btn btn-lg btn-success btn-block'>No changes to save</button>
+                <button
+                    type="button"
+                    class='btn btn-lg btn-block'
+                    :disabled="!calendar_changed || !calendar_valid"
+                    x-text="save_button_text"
+                    :class="calendar_valid ? 'btn-success' : 'btn-danger'"
+                >No changes to save</button>
             </div>
         </div>
     </div>

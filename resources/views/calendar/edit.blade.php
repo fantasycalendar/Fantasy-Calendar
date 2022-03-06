@@ -21,6 +21,7 @@
 
     window.calendar = new window.FantasyCalendar(
         `{{ $calendar->hash }}`,
+        `{{ $calendar->name }}`,
         {{ Illuminate\Support\Js::from($calendar->static_data) }},
         {{ Illuminate\Support\Js::from($calendar->dynamic_data) }},
         {{ Illuminate\Support\Js::from($calendar->events) }},
@@ -36,16 +37,38 @@
     window.Perms = new Perms(...userData);
 
     function sidebar() {
+
         return {
 
+            // Set up bindings
+            name: window.calendar.name,
             static_data: window.calendar.static_data,
             dynamic_data: window.calendar.dynamic_data,
             preview_date: window.calendar.preview_date,
             events: window.calendar.events,
             event_categories: window.calendar.event_categories,
-            link_data: window.calendar.link_data
+            link_data: window.calendar.link_data,
+
+            // Defaults
+            calendar_changed: false,
+            calendar_valid: true,
+            errors: [],
+
+            get save_button_text(){
+                if(!this.calendar_valid){
+                    return "Calendar has errors - can't save";
+                }
+                return this.calendar_changed ? "Save calendar" : "No changes to save";
+            },
+
+            change(){
+                this.calendar_changed = window.calendar.hasDataChanged();
+                this.errors = window.calendar.getErrors();
+                this.calendar_valid = !this.errors.length;
+            }
 
         }
+
     }
 
     $(document).ready(function() {
@@ -58,7 +81,7 @@
 @endpush
 
 @section('content')
-    <div id="generator_container" x-data="sidebar()">
+    <div id="generator_container" x-data="sidebar()" @change="change">
         @include('layouts.layouts')
         @include('layouts.weather_tooltip')
         @include('layouts.day_data_tooltip')

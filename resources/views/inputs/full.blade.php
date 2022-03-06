@@ -156,11 +156,14 @@
 
 <div id="calendar_container">
 
-	<div id="modal_background" class='flexible_background blurred_background'>
+	<div id="modal_background" class='errors_background flex blurred_background' x-show="errors.length">
 		<div id="modal">
-			<span id="modal_text">
-				This is an alert box.
-			</span>
+            Errors:
+            <ol>
+                <template x-for="error in errors">
+                    <li x-html="error"></li>
+                </template>
+            </ol>
 		</div>
 	</div>
 
