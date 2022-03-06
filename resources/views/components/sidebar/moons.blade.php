@@ -200,7 +200,7 @@
                             <div class='row no-gutters mb-1'>
                                 <select class='form-control protip' x-model="moon.cycle_rounding" data-pt-position="top" data-pt-title='This determines the way this moon calculates its phases, as in which way it rounds the phase value to the closest sprite.'>
                                     <option value='floor'>Always round down</option>
-                                    <option value='round'>Std. round</option>
+                                    <option value='round'>Standard rounding</option>
                                     <option value='ceil'>Always round up</option>
                                 </select>
 
