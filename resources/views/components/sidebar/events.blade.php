@@ -63,7 +63,7 @@
             </div>
         </div>
 
-        <div class="sortable list-group" style="max-height: 500px; overflow-y: scroll;">
+        <div class="sortable list-group -mr-2" style="max-height: 500px; overflow-y: scroll;">
             <template x-for="(event, index) in events">
 
                 <div class='sortable-container list-group-item' x-show="shownEvents.indexOf(event) > -1">
@@ -71,7 +71,9 @@
                     <div class='main-container' x-show="deleting !== event">
                         <i class='handle icon-reorder'></i>
                         <div class="input-group">
-                            <div class='btn btn-outline-accent open-edit-event-ui event_name' x-text="event.name" @click="$dispatch('event-editor-modal-edit-event', { event_id: index, epoch: epoch })"></div>
+                            <div class="input-group-prepend flex-1">
+                                <div class='btn btn-outline-accent open-edit-event-ui event_name' x-text="event.name" @click="$dispatch('event-editor-modal-edit-event', { event_id: index, epoch: epoch })"></div>
+                            </div>
                             <div class="input-group-append">
                                 <div class='btn btn-danger icon-trash' @click="deleting = event" x-show="deleting !== event"></div>
                             </div>

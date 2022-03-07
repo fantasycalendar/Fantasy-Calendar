@@ -50,7 +50,6 @@
     icon="fas fa-th-list"
     tooltip-title="More Info: Event Categories"
     helplink="event_categories"
-    checked="true"
 >
 
     <div x-data="eventCategorySection($data)">
