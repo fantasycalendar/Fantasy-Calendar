@@ -118,9 +118,9 @@
                 interpolateSeasons(){
                     // TODO: This is a monster mammoth function that needs refactoring, just take a look at line 1038 in calendar_inputs_edit.js
                 },
-                
+
                 sortSeasonsByDate(){
-                    
+
                     if(this.settings.periodic_seasons) return;
 
                     // Map each expanded index to the season it represents
@@ -151,6 +151,7 @@
     icon="fas fa-snowflake"
     tooltip-title="Seasons"
     helplink="seasons"
+    checked="true"
 >
 
     <div x-data="seasonSection($data)">
@@ -241,11 +242,14 @@
 
                             <div class='col-md-6 col-sm-12 pl-0 pr-1'>
                                 Duration:
-                                <input type='number' step='any' class='form-control protip' x-model.number='season.transition_length' min='1' data-pt-position="right" data-pt-title='How many days until this season ends, and the next begins.'/>
                             </div>
 
                             <div class='col-md-6 col-sm-12 pl-1 pr-0'>
                                 Peak duration:
+                            </div>
+
+                            <div class="col-12 input-group">
+                                <input type='number' step='any' class='form-control protip' x-model.number='season.transition_length' min='1' data-pt-position="right" data-pt-title='How many days until this season ends, and the next begins.'/>
                                 <input type='number' step='any' class='form-control protip' x-model.number='season.duration' min='0' data-pt-position="right" data-pt-title='If the duration is the path up a mountain, the peak duration is a flat summit. This is how many days the season will pause before going down the other side of the mountain.'/>
                             </div>
 
@@ -277,21 +281,15 @@
 
                         </div>
 
-                        <div class='mt-1 p-2 border rounded' x-show="settings.color_enabled">
 
-                            <div class='row no-gutters'>
-                                <div class='col-6 pr-1'>Start color:</div>
-                                <div class='col-6 pl-1'>End color:</div>
-                            </div>
+                        <div class='row no-gutters mt-2'>
+                            <div class='col-6 pr-1'>Start color:</div>
+                            <div class='col-6 pl-1'>End color:</div>
+                        </div>
 
-                            <div class='row no-gutters my-1'>
-                                <div class='col-6 pr-1'>
-                                    <input type='color' class='full' x-model='season.color[0]'/>
-                                </div>
-                                <div class='col-6 pl-1'>
-                                    <input type='color' class='full' x-model='season.color[1]'/>
-                                </div>
-                            </div>
+                        <div class='grid grid-cols-2 gap-2'>
+                            <x-color-picker input-class="form-control" model="season.color[0]" name="season_color_start"></x-color-picker>
+                            <x-color-picker input-class="form-control" model="season.color[1]" name="season_color_start"></x-color-picker>
                         </div>
 
                         <div x-show="clock.enabled">
@@ -305,13 +303,9 @@
                                 <div class='col-6 pl-1'>Minute</div>
                             </div>
 
-                            <div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season">
-                                <div class='col-6 pr-1 clock-input'>
-                                    <input type='number' step="1.0" class='form-control full' min="0" :max="clock.hours" x-model='season.time.sunrise.hour' />
-                                </div>
-                                <div class='col-6 pl-1 clock-input'>
-                                    <input type='number' step="1.0" class='form-control full' min="0" :max="clock.minutes" x-model='season.time.sunrise.minute' />
-                                </div>
+                            <div class='row no-gutters mb-2 input-group protip' data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season">
+                                <input type='number' step="1.0" class='form-control' min="0" :max="clock.hours" x-model='season.time.sunrise.hour' />
+                                <input type='number' step="1.0" class='form-control' min="0" :max="clock.minutes" x-model='season.time.sunrise.minute' />
                             </div>
 
                             <div class='row no-gutters mt-2'>
@@ -323,13 +317,9 @@
                                 <div class='col-6 pl-1'>Minute</div>
                             </div>
 
-                            <div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season">
-                                <div class='col-6 pr-1 clock-input'>
-                                    <input type='number' step="1.0" class='form-control full' min="0" :max="clock.hours" x-model='season.time.sunset.hour' />
-                                </div>
-                                <div class='col-6 pl-1 clock-input'>
-                                    <input type='number' step="1.0" class='form-control full' min="0" :max="clock.minutes" x-model='season.time.sunset.minute' />
-                                </div>
+                            <div class='row no-gutters mb-2 input-group protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season">
+                                <input type='number' step="1.0" class='form-control' min="0" :max="clock.hours" x-model='season.time.sunset.hour' />
+                                <input type='number' step="1.0" class='form-control' min="0" :max="clock.minutes" x-model='season.time.sunset.minute' />
                             </div>
 
                             <div class='row no-gutters my-1' x-show="clock.enabled && seasons.length >= 3">

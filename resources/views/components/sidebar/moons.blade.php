@@ -123,7 +123,6 @@
         icon="fas fa-moon"
         tooltip-title="More Info: Moons"
         helplink="moons"
-        checked="true"
 >
 
     <div x-data="moonSection($data)">
