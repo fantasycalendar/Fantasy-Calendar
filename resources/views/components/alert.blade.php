@@ -1,4 +1,4 @@
-@props(['type' => 'notice', 'icon' => null, 'color' => null])
+@props(['type' => 'notice', 'icon' => null, 'color' => null, 'padding' => 4])
 
 @php
     $styles = [
@@ -23,7 +23,7 @@
     $icon = $icon ?? $styles[$type]['icon'];
 @endphp
 
-<div {{ $attributes->except('x-text')->merge(['class' => "bg-$color-100 border-l-4 border-$color-400 dark:border-$color-600 dark:bg-$color-900 p-4"]) }}>
+<div {{ $attributes->except('x-text')->merge(['class' => "bg-$color-100 border-l-4 border-$color-400 dark:border-$color-600 dark:bg-$color-900 p-$padding"]) }}>
     <div class="flex">
         <div class="flex-shrink-0">
             <i class="{{ $icon }} text-{{ $color }}-400 dark:text-{{ $color }}-300"></i>

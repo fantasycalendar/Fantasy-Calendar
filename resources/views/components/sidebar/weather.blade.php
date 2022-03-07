@@ -28,7 +28,6 @@
     icon="fas fa-cloud-sun-rain"
     tooltip-title="More Info: Weather"
     helplink="weather"
-    checked="true"
 >
     <div x-data="weatherSection($data)">
 

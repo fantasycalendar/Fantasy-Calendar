@@ -102,6 +102,7 @@
     icon="fas fa-compass"
     tooltip-title="More Info: Locations"
     helplink="locations"
+    checked="true"
 >
 
     <div x-data="locationSection($data)">
@@ -110,9 +111,9 @@
             You need weather enabled (temperatures, precipitation) or the clock enabled (timezone, sunrise/sunset) for locations to function.
         </div>
 
-        <div class='row no-gutters'>
-            <p class="m-0">Preset locations work only with four or two seasons and weather enabled.</p>
-            <p><small>If you name your seasons winter, spring, summer, and autumn/fall, the system matches them with the presets' seasons, no matter which order.</small></p>
+        <div class='row no-gutters mb-4'>
+            <p class="mb-2">Preset locations work only with four or two seasons and weather enabled.</p>
+            <x-alert padding="2">If you name your seasons winter, spring, summer, and autumn/fall, the system matches them with the presets' seasons, no matter which order.</x-alert>
         </div>
 
         <div x-show="(seasons.length > 0 && season_settings.enable_weather) || clock.enabled">
@@ -122,7 +123,7 @@
             </div>
             <div class='row no-gutters mb-2'>
                 <select class='form-control' @change="changeCurrentLocation" :value="current_location">
-                    <optgroup label="Custom" value="custom">
+                    <optgroup label="Custom" value="custom" x-show="locations.length">
                         <template x-for="(location, index) in locations">
                             <option :value="index" x-text="location.name"></option>
                         </template>
@@ -135,10 +136,10 @@
                 </select>
             </div>
             <div class='row no-gutters my-2'>
-                <input type='button' value='Copy current location' class='btn btn-info full'>
+                <input type='button' value='Copy current location' class='btn btn-info w-100'>
             </div>
 
-            <div class='row no-gutters my-2'>
+            <div class='row no-gutters my-4'>
                 <div class='separator'></div>
             </div>
 
@@ -146,11 +147,9 @@
                 <div class='col'>New location:</div>
             </div>
 
-            <div class='row no-gutters'>
-                <div class="col">
-                    <input type='text' class='form-control name' placeholder='Location name' x-model="newLocationName">
-                </div>
-                <div class="col-auto">
+            <div class='row no-gutters input-group mb-4'>
+                <input type='text' class='form-control name' placeholder='Location name' x-model="newLocationName">
+                <div class="col-auto input-group-append">
                     <button type='button' class='btn btn-primary' @click="add({ name: newLocationName })"><i class="fa fa-plus"></i></button>
                 </div>
             </div>
@@ -193,12 +192,15 @@
                                             <div class='row no-gutters'>
                                                 <div class='col-lg-6 my-1'>
                                                     Temperature low:
-                                                    <input type='number' step="any" class='form-control full' x-model="location.seasons[season_index].weather.temp_low">
                                                 </div>
                                                 <div class='col-lg-6 my-1'>
                                                     Temperature high:
-                                                    <input type='number' step="any" class='form-control full' x-model="location.seasons[season_index].weather.temp_high">
                                                 </div>
+                                            </div>
+
+                                            <div class="my-2 input-group">
+                                                <input type='number' step="any" class='form-control' x-model="location.seasons[season_index].weather.temp_low">
+                                                <input type='number' step="any" class='form-control' x-model="location.seasons[season_index].weather.temp_high">
                                             </div>
 
                                             <div class='row no-gutters my-2'>
@@ -206,36 +208,43 @@
                                             </div>
 
                                             <div class='row no-gutters mt-2'>
-                                                Precipitation chance: (%)
+                                                Precipitation chance:
                                             </div>
 
                                             <div class='row no-gutters mb-2'>
-                                                <div class='col-9 pt-1'>
-                                                    <input type="range" min="0" max="1" step="0.01" x-model='location.seasons[season_index].weather.precipitation'>
-                                                    <div class='slider_percentage'></div>
+                                                <div class='col-8 pt-1'>
+                                                    <input type="range" class="custom-range" min="0" max="1" step="0.01" x-model='location.seasons[season_index].weather.precipitation'>
                                                 </div>
-                                                <div class='col-3 pl-1'>
-                                                    <input type='number' step="any" class='form-control form-control-sm full' min="0" max="100"
+                                                <div class='col-4 pl-1 input-group'>
+                                                    <input type='number' step="any" class='form-control' min="0" max="100"
                                                        :value='Math.floor(location.seasons[season_index].weather.precipitation*100)'
                                                        @input="location.seasons[season_index].weather.precipitation = Number($event.target.value) / 100"
                                                     >
+
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text border">%</span>
+                                                    </div>
                                                 </div>
                                             </div>
 
 
                                             <div class='row no-gutters mt-2'>
-                                                Precipitation intensity: (%)
+                                                Precipitation intensity:
                                             </div>
 
                                             <div class='row no-gutters mb-2'>
-                                                <div class='col-9 pt-1'>
-                                                    <input type="range" min="0" max="1" step="0.01" x-model='location.seasons[season_index].weather.precipitation_intensity'>
+                                                <div class='col-8 pt-1'>
+                                                    <input type="range" class="custom-range" min="0" max="1" step="0.01" x-model='location.seasons[season_index].weather.precipitation_intensity'>
                                                 </div>
-                                                <div class='col-3 pl-1'>
-                                                    <input type='number' step="any" class='form-control form-control-sm full' min="0" max="100"
+                                                <div class='col-4 pl-1 input-group'>
+                                                    <input type='number' step="any" class='form-control' min="0" max="100"
                                                        :value='Math.floor(location.seasons[season_index].weather.precipitation_intensity*100)'
                                                        @input="location.seasons[season_index].weather.precipitation_intensity = Number($event.target.value) / 100"
                                                     >
+
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text border">%</span>
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -255,18 +264,17 @@
                                                 <div class='col-6 pl-1'>Minute</div>
                                             </div>
 
-                                            <div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season, in this location">
+                                            <div class='mb-2 protip input-group' data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season, in this location">
+                                                <input type='number' step="1.0" class='form-control text-right' min="0" :max="clock.hours" :disabled="location.settings.season_based_time" x-model='location.seasons[season_index].time.sunrise.hour' />
 
-                                                <div class='col-6 pl-0 pr-1 clock-input'>
-                                                    <input type='number' step="1.0" class='form-control text-right full' min="0" :max="clock.hours" :disabled="location.settings.season_based_time" x-model='location.seasons[season_index].time.sunrise.hour' />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text border">:</span>
+                                                    <span class="input-group-text hidden">
+                                                        <!-- Empty span is here to trick bootstrap into square-ifying the ':' above -->
+                                                    </span>
                                                 </div>
 
-                                                <div class='col-auto pt-1'>:</div>
-
-                                                <div class='col pl-1 pr-0 clock-input'>
-                                                    <input type='number' step="1.0" class='form-control text-left full' min="0" :max="clock.minutes" :disabled="location.settings.season_based_time" x-model='location.seasons[season_index].time.sunrise.minute' />
-                                                </div>
-
+                                                <input type='number' step="1.0" class='form-control text-left border-left-0' min="0" :max="clock.minutes" :disabled="location.settings.season_based_time" x-model='location.seasons[season_index].time.sunrise.minute' />
                                             </div>
 
                                             <div class='row no-gutters mt-2'>
@@ -278,18 +286,17 @@
                                                 <div class='col-6 pl-1'>Minute</div>
                                             </div>
 
-                                            <div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season, in this location">
+                                            <div class='mb-2 protip input-group' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season, in this location">
+                                                <input type='number' step="1.0" class='form-control text-right' min="0" :max="clock.hours" :disabled="location.settings.season_based_time" x-model='location.seasons[season_index].time.sunset.hour' />
 
-                                                <div class='col-6 pl-0 pr-1 clock-input'>
-                                                    <input type='number' step="1.0" class='form-control text-right full' min="0" :max="clock.hours" :disabled="location.settings.season_based_time" x-model='location.seasons[season_index].time.sunset.hour' />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text border">:</span>
+                                                    <span class="input-group-text hidden">
+                                                        <!-- Empty span is here to trick bootstrap into square-ifying the ':' above -->
+                                                    </span>
                                                 </div>
 
-                                                <div class='col-auto pt-1'>:</div>
-
-                                                <div class='col pl-1 pr-0 clock-input'>
-                                                    <input type='number' step="1.0" class='form-control text-left full' min="0" :max="clock.minutes" :disabled="location.settings.season_based_time" x-model='location.seasons[season_index].time.sunset.minute' />
-                                                </div>
-
+                                                <input type='number' step="1.0" class='form-control text-left border-left-0' min="0" :max="clock.minutes" :disabled="location.settings.season_based_time" x-model='location.seasons[season_index].time.sunset.minute' />
                                             </div>
                                         </div>
                                         <div class='row no-gutters my-2'>
@@ -324,18 +331,17 @@
                                     <div class='col-6 pl-1'>Minute</div>
                                 </div>
 
-                                <div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="When this location becomes active, the current time will change this much to reflect the new location.">
+                                <div class='mb-2 protip input-group' data-pt-position="right" data-pt-title="When this location becomes active, the current time will change this much to reflect the new location.">
+                                    <input type='number' step="1.0" :min="Math.floor(clock.hours*-0.5)" :max="Math.floor(clock.hours*0.5)" class='form-control right-text ' x-model='location.settings.timezone.hour' />
 
-                                    <div class='col-6 pr-1 clock-input'>
-                                        <input type='number' step="1.0" :min="Math.floor(clock.hours*-0.5)" :max="Math.floor(clock.hours*0.5)" class='form-control right-text full' x-model='location.settings.timezone.hour' />
+                                    <div class="input-group-append">
+                                        <span class="input-group-text border">:</span>
+                                        <span class="input-group-text hidden">
+                                            <!-- Empty span is here to trick bootstrap into square-ifying the ':' above -->
+                                        </span>
                                     </div>
 
-                                    <div class='col-auto pt-1'>:</div>
-
-                                    <div class='col pl-1 clock-input'>
-                                        <input type='number' step="1.0" :min="Math.floor(clock.minutes*-0.5)" :max="Math.floor(clock.minutes*0.5)" class='form-control full' x-model='location.settings.timezone.minute' />
-                                    </div>
-
+                                    <input type='number' step="1.0" :min="Math.floor(clock.minutes*-0.5)" :max="Math.floor(clock.minutes*0.5)" class='form-control border-l-0' x-model='location.settings.timezone.minute' />
                                 </div>
 
                             </div>
@@ -349,13 +355,9 @@
                                     <div class='col-6 pr-1'>Large frequency:</div>
                                     <div class='col-6 pl-1'>Large amplitude:</div>
                                 </div>
-                                <div class='row no-gutters my-1'>
-                                    <div class='col-6 pr-1'>
-                                        <input step="0.0000001" type="number" class='form-control full' x-model.number='location.settings.large_noise_frequency'/>
-                                    </div>
-                                    <div class='col-6 pl-1'>
-                                        <input step="0.0000001" type="number" class='form-control full' x-model.number='location.settings.large_noise_amplitude'/>
-                                    </div>
+                                <div class='row no-gutters my-1 input-group'>
+                                    <input step="0.0000001" type="number" class='form-control' x-model.number='location.settings.large_noise_frequency'/>
+                                    <input step="0.0000001" type="number" class='form-control' x-model.number='location.settings.large_noise_amplitude'/>
                                 </div>
 
                                 <div class='row no-gutters my-1'>
@@ -366,13 +368,9 @@
                                         Medium amplitude:
                                     </div>
                                 </div>
-                                <div class='row no-gutters my-1'>
-                                    <div class='col-6 pr-1'>
-                                        <input step="0.0000001" type="number" class='form-control full' x-model.number='location.settings.medium_noise_frequency'/>
-                                    </div>
-                                    <div class='col-6 pl-1'>
-                                        <input step="0.0000001" type="number" class='form-control full' x-model.number='location.settings.medium_noise_amplitude'/>
-                                    </div>
+                                <div class='row no-gutters my-1 input-group'>
+                                    <input step="0.0000001" type="number" class='form-control' x-model.number='location.settings.medium_noise_frequency'/>
+                                    <input step="0.0000001" type="number" class='form-control' x-model.number='location.settings.medium_noise_amplitude'/>
                                 </div>
 
                                 <div class='row no-gutters my-1'>
@@ -383,13 +381,9 @@
                                         Small amplitude:
                                     </div>
                                 </div>
-                                <div class='row no-gutters my-1'>
-                                    <div class='col-6 pr-1'>
-                                        <input step="0.0000001" type="number" class='form-control full' x-model.number='location.settings.small_noise_frequency'/>
-                                    </div>
-                                    <div class='col-6 pl-1'>
-                                        <input step="0.0000001" type="number" class='form-control full' x-model.number='location.settings.small_noise_amplitude'/>
-                                    </div>
+                                <div class='row no-gutters my-1 input-group'>
+                                    <input step="0.0000001" type="number" class='form-control' x-model.number='location.settings.small_noise_frequency'/>
+                                    <input step="0.0000001" type="number" class='form-control' x-model.number='location.settings.small_noise_amplitude'/>
                                 </div>
                             </div>
 
