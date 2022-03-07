@@ -93,7 +93,6 @@
     icon="fas fa-redo"
     tooltip-title="More Info: Cycles"
     helplink="cycles"
-    checked="true"
 >
 
     <div

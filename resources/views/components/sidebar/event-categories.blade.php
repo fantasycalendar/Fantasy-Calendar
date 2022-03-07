@@ -50,6 +50,7 @@
     icon="fas fa-th-list"
     tooltip-title="More Info: Event Categories"
     helplink="event_categories"
+    checked="true"
 >
 
     <div x-data="eventCategorySection($data)">
@@ -59,11 +60,10 @@
                 New event category:
             </div>
         </div>
-        <div class='add_inputs event_categories row no-gutters'>
-            <div class="col">
-                <input type='text' class='form-control name' placeholder='Event category name' x-model="newCategoryName">
-            </div>
-            <div class="col-auto">
+        <div class='add_inputs event_categories input-group'>
+            <input type='text' class='form-control name' placeholder='Event category name' x-model="newCategoryName">
+
+            <div class="input-group-append">
                 <button type='button' class='btn btn-primary' @click="add(newCategoryName)"><i class="fa fa-plus"></i></button>
             </div>
         </div>
@@ -71,6 +71,7 @@
         <div class="row sortable-header no-gutters align-items-center">
             <div x-show="!reordering" @click="reordering = true" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
             <div x-show="reordering" @click="reordering = false" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
+            <div class="col-11 pl-2">Your Categories</div>
         </div>
 
         <div class="sortable list-group">
@@ -169,36 +170,40 @@
                         <div class='row no-gutters my-2'>
                             <div class='col-md-6 col-sm-12'>
                                 <div>Color:</div>
-                                <select class='custom-select form-control' x-model='category.event_settings.color'>
-                                    <option>Dark-Solid</option>
-                                    <option>Red</option>
-                                    <option>Pink</option>
-                                    <option>Purple</option>
-                                    <option>Deep-Purple</option>
-                                    <option>Blue</option>
-                                    <option>Light-Blue</option>
-                                    <option>Cyan</option>
-                                    <option>Teal</option>
-                                    <option>Green</option>
-                                    <option>Light-Green</option>
-                                    <option>Lime</option>
-                                    <option>Yellow</option>
-                                    <option>Orange</option>
-                                    <option>Blue-Grey</option>
-                                </select>
                             </div>
 
                             <div class='col-md-6 col-sm-12'>
                                 <div>Display:</div>
-                                <select class='custom-select form-control' x-model='category.event_settings.text'>
-                                    <option value="text">Just text</option>
-                                    <option value="dot">• Dot with text</option>
-                                    <option value="background">Background</option>
-                                </select>
                             </div>
                         </div>
 
-                        <div class='row no-gutters mt-1'>
+                        <div class="input-group">
+                            <select class='custom-select form-control' x-model='category.event_settings.color'>
+                                <option>Dark-Solid</option>
+                                <option>Red</option>
+                                <option>Pink</option>
+                                <option>Purple</option>
+                                <option>Deep-Purple</option>
+                                <option>Blue</option>
+                                <option>Light-Blue</option>
+                                <option>Cyan</option>
+                                <option>Teal</option>
+                                <option>Green</option>
+                                <option>Light-Green</option>
+                                <option>Lime</option>
+                                <option>Yellow</option>
+                                <option>Orange</option>
+                                <option>Blue-Grey</option>
+                            </select>
+
+                            <select class='custom-select form-control' x-model='category.event_settings.text'>
+                                <option value="text">Just text</option>
+                                <option value="dot">• Dot with text</option>
+                                <option value="background">Background</option>
+                            </select>
+                        </div>
+
+                        <div class='row no-gutters mt-2'>
                             <div class='col'>
                                 What the events will look like:
                             </div>
