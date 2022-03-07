@@ -235,7 +235,7 @@ body.page-calendars-index {
     border-radius: 1rem 0 0 1rem;
 
     @media screen and (min-width: 992px) {
-        left: calc(min(#{$sidebar-width}, 25rem) - 4rem);
+        left: calc(400px - 4rem);
     }
 }
 

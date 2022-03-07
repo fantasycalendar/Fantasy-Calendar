@@ -175,8 +175,6 @@
     <script src="{{ mix('js/calendar/calendar_presets.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_workers.js') }}"></script>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-
     @if(Auth::check() && Auth::user()->setting('dark_theme'))
         <link rel="stylesheet" href="{{ mix('css/app-dark.css') }}">
     @else
