@@ -9,12 +9,12 @@ const render_data_generator = {
 			(!Perms.player_at_least('co-owner')
 				&&
 				(
-					static_data.settings.hide_all_weather
+					window.calendar.static_data.settings.hide_all_weather
 					||
 					(
-						static_data.settings.hide_future_weather
+						window.calendar.static_data.settings.hide_future_weather
 						&&
-						epoch > dynamic_data.epoch
+						epoch > window.calendar.dynamic_data.epoch
 					)
 				)
 			)
@@ -79,9 +79,9 @@ const render_data_generator = {
 
         let moons = [];
         moon_loop:
-        for (let moon_index = 0; moon_index < static_data.moons.length; moon_index++) {
+        for (let moon_index = 0; moon_index < window.calendar.static_data.moons.length; moon_index++) {
 
-            let moon = static_data.moons[moon_index];
+            let moon = window.calendar.static_data.moons[moon_index];
 
             if (!moon.hidden || Perms.player_at_least('co-owner')) {
 
@@ -92,11 +92,11 @@ const render_data_generator = {
                 let shadow_color = moon.shadow_color ? moon.shadow_color : "#292b4a";
                 let hidden = moon.hidden;
 
-                for (let index in events) {
-                    if (events[index].overrides) {
-                        if (events[index].overrides.moons !== undefined) {
-                            if (events[index].overrides.moons[moon_index] !== undefined) {
-                                let moon_overrides = events[index].overrides.moons[moon_index];
+                for (let index in window.calendar.events) {
+                    if (window.calendar.events[index].overrides) {
+                        if (window.calendar.events[index].overrides.moons !== undefined) {
+                            if (window.calendar.events[index].overrides.moons[moon_index] !== undefined) {
+                                let moon_overrides = window.calendar.events[index].overrides.moons[moon_index];
                                 phase = moon_overrides.phase !== undefined && moon_overrides.override_phase ? moon_overrides.phase : phase;
                                 phase_name = Object.keys(moon_phases[moon.granularity])[phase];
                                 color = moon_overrides.color !== undefined ? moon_overrides.color : color;
@@ -131,7 +131,7 @@ const render_data_generator = {
 
 		let epoch_data = this.epoch_data[epoch];
 
-		if(static_data.settings.only_reveal_today && epoch > dynamic_data.epoch && !Perms.player_at_least('co-owner')){
+		if(window.calendar.static_data.settings.only_reveal_today && epoch > window.calendar.dynamic_data.epoch && !Perms.player_at_least('co-owner')){
 			return {
 				"number": "",
 				"text": "",
@@ -154,10 +154,10 @@ const render_data_generator = {
         let leap_day = undefined;
 		if(epoch_data.leap_day !== undefined){
 			let index = epoch_data.leap_day;
-            leap_day = static_data.year_data.leap_days[index];
+            leap_day = window.calendar.static_data.year_data.leap_days[index];
             if(leap_day.show_text){
                 text = leap_day.name;
-                if(static_data.settings.layout === "minimalistic"){
+                if(window.calendar.static_data.settings.layout === "minimalistic"){
                     number = "x";
                 }
             }
@@ -171,11 +171,11 @@ const render_data_generator = {
         let events = this.event_data[epoch] ? this.event_data[epoch] : [];
 
 		let moons = [];
-		if(!static_data.settings.hide_moons || (static_data.settings.hide_moons && Perms.player_at_least('co-owner'))){
+		if(!window.calendar.static_data.settings.hide_moons || (window.calendar.static_data.settings.hide_moons && Perms.player_at_least('co-owner'))){
             moons = this.get_moon_data(epoch_data, events);
 		}
 
-        let year_day = static_data.settings.add_year_day_number ? epoch_data.year_day : false;
+        let year_day = window.calendar.static_data.settings.add_year_day_number ? epoch_data.year_day : false;
 
 		return {
             "number": number,
@@ -226,13 +226,13 @@ const render_data_generator = {
         this.epoch_data = this.processed_data.epoch_data;
 
         this.render_data = {
-            "current_epoch": dynamic_data.epoch,
-            "preview_epoch": preview_date.epoch,
-            "render_style": static_data.settings.layout,
+            "current_epoch": window.calendar.dynamic_data.epoch,
+            "preview_epoch": window.calendar.preview_date.epoch,
+            "render_style": window.calendar.static_data.settings.layout,
             "timespans": [],
             "event_epochs": {},
             "timespan_event_epochs": {},
-            "current_month_only": static_data.settings.show_current_month,
+            "current_month_only": window.calendar.static_data.settings.show_current_month,
         }
 
         this.create_event_data();
@@ -256,7 +256,7 @@ const render_data_generator = {
                     "title": "",
                     "show_title": false,
                     "short_weekdays": timespan.truncated_week,
-                    "weekdays": static_data.year_data.global_week,
+                    "weekdays": window.calendar.static_data.year_data.global_week,
                     "show_weekdays": false,
                     "days": [[]],
                     "events": []
@@ -285,7 +285,7 @@ const render_data_generator = {
                 }
 
                 if(this.render_data.render_style !== "vertical") {
-                    for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
+                    for(weekday_number; weekday_number <= window.calendar.static_data.year_data.global_week.length; weekday_number++){
                         timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                     }
                 }
@@ -299,16 +299,16 @@ const render_data_generator = {
             let timespan_epoch_data = Object.values(timespan.epochs)[0];
 
             let timespan_data = {
-                "title": static_data.settings.add_month_number ? `${timespan.name} - Month ${timespan_epoch_data.timespan_number + 1}` : timespan.name,
+                "title": window.calendar.static_data.settings.add_month_number ? `${timespan.name} - Month ${timespan_epoch_data.timespan_number + 1}` : timespan.name,
                 "show_title": true,
                 "weekdays": timespan.week,
                 "short_weekdays": timespan.truncated_week,
-                "show_weekdays": !static_data.settings.hide_weekdays ? timespan.type === "month" : false,
+                "show_weekdays": !window.calendar.static_data.settings.hide_weekdays ? timespan.type === "month" : false,
                 "days": [[]],
                 "events": []
             }
 
-            if(!static_data.year_data.overflow){
+            if(!window.calendar.static_data.year_data.overflow){
                 week_day = 1;
             }
 
@@ -350,7 +350,7 @@ const render_data_generator = {
                             timespan_data = {
                                 "title": "",
                                 "show_title": false,
-                                "weekdays": static_data.year_data.global_week,
+                                "weekdays": window.calendar.static_data.year_data.global_week,
                                 "short_weekdays": timespan.truncated_week,
                                 "show_weekdays": false,
                                 "days": [[]],
@@ -380,7 +380,7 @@ const render_data_generator = {
                             }
 
                             if(this.render_data.render_style !== "vertical") {
-                                for(internal_weekday_number; internal_weekday_number <= static_data.year_data.global_week.length; internal_weekday_number++){
+                                for(internal_weekday_number; internal_weekday_number <= window.calendar.static_data.year_data.global_week.length; internal_weekday_number++){
                                     timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                                 }
                             }
@@ -388,11 +388,11 @@ const render_data_generator = {
                             this.render_data.timespans.push(timespan_data);
 
                             timespan_data = {
-                                "title": static_data.settings.add_month_number ? `${timespan.name} - Month ${index+1}` : timespan.name,
+                                "title": window.calendar.static_data.settings.add_month_number ? `${timespan.name} - Month ${index+1}` : timespan.name,
                                 "show_title": true,
                                 "weekdays": timespan.week,
                                 "short_weekdays": timespan.truncated_week,
-                                "show_weekdays": !static_data.settings.hide_weekdays ? timespan.type === "month" : false,
+                                "show_weekdays": !window.calendar.static_data.settings.hide_weekdays ? timespan.type === "month" : false,
                                 "days": [[]],
                                 "events": []
                             }
@@ -433,7 +433,7 @@ const render_data_generator = {
 
             this.render_data.timespans.push(timespan_data);
 
-            if(Perms.player_at_least('co-owner') || !static_data.settings.only_reveal_today || (static_data.settings.only_reveal_today && epoch > dynamic_data.epoch)){
+            if(Perms.player_at_least('co-owner') || !window.calendar.static_data.settings.only_reveal_today || (window.calendar.static_data.settings.only_reveal_today && epoch > window.calendar.dynamic_data.epoch)){
 
                 var filtered_leap_days_end = timespan.leap_days.filter(function(features) {
                     return features.intercalary && features.day === timespan.length;
@@ -445,7 +445,7 @@ const render_data_generator = {
                         "title": "",
                         "show_title": false,
                         "short_weekdays": timespan.truncated_week,
-                        "weekdays": static_data.year_data.global_week,
+                        "weekdays": window.calendar.static_data.year_data.global_week,
                         "show_weekdays": false,
                         "days": [[]],
                         "events": []
@@ -474,7 +474,7 @@ const render_data_generator = {
                     }
 
                     if(this.render_data.render_style !== "vertical") {
-                        for(weekday_number; weekday_number <= static_data.year_data.global_week.length; weekday_number++){
+                        for(weekday_number; weekday_number <= window.calendar.static_data.year_data.global_week.length; weekday_number++){
                             timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                         }
                     }
@@ -485,7 +485,7 @@ const render_data_generator = {
 
             }
 
-            if(static_data.settings.only_reveal_today && epoch > dynamic_data.epoch && !Perms.player_at_least('co-owner')){
+            if(window.calendar.static_data.settings.only_reveal_today && epoch > window.calendar.dynamic_data.epoch && !Perms.player_at_least('co-owner')){
                 break;
             }
 
@@ -551,26 +551,26 @@ const render_data_generator = {
 
         this.events_to_send = {};
 
-        if(static_data.settings.hide_events && !Perms.player_at_least('co-owner')){
+        if(window.calendar.static_data.settings.hide_events && !Perms.player_at_least('co-owner')){
             return {
                 success: true,
                 event_data: this.events_to_send
             }
         }
 
-		if(static_data.eras.length > 0 && (Perms.player_at_least('co-owner') || !static_data.settings.hide_eras)){
+		if(window.calendar.static_data.eras.length > 0 && (Perms.player_at_least('co-owner') || !window.calendar.static_data.settings.hide_eras)){
 
-			let num_eras = Object.keys(static_data.eras).length;
+			let num_eras = Object.keys(window.calendar.static_data.eras).length;
 
 			for(let era_index = 0; era_index < num_eras; era_index++){
 
-				let era = static_data.eras[era_index];
+				let era = window.calendar.static_data.eras[era_index];
 
 				if(era.settings.show_as_event){
 
                     let event_class = ['era_event'];
 
-                    let category = era.settings.event_category_id && era.settings.event_category_id > -1 ?  get_category(era.settings.event_category_id) : false;
+                    let category = era.settings.event_category_id && era.settings.event_category_id > -1 ?  window.calendar.get_category(era.settings.event_category_id) : false;
 
                     if(category && category.id !== -1){
                         if(category.event_settings.hide_full){
@@ -600,11 +600,11 @@ const render_data_generator = {
             }
         }
 
-        for(let event_index = 0; event_index < events.length; event_index++){
+        for(let event_index = 0; event_index < window.calendar.events.length; event_index++){
 
-            let event = events[event_index];
+            let event = window.calendar.events[event_index];
 
-            let category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
+            let category = event.event_category_id && event.event_category_id > -1 ?  window.calendar.get_category(event.event_category_id) : false;
 
             let category_hide = category && category.id !== -1 ? category.category_settings.hide : false;
 
@@ -621,7 +621,7 @@ const render_data_generator = {
                 event_class.push(!event.settings.print ? "d-print-none" : "");
                 event_class.push(event.settings.color ? event.settings.color : "");
                 event_class.push(event.settings.text ? event.settings.text : "");
-                event_class.push(event.settings.hide || static_data.settings.hide_events || category_hide ? " hidden_event" : "");
+                event_class.push(event.settings.hide || window.calendar.static_data.settings.hide_events || category_hide ? " hidden_event" : "");
                 event_class.push(start ? "event_start" : "");
                 event_class.push(end ? "event_end" : "");
 
@@ -683,10 +683,10 @@ const render_data_generator = {
 	create_event_data: function(){
 
         let evaluated_event_data = event_evaluator.init(
-            static_data,
-            dynamic_data,
-            events,
-            event_categories,
+            window.calendar.static_data,
+            window.calendar.dynamic_data,
+            window.calendar.events,
+            window.calendar.event_categories,
             this.epoch_data,
             undefined,
             this.processed_data.year_data.start_epoch,

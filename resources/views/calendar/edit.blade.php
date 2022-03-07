@@ -54,6 +54,13 @@
             calendar_valid: true,
             errors: [],
 
+            init(){
+                this.$nextTick(() => {
+                    window.calendar.render();
+                    this.$watch("static_data, dynamic_data, events, event_categories", this.calendarChanged.bind(this));
+                })
+            },
+
             get save_button_text(){
                 if(!this.calendar_valid){
                     return "Calendar has errors - can't save";
@@ -61,27 +68,23 @@
                 return this.calendar_changed ? "Save calendar" : "No changes to save";
             },
 
-            change(){
+            calendarChanged(){
                 this.calendar_changed = window.calendar.hasDataChanged();
                 this.errors = window.calendar.getErrors();
                 this.calendar_valid = !this.errors.length;
+                if(!this.calendar_valid) return;
+                window.calendar.render();
             }
 
         }
 
     }
 
-    $(document).ready(function() {
-        // preview_date = clone(dynamic_data);
-        // preview_date.follow = true;
-        // rebuild_calendar('calendar', dynamic_data);
-    });
-
     </script>
 @endpush
 
 @section('content')
-    <div id="generator_container" x-data="sidebar()" @change="change">
+    <div id="generator_container" x-data="sidebar()">
         @include('layouts.layouts')
         @include('layouts.weather_tooltip')
         @include('layouts.day_data_tooltip')

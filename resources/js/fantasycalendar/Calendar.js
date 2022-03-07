@@ -8,7 +8,7 @@ export default class Calendar{
         this.static_data = static_data;
         this.dynamic_data = dynamic_data;
         this.preview_date = clone(dynamic_data);
-        this.preview_date.follow = false;
+        this.preview_date.follow = true;
         this.events = events;
         this.event_categories = event_categories;
         this.link_data = link_data;
@@ -29,6 +29,10 @@ export default class Calendar{
                JSON.stringify(this.dynamic_data) !== JSON.stringify(this.old_dynamic_data) ||
                JSON.stringify(this.events) !== JSON.stringify(this.old_events) ||
                JSON.stringify(this.event_categories) !== JSON.stringify(this.old_event_categories);
+    }
+
+    render(){
+        rebuild_calendar('calendar');
     }
 
     getEpochForDate(year, timespan = 0, day = 1){
@@ -176,6 +180,25 @@ export default class Calendar{
 
         return errors;
 
+    }
+
+    get_category(search) {
+
+        if(this.event_categories.length === 0){
+            return {id: -1};
+        }
+
+        const results = isNaN(search) ? this.event_categories.filter(function(element) {
+            return slugify(element.name) === search;
+        }) :  this.event_categories.filter(function(element) {
+            return element.id === search;
+        });
+
+        if(results.length < 1) {
+            return {id: -1};
+        }
+
+        return results[0];
     }
 
 }

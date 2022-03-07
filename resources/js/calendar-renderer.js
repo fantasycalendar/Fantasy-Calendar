@@ -70,9 +70,9 @@ const calendar_renderer = {
         this.render_data.current_epoch = event.detail.current_epoch;
         this.render_data.preview_epoch = event.detail.preview_epoch;
         CalendarYearHeader.update(
-            static_data,
-            dynamic_data,
-            preview_date,
+            window.calendar.static_data,
+            window.calendar.dynamic_data,
+            window.calendar.preview_date,
             evaluated_static_data.epoch_data
         );
         this.scroll_to_epoch();
@@ -92,9 +92,9 @@ const calendar_renderer = {
         if(!this.loaded || this.rerendering) this.scroll_to_epoch();
 
         CalendarYearHeader.update(
-            static_data,
-            dynamic_data,
-            preview_date,
+            window.calendar.static_data,
+            window.calendar.dynamic_data,
+            window.calendar.preview_date,
             evaluated_static_data.epoch_data
         );
 
