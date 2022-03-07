@@ -102,7 +102,6 @@
     icon="fas fa-compass"
     tooltip-title="More Info: Locations"
     helplink="locations"
-    checked="true"
 >
 
     <div x-data="locationSection($data)">

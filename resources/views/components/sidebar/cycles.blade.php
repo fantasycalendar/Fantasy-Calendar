@@ -93,6 +93,7 @@
     icon="fas fa-redo"
     tooltip-title="More Info: Cycles"
     helplink="cycles"
+    checked="true"
 >
 
     <div
@@ -118,9 +119,10 @@
         </div>
 
 
-        <div class="row sortable-header no-gutters align-items-center">
+        <div class="row sortable-header no-gutters align-items-center" x-show="cycles.length">
             <div x-show="!reordering" @click="reordering = true" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
             <div x-show="reordering" @click="reordering = false" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
+            <div class="col-11 pl-2">Your Cycles</div>
         </div>
 
         <div class="sortable list-group">
@@ -132,7 +134,7 @@
                         <i class='handle icon-reorder' x-show="reordering"></i>
                         <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
                         <div class="input-group">
-                            <div class='name-container cycle-text center-text' x-text="`Cycle #${index+1} - Using \{\{${index+1}\}\}`"></div>
+                            <div class='name-container cycle-text flex items-center justify-center' x-text="`Cycle #${index+1} - Using \{\{${index+1}\}\}`"></div>
                             <div class="input-group-append">
                                 <div class='btn btn-danger icon-trash' @click="deleting = cycle" x-show="deleting !== cycle"></div>
                             </div>
@@ -170,23 +172,17 @@
                             </div>
                         </div>
 
-                        <div class='row no-gutters mb-1'>
-                            <div class='col-6 pr-1 pl-0'>
-                                <input type='number' step="1.0" class='form-control' min='1' x-model.number='cycle.length' />
-                            </div>
-
-                            <div class='col-6 pr-0 pl-1'>
-                                <input type='number' step="1.0" class='form-control' min='0' x-model.number='cycle.offset' />
-                            </div>
+                        <div class='row no-gutters mb-1 input-group'>
+                            <input type='number' step="1.0" class='form-control' min='1' x-model.number='cycle.length' />
+                            <input type='number' step="1.0" class='form-control' min='0' x-model.number='cycle.offset' />
                         </div>
 
                         <div class='row no-gutters mt-3 mb-2'>Number of names:</div>
 
-                        <div class='row no-gutters my-2'>
-                            <div class='col-6 pl-0 pr-1'>
-                                <input type='number' step="1.0" class='form-control' :value='cycle.names.length' @input="numberCycleNamesChanged($event, cycle, index)"/>
-                            </div>
-                            <div class='col-6 pl-1 pr-0'>
+                        <div class='row no-gutters my-2 input-group'>
+                            <input type='number' step="1.0" class='form-control' :value='cycle.names.length' @input="numberCycleNamesChanged($event, cycle, index)"/>
+
+                            <div class='col-6 input-group-append'>
                                 <button type='button' class='full btn btn-primary' @click="quickAddNames(cycle)">Quick add</button>
                             </div>
                         </div>
