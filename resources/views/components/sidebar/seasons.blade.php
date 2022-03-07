@@ -151,7 +151,6 @@
     icon="fas fa-snowflake"
     tooltip-title="Seasons"
     helplink="seasons"
-    checked="true"
 >
 
     <div x-data="seasonSection($data)">

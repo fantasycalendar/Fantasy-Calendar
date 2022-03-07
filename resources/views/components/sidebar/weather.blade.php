@@ -28,6 +28,7 @@
     icon="fas fa-cloud-sun-rain"
     tooltip-title="More Info: Weather"
     helplink="weather"
+    checked="true"
 >
     <div x-data="weatherSection($data)">
 
@@ -61,29 +62,33 @@
                     </div>
                 </div>
 
-                <div class='row no-gutters'>
-                    <div class='col-md-6 my-1'>
-                        Temperature system:
-                        <select class='custom-select form-control' x-model='settings.temp_sys'>
-                            <option selected value='metric'>Metric</option>
-                            <option value='imperial'>Imperial</option>
-                            <option value='both_m'>Both (inputs metric)</option>
-                            <option value='both_i'>Both (inputs imperial)</option>
-                        </select>
+                <div class="row no-gutters">
+                    <div class='col-6 my-1'>
+                        Temperature units:
                     </div>
 
-                    <div class='col-md-6 my-1'>
-                        Wind system:
-                        <select class='custom-select form-control' x-model='settings.wind_sys'>
-                            <option selected value='metric'>Metric</option>
-                            <option value='imperial'>Imperial</option>
-                            <option value='both'>Both</option>
-                        </select>
+                    <div class='col-6 my-1'>
+                        Wind speed units:
                     </div>
                 </div>
 
-                <div class='row no-gutters my-2 protip align-items-center' data-pt-position="right" data-pt-title="In addition of the temperature being shown, you'll also see the description for the temperature of that particular day.">
-                    <div class='col-8'>Cinematic temperature description:</div>
+                <div class='input-group'>
+                    <select class='custom-select form-control' x-model='settings.temp_sys'>
+                        <option selected value='metric'>Metric</option>
+                        <option value='imperial'>Imperial</option>
+                        <option value='both_m'>Both (inputs metric)</option>
+                        <option value='both_i'>Both (inputs imperial)</option>
+                    </select>
+
+                    <select class='custom-select form-control' x-model='settings.wind_sys'>
+                        <option selected value='metric'>Metric</option>
+                        <option value='imperial'>Imperial</option>
+                        <option value='both'>Both</option>
+                    </select>
+                </div>
+
+                <div class='row no-gutters mt-2 mb-4 protip align-items-center' data-pt-position="right" data-pt-title="In addition of the temperature being shown, you'll also see the description for the temperature of that particular day.">
+                    <div class='col-8'>Cinematic temp. description:</div>
                     <div class='col-4 text-right'>
                         <label class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" x-model='settings.cinematic'>
@@ -95,11 +100,9 @@
                 <div class='row no-gutters'>
                     <div class='col-auto'>Weather generation seed:</div>
                 </div>
-                <div class='row no-gutters'>
-                    <div class='col'>
-                        <input type='number' class='form-control full' x-model='settings.seed' />
-                    </div>
-                    <div class='col-auto'>
+                <div class='input-group'>
+                    <input type='number' class='form-control' x-model='settings.seed' />
+                    <div class="input-group-append">
                         <div class='btn btn-primary' @click="reseedWeather()"><i class="fa fa-redo"></i></div>
                     </div>
                 </div>
