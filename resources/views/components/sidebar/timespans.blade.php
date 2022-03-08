@@ -150,6 +150,7 @@
     icon="fas fa-calendar-alt"
     tooltip-title="More Info: Months & Intercalaries"
     helplink="months"
+    checked="true"
 >
 
     @if(request()->is('calendars/*/edit') && $calendar->isLinked())
@@ -232,16 +233,27 @@
 
                 <div class="sortable list-group">
                     <template x-for="(timespan, index) in timespans">
-                        <div class='sortable-container list-group-item' :class="timespan.type">
+                        <div class='sortable-container list-group-item' :class="{[timespan.type]: true, '!border-primary-500 !bg-primary-500/30': dropping === index && dragging !== index, 'opacity-60': dragging === index}">
+                            <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging > index">
+                                <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
+                                    <span class="text-primary-800 font-medium" x-text="timespans[dragging]?.name"></span>
+                                </div>
+                            </div>
 
-                            <div class='main-container' x-show="deleting !== timespan" @dragenter.prevent="dropping = index" @dragstart="dragging = index" @dragend="dragging = null">
-                                <i class='handle icon-reorder' draggable="true" x-show="reordering"></i>
+                            <div class='main-container'
+                                 x-show="deleting !== timespan"
+                                 @dragenter.prevent="dropping = index"
+                                 @dragstart="dragging = index"
+                                 @dragend="dragging = null; $nextTick(() => {dropping = null})"
+                                 :draggable="reordering"
+                            >
+                                <i class='handle icon-reorder' x-show="reordering"></i>
                                 <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
                                 <div class="input-group">
-                                    <input class='name-input small-input form-control' x-model="timespan.name" @change="$dispatch('timespan-name-changed')"/>
-                                    <input type='number' min='1' class='length-input form-control' x-model='timespan.length' style="max-width: 50px;" />
+                                    <input :disabled="reordering" class='name-input small-input form-control' x-model="timespan.name" @change="$dispatch('timespan-name-changed')"/>
+                                    <input :disabled="reordering" type='number' min='1' class='length-input form-control' x-model='timespan.length' style="max-width: 50px;" />
                                     <div class="input-group-append">
-                                        <div class='btn btn-danger icon-trash' @click="deleting = timespan" x-show="deleting !== timespan"></div>
+                                        <button type="button" :disabled="reordering" class='btn btn-danger icon-trash' @click.prevent="deleting = timespan" x-show="deleting !== timespan"></button>
                                     </div>
                                 </div>
                             </div>
@@ -328,6 +340,12 @@
                                         </div>
                                     </div>
                                 </template>
+                            </div>
+
+                            <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging < index">
+                                <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
+                                    <span class="text-primary-800 font-medium" x-text="timespans[dragging]?.name"></span>
+                                </div>
                             </div>
                         </div>
                     </template>
