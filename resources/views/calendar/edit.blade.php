@@ -52,13 +52,16 @@
             // Defaults
             calendar_changed: false,
             calendar_valid: true,
+            initialized: false,
             errors: [],
 
             init(){
+                const self = this;
+                this.$watch("static_data, dynamic_data, events, event_categories", this.calendarChanged.bind(this));
                 this.$nextTick(() => {
                     window.calendar.render();
-                    this.$watch("static_data, dynamic_data, events, event_categories", this.calendarChanged.bind(this));
-                })
+                    self.initialized = true;
+                });
             },
 
             get save_button_text(){
@@ -69,6 +72,8 @@
             },
 
             calendarChanged(){
+                // To avoid data updates re-triggering the intial render
+                if(!this.initialized) return;
                 this.calendar_changed = window.calendar.hasDataChanged();
                 this.errors = window.calendar.getErrors();
                 this.calendar_valid = !this.errors.length;
