@@ -58,36 +58,6 @@ function bind_calendar_events(){
 		calendar_weather.tooltip.hide();
 	});
 
-	$(document).on('change', '.event-text-input', function() {
-
-		let parent = $(this).closest('.sortable-container');
-
-		let value_input = this;
-
-		let output = parent.find('.event-text-output');
-		let input = parent.find('.event-text-input');
-
-		output.each(function() {
-
-			var classes = $(this).attr('class').split(' ');
-
-			if (classes.indexOf("hidden_event") > -1) {
-				classes.length = 4;
-			} else {
-				classes.length = 3;
-			}
-
-			classes.push($(value_input).val());
-			classes.push(input.not(value_input).val());
-
-			classes = classes.join(' ');
-
-			$(this).prop('class', classes);
-
-		})
-
-	});
-
 }
 
 function eval_apply_changes(output){

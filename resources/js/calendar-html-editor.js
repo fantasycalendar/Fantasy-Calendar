@@ -25,7 +25,7 @@ const calendar_html_editor = {
 
 		this.era_id = $event.detail.era_id;
 
-		this.description = static_data.eras[this.era_id].description ? static_data.eras[this.era_id].description : "";
+		this.description = window.calendar.static_data.eras[this.era_id].description ? window.calendar.static_data.eras[this.era_id].description : "";
 
 		this.html_input.trumbowyg("html", this.description);
 
@@ -35,7 +35,7 @@ const calendar_html_editor = {
 
 	save_html: function(){
 
-		static_data.eras[this.era_id].description = this.html_input.trumbowyg("html");
+        window.calendar.static_data.eras[this.era_id].description = this.html_input.trumbowyg("html");
 
 		this.close()
 

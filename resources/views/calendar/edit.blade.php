@@ -62,6 +62,7 @@
                     window.calendar.render();
                     self.initialized = true;
                 });
+                bind_calendar_events();
             },
 
             get save_button_text(){

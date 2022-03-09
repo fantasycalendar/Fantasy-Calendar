@@ -140,7 +140,7 @@ var calendar_weather = {
 				let epoch_data = calendar_weather.epoch_data[epoch];
 				if(epoch_data.leap_day !== undefined) {
 					let index = epoch_data.leap_day;
-					leap_day = static_data.year_data.leap_days[index];
+					let leap_day = window.calendar.static_data.year_data.leap_days[index];
 					if(leap_day.show_text) {
 						this.day_container.text(leap_day.name);
 					}
@@ -164,7 +164,7 @@ var calendar_weather = {
 				this.weather_clouds.parent().toggleClass('hidden', false);
 				this.weather_feature.parent().toggleClass('hidden', false);
 
-				if(static_data.seasons.global_settings.cinematic){
+				if(window.calendar.static_data.seasons.global_settings.cinematic){
 					this.weather_temp_desc.parent().css('display', '');
 				}else{
 					this.weather_temp_desc.parent().css('display', 'none');
@@ -174,10 +174,10 @@ var calendar_weather = {
 
 				var desc = weather.temperature.cinematic;
 
-				var temp_sys = static_data.seasons.global_settings.temp_sys;
+				var temp_sys = window.calendar.static_data.seasons.global_settings.temp_sys;
 
 				var temp = "";
-				if(!static_data.settings.hide_weather_temp || Perms.player_at_least('co-owner')){
+				if(!window.calendar.static_data.settings.hide_weather_temp || Perms.player_at_least('co-owner')){
 					if(temp_sys == 'imperial'){
 						temp_symbol = '°F';
 						var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString()+temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString()+temp_symbol}`;
@@ -190,21 +190,21 @@ var calendar_weather = {
 						var temp = `${temp_f}${temp_c}`;
 					}
 				}
-				this.weather_temp.toggleClass('newline', (temp_sys == 'both_i' || temp_sys == 'both_m') && (!static_data.settings.hide_weather_temp || Perms.player_at_least('co-owner')));
+				this.weather_temp.toggleClass('newline', (temp_sys == 'both_i' || temp_sys == 'both_m') && (!window.calendar.static_data.settings.hide_weather_temp || Perms.player_at_least('co-owner')));
 
 
-				var wind_sys = static_data.seasons.global_settings.wind_sys;
+				var wind_sys = window.calendar.static_data.seasons.global_settings.wind_sys;
 
 				var wind_text = ""
 				if(wind_sys == 'both'){
 					wind_text = `${weather.wind_speed} (${weather.wind_direction})`;
-					if(!static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')){
+					if(!window.calendar.static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')){
 						wind_text += `<span class='newline'>(${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH | ${weather.wind_velocity.knots} KN)</span>`;
 					}
 				}else{
 					var wind_symbol = wind_sys == "imperial" ? "MPH" : "KPH";
 					wind_text = `${weather.wind_speed} (${weather.wind_direction})`
-					if(!static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')){
+					if(!window.calendar.static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')){
 						wind_text += `<span class='newline'>(${weather.wind_velocity[wind_sys]} ${wind_symbol} | ${weather.wind_velocity.knots} KN)</span>`;
 					}
 				}
@@ -215,7 +215,7 @@ var calendar_weather = {
 
 				this.weather_temp.each(function(){
 					$(this).html(temp);
-				}).parent().toggleClass('hidden', static_data.settings.hide_weather_temp !== undefined && static_data.settings.hide_weather_temp && !Perms.player_at_least('co-owner'));
+				}).parent().toggleClass('hidden', window.calendar.static_data.settings.hide_weather_temp !== undefined && window.calendar.static_data.settings.hide_weather_temp && !Perms.player_at_least('co-owner'));
 
 				this.weather_wind.each(function(){
 					$(this).html(wind_text);
@@ -362,7 +362,7 @@ var climate_charts = {
 			removeData(this.day_length_chart);
 		}
 
-		if(!static_data.clock.enabled){
+		if(!window.calendar.static_data.clock.enabled){
 			this.day_length.addClass('hidden');
 			return;
 		}
@@ -440,7 +440,7 @@ var climate_charts = {
 							label: function(item, data) {
 								var datasetLabel = data.datasets[item.datasetIndex].label || "";
 								var dataPoint = item.yLabel;
-								return datasetLabel + ": " + time_data_to_string(static_data, dataPoint);
+								return datasetLabel + ": " + time_data_to_string(window.calendar.static_data, dataPoint);
 							}
 						}
 					},
@@ -459,9 +459,9 @@ var climate_charts = {
 						}],
 						yAxes: [{
 							ticks: {
-								suggestedMax: static_data.clock.hours-1,
+								suggestedMax: window.calendar.static_data.clock.hours-1,
 								callback: function(value, index, values) {
-									return value+":00";//time_data_to_string(static_data, dataPoint);
+									return value+":00";//time_data_to_string(window.calendar.static_data, dataPoint);
 								}
 							}
 						}]
@@ -523,7 +523,7 @@ var climate_charts = {
 		var precipitation = [[], [], []];
 		var labels = [];
 
-		var temp_sys = static_data.seasons.global_settings.temp_sys;
+		var temp_sys = window.calendar.static_data.seasons.global_settings.temp_sys;
 		if(temp_sys === "both_i"){
 			var temp_sys = "imperial";
 		}else if(temp_sys === "both_m"){

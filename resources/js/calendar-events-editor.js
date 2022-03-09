@@ -238,7 +238,7 @@ const calendar_events_editor = {
         this.initialize($event);
 
 	    if($event.detail.event_data === undefined && $event.detail.event_id){
-            $event.detail.event_data = clone(events[$event.detail.event_id]);
+            $event.detail.event_data = clone(window.calendar.events[$event.detail.event_id]);
             $event.detail.event_data.name += " (clone)";
         }
 
@@ -252,7 +252,7 @@ const calendar_events_editor = {
 
         this.set_up_moon_data();
 
-        this.event_id = Object.keys(events).length;
+        this.event_id = Object.keys(window.calendar.events).length;
 
         this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
 
@@ -301,7 +301,7 @@ const calendar_events_editor = {
             this.description_input.trumbowyg('html', this.working_event.description);
         }
 
-		let category_id = static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
+		let category_id = window.calendar.static_data.settings.default_category !== undefined ? window.calendar.static_data.settings.default_category : -1;
 
 		if (category_id !== -1) {
 			let category = get_category(category_id);
@@ -317,7 +317,7 @@ const calendar_events_editor = {
 
 		this.set_up_moon_data();
 
-		this.event_id = Object.keys(events).length;
+		this.event_id = Object.keys(window.calendar.events).length;
 
 		this.populate_condition_presets();
 		this.update_every_nth_presets();
@@ -353,7 +353,7 @@ const calendar_events_editor = {
 
 		this.event_id = $event.detail.event_id;
 
-		this.working_event = clone(events[this.event_id]);
+		this.working_event = clone(window.calendar.events[this.event_id]);
 
 		this.set_up_moon_data();
 
@@ -379,15 +379,15 @@ const calendar_events_editor = {
 
 		this.working_event.description = this.description_input.trumbowyg('html');
 
-		events[this.event_id] = clone(this.working_event);
+        window.calendar.events[this.event_id] = clone(this.working_event);
 
 		let not_view_page = window.location.pathname.indexOf('/edit') > -1 || window.location.pathname.indexOf('/calendars/create') > -1;
 
 		if (not_view_page) {
 			if (this.new_event) {
-				add_event_to_sortable(events_sortable, this.event_id, events[this.event_id]);
+				add_event_to_sortable(events_sortable, this.event_id, window.calendar.events[this.event_id]);
 			} else {
-				$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${events[this.event_id].name}`);
+				$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${window.calendar.events[this.event_id].name}`);
 			}
 
 			this.submit_event_callback(true);
@@ -760,11 +760,11 @@ const calendar_events_editor = {
 
 	event_has_changed() {
 
-		if (events[this.event_id] && this.inputs_changed) {
+		if (window.calendar.events[this.event_id] && this.inputs_changed) {
 
-			let event_check = clone(events[this.event_id])
+			let event_check = clone(window.calendar.events[this.event_id])
 
-			let eventid = events[this.event_id].id;
+			let eventid = window.calendar.events[this.event_id].id;
 
 			if (eventid !== undefined) {
 				event_check.id = eventid;
@@ -776,7 +776,7 @@ const calendar_events_editor = {
 
 			event_check.settings = clone(this.working_event.settings)
 
-			return !Object.compare(event_check, events[this.event_id])
+			return !Object.compare(event_check, window.calendar.events[this.event_id])
 
 		} else {
 
@@ -788,11 +788,11 @@ const calendar_events_editor = {
 
 	set_up_moon_data() {
 
-	    if(!static_data.moons.length) return;
+	    if(!window.calendar.static_data.moons.length) return;
 
 		this.moons = [];
-		for (let index in static_data.moons) {
-			let moon = clone(static_data.moons[index])
+		for (let index in window.calendar.static_data.moons) {
+			let moon = clone(window.calendar.moons[index])
 			moon.index = index;
 			moon.hidden = false;
 			moon.shadow_color = moon.shadow_color ? moon.shadow_color : "#292b4a";
@@ -947,13 +947,13 @@ const calendar_events_editor = {
 
 		this.moon_presets = [];
 
-		if(!static_data.moons.length) return;
+		if(!window.calendar.static_data.moons.length) return;
 
 		let moon_phase_collection = ''
 
-		for (let moon_index in static_data.moons) {
+		for (let moon_index in window.calendar.static_data.moons) {
 
-			let moon = static_data.moons[moon_index];
+			let moon = window.calendar.static_data.moons[moon_index];
 
 			let moon_phase_name = Object.keys(moon_phases[moon.granularity])[this.epoch_data.moon_phase[moon_index]];
 
@@ -1262,9 +1262,9 @@ const calendar_events_editor = {
 
 			case 'multimoon_every':
 				result = [];
-				for (let i = 0; i < static_data.moons.length; i++) {
+				for (let i = 0; i < window.calendar.static_data.moons.length; i++) {
 					result.push(['Moons', '0', [i, this.epoch_data.moon_phase[i]]])
-					if (i !== static_data.moons.length - 1) {
+					if (i !== window.calendar.static_data.moons.length - 1) {
 						result.push(['&&']);
 					}
 				}
@@ -1598,9 +1598,9 @@ const calendar_events_editor = {
 
                     html.push("<select class='form-control order-1'>")
 
-                    for (let i = 0; i < static_data.year_data.timespans.length; i++) {
+                    for (let i = 0; i < window.calendar.static_data.year_data.timespans.length; i++) {
                         html.push(`<option value='${i}'>`);
-                        html.push(static_data.year_data.timespans[i].name);
+                        html.push(window.calendar.static_data.year_data.timespans[i].name);
                         html.push("</option>");
                     }
 
@@ -1695,7 +1695,7 @@ const calendar_events_editor = {
 
                     html.push("<select class='form-control'>")
 
-                    let phases = Object.keys(moon_phases[static_data.moons[selected_moon].granularity]);
+                    let phases = Object.keys(moon_phases[window.calendar.static_data.moons[selected_moon].granularity]);
 
                     for (let i = 0; i < phases.length; i++) {
                         html.push(`<option value='${i}'>`);
@@ -1739,9 +1739,9 @@ const calendar_events_editor = {
 
 			html.push("<select class='form-control order-1'>")
 
-			for (let i = 0; i < static_data.cycles.data.length; i++) {
+			for (let i = 0; i < window.calendar.static_data.cycles.data.length; i++) {
 				html.push(`<optgroup label='${ordinal_suffix_of(i + 1)} cycle group' value='${i}'>`);
-				for (let j = 0; j < static_data.cycles.data[i].names.length; j++) {
+				for (let j = 0; j < window.calendar.static_data.cycles.data[i].names.length; j++) {
 					html.push(`<option value='${j}'>`);
 					html.push(`Cycle ${i + 1}: ${static_data.cycles.data[i].names[j]}`);
 					html.push("</option>");
@@ -1757,9 +1757,9 @@ const calendar_events_editor = {
 
 			html.push("<select class='form-control order-1'>");
 
-			for (let i = 0; i < static_data.eras.length; i++) {
+			for (let i = 0; i < window.calendar.static_data.eras.length; i++) {
 				html.push(`<option value='${i}'>`);
-				html.push(static_data.eras[i].name);
+				html.push(window.calendar.static_data.eras[i].name);
 				html.push("</option>");
 			}
 
@@ -1780,9 +1780,9 @@ const calendar_events_editor = {
 
                 if (type === "select") {
                     html.push("<select class='form-control order-1'>")
-                    for (let i = 0; i < static_data.seasons.data.length; i++) {
+                    for (let i = 0; i < window.calendar.static_data.seasons.data.length; i++) {
                         html.push(`<option value='${i}'>`);
-                        html.push(static_data.seasons.data[i].name);
+                        html.push(window.calendar.static_data.seasons.data[i].name);
                         html.push("</option>");
                     }
 
@@ -1835,22 +1835,22 @@ const calendar_events_editor = {
 
                     let weekdays = [];
 
-                    for (let i = 0; i < static_data.year_data.global_week.length; i++) {
+                    for (let i = 0; i < window.calendar.static_data.year_data.global_week.length; i++) {
 
-                        if (weekdays.indexOf(static_data.year_data.global_week[i]) === -1) {
-                            weekdays.push(static_data.year_data.global_week[i]);
+                        if (weekdays.indexOf(window.calendar.static_data.year_data.global_week[i]) === -1) {
+                            weekdays.push(window.calendar.static_data.year_data.global_week[i]);
                         }
 
                     }
 
-                    for (let i = 0; i < static_data.year_data.timespans.length; i++) {
+                    for (let i = 0; i < window.calendar.static_data.year_data.timespans.length; i++) {
 
-                        if (static_data.year_data.timespans[i].week) {
+                        if (window.calendar.static_data.year_data.timespans[i].week) {
 
-                            for (let j = 0; j < static_data.year_data.timespans[i].week.length; j++) {
+                            for (let j = 0; j < window.calendar.static_data.year_data.timespans[i].week.length; j++) {
 
-                                if (weekdays.indexOf(static_data.year_data.timespans[i].week[j]) === -1) {
-                                    weekdays.push(static_data.year_data.timespans[i].week[j]);
+                                if (weekdays.indexOf(window.calendar.static_data.year_data.timespans[i].week[j]) === -1) {
+                                    weekdays.push(window.calendar.static_data.year_data.timespans[i].week[j]);
                                 }
                             }
                         }
@@ -1899,9 +1899,9 @@ const calendar_events_editor = {
 
 			html.push("<select class='form-control'>")
 
-			for (let locationId in static_data.seasons.locations) {
+			for (let locationId in window.calendar.static_data.seasons.locations) {
 
-				let location = static_data.seasons.locations[locationId]
+				let location = window.calendar.static_data.seasons.locations[locationId]
 
 				html.push(`<option value="${locationId}">`);
 				html.push(location.name);
@@ -1915,9 +1915,9 @@ const calendar_events_editor = {
 
 			html.push("<select class='event_select form-control'>")
 
-			for (let eventId in events) {
+			for (let eventId in window.calendar.events) {
 
-				let event = events[eventId];
+				let event = window.calendar.events[eventId];
 
 				if (eventId === this.event_id) {
 					html.push(`<option disabled>`);
@@ -2074,9 +2074,9 @@ const calendar_events_editor = {
 		html.push(`<div class='condition_container ${type}'>`);
 		html.push("<div class='handle icon-reorder'></div>");
 		html.push("<select class='form-control moon_select'>");
-		for (let i = 0; i < static_data.moons.length; i++) {
+		for (let i = 0; i < window.calendar.static_data.moons.length; i++) {
 			html.push(`<option value='${i}'>`);
-			html.push(static_data.moons[i].name);
+			html.push(window.calendar.static_data.moons[i].name);
 			html.push("</option>");
 		}
 		html.push("</select>");
@@ -2087,23 +2087,23 @@ const calendar_events_editor = {
 		for (let i = 0; i < keys.length; i++) {
 
 			if (
-				(keys[i] === "Era year" && static_data.eras === undefined)
+				(keys[i] === "Era year" && window.calendar.static_data.eras === undefined)
 				||
-				(keys[i] === "Era" && static_data.eras === undefined)
+				(keys[i] === "Era" && window.calendar.static_data.eras === undefined)
 				||
-				(keys[i] === "Month" && static_data.year_data.timespans === undefined)
+				(keys[i] === "Month" && window.calendar.static_data.year_data.timespans === undefined)
 				||
-				(keys[i] === "Weekday" && static_data.year_data.global_week === undefined)
+				(keys[i] === "Weekday" && window.calendar.static_data.year_data.global_week === undefined)
 				||
-				(keys[i] === "Moons" && static_data.moons === undefined)
+				(keys[i] === "Moons" && window.calendar.static_data.moons === undefined)
 				||
-				(keys[i] === "Cycle" && static_data.cycles === undefined)
+				(keys[i] === "Cycle" && window.calendar.static_data.cycles === undefined)
 				||
-				(keys[i] === "Events" && events.length <= 1)
+				(keys[i] === "Events" && window.calendar.events.length <= 1)
 				||
-				(keys[i] === "Season" && static_data.seasons.data.length < 1)
+				(keys[i] === "Season" && window.calendar.static_data.seasons.data.length < 1)
 				||
-				(keys[i] === "Location" && static_data.seasons.locations.length < 1)
+				(keys[i] === "Location" && window.calendar.static_data.seasons.locations.length < 1)
 			) {
 				continue;
 			}
@@ -2208,8 +2208,8 @@ const calendar_events_editor = {
 
 		let warnings = [];
 
-		for (let eventId in events) {
-			if (events[eventId].data.connected_events !== undefined) {
+		for (let eventId in window.calendar.events) {
+			if (window.calendar.events[eventId].data.connected_events !== undefined) {
 				let connected_events = events[eventId].data.connected_events;
 				if (connected_events.includes(String(delete_event_id)) || connected_events.includes(Number(delete_event_id))) {
 					warnings.push(eventId);
@@ -2221,14 +2221,14 @@ const calendar_events_editor = {
 
 			let html = [];
 			html.push(`<div class='text-left'>`)
-			html.push(`<h5>You trying to delete "${events[delete_event_id].name}" which is used in the conditions of the following events:</h5>`)
+			html.push(`<h5>You trying to delete "${window.calendar.events[delete_event_id].name}" which is used in the conditions of the following events:</h5>`)
 			html.push(`<ul>`);
 			for (let i = 0; i < warnings.length; i++) {
 				let warning_event_id = warnings[i];
-				html.push(`<li>${events[warning_event_id].name}</li>`);
+				html.push(`<li>${window.calendar.events[warning_event_id].name}</li>`);
 			}
 			html.push(`</ul>`);
-			html.push(`<p>Please remove the conditions using "${events[delete_event_id].name}" in these events before trying to delete it.</p>`)
+			html.push(`<p>Please remove the conditions using "${window.calendar.events[delete_event_id].name}" in these events before trying to delete it.</p>`)
 			html.push(`</div>`);
 
 			swal.fire({
@@ -2245,7 +2245,7 @@ const calendar_events_editor = {
 			swal.fire({
 
 				title: "Warning!",
-				html: `Are you sure you want to delete the event<br>"${events[delete_event_id].name}"?`,
+				html: `Are you sure you want to delete the event<br>"${window.calendar.events[delete_event_id].name}"?`,
 				showCancelButton: true,
 				confirmButtonColor: '#d33',
 				cancelButtonColor: '#3085d6',
@@ -2263,7 +2263,7 @@ const calendar_events_editor = {
 						events_sortable.children(`[index='${delete_event_id}']`).remove();
 
 						events_sortable.children().each(function(i) {
-							events[i].sort_by = i;
+                            window.calendar.events[i].sort_by = i;
 							$(this).attr('index', i);
 						});
 
@@ -2289,18 +2289,18 @@ const calendar_events_editor = {
 
 	delete_event(delete_event_id) {
 
-		for (let eventId in events) {
-			if (events[eventId].data.connected_events !== undefined) {
+		for (let eventId in window.calendar.events) {
+			if (window.calendar.events[eventId].data.connected_events !== undefined) {
 				for (let connectedId in events[eventId].data.connected_events) {
 					let number = Number(events[eventId].data.connected_events[connectedId])
 					if (number > delete_event_id) {
-						events[eventId].data.connected_events[connectedId] = String(number - 1)
+                        window.calendar.events[eventId].data.connected_events[connectedId] = String(number - 1)
 					}
 				}
 			}
 		}
 
-		events.splice(delete_event_id, 1);
+        window.calendar.events.splice(delete_event_id, 1);
 
         this.close();
 
@@ -2367,28 +2367,28 @@ const calendar_events_editor = {
 
 		if (this.new_event) {
 
-			events[this.event_id] = {}
+            window.calendar.events[this.event_id] = {}
 
-			events[this.event_id].data = this.create_event_data();
+            window.calendar.events[this.event_id].data = this.create_event_data();
 
 		} else {
 
-			this.backup_event_data = clone(events[this.event_id].data);
+			this.backup_event_data = clone(window.calendar.events[this.event_id].data);
 
-			events[this.event_id].data = this.create_event_data();
+            window.calendar.events[this.event_id].data = this.create_event_data();
 
 		}
 
-		let start_year = preview_date.year;
-		let end_year = preview_date.year + years;
+		let start_year = window.calendar.preview_date.year;
+		let end_year = window.calendar.preview_date.year + years;
 
 		this.worker_event_tester = new Worker('/js/webworkers/worker_event_tester.js')
 
 		this.worker_event_tester.postMessage(JSON.parse(JSON.stringify({
-			calendar_name: calendar_name,
-			static_data: static_data,
-			dynamic_data: preview_date,
-			events: events,
+			calendar_name: window.calendar.name,
+			static_data: window.calendar.static_data,
+			dynamic_data: window.calendar.preview_date,
+			events: window.calendar.events,
 			event_categories: event_categories,
 			owner: Perms.player_at_least('co-owner'),
 			start_year: start_year,
@@ -2413,7 +2413,7 @@ const calendar_events_editor = {
 
 				if (!event_editor_ui.new_event) {
 
-					events[event_editor_ui.event_id].data = clone(event_editor_ui.backup_event_data)
+                    window.calendar.events[event_editor_ui.event_id].data = clone(event_editor_ui.backup_event_data)
 					event_editor_ui.backup_event_data = {}
 
 				}
@@ -2456,7 +2456,7 @@ const calendar_events_editor = {
 
 			let year = occurrence.year;
 			let timespan = occurrence.timespan;
-			let timespan_name = static_data.year_data.timespans[occurrence.timespan].name;
+			let timespan_name = window.calendar.static_data.year_data.timespans[occurrence.timespan].name;
 			let day = occurrence.day;
 			let intercalary = occurrence.intercalary;
 
@@ -2531,7 +2531,7 @@ const calendar_events_editor = {
 		if (working_event){
 			current_event = clone(this.working_event);
 		}else{
-			current_event = events[event_id];
+			current_event = window.calendar.events[event_id];
 		}
 		this.checked_events.push(current_event);
 
@@ -2551,17 +2551,17 @@ const calendar_events_editor = {
 
 	look_through_event_chain(child, parent_id) {
 
-		if (events[parent_id].data.connected_events !== undefined && events[parent_id].data.connected_events.length > 0) {
+		if (window.calendar.events[parent_id].data.connected_events !== undefined && window.calendar.events[parent_id].data.connected_events.length > 0) {
 
-			if (events[parent_id].data.connected_events.includes(child)) {
+			if (window.calendar.events[parent_id].data.connected_events.includes(child)) {
 
 				return false;
 
 			} else {
 
-				for (let i = 0; i < events[parent_id].data.connected_events.length; i++) {
+				for (let i = 0; i < window.calendar.events[parent_id].data.connected_events.length; i++) {
 
-					let id = events[parent_id].data.connected_events[i];
+					let id = window.calendar.events[parent_id].data.connected_events[i];
 
 					let result = this.look_through_event_chain(child, id);
 
