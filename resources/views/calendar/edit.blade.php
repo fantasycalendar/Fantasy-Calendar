@@ -96,13 +96,9 @@
             dragging: null,
             dropping: null,
 
-            swapArrayElements(array, x, y) {
-                if (array.length === 1) return array;
-                array.splice(y, 1, array.splice(x, 1, array[y])[0]);
-                return array;
-            },
-
             dropped(){
+
+                console.log(this.dragging, this.dropping)
 
                 if(this.dragging === this.dropping || this.dragging === null || this.dropping === null){
                     this.dragging = null;
@@ -114,7 +110,7 @@
 
                 data.splice(this.dropping, 0, elem);
 
-                window.dispatchEvent(new CustomEvent(eventName));
+                if(eventName) window.dispatchEvent(new CustomEvent(eventName));
 
                 this.dragging = null;
                 this.dropping = null;
