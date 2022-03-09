@@ -73,13 +73,52 @@
             },
 
             calendarChanged(){
-                // To avoid data updates re-triggering the intial render
+                // To avoid data updates re-triggering the initial render
                 if(!this.initialized) return;
                 this.calendar_changed = window.calendar.hasDataChanged();
                 this.errors = window.calendar.getErrors();
                 this.calendar_valid = !this.errors.length;
                 if(!this.calendar_valid) return;
                 window.calendar.render();
+            }
+
+        }
+
+    }
+
+
+
+    function sortableList(data, eventName){
+
+        return {
+
+            reordering: false,
+            dragging: null,
+            dropping: null,
+
+            swapArrayElements(array, x, y) {
+                if (array.length === 1) return array;
+                array.splice(y, 1, array.splice(x, 1, array[y])[0]);
+                return array;
+            },
+
+            dropped(){
+
+                if(this.dragging === this.dropping || this.dragging === null || this.dropping === null){
+                    this.dragging = null;
+                    this.dropping = null;
+                    return;
+                }
+
+                const elem = data.splice(this.dragging, 1)[0];
+
+                data.splice(this.dropping, 0, elem);
+
+                window.dispatchEvent(new CustomEvent(eventName));
+
+                this.dragging = null;
+                this.dropping = null;
+
             }
 
         }

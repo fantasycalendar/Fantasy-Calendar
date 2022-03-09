@@ -40,7 +40,7 @@
                 },
 
                 getWeekdays(leapday){
-                    const weekdays = this.timespans[leapday.timespan]?.week ?? this.global_week;
+                    const weekdays = clone(this.timespans[leapday.timespan]?.week ?? this.global_week);
                     weekdays.unshift(`Before ${weekdays[0]}`);
                     return weekdays;
                 },

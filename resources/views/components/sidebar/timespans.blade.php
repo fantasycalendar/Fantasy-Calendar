@@ -92,53 +92,6 @@
             }
         }
 
-        function sortableList(data, dataKey, eventName){
-
-            return {
-
-                reordering: false,
-                dragging: null,
-                dropping: null,
-
-                swapArrayElements(array, x, y) {
-                    if (array.length === 1) return array;
-                    array.splice(y, 1, array.splice(x, 1, array[y])[0]);
-                    return array;
-                },
-
-                dropped(){
-
-                    if(this.dragging === this.dropping || this.dragging === null || this.dropping === null){
-                        this.dragging = null;
-                        this.dropping = null;
-                        return;
-                    }
-
-                    if (this.dragging < this.dropping) {
-                        data[dataKey] = [
-                            ...data[dataKey].slice(0, this.dragging),
-                            ...data[dataKey].slice(this.dragging + 1, this.dropping + 1),
-                            data[dataKey][this.dragging],
-                            ...data[dataKey].slice(this.dropping + 1)];
-                    }else{
-                        data[dataKey] = [
-                            ...data[dataKey].slice(0, this.dropping),
-                            data[dataKey][this.dragging],
-                            ...data[dataKey].slice(this.dropping, this.dragging),
-                            ...data[dataKey].slice(this.dragging + 1)];
-                    }
-
-                    window.dispatchEvent(new CustomEvent(eventName));
-
-                    this.dragging = null;
-                    this.dropping = null;
-
-                }
-
-            }
-
-        }
-
     </script>
 
 @endpush
@@ -220,7 +173,7 @@
             </div>
 
             <div
-                x-data="sortableList($data.static_data.year_data, 'timespans', 'timespan-order-changed')"
+                x-data="sortableList($data.static_data.year_data.timespans, 'timespan-order-changed')"
                 @drop.prevent="dropped"
             >
 
