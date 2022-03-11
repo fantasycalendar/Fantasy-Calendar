@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use App\CalendarInvite;
 use App\Http\Requests\ChangeUserRoleRequest;

@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\Api\CalendarController;
-use App\Http\Controllers\Api\CalendarEventController;
-use App\Http\Controllers\Api\CalendarRendererController;
-use App\Http\Controllers\Api\EventCategoryController;
-use App\Http\Controllers\Api\EventCommentController;
-use App\Http\Controllers\Api\PresetController;
-use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\V1\CalendarController;
+use App\Http\Controllers\Api\V1\CalendarEventController;
+use App\Http\Controllers\Api\V1\CalendarRendererController;
+use App\Http\Controllers\Api\V1\EventCategoryController;
+use App\Http\Controllers\Api\V1\EventCommentController;
+use App\Http\Controllers\Api\V1\PresetController;
+use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Http\Request;
 
 /*
