@@ -13,6 +13,7 @@ Alpine.start()
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.withCredentials = true;
 
 /**
  * Next we will register the CSRF Token as a common header with Axios so that
@@ -27,14 +28,14 @@ if (token) {
 } else {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
-
-let authorization = document.head.querySelector('meta[name="api-token"]');
-
-if (authorization) {
-    window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + authorization.content;
-} else {
-    console.log('No API token.');
-}
+//
+// let authorization = document.head.querySelector('meta[name="api-token"]');
+//
+// if (authorization) {
+//     window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + authorization.content;
+// } else {
+//     console.log('No API token.');
+// }
 
 /**
  * Sweet Alert provides rich alerts that are much nicer than is provided by

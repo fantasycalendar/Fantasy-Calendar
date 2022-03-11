@@ -20,10 +20,10 @@ class UserController extends Controller
         $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
         request()->merge([$field => $login]);
 
-        if(Auth::once($request->only([$field, 'password']))) {
+        if(auth()->once($request->only([$field, 'password']))) {
             return [
-                'username' => Auth::user()->username,
-                'api_token' => Auth::user()->api_token,
+                'username' => auth()->user()->username,
+                'api_token' => auth()->user()->api_token,
             ];
         }
 
