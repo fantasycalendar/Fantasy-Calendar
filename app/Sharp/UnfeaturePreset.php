@@ -25,6 +25,6 @@ class UnfeaturePreset extends InstanceCommand
 
         Preset::findOrFail($instanceId)->unFeature();
 
-        return $this->link('/sharp/list/presets');
+        return $this->link('/sharp/s-list/presets');
     }
 }

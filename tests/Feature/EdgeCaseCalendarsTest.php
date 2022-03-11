@@ -61,8 +61,20 @@ class EdgeCaseCalendarsTest extends TestCase
         });
     }
 
-    private function testCalendar($calendar, $fromYear = -100, $toYear = 100)
+    private function testCalendar($calendar, $fromYear = null, $toYear = null)
     {
+        if(is_null($fromYear)) {
+            $fromYear = env('GITHUB_ACTIONS', false)
+                ? -30
+                : -100;
+        }
+
+        if(is_null($toYear)) {
+            $toYear = env('GITHUB_ACTIONS', false)
+                ? 30
+                : 100;
+        }
+
         $calendar->setDate($fromYear);
 
         $epochs = EpochFactory::forCalendarYear($calendar);

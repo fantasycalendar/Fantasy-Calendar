@@ -1,5 +1,12 @@
 <?php
 
+use App\Http\Controllers\Api\CalendarController;
+use App\Http\Controllers\Api\CalendarEventController;
+use App\Http\Controllers\Api\CalendarRendererController;
+use App\Http\Controllers\Api\EventCategoryController;
+use App\Http\Controllers\Api\EventCommentController;
+use App\Http\Controllers\Api\PresetController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 
 /*
@@ -13,36 +20,36 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::any('/user/login', 'Api\UserController@authenticate');
-Route::middleware('auth:api')->get('/user', 'Api\UserController@user');
+Route::any('/user/login', [UserController::class, 'authenticate']);
+Route::middleware('auth:api')->get('/user', [UserController::class, 'user']);
 
-Route::any('/calendar/{calendar}/clone', 'Api\CalendarController@clone');
-Route::any('/calendar/{calendar}/owned', 'Api\CalendarController@owned');
-Route::any('/calendar/{calendar}/users', 'Api\CalendarController@users');
-Route::any('/calendar/{calendar}/inviteUser', 'Api\CalendarController@inviteUser');
-Route::any('/calendar/{calendar}/removeUser', 'Api\CalendarController@removeUser');
-Route::any('/calendar/{calendar}/resend_invite', 'Api\CalendarController@resend_invite');
-Route::any('/calendar/{calendar}/changeUserRole', 'Api\CalendarController@changeUserRole');
-Route::any('/calendar/{calendar}/children', 'Api\CalendarController@children');
-Route::any('/calendar/{calendar}/last_changed', 'Api\CalendarController@last_changed');
-Route::any('/calendar/{calendar}/dynamic_data', 'Api\CalendarController@dynamic_data');
-Route::any('/calendar/{calendar}/changeDate', 'Api\CalendarController@changeDate');
-Route::any('/calendar/{calendar}/getCurrentDate', 'Api\CalendarController@getCurrentDate');
-Route::apiResource('calendar', 'Api\CalendarController');
+Route::any('/calendar/{calendar}/clone', [CalendarController::class, 'clone']);
+Route::any('/calendar/{calendar}/owned', [CalendarController::class, 'owned']);
+Route::any('/calendar/{calendar}/users', [CalendarController::class, 'users']);
+Route::any('/calendar/{calendar}/inviteUser', [CalendarController::class, 'inviteUser']);
+Route::any('/calendar/{calendar}/removeUser', [CalendarController::class, 'removeUser']);
+Route::any('/calendar/{calendar}/resend_invite', [CalendarController::class, 'resend_invite']);
+Route::any('/calendar/{calendar}/changeUserRole', [CalendarController::class, 'changeUserRole']);
+Route::any('/calendar/{calendar}/children', [CalendarController::class, 'children']);
+Route::any('/calendar/{calendar}/last_changed', [CalendarController::class, 'last_changed']);
+Route::any('/calendar/{calendar}/dynamic_data', [CalendarController::class, 'dynamic_data']);
+Route::any('/calendar/{calendar}/changeDate', [CalendarController::class, 'changeDate']);
+Route::any('/calendar/{calendar}/getCurrentDate', [CalendarController::class, 'getCurrentDate']);
+Route::apiResource('calendar', CalendarController::class);
 
 
-Route::apiResource('eventcategory', 'Api\EventCategoryController');
+Route::apiResource('eventcategory', EventCategoryController::class);
 
-Route::any('/eventcomment/event/{id}', 'Api\EventCommentController@forEvent');
-Route::any('/eventcomment/calendar/{id}', 'Api\EventCommentController@forCalendar');
-Route::apiResource('eventcomment', 'Api\EventCommentController');
+Route::any('/eventcomment/event/{id}', [EventCommentController::class, 'forEvent']);
+Route::any('/eventcomment/calendar/{id}', [EventCommentController::class, 'forCalendar']);
+Route::apiResource('eventcomment', EventCommentController::class);
 
-Route::apiResource('event', 'Api\CalendarEventController');
+Route::apiResource('event', CalendarEventController::class);
 
-Route::get('presets', Api\PresetController::class.'@list');
-Route::get('preset/{id}', Api\PresetController::class.'@show');
-Route::get('presets.html', Api\PresetController::class.'@listHtml');
+Route::get('presets', [PresetController::class, 'list']);
+Route::get('preset/{id}', [PresetController::class, 'show']);
+Route::get('presets.html', [PresetController::class, 'listHtml']);
 
 Route::prefix('render/{calendar}')->group(function() {
-    Route::get('/month/{year?}/{month?}/{day?}', Api\CalendarRendererController::class.'@month');
+    Route::get('/month/{year?}/{month?}/{day?}', [CalendarRendererController::class, 'month']);
 });

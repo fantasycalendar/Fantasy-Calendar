@@ -46,7 +46,7 @@ class ImageRendererTest extends TestCase
 
 //                Storage::disk('local')->put('tmp/' . Str::slug(Str::ascii($calendar->name)) . '_' . Str::slug(Str::ascii($calendar->current_date)) . '.png', $freshBlob);
 
-                $this->assertEquals(0.0, $this->compareImages($expectationBlob, $freshBlob));
+                $this->assertEquals(round(0.0, 2), round($this->compareImages($expectationBlob, $freshBlob), 2));
             });
         });
     }

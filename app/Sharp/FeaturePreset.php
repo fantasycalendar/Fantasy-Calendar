@@ -25,6 +25,6 @@ class FeaturePreset extends InstanceCommand
 
         Preset::findOrFail($instanceId)->feature();
 
-        return $this->link('/sharp/list/presets');
+        return $this->link('/sharp/s-list/presets');
     }
 }
