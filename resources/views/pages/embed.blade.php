@@ -144,7 +144,7 @@
                 login: function($event) {
                     $event.preventDefault();
 
-                    fetch('/api/user/login', {
+                    fetch(window.apiurl + '/user/login', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -268,7 +268,6 @@
                             throw new Error(`Updating setting ${name} is not allowed!`);
                             return;
                         }
-
                     }
 
                     dispatch('updated-settings', params);
@@ -297,7 +296,7 @@
                         return;
                     }
 
-                    fetch('/api/calendar/{{ $calendar->hash }}/' + method, {
+                    fetch(window.apiurl + '/calendar/{{ $calendar->hash }}/' + method, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
