@@ -39,13 +39,13 @@ class EventCommentController extends Controller
     public function store(Request $request)
     {
         $commentData = [
-            'user_id' => auth('api')->user()->id,
+            'user_id' => auth()->user()->id,
             'event_id' => $request->get('event_id'),
             'calendar_id' => $request->get('calendar_id'),
             'content' => $request->get('content')
         ];
 
-        if(!auth('api')->user()->can('add-comment', [$commentData])) {
+        if(!auth()->user()->can('add-comment', [$commentData])) {
             return response()->make(['success' => false, 'message' => "You're not authorized to comment on this event!"]);
         }
 
@@ -113,7 +113,7 @@ class EventCommentController extends Controller
     {
         $comment = CalendarEventComment::find($id);
 
-        if(!auth('api')->user()->can('update', $comment)) {
+        if(!auth()->user()->can('update', $comment)) {
             return response()->json(['success' => false, 'message' => "You're not authorized to edit that event comment!"]);
         }
 
@@ -129,7 +129,7 @@ class EventCommentController extends Controller
     public function destroy($id)
     {
         $comment = CalendarEventComment::findOrFail($id);
-        if(!auth('api')->user()->can('delete', $comment)) {
+        if(!auth()->user()->can('delete', $comment)) {
             return response()->json(['error' => true, 'message' => "You're not authorized to delete that event comment!"]);
         }
 

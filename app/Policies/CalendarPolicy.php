@@ -30,7 +30,7 @@ class CalendarPolicy
      */
     public function view(?User $user, Calendar $calendar)
     {
-        $user = $user ?? auth('api')->user() ?? null;
+        $user = $user ?? auth()->user() ?? null;
 
         return !$calendar->disabled
             && (!$calendar->setting('private')

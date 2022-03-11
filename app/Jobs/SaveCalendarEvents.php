@@ -52,7 +52,7 @@ class SaveCalendarEvents implements ShouldQueue
                 $event['settings'] = json_encode($event['settings']);
                 CalendarEvent::where('id', $event['id'])->update($event);
             } else {
-                $event['creator_id'] = Auth::user()->id ?? auth('api')->user()->id ?? Calendar::find($this->calendarId)->user->id;
+                $event['creator_id'] = Auth::user()->id ?? auth()->user()->id ?? Calendar::find($this->calendarId)->user->id;
                 $event['calendar_id'] = $this->calendarId;
                 $event = CalendarEvent::Create($event);
                 $eventids[] = $event->id;

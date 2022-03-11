@@ -53,11 +53,11 @@ class CalendarEventController extends Controller
     {
         $event = new CalendarEvent($request->all());
 
-        if(!auth('api')->user()->can('attach-event', $event)) {
+        if(!auth()->user()->can('attach-event', $event)) {
             return response()->make(['success' => false, 'message' => "You don't have permission to make that event!"]);
         }
 
-        $event->creator_id = auth('api')->user()->id;
+        $event->creator_id = auth()->user()->id;
 
         $event->save();
 
@@ -99,7 +99,7 @@ class CalendarEventController extends Controller
     {
         $event = CalendarEvent::findOrFail($id);
 
-        if(!auth('api')->user()->can('update', $event)) {
+        if(!auth()->user()->can('update', $event)) {
             return response()->json(['error' => true, 'message' => 'Action not authorized.']);
         }
 
@@ -115,7 +115,7 @@ class CalendarEventController extends Controller
     public function destroy($id)
     {
         $delete_event = CalendarEvent::findOrFail($id);
-        if(!auth('api')->user()->can('delete', $delete_event)) {
+        if(!auth()->user()->can('delete', $delete_event)) {
             return response()->json(['error' => true, 'message' => "You're not authorized to delete that event!"]);
         }
 
