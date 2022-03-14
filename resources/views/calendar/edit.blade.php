@@ -98,8 +98,6 @@
 
             dropped(){
 
-                console.log(this.dragging, this.dropping)
-
                 if(this.dragging === this.dropping || this.dragging === null || this.dropping === null){
                     this.dragging = null;
                     this.dropping = null;

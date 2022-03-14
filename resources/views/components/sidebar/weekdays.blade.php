@@ -95,7 +95,11 @@
     @endif
 
 
-    <div x-data="weekdaySection($data)">
+    <div
+        x-data="weekdaySection($data)"
+        @dragover.prevent="$event.dataTransfer.dropEffect = 'move';"
+        @timespan-order-changed.window="weekdays = $data.static_data.year_data.global_week;"
+    >
 
         <div class='row no-gutters mt-2 bold-text'>
             <div class="col">
@@ -112,8 +116,8 @@
         </div>
 
         <div
-            x-data="sortableList(weekdays, 'test')"
-            @drop="console.log(dragging, dropping)"
+            x-data="sortableList($data.static_data.year_data.global_week, 'test')"
+            @drop.prevent="dropped"
         >
 
             <div class="row sortable-header timespan_sortable_header no-gutters align-items-center">
