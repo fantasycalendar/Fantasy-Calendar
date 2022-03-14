@@ -258,7 +258,7 @@
             <div class='col'>
                 Default category:
                 <select class='form-control protip' x-model="default_category" data-pt-position="right" data-pt-title="This sets the category to be selected by default when a new event is created">
-                    <template x-for="(category, index) in categories">
+                    <template x-for="(category, index) in event_categories">
                         <option :selected="(category.id ?? slugify(category.name)) == default_category" :value="category.id ?? slugify(category.name)" x-text="category.name"></option>
                     </template>
                 </select>
