@@ -125,7 +125,10 @@
         helplink="moons"
 >
 
-    <div x-data="moonSection($data)">
+    <div
+        x-data="moonSection($data)"
+        @dragover.prevent="$event.dataTransfer.dropEffect = 'move';"
+    >
 
         <div class='row bold-text'>
             <div class="col">
@@ -146,127 +149,151 @@
             </div>
         </div>
 
-        <div class="row sortable-header timespan_sortable_header no-gutters align-items-center">
-            <div x-show="!reordering" @click="reordering = true" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
-            <div x-show="reordering" @click="reordering = false" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
-            <div class='py-2 col-8 text-left pl-2'>Name</div>
-        </div>
+        <div
+            x-data="sortableList($data.static_data.moons)"
+            @drop.prevent="dropped"
+        >
 
-        <div class="sortable list-group">
-            <template x-for="(moon, index) in moons">
-                <div class='sortable-container list-group-item'>
+            <div class="row sortable-header timespan_sortable_header no-gutters align-items-center">
+                <div x-show="!reordering" @click="reordering = true; deleting = null;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
+                <div x-show="reordering" @click="reordering = false;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
+                <div class='py-2 col-8 text-left pl-2'>Name</div>
+            </div>
 
-                    <div class='main-container' x-show="deleting !== moon">
-                        <i class='handle icon-reorder' x-show="reordering"></i>
-                        <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
-                        <div class="input-group">
-                            <input class='name-input small-input form-control' x-model="moon.name">
-                            <div class="input-group-append">
-                                <div class='btn btn-danger icon-trash' @click="deleting = moon" x-show="deleting !== moon"></div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="sortable list-group">
+                <template x-for="(moon, index) in moons">
+                    <div class='sortable-container list-group-item'>
 
-                    <div class='d-flex justify-content-between align-items-center w-100 px-1'>
-                        <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === moon"></div>
-                        <div class='remove-container-text' x-show="deleting === moon">Are you sure?</div>
-                        <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === moon"></div>
-                    </div>
-
-                    <div class='container pb-2' x-show="expanded[index] && deleting !== moon">
-
-                        <div class='row no-gutters my-1'>
-                            <div class='form-check col-12 py-2 border rounded'>
-                                <input type='checkbox' :id='index+"_custom_cycle_count"' class='form-check-input' :checked="moon.custom_cycle?.length > 0" @change="toggleCustomCycle(moon)">
-                                <label :for='index+"_custom_cycle_count"' class='form-check-label ml-1'>
-                                    Custom phase count
-                                </label>
+                        <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging > index">
+                            <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
+                                <span class="text-primary-800 font-medium" x-text="moons[dragging]?.name"></span>
                             </div>
                         </div>
 
-                        <div x-show="!moon.custom_cycle?.length">
+                        <div class='main-container'
+                             x-show="deleting !== moon"
+                             @dragenter.prevent="dropping = index"
+                             @dragstart="dragging = index"
+                             @dragend="dragging = null; $nextTick(() => {dropping = null})"
+                             :draggable="reordering"
+                        >
+                            <i class='handle icon-reorder' x-show="reordering"></i>
+                            <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
+                            <div class="input-group">
+                                <input class='name-input small-input form-control' :disabled="reordering" x-model="moon.name">
+                                <div class="input-group-append">
+                                    <div class='btn btn-danger icon-trash' :disabled="reordering" @click="deleting = moon" x-show="deleting !== moon"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class='d-flex justify-content-between align-items-center w-100 px-1'>
+                            <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === moon"></div>
+                            <div class='remove-container-text' x-show="deleting === moon">Are you sure?</div>
+                            <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === moon"></div>
+                        </div>
+
+                        <div class='container pb-2' x-show="expanded[index] && deleting !== moon">
 
                             <div class='row no-gutters my-1'>
-                                <div class='col-7'>Cycle:</div>
-                                <div class='col-5'>Shift:</div>
+                                <div class='form-check col-12 py-2 border rounded'>
+                                    <input type='checkbox' :id='index+"_custom_cycle_count"' class='form-check-input' :checked="moon.custom_cycle?.length > 0" @change="toggleCustomCycle(moon)">
+                                    <label :for='index+"_custom_cycle_count"' class='form-check-label ml-1'>
+                                        Custom phase count
+                                    </label>
+                                </div>
                             </div>
 
-                            <div class='row input-group no-gutters mb-1'>
-                                <input type='number' min='1' step="any" class='col-7 form-control protip' x-model="moon.cycle" @change="cycleChanged(moon)" data-pt-position="top" data-pt-title='How many days it takes for this moon go from Full Moon to the next Full Moon.'/>
-                                <input type='number' step="any" class='col-5 form-control protip' x-model="moon.shift" data-pt-position="top" data-pt-title='This is how many days the cycle is offset by.'/>
-                            </div>
+                            <div x-show="!moon.custom_cycle?.length">
 
-                            <div class='row no-gutters mb-1'>
-                                <select class='form-control protip' x-model="moon.cycle_rounding" data-pt-position="top" data-pt-title='This determines the way this moon calculates its phases, as in which way it rounds the phase value to the closest sprite.'>
-                                    <option value='floor'>Always round down</option>
-                                    <option value='round'>Standard rounding</option>
-                                    <option value='ceil'>Always round up</option>
-                                </select>
+                                <div class='row no-gutters my-1'>
+                                    <div class='col-7'>Cycle:</div>
+                                    <div class='col-5'>Shift:</div>
+                                </div>
 
-                            </div>
+                                <div class='row input-group no-gutters mb-1'>
+                                    <input type='number' min='1' step="any" class='col-7 form-control protip' x-model="moon.cycle" @change="cycleChanged(moon)" data-pt-position="top" data-pt-title='How many days it takes for this moon go from Full Moon to the next Full Moon.'/>
+                                    <input type='number' step="any" class='col-5 form-control protip' x-model="moon.shift" data-pt-position="top" data-pt-title='This is how many days the cycle is offset by.'/>
+                                </div>
 
-                        </div>
-
-                        <div class='row no-gutters' x-show="moon.custom_cycle?.length">
-
-                            <div class='col'>
-
-                                <div class='my-1'>Custom phase:</div>
-
-                                <div class='input-group my-1'>
-
-                                    <div class='input-group-prepend'>
-                                        <button type='button' class='btn btn-sm btn-danger' @click="shiftCustomCycle(moon, true)"><</button>
-                                    </div>
-
-                                    <input type='text' class='form-control form-control-sm' :value='moon.custom_cycle' @change="changeCustomCycle($event, index, moon)" />
-
-                                    <div class='input-group-append'>
-                                        <button type='button' class='btn btn-sm btn-success' @click="shiftCustomCycle(moon)">></button>
-                                    </div>
+                                <div class='row no-gutters mb-1'>
+                                    <select class='form-control protip' x-model="moon.cycle_rounding" data-pt-position="top" data-pt-title='This determines the way this moon calculates its phases, as in which way it rounds the phase value to the closest sprite.'>
+                                        <option value='floor'>Always round down</option>
+                                        <option value='round'>Standard rounding</option>
+                                        <option value='ceil'>Always round up</option>
+                                    </select>
 
                                 </div>
 
-                                <div class='custom_cycle_text italics-text small-text my-1' x-text="moon.custom_cycle ? `This moon has ${moon.custom_cycle.split(',').length} phases, with a granularity of ${moon.granularity} moon sprites.` : ''"></div>
+                            </div>
+
+                            <div class='row no-gutters' x-show="moon.custom_cycle?.length">
+
+                                <div class='col'>
+
+                                    <div class='my-1'>Custom phase:</div>
+
+                                    <div class='input-group my-1'>
+
+                                        <div class='input-group-prepend'>
+                                            <button type='button' class='btn btn-sm btn-danger' @click="shiftCustomCycle(moon, true)"><</button>
+                                        </div>
+
+                                        <input type='text' class='form-control form-control-sm' :value='moon.custom_cycle' @change="changeCustomCycle($event, index, moon)" />
+
+                                        <div class='input-group-append'>
+                                            <button type='button' class='btn btn-sm btn-success' @click="shiftCustomCycle(moon)">></button>
+                                        </div>
+
+                                    </div>
+
+                                    <div class='custom_cycle_text italics-text small-text my-1' x-text="moon.custom_cycle ? `This moon has ${moon.custom_cycle.split(',').length} phases, with a granularity of ${moon.granularity} moon sprites.` : ''"></div>
+
+                                </div>
 
                             </div>
 
-                        </div>
+                            <div class='row no-gutters my-2'>
+                                <div class='col'>
+                                    <div class='separator'></div>
+                                </div>
+                            </div>
 
-                        <div class='row no-gutters my-2'>
-                            <div class='col'>
-                                <div class='separator'></div>
+                            <div class='row no-gutters mt-1'>
+                                <div class='col-6'>Moon color:</div>
+                                <div class='col-6'>Shadow color:</div>
+                            </div>
+
+                            <div class='row no-gutters mb-1'>
+                                <div class='col-6 pr-1'>
+                                    <x-color-picker input-class="form-control" model="moon.color" name="Moon color"></x-color-picker>
+                                </div>
+
+                                <div class='col-6 pl-1'>
+                                    <x-color-picker input-class="form-control" model="moon.shadow_color" name="Shadow color"></x-color-picker>
+                                </div>
+                            </div>
+
+                            <div class='row no-gutters my-1'>
+                                <div class='form-check col-12 py-2 border rounded'>
+                                    <input type='checkbox' :id='index + "_hidden_moon"' class='form-check-input' x-model="moon.hidden">
+                                    <label :for='index + "_hidden_moon"' class='form-check-label ml-1'>
+                                        Hide from guest viewers
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
-                        <div class='row no-gutters mt-1'>
-                            <div class='col-6'>Moon color:</div>
-                            <div class='col-6'>Shadow color:</div>
-                        </div>
-
-                        <div class='row no-gutters mb-1'>
-                            <div class='col-6 pr-1'>
-                                <x-color-picker input-class="form-control" model="moon.color" name="Moon color"></x-color-picker>
-                            </div>
-
-                            <div class='col-6 pl-1'>
-                                <x-color-picker input-class="form-control" model="moon.shadow_color" name="Shadow color"></x-color-picker>
+                        <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging < index">
+                            <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
+                                <span class="text-primary-800 font-medium" x-text="moons[dragging]?.name"></span>
                             </div>
                         </div>
 
-                        <div class='row no-gutters my-1'>
-                            <div class='form-check col-12 py-2 border rounded'>
-                                <input type='checkbox' :id='index + "_hidden_moon"' class='form-check-input' x-model="moon.hidden">
-                                <label :for='index + "_hidden_moon"' class='form-check-label ml-1'>
-                                    Hide from guest viewers
-                                </label>
-                            </div>
-                        </div>
                     </div>
 
-                </div>
-
-            </template>
+                </template>
+            </div>
         </div>
     </div>
 </x-sidebar.collapsible>
