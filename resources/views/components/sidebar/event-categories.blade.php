@@ -55,7 +55,6 @@
     <div
         x-data="eventCategorySection($data)"
         @dragover.prevent="$event.dataTransfer.dropEffect = 'move';"
-        @timespan-order-changed.window="event_categories = $data.event_categories;"
     >
 
         <div class='row no-gutters bold-text'>
