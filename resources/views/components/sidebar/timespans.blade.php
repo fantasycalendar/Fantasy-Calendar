@@ -149,7 +149,6 @@
             @remove-timespan.window="remove($event.detail.index)"
             @set-timespan-weekdays.window="setWeekdays"
             @dragover.prevent="$event.dataTransfer.dropEffect = 'move';"
-            @timespan-order-changed.window="timespans = $data.static_data.year_data.timespans;"
         >
 
             <div class='row bold-text'>
@@ -172,7 +171,7 @@
             </div>
 
             <div
-                x-data="sortableList($data.static_data.year_data.timespans, 'timespan-order-changed')"
+                x-data="sortableList($data.static_data.year_data.timespans, 'calendar-structure-changed')"
                 @drop.prevent="dropped"
             >
 

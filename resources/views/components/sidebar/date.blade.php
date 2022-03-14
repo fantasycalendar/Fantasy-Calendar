@@ -295,7 +295,7 @@
             <div
                 x-data="dateSelector($data, dynamic_data, { hasTime: true, hasButtons: true })"
                 @add-to-current-date.window="addToDate($event.detail.data)"
-                @timespan-order-changed.window="clearCache()"
+                @calendar-structure-changed.window="clearCache()"
                 @timespan-name-changed.window="clearCache()"
             >
 
@@ -355,7 +355,7 @@
             <div
                 x-data="dateSelector($data, preview_date, { hasTime: true, hasButtons: true })"
                 @add-to-preview-date.window="addToDate($event.detail.data)"
-                @timespan-order-changed.window="clearCache()"
+                @calendar-structure-changed.window="clearCache()"
                 @timespan-name-changed.window="clearCache()"
             >
 

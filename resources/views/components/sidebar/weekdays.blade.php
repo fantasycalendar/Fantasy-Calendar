@@ -98,7 +98,6 @@
     <div
         x-data="weekdaySection($data)"
         @dragover.prevent="$event.dataTransfer.dropEffect = 'move';"
-        @timespan-order-changed.window="weekdays = $data.static_data.year_data.global_week;"
     >
 
         <div class='row no-gutters mt-2 bold-text'>

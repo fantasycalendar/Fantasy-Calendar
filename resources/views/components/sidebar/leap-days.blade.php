@@ -125,6 +125,7 @@
             x-data="leapdaySection($data)"
             @add-leapday.window="add($event.detail)"
             @remove-leapday.window="remove($event.detail.index)"
+            @dragover.prevent="$event.dataTransfer.dropEffect = 'move';"
         >
 
             <div class='row bold-text'>
@@ -146,151 +147,177 @@
                 </div>
             </div>
 
-            <div class="row">
-                <div style='font-style: italic; margin-left:3.5rem'>Name</div>
-            </div>
+            <div
+                x-data="sortableList($data.static_data.year_data.leap_days, 'calendar-structure-changed')"
+                @drop.prevent="dropped"
+            >
 
-            <div class="sortable list-group">
-                <template x-for="(leapday, index) in leapdays">
+                <div class="row sortable-header timespan_sortable_header no-gutters align-items-center">
+                    <div x-show="!reordering" @click="reordering = true; deleting = null;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
+                    <div x-show="reordering" @click="reordering = false;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
+                    <div class='py-2 col-6 text-center'>Your leap days</div>
+                </div>
 
-                    <div class='sortable-container list-group-item collapsed collapsible' x-bind:class="leapday.intercalary ? 'intercalary' : ''">
+                <div class="sortable list-group">
+                    <template x-for="(leapday, index) in leapdays">
 
-                        <div class='main-container' x-show="deleting !== leapday">
-                            <i class='handle icon-reorder' x-show="reordering"></i>
-                            <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
-                            <div class="input-group">
-                                <input class='name-input small-input form-control' x-model="leapday.name">
-                                <div class="input-group-append">
-                                    <div class='btn btn-danger icon-trash' @click="deleting = leapday" x-show="deleting !== leapday"></div>
-                                </div>
-                            </div>
-                        </div>
+                        <div class='sortable-container list-group-item collapsed collapsible' x-bind:class="leapday.intercalary ? 'intercalary' : ''">
 
-                        <div class='d-flex justify-content-between align-items-center w-100 px-1'>
-                            <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === leapday"></div>
-                            <div class='remove-container-text' x-show="deleting === leapday">Are you sure?</div>
-                            <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === leapday"></div>
-                        </div>
-
-                        <div class='container pb-2' x-show="expanded[index] && deleting !== leapday">
-
-                            <div class='row my-2 bold-text big-text italics-text'>
-                                <div class='col' x-text="leapday.intercalary ? 'Intercalary leap day' : 'Leap day'"></div>
-                            </div>
-
-                            <div class='row my-2'>
-                                <div class='col'>
-                                    <div class='bold-text'>Leap day settings</div>
+                            <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging > index">
+                                <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
+                                    <span class="text-primary-800 font-medium" x-text="leapdays[dragging]?.name"></span>
                                 </div>
                             </div>
 
-                            <div class='date_control'>
-
-                                <div class="pl-2 border-l-4 border-gray-500 vertical-input-group">
-                                    <div class='row no-gutters'>
-                                        <div class='col'>
-                                            Add leapday to month:
-                                            <select type='number' class='custom-select form-control full' x-model="leapday.timespan">
-                                                <template x-for="(timespan, index) in timespans">
-                                                    <option :value="index" x-text="timespan.name"></option>
-                                                </template>
-                                            </select>
-                                        </div>
-                                    </div>
-
-
-                                    <div class='row no-gutters mt-1 border-b-0 -mb-px' x-show="leapday.intercalary">
-                                        <div class='form-check col-12 py-2 border rounded-t protip' data-pt-position="right" data-pt-title="This setting toggles whether this intercalary leap day should continue its parent month's day count (for example, day 1, day 2, intercalary, day 3).">
-                                            <input type='checkbox' :id="index + '_not_numbered'" class='form-check-input' x-model="leapday.not_numbered"/>
-                                            <label :for="index + '_not_numbered'" class='form-check-label ml-1'>
-                                                Not numbered
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class='row no-gutters mb-1' x-show="leapday.intercalary">
-                                        <div class='form-check col-12 py-2 border rounded-b protip' data-pt-position="right" data-pt-title="This setting toggles whether this intercalary leap day should show its name in the calendar.">
-                                            <input type='checkbox' :id="index + '_show_text'" class='form-check-input' x-model="leapday.show_text"/>
-                                            <label :for="index + '_show_text'" class='form-check-label ml-1'>
-                                                Show leap day text
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class='row no-gutters my-1' x-show="!leapday.intercalary">
-                                        <div class='form-check col-12 py-2 border rounded'>
-                                            <input type='checkbox' :id="index + '_adds_week_day'" class='form-check-input adds-week-day' x-model="leapday.adds_week_day"/>
-                                            <label :for="index + '_adds_week_day'" class='form-check-label ml-1'>
-                                                Adds week day
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class='adds_week_day_data_container' x-show="leapday.adds_week_day && !leapday.intercalary">
-                                        <div class='row no-gutters mt-2'>
-                                            <div class='col'>
-                                                Week day name:
-                                                <input type='text' class='form-control internal-list-name dynamic_input' x-model="leapday.week_day" :disabled="!leapday.adds_week_day || leapday.intercalary"/>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class='week_day_select_container' x-show="leapday.adds_week_day && !leapday.intercalary">
-                                        <div class='row no-gutters mt-2'>
-                                            <div class='col'>
-                                                After which weekday:
-                                                <select type='number' class='custom-select form-control full' :disabled="!leapday.adds_week_day || leapday.intercalary" x-model="leapday.day">
-                                                    <template x-for="(weekday, index) in getWeekdays(leapday)">
-                                                        <option :value="index" x-text="weekday"></option>
-                                                    </template>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div x-show="leapday.intercalary">
-                                        <div class='row my-1'>
-                                            <div class='col'>
-                                                After which day:
-                                                <select type='number' class='custom-select form-control full' x-model="leapday.day" :disabled="!leapday.intercalary">
-                                                    <template x-for="(day, index) in getDaysInTimespan(leapday)">
-                                                        <option :value="index" x-text="day"></option>
-                                                    </template>
-                                                </select>
-                                            </div>
-                                        </div>
+                            <div class='main-container'
+                                 x-show="deleting !== leapday"
+                                 @dragenter.prevent="dropping = index"
+                                 @dragstart="dragging = index"
+                                 @dragend="dragging = null; $nextTick(() => {dropping = null})"
+                                 :draggable="reordering"
+                            >
+                                <i class='handle icon-reorder' x-show="reordering"></i>
+                                <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
+                                <div class="input-group">
+                                    <input class='name-input small-input form-control' :disabled="reordering" x-model="leapday.name">
+                                    <div class="input-group-append">
+                                        <div class='btn btn-danger icon-trash' :disabled="reordering" @click="deleting = leapday" x-show="deleting !== leapday"></div>
                                     </div>
                                 </div>
+                            </div>
 
+                            <div class='d-flex justify-content-between align-items-center w-100 px-1'>
+                                <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === leapday"></div>
+                                <div class='remove-container-text' x-show="deleting === leapday">Are you sure?</div>
+                                <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === leapday"></div>
+                            </div>
 
-                                <div class='row no-gutters mt-4 mb-1'>
+                            <div class='container pb-2' x-show="expanded[index] && deleting !== leapday">
+
+                                <div class='row my-2 bold-text big-text italics-text'>
+                                    <div class='col' x-text="leapday.intercalary ? 'Intercalary leap day' : 'Leap day'"></div>
+                                </div>
+
+                                <div class='row my-2'>
                                     <div class='col'>
-                                        <div class='bold-text'>Leaping settings</div>
+                                        <div class='bold-text'>Leap day settings</div>
                                     </div>
                                 </div>
 
-                                <div class="pl-2 border-l-4 border-gray-500">
-                                    <div class='row no-gutters mt-2'>
-                                        <div class='col-8'>Interval:</div>
-                                        <div class='col-4'>Offset:</div>
+                                <div class='date_control'>
+
+                                    <div class="pl-2 border-l-4 border-gray-500 vertical-input-group">
+                                        <div class='row no-gutters'>
+                                            <div class='col'>
+                                                Add leapday to month:
+                                                <select type='number' class='custom-select form-control full' x-model="leapday.timespan">
+                                                    <template x-for="(timespan, index) in timespans">
+                                                        <option :value="index" x-text="timespan.name"></option>
+                                                    </template>
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+                                        <div class='row no-gutters mt-1 border-b-0 -mb-px' x-show="leapday.intercalary">
+                                            <div class='form-check col-12 py-2 border rounded-t protip' data-pt-position="right" data-pt-title="This setting toggles whether this intercalary leap day should continue its parent month's day count (for example, day 1, day 2, intercalary, day 3).">
+                                                <input type='checkbox' :id="index + '_not_numbered'" class='form-check-input' x-model="leapday.not_numbered"/>
+                                                <label :for="index + '_not_numbered'" class='form-check-label ml-1'>
+                                                    Not numbered
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class='row no-gutters mb-1' x-show="leapday.intercalary">
+                                            <div class='form-check col-12 py-2 border rounded-b protip' data-pt-position="right" data-pt-title="This setting toggles whether this intercalary leap day should show its name in the calendar.">
+                                                <input type='checkbox' :id="index + '_show_text'" class='form-check-input' x-model="leapday.show_text"/>
+                                                <label :for="index + '_show_text'" class='form-check-label ml-1'>
+                                                    Show leap day text
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class='row no-gutters my-1' x-show="!leapday.intercalary">
+                                            <div class='form-check col-12 py-2 border rounded'>
+                                                <input type='checkbox' :id="index + '_adds_week_day'" class='form-check-input adds-week-day' x-model="leapday.adds_week_day"/>
+                                                <label :for="index + '_adds_week_day'" class='form-check-label ml-1'>
+                                                    Adds week day
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class='adds_week_day_data_container' x-show="leapday.adds_week_day && !leapday.intercalary">
+                                            <div class='row no-gutters mt-2'>
+                                                <div class='col'>
+                                                    Week day name:
+                                                    <input type='text' class='form-control internal-list-name dynamic_input' x-model="leapday.week_day" :disabled="!leapday.adds_week_day || leapday.intercalary"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class='week_day_select_container' x-show="leapday.adds_week_day && !leapday.intercalary">
+                                            <div class='row no-gutters mt-2'>
+                                                <div class='col'>
+                                                    After which weekday:
+                                                    <select type='number' class='custom-select form-control full' :disabled="!leapday.adds_week_day || leapday.intercalary" x-model="leapday.day">
+                                                        <template x-for="(weekday, index) in getWeekdays(leapday)">
+                                                            <option :value="index" x-text="weekday"></option>
+                                                        </template>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div x-show="leapday.intercalary">
+                                            <div class='row my-1'>
+                                                <div class='col'>
+                                                    After which day:
+                                                    <select type='number' class='custom-select form-control full' x-model="leapday.day" :disabled="!leapday.intercalary">
+                                                        <template x-for="(day, index) in getDaysInTimespan(leapday)">
+                                                            <option :value="index" x-text="day"></option>
+                                                        </template>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
-                                    <div class='row no-gutters input-group mb-2'>
-                                        <input type='text' class='form-control col-8 pr-1 protip' data-pt-position="top" data-pt-title='Every nth year this leap day appears. Multiple intervals can be separated by commas, like the gregorian leap day: 400,!100,4. Every 4th year, unless it is divisible by 100, but again if it is divisible by 400.' x-model="leapday.interval" />
-                                        <input type='number' step="1" class='form-control col-4 pl-1' min='0' x-model="leapday.offset"/>
-                                    </div>
 
-                                    <div class='row no-gutters'>
+                                    <div class='row no-gutters mt-4 mb-1'>
                                         <div class='col'>
-                                            <div class='italics-text' x-html="getLeapingText(leapday)"></div>
+                                            <div class='bold-text'>Leaping settings</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="pl-2 border-l-4 border-gray-500">
+                                        <div class='row no-gutters mt-2'>
+                                            <div class='col-8'>Interval:</div>
+                                            <div class='col-4'>Offset:</div>
+                                        </div>
+
+                                        <div class='row no-gutters input-group mb-2'>
+                                            <input type='text' class='form-control col-8 pr-1 protip' data-pt-position="top" data-pt-title='Every nth year this leap day appears. Multiple intervals can be separated by commas, like the gregorian leap day: 400,!100,4. Every 4th year, unless it is divisible by 100, but again if it is divisible by 400.' x-model="leapday.interval" />
+                                            <input type='number' step="1" class='form-control col-4 pl-1' min='0' x-model="leapday.offset"/>
+                                        </div>
+
+                                        <div class='row no-gutters'>
+                                            <div class='col'>
+                                                <div class='italics-text' x-html="getLeapingText(leapday)"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                </template>
+                            <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging < index">
+                                <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
+                                    <span class="text-primary-800 font-medium" x-text="leapdays[dragging]?.name"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </template>
+                </div>
             </div>
 
         </div>
