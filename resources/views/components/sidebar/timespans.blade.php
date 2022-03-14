@@ -215,7 +215,7 @@
                                 <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === timespan"></div>
                             </div>
 
-                            <div class='container pb-2' x-show="expanded[index] && deleting !== timespan">
+                            <div class='container pb-2' x-show="expanded[index] && deleting !== timespan && !reordering">
 
                                 <div class='row no-gutters bold-text big-text italics-text'>
                                     <div class='col-12' x-text='timespan.type === "month" ? "Month" : "Intercalary month"'></div>

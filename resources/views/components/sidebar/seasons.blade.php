@@ -153,7 +153,10 @@
     helplink="seasons"
 >
 
-    <div x-data="seasonSection($data)">
+    <div
+        x-data="seasonSection($data)"
+        @dragover.prevent="$event.dataTransfer.dropEffect = 'move';"
+    >
 
         <div class='row bold-text'>
             <div class='col'>
@@ -202,134 +205,159 @@
             </div>
         </div>
 
-        <div class="row sortable-header no-gutters align-items-center" x-show="settings.periodic_seasons">
-            <div x-show="!reordering" @click="reordering = true" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
-            <div x-show="reordering" @click="reordering = false" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
-        </div>
+        <div
+            x-data="sortableList($data.static_data.seasons.data, 'season-order-changed')"
+            @drop.prevent="dropped"
+        >
 
-        <div class="sortable list-group">
-            <template x-for="(season, index) in seasons">
-                <div class='sortable-container list-group-item'>
-                    <div class='main-container' x-show="deleting !== season">
-                        <i class='handle icon-reorder' x-show="reordering"></i>
-                        <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
-                        <div class="input-group">
-                            <input class='name-input small-input form-control' x-model="season.name">
-                            <div class="input-group-append">
-                                <div class='btn btn-danger icon-trash' @click="deleting = season" x-show="deleting !== season"></div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="row sortable-header no-gutters align-items-center" x-show="settings.periodic_seasons">
+                <div x-show="!reordering" @click="reordering = true; deleting = null;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
+                <div x-show="reordering" @click="reordering = false;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
+            </div>
 
-                    <div class='d-flex justify-content-between align-items-center w-100 px-1'>
-                        <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === season"></div>
-                        <div class='remove-container-text' x-show="deleting === season">Are you sure?</div>
-                        <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === season"></div>
-                    </div>
+            <div class="sortable list-group">
+                <template x-for="(season, index) in seasons">
+                    <div class='sortable-container list-group-item'>
 
-                    <div class='container pb-2' x-show="expanded[index] && deleting !== season">
-
-                        <div class='row no-gutters my-1' x-show="!using_preset_seasons">
-                            <div class='col-4 pt-1'>Season type:</div>
-                            <div class='col'>
-                                <select type='number' class='form-control' x-model='settings.preset_order[index]'>
-                                </select>
+                        <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging > index">
+                            <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
+                                <span class="text-primary-800 font-medium" x-text="seasons[dragging]?.name"></span>
                             </div>
                         </div>
 
-                        <div class='row no-gutters mt-2' x-show="settings.periodic_seasons">
-
-                            <div class='col-md-6 col-sm-12 pl-0 pr-1'>
-                                Duration:
+                        <div class='main-container'
+                             x-show="deleting !== season"
+                             @dragenter.prevent="dropping = index"
+                             @dragstart="dragging = index"
+                             @dragend="dragging = null; $nextTick(() => {dropping = null})"
+                             :draggable="reordering"
+                        >
+                            <i class='handle icon-reorder' x-show="reordering"></i>
+                            <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
+                            <div class="input-group">
+                                <input class='name-input small-input form-control' :disabled="reordering" x-model="season.name">
+                                <div class="input-group-append">
+                                    <div class='btn btn-danger icon-trash' :disabled="reordering" @click="deleting = season" x-show="deleting !== season"></div>
+                                </div>
                             </div>
-
-                            <div class='col-md-6 col-sm-12 pl-1 pr-0'>
-                                Peak duration:
-                            </div>
-
-                            <div class="col-12 input-group">
-                                <input type='number' step='any' class='form-control protip' x-model.number='season.transition_length' min='1' data-pt-position="right" data-pt-title='How many days until this season ends, and the next begins.'/>
-                                <input type='number' step='any' class='form-control protip' x-model.number='season.duration' min='0' data-pt-position="right" data-pt-title='If the duration is the path up a mountain, the peak duration is a flat summit. This is how many days the season will pause before going down the other side of the mountain.'/>
-                            </div>
-
                         </div>
 
-                        <div class='col p-0' x-show="!settings.periodic_seasons">
+                        <div class='d-flex justify-content-between align-items-center w-100 px-1'>
+                            <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === season"></div>
+                            <div class='remove-container-text' x-show="deleting === season">Are you sure?</div>
+                            <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === season"></div>
+                        </div>
 
-                            <div class='row no-gutters my-1'>
-                                <div class='col-4 pt-1'>Month:</div>
-                                <div class='col-8'>
-                                    <select type='number' class='date form-control full' x-model.number='season.timespan' @change="sortSeasonsByDate()">
-                                        <template x-for="(timespan, index) in timespans.filter(timespan => timespan.interval === 1)">
-                                            <option :value="index" x-text="timespan.name"></option>
-                                        </template>
+                        <div class='container pb-2' x-show="expanded[index] && deleting !== season && !reordering">
+
+                            <div class='row no-gutters my-1' x-show="!using_preset_seasons">
+                                <div class='col-4 pt-1'>Season type:</div>
+                                <div class='col'>
+                                    <select type='number' class='form-control' x-model='settings.preset_order[index]'>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class='row no-gutters my-1'>
-                                <div class='col-4 pt-1'>Day:</div>
-                                <div class='col-8'>
-                                    <select type='number' class='date form-control full' x-model.number='season.day' @change="sortSeasonsByDate()">
-                                        <template x-for="(day, index) in window.calendar.getNonLeapingDaysInTimespan(season.timespan ?? 0)">
-                                            <option :value="index+1" x-text="day"></option>
-                                        </template>
-                                    </select>
+                            <div class='row no-gutters mt-2' x-show="settings.periodic_seasons">
+
+                                <div class='col-md-6 col-sm-12 pl-0 pr-1'>
+                                    Duration:
                                 </div>
+
+                                <div class='col-md-6 col-sm-12 pl-1 pr-0'>
+                                    Peak duration:
+                                </div>
+
+                                <div class="col-12 input-group">
+                                    <input type='number' step='any' class='form-control protip' x-model.number='season.transition_length' min='1' data-pt-position="right" data-pt-title='How many days until this season ends, and the next begins.'/>
+                                    <input type='number' step='any' class='form-control protip' x-model.number='season.duration' min='0' data-pt-position="right" data-pt-title='If the duration is the path up a mountain, the peak duration is a flat summit. This is how many days the season will pause before going down the other side of the mountain.'/>
+                                </div>
+
                             </div>
 
-                        </div>
+                            <div class='col p-0' x-show="!settings.periodic_seasons">
 
+                                <div class='row no-gutters my-1'>
+                                    <div class='col-4 pt-1'>Month:</div>
+                                    <div class='col-8'>
+                                        <select type='number' class='date form-control full' x-model.number='season.timespan' @change="sortSeasonsByDate()">
+                                            <template x-for="(timespan, index) in timespans.filter(timespan => timespan.interval === 1)">
+                                                <option :value="index" x-text="timespan.name"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </div>
 
-                        <div class='row no-gutters mt-2'>
-                            <div class='col-6 pr-1'>Start color:</div>
-                            <div class='col-6 pl-1'>End color:</div>
-                        </div>
+                                <div class='row no-gutters my-1'>
+                                    <div class='col-4 pt-1'>Day:</div>
+                                    <div class='col-8'>
+                                        <select type='number' class='date form-control full' x-model.number='season.day' @change="sortSeasonsByDate()">
+                                            <template x-for="(day, index) in window.calendar.getNonLeapingDaysInTimespan(season.timespan ?? 0)">
+                                                <option :value="index+1" x-text="day"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </div>
 
-                        <div class='grid grid-cols-2 gap-2'>
-                            <x-color-picker input-class="form-control" model="season.color[0]" name="season_color_start"></x-color-picker>
-                            <x-color-picker input-class="form-control" model="season.color[1]" name="season_color_start"></x-color-picker>
-                        </div>
+                            </div>
 
-                        <div x-show="clock.enabled">
 
                             <div class='row no-gutters mt-2'>
-                                <div class='col-12'>Sunrise:</div>
+                                <div class='col-6 pr-1'>Start color:</div>
+                                <div class='col-6 pl-1'>End color:</div>
                             </div>
 
-                            <div class='row no-gutters sortable-header'>
-                                <div class='col-6 pr-1'>Hour</div>
-                                <div class='col-6 pl-1'>Minute</div>
+                            <div class='grid grid-cols-2 gap-2'>
+                                <x-color-picker input-class="form-control" model="season.color[0]" name="season_color_start"></x-color-picker>
+                                <x-color-picker input-class="form-control" model="season.color[1]" name="season_color_start"></x-color-picker>
                             </div>
 
-                            <div class='row no-gutters mb-2 input-group protip' data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season">
-                                <input type='number' step="1.0" class='form-control' min="0" :max="clock.hours" x-model='season.time.sunrise.hour' />
-                                <input type='number' step="1.0" class='form-control' min="0" :max="clock.minutes" x-model='season.time.sunrise.minute' />
-                            </div>
+                            <div x-show="clock.enabled">
 
-                            <div class='row no-gutters mt-2'>
-                                <div class='col-12 '>Sunset:</div>
-                            </div>
+                                <div class='row no-gutters mt-2'>
+                                    <div class='col-12'>Sunrise:</div>
+                                </div>
 
-                            <div class='row no-gutters sortable-header'>
-                                <div class='col-6 pr-1'>Hour</div>
-                                <div class='col-6 pl-1'>Minute</div>
-                            </div>
+                                <div class='row no-gutters sortable-header'>
+                                    <div class='col-6 pr-1'>Hour</div>
+                                    <div class='col-6 pl-1'>Minute</div>
+                                </div>
 
-                            <div class='row no-gutters mb-2 input-group protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season">
-                                <input type='number' step="1.0" class='form-control' min="0" :max="clock.hours" x-model='season.time.sunset.hour' />
-                                <input type='number' step="1.0" class='form-control' min="0" :max="clock.minutes" x-model='season.time.sunset.minute' />
-                            </div>
+                                <div class='row no-gutters mb-2 input-group protip' data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season">
+                                    <input type='number' step="1.0" class='form-control' min="0" :max="clock.hours" x-model='season.time.sunrise.hour' />
+                                    <input type='number' step="1.0" class='form-control' min="0" :max="clock.minutes" x-model='season.time.sunrise.minute' />
+                                </div>
 
-                            <div class='row no-gutters my-1' x-show="clock.enabled && seasons.length >= 3">
-                                <button type="button" @click="interpolateSeasons()" class="btn btn-sm btn-info full protip" data-pt-title="Use the median values from the previous and next seasons' time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate sunrise & sunset from surrounding seasons</button>
+                                <div class='row no-gutters mt-2'>
+                                    <div class='col-12 '>Sunset:</div>
+                                </div>
+
+                                <div class='row no-gutters sortable-header'>
+                                    <div class='col-6 pr-1'>Hour</div>
+                                    <div class='col-6 pl-1'>Minute</div>
+                                </div>
+
+                                <div class='row no-gutters mb-2 input-group protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season">
+                                    <input type='number' step="1.0" class='form-control' min="0" :max="clock.hours" x-model='season.time.sunset.hour' />
+                                    <input type='number' step="1.0" class='form-control' min="0" :max="clock.minutes" x-model='season.time.sunset.minute' />
+                                </div>
+
+                                <div class='row no-gutters my-1' x-show="clock.enabled && seasons.length >= 3">
+                                    <button type="button" @click="interpolateSeasons()" class="btn btn-sm btn-info full protip" data-pt-title="Use the median values from the previous and next seasons' time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate sunrise & sunset from surrounding seasons</button>
+                                </div>
+
                             </div>
 
                         </div>
 
+                        <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging < index">
+                            <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
+                                <span class="text-primary-800 font-medium" x-text="seasons[dragging]?.name"></span>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </template>
+                </template>
+            </div>
         </div>
 
 
