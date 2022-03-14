@@ -77,7 +77,7 @@
 
             <div class="row sortable-header no-gutters align-items-center">
                 <div x-show="!reordering" @click="reordering = true; deleting = null;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
-                <div x-show="reordering" @click="reordering = false; deleting = null;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
+                <div x-show="reordering" @click="reordering = false;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
                 <div class="col-11 pl-2">Your Categories</div>
             </div>
 
