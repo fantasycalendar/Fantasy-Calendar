@@ -115,7 +115,7 @@
         </div>
 
         <div
-            x-data="sortableList($data.static_data.year_data.global_week, 'test')"
+            x-data="sortableList($data.static_data.year_data.global_week)"
             @drop.prevent="dropped"
         >
 
