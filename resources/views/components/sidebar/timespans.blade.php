@@ -170,7 +170,7 @@
                 </div>
             </div>
 
-            <div x-data="sortableList($data.static_data.year_data.timespans, 'timespans', 'calendar-structure-changed')">
+            <div x-data="sortableList($data.static_data.year_data.timespans, 'timespans-sortable', 'calendar-structure-changed')">
 
                 <div class="row sortable-header timespan_sortable_header no-gutters align-items-center">
                     <div x-show="!reordering" @click="reordering = true; deleting = null;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
@@ -179,8 +179,8 @@
                     <div class='py-2 col-5 text-center'>Length</div>
                 </div>
 
-                <div class="sortable list-group border-t border-gray-600" x-ref="timespans">
-                    <template x-for="(timespan, index) in timespans" x-ref="timespans_template">
+                <div class="sortable list-group border-t border-gray-600" x-ref="timespans-sortable">
+                    <template x-for="(timespan, index) in timespans" x-ref="timespans-sortable-template">
                         <div class='sortable-container border-t -mt-px list-group-item draggable-source' :class="timespan.type" :data-id="index">
 
                             <div class='main-container' x-show="deleting !== index">

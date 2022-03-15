@@ -95,7 +95,8 @@
             reordering: false,
             dragging: null,
             dropping: null,
-            oldOrder: data.map((elem, index) => index),
+
+            draggable: null,
 
             dropped(start, end){
 
@@ -108,7 +109,7 @@
 
                 data.splice(end, 0, elem);
 
-                this.$refs[element+"_template"]._x_prevKeys = order;
+                this.$refs[element+"-template"]._x_prevKeys = order;
 
                 if(eventName){
                     if(Array.isArray(eventName)){

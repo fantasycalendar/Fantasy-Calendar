@@ -95,10 +95,7 @@
     @endif
 
 
-    <div
-        x-data="weekdaySection($data)"
-        @dragover.prevent="$event.dataTransfer.dropEffect = 'move';"
-    >
+    <div x-data="weekdaySection($data)">
 
         <div class='row no-gutters mt-2 bold-text'>
             <div class="col">
@@ -114,10 +111,7 @@
             </div>
         </div>
 
-        <div
-            x-data="sortableList($data.static_data.year_data.global_week)"
-            @drop.prevent="dropped"
-        >
+        <div x-data="sortableList($data.static_data.year_data.global_week, 'weekdays-sortable')">
 
             <div class="row sortable-header timespan_sortable_header no-gutters align-items-center">
                 <div x-show="!reordering" @click="reordering = true; deleting = null;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
@@ -125,22 +119,11 @@
                 <div class='py-2 col-6 text-center'>Name</div>
             </div>
 
-            <div class="sortable list-group">
-                <template x-for="(weekday, index) in weekdays">
-                    <div class='sortable-container list-group-item' :class="{'!border-primary-500 !bg-primary-500/30': dropping === index && dragging !== index, 'opacity-60': dragging === index}">
-                        <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging > index">
-                            <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
-                                <span class="text-primary-800 font-medium" x-text="weekdays[dragging]"></span>
-                            </div>
-                        </div>
+            <div class="sortable list-group border-t border-gray-600" x-ref="weekdays-sortable">
+                <template x-for="(weekday, index) in weekdays" x-ref="weekdays-sortable-template">
+                    <div class='sortable-container border-t -mt-px list-group-item draggable-source' :data-id="index">
 
-                        <div class='main-container'
-                             x-show="deleting !== weekday"
-                             @dragenter.prevent="dropping = index"
-                             @dragstart="dragging = index"
-                             @dragend="dragging = null; $nextTick(() => {dropping = null})"
-                             :draggable="reordering"
-                        >
+                        <div class='main-container' x-show="deleting !== weekday">
                             <div class='handle icon-reorder' x-show="reordering"></div>
                             <div class='name-container input-group'>
                                 <input type='text' :disabled="reordering" class='form-control name-input small-input' x-model="weekday"/>
@@ -155,14 +138,7 @@
                             <div class='remove-container-text' x-show="deleting === weekday">Are you sure?</div>
                             <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === weekday"></div>
                         </div>
-
-                        <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging < index">
-                            <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
-                                <span class="text-primary-800 font-medium" x-text="weekdays[dragging]"></span>
-                            </div>
-                        </div>
                     </div>
-
                 </template>
             </div>
         </div>
