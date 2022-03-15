@@ -36,6 +36,7 @@
                         delete timespan.week;
                     }else{
                         timespan.week = clone(this.global_week);
+                        $data.static_data.year_data.overflow = false;
                     }
                 },
 

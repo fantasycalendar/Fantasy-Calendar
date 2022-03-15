@@ -45,11 +45,17 @@
         @if(request()->is('calendars/*/edit') && $calendar->isLinked())
             {{ Arr::get($calendar->static_data, 'year_data.overflow') ? "Enabled" : "Disabled" }}
         @else
-            <div class='col-4'>
-                <label class="custom-control custom-checkbox right-text">
-                    <input type="checkbox" class="custom-control-input" x-model='static_data.year_data.overflow'>
-                    <span class="custom-control-indicator"></span>
-                </label>
+            <div x-data="{ get customWeekdays(){ return $data.static_data.year_data.timespans.find(timespan => timespan?.week?.length > 0); } }">
+                <div class='col-4'>
+                    <label class="custom-control custom-checkbox right-text" x-show="!customWeekdays">
+                        <input type="checkbox" class="custom-control-input" x-model='static_data.year_data.overflow' :disabled="customWeekdays">
+                        <span class="custom-control-indicator"></span>
+                    </label>
+                </div>
+
+                <div x-show="customWeekdays">
+                    This calendar has a custom week in some months or a leap day is adding a week-day, this will disable overflows between months, because it makes no sense for two weeks that do not go together to overflow into each other. Sorry.
+                </div>
             </div>
         @endif
     </div>
