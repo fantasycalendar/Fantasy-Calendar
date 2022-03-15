@@ -62,6 +62,18 @@ return [
                         'type' => 1,
                     ],
                     [
+                        'name' => 'create',
+                        'description' => 'Create various calendar resources for your selected calendar',
+                        'type' => 2,
+                        'options' => [
+                            [
+                                'name' => 'event',
+                                'description' => 'Creates a one-time event on the current date',
+                                'type' => 1
+                            ]
+                        ]
+                    ],
+                    [
                         'name' => 'show',
                         'description' => 'Displays information from your selected calendar',
                         'type' => 2,
@@ -435,6 +447,9 @@ return [
         'command_handlers' => [
             env('DISCORD_COMMAND', 'fc') => [
                 'help' => \App\Services\Discord\Commands\Command\HelpHandler::class,
+                'create' => [
+                    'event' => \App\Services\Discord\Commands\Command\Create\EventHandler::class,
+                ],
                 'show' => [
                     'date' => \App\Services\Discord\Commands\Command\Show\DateHandler::class,
                     'month' => \App\Services\Discord\Commands\Command\Show\MonthHandler::class,

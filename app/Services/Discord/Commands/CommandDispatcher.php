@@ -17,7 +17,8 @@ class CommandDispatcher
     private const TYPES = [
         1 => 'Pong',
         2 => 'Command',
-        3 => 'Component'
+        3 => 'Component',
+        5 => 'Component'
     ];
 
     /**
@@ -48,8 +49,12 @@ class CommandDispatcher
     {
         $handlerClass = config('services.discord.command_handlers' . self::processConfigPath($commandData['data']));
 
-        return (new $handlerClass($commandData))
+        $returnVal = (new $handlerClass($commandData))
             ->handleInteraction();
+
+        ld($returnVal->getMessage());
+
+        return $returnVal;
     }
 
     /**
@@ -65,8 +70,8 @@ class CommandDispatcher
     {
         $interactionIdParts = explode(':', $interactionData['data']['custom_id']);
 
-        logger(json_encode($interactionIdParts, JSON_PRETTY_PRINT));
-        logger(json_encode($interactionData['data']));
+        ld($interactionIdParts, JSON_PRETTY_PRINT);
+        ld($interactionData['data']);
 
         $handlerClass = config('services.discord.command_handlers.'. $interactionIdParts[0]);
         $handlerFunction = $interactionIdParts[1];

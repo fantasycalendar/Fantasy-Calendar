@@ -49,6 +49,46 @@ class DiscordController extends Controller
      */
     public function hook(): array
     {
+//        return [
+//            'type' => 9,
+//            'data' => [
+//                "title" => "My Cool Modal",
+//                "custom_id" => "cool_modal",
+//                "components" => [
+//                    [
+//                        "type" => 1,
+//                        "components" => [
+//                            [
+//                                "type" => 4,
+//                                "custom_id" => "name",
+//                                "label" => "Name",
+//                                "style" => 1,
+//                                "min_length" => 1,
+//                                "max_length" => 4000,
+//                                "placeholder" => "John",
+//                                "required" => true
+//                            ]
+//                        ]
+//                    ],
+//                    [
+//                        "type" => 1,
+//                        "components" => [
+//                            [
+//                                "type" => 4,
+//                                "custom_id" => "description",
+//                                "label" => "Description",
+//                                "style" => 2,
+//                                "min_length" => 1,
+//                                "max_length" => 4000,
+//                                "placeholder" => "John",
+//                                "required" => true
+//                            ]
+//                        ]
+//                    ]
+//                ]
+//            ]
+//        ];
+
         logger()->debug(json_encode(request()->all(), true));
         return CommandDispatcher::dispatch(request()->all())
             ->getMessage();
