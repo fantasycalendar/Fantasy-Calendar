@@ -18,6 +18,9 @@ window.CalendarEventViewer = require('./calendar-events-viewer')
 window.CalendarHTMLEditor = require('./calendar-html-editor')
 window.CalendarYearHeader = require('./calendar-year-header')
 
+import Sortable from 'sortablejs';
+window.Sortable = Sortable;
+
 // Calendar specific modules
 import IntervalsCollection from "./fantasycalendar/Collections/IntervalsCollection.js";
 window.IntervalsCollection = IntervalsCollection;

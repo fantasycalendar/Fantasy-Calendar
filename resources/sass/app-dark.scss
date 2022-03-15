@@ -39,6 +39,12 @@ html { font-family: 'Inter', sans-serif; }
     [x-cloak] {
         display: none;
     }
+    .dragged-placeholder {
+        @apply my-2 shadow opacity-50 #{!important};
+    }
+    .dragged-item {
+        @apply opacity-50 border-none #{!important};
+    }
 }
 
 

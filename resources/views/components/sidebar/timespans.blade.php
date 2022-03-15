@@ -103,6 +103,7 @@
     icon="fas fa-calendar-alt"
     tooltip-title="More Info: Months & Intercalaries"
     helplink="months"
+    checked="true"
 >
 
     @if(request()->is('calendars/*/edit') && $calendar->isLinked())
@@ -171,8 +172,8 @@
             </div>
 
             <div
-                x-data="sortableList($data.static_data.year_data.timespans, 'calendar-structure-changed')"
-                @drop.prevent="dropped"
+                x-data="sortableList($data.static_data.year_data.timespans, 'timespans', 'calendar-structure-changed')"
+{{--                @drop.prevent="dropped"--}}
             >
 
                 <div class="row sortable-header timespan_sortable_header no-gutters align-items-center">
@@ -182,9 +183,9 @@
                     <div class='py-2 col-5 text-center'>Length</div>
                 </div>
 
-                <div class="sortable list-group">
+                <div class="sortable list-group border-t border-gray-600" x-ref="timespans">
                     <template x-for="(timespan, index) in timespans">
-                        <div class='sortable-container list-group-item' :class="{[timespan.type]: true, '!border-primary-500 !bg-primary-500/30': dropping === index && dragging !== index, 'opacity-60': dragging === index}">
+                        <div class='sortable-container border-t -mt-px list-group-item draggable-source' :class="{[timespan.type]: true, '!border-primary-500 !bg-primary-500/30': dropping === index && dragging !== index, 'opacity-60': dragging === index}">
                             <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging > index">
                                 <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
                                     <span class="text-primary-800 font-medium" x-text="timespans[dragging]?.name"></span>
@@ -192,11 +193,11 @@
                             </div>
 
                             <div class='main-container'
-                                 x-show="deleting !== timespan"
-                                 @dragenter.prevent="dropping = index"
-                                 @dragstart="dragging = index"
-                                 @dragend="dragging = null; $nextTick(() => {dropping = null})"
-                                 :draggable="reordering"
+                                 x-show="deleting !== index"
+{{--                                 @dragenter.prevent="dropping = index"--}}
+{{--                                 @dragstart="dragging = index"--}}
+{{--                                 @dragend="dragging = null; $nextTick(() => {dropping = null})"--}}
+{{--                                 :draggable="reordering"--}}
                             >
                                 <i class='handle icon-reorder' x-show="reordering"></i>
                                 <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
@@ -210,12 +211,12 @@
                             </div>
 
                             <div class='d-flex justify-content-between align-items-center w-100 px-1'>
-                                <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === timespan"></div>
-                                <div class='remove-container-text' x-show="deleting === timespan">Are you sure?</div>
-                                <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === timespan"></div>
+                                <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === index"></div>
+                                <div class='remove-container-text' x-show="deleting === index">Are you sure?</div>
+                                <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === index"></div>
                             </div>
 
-                            <div class='container pb-2' x-show="expanded[index] && deleting !== timespan && !reordering">
+                            <div class='container pb-2' x-show="expanded[index] && deleting !== index && !reordering">
 
                                 <div class='row no-gutters bold-text big-text italics-text'>
                                     <div class='col-12' x-text='timespan.type === "month" ? "Month" : "Intercalary month"'></div>

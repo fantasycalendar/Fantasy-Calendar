@@ -148,7 +148,7 @@
             </div>
 
             <div
-                x-data="sortableList($data.static_data.year_data.leap_days, 'calendar-structure-changed')"
+                x-data="sortableList($data.static_data.year_data.leap_days)"
                 @drop.prevent="dropped"
             >
 

@@ -88,7 +88,7 @@
 		<!------------------- SEASONS ------------------>
 		<!---------------------------------------------->
 
-        <x-sidebar.seasons :calendar="$calendar"></x-sidebar.seasons>
+{{--        <x-sidebar.seasons :calendar="$calendar"></x-sidebar.seasons>--}}
 
 
 		<!---------------------------------------------->

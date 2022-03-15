@@ -4,7 +4,7 @@
 
 @include('templates._head_content_tw')
 
-<body class="scrollbar page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class') @setting('dark_theme') dark @endsetting">
+<body class="scrollbar page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class') @guest dark @endguest @setting('dark_theme') dark @endsetting">
 
 @if(auth()->check() && request()->session()->has('admin.id'))
     <div class="w-full py-1 bg-red-200 dark:bg-red-900 text-red-800 dark:text-red-200 text-center flex justify-center items-center">

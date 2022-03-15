@@ -130,5 +130,7 @@ window.AlpineEditor = require('alpine-editor')
 let collectJS = require('collect.js');
 window.Collection = collectJS.Collection;
 window.collect = collectJS.collect;
-
-window.Alpine = require('alpinejs')
+//
+// import Alpine from 'alpinejs'
+// window.Alpine = Alpine
+// Alpine.start()

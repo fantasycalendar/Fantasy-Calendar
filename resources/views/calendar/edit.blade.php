@@ -88,7 +88,7 @@
 
 
 
-    function sortableList(data, eventName){
+    function sortableList(data, element, eventName){
 
         return {
 
@@ -113,10 +113,18 @@
                 this.dragging = null;
                 this.dropping = null;
 
+            },
+
+            init() {
+                if(element) {
+                    this.draggable = Sortable.create(this.$refs[element], {
+                        animation: 300,
+                        ghostClass: "dragged-placeholder",  // Class name for the drop placeholder
+                        dragClass: "dragged-item",  // Class name for the dragging item
+                    });
+                }
             }
-
         }
-
     }
 
     </script>
