@@ -20,7 +20,8 @@
                 expanded: {},
                 reordering: false,
 
-                using_preset_seasons: true,
+                old_order: clone($data.static_data.seasons.global_settings.preset_order),
+                preset_season_list: [],
 
                 get seasonLength(){
                     return this.seasons.reduce((acc, season) => {
@@ -41,6 +42,10 @@
                         && this.clock.enabled
                         && $data.dynamic_data.custom_location
                         && !this.locations[$data.dynamic_data.location]?.settings?.season_based_time;
+                },
+
+                init(){
+                    this.populatePresetSeasonList();
                 },
 
                 add(name){
@@ -171,6 +176,72 @@
                     // Map each season back to its new index so that the right seasons remains expanded
                     this.expanded = Object.fromEntries(expanded.map(entry => [this.seasons.indexOf(entry[1]), true]));
 
+                },
+
+                show_preset_order: false,
+
+                populatePresetSeasonList(){
+
+                    this.show_preset_order = false;
+
+                    if(this.detectAutomaticMapping()) return;
+
+                    this.show_preset_order = this.preset_season_list.length;
+
+                    if(!this.preset_season_list) return false;
+
+                    if(!this.settings.preset_order){
+                        this.settings.preset_order = Array.from(Array(this.preset_season_list.length).keys());
+                    }
+
+                    if(!this.preset_season_list.length){
+                        $data.static_data.seasons.global_settings.preset_order = null;
+                        return false;
+                    }
+
+                },
+
+                detectAutomaticMapping(){
+
+                    if(this.seasons.length === 2){
+                        this.preset_season_list = ['winter', 'summer'];
+                    }else if(this.seasons.length === 4){
+                        this.preset_season_list = ['winter', 'spring', 'summer', 'autumn'];
+                    }else{
+                        this.preset_season_list = [];
+                        return false;
+                    }
+
+                    const season_test = new Set(this.seasons.map(season => {
+                        const index = this.preset_season_list.indexOf(season.name.toLowerCase());
+                        const isFall = index === -1 && season.name.toLowerCase() === "fall" && this.seasons.length === 4;
+                        return isFall ? 3 : index;
+                    }).filter(num => num !== -1));
+
+                    if(this.seasons.length === season_test.size){
+                        $data.static_data.seasons.global_settings.preset_order = Array.from(season_test);
+                        return true;
+                    }
+
+                    return false;
+
+                },
+
+                presetOrderChanged(index){
+
+                    const newValue = this.settings.preset_order[index];
+
+                    for(let i = 0; i < this.settings.preset_order.length; i++){
+                        if(i === index) continue;
+                        const value = this.settings.preset_order[i];
+                        if(value === newValue){
+                            this.settings.preset_order[i] = this.old_order[index];
+                            break;
+                        }
+                    }
+
+                    this.old_order = clone($data.static_data.seasons.global_settings.preset_order);
+
                 }
 
             }
@@ -188,6 +259,7 @@
     icon="fas fa-snowflake"
     tooltip-title="Seasons"
     helplink="seasons"
+    checked="true"
 >
 
     <div
@@ -257,7 +329,7 @@
                             <i class='handle icon-reorder' x-show="reordering"></i>
                             <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
                             <div class="input-group">
-                                <input class='name-input small-input form-control' :disabled="reordering" x-model="season.name">
+                                <input class='name-input small-input form-control' :disabled="reordering" x-model="season.name" @input.debounce="populatePresetSeasonList()">
                                 <div class="input-group-append">
                                     <div class='btn btn-danger icon-trash' :disabled="reordering" @click="deleting = season" x-show="deleting !== season"></div>
                                 </div>
@@ -272,10 +344,13 @@
 
                         <div class='container pb-2' x-show="expanded[index] && deleting !== season && !reordering">
 
-                            <div class='row no-gutters my-1' x-show="!using_preset_seasons">
+                            <div class='row no-gutters my-1' x-show="show_preset_order">
                                 <div class='col-4 pt-1'>Season type:</div>
                                 <div class='col'>
-                                    <select type='number' class='form-control' x-model='settings.preset_order[index]'>
+                                    <select type='number' class='form-control' x-model.number="settings.preset_order[index]" @change="presetOrderChanged(index)">
+                                        <template x-for="(preset_season_name, preset_index) in preset_season_list">
+                                            <option :selected="settings.preset_order[index] === preset_index" :value="preset_index" x-text="_.upperFirst(preset_season_name)"></option>
+                                        </template>
                                     </select>
                                 </div>
                             </div>
