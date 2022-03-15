@@ -42,6 +42,16 @@ class EventHandler extends Command
                     'Event title',
                     'Event title'
                 );
+            })->addRow(function(ActionRow $row){
+                return $row->addTextInput(
+                    self::target('reEcho2'),
+                    'Event Description',
+                    'Today my players were a pain by...',
+                    false,
+                    0,
+                    1000,
+                    2
+                );
             });
     }
 

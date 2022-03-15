@@ -7,7 +7,6 @@ use App\Services\Discord\Commands\Command\Response\Component;
 class TextInput extends Component
 {
     public int $type = 4;
-    public int $style = 1;
 
     public function __construct(
         public string $target = 'text_input',
@@ -16,6 +15,7 @@ class TextInput extends Component
         public bool $required = false,
         public int $min_length = 0,
         public int $max_length = 256,
+        public int $style = 1,
     )
     {
     }

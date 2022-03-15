@@ -60,10 +60,10 @@ class ActionRow extends Component
      * @param false $disabled
      * @return $this
      */
-    public function addTextInput($target, $label, $placeholder, $required = false, $min_length = 0, $max_length = 256): static
+    public function addTextInput($target, $label, $placeholder, $required = false, $min_length = 0, $max_length = 256, $style = 1): static
     {
         $this->components->push(
-            new TextInput($target, $label, $placeholder, $required, $min_length, $max_length)
+            new TextInput($target, $label, $placeholder, $required, $min_length, $max_length, $style)
         );
 
         return $this;
