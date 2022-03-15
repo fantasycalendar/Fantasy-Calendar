@@ -125,10 +125,7 @@
         helplink="moons"
 >
 
-    <div
-        x-data="moonSection($data)"
-        @dragover.prevent="$event.dataTransfer.dropEffect = 'move';"
-    >
+    <div x-data="moonSection($data)">
 
         <div class='row bold-text'>
             <div class="col">
@@ -149,10 +146,7 @@
             </div>
         </div>
 
-        <div
-            x-data="sortableList($data.static_data.moons)"
-            @drop.prevent="dropped"
-        >
+        <div x-data="sortableList($data.static_data.moons, 'moons-sortable')">
 
             <div class="row sortable-header timespan_sortable_header no-gutters align-items-center">
                 <div x-show="!reordering" @click="reordering = true; deleting = null;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
@@ -160,23 +154,11 @@
                 <div class='py-2 col-8 text-left pl-2'>Name</div>
             </div>
 
-            <div class="sortable list-group">
-                <template x-for="(moon, index) in moons">
-                    <div class='sortable-container list-group-item'>
+            <div class="sortable list-group border-t border-gray-600" x-ref="moons-sortable">
+                <template x-for="(moon, index) in moons" x-ref="moons-sortable-template">
+                    <div class='sortable-container border-t -mt-px list-group-item draggable-source' :data-id="index">
 
-                        <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging > index">
-                            <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
-                                <span class="text-primary-800 font-medium" x-text="moons[dragging]?.name"></span>
-                            </div>
-                        </div>
-
-                        <div class='main-container'
-                             x-show="deleting !== moon"
-                             @dragenter.prevent="dropping = index"
-                             @dragstart="dragging = index"
-                             @dragend="dragging = null; $nextTick(() => {dropping = null})"
-                             :draggable="reordering"
-                        >
+                        <div class='main-container' x-show="deleting !== moon">
                             <i class='handle icon-reorder' x-show="reordering"></i>
                             <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
                             <div class="input-group">
@@ -281,12 +263,6 @@
                                         Hide from guest viewers
                                     </label>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging < index">
-                            <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
-                                <span class="text-primary-800 font-medium" x-text="moons[dragging]?.name"></span>
                             </div>
                         </div>
 

@@ -125,7 +125,6 @@
             x-data="leapdaySection($data)"
             @add-leapday.window="add($event.detail)"
             @remove-leapday.window="remove($event.detail.index)"
-            @dragover.prevent="$event.dataTransfer.dropEffect = 'move';"
         >
 
             <div class='row bold-text'>
@@ -147,10 +146,7 @@
                 </div>
             </div>
 
-            <div
-                x-data="sortableList($data.static_data.year_data.leap_days)"
-                @drop.prevent="dropped"
-            >
+            <div x-data="sortableList($data.static_data.year_data.leap_days, 'leapdays-sortable')">
 
                 <div class="row sortable-header timespan_sortable_header no-gutters align-items-center">
                     <div x-show="!reordering" @click="reordering = true; deleting = null;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
@@ -158,24 +154,11 @@
                     <div class='py-2 col-6 text-center'>Your leap days</div>
                 </div>
 
-                <div class="sortable list-group">
-                    <template x-for="(leapday, index) in leapdays">
+                <div class="sortable list-group border-t border-gray-600" x-ref="leapdays-sortable">
+                    <template x-for="(leapday, index) in leapdays" x-ref="leapdays-sortable-template">
+                        <div class='sortable-container border-t -mt-px list-group-item draggable-source' x-bind:class="leapday.intercalary ? 'intercalary' : ''" :data-id="index">
 
-                        <div class='sortable-container list-group-item collapsed collapsible' x-bind:class="leapday.intercalary ? 'intercalary' : ''">
-
-                            <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging > index">
-                                <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
-                                    <span class="text-primary-800 font-medium" x-text="leapdays[dragging]?.name"></span>
-                                </div>
-                            </div>
-
-                            <div class='main-container'
-                                 x-show="deleting !== leapday"
-                                 @dragenter.prevent="dropping = index"
-                                 @dragstart="dragging = index"
-                                 @dragend="dragging = null; $nextTick(() => {dropping = null})"
-                                 :draggable="reordering"
-                            >
+                            <div class='main-container' x-show="deleting !== leapday">
                                 <i class='handle icon-reorder' x-show="reordering"></i>
                                 <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
                                 <div class="input-group">
@@ -306,12 +289,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging < index">
-                                <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
-                                    <span class="text-primary-800 font-medium" x-text="leapdays[dragging]?.name"></span>
                                 </div>
                             </div>
                         </div>

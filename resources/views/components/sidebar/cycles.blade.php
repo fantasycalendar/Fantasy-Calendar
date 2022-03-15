@@ -117,86 +117,87 @@
             <input type='button' value='Add new cycle' @click="add()" class='btn btn-primary full'>
         </div>
 
+        <div x-data="sortableList($data.static_data.cycles.data, 'cycles-sortable')">
 
-        <div class="row sortable-header no-gutters align-items-center" x-show="cycles.length">
-            <div x-show="!reordering" @click="reordering = true" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
-            <div x-show="reordering" @click="reordering = false" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
-            <div class="col-11 pl-2">Your Cycles</div>
-        </div>
+            <div class="row sortable-header no-gutters align-items-center" x-show="cycles.length">
+                <div x-show="!reordering" @click="reordering = true; deleting = null;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
+                <div x-show="reordering" @click="reordering = false;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
+                <div class="col-11 pl-2">Your Cycles</div>
+            </div>
 
-        <div class="sortable list-group">
-            <template x-for="(cycle, index) in cycles">
+            <div class="sortable list-group border-t border-gray-600" x-ref="cycles-sortable">
+                <template x-for="(cycle, index) in cycles" x-ref="cycles-sortable-template">
+                    <div class='sortable-container border-t -mt-px list-group-item draggable-source' :data-id="index">
 
-                <div class='sortable-container list-group-item cycle_inputs collapsed collapsible'>
-
-                    <div class='main-container' x-show="deleting !== cycle">
-                        <i class='handle icon-reorder' x-show="reordering"></i>
-                        <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
-                        <div class="input-group">
-                            <div class='name-container cycle-text flex items-center justify-center' x-text="`Cycle #${index+1} - Using \{\{${index+1}\}\}`"></div>
-                            <div class="input-group-append">
-                                <div class='btn btn-danger icon-trash' @click="deleting = cycle" x-show="deleting !== cycle"></div>
+                        <div class='main-container' x-show="deleting !== cycle">
+                            <i class='handle icon-reorder' x-show="reordering"></i>
+                            <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
+                            <div class="input-group">
+                                <div class='name-container cycle-text flex items-center justify-center' x-text="`Cycle #${index+1} - Using \{\{${index+1}\}\}`"></div>
+                                <div class="input-group-append">
+                                    <div class='btn btn-danger icon-trash' @click="deleting = cycle" x-show="deleting !== cycle"></div>
+                                </div>
                             </div>
                         </div>
+
+                        <div class='d-flex justify-content-between align-items-center w-100 px-1'>
+                            <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === cycle"></div>
+                            <div class='remove-container-text' x-show="deleting === cycle">Are you sure?</div>
+                            <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === cycle"></div>
+                        </div>
+
+                        <div class='container pb-2' x-show="expanded[index] && deleting !== cycle && !reordering">
+
+                            <div class='row no-gutters mt-2'>Cycle is based on:</div>
+                            <div class='row no-gutters mb-2'>
+                                <select class='form-control full dynamic_input cycle_type' x-model="cycle.type">
+                                    <option value='year'>Year</option>
+                                    <option value='era_year'>Era year</option>
+                                    <option value='timespan_index'>Month in year</option>
+                                    <option value='num_timespans'>Month count (since 1/1/1)</option>
+                                    <option value='day'>Day in month</option>
+                                    <option value='year_day'>Year day</option>
+                                    <option value='epoch'>Epoch (days since 1/1/1)</option>
+                                </select>
+                            </div>
+
+                            <div class='row no-gutters mt-2'>
+                                <div class='col-6 pr-1 pl-0'>
+                                    <div>Length:</div>
+                                </div>
+
+                                <div class='col-6 pr-0 pl-1'>
+                                    <div>Offset:</div>
+                                </div>
+                            </div>
+
+                            <div class='row no-gutters mb-1 input-group'>
+                                <input type='number' step="1.0" class='form-control' min='1' x-model.number='cycle.length' />
+                                <input type='number' step="1.0" class='form-control' min='0' x-model.number='cycle.offset' />
+                            </div>
+
+                            <div class='row no-gutters mt-3 mb-2'>Number of names:</div>
+
+                            <div class='row no-gutters my-2 input-group'>
+                                <input type='number' step="1.0" class='form-control' :value='cycle.names.length' @input="numberCycleNamesChanged($event, cycle, index)"/>
+
+                                <div class='col-6 input-group-append'>
+                                    <button type='button' class='full btn btn-primary' @click="quickAddNames(cycle)">Quick add</button>
+                                </div>
+                            </div>
+                            <div class='row no-gutters mb-2'>
+                                <div class='col-12 vertical-input-group'>
+                                    <template x-for="name in cycle.names">
+                                        <input type='text' class='form-control internal-list-name' x-model="name"/>
+                                    </template>
+                                </div>
+                            </div>
+
+                        </div>
+
                     </div>
-
-                    <div class='d-flex justify-content-between align-items-center w-100 px-1'>
-                        <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === cycle"></div>
-                        <div class='remove-container-text' x-show="deleting === cycle">Are you sure?</div>
-                        <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === cycle"></div>
-                    </div>
-
-                    <div class='container pb-2' x-show="expanded[index] && deleting !== cycle && !reordering">
-
-                        <div class='row no-gutters mt-2'>Cycle is based on:</div>
-                        <div class='row no-gutters mb-2'>
-                            <select class='form-control full dynamic_input cycle_type' x-model="cycle.type">
-                                <option value='year'>Year</option>
-                                <option value='era_year'>Era year</option>
-                                <option value='timespan_index'>Month in year</option>
-                                <option value='num_timespans'>Month count (since 1/1/1)</option>
-                                <option value='day'>Day in month</option>
-                                <option value='year_day'>Year day</option>
-                                <option value='epoch'>Epoch (days since 1/1/1)</option>
-                            </select>
-                        </div>
-
-                        <div class='row no-gutters mt-2'>
-                            <div class='col-6 pr-1 pl-0'>
-                                <div>Length:</div>
-                            </div>
-
-                            <div class='col-6 pr-0 pl-1'>
-                                <div>Offset:</div>
-                            </div>
-                        </div>
-
-                        <div class='row no-gutters mb-1 input-group'>
-                            <input type='number' step="1.0" class='form-control' min='1' x-model.number='cycle.length' />
-                            <input type='number' step="1.0" class='form-control' min='0' x-model.number='cycle.offset' />
-                        </div>
-
-                        <div class='row no-gutters mt-3 mb-2'>Number of names:</div>
-
-                        <div class='row no-gutters my-2 input-group'>
-                            <input type='number' step="1.0" class='form-control' :value='cycle.names.length' @input="numberCycleNamesChanged($event, cycle, index)"/>
-
-                            <div class='col-6 input-group-append'>
-                                <button type='button' class='full btn btn-primary' @click="quickAddNames(cycle)">Quick add</button>
-                            </div>
-                        </div>
-                        <div class='row no-gutters mb-2'>
-                            <div class='col-12 vertical-input-group'>
-                                <template x-for="name in cycle.names">
-                                    <input type='text' class='form-control internal-list-name' x-model="name"/>
-                                </template>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-            </template>
+                </template>
+            </div>
         </div>
 
 

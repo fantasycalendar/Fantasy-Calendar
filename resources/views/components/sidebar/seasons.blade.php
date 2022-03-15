@@ -153,10 +153,7 @@
     helplink="seasons"
 >
 
-    <div
-        x-data="seasonSection($data)"
-        @dragover.prevent="$event.dataTransfer.dropEffect = 'move';"
-    >
+    <div x-data="seasonSection($data)">
 
         <div class='row bold-text'>
             <div class='col'>
@@ -205,33 +202,18 @@
             </div>
         </div>
 
-        <div
-            x-data="sortableList($data.static_data.seasons.data, 'season-order-changed')"
-            @drop.prevent="dropped"
-        >
+        <div x-data="sortableList($data.static_data.seasons.data, 'season-sortable', 'season-order-changed')">
 
             <div class="row sortable-header no-gutters align-items-center" x-show="settings.periodic_seasons">
                 <div x-show="!reordering" @click="reordering = true; deleting = null;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
                 <div x-show="reordering" @click="reordering = false;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer "><i class="fa fa-times"></i></div>
             </div>
 
-            <div class="sortable list-group">
-                <template x-for="(season, index) in seasons">
-                    <div class='sortable-container list-group-item'>
+            <div class="sortable list-group border-t border-gray-600" x-ref="seasons-sortable">
+                <template x-for="(season, index) in seasons" x-ref="seasons-sortable-template">
+                    <div class='sortable-container border-t -mt-px list-group-item draggable-source' :data-id="index">
 
-                        <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging > index">
-                            <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
-                                <span class="text-primary-800 font-medium" x-text="seasons[dragging]?.name"></span>
-                            </div>
-                        </div>
-
-                        <div class='main-container'
-                             x-show="deleting !== season"
-                             @dragenter.prevent="dropping = index"
-                             @dragstart="dragging = index"
-                             @dragend="dragging = null; $nextTick(() => {dropping = null})"
-                             :draggable="reordering"
-                        >
+                        <div class='main-container' x-show="deleting !== season">
                             <i class='handle icon-reorder' x-show="reordering"></i>
                             <i class='expand' x-show="!reordering" :class="expanded[index] ? 'icon-collapse' : 'icon-expand'" @click="expanded[index] = !expanded[index]"></i>
                             <div class="input-group">
@@ -350,11 +332,6 @@
 
                         </div>
 
-                        <div class="bg-primary-500 w-full" x-show="reordering && dragging !== null && dropping === index && dragging < index">
-                            <div class="border-2 rounded border-primary-800 border-dashed m-1 grid place-items-center p-3">
-                                <span class="text-primary-800 font-medium" x-text="seasons[dragging]?.name"></span>
-                            </div>
-                        </div>
                     </div>
                 </template>
             </div>
