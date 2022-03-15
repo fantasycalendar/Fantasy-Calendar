@@ -61,6 +61,38 @@ class CalendarEvent extends Model
         return html_entity_decode($value);
     }
 
+    public function oneTime($year, $month, $day)
+    {
+        $this->data = [
+            'has_duration' => false,
+            'duration' => 1,
+            'show_first_last' => false,
+            'limited_repeat' => false,
+            'limited_repeat_num' => 1,
+            'conditions' => [
+                [
+                    "Date",
+                    "0",
+                    [
+                        $year,
+                        $month,
+                        $day
+                    ]
+                ]
+            ],
+            'connected_events' => [],
+            'date' => [
+                $year,
+                $month,
+                $day
+            ],
+            'search_distance' => 0,
+            'overrides' => [
+                'moons' => []
+            ]
+        ];
+    }
+
     /**
      * Prepare a date for array / JSON serialization
      *

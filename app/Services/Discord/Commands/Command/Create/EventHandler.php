@@ -4,6 +4,7 @@
 namespace App\Services\Discord\Commands\Command\Create;
 
 
+use App\CalendarEvent;
 use App\Services\Discord\Commands\Command;
 use App\Services\Discord\Commands\Command\Response;
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
@@ -12,6 +13,7 @@ use App\Services\Discord\Commands\Command\Response\Modal;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 use App\Services\Discord\Exceptions\DiscordUserHasNoCalendarsException;
 use App\User;
+use Mews\Purifier\Facades\Purifier;
 
 class EventHandler extends Command
 {
@@ -34,17 +36,17 @@ class EventHandler extends Command
         ld($this->interaction_user_id);
         return Modal::create(
             'Enter your event title',
-            self::target('reEcho')
+            self::target('createEvent')
         )
             ->addRow(function(ActionRow $row){
                 return $row->addTextInput(
-                    self::target('reEcho'),
+                    'event_title',
                     'Event title',
                     'Event title'
                 );
             })->addRow(function(ActionRow $row){
                 return $row->addTextInput(
-                    self::target('reEcho2'),
+                    'event_description',
                     'Event Description',
                     'Today my players were a pain by...',
                     false,
@@ -55,7 +57,27 @@ class EventHandler extends Command
             });
     }
 
-    public function reEcho($response) {
-        return Response::make($this->interaction('data.components.0.components.0.value'));
+    public function createEvent() {
+        $title = $this->interaction('data.components.0.components.0.value');
+        $description = $this->interaction('data.components.1.components.0.value');
+
+        $calendar = $this->getDefaultCalendar();
+        $event = new CalendarEvent([
+            'name' => $title,
+            'description' => Purifier::clean($description),
+            'calendar_id' => $calendar->id,
+            'event_category_id' => ($calendar->event_categories()->whereId($calendar->setting('default_category'))->exists())
+                ? $calendar->setting('default_category')
+                : "-1",
+            'settings' => ["color" => "Dark-Solid", "text" => "text", "hide" => false, "hide_full" => false, "print" => false]
+        ]);
+
+        $event->oneTime($calendar->year, $calendar->month_id, $calendar->day);
+
+        $event->save();
+
+        return Response::make(
+            "Created one-time event **{$event->name}** on **{$calendar->current_date}**."
+        );
     }
 }
