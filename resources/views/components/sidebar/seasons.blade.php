@@ -101,6 +101,8 @@
                         this.sortSeasonsByDate();
                     }
 
+                    this.populatePresetSeasonList();
+
                     window.dispatchEvent(new CustomEvent("season-added", { detail: { data } }));
 
                     // TODO: Investigate why date-based seasons' month selection sometimes doesn't update properly on creation
@@ -109,6 +111,7 @@
 
                 remove(index){
                     this.seasons.splice(index, 1);
+                    this.populatePresetSeasonList();
                     window.dispatchEvent(new CustomEvent("season-removed", { detail: { index }}));
                 },
 
@@ -242,6 +245,16 @@
 
                     this.old_order = clone($data.static_data.seasons.global_settings.preset_order);
 
+                },
+
+                seasonOrderChanged({ start, end }={}){
+
+                    if($data.static_data.seasons.global_settings.preset_order){
+                        const value = $data.static_data.seasons.global_settings.preset_order.splice(start, 1)[0];
+                        $data.static_data.seasons.global_settings.preset_order.splice(end, 0, value);
+                        this.populatePresetSeasonList();
+                    }
+
                 }
 
             }
@@ -265,6 +278,7 @@
     <div
         x-data="seasonSection($data)"
         @toggle-season-type.window="toggleSeasonType"
+        @season-order-changed.window="seasonOrderChanged($event.detail)"
     >
 
         <div class='row bold-text'>
