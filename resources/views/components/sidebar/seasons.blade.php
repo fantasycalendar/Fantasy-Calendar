@@ -39,7 +39,7 @@
                     return this.seasons.length > 0
                         && this.clock.enabled
                         && $data.dynamic_data.custom_location
-                        && !this.locations[$data.dynamic_data.location].season_based_time;
+                        && !this.locations[$data.dynamic_data.location]?.settings?.season_based_time;
                 },
 
                 add(name){
@@ -202,7 +202,7 @@
             </div>
         </div>
 
-        <div x-data="sortableList($data.static_data.seasons.data, 'season-sortable', 'season-order-changed')">
+        <div x-data="sortableList($data.static_data.seasons.data, 'seasons-sortable', 'season-order-changed')">
 
             <div class="row sortable-header no-gutters align-items-center" x-show="settings.periodic_seasons">
                 <div x-show="!reordering" @click="reordering = true; deleting = null;" class="btn btn-outline-secondary p-1 border col-1 rounded text-center cursor-pointer"><i class="fa fa-sort"></i></div>
