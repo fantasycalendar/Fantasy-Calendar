@@ -104,7 +104,6 @@
     icon="fas fa-calendar-alt"
     tooltip-title="More Info: Months & Intercalaries"
     helplink="months"
-    checked="true"
 >
 
     @if(request()->is('calendars/*/edit') && $calendar->isLinked())

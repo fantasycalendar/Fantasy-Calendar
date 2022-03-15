@@ -9,6 +9,7 @@
 
                 newSeasonName: "",
 
+                static_data: $data.static_data,
                 locations: $data.static_data.seasons.locations,
                 seasons: $data.static_data.seasons.data,
                 settings: $data.static_data.seasons.global_settings,
@@ -45,19 +46,19 @@
                 add(name){
 
                     const data = {
-                        "name": name || `Season ${this.seasons.length+1}`,
-                        "color": [
+                        name: name || `Season ${this.seasons.length+1}`,
+                        color: [
                             "#" + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0'),
                             "#" + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0')
                         ],
-                        "time": {
-                            "sunrise": {
-                                "hour": 6,
-                                "minute": 0
+                        time: {
+                            sunrise: {
+                                hour: 6,
+                                minute: 0
                             },
-                            "sunset": {
-                                "hour": 18,
-                                "minute": 0
+                            sunset: {
+                                hour: 18,
+                                minute: 0
                             }
                         },
                         transition_length: 90,
@@ -95,20 +96,56 @@
                         this.sortSeasonsByDate();
                     }
 
+                    window.dispatchEvent(new CustomEvent("season-added", { detail: { data } }));
+
                     // TODO: Investigate why date-based seasons' month selection sometimes doesn't update properly on creation
 
                 },
 
                 remove(index){
                     this.seasons.splice(index, 1);
+                    window.dispatchEvent(new CustomEvent("season-removed", { detail: { index }}));
                 },
 
-                switchSeasonType(){
-                    // TODO: Add modal warning when switching season type
-                    const newType = !this.settings.periodic_seasons;
-                    this.seasons = [];
+                querySwitchSeasonType(){
+
+                    this.season_type = this.settings.periodic_seasons;
+
+                    const endsYear = this.static_data.eras.find(era => era.settings.ends_year);
+
+                    if(endsYear){
+                        swal.fire({
+                            title: "Error!",
+                            text: `You have eras that end years - you cannot switch to dated seasons with year-ending eras as the dates might disappear, and that kinda defeats the whole purpose.`,
+                            icon: "error"
+                        });
+                        return;
+                    }
+
+                    swal.fire({
+                        title: "Are you sure?",
+                        text: `Are you sure you want to switch to ${!this.settings.periodic_seasons ? "PERIODIC" : "DATED"} seasons? Your current seasons will be deleted so you can re-create them.`,
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Okay',
+                        icon: "warning",
+                    })
+                    .then((result) => {
+                        if (!result.dismiss) {
+                            window.dispatchEvent(new CustomEvent('toggle-season-type'));
+                        }
+                    });
+                },
+
+                toggleSeasonType(){
                     this.reordering = false;
-                    this.settings.periodic_seasons = newType;
+
+                    $data.static_data.seasons.data = [];
+                    $data.static_data.seasons.global_settings.periodic_seasons = !this.settings.periodic_seasons;
+                    this.seasons = $data.static_data.seasons.data;
+
+                    window.dispatchEvent(new CustomEvent("all-seasons-removed"));
                 },
 
                 createSeasonEvents(){
@@ -153,7 +190,10 @@
     helplink="seasons"
 >
 
-    <div x-data="seasonSection($data)">
+    <div
+        x-data="seasonSection($data)"
+        @toggle-season-type.window="toggleSeasonType"
+    >
 
         <div class='row bold-text'>
             <div class='col'>
@@ -167,8 +207,8 @@
                     Date Based
                 </div>
                 <div class='col-12 col-md-2 px-md-0 text-center'>
-                    <label class="custom-control custom-checkbox flexible">
-                        <input type="checkbox" class="custom-control-input" :checked="settings.periodic_seasons" @change="switchSeasonType">
+                    <label class="custom-control custom-checkbox flexible" @click.prevent="querySwitchSeasonType">
+                        <input type="checkbox" class="custom-control-input" x-model="settings.periodic_seasons">
                         <span class="custom-control-indicator"></span>
                     </label>
                 </div>
