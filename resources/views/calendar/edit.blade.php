@@ -95,23 +95,30 @@
             reordering: false,
             dragging: null,
             dropping: null,
+            oldOrder: data.map((elem, index) => index),
 
-            dropped(){
+            dropped(start, end){
 
-                if(this.dragging === this.dropping || this.dragging === null || this.dropping === null){
-                    this.dragging = null;
-                    this.dropping = null;
-                    return;
+                if(start === end) return;
+
+                let order = this.draggable.toArray()
+                order.shift()
+
+                const elem = data.splice(start, 1)[0];
+
+                data.splice(end, 0, elem);
+
+                this.$refs[element+"_template"]._x_prevKeys = order;
+
+                if(eventName){
+                    if(Array.isArray(eventName)){
+                        eventName.forEach((evtName) => {
+                            window.dispatchEvent(new CustomEvent(evtName, { detail: { start, end }}));
+                        })
+                    }else{
+                        window.dispatchEvent(new CustomEvent(eventName, { detail: { start, end }}));
+                    }
                 }
-
-                const elem = data.splice(this.dragging, 1)[0];
-
-                data.splice(this.dropping, 0, elem);
-
-                if(eventName) window.dispatchEvent(new CustomEvent(eventName));
-
-                this.dragging = null;
-                this.dropping = null;
 
             },
 
@@ -121,6 +128,10 @@
                         animation: 300,
                         ghostClass: "dragged-placeholder",  // Class name for the drop placeholder
                         dragClass: "dragged-item",  // Class name for the dragging item
+                        handle: ".handle",
+                        onEnd: (event) => {
+                            this.dropped(event.oldIndex, event.newIndex);
+                        },
                     });
                 }
             }
