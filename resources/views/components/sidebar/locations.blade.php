@@ -87,6 +87,14 @@
                         current_location: this.current_location,
                         custom_location: this.custom_location
                     }}));
+                },
+
+                seasonOrderChanged($event){
+                    const { start, end } = $event.detail;
+                    for(const location of this.locations){
+                        const season = location.seasons.splice(start, 1)[0];
+                        location.seasons.splice(end, 0, season);
+                    }
                 }
             }
         }
@@ -104,7 +112,10 @@
     helplink="locations"
 >
 
-    <div x-data="locationSection($data)">
+    <div
+        x-data="locationSection($data)"
+        @season-order-changed.window="seasonOrderChanged"
+    >
 
         <div class='row no-gutters mb-2' x-show="(seasons.length === 0 || !season_settings.enable_weather) && !clock.enabled">
             You need weather enabled (temperatures, precipitation) or the clock enabled (timezone, sunrise/sunset) for locations to function.
