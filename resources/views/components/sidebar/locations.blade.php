@@ -21,14 +21,14 @@
                 deleting: null,
                 reordering: false,
 
-                add(newLocationName){
+                add(data={}){
 
                     const location = {
-                        name: newLocationName || `Location ${this.locations.length+1}`,
+                        name: `Location ${this.locations.length + 1}`,
                         seasons: this.seasons.map(season => {
                             return {
                                 time: clone(season.time),
-                                weather:{
+                                weather: {
                                     temp_low: 0,
                                     temp_high: 0,
                                     precipitation: 0,
@@ -55,7 +55,8 @@
                             small_noise_frequency: 0.8,
                             small_noise_amplitude: 3.0
 
-                        }
+                        },
+                        ...data
                     }
 
                     this.locations.push(location);
@@ -71,7 +72,23 @@
                 },
 
                 copyLocation(){
-
+                    let location;
+                    if(this.custom_location){
+                        location = clone(this.locations[this.current_location]);
+                    }else{
+                        const custom_locations = preset_data.locations[this.seasons.length];
+                        if(!custom_locations) return;
+                        location = clone(custom_locations[this.current_location]);
+                        location.seasons = this.seasons.map((season, index) => {
+                            const newLocationData = location.seasons[this.season_settings.preset_order[index]];
+                            return {
+                                time: clone(season.time),
+                                ...newLocationData
+                            }
+                        });
+                    }
+                    location.name += " (Copy)";
+                    this.add(location);
                 },
 
                 get preset_locations(){
@@ -98,12 +115,16 @@
                 },
 
                 seasonAdded(data){
+                    if(!this.season_settings.preset_order.length && this.custom_location){
+                        this.custom_location = false;
+                        this.current_location = this.locations.length-1;
+                    }
                     this.locations.forEach(location => {
                         location.seasons.push({
                             time: clone(data.time),
                             weather:{
                                 temp_low: 0,
-                                temp_high: 500,
+                                temp_high: 0,
                                 precipitation: 0,
                                 precipitation_intensity: 0
                             }
@@ -176,7 +197,7 @@
                 </select>
             </div>
             <div class='row no-gutters my-2'>
-                <input type='button' value='Copy current location' class='btn btn-info w-100'>
+                <input type='button' value='Copy current location' class='btn btn-info w-100' @click="copyLocation()">
             </div>
 
             <div class='row no-gutters my-4'>
@@ -190,7 +211,7 @@
             <div class='row no-gutters input-group mb-4'>
                 <input type='text' class='form-control name' placeholder='Location name' x-model="newLocationName">
                 <div class="col-auto input-group-append">
-                    <button type='button' class='btn btn-primary' @click="add(newLocationName)"><i class="fa fa-plus"></i></button>
+                    <button type='button' class='btn btn-primary' @click="add({ name: newLocationName })"><i class="fa fa-plus"></i></button>
                 </div>
             </div>
 

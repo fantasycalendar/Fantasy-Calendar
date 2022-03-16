@@ -20,7 +20,7 @@
                 expanded: {},
                 reordering: false,
 
-                old_order: clone($data.static_data.seasons.global_settings.preset_order),
+                old_order: clone($data.static_data.seasons.global_settings.preset_order) ?? [],
                 preset_season_list: [],
 
                 get seasonLength(){
@@ -198,7 +198,7 @@
                     }
 
                     if(!this.preset_season_list.length){
-                        $data.static_data.seasons.global_settings.preset_order = null;
+                        $data.static_data.seasons.global_settings.preset_order = [];
                         return false;
                     }
 
