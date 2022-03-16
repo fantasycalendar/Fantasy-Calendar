@@ -193,7 +193,7 @@
 
                     if(!this.preset_season_list) return false;
 
-                    if(!this.settings.preset_order){
+                    if(!this.settings.preset_order.length){
                         this.settings.preset_order = Array.from(Array(this.preset_season_list.length).keys());
                     }
 

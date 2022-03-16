@@ -16,10 +16,14 @@
                 current_location: $data.dynamic_data.location,
                 custom_location: $data.dynamic_data.custom_location,
 
-
+                preset_locations: [],
                 expanded: {},
                 deleting: null,
                 reordering: false,
+
+                init(){
+                    this.populate_preset_locations();
+                },
 
                 add(data={}){
 
@@ -91,10 +95,9 @@
                     this.add(location);
                 },
 
-                get preset_locations(){
+                populate_preset_locations(){
                     const validSeasons = (this.seasons.length === 2 || this.seasons.length === 4) && this.season_settings.enable_weather;
-                    const length = validSeasons ? this.seasons.length : 4;
-                    return preset_data.locations[length];
+                    this.preset_locations = validSeasons ? Object.values(preset_data.locations[this.seasons.length]) : [];
                 },
 
                 changeCurrentLocation($event){
@@ -130,12 +133,14 @@
                             }
                         })
                     })
+                    this.populate_preset_locations();
                 },
 
                 seasonRemoved(index){
                     this.locations.forEach(location => {
                         location.seasons.splice(index, 1);
                     });
+                    this.populate_preset_locations();
                 },
 
                 allSeasonsRemoved(){
@@ -143,6 +148,7 @@
                         location.seasons = [];
                         return location;
                     })
+                    this.populate_preset_locations();
                 }
             }
         }
@@ -189,7 +195,7 @@
                             <option :value="index" x-text="location.name"></option>
                         </template>
                     </optgroup>
-                    <optgroup label="Location Presets" value="preset_location">
+                    <optgroup label="Location Presets" value="preset_location" x-show="preset_locations.length">
                         <template x-for="(location, index) in preset_locations">
                             <option x-text="location.name"></option>
                         </template>
