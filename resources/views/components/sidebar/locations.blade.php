@@ -22,7 +22,7 @@
                 reordering: false,
 
                 init(){
-                    this.populate_preset_locations();
+                    this.populatePresetLocations();
                 },
 
                 add(data={}){
@@ -95,7 +95,7 @@
                     this.add(location);
                 },
 
-                populate_preset_locations(){
+                populatePresetLocations(){
                     const validSeasons = (this.seasons.length === 2 || this.seasons.length === 4) && this.season_settings.enable_weather;
                     this.preset_locations = validSeasons ? Object.values(preset_data.locations[this.seasons.length]) : [];
                 },
@@ -133,14 +133,14 @@
                             }
                         })
                     })
-                    this.populate_preset_locations();
+                    this.populatePresetLocations();
                 },
 
                 seasonRemoved(index){
                     this.locations.forEach(location => {
                         location.seasons.splice(index, 1);
                     });
-                    this.populate_preset_locations();
+                    this.populatePresetLocations();
                 },
 
                 allSeasonsRemoved(){
@@ -148,7 +148,72 @@
                         location.seasons = [];
                         return location;
                     })
-                    this.populate_preset_locations();
+                    this.populatePresetLocations();
+                },
+
+                seasonTimesChanged(index){
+                    const season_time = this.seasons[index].time;
+                    this.locations.forEach(location => {
+                        if(!location.settings.season_based_time) return;
+                        location.seasons[index].time = clone(season_time);
+                    });
+                },
+
+                lockSeasonTime(location){
+                    if(!location.settings.season_based_time) return;
+                    this.seasons.forEach((season, index) => {
+                        location.seasons[index].time = clone(season.time);
+                    });
+                },
+
+                interpolateLocationSeason(location_index, season_index){
+
+                    const { prev_index, next_index, interpolationPercentage } = window.calendar.getSeasonInterpolation(season_index);
+
+                    const location = this.locations[location_index];
+
+                    const prev_season = location.seasons[prev_index];
+                    const curr_season = location.seasons[season_index];
+                    const next_season = location.seasons[next_index];
+
+                    if(this.clock.enabled && !location.settings.season_based_time){
+
+                        const prev_sunrise = prev_season.time.sunrise.hour+(prev_season.time.sunrise.minute/this.clock.minutes);
+                        const next_sunrise = next_season.time.sunrise.hour+(next_season.time.sunrise.minute/this.clock.minutes);
+
+                        const sunrise_middle = lerp(prev_sunrise, next_sunrise, interpolationPercentage);
+                        const sunrise_h = Math.floor(sunrise_middle);
+                        const sunrise_m = Math.floor(fract(sunrise_middle)*this.clock.minutes);
+
+                        curr_season.time.sunrise.hour = sunrise_h;
+                        curr_season.time.sunrise.minute = sunrise_m;
+
+                        const prev_sunset = prev_season.time.sunset.hour+(prev_season.time.sunset.minute/this.clock.minutes);
+                        const next_sunset = next_season.time.sunset.hour+(next_season.time.sunset.minute/this.clock.minutes);
+
+                        const sunset_middle = lerp(prev_sunset, next_sunset, interpolationPercentage);
+                        const sunset_h = Math.floor(sunset_middle);
+                        const sunset_m = Math.floor(fract(sunset_middle)*this.clock.minutes);
+
+                        curr_season.time.sunset.hour = sunset_h;
+                        curr_season.time.sunset.minute = sunset_m;
+
+                    }
+
+                    if(this.season_settings.enable_weather){
+
+                        let temp_low = precisionRound(lerp(prev_season.weather.temp_low, next_season.weather.temp_low, interpolationPercentage), 2);
+                        let temp_high = precisionRound(lerp(prev_season.weather.temp_high, next_season.weather.temp_high, interpolationPercentage), 2);
+                        let precipitation = precisionRound(lerp(prev_season.weather.precipitation, next_season.weather.precipitation, interpolationPercentage), 2);
+                        let precipitation_intensity = precisionRound(lerp(prev_season.weather.precipitation_intensity, next_season.weather.precipitation_intensity, interpolationPercentage), 2);
+
+                        curr_season.weather = {
+                            temp_low,
+                            temp_high,
+                            precipitation,
+                            precipitation_intensity
+                        }
+                    }
                 }
             }
         }
@@ -171,6 +236,7 @@
         @season-order-changed.window="seasonOrderChanged($event.detail)"
         @season-added.window="seasonAdded($event.detail.data)"
         @season-removed.window="seasonRemoved($event.detail.index)"
+        @season-times-changed.window="seasonTimesChanged($event.detail.index)"
         @all-seasons-removed.window="allSeasonsRemoved()"
     >
 
@@ -266,8 +332,8 @@
                                             </div>
 
                                             <div class="my-2 input-group">
-                                                <input type='number' step="any" class='form-control' x-model="season.weather.temp_low">
-                                                <input type='number' step="any" class='form-control' x-model="season.weather.temp_high">
+                                                <input type='number' step="any" class='form-control' x-model.number="season.weather.temp_low">
+                                                <input type='number' step="any" class='form-control' x-model.number="season.weather.temp_high">
                                             </div>
 
                                             <div class='row no-gutters my-2'>
@@ -280,7 +346,7 @@
 
                                             <div class='row no-gutters mb-2'>
                                                 <div class='col-8 pt-1'>
-                                                    <input type="range" class="custom-range" min="0" max="1" step="0.01" x-model='season.weather.precipitation'>
+                                                    <input type="range" class="custom-range" min="0" max="1" step="0.01" x-model.number='season.weather.precipitation'>
                                                 </div>
                                                 <div class='col-4 pl-1 input-group'>
                                                     <input type='number' step="any" class='form-control' min="0" max="100"
@@ -301,7 +367,7 @@
 
                                             <div class='row no-gutters mb-2'>
                                                 <div class='col-8 pt-1'>
-                                                    <input type="range" class="custom-range" min="0" max="1" step="0.01" x-model='season.weather.precipitation_intensity'>
+                                                    <input type="range" class="custom-range" min="0" max="1" step="0.01" x-model.number='season.weather.precipitation_intensity'>
                                                 </div>
                                                 <div class='col-4 pl-1 input-group'>
                                                     <input type='number' step="any" class='form-control' min="0" max="100"
@@ -332,7 +398,7 @@
                                             </div>
 
                                             <div class='mb-2 protip input-group' data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season, in this location">
-                                                <input type='number' step="1.0" class='form-control text-right' min="0" :max="clock.hours" :disabled="location.settings.season_based_time" x-model='season.time.sunrise.hour' />
+                                                <input type='number' step="1.0" class='form-control text-right' min="0" :max="clock.hours" :disabled="location.settings.season_based_time" x-model.number='season.time.sunrise.hour' />
 
                                                 <div class="input-group-append">
                                                     <span class="input-group-text border">:</span>
@@ -341,7 +407,7 @@
                                                     </span>
                                                 </div>
 
-                                                <input type='number' step="1.0" class='form-control text-left border-left-0' min="0" :max="clock.minutes" :disabled="location.settings.season_based_time" x-model='season.time.sunrise.minute' />
+                                                <input type='number' step="1.0" class='form-control text-left border-left-0' min="0" :max="clock.minutes" :disabled="location.settings.season_based_time" x-model.number='season.time.sunrise.minute' />
                                             </div>
 
                                             <div class='row no-gutters mt-2'>
@@ -354,7 +420,7 @@
                                             </div>
 
                                             <div class='mb-2 protip input-group' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season, in this location">
-                                                <input type='number' step="1.0" class='form-control text-right' min="0" :max="clock.hours" :disabled="location.settings.season_based_time" x-model='season.time.sunset.hour' />
+                                                <input type='number' step="1.0" class='form-control text-right' min="0" :max="clock.hours" :disabled="location.settings.season_based_time" x-model.number='season.time.sunset.hour' />
 
                                                 <div class="input-group-append">
                                                     <span class="input-group-text border">:</span>
@@ -363,11 +429,11 @@
                                                     </span>
                                                 </div>
 
-                                                <input type='number' step="1.0" class='form-control text-left border-left-0' min="0" :max="clock.minutes" :disabled="location.settings.season_based_time" x-model='season.time.sunset.minute' />
+                                                <input type='number' step="1.0" class='form-control text-left border-left-0' min="0" :max="clock.minutes" :disabled="location.settings.season_based_time" x-model.number='season.time.sunset.minute' />
                                             </div>
                                         </div>
                                         <div class='row no-gutters my-2'>
-                                            <button type="button" class="btn btn-sm btn-info full protip" data-pt-position="right" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>
+                                            <button type="button" class="btn btn-sm btn-info full protip" data-pt-position="right" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn" @click="interpolateLocationSeason(index, season_index)">Interpolate data from surrounding seasons</button>
                                         </div>
 
                                         <div class='separator'></div>
@@ -382,7 +448,7 @@
 
                                 <div class='row no-gutters my-1 protip' x-show="location.seasons.length" data-pt-position="right" data-pt-title="Checking this will base this location's sunrise and sunset times on your season's sunrise and sunset times, and keep them the same">
                                     <div class='form-check col-12 py-2 border rounded'>
-                                        <input type='checkbox' :id='index + "_season_based_time"' class='form-check-input' x-model='location.settings.season_based_time' />
+                                        <input type='checkbox' :id='index + "_season_based_time"' class='form-check-input' x-model='location.settings.season_based_time' @change="lockSeasonTime(location)" />
                                         <label :for='index + "_season_based_time"' class='form-check-label ml-1'>
                                             Lock sunset/rise times to season
                                         </label>
@@ -400,7 +466,7 @@
                                 </div>
 
                                 <div class='mb-2 protip input-group' data-pt-position="right" data-pt-title="When this location becomes active, the current time will change this much to reflect the new location.">
-                                    <input type='number' step="1.0" :min="Math.floor(clock.hours*-0.5)" :max="Math.floor(clock.hours*0.5)" class='form-control right-text ' x-model='location.settings.timezone.hour' />
+                                    <input type='number' step="1.0" :min="Math.floor(clock.hours*-0.5)" :max="Math.floor(clock.hours*0.5)" class='form-control right-text ' x-model.number='location.settings.timezone.hour' />
 
                                     <div class="input-group-append">
                                         <span class="input-group-text border">:</span>
@@ -409,7 +475,7 @@
                                         </span>
                                     </div>
 
-                                    <input type='number' step="1.0" :min="Math.floor(clock.minutes*-0.5)" :max="Math.floor(clock.minutes*0.5)" class='form-control border-l-0' x-model='location.settings.timezone.minute' />
+                                    <input type='number' step="1.0" :min="Math.floor(clock.minutes*-0.5)" :max="Math.floor(clock.minutes*0.5)" class='form-control border-l-0' x-model.number='location.settings.timezone.minute' />
                                 </div>
 
                             </div>

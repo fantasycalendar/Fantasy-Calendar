@@ -13,7 +13,7 @@ class random {
      * This function returns a float between -1.0 and 1.0, based on the index you give it
      *
      * @param  {int}     idx    The index in the pseudo-random sequence
-     * @return {float}          A pseudo-random value
+     * @return {Number}          A pseudo-random value
      */
 	rndUNorm(idx){
 		return fract(43758.5453 * Math.sin(this.seed + (78.233 * idx)));
@@ -23,7 +23,7 @@ class random {
      * This function returns a float between 0.0 and 1.0, based on the index you give it
      *
      * @param  {int}     idx    The index in the pseudo-random sequence
-     * @return {float}          A pseudo-random value
+     * @return {Number}          A pseudo-random value
      */
 	rndSNorm(idx){
 		return this.rndUNorm(idx) * 2.0 - 1.0;
@@ -47,9 +47,9 @@ class random {
      * This function returns a float between minimum and maximum, based on the index you give it
      *
      * @param  {int}     idx    The index in the pseudo-random sequence
-     * @param  {float}   min    The minimum value
-     * @param  {float}   max    The maximmum value
-     * @return {float}          A pseudo-random value
+     * @param  {Number}   min    The minimum value
+     * @param  {Number}   max    The maximmum value
+     * @return {Number}          A pseudo-random value
      */
 	random_float_between(idx, min, max){
 		return this.rndUNorm(idx) * (max - min) + min;
@@ -61,7 +61,7 @@ class random {
      *
      * @param  {int}     idx            The index in the pseudo-random sequence
      * @param  {string}  dice_formula   The dice formula (eg. 2d6, 1d10, 2d20)
-     * @return {float}                  A pseudo-random value
+     * @return {Number}                  A pseudo-random value
      */
 	roll_dice(idx, dice_formula){
 
@@ -79,10 +79,10 @@ class random {
      * This function returns a float between -1.0 and 1.0, along a noise curve set by the parameters below
      *
      * @param  {int}     pos            The position in the pseudo-random sequence
-     * @param  {float}   phase
-     * @param  {float}   frequency
-     * @param  {float}   amplitude
-     * @return {float}                  A pseudo-random value
+     * @param  {Number}   phase
+     * @param  {Number}   frequency
+     * @param  {Number}   amplitude
+     * @return {Number}                  A pseudo-random value
      */
 	noise(pos, phase, frequency, amplitude){
 

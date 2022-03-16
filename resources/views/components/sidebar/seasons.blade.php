@@ -160,8 +160,42 @@
                     // TODO: Add season event creation on buttons
                 },
 
-                interpolateSeasons(){
-                    // TODO: This is a monster mammoth function that needs refactoring, just take a look at line 1038 in calendar_inputs_edit.js
+                interpolateSeasons(index){
+
+                    const { prev_index, next_index, interpolationPercentage } = window.calendar.getSeasonInterpolation(index);
+
+                    const prev_season = this.seasons[prev_index];
+                    const curr_season = this.seasons[index];
+                    const next_season = this.seasons[next_index];
+
+                    if(this.clock.enabled){
+
+                        const prev_sunrise = prev_season.time.sunrise.hour+(prev_season.time.sunrise.minute/this.clock.minutes);
+                        const next_sunrise = next_season.time.sunrise.hour+(next_season.time.sunrise.minute/this.clock.minutes);
+
+                        const sunrise_middle = lerp(prev_sunrise, next_sunrise, interpolationPercentage);
+
+                        const sunrise_h = Math.floor(sunrise_middle);
+                        const sunrise_m = Math.floor(fract(sunrise_middle)*this.clock.minutes);
+
+                        curr_season.time.sunrise.hour = sunrise_h;
+                        curr_season.time.sunrise.minute = sunrise_m;
+
+                        const prev_sunset = prev_season.time.sunset.hour+(prev_season.time.sunset.minute/this.clock.minutes);
+                        const next_sunset = next_season.time.sunset.hour+(next_season.time.sunset.minute/this.clock.minutes);
+
+                        const sunset_middle = lerp(prev_sunset, next_sunset, interpolationPercentage);
+
+                        const sunset_h = Math.floor(sunset_middle);
+                        const sunset_m = Math.floor(fract(sunset_middle)*this.clock.minutes);
+
+                        curr_season.time.sunset.hour = sunset_h;
+                        curr_season.time.sunset.minute = sunset_m;
+
+                        window.dispatchEvent(new CustomEvent("season-times-changed", { detail: { index }}));
+
+                    }
+
                 },
 
                 sortSeasonsByDate(){
@@ -255,7 +289,7 @@
                         this.populatePresetSeasonList();
                     }
 
-                }
+                },
 
             }
 
@@ -423,7 +457,7 @@
                                 <x-color-picker input-class="form-control" model="season.color[1]" name="season_color_start"></x-color-picker>
                             </div>
 
-                            <div x-show="clock.enabled">
+                            <div x-show="clock.enabled" @change="$dispatch('season-times-changed', { index: index })">
 
                                 <div class='row no-gutters mt-2'>
                                     <div class='col-12'>Sunrise:</div>
@@ -434,9 +468,17 @@
                                     <div class='col-6 pl-1'>Minute</div>
                                 </div>
 
-                                <div class='row no-gutters mb-2 input-group protip' data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season">
-                                    <input type='number' step="1.0" class='form-control' min="0" :max="clock.hours" x-model='season.time.sunrise.hour' />
-                                    <input type='number' step="1.0" class='form-control' min="0" :max="clock.minutes" x-model='season.time.sunrise.minute' />
+                                <div class='mb-2 protip input-group' data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season">
+                                    <input type='number' step="1.0" class='form-control text-right' min="0" :max="clock.hours" x-model.number='season.time.sunrise.hour' />
+
+                                    <div class="input-group-append">
+                                        <span class="input-group-text border">:</span>
+                                        <span class="input-group-text hidden">
+                                                        <!-- Empty span is here to trick bootstrap into square-ifying the ':' above -->
+                                        </span>
+                                    </div>
+
+                                    <input type='number' step="1.0" class='form-control text-left border-left-0' min="0" :max="clock.minutes" x-model.number='season.time.sunrise.minute' />
                                 </div>
 
                                 <div class='row no-gutters mt-2'>
@@ -448,13 +490,21 @@
                                     <div class='col-6 pl-1'>Minute</div>
                                 </div>
 
-                                <div class='row no-gutters mb-2 input-group protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season">
-                                    <input type='number' step="1.0" class='form-control' min="0" :max="clock.hours" x-model='season.time.sunset.hour' />
-                                    <input type='number' step="1.0" class='form-control' min="0" :max="clock.minutes" x-model='season.time.sunset.minute' />
+                                <div class='mb-2 protip input-group' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season">
+                                    <input type='number' step="1.0" class='form-control text-right' min="0" :max="clock.hours" x-model.number='season.time.sunset.hour' />
+
+                                    <div class="input-group-append">
+                                        <span class="input-group-text border">:</span>
+                                        <span class="input-group-text hidden">
+                                                        <!-- Empty span is here to trick bootstrap into square-ifying the ':' above -->
+                                        </span>
+                                    </div>
+
+                                    <input type='number' step="1.0" class='form-control text-left border-left-0' min="0" :max="clock.minutes" x-model.number='season.time.sunset.minute' />
                                 </div>
 
                                 <div class='row no-gutters my-1' x-show="clock.enabled && seasons.length >= 3">
-                                    <button type="button" @click="interpolateSeasons()" class="btn btn-sm btn-info full protip" data-pt-title="Use the median values from the previous and next seasons' time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate sunrise & sunset from surrounding seasons</button>
+                                    <button type="button" @click="interpolateSeasons(index)" class="btn btn-sm btn-info full protip" data-pt-title="Use the median values from the previous and next seasons' time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate sunrise & sunset from surrounding seasons</button>
                                 </div>
 
                             </div>

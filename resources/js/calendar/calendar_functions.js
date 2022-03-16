@@ -331,7 +331,7 @@ class random {
      * This function returns a float between -1.0 and 1.0, based on the index you give it
      *
      * @param  {int}     idx    The index in the pseudo-random sequence
-     * @return {float}          A pseudo-random value
+     * @return {Number}          A pseudo-random value
      */
 	rndUNorm(idx){
 		return fract(43758.5453 * Math.sin(this.seed + (78.233 * idx)));
@@ -341,7 +341,7 @@ class random {
      * This function returns a float between 0.0 and 1.0, based on the index you give it
      *
      * @param  {int}     idx    The index in the pseudo-random sequence
-     * @return {float}          A pseudo-random value
+     * @return {Number}          A pseudo-random value
      */
 	rndSNorm(idx){
 		return this.rndUNorm(idx) * 2.0 - 1.0;
@@ -365,9 +365,9 @@ class random {
      * This function returns a float between minimum and maximum, based on the index you give it
      *
      * @param  {int}     idx    The index in the pseudo-random sequence
-     * @param  {float}   min    The minimum value
-     * @param  {float}   max    The maximmum value
-     * @return {float}          A pseudo-random value
+     * @param  {Number}   min    The minimum value
+     * @param  {Number}   max    The maximmum value
+     * @return {Number}          A pseudo-random value
      */
 	random_float_between(idx, min, max){
 		return this.rndUNorm(idx) * (max - min) + min;
@@ -379,7 +379,7 @@ class random {
      *
      * @param  {int}     idx            The index in the pseudo-random sequence
      * @param  {string}  dice_formula   The dice formula (eg. 2d6, 1d10, 2d20)
-     * @return {float}                  A pseudo-random value
+     * @return {Number}                  A pseudo-random value
      */
 	roll_dice(idx, dice_formula){
 
@@ -397,10 +397,10 @@ class random {
      * This function returns a float between -1.0 and 1.0, along a noise curve set by the parameters below
      *
      * @param  {int}     pos            The position in the pseudo-random sequence
-     * @param  {float}   phase
-     * @param  {float}   frequency
-     * @param  {float}   amplitude
-     * @return {float}                  A pseudo-random value
+     * @param  {Number}   phase
+     * @param  {Number}   frequency
+     * @param  {Number}   amplitude
+     * @return {Number}                  A pseudo-random value
      */
 	noise(pos, phase, frequency, amplitude){
 
@@ -466,10 +466,10 @@ function precisionRound(number, precision) {
 /**
  * This function clamps a value between a min and a max
  *
- * @param  {float}  t       The value to be clamped
- * @param  {float}  pin     Minimum value
- * @param  {float}  max     Maximum value
- * @return {float}          The clamped value
+ * @param  {Number}  t       The value to be clamped
+ * @param  {Number}  min     Minimum value
+ * @param  {Number}  max     Maximum value
+ * @return {Number}          The clamped value
  */
 function clamp(t, min, max){
 	return Math.min(Math.max(t, min), max);
@@ -479,10 +479,10 @@ function clamp(t, min, max){
 /**
  * This function returns a value that has been lineraly interpolated between p0 and p1
  *
- * @param  {float}  p0      The first float
- * @param  {float}  p1      The second float
- * @param  {float}  t       A normalized value between 0.0 and 1.0, 0.0 returning p0 and 1.0 returning p1
- * @return {float}          The interpolated value
+ * @param  {Number}  p0      The first float
+ * @param  {Number}  p1      The second float
+ * @param  {Number}  t       A normalized value between 0.0 and 1.0, 0.0 returning p0 and 1.0 returning p1
+ * @return {Number}          The interpolated value
  */
 function lerp(p0, p1, t){
 	return p0 + t*(p1 - p0);
@@ -492,8 +492,8 @@ function lerp(p0, p1, t){
 /**
  * This function returns the fraction of any given float.
  *
- * @param  {float}    float     The float
- * @return {float}              The fraction of that value
+ * @param  {Number}    float     The float
+ * @return {Number}              The fraction of that value
  */
 function fract(float){
 	return float - Math.floor(float);
@@ -503,9 +503,9 @@ function fract(float){
 /**
  * This function gets the middle value of the two given value
  *
- * @param  {float}    p0    The first value
- * @param  {float}    p1    The second value
- * @return {float}          The middle value
+ * @param  {Number}    p0    The first value
+ * @param  {Number}    p1    The second value
+ * @return {Number}          The middle value
  */
 function mid(p0, p1){
 	return (p0+p1)/2;
@@ -515,10 +515,10 @@ function mid(p0, p1){
 /**
  * This function normalizes a value (v) between min and max
  *
- * @param  {float}  v       The value to be normalized
- * @param  {float}  min     The minimum value
- * @param  {float}  max     The maximum value
- * @return {float}          The normalized value
+ * @param  {Number}  v       The value to be normalized
+ * @param  {Number}  min     The minimum value
+ * @param  {Number}  max     The maximum value
+ * @return {Number}          The normalized value
  */
 function norm(v, min, max)
 {
@@ -528,10 +528,10 @@ function norm(v, min, max)
 /**
  * This function normalizes a value (v) between min and max
  *
- * @param  {float}  v       The value to be normalized
- * @param  {float}  min     The minimum value
- * @param  {float}  max     The maximum value
- * @return {float}          The normalized value
+ * @param  {Number}  v       The value to be normalized
+ * @param  {Number}  min     The minimum value
+ * @param  {Number}  max     The maximum value
+ * @return {Number}          The normalized value
  */
 function inv_norm(v, min, max)
 {
@@ -543,7 +543,7 @@ function inv_norm(v, min, max)
  * This function is used to calculate the suggested granularity for a given moon cycle.
  * The granularity is used to select the number of sprites that will be shown for that moon.
  *
- * @param  {float}  cycle   The cycle of a moon
+ * @param  {Number}  cycle   The cycle of a moon
  * @return {int}            The given level of granularity suggested for that cycle
  */
 function get_moon_granularity(cycle){
@@ -1266,7 +1266,7 @@ function does_day_appear(static_data, year, timespan, day){
  * This function is used to calculate the average length of a year in the current calendar.
  *
  * @param  {object}    static_data     A calendar static data object
- * @return {float}                     The current calendar's average year length
+ * @return {Number}                     The current calendar's average year length
  */
 function avg_year_length(static_data){
 

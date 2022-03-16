@@ -201,4 +201,43 @@ export default class Calendar{
         return results[0];
     }
 
+    getSeasonInterpolation(season_index){
+
+        let prev_index = (season_index-1)%this.static_data.seasons.data.length
+        if(prev_index < 0) prev_index += this.static_data.seasons.data.length;
+        const prev_season = this.static_data.seasons.data[prev_index];
+
+        const curr_season = this.static_data.seasons.data[season_index];
+
+        const next_index = (season_index+1)%this.static_data.seasons.data.length;
+        const next_season = this.static_data.seasons.data[next_index];
+
+        if(this.static_data.seasons.global_settings.periodic_seasons) {
+
+            const season_length = prev_season.duration + prev_season.transition_length + curr_season.duration + curr_season.transition_length;
+            const target = prev_season.duration + prev_season.transition_length;
+
+            return {
+                prev_index,
+                next_index,
+                interpolationPercentage: target / season_length
+            };
+
+        }
+
+        const prev_year = prev_index > season_index ? 1 : 2;
+        const next_year = next_index < season_index ? 3 : 2;
+
+        const prev_day = window.calendar.getEpochForDate(prev_year, prev_season.timespan, prev_season.day);
+        const curr_day = window.calendar.getEpochForDate(2, curr_season.timespan, curr_season.day)-prev_day;
+        const next_day = window.calendar.getEpochForDate(next_year, next_season.timespan, next_season.day)-prev_day;
+
+        return {
+            prev_index,
+            next_index,
+            interpolationPercentage: curr_day/next_day
+        };
+
+    }
+
 }
