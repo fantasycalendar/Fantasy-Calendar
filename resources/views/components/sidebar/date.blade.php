@@ -142,6 +142,13 @@
                 init(){
                     this.timespans = window.calendar.getTimespansInYear(this.date.year);
                     this.days = window.calendar.getDaysForTimespanInYear(this.date.year, this.date.timespan);
+                    this.updatePrevNextTimespans();
+                    this.updatePrevNextDays();
+                },
+
+                updateTimespans(){
+                    this.timespans = window.calendar.getTimespansInYear(this.date.year);
+                    this.days = window.calendar.getDaysForTimespanInYear(this.date.year, this.date.timespan);
                     this.clearCache();
                 },
 
@@ -295,8 +302,8 @@
             <div
                 x-data="dateSelector($data, dynamic_data, { hasTime: true, hasButtons: true })"
                 @add-to-current-date.window="addToDate($event.detail.data)"
-                @calendar-structure-changed.window="clearCache()"
-                @timespan-name-changed.window="clearCache()"
+                @calendar-structure-changed.window="updateTimespans()"
+                @timespan-name-changed.window="updateTimespans()"
             >
 
                 <div class="row my-2 divide-x divide-gray-500">
@@ -355,8 +362,8 @@
             <div
                 x-data="dateSelector($data, preview_date, { hasTime: true, hasButtons: true })"
                 @add-to-preview-date.window="addToDate($event.detail.data)"
-                @calendar-structure-changed.window="clearCache()"
-                @timespan-name-changed.window="clearCache()"
+                @calendar-structure-changed.window="updateTimespans()"
+                @timespan-name-changed.window="updateTimespans()"
             >
 
                 <div class="row my-2 divide-x divide-gray-500">
