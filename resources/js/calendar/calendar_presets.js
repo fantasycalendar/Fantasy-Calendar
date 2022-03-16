@@ -1,8 +1,30 @@
+const preset_season_data = [
+    {
+        name: "Winter Solstice",
+        description: "The winter solstice marks the shortest day and longest night of the year, when the sun is at its lowest arc in the sky.",
+    },
+    {
+        name: "Summer Solstice",
+        description: "	At the summer solstice, the Sun travels the longest path through the sky, and that day therefore has the most daylight.",
+    },
+    {
+        name: "Autumn Equinox",
+        description: "The autumn equinox is when the day and the night are equally as long, and are getting shorter.",
+    },
+    {
+        name: "Spring Equinox",
+        description: "The spring equinox is when the day and the night are equally as long, and are getting longer.",
+    },
+];
+
+
 function create_season_events(complex){
+
+    const events = [];
 
 	if(complex){
 
-		return [
+		events.push(
 			{
 				"name":"Summer Solstice",
 				"description":"At the summer solstice, the Sun travels the longest path through the sky, and that day therefore has the most daylight.",
@@ -50,88 +72,110 @@ function create_season_events(complex){
 					"hide_full":false,
 					"print":false
 				}
-			},
-			{
-				"name":"Spring Equinox",
-				"description":"The spring equinox is when the day and the night are equally as long, and are getting longer.",
-				"data":{
-					'has_duration': false,
-					'duration': 0,
-					'show_first_last': false,
-					'limited_repeat': true,
-					'limited_repeat_num': 2,
-					'connected_events': [],
-					'date': [],
-					"conditions":[
-						["Season","17",['1']]
-					]
-				},
-				"event_category_id":"-1",
-				"settings":{
-					"color":"Green",
-					"text":"text",
-					"hide":false,
-					"hide_full":false,
-					"print":false
-				}
-			},
-			{
-				"name":"Autumn Equinox",
-				"description":"The autumn equinox is when the day and the night are equally as long, and are getting shorter.",
-				"data":{
-					'has_duration': false,
-					'duration': 0,
-					'show_first_last': false,
-					'limited_repeat': true,
-					'limited_repeat_num': 2,
-					'connected_events': [],
-					'date': [],
-					"conditions":[
-						["Season","18",['1']]
-					]
-				},
-				"event_category_id":"-1",
-				"settings":{
-					"color":"Green",
-					"text":"text",
-					"hide":false,
-					"hide_full":false,
-					"print":false
-				}
 			}
-		]
+        );
+
+		if(window.calendar.static_data.seasons.data.length === 4){
+
+		    events.push(
+                {
+                    "name":"Spring Equinox",
+                    "description":"The spring equinox is when the day and the night are equally as long, and are getting longer.",
+                    "data":{
+                        'has_duration': false,
+                        'duration': 0,
+                        'show_first_last': false,
+                        'limited_repeat': true,
+                        'limited_repeat_num': 2,
+                        'connected_events': [],
+                        'date': [],
+                        "conditions":[
+                            ["Season","17",['1']]
+                        ]
+                    },
+                    "event_category_id":"-1",
+                    "settings":{
+                        "color":"Green",
+                        "text":"text",
+                        "hide":false,
+                        "hide_full":false,
+                        "print":false
+                    }
+                },
+                {
+                    "name":"Autumn Equinox",
+                    "description":"The autumn equinox is when the day and the night are equally as long, and are getting shorter.",
+                    "data":{
+                        'has_duration': false,
+                        'duration': 0,
+                        'show_first_last': false,
+                        'limited_repeat': true,
+                        'limited_repeat_num': 2,
+                        'connected_events': [],
+                        'date': [],
+                        "conditions":[
+                            ["Season","18",['1']]
+                        ]
+                    },
+                    "event_category_id":"-1",
+                    "settings":{
+                        "color":"Green",
+                        "text":"text",
+                        "hide":false,
+                        "hide_full":false,
+                        "print":false
+                    }
+                }
+            )
+        }
+
 	}else{
 
-		var events = [];
+	    const seasons = window.calendar.static_data.seasons;
 
-		if(static_data.seasons.data.length == 4){
+	    if(seasons.global_settings.preset_order?.length){
 
-			for(var i = 0; i < static_data.seasons.data.length; i++){
+            for(let season_index = 0; season_index < seasons.global_settings.preset_order.length; season_index++){
 
-				var season = static_data.seasons.data[i];
+                const actual_season_index = seasons.global_settings.preset_order[season_index];
 
-				var season_name = season.name;
+                events.push({
+                    ...preset_season_data[actual_season_index],
+                    "data":{
+                        'has_duration': false,
+                        'duration': 0,
+                        'show_first_last': false,
+                        'limited_repeat': false,
+                        'limited_repeat_num': 0,
+                        'connected_events': [],
+                        'date': [],
+                        "conditions":[
+                            ["Season","0",[season_index]],
+                            ["&&"],
+                            ["Season","8",[1]],
+                        ]
+                    },
+                    "event_category_id":"-1",
+                    "settings":{
+                        "color":"Green",
+                        "text":"text",
+                        "hide":false,
+                        "hide_full":false,
+                        "print":false
+                    }
+                });
 
-				if(season_name.toLowerCase().includes('winter')){
-					var name = "Winter Solstice";
-					var description = "The winter solstice marks the shortest day and longest night of the year, when the sun is at its lowest arc in the sky.";
-				}else if(season_name.toLowerCase().includes('summer')){
-					var name = "Summer Solstice";
-					var description = "	At the summer solstice, the Sun travels the longest path through the sky, and that day therefore has the most daylight.";
-				}else if(season_name.toLowerCase().includes('autumn')){
-					var name = "Autumn Equinox";
-					var description = "The autumn equinox is when the day and the night are equally as long, and are getting shorter.";
-				}else if(season_name.toLowerCase().includes('spring')){
-					var name = "Spring Equinox";
-					var description = "The spring equinox is when the day and the night are equally as long, and are getting longer.";
-				}else{
-					var name = `${season_name}`;
-					var description = ""
-				}
+            }
+
+        }else{
+
+			for(let i = 0; i < window.calendar.static_data.seasons.data.length; i++){
+
+				let season = window.calendar.static_data.seasons.data[i];
 
 				events.push({
-					"name": name,
-					"description": description,
+                    "name": `${season.name}`,
+                    "description": "",
 					"data":{
 						'has_duration': false,
 						'duration': 0,
@@ -158,114 +202,11 @@ function create_season_events(complex){
 
 			}
 
-		}else{
+	    }
 
-			for(var i = 0; i < static_data.seasons.data.length; i++){
+    }
 
-				var season = static_data.seasons.data[i];
-
-				var season_name = season.name;
-
-				if(season_name.toLowerCase().includes('winter')){
-
-					var name = "Winter Solstice";
-					var description = "The winter solstice marks the shortest day and longest night of the year, when the sun is at its lowest arc in the sky.";
-					var equinox_name = "Spring Equinox";
-					var equinox_description = "The spring equinox is when the day and the night are equally as long, and are getting longer.";
-
-				}else if(season_name.toLowerCase().includes('summer')){
-
-					var name = "Summer Solstice";
-					var description = "At the summer solstice, the Sun travels the longest path through the sky, and that day therefore has the most daylight.";
-					var equinox_name = "Autumn Equinox";
-					var equinox_description = "The autumn equinox is when the day and the night are equally as long, and are getting shorter.";
-
-				}else if(season_name.toLowerCase().includes('autumn')){
-
-					var name = "Autumn Equinox";
-					var description = "The autumn equinox is when the day and the night are equally as long, and are getting shorter.";
-
-				}else if(season_name.toLowerCase().includes('spring')){
-
-					var name = "Spring Equinox";
-					var description = "The spring equinox is when the day and the night are equally as long, and are getting longer.";
-
-				}else{
-
-					var name = `${season_name} Solstice`;
-					var description = ""
-
-					var equinox_name = `${season_name} Equinox`;
-					var equinox_description = ""
-
-				}
-
-				events.push({
-					"name": name,
-					"description": description,
-					"data":{
-						'has_duration': false,
-						'duration': 0,
-						'show_first_last': false,
-						'limited_repeat': false,
-						'limited_repeat_num': 0,
-						'connected_events': [],
-						'date': [],
-						"conditions":[
-							["Season","0",[i]],
-							["&&"],
-							["Season","8",[1]],
-						]
-					},
-					"event_category_id":"-1",
-					"settings":{
-						"color":"Green",
-						"text":"text",
-						"hide":false,
-						"hide_full":false,
-						"print":false
-					}
-				});
-
-				if(static_data.seasons.global_settings.periodic_seasons){
-
-					events.push({
-						"name": equinox_name,
-						"description": equinox_description,
-						"data":{
-							'has_duration': false,
-							'duration': 0,
-							'show_first_last': false,
-							'limited_repeat': false,
-							'limited_repeat_num': 0,
-							'connected_events': [],
-							'date': [],
-							"conditions":[
-								["Season","0",[i]],
-								["&&"],
-								["Season","8",[Math.floor(season.transition_length/2)]],
-							]
-						},
-						"event_category_id":"-1",
-						"settings":{
-							"color":"Green",
-							"text":"text",
-							"hide":false,
-							"hide_full":false,
-							"print":false
-						}
-
-					});
-
-				}
-
-			}
-
-		}
-
-		return events;
-
-	}
+    return events;
 
 }
 

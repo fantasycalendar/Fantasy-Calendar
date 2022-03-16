@@ -15,6 +15,7 @@
                 settings: $data.static_data.seasons.global_settings,
                 clock: $data.static_data.clock,
                 timespans: $data.static_data.year_data.timespans,
+                events: $data.events,
 
                 deleting: null,
                 expanded: {},
@@ -156,8 +157,79 @@
                     window.dispatchEvent(new CustomEvent("all-seasons-removed"));
                 },
 
-                createSeasonEvents(){
-                    // TODO: Add season event creation on buttons
+                queryCreateSeasonEvents(){
+
+
+                    new Promise((resolve, reject) => {
+
+                        const season_event_names = ['spring equinox', 'summer solstice', 'autumn equinox', 'winter solstice'];
+                        const has_season_events = window.calendar.events.find(event => season_event_names.indexOf(event.name.toLowerCase()) > -1);
+
+                        if(!has_season_events) {
+                            return resolve();
+                        }
+
+                        swal.fire({
+                            title: `Events exist!`,
+                            text: "You already have solstice and equinox events, are you sure you want to create another set?",
+                            showCloseButton: false,
+                            showCancelButton: true,
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonColor: '#d33',
+                            confirmButtonText: 'Yes',
+                            icon: "warning"
+                        })
+                        .then((result) => {
+                            if(result.dismiss === "close" || result.dismiss === "cancel") {
+                                reject();
+                            }else{
+                                resolve();
+                            }
+                        });
+
+                    }).then(() => {
+
+                        let html = '<strong><span style="color:#4D61B3;">Simple</span></strong> season events are based on the <strong>specific start dates</strong> of the seasons.<br><br>';
+
+                        html += '<strong><span style="color:#84B356;">Complex</span></strong> season events are based on the <strong>longest and shortest day</strong> of the year.<br>';
+                        if(!window.calendar.static_data.clock.enabled) {
+                            html += '<span style="font-style:italic;font-size:0.8rem;">You need to <strong>enable the clock</strong> for this button to be enabled.</span><br>';
+                        }
+                        html += '<br>';
+                        html += '<span style="font-size:0.9rem;">Still unsure?<br><a href="https://helpdocs.fantasy-calendar.com/topic/seasons#Create_solstice_and_equinox_events" target="_blank">Read more on the Wiki (opens in a new window)</a>.</span><br>';
+
+                        swal.fire({
+                            title: `Simple or Complex?`,
+                            html: html,
+                            showCloseButton: true,
+                            showCancelButton: true,
+                            confirmButtonColor: '#4D61B3',
+                            cancelButtonColor: window.calendar.static_data.clock.enabled ? '#84B356' : '#999999',
+                            confirmButtonText: 'Simple',
+                            cancelButtonText: 'Complex',
+                            icon: "question",
+                            onOpen: function() {
+                                $(swal.getCancelButton()).prop("disabled", !window.calendar.static_data.clock.enabled);
+                            }
+                        })
+                        .then((result) => {
+
+                            if(result.dismiss !== "close") {
+
+                                window.dispatchEvent(new CustomEvent('create-season-events', {
+                                    detail: {
+                                        complex: result.dismiss === "cancel"
+                                    }
+                                }))
+
+                            }
+                        });
+
+                    });
+                },
+
+                createSeasonEvents(complex){
+                    this.events.push(...create_season_events(complex));
                 },
 
                 interpolateSeasons(index){
@@ -313,6 +385,7 @@
         x-data="seasonSection($data)"
         @toggle-season-type.window="toggleSeasonType"
         @season-order-changed.window="seasonOrderChanged($event.detail)"
+        @create-season-events.window="createSeasonEvents($event.detail.complex)"
     >
 
         <div class='row bold-text'>
@@ -547,7 +620,7 @@
         </div>
 
         <div>
-            <button type='button' class='btn btn-secondary full' @click="createSeasonEvents()">Create solstice and equinox events</button>
+            <button type='button' class='btn btn-secondary full' @click="queryCreateSeasonEvents()">Create solstice and equinox events</button>
         </div>
 
     </div>
