@@ -31,7 +31,10 @@ class OverviewHandler extends \App\Services\Discord\Commands\Command
 
     public function getEvents($calendar)
     {
-        $events = $calendar->todaysOneTimeEvents->filter(fn($event) => !$event->setting('hide') && !$event->setting('hide_full'));
+        $events = $calendar
+            ->todaysOneTimeEvents
+            ->reject->setting('hide')
+            ->reject->setting('hide_full');
 
         if(!$events->count()) {
             return '';
