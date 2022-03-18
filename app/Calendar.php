@@ -5,6 +5,7 @@ namespace App;
 use App\Collections\ErasCollection;
 use App\Collections\MonthsCollection;
 use App\Facades\Epoch;
+use App\Models\Concerns\HasCalendarEvents;
 use App\Models\Concerns\HasDate;
 use App\Services\CalendarService\Era;
 use App\Services\CalendarService\LeapDay;
@@ -63,7 +64,8 @@ class Calendar extends Model
 {
     use SoftDeletes,
         HasDate,
-        HasFactory;
+        HasFactory,
+        HasCalendarEvents;
 
     protected $casts = [
         'dynamic_data' => 'array',

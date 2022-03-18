@@ -69,7 +69,15 @@ return [
                             [
                                 'name' => 'event',
                                 'description' => 'Creates a one-time event on the current date',
-                                'type' => 1
+                                'type' => 1,
+                                'options' => [
+                                    [
+                                        'name' => 'title',
+                                        'description' => 'The title of the event (omit to create interactively)',
+                                        'type' => 3,
+                                        'required' => false
+                                    ]
+                                ]
                             ]
                         ]
                     ],

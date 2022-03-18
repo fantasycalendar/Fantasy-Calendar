@@ -31,9 +31,17 @@ class EventHandler extends Command
      * @throws DiscordUserHasNoCalendarsException
      * @throws \App\Services\Discord\Exceptions\DiscordCalendarNotSetException
      */
-    public function handle(): Modal
+    public function handle(): Response
     {
-        ld($this->interaction_user_id);
+        if($title = $this->interaction('data.options.0.options.0.options.0.value')) {
+            $calendar = $this->getDefaultCalendar();
+            $event = $calendar->oneTimeEvent($title);
+
+            return Response::make(
+                "Created one-time event **{$event->name}** on **{$calendar->current_date}**."
+            );
+        }
+
         return Modal::create(
             'Enter your event title',
             self::target('createEvent')
@@ -62,19 +70,7 @@ class EventHandler extends Command
         $description = $this->interaction('data.components.1.components.0.value');
 
         $calendar = $this->getDefaultCalendar();
-        $event = new CalendarEvent([
-            'name' => $title,
-            'description' => Purifier::clean($description),
-            'calendar_id' => $calendar->id,
-            'event_category_id' => ($calendar->event_categories()->whereId($calendar->setting('default_category'))->exists())
-                ? $calendar->setting('default_category')
-                : "-1",
-            'settings' => ["color" => "Dark-Solid", "text" => "text", "hide" => false, "hide_full" => false, "print" => false]
-        ]);
-
-        $event->oneTime($calendar->year, $calendar->month_id, $calendar->day);
-
-        $event->save();
+        $event = $calendar->oneTimeEvent($title, $description);
 
         return Response::make(
             "Created one-time event **{$event->name}** on **{$calendar->current_date}**."
