@@ -45,7 +45,7 @@ class OverviewHandler extends \App\Services\Discord\Commands\Command
         return $this->newLine(2)
              . $this->heading('One-time events', $this->width)
              . $this->newLine()
-             . $events->map->name->join($this->newLine());
+             . $events->map(fn($event) => '- ' . $event->name)->join($this->newLine());
     }
 
     /**
