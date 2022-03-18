@@ -25,4 +25,13 @@ trait HasCalendarEvents
 
         return $event;
     }
+
+    public function getTodaysOneTimeEventsAttribute()
+    {
+        $year = $this->year;
+        $month_id = $this->month_id;
+        $day = $this->day;
+
+        return $this->events->filter(fn($event) => $event->detail('date') == [$year, $month_id, $day]);
+    }
 }

@@ -57,6 +57,11 @@ return [
                         'type' => 1
                     ],
                     [
+                        'name' => 'overview',
+                        'description' => 'Gives an overview of the current day',
+                        'type' => 1
+                    ],
+                    [
                         'name' => 'choose',
                         'description' => 'Set the default calendar for use in this server',
                         'type' => 1,
@@ -455,6 +460,7 @@ return [
         'command_handlers' => [
             env('DISCORD_COMMAND', 'fc') => [
                 'help' => \App\Services\Discord\Commands\Command\HelpHandler::class,
+                'overview' => \App\Services\Discord\Commands\Command\OverviewHandler::class,
                 'create' => [
                     'event' => \App\Services\Discord\Commands\Command\Create\EventHandler::class,
                 ],
