@@ -118,6 +118,10 @@ export default class Calendar{
 
     }
 
+    getAverageMonthLength(){
+        return precisionRound(this.getAverageYearLength() / this.static_data.year_data.timespans.length, 10);
+    }
+
     getErrors(){
 
         const errors = [];

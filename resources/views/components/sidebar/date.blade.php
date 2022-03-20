@@ -12,14 +12,6 @@
                 preview_date: $data.preview_date,
                 clock: $data.static_data.clock,
 
-                fixedUnits: {
-                    years: null,
-                    months: null,
-                    days: null,
-                    hours: null,
-                    minutes: null,
-                },
-
                 clockRenderer: null,
 
                 get validCalendar(){
@@ -61,7 +53,6 @@
                     if(sunrise !== undefined) this.clockRenderer.sunrise = sunrise;
                     if(sunset !== undefined) this.clockRenderer.sunset = sunset;
                 }
-
             }
         }
 
@@ -70,7 +61,6 @@
             return {
 
                 date: date_object,
-                oldDate: clone(date_object),
                 get hasTime(){
                     return hasTime && $data.static_data.clock.enabled;
                 },
@@ -152,6 +142,15 @@
 
                 updateCalendarDate(){
                     window.calendar.dateChanged();
+                },
+
+                dateUpdated({ year, timespan, day, hour, minute }={}){
+                    this.date.year = year;
+                    this.date.timespan = timespan;
+                    this.date.day = day;
+                    this.date.hour = hour;
+                    this.date.minute = minute;
+                    this.updateTimespans();
                 },
 
                 updateTimespans(){
@@ -267,6 +266,149 @@
             }
         }
 
+        function fixedUnitsHandler(){
+
+            return {
+
+                fixedUnits: {
+                    years: null,
+                    months: null,
+                    days: null,
+                    hours: null,
+                    minutes: null,
+                },
+
+                targetEpoch: null,
+
+                addDateUnits(toPreviewDate = false){
+
+                    const dateObject = toPreviewDate ? window.calendar.preview_date : window.calendar.dynamic_data;
+
+                    let { years, months, days, hours, minutes } = this.fixedUnits;
+
+                    const averageYearLength = window.calendar.getAverageYearLength();
+                    const averageMonthLength = window.calendar.getAverageMonthLength();
+
+                    days += Math.floor(averageYearLength * years);
+                    days += Math.floor(averageMonthLength * months);
+
+                    let currentHour = 0;
+                    let currentMinute = 0;
+
+                    if(window.calendar.static_data.clock.enabled) {
+
+                        let hoursAdded = (dateObject.minute + minutes) / window.calendar.static_data.clock.minutes;
+                        let daysAdded = (dateObject.hour + hoursAdded + hours) / window.calendar.static_data.clock.hours;
+
+                        currentHour = fract(daysAdded) * window.calendar.static_data.clock.hours;
+
+                        if(currentHour < 0){
+                            currentHour += window.calendar.static_data.clock.hours;
+                        }
+
+                        currentMinute = Math.round(fract(currentHour) * window.calendar.static_data.clock.minutes);
+                        currentHour = Math.floor(currentHour);
+
+                        if(currentMinute === window.calendar.static_data.clock.minutes){
+                            currentHour++;
+                            currentMinute = 0;
+                            if(currentHour === window.calendar.static_data.clock.hours){
+                                daysAdded++;
+                                currentHour = 0;
+                            }
+                        }
+
+                        days += Math.floor(daysAdded);
+
+                    }
+
+                    this.targetEpoch = dateObject.epoch + Math.floor(days);
+
+                    const guessYear = Math.floor(this.targetEpoch / averageYearLength) + window.calendar.static_data.settings.year_zero_exists + 1;
+
+                    const year = this.resolveYear(guessYear);
+                    let foundEpoch = window.calendar.getEpochForDate(year).epoch;
+
+                    let timespansInYear = window.calendar.getTimespansInYear(year);
+                    let timespanIndex = timespansInYear[0].index;
+                    if(foundEpoch < this.targetEpoch) {
+                        for (let timespan of timespansInYear) {
+                            const days = window.calendar.getDaysForTimespanInYear(year, timespan.index).length;
+                            if((foundEpoch+days) <= this.targetEpoch){
+                                foundEpoch += days;
+                            }else{
+                                timespanIndex = timespan.index;
+                                break;
+                            }
+                        }
+                    }
+
+                    const day = this.targetEpoch - foundEpoch + 1;
+
+                    const targetEpoch = this.targetEpoch;
+
+                    window.dispatchEvent(new CustomEvent("current-date-changed", { detail: {
+                        year: year,
+                        timespan: timespanIndex,
+                        day: day,
+                        hour: currentHour,
+                        minute: currentMinute,
+                        epoch: targetEpoch
+                    }}));
+
+                    if(window.calendar.preview_date.follow) {
+                        window.dispatchEvent(new CustomEvent("preview-date-changed", { detail: {
+                            year: year,
+                            timespan: timespanIndex,
+                            day: day,
+                            hour: currentHour,
+                            minute: currentMinute,
+                            epoch: targetEpoch
+                        }}));
+                    }
+                },
+
+                resolveYear(guessYear){
+
+                    let lowerGuess;
+                    let higherGuess;
+
+                    do {
+                        lowerGuess = window.calendar.getEpochForDate(guessYear).epoch;
+                        higherGuess = window.calendar.getEpochForDate(guessYear + 1).epoch;
+
+                        guessYear += this.refinedEstimationDistance(lowerGuess, higherGuess);
+
+                    } while(lowerGuess > this.targetEpoch || higherGuess <= this.targetEpoch);
+
+                    return guessYear;
+
+                },
+
+                refinedEstimationDistance(lowerGuess, higherGuess){
+
+                    if(lowerGuess <= this.targetEpoch && higherGuess > this.targetEpoch) return 0;
+
+                    const distance = Math.abs(lowerGuess - this.targetEpoch);
+                    const offByYears = distance / window.calendar.getAverageYearLength();
+
+                    if(offByYears <= 1){
+                        return 1;
+                    }
+
+                    if(higherGuess <= this.targetEpoch){
+                        return Math.floor(offByYears);
+                    }
+
+                    return -Math.ceil(offByYears)
+
+                }
+
+            }
+
+
+        }
+
     </script>
 @endpush
 
@@ -309,7 +451,7 @@
 
             <div
                 x-data="dateSelector($data, dynamic_data, { hasTime: true, hasButtons: true })"
-                @add-to-current-date.window="addToDate($event.detail.data)"
+                @current-date-changed.window="dateUpdated($event.detail)"
                 @calendar-structure-changed.window="updateTimespans()"
                 @timespan-name-changed.window="updateTimespans()"
             >
@@ -369,7 +511,7 @@
 
             <div
                 x-data="dateSelector($data, preview_date, { hasTime: true, hasButtons: true, actualDate: false })"
-                @add-to-preview-date.window="addToDate($event.detail.data)"
+                @preview-date-changed.window="dateUpdated($event.detail)"
                 @calendar-structure-changed.window="updateTimespans()"
                 @timespan-name-changed.window="updateTimespans()"
             >
@@ -431,7 +573,7 @@
             </div>
         </div>
 
-        <div class='wrap-collapsible card full date_inputs'>
+        <div class='wrap-collapsible card full' x-data="fixedUnitsHandler()">
             <input class="toggle" type="checkbox" id="collapsible_add_units">
             <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or subtract fixed datetime amounts</label>
             <div class="collapsible-content container card-body">
@@ -448,11 +590,11 @@
 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <button type="button" step="1.0" class="btn btn-secondary btn-block my-2" @click="$dispatch('add-to-preview-date', { data: fixedUnits })">To preview</button>
+                        <button type="button" step="1.0" class="btn btn-secondary btn-block my-2" @click="addDateUnits(true)">To preview</button>
                     </div>
                     @if(request()->is('calendars/*/edit') && $calendar->parent == null)
                         <div>
-                            <button type="button" step="1.0" class="btn btn-primary btn-block my-2" @click="$dispatch('add-to-current-date', { data: fixedUnits })">To current</button>
+                            <button type="button" step="1.0" class="btn btn-primary btn-block my-2" @click="addDateUnits()">To current</button>
                         </div>
                     @endif
 
