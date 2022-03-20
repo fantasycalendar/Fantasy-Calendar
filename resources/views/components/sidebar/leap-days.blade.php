@@ -50,15 +50,73 @@
                         .map(num => !num ? `Before day ${num+1}` : `Day ${num}`);
                 },
 
+                global_regex: /[ `~@#$%^&*()_|\-=?;:'".<>{}\[\]\\\/A-Za-z]/g,
+                local_regex: /^\+*!*[1-9]+[0-9]*$/,
+                numbers_regex: /([1-9]+[0-9]*)/,
+
+                intervalErrorMsg: "",
+
+                sanitizeInterval($event, leapday){
+
+                    let intervals = $event.target.value;
+
+                    if(intervals === ""){
+                        this.intervalErrorMsg = `The interval for ${leapday.name} is empty, please enter at least one number.`;
+                        return;
+                    }
+
+                    if(intervals === "0"){
+                        this.intervalErrorMsg = `The interval for ${leapday.name} is 0, please enter a positive number.`;
+                        return;
+                    }
+
+                    let invalid = this.global_regex.test(intervals);
+
+                    intervals = intervals.split(',');
+
+                    if(!invalid){
+                        invalid = intervals.find(interval => !this.local_regex.test(interval));
+                    }
+
+                    if(invalid){
+                        this.intervalErrorMsg = `The interval formula for ${leapday.name} is invalid.`
+                        return;
+                    }
+
+                    this.intervalErrorMsg = "";
+
+                    intervals.sort((a, b) => {
+                        return b.match(this.numbers_regex)[0] - a.match(this.numbers_regex)[0];
+                    })
+
+                    intervals = intervals.filter((interval, index) => intervals.indexOf(interval) === index).join(',');
+
+                    leapday.interval = intervals;
+
+                },
+
                 getLeapingText(leapday){
 
-                    // TODO: take get_interval_text and refactor it
-                    let html = "This leap day will appear every:";
+                    const intervals = leapday.interval.split(',');
+                    intervals.reverse();
 
-                    html += ``
+                    const timespan = this.timespans[leapday.timespan];
+                    const type = timespan.interval.toString() === "1" ? "year" : timespan.name;
 
-                    return html;
+                    return Array.from(intervals.map((interval, index) => {
+                        const noOffset = interval.includes("+");
+                        const subtracts = interval.includes("!");
+                        const number = Number(interval.slice(noOffset + subtracts)); // Sometimes... my genius is almost frightening.
+                        return `${subtracts ? "but not every " : index > 0 ? "but also every " : ""}${ordinal_suffix_of(number)} ${type}`;
+                    }));
 
+                },
+
+                getTotalFraction(leapday){
+                    const timespan = this.timespans[leapday.timespan];
+                    const timespan_interval = IntervalsCollection.make(timespan);
+                    const leapday_interval = IntervalsCollection.make(leapday);
+                    return timespan_interval.totalFraction * leapday_interval.totalFraction;
                 }
 
             }
@@ -76,6 +134,7 @@
     icon="fas fa-calendar-day"
     tooltip-title="More Info: Leap Days"
     helplink="leap_days"
+    checked="true"
 >
 
     @if(request()->is('calendars/*/edit') && $calendar->isLinked())
@@ -195,7 +254,7 @@
                                                 Add leapday to month:
                                                 <select type='number' class='custom-select form-control full' x-model="leapday.timespan">
                                                     <template x-for="(timespan, index) in timespans">
-                                                        <option :value="index" x-text="timespan.name"></option>
+                                                        <option :selected="index === leapday.timespan" :value="index" x-text="timespan.name"></option>
                                                     </template>
                                                 </select>
                                             </div>
@@ -279,13 +338,26 @@
                                         </div>
 
                                         <div class='row no-gutters input-group mb-2'>
-                                            <input type='text' class='form-control col-8 pr-1 protip' data-pt-position="top" data-pt-title='Every nth year this leap day appears. Multiple intervals can be separated by commas, like the gregorian leap day: 400,!100,4. Every 4th year, unless it is divisible by 100, but again if it is divisible by 400.' x-model="leapday.interval" />
-                                            <input type='number' step="1" class='form-control col-4 pl-1' min='0' x-model="leapday.offset"/>
+                                            <input type='text' @change="sanitizeInterval($event, leapday)" :value="leapday.interval" class='form-control col-8 pr-1 protip' data-pt-position="top" data-pt-title='Every nth year this leap day appears. Multiple intervals can be separated by commas, like the gregorian leap day: 400,!100,4. Every 4th year, unless it is divisible by 100, but again if it is divisible by 400.' />
+                                            <input type='number' x-model.number="leapday.offset" @change="leapday.offset = Math.max(0, leapday.offset)" step="1" class='form-control col-4 pl-1' min='0'/>
+                                        </div>
+
+                                        <div class='row no-gutters mb-2 text-red-500' x-show="intervalErrorMsg" x-text="intervalErrorMsg"></div>
+
+                                        <div class='row no-gutters'>
+                                            <div class='col'>
+                                                This leap day will appear every:
+                                                <ul class="list-disc ml-4">
+                                                    <template x-for="interval in getLeapingText(leapday)">
+                                                        <li x-text="interval"></li>
+                                                    </template>
+                                                </ul>
+                                            </div>
                                         </div>
 
                                         <div class='row no-gutters'>
                                             <div class='col'>
-                                                <div class='italics-text' x-html="getLeapingText(leapday)"></div>
+                                                This leap day adds on average <span x-text="getTotalFraction(leapday)"></span> days every year.
                                             </div>
                                         </div>
                                     </div>

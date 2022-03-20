@@ -90,6 +90,12 @@
 
                     })
                 },
+
+                getLeapingText(timespan){
+                    if(timespan.interval.toString() === "1") return false;
+                    const timespan_interval = IntervalsCollection.make(timespan);
+                    return `This month appears every ${ordinal_suffix_of(timespan.interval)} year, which adds on average ${timespan_interval.totalFraction * timespan.length} days per year.`
+                }
             }
         }
 
@@ -228,6 +234,8 @@
                                         <input type='number' step="1" min='0' class='form-control small-input' x-model='timespan.offset'/>
                                     </div>
                                 </div>
+
+                                <div class='row no-gutters mb-1' x-show="getLeapingText(timespan)" x-text="getLeapingText(timespan)"></div>
 
                                 <template x-if="timespan.type === 'month'">
 

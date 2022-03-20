@@ -26,6 +26,7 @@ export default class IntervalsCollection extends Collection{
 
         const intervals = intervalString.toString()
             .split(',')
+            .filter(interval => interval !== "")
             .map(interval => new Interval(interval, offset));
 
         if (intervals.length === 0) {
@@ -48,6 +49,7 @@ export default class IntervalsCollection extends Collection{
 
         const intervals = cycleString.toString()
             .split(',')
+            .filter(offset => offset !== "")
             .map(offset => new Interval(length, offset));
 
         const intervalsCollection = new IntervalsCollection(intervals).normalize();
