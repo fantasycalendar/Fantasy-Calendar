@@ -65,11 +65,12 @@
             }
         }
 
-        function dateSelector($data, date_object, { hasTime = false, hasButtons = true }={}){
+        function dateSelector($data, date_object, { hasTime = false, hasButtons = true, actualDate = true }={}){
 
             return {
 
                 date: date_object,
+                oldDate: clone(date_object),
                 get hasTime(){
                     return hasTime && $data.static_data.clock.enabled;
                 },
@@ -144,6 +145,13 @@
                     this.days = window.calendar.getDaysForTimespanInYear(this.date.year, this.date.timespan);
                     this.updatePrevNextTimespans();
                     this.updatePrevNextDays();
+                    if(actualDate) {
+                        this.$watch("date", this.updateCalendarDate.bind(this))
+                    }
+                },
+
+                updateCalendarDate(){
+                    window.calendar.dateChanged();
                 },
 
                 updateTimespans(){
@@ -360,7 +368,7 @@
             </div>
 
             <div
-                x-data="dateSelector($data, preview_date, { hasTime: true, hasButtons: true })"
+                x-data="dateSelector($data, preview_date, { hasTime: true, hasButtons: true, actualDate: false })"
                 @add-to-preview-date.window="addToDate($event.detail.data)"
                 @calendar-structure-changed.window="updateTimespans()"
                 @timespan-name-changed.window="updateTimespans()"
@@ -414,11 +422,11 @@
 
             <div class="grid grid-cols-2">
                 <div class='col-span-2 my-2' :class="{'col-span-2': preview_date.follow}">
-                    <div class='btn btn-success full' @click="preview_date.follow = false">Go To Preview date</div>
+                    <div class='btn btn-success full' @click="preview_date.follow = false; window.calendar.dateChanged();">Go To Preview date</div>
                 </div>
 
                 <div class='my-2'>
-                    <div class='btn btn-info full' x-show="!preview_date.follow" @click="preview_date.follow = true">Go To Current Date</div>
+                    <div class='btn btn-info full' x-show="!preview_date.follow" @click="preview_date.follow = true; window.calendar.dateChanged();">Go To Current Date</div>
                 </div>
             </div>
         </div>

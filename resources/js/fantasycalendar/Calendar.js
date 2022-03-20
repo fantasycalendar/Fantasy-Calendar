@@ -35,6 +35,24 @@ export default class Calendar{
         // rebuild_calendar('calendar');
     }
 
+    dateChanged(){
+        const rerender = this.dynamic_data.year !== this.old_dynamic_data.year
+            || (this.dynamic_data.timespan !== this.old_dynamic_data.timespan && window.calendar.static_data.settings.show_current_month);
+        this.dynamic_data.epoch = this.getEpochForDate(this.dynamic_data.year, this.dynamic_data.timespan, this.dynamic_data.day).epoch;
+        if(!this.preview_date.follow){
+            this.preview_date.epoch = this.getEpochForDate(this.preview_date.year, this.preview_date.timespan, this.preview_date.day).epoch;
+        }else{
+            this.preview_date = clone(this.dynamic_data);
+        }
+        if(rerender){
+            return this.render();
+        }
+        window.dispatchEvent(new CustomEvent('update-epochs', {detail: {
+            current_epoch: this.dynamic_data.epoch,
+            preview_epoch: this.preview_date.follow ? this.dynamic_data.epoch : this.preview_date.epoch
+        }}));
+    }
+
     getEpochForDate(year, timespan = 0, day = 1){
         return evaluate_calendar_start(
             this.static_data,
