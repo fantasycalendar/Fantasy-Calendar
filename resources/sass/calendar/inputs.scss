@@ -1376,10 +1376,10 @@ ol.example li.placeholder:before {
     height:100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 11;
-    position:fixed;
     align-items: center;
     text-align:center;
     overflow:hidden;
+    display: flex;
 
     &.transparent{
        background-color: rgba(0, 0, 0, 0.0);

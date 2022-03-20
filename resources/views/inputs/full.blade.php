@@ -156,16 +156,16 @@
 
 <div id="calendar_container">
 
-	<div id="modal_background" class='errors_background flex blurred_background' x-show="errors.length">
-		<div id="modal">
-            Errors:
+    <div x-show="errors.length" class='errors_background blurred_background'>
+        <div class="flex-1">
+            <h3>Errors:</h3>
             <ol>
                 <template x-for="error in errors">
                     <li x-html="error"></li>
                 </template>
             </ol>
-		</div>
-	</div>
+        </div>
+    </div>
 
     <div id="reload_background" class='flexible_background blurred_background d-flex flex-column justify-content-center hidden d-print-none'>
         <div class='p-2 text-white'>You have made changes to your calendar.</div>
