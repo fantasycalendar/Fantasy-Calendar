@@ -6,9 +6,9 @@
 
 	<div class='wrap-collapsible step-hide'>
 		<div class="view-tabs btn-group d-flex mb-2 w-100">
-            <button type="button" data-pt-position='top' data-pt-title='What you, the owner, will always see' data-view-type='owner' class="protip owner w-100 btn btn-sm btn-primary">Owner View</button>
-            <button type="button" data-pt-position='top' data-pt-title='A simulated view of what guests with the link to this calendar will see' data-view-type='player' class="protip player w-100 btn btn-sm btn-secondary">Guest View</button>
-            <button type="button" data-pt-position='top' data-pt-title='Graphs showing the weather curves' data-view-type='weather' class="protip weather w-100 btn btn-sm btn-secondary">Climate view</button>
+            <button type="button" data-pt-position='top' :class="currentViewType === 'owner' ? 'outline outline-blue-500 outline-offset-2 outline-1' : ''" @click="changeViewType('owner')" data-pt-title='What you, the owner, will always see' class="protip owner w-100 btn btn-sm btn-primary">Owner View</button>
+            <button type="button" data-pt-position='top' :class="currentViewType === 'player' ? 'outline outline-blue-500 outline-offset-2 outline-1' : ''" @click="changeViewType('player')" data-pt-title='A simulated view of what guests with the link to this calendar will see' class="protip player w-100 btn btn-sm btn-secondary">Guest View</button>
+            <button type="button" data-pt-position='top' :class="currentViewType === 'weather' ? 'outline outline-blue-500 outline-offset-2 outline-1' : ''" @click="changeViewType('weather')" data-pt-title='Graphs showing the weather curves' class="protip weather w-100 btn btn-sm btn-secondary">Climate view</button>
 		</div>
 	</div>
 
@@ -172,7 +172,7 @@
         <div class='p-2'><button type='button' class='btn btn-primary' id='apply_changes_btn'>Update preview</button></div>
     </div>
 
-    <div id="top_follower" :class="{ 'single_month': apply == 'single_month' }" x-data="{ apply: '' }" @layout-change.window="apply = $event.detail.apply">
+    <div id="top_follower" x-show="currentViewType !== 'weather'" :class="{ 'single_month': apply == 'single_month' }" x-data="{ apply: '' }" @layout-change.window="apply = $event.detail.apply">
 
 		<div class='parent_button_container hidden d-print-none'>
 			<div class='container d-flex h-100 p-0'>
@@ -212,9 +212,11 @@
 
 	</div>
 
-    @include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
+    <div x-show="currentViewType !== 'weather'">
+        @include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
+    </div>
 
-	<div id="weather_container" class="hidden">
+	<div id="weather_container" x-show="currentViewType === 'weather'">
 
 		<div id='day_length' class='hidden'>
 			<h3 class='text-center mt-3'>Sunrise and Sunset</h3>

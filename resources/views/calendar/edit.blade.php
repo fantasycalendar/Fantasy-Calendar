@@ -80,6 +80,21 @@
                 this.calendar_valid = !this.errors.length;
                 if(!this.calendar_valid) return;
                 window.calendar.render();
+            },
+
+            currentViewType: "owner",
+
+            changeViewType(type){
+
+                Perms.owner = type !== "player";
+                climate_charts.active_view = type === "weather";
+
+                if(this.currentViewType !== type && (type === "player" || this.currentViewType === "player")){
+                    window.calendar.render();
+                }
+
+                this.currentViewType = type;
+
             }
 
         }

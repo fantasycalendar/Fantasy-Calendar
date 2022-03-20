@@ -32,7 +32,7 @@ export default class Calendar{
     }
 
     render(){
-        // rebuild_calendar('calendar');
+        rebuild_calendar('calendar');
     }
 
     dateChanged(){

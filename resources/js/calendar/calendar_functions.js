@@ -1375,7 +1375,7 @@ function clone(obj) {
 
 function time_data_to_string(static_data, time){
 
-	var minutes = (Math.round(fract(time)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(time)*this.static_data.clock.minutes)).toString() : (Math.round(fract(time)*this.static_data.clock.minutes));
+	let minutes = (Math.round(fract(time)*static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(time)*static_data.clock.minutes)).toString() : (Math.round(fract(time)*static_data.clock.minutes));
 
 	return Math.floor(time)+":"+minutes;
 
