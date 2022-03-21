@@ -9,14 +9,14 @@ trait HasCalendarEvents
 {
     public function oneTimeEvent($title, $description = '')
     {
+        $category = $this->defaultEventCategory;
+
         $event = new CalendarEvent([
             'name' => $title,
             'description' => Purifier::clean($description),
             'calendar_id' => $this->id,
-            'event_category_id' => ($this->event_categories()->whereId($this->setting('default_category'))->exists())
-                ? $this->setting('default_category')
-                : "-1",
-            'settings' => ["color" => "Dark-Solid", "text" => "text", "hide" => false, "hide_full" => false, "print" => false]
+            'event_category_id' => $category?->id ?? '-1',
+            'settings' => $category?->event_settings ?? ["color" => "Dark-Solid", "text" => "text", "hide" => false, "hide_full" => false, "print" => false]
         ]);
 
         $event->oneTime($this->year, $this->month_id, $this->day);
