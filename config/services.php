@@ -58,7 +58,7 @@ return [
                     ],
                     [
                         'name' => 'overview',
-                        'description' => 'Gives an overview of the current day (This command is unfinished)',
+                        'description' => 'Gives an overview of the current day (Early prototype)',
                         'type' => 1
                     ],
                     [
