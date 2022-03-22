@@ -95,6 +95,28 @@
 
                 this.currentViewType = type;
 
+            },
+
+            dateOpen: false,
+
+            moveClock($event, location){
+
+                const { checked } = $event.target;
+
+                if(location === "date"){
+                    this.dateOpen = checked;
+                }
+
+                const clock = document.getElementById("clock");
+                const clock_container = document.getElementById("clock_container");
+                const alt_clock_container = document.getElementById("alt_clock_container");
+
+                if(!this.dateOpen && alt_clock_container){
+                    alt_clock_container.appendChild(clock);
+                }else{
+                    clock_container.appendChild(clock);
+                }
+
             }
 
         }

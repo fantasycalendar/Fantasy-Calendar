@@ -18,12 +18,17 @@
                     return !!this.static_data.year_data.timespans.length && !!this.static_data.year_data.global_week.length;
                 },
 
-                get renderClock(){
+                get shouldRenderClock(){
                     return this.clock.enabled && this.clock.render && window.Perms.user_can_see_clock();
                 },
 
                 init(){
+                    this.$watch("static_data.clock", this.renderClock.bind(this));
+                    this.$watch("dynamic_data", this.updateClockTime.bind(this));
+                    this.renderClock()
+                },
 
+                renderClock(){
                     if(this.renderClock){
                         this.clockRenderer = new CalendarClock(
                             this.$refs.clock_face,
@@ -420,17 +425,19 @@
     icon="fas fa-hourglass-half"
     tooltip-title="More Info: Date"
     helplink="current_date_and_time"
+    @change="moveClock($event, 'date')"
 >
 
     <div
         x-data="dateSection($data)"
-        @time-changed.window="updateClockTime()"
     >
 
-        <div class='mb-2' x-ref="clock" id="clock" x-show="renderClock">
-            <canvas style="z-index: 2;" x-ref="clock_face"></canvas>
-            <canvas style="z-index: 1;" x-ref="clock_sun"></canvas>
-            <canvas style="z-index: 0;" x-ref="clock_background"></canvas>
+        <div id="clock_container">
+            <div class='mb-2' x-ref="clock" id="clock" x-show="shouldRenderClock">
+                <canvas style="z-index: 2;" x-ref="clock_face"></canvas>
+                <canvas style="z-index: 1;" x-ref="clock_sun"></canvas>
+                <canvas style="z-index: 0;" x-ref="clock_background"></canvas>
+            </div>
         </div>
 
         <div class='center-text mb-2' x-show="!validCalendar">

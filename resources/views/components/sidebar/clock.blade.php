@@ -20,9 +20,12 @@
     icon="fa fa-clock"
     tooltip-title="More Info: Clock"
     helplink="clock"
+    @change="moveClock($event, 'clock')"
 >
 
     <div x-data="clockSection($data)">
+
+        <div id="alt_clock_container"></div>
 
         <div class='row'>
             <div class='col-3 bold-text'>Enable:</div>
@@ -84,7 +87,6 @@
                         </div>
                     @endif
                 </div>
-
             </div>
 
             <div class='row mt-2' x-show="clock.render" x-transition.duration.200ms>
