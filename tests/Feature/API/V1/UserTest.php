@@ -1,14 +1,11 @@
 <?php
 
-namespace Tests\Feature\API;
+namespace Tests\Feature\API\V1;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
-use Tests\TestCase;
 
-class ApiV1UserTest extends TestCase
+class UserTest extends TestCase
 {
     /**
      * A basic feature test example.
@@ -17,7 +14,7 @@ class ApiV1UserTest extends TestCase
      */
     public function test_unauthenticated_error()
     {
-        $response = $this->get('/api/v1/user');
+        $response = $this->get($this->apiUrl('user'));
 
         $response->assertStatus(200);
 
@@ -33,7 +30,7 @@ class ApiV1UserTest extends TestCase
             ['*']
         );
 
-        $response = $this->get('/api/v1/user');
+        $response = $this->get($this->apiUrl('user'));
 
         $response->assertStatus(200);
         $response->assertJson([
@@ -47,7 +44,7 @@ class ApiV1UserTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->post('/api/v1/user/login', [
+        $response = $this->post($this->apiUrl('user/login'), [
             'identity' => $user->username,
             'password' => 'password',
         ]);
@@ -63,7 +60,7 @@ class ApiV1UserTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->post('/api/v1/user/login', [
+        $response = $this->post($this->apiUrl('user/login'), [
             'identity' => $user->username,
             'password' => 'nottherightpassword',
         ]);
