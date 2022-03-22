@@ -172,15 +172,6 @@
 
             <fieldset>
                 <div class="grid grid-cols-6 gap-4 items-center">
-
-                    <div class="col-span-6">
-                        <x-button class="w-full justify-center shadow-sm border-gray-300" @click="fantasyCalendar.loginForm()">Do Login</x-button>
-                    </div>
-
-                    <div class="col-span-6">
-                        <x-button class="w-full justify-center shadow-sm border-gray-300" @click="fantasyCalendar.addDays(1)">Add day</x-button>
-                    </div>
-
                     <div class="pt-8 col-span-6">
                         <label for="calendar-hash" class="block font-medium text-gray-700 dark:text-gray-400">Calendar hash</label>
                         <input type="text" name="calendar-hash" id="calendar-hash" class="dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 mt-1 text-gray-600 focus:ring-primary-500 focus:border-primary-500 block w-full px-2 shadow-sm border-gray-300 rounded-md" x-model="hash">
