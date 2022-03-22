@@ -202,6 +202,7 @@ class UserShow extends SharpShow
             LoginAsUser::class,
             SendUserResetPassword::class,
             VisitStripeCustomer::class,
+            ForceVerifyUserEmail::class,
         ];
     }
 }
