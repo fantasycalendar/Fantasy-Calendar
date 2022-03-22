@@ -9,23 +9,14 @@ use App\Http\Requests\InviteCalendarUserRequest;
 use App\Http\Requests\RemoveUserFromCalendarRequest;
 use App\Http\Requests\ResendCalendarInvitationRequest;
 use App\Jobs\CloneCalendar;
-use App\Notifications\CalendarInvitation;
-use App\Notifications\UnregisteredCalendarInvitation;
 use App\Transformer\CalendarUserTransformer;
-use App\Models\User;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\CalendarCollection;
-
 use App\Models\Calendar;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Validation\ValidationException;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
-use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\DataArraySerializer;
+use Illuminate\Http\Request;
 
 class CalendarController extends Controller
 {
