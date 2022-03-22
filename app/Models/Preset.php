@@ -36,7 +36,7 @@ class Preset extends Model
 
     public function source()
     {
-        return $this->belongsTo(\App\Models\Calendar::class, 'source_calendar_id');
+        return $this->belongsTo(Calendar::class, 'source_calendar_id');
     }
 
     public function creator()

@@ -767,7 +767,7 @@ class Calendar extends Model
      */
     public function removeUser($user, $remove_all = false, $email = false): bool
     {
-        $id = ($user instanceof \App\User) ? $user->id : $user;
+        $id = ($user instanceof User) ? $user->id : $user;
 
         if($this->users()->where('users.id', $id)->exists()) {
             $this->users()->detach($id);

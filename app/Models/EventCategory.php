@@ -25,7 +25,7 @@ class EventCategory extends Model
     ];
 
     public function calendar() {
-        return $this->belongsTo(\App\Models\Calendar::class);
+        return $this->belongsTo(Calendar::class);
     }
 
     /**
