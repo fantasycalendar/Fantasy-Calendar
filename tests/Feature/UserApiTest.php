@@ -42,4 +42,20 @@ class UserApiTest extends TestCase
             "email" => $user->email,
         ]);
     }
+
+    public function test_login_successfully()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('/api/v1/user/login', [
+            'identity' => $user->username,
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'username' => $user->username,
+            'api_token' => 'afakeapitoken'
+        ]);
+    }
 }
