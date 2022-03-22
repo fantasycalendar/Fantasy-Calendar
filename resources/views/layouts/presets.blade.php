@@ -27,22 +27,23 @@
                     <div class="col-12">
                         <h4 class="text-center w-100" style="opacity: 0.8;">Featured by the Fantasy Calendar team</h4>
                     </div>
+                    <template x-if="loaded && featured.length">
+                        <template x-for="feature in featured" :key="feature.id">
+                            <div class="col-12 col-md-6">
+                                <button type="button" @click="fetch_preset(feature.id, feature.name)" class="full rounded my-1 py-2 px-3 preset flex-grow text-left">
+                                    <div class="icon">
+                                        <i class="fa fa-globe" :class="{
+                                        ['fa-'+feature.icon]: feature.icon != false,
+                                        'fa-globe': !feature.icon
+                                    }"></i>
+                                    </div>
 
-                    <template x-if="loaded && featured.length" x-for="feature in featured" :key="feature.id">
-                        <div class="col-12 col-md-6">
-                            <button type="button" @click="fetch_preset(feature.id, feature.name)" class="full rounded my-1 py-2 px-3 preset flex-grow text-left">
-                                <div class="icon">
-                                    <i class="fa fa-globe" :class="{
-                                    ['fa-'+feature.icon]: feature.icon != false,
-                                    'fa-globe': !feature.icon
-                                }"></i>
-                                </div>
-
-                                <h4 class="m-0" x-text="feature.name"></h4>
-                                <p class="m-0 small font-italic"><small x-text="feature.author"></small></p>
-                                <p class="m-0 mt-1"><small x-text="feature.description"></small></p>
-                            </button>
-                        </div>
+                                    <h4 class="m-0" x-text="feature.name"></h4>
+                                    <p class="m-0 small font-italic"><small x-text="feature.author"></small></p>
+                                    <p class="m-0 mt-1"><small x-text="feature.description"></small></p>
+                                </button>
+                            </div>
+                        </template>
                     </template>
                 </div>
 
@@ -55,21 +56,23 @@
                 </div>
 
                 <div class='row justify-content-start'>
-                    <template x-if="loaded" x-for="preset in filteredPresets" :key="preset.id">
-                        <div class="col-12 col-md-6 pb-2 d-flex">
-                            <button type="button" @click="fetch_preset(preset.id, preset.name)" class="full rounded my-1 py-2 px-3 preset flex-grow text-left">
-                                <div class="icon">
-                                    <i class="fa fa-globe" :class="{
-                                        ['fa-'+preset.icon]: preset.icon != false,
-                                        'fa-globe': !preset.icon
-                                    }"></i>
-                                </div>
+                    <template x-if="loaded">
+                        <template x-for="preset in filteredPresets" :key="preset.id">
+                            <div class="col-12 col-md-6 pb-2 d-flex">
+                                <button type="button" @click="fetch_preset(preset.id, preset.name)" class="full rounded my-1 py-2 px-3 preset flex-grow text-left">
+                                    <div class="icon">
+                                        <i class="fa fa-globe" :class="{
+                                            ['fa-'+preset.icon]: preset.icon != false,
+                                            'fa-globe': !preset.icon
+                                        }"></i>
+                                    </div>
 
-                                <h4 class="m-0" x-text="preset.name"></h4>
-                                <p class="m-0 small font-italic"><small x-text="preset.author"></small></p>
-                                <p class="m-0 mt-1"><small x-text="preset.description"></small></p>
-                            </button>
-                        </div>
+                                    <h4 class="m-0" x-text="preset.name"></h4>
+                                    <p class="m-0 small font-italic"><small x-text="preset.author"></small></p>
+                                    <p class="m-0 mt-1"><small x-text="preset.description"></small></p>
+                                </button>
+                            </div>
+                        </template>
                     </template>
                 </div>
 
