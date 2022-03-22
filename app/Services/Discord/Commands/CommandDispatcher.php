@@ -49,12 +49,8 @@ class CommandDispatcher
     {
         $handlerClass = config('services.discord.command_handlers' . self::processConfigPath($commandData['data']));
 
-        $returnVal = (new $handlerClass($commandData))
+        return (new $handlerClass($commandData))
             ->handleInteraction();
-
-        ld($returnVal->getMessage());
-
-        return $returnVal;
     }
 
     /**
@@ -69,9 +65,6 @@ class CommandDispatcher
     public static function dispatchComponent($interactionData): Response
     {
         $interactionIdParts = explode(':', $interactionData['data']['custom_id']);
-
-        ld($interactionIdParts, JSON_PRETTY_PRINT);
-        ld($interactionData['data']);
 
         $handlerClass = config('services.discord.command_handlers.'. $interactionIdParts[0]);
         $handlerFunction = $interactionIdParts[1];
