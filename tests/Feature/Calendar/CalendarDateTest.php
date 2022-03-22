@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Calendar;
 
 use App\Models\Calendar;
 use App\Models\User;
