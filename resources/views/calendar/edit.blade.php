@@ -55,9 +55,23 @@
             initialized: false,
             errors: [],
 
+            watchProperties: [
+                "static_data",
+                "events",
+                "event_categories",
+                "preview_date",
+                "dynamic_data.year",
+                "dynamic_data.timespan",
+                "dynamic_data.day",
+                "dynamic_data.hour",
+                "dynamic_data.minute",
+                "dynamic_data.current_location",
+                "dynamic_data.custom_location"
+            ],
+
             init(){
                 const self = this;
-                this.$watch("static_data, dynamic_data, events, event_categories", this.calendarChanged.bind(this));
+                this.$watch(this.watchProperties.join(', '), this.calendarChanged.bind(this));
                 this.$nextTick(() => {
                     window.calendar.render();
                     self.initialized = true;
@@ -79,7 +93,7 @@
                 this.errors = window.calendar.getErrors();
                 this.calendar_valid = !this.errors.length;
                 if(!this.calendar_valid) return;
-                window.calendar.render();
+                window.calendar.calendarChanged();
             },
 
             currentViewType: "owner",
@@ -117,7 +131,7 @@
                     clock_container.appendChild(clock);
                 }
 
-            }
+            },
 
         }
 

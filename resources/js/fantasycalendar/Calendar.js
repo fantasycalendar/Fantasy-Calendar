@@ -19,6 +19,7 @@ export default class Calendar{
         this.old_name = this.name;
         this.old_static_data = clone(this.static_data);
         this.old_dynamic_data = clone(this.dynamic_data);
+        this.old_preview_date = clone(this.preview_date);
         this.old_events = clone(this.events);
         this.old_event_categories = clone(this.event_categories);
     }
@@ -32,21 +33,49 @@ export default class Calendar{
     }
 
     render(){
-        rebuild_calendar('calendar');
+        rebuild_calendar();
     }
 
-    dateChanged(){
-        const rerender = this.dynamic_data.year !== this.old_dynamic_data.year
-            || (this.dynamic_data.timespan !== this.old_dynamic_data.timespan && window.calendar.static_data.settings.show_current_month);
-        this.dynamic_data.epoch = this.getEpochForDate(this.dynamic_data.year, this.dynamic_data.timespan, this.dynamic_data.day).epoch;
-        if(!this.preview_date.follow){
-            this.preview_date.epoch = this.getEpochForDate(this.preview_date.year, this.preview_date.timespan, this.preview_date.day).epoch;
-        }else{
-            this.preview_date = clone(this.dynamic_data);
-        }
+
+    goToPreviewDate(){
+
+        this.preview_date.follow = false;
+
+        this.preview_date.epoch = this.getEpochForDate(this.preview_date.year, this.preview_date.timespan, this.preview_date.day).epoch;
+        let rerender = this.preview_date.year !== this.old_preview_date.year || (this.preview_date.timespan !== this.old_preview_date.timespan && window.calendar.static_data.settings.show_current_month);
+        this.old_preview_date = clone(this.preview_date);
+
         if(rerender){
             return this.render();
         }
+
+        window.dispatchEvent(new CustomEvent('update-epochs', {detail: {
+            current_epoch: this.dynamic_data.epoch,
+            preview_epoch: this.preview_date.follow ? this.dynamic_data.epoch : this.preview_date.epoch
+        }}));
+    }
+
+    goToCurrentDate(){
+        this.preview_date = clone(this.dynamic_data);
+        this.preview_date.follow = true;
+        this.calendarChanged();
+    }
+
+    calendarChanged(){
+
+        this.dynamic_data.epoch = this.getEpochForDate(this.dynamic_data.year, this.dynamic_data.timespan, this.dynamic_data.day).epoch;
+
+        if(this.preview_date.follow){
+            this.preview_date = clone(this.dynamic_data);
+            this.preview_date.follow = true;
+        }
+
+        const rerender = this.dynamic_data.year !== this.old_dynamic_data.year || (this.dynamic_data.timespan !== this.old_dynamic_data.timespan && window.calendar.static_data.settings.show_current_month);
+
+        if(rerender){
+            return this.render();
+        }
+
         window.dispatchEvent(new CustomEvent('update-epochs', {detail: {
             current_epoch: this.dynamic_data.epoch,
             preview_epoch: this.preview_date.follow ? this.dynamic_data.epoch : this.preview_date.epoch

@@ -219,10 +219,10 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000){
 
 var evaluated_static_data = {};
 
-async function rebuild_calendar(action){
+async function rebuild_calendar(){
 
     calendar_data_generator.static_data = window.calendar.static_data;
-    calendar_data_generator.dynamic_data = window.calendar.dynamic_data;
+    calendar_data_generator.dynamic_data = window.calendar.preview_date.follow ? window.calendar.dynamic_data : window.calendar.preview_date;
     calendar_data_generator.owner = Perms.player_at_least('co-owner');
     calendar_data_generator.events = window.calendar.events;
     calendar_data_generator.event_categories = window.calendar.event_categories;
@@ -294,5 +294,13 @@ function rerender_calendar(processed_data) {
 
 	RenderDataGenerator.create_render_data(processed_data).then((result) => {
         window.dispatchEvent(new CustomEvent('render-data-change', { detail: result }));
+        setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('update-epochs', {
+                detail: {
+                    current_epoch: window.calendar.dynamic_data.epoch,
+                    preview_epoch: window.calendar.preview_date.follow ? window.calendar.dynamic_data.epoch : window.calendar.preview_date.epoch
+                }
+            }));
+        }, 150);
     });
 }

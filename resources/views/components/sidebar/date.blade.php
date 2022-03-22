@@ -57,11 +57,19 @@
                     if(!this.renderClock) return;
                     if(sunrise !== undefined) this.clockRenderer.sunrise = sunrise;
                     if(sunset !== undefined) this.clockRenderer.sunset = sunset;
+                },
+
+                goToPreviewDate(){
+                    window.calendar.goToPreviewDate();
+                },
+
+                goToCurrentDate(){
+                    window.calendar.goToCurrentDate();
                 }
             }
         }
 
-        function dateSelector($data, date_object, { hasTime = false, hasButtons = true, actualDate = true }={}){
+        function dateSelector($data, date_object, { hasTime = true, hasButtons = true, previewDate = false }={}){
 
             return {
 
@@ -140,13 +148,6 @@
                     this.days = window.calendar.getDaysForTimespanInYear(this.date.year, this.date.timespan);
                     this.updatePrevNextTimespans();
                     this.updatePrevNextDays();
-                    if(actualDate) {
-                        this.$watch("date", this.updateCalendarDate.bind(this))
-                    }
-                },
-
-                updateCalendarDate(){
-                    window.calendar.dateChanged();
                 },
 
                 dateUpdated({ year, timespan, day, hour, minute }={}){
@@ -261,13 +262,7 @@
 
                     // TODO: We need to reimplement the time inputs
 
-                },
-
-                addToDate({ years = 0, months = 0, days = 0, hours = 0, minutes = 0 }={}){
-
-                    // TODO: Add to date handling - will need an epoch factory to have an easier time to do this
-
-                },
+                }
             }
         }
 
@@ -430,6 +425,8 @@
 
     <div
         x-data="dateSection($data)"
+        @go-to-preview-date.window="goToPreviewDate()"
+        @go-to-current-date.window="goToCurrentDate()"
     >
 
         <div id="clock_container">
@@ -457,7 +454,7 @@
             </div>
 
             <div
-                x-data="dateSelector($data, dynamic_data, { hasTime: true, hasButtons: true })"
+                x-data="dateSelector($data, dynamic_data)"
                 @current-date-changed.window="dateUpdated($event.detail)"
                 @calendar-structure-changed.window="updateTimespans()"
                 @timespan-name-changed.window="updateTimespans()"
@@ -517,7 +514,7 @@
             </div>
 
             <div
-                x-data="dateSelector($data, preview_date, { hasTime: true, hasButtons: true, actualDate: false })"
+                x-data="dateSelector($data, preview_date, { hasButtons: true, previewDate: true})"
                 @preview-date-changed.window="dateUpdated($event.detail)"
                 @calendar-structure-changed.window="updateTimespans()"
                 @timespan-name-changed.window="updateTimespans()"
@@ -571,11 +568,11 @@
 
             <div class="grid grid-cols-2">
                 <div class='col-span-2 my-2' :class="{'col-span-2': preview_date.follow}">
-                    <div class='btn btn-success full' @click="preview_date.follow = false; window.calendar.dateChanged();">Go To Preview date</div>
+                    <div class='btn btn-success full' @click="$dispatch('go-to-preview-date')">Go To Preview date</div>
                 </div>
 
                 <div class='my-2'>
-                    <div class='btn btn-info full' x-show="!preview_date.follow" @click="preview_date.follow = true; window.calendar.dateChanged();">Go To Current Date</div>
+                    <div class='btn btn-info full' x-show="!preview_date.follow" @click="$dispatch('go-to-current-date')">Go To Current Date</div>
                 </div>
             </div>
         </div>
