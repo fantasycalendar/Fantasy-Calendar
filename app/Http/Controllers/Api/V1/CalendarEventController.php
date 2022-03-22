@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Models\EventCategory;
-use App\Http\Resources\Calendar;
+use App\Http\Resources\V1\Calendar;
 use App\Transformer\CalendarEventTransformer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;

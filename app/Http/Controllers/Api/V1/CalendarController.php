@@ -17,7 +17,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CalendarCollection;
+use App\Http\Resources\V1\CalendarCollection;
 
 use App\Models\Calendar;
 use Illuminate\Support\Facades\Notification;
