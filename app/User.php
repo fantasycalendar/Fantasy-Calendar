@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Redis;
 use Laravel\Cashier\Billable;
 use Carbon\Carbon;
 use Arr;
+use Laravel\Sanctum\HasApiTokens;
 use Str;
 use Stripe\StripeClient;
 
@@ -25,7 +26,8 @@ class User extends Authenticatable implements
     use Notifiable,
         Billable,
         SoftDeletes,
-        HasFactory;
+        HasFactory,
+        HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -68,7 +70,7 @@ class User extends Authenticatable implements
         'date_update_pass',
         'date_register',
         'reg_ip',
-        'settings',
+        'api_token'
     ];
 
     /**

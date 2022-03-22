@@ -21,7 +21,7 @@ use Illuminate\Http\Request;
 */
 
 Route::any('/user/login', [UserController::class, 'authenticate']);
-Route::middleware('auth:api')->get('/user', [UserController::class, 'user']);
+Route::any('/user', [UserController::class, 'user']);
 
 Route::any('/calendar/{calendar}/clone', [CalendarController::class, 'clone']);
 Route::any('/calendar/{calendar}/owned', [CalendarController::class, 'owned']);
