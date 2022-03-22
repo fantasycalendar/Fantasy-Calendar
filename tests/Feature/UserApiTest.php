@@ -58,4 +58,16 @@ class UserApiTest extends TestCase
             'api_token' => 'afakeapitoken'
         ]);
     }
+
+    public function test_incorrect_password_401()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('/api/v1/user/login', [
+            'identity' => $user->username,
+            'password' => 'nottherightpassword',
+        ]);
+
+        $response->assertStatus(401);
+    }
 }
