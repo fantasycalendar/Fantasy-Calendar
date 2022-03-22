@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Rendering;
 
 use App\Services\RendererService\ImageRenderer;
 use Illuminate\Foundation\Testing\RefreshDatabase;

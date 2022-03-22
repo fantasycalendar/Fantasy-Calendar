@@ -55,7 +55,7 @@ class ApiV1UserTest extends TestCase
         $response->assertStatus(200);
         $response->assertJson([
             'username' => $user->username,
-            'api_token' => 'afakeapitoken'
+            'api_token' => "afakeapitoken{$user->username}"
         ]);
     }
 
