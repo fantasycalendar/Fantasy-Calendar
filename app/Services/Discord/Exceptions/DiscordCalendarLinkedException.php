@@ -2,7 +2,7 @@
 
 namespace App\Services\Discord\Exceptions;
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Services\Discord\Commands\Command\Response;
 use Throwable;
 

@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Facades\Epoch;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;

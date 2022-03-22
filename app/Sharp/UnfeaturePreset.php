@@ -2,7 +2,7 @@
 
 namespace App\Sharp;
 
-use App\Preset;
+use App\Models\Preset;
 use Code16\Sharp\EntityList\Commands\InstanceCommand;
 
 class UnfeaturePreset extends InstanceCommand

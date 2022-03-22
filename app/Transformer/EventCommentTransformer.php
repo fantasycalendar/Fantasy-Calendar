@@ -3,7 +3,7 @@
 namespace App\Transformer;
 
 use League\Fractal;
-use App\CalendarEventComment;
+use App\Models\CalendarEventComment;
 
 use Auth;
 

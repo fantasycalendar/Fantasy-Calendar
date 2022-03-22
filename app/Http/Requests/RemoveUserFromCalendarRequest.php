@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 

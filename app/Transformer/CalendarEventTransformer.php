@@ -2,7 +2,7 @@
 
 namespace App\Transformer;
 
-use App\CalendarEvent;
+use App\Models\CalendarEvent;
 use League\Fractal;
 
 use Auth;

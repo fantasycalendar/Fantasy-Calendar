@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
-use App\Calendar;
+use App\Models\User;
+use App\Models\Calendar;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CalendarPolicy
@@ -13,7 +13,7 @@ class CalendarPolicy
     /**
      * Determine whether the user can view any calendars.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function viewAny(?User $user)
@@ -24,8 +24,8 @@ class CalendarPolicy
     /**
      * Determine whether the user can view the calendar.
      *
-     * @param  \App\User  $user
-     * @param  \App\Calendar  $calendar
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Calendar  $calendar
      * @return mixed
      */
     public function view(?User $user, Calendar $calendar)
@@ -50,7 +50,7 @@ class CalendarPolicy
     /**
      * Determine whether the user can create calendars.
      *
-     * @param  \App\User  $user
+     * @param  \App\Models\User  $user
      * @return mixed
      */
     public function create(?User $user)
@@ -67,8 +67,8 @@ class CalendarPolicy
     /**
      * Determine whether the user can update the calendar.
      *
-     * @param  \App\User  $user
-     * @param  \App\Calendar  $calendar
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Calendar  $calendar
      * @return mixed
      */
     public function update(User $user, Calendar $calendar)
@@ -83,8 +83,8 @@ class CalendarPolicy
     /**
      * Determine whether the user can delete the calendar.
      *
-     * @param  \App\User  $user
-     * @param  \App\Calendar  $calendar
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Calendar  $calendar
      * @return mixed
      */
     public function delete(User $user, Calendar $calendar)
@@ -99,8 +99,8 @@ class CalendarPolicy
     /**
      * Determine whether the user can restore the calendar.
      *
-     * @param  \App\User  $user
-     * @param  \App\Calendar  $calendar
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Calendar  $calendar
      * @return mixed
      */
     public function restore(User $user, Calendar $calendar)
@@ -111,8 +111,8 @@ class CalendarPolicy
     /**
      * Determine whether the user can permanently delete the calendar.
      *
-     * @param  \App\User  $user
-     * @param  \App\Calendar  $calendar
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Calendar  $calendar
      * @return mixed
      */
     public function forceDelete(User $user, Calendar $calendar)

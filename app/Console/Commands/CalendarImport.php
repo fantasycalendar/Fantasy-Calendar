@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Jobs\SaveCalendarEvents;
 use App\Jobs\SaveEventCategories;
 use Illuminate\Console\Command;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,14 +14,14 @@ class CalendarEventComment extends Model
     ];
 
     public function calendar() {
-        return $this->belongsTo('App\Calendar');
+        return $this->belongsTo(\App\Models\Calendar::class);
     }
 
     public function user() {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(User::class);
     }
 
     public function event() {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(User::class);
     }
 }

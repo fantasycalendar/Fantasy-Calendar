@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;

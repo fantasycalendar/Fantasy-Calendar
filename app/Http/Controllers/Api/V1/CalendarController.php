@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\CalendarInvite;
+use App\Models\CalendarInvite;
 use App\Http\Requests\ChangeUserRoleRequest;
 use App\Http\Requests\GetCalendarUsersRequest;
 use App\Http\Requests\InviteCalendarUserRequest;
@@ -12,14 +12,14 @@ use App\Jobs\CloneCalendar;
 use App\Notifications\CalendarInvitation;
 use App\Notifications\UnregisteredCalendarInvitation;
 use App\Transformer\CalendarUserTransformer;
-use App\User;
+use App\Models\User;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CalendarCollection;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 use League\Fractal\Manager;

@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\EventCategory;
+use App\Models\EventCategory;
 use App\Http\Resources\Calendar;
 use App\Transformer\CalendarEventTransformer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-use App\CalendarEvent;
+use App\Models\CalendarEvent;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\DataArraySerializer;

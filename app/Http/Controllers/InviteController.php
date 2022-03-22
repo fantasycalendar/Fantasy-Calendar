@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Calendar;
-use App\CalendarInvite;
+use App\Models\Calendar;
+use App\Models\CalendarInvite;
 use App\Http\Middleware\ValidateRelativeSignedUrl;
 use App\Http\Requests\AcceptCalendarInviteRequest;
 use App\Http\Requests\RejectCalendarInviteRequest;

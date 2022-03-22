@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Services\Discord\Models\DiscordAuthToken;
 use App\Services\Discord\Models\DiscordGuild;
@@ -92,7 +92,7 @@ class User extends Authenticatable implements
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function calendars() {
-        return $this->hasMany('App\Calendar');
+        return $this->hasMany(\App\Models\Calendar::class);
     }
 
     public function discord_auth() {
@@ -111,14 +111,14 @@ class User extends Authenticatable implements
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function related_calendars() {
-        return $this->belongsToMany('App\Calendar', 'calendar_user_role')->withPivot('user_role');
+        return $this->belongsToMany(\App\Models\Calendar::class, 'calendar_user_role')->withPivot('user_role');
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function agreement() {
-        return $this->belongsTo('App\Agreement');
+        return $this->belongsTo(App\Models\Agreement::class);
     }
 
     public function getSubscriptionEndAttribute()

@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Services\RendererService\TextRenderer;
-use App\User;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Storage;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use App\Notifications\CalendarInvitation;
 use App\Notifications\UnregisteredCalendarInvitation;
@@ -24,7 +24,7 @@ class CalendarInvite extends Model
     ];
 
     public function calendar() {
-        return $this->belongsTo('App\Calendar');
+        return $this->belongsTo(\App\Models\Calendar::class);
     }
 
     public function isValid() {

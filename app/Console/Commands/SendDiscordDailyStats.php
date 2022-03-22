@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Services\Statistics;
-use App\WebhookLog;
+use App\Models\WebhookLog;
 use Aws\Credentials\Credentials;
 use Aws\Sns\SnsClient;
 use Illuminate\Console\Command;

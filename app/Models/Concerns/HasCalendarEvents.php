@@ -2,7 +2,7 @@
 
 namespace App\Models\Concerns;
 
-use App\CalendarEvent;
+use App\Models\CalendarEvent;
 use Mews\Purifier\Facades\Purifier;
 
 trait HasCalendarEvents

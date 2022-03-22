@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
@@ -30,19 +30,19 @@ class CalendarEvent extends Model
     ];
 
     public function category() {
-        return $this->belongsTo('App\EventCategory', 'event_category_id');
+        return $this->belongsTo(EventCategory::class, 'event_category_id');
     }
 
     public function calendar() {
-        return $this->belongsTo('App\Calendar');
+        return $this->belongsTo(\App\Models\Calendar::class);
     }
 
     public function comments() {
-        return $this->hasMany('App\CalendarEventComment', 'event_id');
+        return $this->hasMany(CalendarEventComment::class, 'event_id');
     }
 
     public function creator() {
-        return $this->belongsTo('App\User', 'creator_id');
+        return $this->belongsTo(User::class, 'creator_id');
     }
 
     public function getCreatorIdAttribute($value) {

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Illuminate\Http\Request;
 
 class EmbedController extends Controller

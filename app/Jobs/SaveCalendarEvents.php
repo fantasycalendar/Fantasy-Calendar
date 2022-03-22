@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,7 +13,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Mews\Purifier\Facades\Purifier;
 
-use App\CalendarEvent;
+use App\Models\CalendarEvent;
 
 class SaveCalendarEvents implements ShouldQueue
 {

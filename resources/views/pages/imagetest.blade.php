@@ -42,9 +42,9 @@
         <div class="image_grid">
             @php
                 if(request()->has('id')) {
-                    $calendars = \App\Calendar::whereId(request()->input('id'))->get();
+                    $calendars = \App\Models\Calendar::whereId(request()->input('id'))->get();
                 } else {
-                    $calendars = \App\User::find(1)->calendars;
+                    $calendars = \App\Models\User::find(1)->calendars;
                 }
             @endphp
 

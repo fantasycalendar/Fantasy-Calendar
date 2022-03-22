@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -36,12 +36,12 @@ class Preset extends Model
 
     public function source()
     {
-        return $this->belongsTo('App\Calendar', 'source_calendar_id');
+        return $this->belongsTo(\App\Models\Calendar::class, 'source_calendar_id');
     }
 
     public function creator()
     {
-        return $this->belongsTo('App\User', 'creator_id');
+        return $this->belongsTo(User::class, 'creator_id');
     }
 
     public function feature()

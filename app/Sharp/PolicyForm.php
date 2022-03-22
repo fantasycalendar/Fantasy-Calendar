@@ -2,7 +2,7 @@
 
 namespace App\Sharp;
 
-use App\Policy;
+use App\Models\Policy;
 use Code16\Sharp\Form\Eloquent\WithSharpFormEloquentUpdater;
 use Code16\Sharp\Form\Fields\SharpFormDateField;
 use Code16\Sharp\Form\Fields\SharpFormMarkdownField;

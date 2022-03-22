@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Calendar;
+use App\Models\Calendar;
 use App\Facades\Epoch as EpochFactory;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

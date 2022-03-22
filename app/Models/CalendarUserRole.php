@@ -1,16 +1,16 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class CalendarUserRole extends Pivot
 {
     public function user() {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(User::class);
     }
 
     public function calendar() {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo(User::class);
     }
 }

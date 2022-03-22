@@ -8,7 +8,7 @@ use Code16\Sharp\Show\Layout\ShowLayoutColumn;
 use Code16\Sharp\Show\Layout\ShowLayoutSection;
 use Code16\Sharp\Show\SharpShow;
 
-use App\Preset;
+use App\Models\Preset;
 use Code16\Sharp\Utils\Fields\FieldsContainer;
 
 class PresetShow extends SharpShow

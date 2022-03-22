@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -25,7 +25,7 @@ class EventCategory extends Model
     ];
 
     public function calendar() {
-        return $this->belongsTo('App\Calendar');
+        return $this->belongsTo(\App\Models\Calendar::class);
     }
 
     /**

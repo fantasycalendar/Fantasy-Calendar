@@ -2,7 +2,7 @@
 
 namespace App\Services\Discord\Models;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

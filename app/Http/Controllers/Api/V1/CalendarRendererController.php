@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Http\Controllers\Controller;
 use App\Services\RendererService\MonthRenderer;
 use Illuminate\Http\Request;

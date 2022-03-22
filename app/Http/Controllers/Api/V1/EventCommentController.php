@@ -10,7 +10,7 @@ use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Serializer\DataArraySerializer;
 
-use App\CalendarEventComment;
+use App\Models\CalendarEventComment;
 use App\Transformer\EventCommentTransformer;
 
 class EventCommentController extends Controller
