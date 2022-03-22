@@ -128,8 +128,6 @@ class CalendarController extends Controller
 
         $dayDifference = abs($epoch - $calendar->epoch->epoch);
 
-        logger()->info('here');
-
         return [
             "date_string" => $calendar->current_date,
             "date" => $calendar->raw_date,
