@@ -43,11 +43,11 @@
                     $dispatch('modal-ok', this.ok_event);
                 }
             }"
-         @modal.window="if($event.detail.name === '{{ $attributes->get('name') }}') {
+         @modal.window="if($event.detail.name === `{{ $attributes->get('name') }}`) {
                 show = true;
-                title = $event.detail.title ?? '{{ $attributes->get('title') }}';
-                body = $event.detail.body ?? '{{ $attributes->get('body') }}';
-                ok_event = $event.detail.ok_event ?? { name: '{{ $attributes->get('name') }}' };
+                title = $event.detail.title ?? `{{ $attributes->get('title') }}`;
+                body = $event.detail.body ?? `{{ $attributes->get('body') }}`;
+                ok_event = $event.detail.ok_event ?? { name: `{{ $attributes->get('name') }}` };
                 cancel_event = $event.detail.cancel_event ?? '';
                 form_info = $event.detail.form_prefill ?? {};
                 validation_errors = [];
