@@ -19,6 +19,18 @@
                         </x-alert>
                     @endif
 
+                    @if(session()->has('error'))
+                        <x-alert type="danger">
+                            {{ session()->get('error') }}
+                        </x-alert>
+                    @endif
+
+                    @if(session()->has('message'))
+                        <x-alert type="success">
+                            {{ session()->get('message') }}
+                        </x-alert>
+                    @endif
+
                     {{ $slot }}
                 </div>
             </div>
