@@ -13,7 +13,7 @@
                 <div class="prose dark:prose-invert mx-auto max-w-none border border-gray-200 dark:border-gray-700 p-4 rounded max-h-96 overflow-y-scroll">
                     <h1>{{ $title }}</h1>
                     <p><i>Document Version {{ $version }}.0 — {{ $date }}</i></p>
-                    <div class="mb-2">{!! (new League\CommonMark\GithubFlavoredMarkdownConverter())->convert($markdown); !!}</div>
+                    <div class="mb-2">{!! mdToHtml($markdown); !!}</div>
                 </div>
 
                 <div class="form-check border border-gray-200 dark:border-gray-700 rounded p-4">

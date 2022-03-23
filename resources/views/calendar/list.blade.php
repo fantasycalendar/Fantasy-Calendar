@@ -83,8 +83,19 @@
         @endif
 
         @if(!auth()->user()->acknowledged_discord_announcement)
-            <x-alert type="notice" icon="fab fa-discord" class="relative mb-4">
-                <a href="{{ route('discord-announcement-acknowledge') }}" class="alert-link" style="float: right;"><i class="fa fa-times"></i></a>
+            <x-alert type="notice"
+                     icon="fab fa-discord"
+                     class="relative mb-4"
+                     x-data="{ show: true }"
+                     x-show="show"
+                     x-transition:enter="transform ease-out duration-300 transition"
+                     x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+                     x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
+                     x-transition:leave="transition ease-in duration-100"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+            >
+                <i @click="axios.get('{{ route('discord-announcement-acknowledge') }}').then(() => { show = false; $dispatch('notification', { title: 'Dismissed!', body: `You can always check out the Discord integration via 'integrations' on your profile.` }) })" class="cursor-pointer fa fa-times float-right"></i>
                 <h4 class="font-semibold">Fantasy Calendar integrates with Discord!</h4>
 
                 @if(!auth()->user()->isPremium())

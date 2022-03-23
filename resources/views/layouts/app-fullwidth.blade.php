@@ -149,19 +149,21 @@
 <div aria-live="assertive" class="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:p-6 sm:items-end" x-data="{ notifications: [], notification: function($event){ this.notifications.push($event.detail) } }" @notification.window="notification">
     <div class="w-full flex flex-col items-center space-y-4 sm:items-end">
         <template x-for="(notification, index) in notifications">
-            <div class="max-w-sm w-full bg-white dark:bg-gray-700 dark:shadow-xl shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
+            <div class="max-w-sm w-full relative bg-white dark:bg-gray-700 dark:shadow-xl shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
                  x-data="{
-                                info: notification,
-                                show:false,
-                                init: function() {
-                                    setTimeout(() => this.show = true, 100);
+                            info: notification,
+                            show:false,
+                            init: function() {
+                                setTimeout(() => this.show = true, 100);
+                                if(!this.info.sticky) {
                                     setTimeout(() => this.show = false, 3000);
                                     setTimeout(() => delete notifications[index], 4000);
-                                },
-                                remove: function() {
-                                    this.show = false;
                                 }
-                             }"
+                            },
+                            remove: function() {
+                                this.show = false;
+                            }
+                         }"
                  x-show="show"
                  x-transition:enter="transform ease-out duration-300 transition"
                  x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
@@ -169,7 +171,7 @@
                  x-transition:leave="transition ease-in duration-100"
                  x-transition:leave-start="opacity-100"
                  x-transition:leave-end="opacity-0">
-                <div class="p-4">
+                <div class="p-4" :class="{ 'mb-2' : !info.sticky }">
                     <div class="flex items-start">
                         <div class="flex-shrink-0">
                             <!-- Heroicon name: outline/check-circle -->
@@ -179,7 +181,7 @@
                         </div>
                         <div class="ml-3 w-0 flex-1 pt-0.5">
                             <p class="text-sm font-medium text-gray-900 dark:text-gray-300" x-text="info.title"></p>
-                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400" x-text="info.body"></p>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400" x-html="info.body"></p>
                         </div>
                         <div class="ml-4 flex-shrink-0 flex">
                             <button class="bg-white dark:bg-gray-500 dark:text-gray-800 rounded-md inline-flex text-gray-400 dark:text-gray-800 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500" @click="remove">
@@ -191,6 +193,15 @@
                             </button>
                         </div>
                     </div>
+                </div>
+
+                <div class="absolute inset-x-0 bottom-0 bg-gray-700 h-2" x-show="!info.sticky">
+                    <div class="absolute inset-x-0 left-0 h-full bg-primary-500"
+                        x-show="!show"
+                        x-transition:leave="transition-all ease-linear duration-[2900ms]"
+                        x-transition:leave-start="w-full"
+                        x-transition:leave-end="w-0"
+                    ></div>
                 </div>
             </div>
         </template>

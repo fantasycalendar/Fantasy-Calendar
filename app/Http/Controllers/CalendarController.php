@@ -307,10 +307,4 @@ class CalendarController extends Controller
     {
         //
     }
-
-    public function print(Calendar $calendar) {
-        return view('calendar.print', [
-            'calendar' => $calendar
-        ]);
-    }
 }
