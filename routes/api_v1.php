@@ -20,8 +20,23 @@ use Illuminate\Http\Request;
 |
 */
 
+// Routes that are _technically_ API but shouldn't require authentication
 Route::any('/user/login', [UserController::class, 'authenticate']);
+Route::any('/calendar/{calendar}/children', [CalendarController::class, 'children']);
+Route::any('/calendar/{calendar}/last_changed', [CalendarController::class, 'last_changed']);
+Route::any('/calendar/{calendar}/dynamic_data', [CalendarController::class, 'dynamic_data']);
+Route::any('/eventcomment/event/{id}', [EventCommentController::class, 'forEvent']);
+Route::any('/eventcomment/calendar/{id}', [EventCommentController::class, 'forCalendar']);
+Route::apiResources(
+    ['calendar' => CalendarController::class, 'eventcomment' => EventCommentController::class],
+    ['only' => 'show']
+);
 
+Route::get('presets', [PresetController::class, 'list']);
+Route::get('preset/{id}', [PresetController::class, 'show']);
+Route::get('presets.html', [PresetController::class, 'listHtml']);
+
+// Any routes in here require authentication
 Route::middleware(['auth:sanctum'])->group(function(){
     Route::any('/user', [UserController::class, 'user']);
 
@@ -32,25 +47,16 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::any('/calendar/{calendar}/removeUser', [CalendarController::class, 'removeUser']);
     Route::any('/calendar/{calendar}/resend_invite', [CalendarController::class, 'resend_invite']);
     Route::any('/calendar/{calendar}/changeUserRole', [CalendarController::class, 'changeUserRole']);
-    Route::any('/calendar/{calendar}/children', [CalendarController::class, 'children']);
-    Route::any('/calendar/{calendar}/last_changed', [CalendarController::class, 'last_changed']);
-    Route::any('/calendar/{calendar}/dynamic_data', [CalendarController::class, 'dynamic_data']);
     Route::any('/calendar/{calendar}/changeDate', [CalendarController::class, 'changeDate']);
     Route::any('/calendar/{calendar}/getCurrentDate', [CalendarController::class, 'getCurrentDate']);
-    Route::apiResource('calendar', CalendarController::class);
-
-
-    Route::apiResource('eventcategory', EventCategoryController::class);
-
-    Route::any('/eventcomment/event/{id}', [EventCommentController::class, 'forEvent']);
-    Route::any('/eventcomment/calendar/{id}', [EventCommentController::class, 'forCalendar']);
-    Route::apiResource('eventcomment', EventCommentController::class);
-
-    Route::apiResource('event', CalendarEventController::class);
-
-    Route::get('presets', [PresetController::class, 'list']);
-    Route::get('preset/{id}', [PresetController::class, 'show']);
-    Route::get('presets.html', [PresetController::class, 'listHtml']);
+    Route::apiResources(
+        ['calendar' => CalendarController::class, 'eventcomment' => EventCommentController::class],
+        ['except' => 'show']
+    );
+    Route::apiResources([
+        'eventcategory' => EventCategoryController::class,
+        'event' => CalendarEventController::class,
+    ]);
 
     Route::prefix('render/{calendar}')->group(function() {
         Route::get('/month/{year?}/{month?}/{day?}', [CalendarRendererController::class, 'month']);
