@@ -2,7 +2,7 @@
 
 namespace App\Services\Discord\Jobs;
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Services\RendererService\ImageRenderer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;

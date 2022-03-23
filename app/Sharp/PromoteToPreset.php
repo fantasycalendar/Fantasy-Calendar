@@ -4,7 +4,7 @@ namespace App\Sharp;
 
 use Code16\Sharp\EntityList\Commands\InstanceCommand;
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Jobs\ConvertCalendarToPreset;
 
 class PromoteToPreset extends InstanceCommand

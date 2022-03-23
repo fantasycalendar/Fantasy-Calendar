@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;

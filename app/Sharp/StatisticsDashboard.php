@@ -2,10 +2,10 @@
 
 namespace App\Sharp;
 
-use App\Calendar;
-use App\CalendarEvent;
-use App\CalendarInvite;
-use App\User;
+use App\Models\Calendar;
+use App\Models\CalendarEvent;
+use App\Models\CalendarInvite;
+use App\Models\User;
 
 use Carbon\CarbonPeriod;
 use Code16\Sharp\Dashboard\Layout\DashboardLayout;

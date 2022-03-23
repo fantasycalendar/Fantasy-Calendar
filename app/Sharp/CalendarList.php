@@ -3,8 +3,8 @@
 namespace App\Sharp;
 
 use Carbon\Carbon;
-use App\Calendar;
-use App\User;
+use App\Models\Calendar;
+use App\Models\User;
 use Code16\Sharp\EntityList\Containers\EntityListDataContainer;
 use Code16\Sharp\EntityList\EntityListQueryParams;
 use Code16\Sharp\EntityList\Fields\EntityListField;

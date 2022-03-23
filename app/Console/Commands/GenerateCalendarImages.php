@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Services\RendererService\ImageRenderer;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;

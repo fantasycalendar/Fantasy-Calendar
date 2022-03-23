@@ -155,7 +155,7 @@ const calendar_events_viewer = {
 			return;
 		}
 
-        axios.patch(window.baseurl+"api/eventcomment/"+comment.id, {
+        axios.patch(window.apiurl+"/eventcomment/"+comment.id, {
             content: comment_content
         })
             .then(function (result){

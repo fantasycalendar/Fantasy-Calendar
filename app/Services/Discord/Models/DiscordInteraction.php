@@ -2,10 +2,10 @@
 
 namespace App\Services\Discord\Models;
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Services\Discord\API\Client;
 use App\Services\Discord\Commands\Command\Response;
-use App\User;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

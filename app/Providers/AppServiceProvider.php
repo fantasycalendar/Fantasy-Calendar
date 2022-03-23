@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\CalendarEvent;
+use App\Models\CalendarEvent;
 use App\Console\Commands\DownCommand;
 use App\Console\Commands\UpCommand;
 use App\Observers\CalendarEventObserver;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 use App\Observers\CalendarObserver;
-use App\Calendar;
+use App\Models\Calendar;
 
 class AppServiceProvider extends ServiceProvider
 {

@@ -2,7 +2,7 @@
 
 namespace App\Sharp;
 
-use App\User;
+use App\Models\User;
 use Code16\Sharp\EntityList\Commands\InstanceCommand;
 
 class VisitStripeCustomer extends InstanceCommand

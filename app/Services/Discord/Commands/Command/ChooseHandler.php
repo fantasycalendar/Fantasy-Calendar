@@ -9,7 +9,7 @@ use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
 use App\Services\Discord\Commands\Command\Response\Component\SelectMenu;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 use App\Services\Discord\Exceptions\DiscordUserHasNoCalendarsException;
-use App\User;
+use App\Models\User;
 
 class ChooseHandler extends Command
 {

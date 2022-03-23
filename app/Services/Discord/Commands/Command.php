@@ -4,7 +4,7 @@
 namespace App\Services\Discord\Commands;
 
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Services\Discord\Commands\Command\Response;
 use App\Services\Discord\Commands\Command\Traits\FormatsText;
 use App\Services\Discord\Commands\Command\ChooseHandler;
@@ -17,7 +17,7 @@ use App\Services\Discord\Exceptions\DiscordUserInvalidException;
 use App\Services\Discord\Models\DiscordAuthToken;
 use App\Services\Discord\Models\DiscordGuild;
 use App\Services\Discord\Models\DiscordInteraction;
-use App\User;
+use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;

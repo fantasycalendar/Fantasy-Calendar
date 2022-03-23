@@ -8,7 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-use App\EventCategory;
+use App\Models\EventCategory;
 
 class SaveEventCategories implements ShouldQueue
 {

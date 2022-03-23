@@ -2,7 +2,7 @@
 
 namespace App\Rules;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Illuminate\Contracts\Validation\Rule;
 
 class UserNotAlreadyPresentOnCalendar implements Rule

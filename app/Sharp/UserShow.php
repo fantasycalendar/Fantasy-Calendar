@@ -2,7 +2,7 @@
 
 namespace App\Sharp;
 
-use App\User;
+use App\Models\User;
 
 use Carbon\CarbonPeriod;
 use Code16\Sharp\Dashboard\Widgets\SharpBarGraphWidget;

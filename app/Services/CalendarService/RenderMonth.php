@@ -2,7 +2,7 @@
 
 namespace App\Services\CalendarService;
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Facades\Epoch;
 use Illuminate\Support\Str;
 

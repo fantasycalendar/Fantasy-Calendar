@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\TrackedRequest;
+use App\Models\TrackedRequest;
 use Closure;
 use Illuminate\Http\Request;
 

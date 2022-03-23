@@ -24,7 +24,7 @@
                     }
                 },
                 copy_calendar(hash, new_name) {
-                    axios.post('/api/calendar/' + hash + "/clone", {
+                    axios.post(window.apiurl + '/calendar/' + hash + "/clone", {
                         new_calendar_name: new_name
                     }).then(results => {
                         if(results.data.error) {
@@ -43,7 +43,7 @@
                 },
                 delete_calendar(hash) {
                     axios
-                        .delete('/api/calendar/' + hash)
+                        .delete(window.apiurl + '/calendar/' + hash)
                         .then(results => {
                             if(results.data.error) {
                                 throw "Error: " + results.data.message;

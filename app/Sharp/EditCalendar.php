@@ -2,7 +2,7 @@
 
 namespace App\Sharp;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Code16\Sharp\EntityList\Commands\InstanceCommand;
 
 class EditCalendar extends InstanceCommand

@@ -2,7 +2,7 @@
 
 namespace App\Sharp;
 
-use App\Agreement;
+use App\Models\Agreement;
 use Code16\Sharp\EntityList\Containers\EntityListDataContainer;
 use Code16\Sharp\EntityList\EntityListQueryParams;
 use Code16\Sharp\EntityList\Fields\EntityListField;

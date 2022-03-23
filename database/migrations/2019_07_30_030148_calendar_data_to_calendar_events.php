@@ -4,8 +4,8 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-use App\Calendar;
-use App\CalendarEvent;
+use App\Models\Calendar;
+use App\Models\CalendarEvent;
 
 class CalendarDataToCalendarEvents extends Migration
 {
@@ -21,9 +21,9 @@ class CalendarDataToCalendarEvents extends Migration
             $static_data = json_decode($calendar->static_data, true);
             if(!array_key_exists('event_data', $static_data)) continue;
             if(!array_key_exists('events', $static_data['event_data'])) continue;
-    
+
             $categories = DB::table('event_categories')->where('calendar_id', $calendar->id)->get();
-            
+
             $events = $static_data['event_data']['events'];
             foreach ($events as $event) {
                 $categoryId = NULL;
@@ -31,7 +31,7 @@ class CalendarDataToCalendarEvents extends Migration
                 if($event['category'] > 0 && $event['category'] < count($categories)) {
                     $categoryId = $categories[$event['category']]->id;
                 }
-    
+
                 CalendarEvent::create([
                     'name' => $event['name'],
                     'description' => $event['description'],
