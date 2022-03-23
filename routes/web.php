@@ -75,7 +75,6 @@ Route::prefix('invite')->group(function(){
 // Calendar management
 Route::middleware(['account.deletion', 'agreement'])->group(function(){
     Route::group(['as' => 'calendars.', 'prefix' => 'calendars'], function(){
-        Route::get('/{calendar}/print', [CalendarController::class, 'print'])->name('print');
         Route::get('/{calendar}/guided_embed', [CalendarController::class, 'guidedEmbed'])->name('guided_embed');
         Route::get('/{calendar}/export', [CalendarController::class, 'export'])->name('export');
         Route::get('/{calendar}.{ext}', [CalendarController::class, 'renderImage'])->name('image');
