@@ -11,7 +11,7 @@
             <div class="flex items-center justify-between">
                 @if(auth()->user()->hasDiscord())
                     <div class="flex items-center">
-                        <div class="h-12 w-12 rounded-full overflow-hidden mr-3 bg-gray-900 dark:bg-gray-500 border-2 border-gray-900 dark:border-gray-500">
+                        <div class="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden mr-3 bg-gray-900 dark:bg-gray-500 border-2 border-gray-900 dark:border-gray-500">
                             <img src="{{ auth()->user()->discord_auth->avatar }}" alt="" class="bg-white h-full w-full">
                         </div>
                         <div>
@@ -35,15 +35,39 @@
                                 ></x-modal>
                             </div>
                             <div class="space-x-2 flex flex-col md:items-center md:flex-row space-y-2 md:space-y-0">
-                                <x-button-link class="justify-center" role="secondary" :href="route('discord.index')">Command Reference</x-button-link>
+                                <x-button @click="$dispatch('modal', {name: 'discord_reference'})" class="justify-center" role="secondary" >Command Reference</x-button>
                                 <x-button-link class="justify-center" role="primary" :href="route('discord.auth.admin')">Add FC to a server</x-button-link>
                             </div>
+
+                            <x-modal name="discord_reference"
+                                     icon="question">
+                                <div class="px-4 py-5 sm:px-6">
+                                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Discord Command Information</h3>
+                                    <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">Commands names and details</p>
+                                </div>
+                                <div class="border-t border-gray-200 dark:border-gray-700 px-4 py-5 sm:p-0">
+                                    <dl class="text-left sm:divide-y sm:divide-gray-200 dark:sm:divide-gray-700">
+                                        @foreach(discord_help() as $command)
+                                            <div class="py-4 sm:py-5 sm:px-6">
+                                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ $command['command'] }}</dt>
+                                                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-200 sm:mt-0 sm:col-span-2">{{ $command['description'] }}</dd>
+                                            </div>
+                                        @endforeach
+                                    </dl>
+                                </div>
+
+                                <x-slot name="buttons">
+                                    <x-button @click="show = false;" type="button" class="col-span-2 mt-3 w-full inline-flex justify-center rounded-md border border-primary-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-primary-700 hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:col-start-1 sm:text-sm">
+                                        Ok
+                                    </x-button>
+                                </x-slot>
+                            </x-modal>
                         </div>
                     </x-slot>
                 @elseif(auth()->user()->isPremium())
                     <div class="flex flex-col space-y-4">
                         <div class="flex items-center">
-                            <div class="h-12 w-12 rounded-full overflow-hidden mr-3 bg-white dark:bg-gray-500 border-2 border-gray-400 dark:border-gray-500 flex items-center justify-center">
+                            <div class="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden mr-3 bg-white dark:bg-gray-500 border-2 border-gray-400 dark:border-gray-500 flex items-center justify-center">
                                 <i class="fa fa-unlink text-xl text-gray-400 dark:text-gray-800"></i>
                             </div>
                             <div>
@@ -57,13 +81,57 @@
                     </div>
 
                     <x-slot name="footer">
-                        <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 dark:border-t dark:border-gray-600 text-right sm:px-6">
-                            <x-button-link href="{{ route('discord.auth.user') }}">Connect your Discord account</x-button-link>
+                        <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 dark:border-t dark:border-gray-600 text-right sm:px-6 flex flex-col md:flex-row justify-end md:space-x-2 space-y-2 md:space-y-0">
+                            <x-button class="justify-center" role="secondary" @click="$dispatch('modal', { name: 'discord_explanation'})">What information does FC get?</x-button>
+                            <x-button-link class="justify-center" href="{{ route('discord.auth.user') }}">Connect your Discord account</x-button-link>
                         </div>
+
+                        <x-modal name="discord_explanation"
+                                 icon="question"
+                        >
+                            <div class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-50 mb-4">
+                                What information does Fantasy Calendar get from Discord?
+                            </div>
+
+                            <div class="prose dark:prose-invert">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" class="whitespace-nowrap">Permission</th>
+                                        <th scope="col">How we use it</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <th scope="row" class="whitespace-nowrap pr-2">Your email</th>
+                                        <td>Used for any notifications about this integration</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="whitespace-nowrap pr-2">Discord ID</th>
+                                        <td>Used to associate your Discord account with your Fantasy Calendar account, for permissions</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="whitespace-nowrap pr-2">List of server IDs you're in</th>
+                                        <td>Required by Discord to create commands in servers you own</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row" class="whitespace-nowrap pr-2">Application command creation</th>
+                                        <td>Lets us create slash-commands in servers you're in</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <x-slot name="buttons">
+                                <x-button @click="show = false;" type="button" class="col-span-2 mt-3 w-full inline-flex justify-center rounded-md border border-primary-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-primary-700 hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:mt-0 sm:col-start-1 sm:text-sm">
+                                    Ok
+                                </x-button>
+                            </x-slot>
+                        </x-modal>
                     </x-slot>
                 @else
                     <div class="flex items-cetnter">
-                        <div class="h-12 w-12 rounded-full overflow-hidden mr-3 bg-white dark:bg-gray-500 border-2 border-gray-400 dark:border-gray-500 flex items-center justify-center">
+                        <div class="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden mr-3 bg-white dark:bg-gray-500 border-2 border-gray-400 dark:border-gray-500 flex items-center justify-center">
                             <i class="fa fa-search-dollar text-xl text-gray-400 dark:text-gray-800"></i>
                         </div>
                         <div>
