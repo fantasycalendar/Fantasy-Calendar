@@ -4,7 +4,7 @@
 namespace App\Services\Discord\Commands\Command\Create;
 
 
-use App\CalendarEvent;
+use App\Models\CalendarEvent;
 use App\Services\Discord\Commands\Command;
 use App\Services\Discord\Commands\Command\Response;
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
@@ -12,7 +12,7 @@ use App\Services\Discord\Commands\Command\Response\Component\SelectMenu;
 use App\Services\Discord\Commands\Command\Response\Modal;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 use App\Services\Discord\Exceptions\DiscordUserHasNoCalendarsException;
-use App\User;
+use App\Models\User;
 use Mews\Purifier\Facades\Purifier;
 
 class EventHandler extends Command

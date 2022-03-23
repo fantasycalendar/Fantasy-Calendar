@@ -2,7 +2,7 @@
 
 namespace App\Sharp;
 
-use App\Agreement;
+use App\Models\Agreement;
 use Code16\Sharp\Show\Fields\SharpShowTextField;
 use Code16\Sharp\Show\Layout\ShowLayoutColumn;
 use Code16\Sharp\Show\Layout\ShowLayoutSection;

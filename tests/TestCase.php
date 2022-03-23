@@ -5,8 +5,8 @@ namespace Tests;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use App\User;
-use App\Calendar;
+use App\Models\User;
+use App\Models\Calendar;
 
 abstract class TestCase extends BaseTestCase
 {

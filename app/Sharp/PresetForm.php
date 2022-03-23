@@ -2,7 +2,7 @@
 
 namespace App\Sharp;
 
-use App\Preset;
+use App\Models\Preset;
 use Code16\Sharp\Form\Fields\SharpFormTextField;
 use Code16\Sharp\Form\Layout\FormLayout;
 use Code16\Sharp\Form\Layout\FormLayoutColumn;

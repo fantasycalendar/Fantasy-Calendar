@@ -2,7 +2,7 @@
 
 namespace App\Services\RendererService;
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Collections\EpochsCollection;
 use App\Services\RendererService\ImageRenderer\ThemeFactory;
 use ArrayAccess;

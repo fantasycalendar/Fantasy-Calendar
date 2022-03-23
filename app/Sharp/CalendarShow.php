@@ -2,7 +2,7 @@
 
 namespace App\Sharp;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Code16\Sharp\Show\Fields\SharpShowTextField;
 use Code16\Sharp\Show\Layout\ShowLayout;
 use Code16\Sharp\Show\Layout\ShowLayoutColumn;

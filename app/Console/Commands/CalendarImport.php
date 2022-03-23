@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Jobs\SaveCalendarEvents;
 use App\Jobs\SaveEventCategories;
 use Illuminate\Console\Command;
@@ -59,7 +59,7 @@ class CalendarImport extends Command
         $this->info('Attempting import of calendar with hash ' . $beta_hash);
 
         // The heavy lifting. Reach out to the beta and grab a calendar
-        $response = $client->get('https://app.fantasy-calendar.com/api/calendar/' . $beta_hash, [
+        $response = $client->get('https://app.fantasy-calendar.com/api/v1/calendar/' . $beta_hash, [
             'query' => ['api_key' => env('FC_API_KEY')]
         ]);
         $calendar_data = json_decode($response->getBody()->getContents(), true);

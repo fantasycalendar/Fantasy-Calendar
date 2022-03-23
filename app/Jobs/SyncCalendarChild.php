@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Services\EpochService\EpochCalculator;
 use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;

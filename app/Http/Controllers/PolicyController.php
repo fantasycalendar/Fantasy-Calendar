@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Policy;
+use App\Models\Policy;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 
 class PolicyController extends Controller

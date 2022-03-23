@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Rules\UserHasNoValidInvites;
 use App\Rules\UserNotAlreadyPresentOnCalendar;
 use Illuminate\Foundation\Http\FormRequest;

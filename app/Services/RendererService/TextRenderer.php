@@ -4,7 +4,7 @@
 namespace App\Services\RendererService;
 
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Services\RendererService\TextRenderer\Month;
 use Illuminate\Support\Collection;
 

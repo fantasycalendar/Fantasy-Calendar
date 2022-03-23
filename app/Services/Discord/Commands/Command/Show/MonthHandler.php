@@ -4,7 +4,7 @@
 namespace App\Services\Discord\Commands\Command\Show;
 
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Services\Discord\Commands\Command\Response;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 use App\Services\Discord\Exceptions\DiscordCalendarNotSetException;

@@ -1,7 +1,7 @@
 <?php
 namespace App\Console\Commands;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 

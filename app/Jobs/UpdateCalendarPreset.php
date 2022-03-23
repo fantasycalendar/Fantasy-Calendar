@@ -8,8 +8,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-use App\Preset;
-use App\Calendar;
+use App\Models\Preset;
+use App\Models\Calendar;
 
 use App\Jobs\ConvertCalendarToPreset;
 

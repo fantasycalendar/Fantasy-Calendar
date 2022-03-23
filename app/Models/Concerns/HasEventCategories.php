@@ -2,7 +2,7 @@
 
 namespace App\Models\Concerns;
 
-use App\EventCategory;
+use App\Models\EventCategory;
 
 trait HasEventCategories
 {
