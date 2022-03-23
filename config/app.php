@@ -205,7 +205,6 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // Package facades
-        'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
         'Image' => Intervention\Image\Facades\Image::class
     ])->toArray(),
 

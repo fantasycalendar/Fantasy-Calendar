@@ -345,3 +345,9 @@ if(!function_exists('random_fantasy_name')) {
         return $names[array_rand($names)];
     }
 }
+
+if(!function_exists('mdToHtml')) {
+    function mdToHtml($markdown) {
+        return (new League\CommonMark\GithubFlavoredMarkdownConverter())->convert($markdown);
+    }
+}
