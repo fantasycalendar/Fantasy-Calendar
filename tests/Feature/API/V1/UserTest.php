@@ -4,9 +4,12 @@ namespace Tests\Feature\API\V1;
 
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
+use Tests\TestCase;
 
 class UserTest extends TestCase
 {
+    use UsesApiV1;
+
     /**
      * A basic feature test example.
      *

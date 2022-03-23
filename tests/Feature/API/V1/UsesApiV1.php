@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\API\V1;
 
-class TestCase extends \Tests\TestCase
+trait UsesApiV1
 {
     public function apiUrl($path): string
     {
