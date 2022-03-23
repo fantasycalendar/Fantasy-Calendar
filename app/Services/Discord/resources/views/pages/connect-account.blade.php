@@ -111,21 +111,9 @@
 
 <x-app-layout>
     <div class="py-5 max-w-none">
-        @if(session()->has('message'))
-            <x-alert role="success" class="py-3 my-4">{{ session('message') }}</x-alert>
-        @endif
-
-        @if(session()->has('alert'))
-            <x-alert role="info" class="py-3 my-4">{{ session('alert') }}</x-alert>
-        @endif
-
-        @if(session()->has('error'))
-            <x-alert role="danger" class="py-3 my-4">{{ session('error') }}</x-alert>
-        @endif
-
         @unless(Auth::user()->hasDiscord())
             <h1>Connect your Fantasy Calendar account with Discord!</h1>
-            <h4 class="lead" style="opacity: 0.65;">Don't worry, we only use the minimum necessary to make integrations work. As Discord will tell you, neither of the options below lets us read your messages or anything like that.</h4>
+            <h4 class="lead" style="opacity: 0.65;"></h4>
         @endunless
 
         <div class="grid grid-cols-12 gap-4">

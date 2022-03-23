@@ -139,6 +139,6 @@ class DiscordController extends Controller
     {
         Auth::user()->discord_auth()->delete();
 
-        return redirect(route('discord.index'))->with('alert', 'Your discord account has been disconnected from Fantasy Calendar.');
+        return redirect(route('profile.integrations'))->with('alert', 'Your discord account has been disconnected from Fantasy Calendar.');
     }
 }
