@@ -4,8 +4,10 @@ namespace App\Sharp;
 
 use App\Preset;
 use Code16\Sharp\Form\Fields\SharpFormTextField;
+use Code16\Sharp\Form\Layout\FormLayout;
 use Code16\Sharp\Form\Layout\FormLayoutColumn;
 use Code16\Sharp\Form\SharpForm;
+use Code16\Sharp\Utils\Fields\FieldsContainer;
 
 class PresetForm extends SharpForm
 {
@@ -43,9 +45,9 @@ class PresetForm extends SharpForm
      *
      * @return void
      */
-    public function buildFormFields(): void
+    public function buildFormFields(FieldsContainer $formFields): void
     {
-        $this->addField(
+        $formFields->addField(
             SharpFormTextField::make('name')
                 ->setLabel('name')
         )->addField(
@@ -59,9 +61,9 @@ class PresetForm extends SharpForm
      *
      * @return void
      */
-    public function buildFormLayout(): void
+    public function buildFormLayout(FormLayout $formLayout): void
     {
-        $this->addColumn(6, function(FormLayoutColumn $column) {
+        $formLayout->addColumn(6, function(FormLayoutColumn $column) {
             $column->withSingleField('name');
         })->addColumn(6, function(FormLayoutColumn $column) {
             $column->withSingleField('description');

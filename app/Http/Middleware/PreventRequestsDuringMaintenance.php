@@ -9,7 +9,7 @@ use Illuminate\Foundation\Http\Exceptions\MaintenanceModeException;
 use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode as Middleware;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class CheckForMaintenanceMode extends Middleware
+class PreventRequestsDuringMaintenance extends Middleware
 {
     /**
      * The URIs that should be reachable while maintenance mode is enabled.

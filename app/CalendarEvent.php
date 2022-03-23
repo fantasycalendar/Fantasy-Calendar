@@ -49,6 +49,11 @@ class CalendarEvent extends Model
         return $value ?? $this->calendar->user->id;
     }
 
+    public function detail($key)
+    {
+        return Arr::get($this->data, $key);
+    }
+
     public function setting($settingName, $default = false) {
         if(is_array($this->settings) && Arr::has($this->settings, $settingName)) {
             return Arr::get($this->settings, $settingName, $default);
@@ -59,6 +64,38 @@ class CalendarEvent extends Model
 
     public function getDescriptionAttribute($value) {
         return html_entity_decode($value);
+    }
+
+    public function oneTime($year, $month, $day)
+    {
+        $this->data = [
+            'has_duration' => false,
+            'duration' => 1,
+            'show_first_last' => false,
+            'limited_repeat' => false,
+            'limited_repeat_num' => 1,
+            'conditions' => [
+                [
+                    "Date",
+                    "0",
+                    [
+                        $year,
+                        $month,
+                        $day
+                    ]
+                ]
+            ],
+            'connected_events' => [],
+            'date' => [
+                $year,
+                $month,
+                $day
+            ],
+            'search_distance' => 0,
+            'overrides' => [
+                'moons' => []
+            ]
+        ];
     }
 
     /**

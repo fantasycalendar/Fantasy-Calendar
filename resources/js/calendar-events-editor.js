@@ -43,7 +43,7 @@ const calendar_events_editor = {
 
 	has_initialized: false,
 
-	init($event) {
+	initialize($event) {
 
 		this.epoch = $event.detail.epoch;
 		this.epoch_data = evaluated_static_data.epoch_data[this.epoch];
@@ -235,7 +235,7 @@ const calendar_events_editor = {
 
     clone_event($event) {
 
-        this.init($event);
+        this.initialize($event);
 
 	    if($event.detail.event_data === undefined && $event.detail.event_id){
             $event.detail.event_data = clone(events[$event.detail.event_id]);
@@ -265,7 +265,7 @@ const calendar_events_editor = {
 
 	create_new_event($event) {
 
-		this.init($event);
+		this.initialize($event);
 
 		this.new_event = true;
 		let name = $event.detail.name ?? "";
@@ -345,7 +345,7 @@ const calendar_events_editor = {
 
 	edit_event($event) {
 
-		this.init($event);
+		this.initialize($event);
 
 		this.new_event = false;
 

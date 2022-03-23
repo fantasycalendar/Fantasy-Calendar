@@ -40,7 +40,7 @@ provider:
     SESSION_DRIVER: redis
     REDIS_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/redis_host}
     REDIS_PORT: 6379
-    MAIL_DRIVER: smtp
+    MAIL_MAILER: smtp
     MAIL_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_host}
     MAIL_PORT: 587
     MAIL_USERNAME: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_username}

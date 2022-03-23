@@ -34,6 +34,7 @@ const calendar_renderer = {
     load_calendar: function(event){
         this.loading_message = "Building calendar...";
         this.render_data = event.detail;
+        // console.log(JSON.parse(JSON.stringify(event.detail)));
     },
 
     view_event: function(event) {

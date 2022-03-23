@@ -1,4 +1,4 @@
-<div class='preset_background clickable_background hidden' :class="{ 'hidden':!open }" x-show='open'>
+<div class='preset_background clickable_background hidden' :class="{ 'hidden':!open }" x-show='open' x-cloak>
     <div class='modal-basic-container'>
         <div class='modal-basic-wrapper'>
             <form id="preset-form" class="modal-wrapper preset-wrapper container" action="post">
