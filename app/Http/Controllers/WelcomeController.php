@@ -22,8 +22,10 @@ class WelcomeController extends Controller
     }
 
     public function discord_announcement_acknowledge() {
-        Auth::user()->acknowledgedDiscordAnnouncement();
+//        Auth::user()->acknowledgedDiscordAnnouncement();
 
-        return redirect(route('calendars.index'));
+        return [
+            'message' => 'Acknowledged'
+        ];
     }
 }
