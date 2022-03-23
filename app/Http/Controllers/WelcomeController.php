@@ -22,7 +22,7 @@ class WelcomeController extends Controller
     }
 
     public function discord_announcement_acknowledge() {
-//        Auth::user()->acknowledgedDiscordAnnouncement();
+        Auth::user()->acknowledgedDiscordAnnouncement();
 
         return [
             'message' => 'Acknowledged'
