@@ -21,8 +21,6 @@ use Illuminate\Http\Request;
 class CalendarController extends Controller
 {
     public function __construct() {
-//        $this->middleware('auth:api')->except('last_changed', 'children', 'show', 'dynamic_data');
-
         $this->authorizeResource(Calendar::class, 'calendar');
 
         $this->manager = new Manager();
