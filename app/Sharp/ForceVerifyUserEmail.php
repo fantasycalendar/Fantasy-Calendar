@@ -21,6 +21,11 @@ class ForceVerifyUserEmail extends InstanceCommand
         return "Are you sure you want to forcibly verify this user's email?";
     }
 
+    public function authorizeFor(mixed $instanceId): bool
+    {
+        return empty(User::find($instanceId)->email_verified_at);
+    }
+
     /**
      * @param string $instanceId
      * @param array $data
