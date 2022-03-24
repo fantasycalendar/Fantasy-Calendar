@@ -17,7 +17,7 @@ class UserFactory extends Factory
      */
     public function definition()
     {
-        $username = $this->faker->userName();
+        $username = Str::limit($this->faker->userName(), 20, '');
 
         return [
             'username' => $username,
