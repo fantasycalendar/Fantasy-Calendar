@@ -52,6 +52,15 @@ class Handler extends ExceptionHandler
         parent::report($exception);
     }
 
+    public function register()
+    {
+        if(config('logging.discord.url')) {
+            $this->reportable(function(Throwable $e){
+                logger()->channel('discord')->error($e->getMessage()."\n".$e->getTraceAsString());
+            });
+        }
+    }
+
     /**
      * Render an exception into an HTTP response.
      *
