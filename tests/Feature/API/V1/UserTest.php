@@ -19,7 +19,7 @@ class UserTest extends TestCase
     {
         $response = $this->get($this->apiUrl('user'));
 
-        $response->assertStatus(200);
+        $response->assertStatus(401);
 
         $response->assertJson([
             'message' => 'Unauthenticated.'
