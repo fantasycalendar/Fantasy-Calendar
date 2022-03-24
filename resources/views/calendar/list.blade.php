@@ -101,7 +101,7 @@
                 @if(!auth()->user()->isPremium())
                     <div>All the information about this subscriber feature (<a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('subscription.pricing') }}">only $2.49/month!</a>) can be found <a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('discord') }}">on this page</a>!</div>
                 @else
-                    <div>All the information can be found <a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('discord') }}">on this page</a> - as a subscriber, you have immediate <a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('discord.index') }}">access</a>!</div>
+                    <div>All the information can be found <a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('discord') }}">on this page</a> - as a subscriber, you have immediate <a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('profile.integrations') }}">access</a>!</div>
                 @endif
             </x-alert>
         @endif

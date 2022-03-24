@@ -91,7 +91,7 @@
 
             <h3 class="px-8 font-semibold w-full text-center text-white text-lg md:text-3xl pb-2">Fantasy Calendar has a Discord integration!</h3>
             @if(Auth::user() && Auth::user()->isPremium())
-                <h4 class="px-8 text-white text-center text-md md:text-xl">Quick to setup, easy to use, and available for subscribers like you <x-app-link href="{{ route('discord.index') }}"><strong>right now</strong></x-app-link>!</h4>
+                <h4 class="px-8 text-white text-center text-md md:text-xl">Quick to setup, easy to use, and available for subscribers like you <x-app-link href="{{ route('profile.integrations') }}"><strong>right now</strong></x-app-link>!</h4>
             @else
                 <h4 class="px-8 text-white text-center text-md md:text-xl">Quick to setup, easy to use, and available in just a few clicks <x-app-link href="{{ route('subscription.pricing') }}">for subscribers!</x-app-link></h4>
                 <span class="px-8 text-white text-center text-sm md:text-md">(only $2.49/month)</span>
@@ -219,7 +219,7 @@
                 @elseif(!Auth::user()->isPremium())
                 <div><x-button-link role="custom" size="xl" class="text-white border-[color:#5865F2] dark:border-[color:#5865F2] bg-[#5865F2] dark:bg-[#5865F2] hover:bg-[color:#2f855a] dark:hover:border-[color:#2f855a] hover:border-[color:#2f855a] dark:hover:bg-[color:#2f855a] transition duration-100" :href='route("subscription.pricing")'>Subscribe Now to Connect!</x-button-link></div>
                 @else
-                <div><x-button-link role="custom" size="xl" class="text-white border-[color:#5865F2] dark:border-[color:#5865F2] bg-[#5865F2] dark:bg-[#5865F2] hover:bg-[color:#2f855a] dark:hover:border-[color:#2f855a] hover:border-[color:#2f855a] dark:hover:bg-[color:#2f855a] transition duration-100" :href='route("discord.index")'>Connect Your Account Now!</x-button-link></div>
+                <div><x-button-link role="custom" size="xl" class="text-white border-[color:#5865F2] dark:border-[color:#5865F2] bg-[#5865F2] dark:bg-[#5865F2] hover:bg-[color:#2f855a] dark:hover:border-[color:#2f855a] hover:border-[color:#2f855a] dark:hover:bg-[color:#2f855a] transition duration-100" :href='route("profile.integrations")'>Connect Your Account Now!</x-button-link></div>
                 @endif
                 <div><x-button-link size="md" role="custom" class="text-gray-200 bg-gray-800 hover:bg-gray-700 focus:ring-primary-500 border-gray-700" :href='route("discord.server")'>Join Our Discord Server</x-button-link></div>
             </div>
