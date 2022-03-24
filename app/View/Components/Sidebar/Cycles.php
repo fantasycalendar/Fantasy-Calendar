@@ -2,7 +2,7 @@
 
 namespace App\View\Components\Sidebar;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Illuminate\View\Component;
 
 class Cycles extends Component

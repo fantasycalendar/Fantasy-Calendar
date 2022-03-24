@@ -47,6 +47,7 @@
 
                 init(){
                     this.populatePresetSeasonList();
+                    this.ensureSeasonColorsExist();
                 },
 
                 add(name){
@@ -363,6 +364,16 @@
 
                 },
 
+                ensureSeasonColorsExist() {
+                    for(const i in this.seasons) {
+                        if(!this.seasons[i].color) {
+                            this.seasons[i].color = [
+                                '#000000',
+                                '#FFFFFF'
+                            ]
+                        }
+                    }
+                }
             }
 
         }
