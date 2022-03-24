@@ -4,7 +4,7 @@
 namespace App\Services\Discord\Commands\Command;
 
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Services\Discord\Commands\Command;
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;

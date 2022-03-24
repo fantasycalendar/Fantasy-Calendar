@@ -4,7 +4,7 @@
 namespace App\Services\RendererService;
 
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Services\CalendarService\LeapDay;
 use App\Services\DatePipeline\AddIsCurrentDate;
 use Illuminate\Pipeline\Pipeline;

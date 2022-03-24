@@ -2,7 +2,7 @@
 
 namespace App\Sharp;
 
-use App\Policy;
+use App\Models\Policy;
 use Code16\Sharp\Show\Fields\SharpShowTextField;
 use Code16\Sharp\Show\Layout\ShowLayoutColumn;
 use Code16\Sharp\Show\Layout\ShowLayoutSection;
@@ -34,7 +34,7 @@ class PolicyShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowFields(): void
+    public function buildShowFields(FieldsContainer $showFields): void
     {
          $this->addField(
             SharpShowTextField::make("content")
@@ -46,7 +46,7 @@ class PolicyShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowLayout(): void
+    public function buildShowLayout(ShowLayout $showLayout): void
     {
          $this->addSection('content', function(ShowLayoutSection $section) {
               $section->addColumn(12, function(ShowLayoutColumn $column) {

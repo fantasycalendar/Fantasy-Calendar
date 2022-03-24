@@ -4,7 +4,7 @@
 namespace App\Services\DatePipeline\Traits;
 
 
-use App\Calendar;
+use App\Models\Calendar;
 use Closure;
 use Illuminate\Support\Collection;
 

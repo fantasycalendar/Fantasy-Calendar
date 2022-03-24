@@ -27,3 +27,4 @@
 /.idea/
 /cache/files/
 /cache/repo/
+/database/schema/testing-schema.dump

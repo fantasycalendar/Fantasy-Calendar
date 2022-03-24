@@ -2,7 +2,7 @@
 
 namespace App\Sharp;
 
-use App\Agreement;
+use App\Models\Agreement;
 use Code16\Sharp\Form\Eloquent\WithSharpFormEloquentUpdater;
 use Code16\Sharp\Form\Fields\SharpFormDateField;
 use Code16\Sharp\Form\Fields\SharpFormMarkdownField;
@@ -52,7 +52,7 @@ class AgreementForm extends SharpForm
      *
      * @return void
      */
-    public function buildFormFields(): void
+    public function buildFormFields(FieldsContainer $formFields): void
     {
         $this->addField(
             SharpFormMarkdownField::make('content')
@@ -68,7 +68,7 @@ class AgreementForm extends SharpForm
      *
      * @return void
      */
-    public function buildFormLayout(): void
+    public function buildFormLayout(FormLayout $formLayout): void
     {
         $this->addColumn(9, function(FormLayoutColumn $column) {
             $column->withSingleField('content');

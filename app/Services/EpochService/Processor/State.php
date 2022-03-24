@@ -4,7 +4,7 @@
 namespace App\Services\EpochService\Processor;
 
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Services\CalendarService\Month;
 use App\Services\EpochService\Traits\CalculatesAndCachesProperties;
 use Illuminate\Support\Collection;

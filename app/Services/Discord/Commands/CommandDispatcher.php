@@ -17,7 +17,8 @@ class CommandDispatcher
     private const TYPES = [
         1 => 'Pong',
         2 => 'Command',
-        3 => 'Component'
+        3 => 'Component',
+        5 => 'Component'
     ];
 
     /**
@@ -64,9 +65,6 @@ class CommandDispatcher
     public static function dispatchComponent($interactionData): Response
     {
         $interactionIdParts = explode(':', $interactionData['data']['custom_id']);
-
-        logger(json_encode($interactionIdParts, JSON_PRETTY_PRINT));
-        logger(json_encode($interactionData['data']));
 
         $handlerClass = config('services.discord.command_handlers.'. $interactionIdParts[0]);
         $handlerFunction = $interactionIdParts[1];

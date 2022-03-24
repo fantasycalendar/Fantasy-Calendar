@@ -2,13 +2,15 @@
 
 namespace App\Sharp;
 
-use App\User;
+use App\Models\User;
 use Code16\Sharp\Form\Eloquent\WithSharpFormEloquentUpdater;
 use Code16\Sharp\Form\Fields\SharpFormCheckField;
 use Code16\Sharp\Form\Fields\SharpFormDateField;
 use Code16\Sharp\Form\Fields\SharpFormTextField;
+use Code16\Sharp\Form\Layout\FormLayout;
 use Code16\Sharp\Form\Layout\FormLayoutColumn;
 use Code16\Sharp\Form\SharpForm;
+use Code16\Sharp\Utils\Fields\FieldsContainer;
 
 class UserForm extends SharpForm
 {
@@ -51,9 +53,9 @@ class UserForm extends SharpForm
      *
      * @return void
      */
-    public function buildFormFields(): void
+    public function buildFormFields(FieldsContainer $formFields): void
     {
-        $this->addField(
+        $formFields->addField(
             SharpFormTextField::make('username')
                 ->setLabel('Username')
         )->addField(
@@ -72,9 +74,9 @@ class UserForm extends SharpForm
      *
      * @return void
      */
-    public function buildFormLayout(): void
+    public function buildFormLayout(FormLayout $formLayout): void
     {
-        $this->addColumn(6, function(FormLayoutColumn $column) {
+        $formLayout->addColumn(6, function(FormLayoutColumn $column) {
             $column->withSingleField('username');
         })->addColumn(6, function(FormLayoutColumn $column) {
             $column->withSingleField('email');

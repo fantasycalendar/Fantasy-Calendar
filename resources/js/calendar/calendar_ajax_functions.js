@@ -320,7 +320,7 @@ function submit_delete_event(event_id, callback){
 
 function get_event_comments(event_id, callback){
 	$.ajax({
-		url: window.baseurl+"api/eventcomment/event/"+event_id,
+		url: window.apiurl+"/eventcomment/event/"+event_id,
 		type: "get",
 		dataType: "json",
 		success: function ( result ) {
@@ -335,7 +335,7 @@ function get_event_comments(event_id, callback){
 
 function submit_new_comment(content, event_id, callback) {
 
-    axios.post(window.baseurl+"api/eventcomment", {
+    axios.post(window.apiurl+"/eventcomment", {
         calendar_id: calendar_id,
         content: content,
         event_id: event_id
@@ -357,7 +357,7 @@ function submit_new_comment(content, event_id, callback) {
 
 function submit_edit_comment(comment_id, content, callback){
 
-    axios.patch(window.baseurl+"api/eventcomment/"+comment_id, {
+    axios.patch(window.apiurl+"/eventcomment/"+comment_id, {
 		content: content
 	})
         .then(function (result){
@@ -382,7 +382,7 @@ function submit_edit_comment(comment_id, content, callback){
 
 function submit_delete_comment(comment_id, callback){
 
-    axios.delete(window.baseurl+"api/eventcomment/"+comment_id)
+    axios.delete(window.apiurl+"/eventcomment/"+comment_id)
         .then(function (result){
             if(!result.data.error && result.data != "") {
                 callback(result.data.message);
@@ -436,7 +436,7 @@ function delete_calendar(calendar_hash, calendar_name, callback){
 
             if (result.value !== calendar_name) throw `Sorry! "${result.value}" isn't the same as "${calendar_name}"`;
 
-            return axios.delete('/api/calendar/' + calendar_hash);
+            return axios.delete(window.apiurl + '/calendar/' + calendar_hash);
 
         })
         .then(results => {
@@ -490,7 +490,7 @@ function copy_calendar(calendar_hash, calendar_name, callback){
 
             return axios({
                 method: 'post',
-                url: '/api/calendar/' + calendar_hash + "/clone",
+                url: window.apiurl + '/calendar/' + calendar_hash + "/clone",
                 data: {
                     new_calendar_name: new_calendar_name
                 }
@@ -554,7 +554,7 @@ function create_calendar(callback){
 function get_event_comments(event_id, callback){
 
 	$.ajax({
-		url: window.baseurl+"api/eventcomment/event/"+event_id,
+		url: window.apiurl+"/eventcomment/event/"+event_id,
 		type: "get",
 		dataType: "json",
 		success: function ( result ) {
@@ -569,7 +569,7 @@ function get_event_comments(event_id, callback){
 
 function create_event_comment(content, event_id, callback) {
 
-    axios.post(window.baseurl+"api/eventcomment", {
+    axios.post(window.apiurl+"/eventcomment", {
         calendar_id: calendar_id,
         content: content,
         event_id: event_id

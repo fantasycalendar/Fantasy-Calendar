@@ -3,11 +3,13 @@
 namespace App\Sharp;
 
 use Code16\Sharp\Show\Fields\SharpShowTextField;
+use Code16\Sharp\Show\Layout\ShowLayout;
 use Code16\Sharp\Show\Layout\ShowLayoutColumn;
 use Code16\Sharp\Show\Layout\ShowLayoutSection;
 use Code16\Sharp\Show\SharpShow;
 
-use App\Preset;
+use App\Models\Preset;
+use Code16\Sharp\Utils\Fields\FieldsContainer;
 
 class PresetShow extends SharpShow
 {
@@ -30,9 +32,9 @@ class PresetShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowFields(): void
+    public function buildShowFields(FieldsContainer $showFields): void
     {
-         $this->addField(
+         $showFields->addField(
             SharpShowTextField::make("name")
                 ->setLabel("Name:")
         )->addField(
@@ -45,10 +47,10 @@ class PresetShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowLayout(): void
+    public function buildShowLayout(ShowLayout $showLayout): void
     {
 
-        $this->addSection('Calendar Info', function(ShowLayoutSection $section) {
+        $showLayout->addSection('Calendar Info', function(ShowLayoutSection $section) {
             $section->addColumn(6, function(ShowLayoutColumn $column) {
                 $column->withSingleField("name");
             });

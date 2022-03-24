@@ -18,6 +18,7 @@ return [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),
         'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
+        'scheme' => 'https',
     ],
 
     'postmark' => [
@@ -56,9 +57,34 @@ return [
                         'type' => 1
                     ],
                     [
+                        'name' => 'overview',
+                        'description' => 'Gives an overview of the current day (Early prototype)',
+                        'type' => 1
+                    ],
+                    [
                         'name' => 'choose',
                         'description' => 'Set the default calendar for use in this server',
                         'type' => 1,
+                    ],
+                    [
+                        'name' => 'create',
+                        'description' => 'Create various calendar resources for your selected calendar',
+                        'type' => 2,
+                        'options' => [
+                            [
+                                'name' => 'event',
+                                'description' => 'Creates a one-time event on the current date',
+                                'type' => 1,
+                                'options' => [
+                                    [
+                                        'name' => 'title',
+                                        'description' => 'The title of the event (omit to create interactively)',
+                                        'type' => 3,
+                                        'required' => false
+                                    ]
+                                ]
+                            ]
+                        ]
                     ],
                     [
                         'name' => 'show',
@@ -434,6 +460,10 @@ return [
         'command_handlers' => [
             env('DISCORD_COMMAND', 'fc') => [
                 'help' => \App\Services\Discord\Commands\Command\HelpHandler::class,
+                'overview' => \App\Services\Discord\Commands\Command\OverviewHandler::class,
+                'create' => [
+                    'event' => \App\Services\Discord\Commands\Command\Create\EventHandler::class,
+                ],
                 'show' => [
                     'date' => \App\Services\Discord\Commands\Command\Show\DateHandler::class,
                     'month' => \App\Services\Discord\Commands\Command\Show\MonthHandler::class,

@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

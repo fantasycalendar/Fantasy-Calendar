@@ -80,6 +80,8 @@
         </style>
 
         <script>
+            window.apiurl = '{{ getenv('WEBADDRESS') }}'+'api/v1';
+
             function dispatch(name, detail = {}) {
                 window.dispatchEvent(new CustomEvent(name, {
                     detail
@@ -89,9 +91,14 @@
             window.FCEmbed = {
                 show_login_form: false,
                 image_loading: false,
-                identity: "",
                 password: "",
-                api_token: "",
+                @auth
+                    api_token: '{{ auth()->user()->api_token }}',
+                    identity: "{{ auth()->user()->username }}",
+                @else
+                    api_token: '',
+                    identity: "",
+                @endauth
                 notifications: [],
                 image_url: new URL('{{ route('calendars.image', ['calendar' => $calendar, 'ext' => 'png']) }}'),
                 image_src: '',
@@ -101,8 +108,10 @@
                 theme_settings: ['background_color', 'border_color', 'current_date_color', 'heading_text_color', 'inactive_text_color', 'placeholder_background_color', 'shadow_color', 'text_color'],
                 init: function() {
                     this.notifications = [];
-                    this.api_token = localStorage.getItem('api_token') ?? '';
-                    this.identity = localStorage.getItem('identity') ?? '';
+                    if(!this.api_token) {
+                        this.api_token = localStorage.getItem('api_token') ?? '';
+                        this.identity = localStorage.getItem('identity') ?? '';
+                    }
 
                     for (const name in this.settings) {
                         this.image_url.searchParams.set(name, this.settings[name]);
@@ -144,7 +153,7 @@
                 login: function($event) {
                     $event.preventDefault();
 
-                    fetch('/api/user/login', {
+                    fetch(window.apiurl + '/user/login', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -268,7 +277,6 @@
                             throw new Error(`Updating setting ${name} is not allowed!`);
                             return;
                         }
-
                     }
 
                     dispatch('updated-settings', params);
@@ -297,7 +305,7 @@
                         return;
                     }
 
-                    fetch('/api/calendar/{{ $calendar->hash }}/' + method, {
+                    fetch(window.apiurl + '/calendar/{{ $calendar->hash }}/' + method, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

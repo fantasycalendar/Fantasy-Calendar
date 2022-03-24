@@ -49,7 +49,6 @@ class DiscordController extends Controller
      */
     public function hook(): array
     {
-        logger()->debug(json_encode(request()->all(), true));
         return CommandDispatcher::dispatch(request()->all())
             ->getMessage();
     }
@@ -96,10 +95,10 @@ class DiscordController extends Controller
             $user = Socialite::driver('discord')->user();
         } catch (ClientException $e) {
             Log::error('A user cancelled Discord auth.');
-            return redirect(route('discord.index'))->with('error', 'Account connection cancelled.');
+            return redirect(route('profile.integrations'))->with('error', 'Account connection cancelled.');
         } catch (\Throwable $e) {
             Log::error('A user cancelled Discord auth.');
-            return redirect(route('discord.index'))->with('error', 'There was an error connecting your Discord account! Please try again, and if it happens again, let us know over on our Discord server.');
+            return redirect(route('profile.integrations'))->with('error', 'There was an error connecting your Discord account! Please try again, and if it happens again, let us know over on our Discord server.');
         }
 
         Auth::user()->discord_auth()->updateOrCreate([
@@ -115,7 +114,7 @@ class DiscordController extends Controller
 
         logger()->channel('discord')->info("'".Auth::user()->username."' has connected their Discord account to us!");
 
-        return redirect(route('discord.index'))->with('message', 'Your Fantasy Calendar account was successfully connected to Discord!');
+        return redirect(route('profile.integrations'))->with('message', 'Your Fantasy Calendar account was successfully connected to Discord!');
     }
 
     /**
@@ -140,6 +139,6 @@ class DiscordController extends Controller
     {
         Auth::user()->discord_auth()->delete();
 
-        return redirect(route('discord.index'))->with('alert', 'Your discord account has been disconnected from Fantasy Calendar.');
+        return redirect(route('profile.integrations'))->with('alert', 'Your discord account has been disconnected from Fantasy Calendar.');
     }
 }

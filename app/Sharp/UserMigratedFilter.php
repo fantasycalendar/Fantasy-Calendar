@@ -2,10 +2,9 @@
 
 namespace App\Sharp;
 
-use App\User;
-use Code16\Sharp\EntityList\EntityListSelectMultipleFilter;
+use Code16\Sharp\Utils\Filters\SelectMultipleFilter;
 
-class UserMigratedFilter implements EntityListSelectMultipleFilter
+class UserMigratedFilter extends SelectMultipleFilter
 {
     /**
     * @return array

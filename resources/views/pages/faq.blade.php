@@ -49,10 +49,6 @@
                         answer: `Fantasy-Calendar is a web application that allows you to create your own custom calendars. The calendar doesn't have to be the same as the calendar in our world, it could be from any established fantastic world, or one of your own making. <br><br> So, whether you're a GM looking to track the events of a long-running Forgotten Realms campaign, an author, or simply a world-builder who likes to have wacky celestial configurations (Such as <strong>Eberron's</strong> <a class='text-primary-700 dark:text-primary-500 dark:hover:text-primary-600 hover:text-primary-600' href='http://archive.wizards.com/default.asp?x=dnd/ebds/20050307a'>twelve moons</a>) with zany timekeeping systems to match, you probably need a calendar of some kind. Fantasy Calendar aims to make that easy.`
                     },
                     {
-                        text: "The site looks different. What's new?",
-                        answer: `You can check out the "<a class='text-primary-700 dark:text-primary-500 dark:hover:text-primary-600 hover:text-primary-600' target='_blank' href='{{ route('whats-new') }}'>what's new</a>" page to see the various updates in broad strokes, or if you want all the nitty gritty details, you can read over the <a class='text-primary-700 dark:text-primary-500 dark:hover:text-primary-600 hover:text-primary-600' target='_blank' href='{{ route('changelog') }}'>changelog</a>.`
-                    },
-                    {
                         text: "How can I make a calendar like the one we use in the real world?",
                         answer: `The calendar we use on earth is called the 'Gregorian Calendar', which is understandably confusing. You can find it right there in the presets you can choose from when <a class='text-primary-700 dark:text-primary-500 dark:hover:text-primary-600 hover:text-primary-600' href="{{ route('calendars.create') }}">creating a calendar</a>! Just search for "Earth" or look for "Gregorian Calendar" in the list.`
                     },

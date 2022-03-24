@@ -4,7 +4,11 @@ namespace App\Sharp;
 
 use Code16\Sharp\EntityList\Containers\EntityListDataContainer;
 use Code16\Sharp\EntityList\EntityListQueryParams;
+use Code16\Sharp\EntityList\Fields\EntityListField;
+use Code16\Sharp\EntityList\Fields\EntityListFieldsContainer;
+use Code16\Sharp\EntityList\Fields\EntityListFieldsLayout;
 use Code16\Sharp\EntityList\SharpEntityList;
+use Illuminate\Contracts\Support\Arrayable;
 
 class EnvVarsList extends SharpEntityList
 {
@@ -13,14 +17,14 @@ class EnvVarsList extends SharpEntityList
     *
     * @return void
     */
-    public function buildListDataContainers(): void
+    public function buildListFields(EntityListFieldsContainer $fieldsContainer): void
     {
-        $this->addDataContainer(
-            EntityListDataContainer::make('key')
+        $fieldsContainer->addField(
+            EntityListField::make('key')
                 ->setLabel('Key')
                 ->setSortable()
-        )->addDataContainer(
-            EntityListDataContainer::make('value')
+        )->addField(
+            EntityListField::make('value')
                 ->setLabel('Value')
                 ->setSortable()
         );
@@ -31,10 +35,10 @@ class EnvVarsList extends SharpEntityList
     *
     * @return void
     */
-    public function buildListLayout(): void
+    public function buildListLayout(EntityListFieldsLayout $fieldsLayout): void
     {
-        $this->addColumn('key', 6, 12);
-        $this->addColumn('value', 6, 12);
+        $fieldsLayout->addColumn('key', 6);
+        $fieldsLayout->addColumn('value', 6);
     }
 
     /**
@@ -53,7 +57,7 @@ class EnvVarsList extends SharpEntityList
 	* @param EntityListQueryParams $params
 	* @return array
 	*/
-    public function getListData(EntityListQueryParams $params)
+    public function getListData(): array|Arrayable
     {
         $count = -1;
         $env = $_ENV;

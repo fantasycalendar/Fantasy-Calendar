@@ -3,7 +3,7 @@
 namespace App\Transformer;
 
 use League\Fractal;
-use App\CalendarEventComment;
+use App\Models\CalendarEventComment;
 
 use Auth;
 
@@ -23,7 +23,7 @@ class EventCommentTransformer extends Fractal\TransformerAbstract {
             'calendar_id' => $comment->calendar_id,
             'content' => $comment->content,
             'date' => date('Y-m-d H:i:s', strtotime($comment->created_at)),
-            'comment_owner' => (auth('api')->check() && $comment->user->id == auth('api')->user()->id),
+            'comment_owner' => (auth()->check() && $comment->user->id == auth()->user()->id),
             'calendar_owner' => $calendar_owner,
         ];
     }

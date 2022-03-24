@@ -9,7 +9,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
 use Auth;
-use App\Calendar;
+use App\Models\Calendar;
 
 use App\Jobs\SaveEventCategories;
 use App\Jobs\SaveCalendarEvents;
@@ -306,11 +306,5 @@ class CalendarController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function print(Calendar $calendar) {
-        return view('calendar.print', [
-            'calendar' => $calendar
-        ]);
     }
 }

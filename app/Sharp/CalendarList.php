@@ -3,11 +3,15 @@
 namespace App\Sharp;
 
 use Carbon\Carbon;
-use App\Calendar;
-use App\User;
+use App\Models\Calendar;
+use App\Models\User;
 use Code16\Sharp\EntityList\Containers\EntityListDataContainer;
 use Code16\Sharp\EntityList\EntityListQueryParams;
+use Code16\Sharp\EntityList\Fields\EntityListField;
+use Code16\Sharp\EntityList\Fields\EntityListFieldsContainer;
+use Code16\Sharp\EntityList\Fields\EntityListFieldsLayout;
 use Code16\Sharp\EntityList\SharpEntityList;
+use Illuminate\Contracts\Support\Arrayable;
 
 class CalendarList extends SharpEntityList
 {
@@ -16,30 +20,30 @@ class CalendarList extends SharpEntityList
     *
     * @return void
     */
-    public function buildListDataContainers(): void
+    public function buildListFields(EntityListFieldsContainer $fieldsContainer): void
     {
-        $this->addDataContainer(
-            EntityListDataContainer::make('name')
+        $fieldsContainer->addField(
+            EntityListField::make('name')
                 ->setLabel('Name')
                 ->setSortable()
                 ->setHtml()
-        )->addDataContainer(
-            EntityListDataContainer::make('user')
+        )->addField(
+            EntityListField::make('user')
                 ->setLabel('Owner')
                 ->setSortable()
                 ->setHtml()
-        )->addDataContainer(
-            EntityListDataContainer::make('events')
+        )->addField(
+            EntityListField::make('events')
                 ->setLabel('Events')
                 ->setSortable()
                 ->setHtml()
-        )->addDataContainer(
-            EntityListDataContainer::make('date_created')
+        )->addField(
+            EntityListField::make('date_created')
                 ->setLabel('Created At')
                 ->setSortable()
                 ->setHtml()
-        )->addDataContainer(
-            EntityListDataContainer::make('last_updated')
+        )->addField(
+            EntityListField::make('last_updated')
                 ->setLabel('Last Updated')
                 ->setSortable()
                 ->setHtml()
@@ -52,13 +56,23 @@ class CalendarList extends SharpEntityList
     * @return void
     */
 
-    public function buildListLayout(): void
+    public function buildListLayout(EntityListFieldsLayout $fieldsLayout): void
     {
-        $this->addColumn('name', 4)
+        $fieldsLayout->addColumn('name', 4)
             ->addColumn('user', 2)
             ->addColumn('events', 2)
             ->addColumn('date_created', 2)
             ->addColumn('last_updated', 2);
+    }
+
+    protected function getInstanceCommands(): ?array
+    {
+        return [
+            EditCalendar::class,
+            ViewCalendar::class,
+            VisitExport::class,
+            PromoteToPreset::class,
+        ];
     }
 
     /**
@@ -68,39 +82,34 @@ class CalendarList extends SharpEntityList
     */
     public function buildListConfig(): void
     {
-        $this->setInstanceIdAttribute('id')
-            ->setSearchable()
-            ->setDefaultSort('name', 'asc')
-            ->setPaginated()
-            ->addInstanceCommand("edit", EditCalendar::class)
-            ->addInstanceCommand("view", ViewCalendar::class)
-            ->addInstanceCommand("export", VisitExport::class)
-            ->addInstanceCommand("promote", PromoteToPreset::class);
+        $this->configureInstanceIdAttribute('id')
+            ->configureSearchable()
+            ->configureDefaultSort('name', 'asc')
+            ->configurePaginated();
     }
 
     /**
-    * Retrieve all rows data as array.
-    *
-    * @param EntityListQueryParams $params
-    * @return array
-    */
-    public function getListData(EntityListQueryParams $params)
+     * Retrieve all rows data as array.
+     *
+     * @return array|Arrayable
+     */
+    public function getListData(): array|Arrayable
     {
 
         $calendar_model = Calendar::query();
 
-        if ($params->hasSearch()) {
-            foreach ($params->searchWords() as $word) {
+        if ($this->queryParams->hasSearch()) {
+            foreach ($this->queryParams->searchWords() as $word) {
                 $calendar_model->where('name', 'like', $word);
             }
         }
 
-        if($user_id = $params->filterFor('user')) {
+        if($user_id = $this->queryParams->filterFor('user')) {
             $calendar_model->where('user_id', $user_id);
         }
 
-        if($params->sortedBy()) {
-            $calendar_model->orderBy($params->sortedBy(), $params->sortedDir());
+        if($this->queryParams->sortedBy()) {
+            $calendar_model->orderBy($this->queryParams->sortedBy(), $this->queryParams->sortedDir());
         }
 
         return $this->setCustomTransformer(

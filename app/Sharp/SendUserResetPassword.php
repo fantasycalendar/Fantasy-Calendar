@@ -2,7 +2,7 @@
 
 namespace App\Sharp;
 
-use App\User;
+use App\Models\User;
 use Code16\Sharp\EntityList\Commands\InstanceCommand;
 use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Support\Facades\Password;

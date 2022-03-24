@@ -2,7 +2,7 @@
 
 namespace App\Sharp;
 
-use App\Preset;
+use App\Models\Preset;
 use Code16\Sharp\EntityList\Commands\InstanceCommand;
 
 class UnfeaturePreset extends InstanceCommand
@@ -25,6 +25,6 @@ class UnfeaturePreset extends InstanceCommand
 
         Preset::findOrFail($instanceId)->unFeature();
 
-        return $this->link('/sharp/list/presets');
+        return $this->link('/sharp/s-list/presets');
     }
 }

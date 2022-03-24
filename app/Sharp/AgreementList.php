@@ -2,10 +2,14 @@
 
 namespace App\Sharp;
 
-use App\Agreement;
+use App\Models\Agreement;
 use Code16\Sharp\EntityList\Containers\EntityListDataContainer;
 use Code16\Sharp\EntityList\EntityListQueryParams;
+use Code16\Sharp\EntityList\Fields\EntityListField;
+use Code16\Sharp\EntityList\Fields\EntityListFieldsContainer;
+use Code16\Sharp\EntityList\Fields\EntityListFieldsLayout;
 use Code16\Sharp\EntityList\SharpEntityList;
+use Illuminate\Contracts\Support\Arrayable;
 
 class AgreementList extends SharpEntityList
 {
@@ -14,25 +18,25 @@ class AgreementList extends SharpEntityList
     *
     * @return void
     */
-    public function buildListDataContainers(): void
+    public function buildListFields(EntityListFieldsContainer $fieldsContainer): void
     {
-        $this->addDataContainer(
-            EntityListDataContainer::make('id')
+        $fieldsContainer->addField(
+            EntityListField::make('id')
                 ->setLabel('ID')
                 ->setSortable()
                 ->setHtml()
-        )->addDataContainer(
-            EntityListDataContainer::make('created_at')
+        )->addField(
+            EntityListField::make('created_at')
                 ->setLabel('Created At')
                 ->setSortable()
                 ->setHtml()
-        )->addDataContainer(
-            EntityListDataContainer::make('updated_at')
+        )->addField(
+            EntityListField::make('updated_at')
                 ->setLabel('Updated At')
                 ->setSortable()
                 ->setHtml()
-        )->addDataContainer(
-            EntityListDataContainer::make('in_effect_at')
+        )->addField(
+            EntityListField::make('in_effect_at')
                 ->setLabel('In Effect At')
                 ->setSortable()
                 ->setHtml()
@@ -45,12 +49,12 @@ class AgreementList extends SharpEntityList
     * @return void
     */
 
-    public function buildListLayout(): void
+    public function buildListLayout(EntityListFieldsLayout $fieldsLayout): void
     {
-        $this->addColumn('id', 2,6);
-        $this->addColumn('created_at', 3,6);
-        $this->addColumn('updated_at', 3,6);
-        $this->addColumn('in_effect_at', 3,6);
+        $fieldsLayout->addColumn('id', 2);
+        $fieldsLayout->addColumn('created_at', 3);
+        $fieldsLayout->addColumn('updated_at', 3);
+        $fieldsLayout->addColumn('in_effect_at', 3);
     }
 
     /**
@@ -60,25 +64,25 @@ class AgreementList extends SharpEntityList
     */
     public function buildListConfig(): void
     {
-        $this->setInstanceIdAttribute('id')
-            ->setSearchable()
-            ->setDefaultSort('in_effect_at', 'desc')
-            ->setPaginated();
+        $this->configureInstanceIdAttribute('id')
+            ->configureSearchable()
+            ->configureDefaultSort('in_effect_at', 'desc')
+            ->configurePaginated();
     }
 
     /**
     * Retrieve all rows data as array.
     *
-    * @param EntityListQueryParams $params
+    * @param EntityListQueryParams $this->queryParams
     * @return array
     */
-    public function getListData(EntityListQueryParams $params)
+    public function getListData(): array|Arrayable
     {
 
         $agreement_model = Agreement::query();
 
-        if($params->sortedBy()) {
-            $agreement_model->orderBy($params->sortedBy(), $params->sortedDir());
+        if($this->queryParams->sortedBy()) {
+            $agreement_model->orderBy($this->queryParams->sortedBy(), $this->queryParams->sortedDir());
         }
 
         return $this->setCustomTransformer(

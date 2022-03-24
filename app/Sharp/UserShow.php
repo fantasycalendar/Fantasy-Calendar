@@ -2,11 +2,13 @@
 
 namespace App\Sharp;
 
-use App\User;
+use App\Models\User;
 
 use Carbon\CarbonPeriod;
 use Code16\Sharp\Dashboard\Widgets\SharpBarGraphWidget;
 use Code16\Sharp\Dashboard\Widgets\SharpPieGraphWidget;
+use Code16\Sharp\Show\Layout\ShowLayout;
+use Code16\Sharp\Utils\Fields\FieldsContainer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Laravel\Cashier\Subscription;
@@ -68,7 +70,7 @@ class UserShow extends SharpShow
                 "discord_authed_at" => $user->discord_auth->expires_at->subDays(7)->format('Y-m-d H:i:s'),
                 "discord_username" => $user->discord_auth->discord_username,
                 "discord_servers_seen_in" => $user->discord_guilds()->count(),
-                "last_discord_command" => $user->discord_interactions()->limit(1)->orderByDesc('created_at')->first()->created_at->format('Y-m-d H:i:s')
+                "last_discord_command" => $user->discord_interactions()->limit(1)->orderByDesc('created_at')->first()?->created_at->format('Y-m-d H:i:s')
             ]);
         }
 
@@ -80,9 +82,9 @@ class UserShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowFields(): void
+    public function buildShowFields(FieldsContainer $showFields): void
     {
-        $this->addField(
+        $showFields->addField(
             SharpShowTextField::make("username")
                 ->setLabel("Username")
         )->addField(
@@ -147,9 +149,9 @@ class UserShow extends SharpShow
      *
      * @return void
      */
-    public function buildShowLayout(): void
+    public function buildShowLayout(ShowLayout $showLayout): void
     {
-         $this->addSection('Personal Info', function(ShowLayoutSection $section) {
+         $showLayout->addSection('Personal Info', function(ShowLayoutSection $section) {
               $section->addColumn(3, function(ShowLayoutColumn $column) {
                   $column->withSingleField("username");
               })->addColumn(3, function(ShowLayoutColumn $column) {
@@ -194,12 +196,13 @@ class UserShow extends SharpShow
          })->addEntityListSection('user_calendars');
     }
 
-    function buildShowConfig(): void
+    public function getInstanceCommands(): ?array
     {
-        $this
-            ->addInstanceCommand("impersonate", LoginAsUser::class)
-            ->addInstanceCommand("reset_password", SendUserResetPassword::class)
-            ->addInstanceCommand("view_on_stripe", VisitStripeCustomer::class);
-
+        return [
+            LoginAsUser::class,
+            SendUserResetPassword::class,
+            VisitStripeCustomer::class,
+            ForceVerifyUserEmail::class,
+        ];
     }
 }

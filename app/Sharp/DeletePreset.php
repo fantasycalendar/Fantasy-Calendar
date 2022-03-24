@@ -2,7 +2,7 @@
 
 namespace App\Sharp;
 
-use App\Preset;
+use App\Models\Preset;
 use Code16\Sharp\EntityList\Commands\InstanceCommand;
 
 class DeletePreset extends InstanceCommand
@@ -24,6 +24,6 @@ class DeletePreset extends InstanceCommand
     {
         $preset = Preset::findOrFail($instanceId);
         $preset->delete();
-        return $this->link('/sharp/list/presets');
+        return $this->link('/sharp/s-list/presets');
     }
 }

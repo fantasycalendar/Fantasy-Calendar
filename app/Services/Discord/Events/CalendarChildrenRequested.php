@@ -2,7 +2,7 @@
 
 namespace App\Services\Discord\Events;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;

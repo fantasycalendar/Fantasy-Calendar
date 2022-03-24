@@ -2,15 +2,17 @@
 
 namespace App\Sharp;
 
-use App\Calendar;
-use App\CalendarEvent;
-use App\CalendarInvite;
-use App\User;
+use App\Models\Calendar;
+use App\Models\CalendarEvent;
+use App\Models\CalendarInvite;
+use App\Models\User;
 
 use Carbon\CarbonPeriod;
+use Code16\Sharp\Dashboard\Layout\DashboardLayout;
 use Code16\Sharp\Dashboard\Layout\DashboardLayoutRow;
 use Code16\Sharp\Dashboard\Widgets\SharpBarGraphWidget;
 use Code16\Sharp\Dashboard\Widgets\SharpPieGraphWidget;
+use Code16\Sharp\Dashboard\Widgets\WidgetsContainer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -28,9 +30,9 @@ class StatisticsDashboard extends SharpDashboard
     /**
      * Build dashboard's widget using ->addWidget.
      */
-    protected function buildWidgets(): void
+    protected function buildWidgets(WidgetsContainer $widgetsContainer): void
     {
-        $this->addWidget(
+        $widgetsContainer->addWidget(
             SharpPanelWidget::make("calendars_created_total")
                 ->setInlineTemplate("<h1>{{count}}</h1> calendars")
 
@@ -108,9 +110,9 @@ class StatisticsDashboard extends SharpDashboard
     /**
      * Build dashboard's widgets layout.
      */
-    protected function buildWidgetsLayout(): void
+    protected function buildDashboardLayout(DashboardLayout $dashboardLayout): void
     {
-        $this->addRow(function(DashboardLayoutRow $row) {
+        $dashboardLayout->addRow(function(DashboardLayoutRow $row) {
                 $row->addWidget(3, "users_created_total")
                     ->addWidget(3, "users_created_in_last_thirty_days")
                     ->addWidget(3, "total_subscriptions")
@@ -143,7 +145,7 @@ class StatisticsDashboard extends SharpDashboard
      *
      * @param DashboardQueryParams $params
      */
-    protected function buildWidgetsData(DashboardQueryParams $params): void
+    protected function buildWidgetsData(): void
     {
 
         $last30Days = now()->subDays(30);

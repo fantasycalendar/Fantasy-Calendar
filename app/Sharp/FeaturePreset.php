@@ -2,7 +2,7 @@
 
 namespace App\Sharp;
 
-use App\Preset;
+use App\Models\Preset;
 use Code16\Sharp\EntityList\Commands\InstanceCommand;
 
 class FeaturePreset extends InstanceCommand
@@ -25,6 +25,6 @@ class FeaturePreset extends InstanceCommand
 
         Preset::findOrFail($instanceId)->feature();
 
-        return $this->link('/sharp/list/presets');
+        return $this->link('/sharp/s-list/presets');
     }
 }

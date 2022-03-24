@@ -30,7 +30,7 @@ class ActionRow extends Component
      * @param false $disabled
      * @return $this
      */
-    public function addButton($target, $label, $style = 'secondary', $disabled = false): ActionRow
+    public function addButton($target, $label, $style = 'secondary', $disabled = false): static
     {
         $this->components->push(new Button($target, $label, $style, $disabled));
 
@@ -46,9 +46,25 @@ class ActionRow extends Component
      * @param bool $disabled
      * @return $this
      */
-    public function addSelectMenu(callable $function, string $customId, string $placeholder, int $minSelectedValues = 1, int $maxSelectedValues = 1, $disabled = false): ActionRow
+    public function addSelectMenu(callable $function, string $customId, string $placeholder, int $minSelectedValues = 1, int $maxSelectedValues = 1, $disabled = false): static
     {
         $this->components->push($function(new SelectMenu($customId, $placeholder, $minSelectedValues, $maxSelectedValues, $disabled)));
+
+        return $this;
+    }
+
+    /**
+     * @param $target
+     * @param $label
+     * @param string $style
+     * @param false $disabled
+     * @return $this
+     */
+    public function addTextInput($target, $label, $placeholder, $required = false, $min_length = 0, $max_length = 256, $style = 1): static
+    {
+        $this->components->push(
+            new TextInput($target, $label, $placeholder, $required, $min_length, $max_length, $style)
+        );
 
         return $this;
     }

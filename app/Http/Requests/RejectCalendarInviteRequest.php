@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\CalendarInvite;
+use App\Models\CalendarInvite;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RejectCalendarInviteRequest extends FormRequest
