@@ -23,9 +23,9 @@ jobs:
         with:
           token: ${{ secrets.GH_CHECKOUT_TOKEN }}
           submodules: 'recursive'
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
       - uses: "shivammathur/setup-php@v2"
         with:
           php-version: "latest"
