@@ -1,3 +1,16 @@
+### 2.2.6 - Contemporary Couatl
+#### March 23rd, 2022
+* Added: `/fc create event` - Create one-time events from Discord!
+* Added: `/fc overview` - **Experimental** "show me all of it" command, intended to (one day) include moons, weather, etc. Currently just includes one-time events (e.g. "Date is exactly" condition)
+* Added: Admin action to manually verify user email addresses
+* Reworked: Error pages into new theme
+* Reworked: Discord account connection process to fit into into new theme
+* Reworked: Various small UI bits to reduce the number of page reloads throughout the app
+* Reworked: Moved existing, undocumented API to /api/v1, in preparation for public API availability
+* Upgraded: Alpine.js to v3
+* Upgraded: Laravel to v9
+* Removed: A bunch of old cruft pages and code that was unnecessary
+
 ### 2.2.5 - Cozy Couatl
 #### February 27th, 2022
 - Updated: Reworked the calendar list into our new visual style
