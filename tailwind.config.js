@@ -2,6 +2,7 @@ module.exports = {
     darkMode: 'class',
     content: [
         "./resources/**/*.blade.php",
+        "./app/Services/Discord/resources/**/*.blade.php",
         "./resources/**/*.js",
         "./resources/**/*.vue",
         "./app/View/Components/**/*.php",

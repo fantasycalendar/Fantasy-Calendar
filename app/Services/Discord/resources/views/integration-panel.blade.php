@@ -23,19 +23,20 @@
                      @modal-ok.window="($event.detail.name == 'disconnect_discord') && (self.location = '{{ route('discord.auth.remove') }}')">
                     <div class="flex flex-col md:items-center md:flex-row mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-0 border-gray-300 dark:border-gray-700">
                         <x-button class="justify-center" role="danger-subtle" @click="$dispatch('modal', { name: 'disconnect_discord'})">Disconnect Integration</x-button>
-                        <x-modal name="disconnect_discord"
-                                 icon="exclamation-triangle"
-                                 icon-color="red"
-                                 title="Are you sure?"
-                                 body="Your Discord account will be disconnected from Fantasy Calendar. Commands will no longer work for you, but you will still need to remove the app from any servers you don't want it in in order to remove it completely."
-                                 affirmative-color="red"
-                                 affirmative-label="Yep, disconnect my account."
-                        ></x-modal>
                     </div>
-                    <div class="space-x-2 flex flex-col md:items-center md:flex-row space-y-2 md:space-y-0">
+                    <div class="md:space-x-2 flex flex-col md:items-center md:flex-row space-y-2 md:space-y-0">
                         <x-button @click="$dispatch('modal', {name: 'discord_reference'})" class="justify-center" role="secondary" >Command Reference</x-button>
                         <x-button-link class="justify-center" role="primary" :href="route('discord.auth.admin')">Add FC to a server</x-button-link>
                     </div>
+
+                    <x-modal name="disconnect_discord"
+                             icon="exclamation-triangle"
+                             icon-color="red"
+                             title="Are you sure?"
+                             body="Your Discord account will be disconnected from Fantasy Calendar. Commands will no longer work for you, but you will still need to remove the app from any servers you don't want it in in order to remove it completely."
+                             affirmative-color="red"
+                             affirmative-label="Yep, disconnect my account."
+                    ></x-modal>
 
                     <x-modal name="discord_reference"
                              icon="question">
