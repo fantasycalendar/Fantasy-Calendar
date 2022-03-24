@@ -27,9 +27,9 @@ jobs:
         with:
           token: ${{ secrets.GH_CHECKOUT_TOKEN }}
           submodules: 'recursive'
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: '16'
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
