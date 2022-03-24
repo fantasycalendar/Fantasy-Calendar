@@ -29,7 +29,7 @@ class ForceVerifyUserEmail extends InstanceCommand
     public function execute($instanceId, array $data = []): array
     {
         User::whereId($instanceId)->update([
-            'email_verified_at' => now();
+            'email_verified_at' => now()
         ]);
 
         return $this->info("Email successfully verified");
