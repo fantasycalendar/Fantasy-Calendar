@@ -31,54 +31,44 @@ class Moon
         $this->granularity = $attributes['granularity'];
     }
 
+    public function toArray()
+    {
+        return [
+            'name' => $this->name,
+            'custom_phase' => $this->custom_phase,
+            'color' => $this->color,
+            'hidden' => $this->hidden,
+            'custom_cycle' => $this->custom_cycle,
+            'cycle_rounding' => $this->cycle_rounding,
+            'cycle' => $this->cycle,
+            'shift' => $this->shift,
+            'granularity' => $this->granularity,
+        ];
+    }
+
+    public function calculatePhases(int $epoch)
+    {
+        if($this->custom_phase) {
+            $customCycle = explode(',', $this->custom_cycle);
+
+            return [
+                $customCycle[abs($epoch % count($customCycle))],
+                round(abs($epoch / count($customCycle)))
+            ];
+        }
+
+        $totalCyclePosition = ($epoch - $this->shift) / $this->cycle;
+        $roundFunc = $this->cycle_rounding;
+
+        return [
+            $roundFunc(($totalCyclePosition - floor($totalCyclePosition)) * $this->granularity) % $this->granularity,
+            $roundFunc(abs($totalCyclePosition) + 1)
+        ];
+    }
+
     public function setEpoch(int $epoch)
     {
         $this->epoch = $epoch;
         return $this;
-    }
-
-    public function getPhases()
-    {
-
-        if($this->custom_phase)
-        {
-            $cycle = explode(",", $this->custom_cycle);
-            $cycleLength = count($cycle);
-
-            $cycleIndex = abs($this->epoch % $cycleLength);
-            $phase = $cycle[$cycleIndex];
-
-            $totalPhases = abs($this->epoch / $cycleLength)+1;
-            $totalPhaseCount = round($totalPhases);
-        }
-        else
-        {
-
-            $totalCyclePosition = ($this->epoch - $this->shift) / $this->cycle;
-            $normalizedCyclePosition = $totalCyclePosition - floor($totalCyclePosition);
-
-            if($this->cycle_rounding === "floor")
-            {
-                $phase = floor($normalizedCyclePosition * $this->granularity) % $this->granularity;
-                $totalPhaseCount = floor(abs($totalCyclePosition)+1);
-            }
-            else if($this->cycle_rounding == "round")
-            {
-                $phase = round($normalizedCyclePosition * $this->granularity) % $this->granularity;
-                $totalPhaseCount = round(abs($totalCyclePosition)+1);
-            }
-            else
-            {
-                $phase = ceil($normalizedCyclePosition * $this->granularity) % $this->granularity;
-                $totalPhaseCount = ceil(abs($totalCyclePosition)+1);
-            }
-
-        }
-
-
-        return [
-            "phase" => $phase,
-            "totalPhaseCount" => $totalPhaseCount
-        ];
     }
 }

@@ -18,15 +18,26 @@ class RenderMonth
         $this->id = $id ?? $calendar->month_index;
     }
 
+    public function fillEpochs()
+    {
+        $this->epochs = Epoch::forCalendarMonth($this->calendar);
+    }
+
+    public function withMoons()
+    {
+        Epoch::enableMoons();
+    }
+
     /*
      * Returns an 2-dimensional array in the format:
      *
      */
     public function getStructure()
     {
-        $epochs = Epoch::forCalendarMonth($this->calendar);
+        $this->fillEpochs();
+        $this->withMoons();
 
-        $weeks = $epochs->chunkByWeeks()->map(function($week){
+        $weeks = $this->epochs->chunkByWeeks()->map(function($week){
             return $week->map(function($week){
                 $weekdays = collect(range(0, $this->weekdays->count() - 1));
 

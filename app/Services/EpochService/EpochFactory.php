@@ -4,6 +4,7 @@
 namespace App\Services\EpochService;
 
 
+use App\Facades\Moons;
 use App\Models\Calendar;
 use App\Collections\EpochsCollection;
 use App\Services\CalendarService\Era;
@@ -16,10 +17,30 @@ class EpochFactory
      * @var Calendar
      */
     private Calendar $calendar;
+
     /**
      * @var EpochsCollection
      */
     private EpochsCollection $epochs;
+
+    /**
+     * @var bool $moonsEnabled Determines whether to query the moon service during construction
+     */
+    private bool $moonsEnabled = false;
+
+    /**
+     * We only want to enable moons if there are actually moons
+     */
+    public function enableMoons()
+    {
+        $this->moonsEnabled = $this->calendar->moons->count() > 0;
+
+        if($this->moonsEnabled && $this->epochs->count()) {
+            Moons::forCalendar($this->calendar);
+
+            $this->epochs->each->addMoons();
+        }
+    }
 
     /**
      * Create an EpochFactory for a specific calendar
@@ -77,15 +98,9 @@ class EpochFactory
      */
     public function forDate($year, $month, $day): Epoch
     {
-//        logger()->debug("Getting for date: " . date_slug($year, $month, $day));
         if($this->needsDate($year, $month, $day)) {
-//            logger()->debug("DOES need date generated");
             $epochs = $this->generateForDate($year, $month, $day);
-//            logger()->debug("Generated " . $epochs->count() . " epochs:");
-//            logger()->debug($epochs->map->slug);
-
             $this->rememberEpochs($epochs);
-//            logger()->debug("Remembered");
         }
 
         return $this->getByDate($year, $month, $day);

@@ -7,6 +7,7 @@ use App\Console\Commands\DownCommand;
 use App\Console\Commands\UpCommand;
 use App\Observers\CalendarEventObserver;
 use App\Services\EpochService\EpochFactory;
+use App\Services\MoonService\Moon;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
@@ -27,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton('epoch', function($app){
             return new EpochFactory();
+        });
+
+        $this->app->singleton('moons', function($app){
+            return new Moon();
         });
 
         $this->app->bind('mustache', function($app){
