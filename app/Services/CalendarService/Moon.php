@@ -4,6 +4,8 @@
 namespace App\Services\CalendarService;
 
 
+use App\Services\EpochService\Epoch;
+
 class Moon
 {
 
@@ -45,18 +47,18 @@ class Moon
         ];
     }
 
-    public function calculatePhases(int $epoch)
+    public function calculatePhases(Epoch $epoch)
     {
         if($this->custom_phase) {
             $customCycle = explode(',', $this->custom_cycle);
 
             return [
-                $customCycle[abs($epoch % count($customCycle))],
-                round(abs($epoch / count($customCycle)))
+                $customCycle[abs($epoch->epoch % count($customCycle))],
+                round(abs($epoch->epoch / count($customCycle)))
             ];
         }
 
-        $totalCyclePosition = ($epoch - $this->shift) / $this->cycle;
+        $totalCyclePosition = ($epoch->epoch - $this->shift) / $this->cycle;
         $roundFunc = $this->cycle_rounding;
 
         // $phaseYearCount =  something
@@ -65,6 +67,8 @@ class Moon
         return [
             $roundFunc(($totalCyclePosition - floor($totalCyclePosition)) * $this->granularity) % $this->granularity,
             $roundFunc(abs($totalCyclePosition) + 1),
+            'phaseYearCountHere',
+            'phaseMonthCountHere'
         ];
     }
 }
