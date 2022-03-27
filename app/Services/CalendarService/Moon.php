@@ -16,7 +16,6 @@ class Moon
     public $cycle;
     public $shift;
     public $granularity;
-    private $epoch;
 
     public function __construct($attributes)
     {
@@ -60,15 +59,12 @@ class Moon
         $totalCyclePosition = ($epoch - $this->shift) / $this->cycle;
         $roundFunc = $this->cycle_rounding;
 
+        // $phaseYearCount =  something
+        // $phaseMonthCount = something
+
         return [
             $roundFunc(($totalCyclePosition - floor($totalCyclePosition)) * $this->granularity) % $this->granularity,
-            $roundFunc(abs($totalCyclePosition) + 1)
+            $roundFunc(abs($totalCyclePosition) + 1),
         ];
-    }
-
-    public function setEpoch(int $epoch)
-    {
-        $this->epoch = $epoch;
-        return $this;
     }
 }

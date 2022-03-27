@@ -18,11 +18,18 @@ class Moon
     public function forEpoch(Epoch $epoch)
     {
         return $this->calendar->moons->map(function(CalendarMoon $moon) use ($epoch) {
-            [$phase, $phase_epoch] = $moon->calculatePhases($epoch->epoch);
+            [
+                $phase,
+                $totalPhaseCount,
+                $phaseYearCount,
+                $phaseMonthCount
+            ] = $moon->calculatePhases($epoch);
 
             return [
                 'phase' => $phase,
-                'phases_total' => $phase_epoch,
+                'totalPhaseCount' => $totalPhaseCount,
+                'phaseYearCount' => $phaseYearCount,
+                'phaseMonthCount' => $phaseMonthCount
             ];
         });
     }
