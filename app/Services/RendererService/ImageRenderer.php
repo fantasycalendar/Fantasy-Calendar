@@ -997,10 +997,7 @@ class ImageRenderer
         }
 
         $im = new Imagick();
-        $png = '';
         $svg = $this->moon_image . "</svg>";
-
-        ld($svg);
 
         $im->setBackgroundColor(new ImagickPixel('transparent'));
         $im->readImageBlob($svg);
