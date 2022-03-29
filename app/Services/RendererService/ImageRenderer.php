@@ -4,6 +4,7 @@ namespace App\Services\RendererService;
 
 use App\Models\Calendar;
 use App\Collections\EpochsCollection;
+use App\Services\CalendarService\Moon;
 use App\Services\RendererService\ImageRenderer\ThemeFactory;
 use ArrayAccess;
 use Exception;
@@ -108,6 +109,7 @@ class ImageRenderer
         $this->intercalary_month = $monthRenderData->get('intercalary_month');
         $this->min_day_text_length = $monthRenderData->get('min_day_text_length');
 
+        $this->moonSprites = Image::make(Storage::disk('s3')->get('resources/MoonSprites.png'));
 
         $this->setupTheme();
         $this->determineCanvasDimensions();
@@ -213,13 +215,33 @@ class ImageRenderer
         $totalIntercalarySpacing = !$this->intercalary_month ? $this->intercalary_spacing * $this->intercalary_weeks_count * 2 : 0;
         $this->grid_row_height = ($boundingBoxHeight - $totalIntercalarySpacing) / $this->weeks_count;
 
-        $this->day_number_size = clamp($this->parameter('day_number_size', $this->grid_row_height / 4), 12, 38);
+        $this->day_number_size = clamp($this->parameter('day_number_size', ($this->grid_row_height / 4) * 0.75), 12, 38);
         $this->day_number_padding = clamp($this->day_number_size / 4, 1, 12);
+
+        $this->moon_columns = min($this->calendar->moons->count(), 4);
+        $this->moon_size = $this->determineMoonSize();
 
         $calendarMaxNameTextSize = $this->header_height / 3.5;
         $determinedCalendarNameWidth = $this->determineTextSize($this->calendar->name, $calendarMaxNameTextSize)['width'];
         $calendarNameRatio = ($boundingBoxWidth * 0.95) / $determinedCalendarNameWidth;
         $this->calendarNameTextSize = clamp($calendarMaxNameTextSize * $calendarNameRatio, 9, $calendarMaxNameTextSize);
+    }
+
+    private function determineMoonSize()
+    {
+        if(!$this->moon_columns) {
+            return 0;
+        }
+
+        if(($desiredSize = ($this->grid_column_width / ($this->moon_columns + 1.5))) < 12) {
+            return 0;
+        }
+
+        if((floor($this->calendar->moons->count() / $this->moon_columns) * $desiredSize) + $this->day_number_size + 4 > $this->grid_row_height) {
+            return 0;
+        }
+
+        return clamp($this->parameter('moon_size', $desiredSize), 12, 32);
     }
 
     /**
@@ -524,11 +546,42 @@ class ImageRenderer
                 $this->colorize($color),
                 'left'
             );
+
+            // If the calendar has moons ... Let's try to draw them.
+            if(($moonCount = $this->calendar->moons->count()) && $this->moon_size) {
+                $moonBoxWidth = (($this->moon_columns * $this->moon_size) / 2);
+
+                $dayCenter = $dayX + ($this->grid_column_width / 2);
+                $moonsLeft = ($dayCenter - $moonBoxWidth);
+                $moonsTop = $current_row_top_y + $this->day_number_size + 4;
+
+                foreach($day->moons as $index => $moon) {
+                    $this->image->insert(
+                        $this->moonImageForPhase($moon['phase'], $this->calendar->moons->get($index)->granularity),
+                        'top-left',
+                        round($moonsLeft + ($this->moon_size * ($index % $this->moon_columns))),
+                        round($moonsTop + ($this->moon_size * floor($index / $this->moon_columns)))
+                    );
+                }
+            }
         });
 
         if($isIntercalary && ($visualWeeks->count() == 1 || ($internal_week_number > 0 && $internal_week_number < $visualWeeks->count()))) {
             $current_row_top_y += $this->intercalary_spacing;
         }
+    }
+
+    private function moonImageForPhase($phase, $granularity)
+    {
+        $thisImage = clone $this->moonSprites;
+        $phaseOffset = Moon::pathIndexForPhase($phase, $granularity);
+
+        return $thisImage->crop(
+            32,
+            32,
+            $phaseOffset * 32,
+            0
+        )->resize($this->moon_size, $this->moon_size);
     }
 
     /**
@@ -732,32 +785,43 @@ class ImageRenderer
             'sm' => [
                 'divide' => 3,
                 'multiply' => 4,
+                'day_number_size' => 10
             ],
             'md' => [
                 'divide' => 18,
-                'multiply' => 31
+                'multiply' => 31,
+                'day_number_size' => 13
             ],
             'lg' => [
                 'divide' => 12,
-                'multiply' => 25
+                'multiply' => 25,
+                'day_number_size' => 14
             ],
             'xl' => [
                 'divide' => 72,
                 'multiply' => 175,
+                'day_number_size' => 15
             ],
             '2xl' => [
                 'divide' => 144,
                 'multiply' => 425,
+                'day_number_size' => 18
             ],
             '3xl' => [
                 'divide' => 48,
                 'multiply' => 175,
+                'day_number_size' => 19
             ]
         ];
 
         $size = $this->size;
         if($size && Arr::has($size_presets, $size)) {
             foreach(['intercalary_spacing', 'day_width','day_height','header_height', 'day_number_size'] as $property) {
+                if($size_presets[$size][$property] ?? false) {
+                    $$property = $size_presets[$size][$property];
+                    continue;
+                }
+
                 $$property /= $size_presets[$size]['divide'];
                 $$property *= $size_presets[$size]['multiply'];
             }
@@ -769,7 +833,7 @@ class ImageRenderer
         $this->parameters->put('grid_row_height', $day_height);
         $this->parameters->put('header_height', clamp($header_height, $this->minimum_header_height, $this->maximum_header_height));
         $this->parameters->put('weekday_header_height', clamp($day_height / 2.5, $this->minimum_weekday_header_height, $this->parameters->get('header_height') / 2));
-        $this->parameters->put('day_number_size', clamp($day_number_size, 10, 50));
+        $this->parameters->put('day_number_size', clamp((int) round($day_number_size), 10, 50));
 
         $this->x = clamp($this->week_length * $day_width, $this->min_x, $this->max_x);
         $this->y = $this->weekday_header_height
