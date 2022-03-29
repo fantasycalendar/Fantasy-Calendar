@@ -556,11 +556,20 @@ class ImageRenderer
                 $moonsTop = $current_row_top_y + $this->day_number_size + 4;
 
                 foreach($day->moons as $index => $moon) {
+                    $left = round($moonsLeft + ($this->moon_size * ($index % $this->moon_columns)));
+                    $top = round($moonsTop + ($this->moon_size * floor($index / $this->moon_columns)));
+                    $this->circle(
+                        floor($this->moon_size * 0.6),
+                        $left + round($this->moon_size / 2) - 1,
+                        $top + round($this->moon_size / 2) - 1,
+                        $this->calendar->moons->get($index)->color
+                    );
+
                     $this->image->insert(
                         $this->moonImageForPhase($moon['phase'], $this->calendar->moons->get($index)->granularity),
                         'top-left',
-                        round($moonsLeft + ($this->moon_size * ($index % $this->moon_columns))),
-                        round($moonsTop + ($this->moon_size * floor($index / $this->moon_columns)))
+                        $left,
+                        $top
                     );
                 }
             }
@@ -647,6 +656,17 @@ class ImageRenderer
                 }
             }
         );
+
+        $this->snapshot();
+    }
+
+    private function circle($diameter, $center_x, $center_y, $color = null)
+    {
+        $this->image->circle($diameter, $center_x, $center_y, function($draw) use ($color) {
+            if($color) {
+                $draw->background($color);
+            }
+        });
 
         $this->snapshot();
     }
