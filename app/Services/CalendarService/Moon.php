@@ -18,6 +18,7 @@ class Moon
     public $cycle;
     public $shift;
     public $granularity;
+    public $shadow_color;
 
     public const PATHS_BY_PHASE = [
         "M6.5,16a9.5,9.5 0 1,0 19,0a9.5,9.5 0 1,0 -19,0",
@@ -142,6 +143,7 @@ class Moon
         $this->cycle = $attributes['cycle'];
         $this->shift = $attributes['shift'];
         $this->granularity = $attributes['granularity'];
+        $this->shadow_color = $attributes['shadow_color'] ?? '#292b4a';
     }
 
     public function toArray()
@@ -182,6 +184,19 @@ class Moon
             'phaseYearCountHere',
             'phaseMonthCountHere'
         ];
+    }
+
+    public function svgForPhase($phase, $size, $x = '0', $y = '0') {
+        $path = static::PATHS_BY_PHASE[static::pathIndexForPhase($phase, $this->granularity)];
+
+        return <<<END
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" width="{$size}px" height="{$size}px" viewBox="0 0 32 32" x="${x}px" y="${y}px">
+<circle cx="16" cy="16" r="10" style="fill: {$this->color}" />
+<path class="lunar_shadow" style="fill: {$this->shadow_color}" d="$path"/>
+<circle cx="16" cy="16" r="10" stroke="black" stroke-width="1.5" fill="none" />
+</svg>
+END;
+
     }
 
     public static function pathIndexForPhase($phase, $granularity)

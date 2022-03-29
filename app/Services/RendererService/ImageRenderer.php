@@ -220,6 +220,9 @@ class ImageRenderer
 
         $this->moon_columns = min($this->calendar->moons->count(), 4);
         $this->moon_size = $this->determineMoonSize();
+        if($this->moon_size) {
+            $this->moon_image = sprintf('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" width="%s" height="%s">', $this->x, $this->y);
+        }
 
         $calendarMaxNameTextSize = $this->header_height / 3.5;
         $determinedCalendarNameWidth = $this->determineTextSize($this->calendar->name, $calendarMaxNameTextSize)['width'];
@@ -258,6 +261,7 @@ class ImageRenderer
         $this->drawWeekdayNames();
         $this->drawColumns();
         $this->drawIntercalaryDividers();
+        $this->mergeMoonImage();
 
         return $this->image->encode($this->ext, $this->quality);
     }
@@ -558,16 +562,10 @@ class ImageRenderer
                 foreach($day->moons as $index => $moon) {
                     $left = round($moonsLeft + ($this->moon_size * ($index % $this->moon_columns)));
                     $top = round($moonsTop + ($this->moon_size * floor($index / $this->moon_columns)));
-                    $this->circle(
-                        floor($this->moon_size * 0.6),
-                        $left + round($this->moon_size / 2) - 1,
-                        $top + round($this->moon_size / 2) - 1,
-                        $this->calendar->moons->get($index)->color
-                    );
 
-                    $this->image->insert(
-                        $this->moonImageForPhase($moon['phase'], $this->calendar->moons->get($index)->granularity),
-                        'top-left',
+                    $this->moon_image .= $this->moonImageForPhase(
+                        $moon['phase'],
+                        $this->calendar->moons->get($index),
                         $left,
                         $top
                     );
@@ -580,17 +578,20 @@ class ImageRenderer
         }
     }
 
-    private function moonImageForPhase($phase, $granularity)
+    private function moonImageForPhase($phase, $moon, $x, $y)
     {
-        $thisImage = clone $this->moonSprites;
-        $phaseOffset = Moon::pathIndexForPhase($phase, $granularity);
+        return $moon->svgForPhase($phase, $this->moon_size, $x, $y);
+        $im = new Imagick();
+        $png = '';
 
-        return $thisImage->crop(
-            32,
-            32,
-            $phaseOffset * 32,
-            0
-        )->resize($this->moon_size, $this->moon_size);
+        $im->setBackgroundColor(new ImagickPixel('transparent'));
+        $im->readImageBlob($svg);
+        $im->setImageFormat('png32');
+        $png = $im->getImageBlob();
+        $im->clear();
+        $im->destroy();
+
+        return $png;
     }
 
     /**
@@ -987,6 +988,28 @@ class ImageRenderer
     public function __get($name)
     {
         return $this->parameter($name);
+    }
+
+    private function mergeMoonImage()
+    {
+        if(!$this->moon_size) {
+            return false;
+        }
+
+        $im = new Imagick();
+        $png = '';
+        $svg = $this->moon_image . "</svg>";
+
+        ld($svg);
+
+        $im->setBackgroundColor(new ImagickPixel('transparent'));
+        $im->readImageBlob($svg);
+        $im->setImageFormat('png32');
+        $png = $im->getImageBlob();
+        $im->clear();
+        $im->destroy();
+
+        $this->image->insert($png);
     }
 }
 
