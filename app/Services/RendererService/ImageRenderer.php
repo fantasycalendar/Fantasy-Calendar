@@ -1007,6 +1007,10 @@ class ImageRenderer
         $im->destroy();
 
         $this->image->insert($png);
+
+        $this->snapshot();
+
+        return $this;
     }
 }
 
