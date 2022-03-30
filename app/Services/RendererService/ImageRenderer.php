@@ -4,13 +4,10 @@ namespace App\Services\RendererService;
 
 use App\Models\Calendar;
 use App\Collections\EpochsCollection;
-use App\Services\CalendarService\Moon;
 use App\Services\RendererService\ImageRenderer\ThemeFactory;
-use ArrayAccess;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Imagick;
@@ -108,8 +105,6 @@ class ImageRenderer
         $this->intercalary_weeks_count = $monthRenderData->get('intercalary_weeks_count');
         $this->intercalary_month = $monthRenderData->get('intercalary_month');
         $this->min_day_text_length = $monthRenderData->get('min_day_text_length');
-
-        $this->moonSprites = Image::make(Storage::disk('s3')->get('resources/MoonSprites.png'));
 
         $this->setupTheme();
         $this->determineCanvasDimensions();
