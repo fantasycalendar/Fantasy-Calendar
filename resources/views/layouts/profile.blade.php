@@ -6,9 +6,15 @@
                     <nav class="space-y-1">
                         <x-left-nav-item icon="cog" label="Account" route="profile"></x-left-nav-item>
                         <x-left-nav-item icon="credit-card" label="Plan & Billing" route="profile.billing"></x-left-nav-item>
+
                         @if(config('services.discord.enabled'))
                             <x-left-nav-item icon="puzzle-piece" label="Integrations" route="profile.integrations"></x-left-nav-item>
                         @endif
+
+                        @can('interact', \Laravel\Sanctum\PersonalAccessToken::class)
+                            <div class="border-t dark:border-gray-800"></div>
+                            <x-left-nav-item icon="key" label="Access Tokens" route="profile.api-tokens"></x-left-nav-item>
+                        @endcan
                     </nav>
                 </aside>
 

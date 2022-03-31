@@ -1,7 +1,7 @@
-@props(['savebutton' => false])
+@props(['savebutton' => false, 'fullwidth' => false])
 
 <div {{ $attributes->merge(['class' => 'shadow sm:rounded-md sm:overflow-hidden']) }}>
-    <div class="bg-white dark:bg-gray-800 dark:text-gray-300 py-6 px-4 space-y-6 sm:p-6">
+    <div class="bg-white dark:bg-gray-800 dark:text-gray-300 space-y-6 @unless($fullwidth) py-6 px-4 sm:p-6 @endunless">
         {{ $slot }}
     </div>
 

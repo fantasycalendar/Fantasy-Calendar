@@ -174,10 +174,12 @@
                 <div class="p-4" :class="{ 'mb-2' : !info.sticky }">
                     <div class="flex items-start">
                         <div class="flex-shrink-0">
-                            <!-- Heroicon name: outline/check-circle -->
-                            <svg class="h-6 w-6 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <i class="fa" :class="{
+                                'fa-check-circle': !info.icon,
+                                'text-green-400': !info.icon_color,
+                                [info.icon]: info.icon,
+                                [info.icon_color]: info.icon_color,
+                            }"></i>
                         </div>
                         <div class="ml-3 w-0 flex-1 pt-0.5">
                             <p class="text-sm font-medium text-gray-900 dark:text-gray-300" x-text="info.title"></p>
@@ -196,7 +198,11 @@
                 </div>
 
                 <div class="absolute inset-x-0 bottom-0 bg-gray-700 h-2" x-show="!info.sticky">
-                    <div class="absolute inset-x-0 left-0 h-full bg-primary-500"
+                    <div class="absolute inset-x-0 left-0 h-full"
+                         :class="{
+                            'bg-primary-500': !info.icon_color,
+                            [info.icon_color?.replace('text-', 'bg-')]: info.icon_color
+                         }"
                         x-show="!show"
                         x-transition:leave="transition-all ease-linear duration-[2900ms]"
                         x-transition:leave-start="w-full"
