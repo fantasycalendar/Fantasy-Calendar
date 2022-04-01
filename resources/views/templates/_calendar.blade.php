@@ -4,9 +4,25 @@
 
 @include('templates._head_content')
 
-<body class="page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class')">
+<body class="page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class')" x-data="{ enhanced: false }" :class="{ 'enhanced-mode': enhanced }">
 
 <div id="protip_container" class='d-print-none'></div>
+
+<div style="position: absolute; bottom: 0; right: 0; width: 300px; z-index: 6000;" x-data="{ show: true; }">
+    <div class="text-center alert alert-success" style="position: absolute; margin-bottom:0; bottom: 30px; right:30px;">
+        <span x-show="!enhanced">
+            Check out <a href="javascript:" @click="enhanced = true">enhanced mode</a>!
+        </span>
+        <span x-show="enhanced" x-cloak>
+            Welcome to <strong>enhanced mode</strong>!
+        </span>
+    </div>
+</div>
+
+<div class="pyro" style="z-index: 6000;" x-show="enhanced">
+    <div class="before"></div>
+    <div class="after"></div>
+</div>
 
 <div id="content">
     <div id="loading_background" class='basic-background hidden'>
