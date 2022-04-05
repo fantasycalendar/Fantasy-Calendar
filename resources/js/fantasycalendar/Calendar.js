@@ -36,7 +36,6 @@ export default class Calendar{
         rebuild_calendar();
     }
 
-
     goToPreviewDate(){
 
         this.preview_date.follow = false;
@@ -61,18 +60,21 @@ export default class Calendar{
         this.calendarChanged();
     }
 
-    calendarChanged(){
+    calendarChanged(forceRerender = false) {
 
         this.dynamic_data.epoch = this.getEpochForDate(this.dynamic_data.year, this.dynamic_data.timespan, this.dynamic_data.day).epoch;
 
-        if(this.preview_date.follow){
+        if (this.preview_date.follow) {
             this.preview_date = clone(this.dynamic_data);
             this.preview_date.follow = true;
         }
 
-        const rerender = this.dynamic_data.year !== this.old_dynamic_data.year || (this.dynamic_data.timespan !== this.old_dynamic_data.timespan && window.calendar.static_data.settings.show_current_month);
+        const rerender = (this.dynamic_data.year !== this.old_dynamic_data.year)
+            || (this.dynamic_data.timespan !== this.old_dynamic_data.timespan && this.static_data.settings.show_current_month);
 
-        if(rerender){
+        this.old_dynamic_data = clone(this.dynamic_data);
+
+        if(rerender || forceRerender){
             return this.render();
         }
 

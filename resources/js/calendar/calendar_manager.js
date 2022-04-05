@@ -301,6 +301,6 @@ function rerender_calendar(processed_data) {
                     preview_epoch: window.calendar.preview_date.follow ? window.calendar.dynamic_data.epoch : window.calendar.preview_date.epoch
                 }
             }));
-        }, 150);
+        }, 250);
     });
 }

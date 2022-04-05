@@ -55,12 +55,17 @@
             initialized: false,
             errors: [],
 
-            watchProperties: [
+            rerenderableProperties: [
                 "static_data",
                 "events",
                 "event_categories",
-                "preview_date",
                 "dynamic_data.year",
+                "preview_date.year",
+            ],
+
+            watchProperties: [
+                "preview_date.timespan",
+                "preview_date.day",
                 "dynamic_data.timespan",
                 "dynamic_data.day",
                 "dynamic_data.hour",
@@ -71,7 +76,8 @@
 
             init(){
                 const self = this;
-                this.$watch(this.watchProperties.join(', '), this.calendarChanged.bind(this));
+                this.$watch(this.rerenderableProperties.join(', '), () => { this.calendarChanged(true) });
+                this.$watch(this.watchProperties.join(', '), () => { this.calendarChanged() });
                 this.$nextTick(() => {
                     window.calendar.render();
                     self.initialized = true;
@@ -86,14 +92,14 @@
                 return this.calendar_changed ? "Save calendar" : "No changes to save";
             },
 
-            calendarChanged(){
+            calendarChanged(rerender = false){
                 // To avoid data updates re-triggering the initial render
                 if(!this.initialized) return;
                 this.calendar_changed = window.calendar.hasDataChanged();
                 this.errors = window.calendar.getErrors();
                 this.calendar_valid = !this.errors.length;
                 if(!this.calendar_valid) return;
-                window.calendar.calendarChanged();
+                window.calendar.calendarChanged(rerender);
             },
 
             currentViewType: "owner",
