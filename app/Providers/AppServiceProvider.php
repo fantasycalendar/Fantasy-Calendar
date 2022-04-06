@@ -7,6 +7,7 @@ use App\Console\Commands\DownCommand;
 use App\Console\Commands\UpCommand;
 use App\Observers\CalendarEventObserver;
 use App\Services\EpochService\EpochFactory;
+use Filament\Facades\Filament;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
@@ -41,6 +42,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Filament::serving(function () {
+            Filament::registerTheme(mix('css/app-tw.css'));
+        });
+
         /**
          * Override Laravel's "php artisan down" command to put the application in maintenance mode
          * using our custom Redis based lock.

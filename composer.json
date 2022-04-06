@@ -25,6 +25,7 @@
         "bref/extra-php-extensions": "^0.11",
         "bref/laravel-bridge": "^1.0",
         "code16/sharp": "^7.1",
+        "filament/filament": "^2.10",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "^2.7",
         "laravel/cashier": "^12.3.1",
