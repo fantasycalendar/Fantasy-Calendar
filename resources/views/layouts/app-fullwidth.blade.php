@@ -37,7 +37,7 @@
                 </div>
                 <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
                     @can('administer-app', auth()->user())
-                        <x-nav-link href="{{ route('code16.sharp.home') }}">Admin Panel</x-nav-link>
+                        <x-nav-link href="{{ route('filament.pages.dashboard') }}">Admin Panel</x-nav-link>
                     @endcan
                     @auth
                         <x-nav-link href="{{ route('profile') }}">Profile</x-nav-link>
@@ -86,7 +86,7 @@
                 <x-mobile-nav-link href="{{ route('discord') }}">Discord Integration</x-mobile-nav-link>
 
                 @can('administer-app', auth()->user())
-                    <x-mobile-nav-link href="{{ route('code16.sharp.home') }}">Admin Panel</x-mobile-nav-link>
+                    <x-mobile-nav-link href="{{ route('filament.pages.dashboard') }}">Admin Panel</x-mobile-nav-link>
                 @endcan
 
                 @auth

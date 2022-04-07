@@ -24,7 +24,6 @@
         "barryvdh/laravel-ide-helper": "^2.10",
         "bref/extra-php-extensions": "^0.11",
         "bref/laravel-bridge": "^1.0",
-        "code16/sharp": "^7.1",
         "filament/filament": "^2.10",
         "flowframe/laravel-trend": "^0.1.1",
         "guzzlehttp/guzzle": "^7.2",
@@ -92,7 +91,6 @@
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan vendor:publish --provider='Code16\\Sharp\\SharpServiceProvider' --tag=assets --force",
             "@php artisan package:discover --ansi"
         ],
         "post-root-package-install": [

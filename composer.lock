@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ba555ef8d44529c4a121027252462611",
+    "content-hash": "9b145f82c412cfde22932ad5602869da",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -889,71 +889,6 @@
                 }
             ],
             "time": "2021-08-15T20:50:18+00:00"
-        },
-        {
-            "name": "code16/sharp",
-            "version": "v7.5.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/code16/sharp.git",
-                "reference": "c9b9e409b99a362dccd6437242f06ace2bba39d2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/code16/sharp/zipball/c9b9e409b99a362dccd6437242f06ace2bba39d2",
-                "reference": "c9b9e409b99a362dccd6437242f06ace2bba39d2",
-                "shasum": ""
-            },
-            "require": {
-                "intervention/image": "^2.5",
-                "laravel/framework": "^8.64|^9.0",
-                "league/commonmark": "^2.0",
-                "php": "^8.0",
-                "spatie/image-optimizer": "^1.2"
-            },
-            "require-dev": {
-                "brianium/paratest": "^6.3",
-                "dms/phpunit-arraysubset-asserts": "^0.2.0",
-                "doctrine/dbal": "~2.5",
-                "mockery/mockery": "^1.4.4",
-                "nunomaduro/collision": "^5.4|^6.0",
-                "orchestra/testbench": "^6.0|^7.0",
-                "phpunit/phpunit": "^9.5",
-                "spatie/laravel-ray": "^1.26"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Code16\\Sharp\\SharpServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "files": [
-                    "src/sharp_helper.php"
-                ],
-                "psr-4": {
-                    "Code16\\Sharp\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "authors": [
-                {
-                    "name": "Philippe Lonchampt",
-                    "email": "philippe@code16.fr"
-                },
-                {
-                    "name": "Antoine Guingand",
-                    "email": "antoine@code16.fr"
-                }
-            ],
-            "description": "Laravel Content Management Framework",
-            "support": {
-                "issues": "https://github.com/code16/sharp/issues",
-                "source": "https://github.com/code16/sharp/tree/v7.5.2"
-            },
-            "time": "2022-03-18T14:25:43+00:00"
         },
         {
             "name": "composer/pcre",
