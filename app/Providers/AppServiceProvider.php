@@ -109,6 +109,25 @@ class AppServiceProvider extends ServiceProvider
             });
         });
 
+        Collection::macro('withRunningTotal', function(string $field){
+            $total = 0;
+            $newFieldName = "${field}_running_total";
+
+            return $this->map(function($item) use (&$total, $newFieldName, $field) {
+                if(is_array($item)) {
+                    $total += $item[$field];
+                    $item[$newFieldName] = $total;
+
+                    return $total;
+                }
+
+                $total += $item->$field;
+                $item->$newFieldName = $total;
+
+                return $item;
+            });
+        });
+
         Collection::macro('ensureSingleItem', function(){
             if($this->count() !== 1) {
                 throw new \Exception('Could not resolve text line of current date to render with! The development team has been notified.');

@@ -26,6 +26,7 @@
         "bref/laravel-bridge": "^1.0",
         "code16/sharp": "^7.1",
         "filament/filament": "^2.10",
+        "flowframe/laravel-trend": "^0.1.1",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "^2.7",
         "laravel/cashier": "^12.3.1",
