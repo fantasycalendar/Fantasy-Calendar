@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Password;
 
 class UserResource extends Resource
@@ -20,6 +21,23 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     protected static ?string $navigationGroup = 'Entities';
+
+    protected static ?string $recordTitleAttribute = 'username';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'username',
+            'email'
+        ];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Email' => $record->email,
+        ];
+    }
 
     public static function form(Form $form): Form
     {

@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class CalendarResource extends Resource
 {
@@ -22,6 +23,23 @@ class CalendarResource extends Resource
 
     protected static ?string $navigationGroup = 'Entities';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'name',
+            'user.username'
+        ];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Creator' => $record->user->username
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -30,6 +48,17 @@ class CalendarResource extends Resource
                 Forms\Components\Placeholder::make('owner')
                     ->label('Owner')
                     ->content(fn (?Calendar $record): string => $record ? $record->user->username : '-'),
+                Forms\Components\TextInput::make('dynamic_data.year')->numeric()
+                    ->label('Current Year'),
+                Forms\Components\Select::make('dynamic_data.timespan')
+                    ->label('Current Timespan')
+                    ->options(fn(?Calendar $record): array => $record?->timespans->mapWithKeys(fn($timespan) => [$timespan->id => $timespan->name])->toArray()),
+                Forms\Components\Select::make('dynamic_data.day')
+                    ->label('Current Day')
+                    ->options(fn(?Calendar $record): array => range(1, $record?->month->length)),
+                Forms\Components\TextInput::make('dynamic_data.epoch')->disabled(),
+                Forms\Components\TextInput::make('dynamic_data.location')->disabled(),
+                Forms\Components\TextInput::make('dynamic_data.current_era')->disabled(),
             ]);
     }
 

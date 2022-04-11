@@ -156,6 +156,17 @@ class Calendar extends Model
     }
 
 
+    public function ensureCurrentEpoch(): Calendar
+    {
+        $this->dynamic('epoch', \App\Facades\Epoch::forCalendar($this)->forDate(
+            $this->dynamic('year'),
+            $this->dynamic('timespan'),
+            $this->dynamic('day'),
+        )->epoch);
+
+        return $this;
+    }
+
     /**
      * Determines whether a given set of static_data would result in modifying the calendar
      *

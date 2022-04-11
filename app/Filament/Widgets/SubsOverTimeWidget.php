@@ -17,6 +17,10 @@ class SubsOverTimeWidget extends LineChartWidget
 
     protected function getData(): array
     {
+        if(app()->environment(['local', 'development'])){
+            return [];
+        }
+
         /* Total subscriptions per day */
         $monthly_subscriptions = Subscription::where('stripe_plan', '=', 'timekeeper_monthly')
             ->where('created_at', '<', now()->subMonth()->lastOfMonth())
