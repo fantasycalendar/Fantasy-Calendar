@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Password;
 
 class UserResource extends Resource
 {
@@ -77,7 +78,24 @@ class UserResource extends Resource
                 Tables\Actions\ButtonAction::make('impersonate')
                     ->label('Impersonate')
                     ->icon('heroicon-o-user-circle')
-                    ->url(fn($record) => route('admin.impersonate', ['userid' => $record->id, 'returnPath' => request()->url()]))
+                    ->url(fn($record) => route('admin.impersonate', ['userid' => $record->id, 'returnPath' => request()->url()])),
+            ])->prependBulkActions([
+                Tables\Actions\BulkAction::make('password_reset')
+                    ->action(function($records){
+                        foreach($records as $record) {
+                            $broker = Password::broker();
+
+                            $broker->sendResetLink([
+                                'email' => $record->email
+                            ]);
+                        }
+
+                        return true;
+                    })
+                    ->requiresConfirmation()
+                    ->label('Send password reset')
+                    ->color('warning')
+                    ->icon('heroicon-o-inbox-in')
             ]);
     }
 
