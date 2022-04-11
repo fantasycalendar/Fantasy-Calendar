@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Services\Discord\Models\DiscordAuthToken;
 use App\Services\Discord\Models\DiscordGuild;
 use App\Services\Discord\Models\DiscordInteraction;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -21,7 +23,9 @@ use Stripe\StripeClient;
 
 class User extends Authenticatable implements
     MustVerifyEmail,
-    CanResetPassword
+    CanResetPassword,
+    FilamentUser,
+    HasName
 {
     use Notifiable,
         Billable,
@@ -87,6 +91,11 @@ class User extends Authenticatable implements
     ];
 
     protected $dateFormat = 'Y-m-d H:i:s';
+
+    public function getFilamentName(): string
+    {
+        return $this->username;
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -157,6 +166,10 @@ class User extends Authenticatable implements
         return $this->created_at <= (new Carbon('2020-11-08'));
     }
 
+    public function getIsEarlySupporterAttribute() {
+        return $this->isEarlySupporter();
+    }
+
     /**
      * @return bool
      */
@@ -216,6 +229,10 @@ class User extends Authenticatable implements
 
     public function isPremium() {
         return $this->paymentLevel() !== 'Free';
+    }
+
+    public function getIsPremiumAttribute() {
+        return $this->isPremium();
     }
 
     public function subscriptionPrice($interval) {
@@ -335,5 +352,10 @@ class User extends Authenticatable implements
     public function scopeVerified($query)
     {
         $query->whereNotNull('email_verified_at');
+    }
+
+    public function canAccessFilament(): bool
+    {
+        return $this->isAdmin();
     }
 }
