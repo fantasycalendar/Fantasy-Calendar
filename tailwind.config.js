@@ -1,3 +1,5 @@
+const colors = require('tailwindcss/colors')
+
 module.exports = {
     darkMode: 'class',
     content: [
@@ -6,6 +8,7 @@ module.exports = {
         "./resources/**/*.js",
         "./resources/**/*.vue",
         "./app/View/Components/**/*.php",
+        './vendor/filament/**/*.blade.php',
     ],
     safelist: [
         {
@@ -35,7 +38,10 @@ module.exports = {
                     700: '#2f855a',
                     800: '#276749',
                     900: '#22543d',
-                }
+                },
+                danger: colors.rose,
+                success: colors.green,
+                warning: colors.yellow,
             }
         },
         fontFamily: {

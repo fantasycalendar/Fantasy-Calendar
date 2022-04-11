@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Auth;
 use Illuminate\Support\Arr;
@@ -149,6 +150,22 @@ class Calendar extends Model
         return $this->hasMany(CalendarInvite::class);
     }
 
+    public function preset(): HasOne
+    {
+        return $this->hasOne(Preset::class, 'source_calendar_id');
+    }
+
+
+    public function ensureCurrentEpoch(): Calendar
+    {
+        $this->dynamic('epoch', \App\Facades\Epoch::forCalendar($this)->forDate(
+            $this->dynamic('year'),
+            $this->dynamic('timespan'),
+            $this->dynamic('day'),
+        )->epoch);
+
+        return $this;
+    }
 
     /**
      * Determines whether a given set of static_data would result in modifying the calendar
