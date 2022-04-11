@@ -45,6 +45,8 @@ class UserResource extends Resource
 
     public static function table(Table $table): Table
     {
+        ld(request()->url());
+
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('username'),
@@ -71,6 +73,11 @@ class UserResource extends Resource
                     }),
                 Tables\Filters\Filter::make('beta_authorised')
                     ->query(fn(Builder $query): Builder => $query->where('beta_authorised', true))
+            ])->prependActions([
+                Tables\Actions\ButtonAction::make('impersonate')
+                    ->label('Impersonate')
+                    ->icon('heroicon-o-user-circle')
+                    ->url(fn($record) => route('admin.impersonate', ['userid' => $record->id, 'returnPath' => request()->url()]))
             ]);
     }
 

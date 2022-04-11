@@ -10,6 +10,11 @@ class AdminController extends Controller
     public function impersonate($userid) {
         request()->session()->push('admin.id', Auth::user()->id);
 
+        if(request()->has('returnPath')) {
+            ld(request()->get('returnPath'));
+            request()->session()->put('return_path', request()->get('returnPath'));
+        }
+
         Auth::logout();
 
         Auth::loginUsingId($userid);
@@ -23,10 +28,12 @@ class AdminController extends Controller
             return redirect('/');
         }
 
+        ld(request()->session()->get('return_path'));
+
         Auth::logout();
         Auth::loginUsingId(request()->session()->get('admin.id'));
         request()->session()->remove('admin.id');
 
-        return redirect(request()->session()->get('sharp_breadcrumb.0.url') ?? '/');
+        return redirect(request()->session()->get('return_path') ?? '/');
     }
 }
