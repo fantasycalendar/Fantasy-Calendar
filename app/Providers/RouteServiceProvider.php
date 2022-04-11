@@ -36,6 +36,10 @@ class RouteServiceProvider extends ServiceProvider
             return $calendar;
         });
 
+        Route::bind('personalAccessToken', function($id) {
+            return auth()->user()->tokens()->findOrFail($id);
+        });
+
         parent::boot();
     }
 
