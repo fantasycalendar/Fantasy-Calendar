@@ -15,7 +15,7 @@ class PresetResource extends Resource
 {
     protected static ?string $model = Preset::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-adjustments';
 
     protected static ?string $navigationGroup = 'Entities';
 

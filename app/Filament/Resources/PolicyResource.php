@@ -15,7 +15,7 @@ class PolicyResource extends Resource
 {
     protected static ?string $model = Policy::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-list';
 
     protected static ?string $navigationGroup = 'Legal Stuff';
 

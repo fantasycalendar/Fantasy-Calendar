@@ -15,7 +15,7 @@ class AgreementResource extends Resource
 {
     protected static ?string $model = Agreement::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard';
 
     protected static ?string $navigationGroup = 'Legal Stuff';
 
