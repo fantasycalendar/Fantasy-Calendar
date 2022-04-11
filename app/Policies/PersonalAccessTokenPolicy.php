@@ -21,6 +21,7 @@ class PersonalAccessTokenPolicy
 
     public function interact(?User $user)
     {
+        return false;
         return $user->isPremium();
     }
 }

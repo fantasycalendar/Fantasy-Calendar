@@ -121,9 +121,9 @@ Route::prefix('profile')->middleware(['auth', 'account.deletion', 'agreement'])-
     Route::view('/integrations','profile.integrations')->name('profile.integrations');
     Route::get('/update-email/{user}', [SettingsController::class, 'updateEmail'])->name('update.email')->middleware('signed');
 
-    Route::get('/api-tokens', [SettingsController::class, 'apiTokens'])->name('profile.api-tokens')->middleware('premium');
-    Route::post('/api-tokens/create', [SettingsController::class, 'createApiToken'])->name('profile.api-tokens.create')->middleware('premium');
-    Route::delete('/api-tokens/delete/{personalAccessToken}', [SettingsController::class, 'deleteApiToken'])->name('profile.api-tokens.delete')->middleware('premium');
+    Route::get('/api-tokens', [SettingsController::class, 'apiTokens'])->name('profile.api-tokens')->middleware(['premium', 'can:interact,Laravel\Sanctum\PersonalAccessToken']);
+    Route::post('/api-tokens/create', [SettingsController::class, 'createApiToken'])->name('profile.api-tokens.create')->middleware(['premium', 'can:interact,Laravel\Sanctum\PersonalAccessToken']);
+    Route::delete('/api-tokens/delete/{personalAccessToken}', [SettingsController::class, 'deleteApiToken'])->name('profile.api-tokens.delete')->middleware(['premium', 'can:interact,Laravel\Sanctum\PersonalAccessToken']);
 
     Route::post('/settings', [SettingsController::class, 'updateSettings'])->name('profile.updateSettings');
     Route::post('/account', [SettingsController::class, 'updateAccount'])->name('profile.updateAccount');
