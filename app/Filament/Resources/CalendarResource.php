@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CalendarResource\Pages;
 use App\Filament\Resources\CalendarResource\RelationManagers;
+use App\Jobs\ConvertCalendarToPreset;
 use App\Models\Calendar;
 use Filament\Forms;
 use Filament\Pages\Actions\ButtonAction;
@@ -11,6 +12,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Illuminate\Database\Eloquent\Builder;
 
 class CalendarResource extends Resource
 {
@@ -42,7 +44,22 @@ class CalendarResource extends Resource
                 Tables\Columns\TextColumn::make('last_dynamic_change')->label('Last Updated')->date('Y-m-d'),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('is_preset')
+                    ->label('Is a preset')
+                    ->default(false)
+                    ->query(fn(Builder $query): Builder => $query->has('preset'))
+            ])->prependActions([
+                Tables\Actions\LinkAction::make('promote')
+                    ->label(fn(Calendar $record) => $record->preset ? 'Demote from preset' : 'Promote to preset')
+                    ->icon(fn(Calendar $record) => $record->preset ? 'heroicon-o-chevron-double-down' : 'heroicon-o-chevron-double-up')
+                    ->color(fn(Calendar $record) => $record->preset ? 'warning' : 'secondary')
+                    ->action(fn(Calendar $record) => $record->preset ? $record->preset()->delete() : ConvertCalendarToPreset::dispatchSync($record)),
+                Tables\Actions\LinkAction::make('feature')
+                    ->label('')
+                    ->icon(fn(Calendar $record) => $record->preset?->featured ? 'heroicon-s-star' : 'heroicon-o-star')
+                    ->color(fn(Calendar $record) => $record->preset?->featured ? 'warning' : 'secondary')
+                    ->action(fn(Calendar $record) => $record->preset?->featured ? $record->preset->unFeature() : $record->preset->feature())
+                    ->disabled(fn(Calendar $record) => (bool) !$record->preset),
             ]);
     }
 
