@@ -50,13 +50,15 @@ class CalendarResource extends Resource
                     ->query(fn(Builder $query): Builder => $query->has('preset'))
             ])->prependActions([
                 Tables\Actions\LinkAction::make('promote')
-                    ->label(fn(Calendar $record) => $record->preset ? 'Demote from preset' : 'Promote to preset')
-                    ->icon(fn(Calendar $record) => $record->preset ? 'heroicon-o-chevron-double-down' : 'heroicon-o-chevron-double-up')
+                    ->label('')
+                    ->tooltip(fn(Calendar $record) => $record->preset ? 'Demote from preset' : 'Promote to preset')
+                    ->icon(fn(Calendar $record) => $record->preset ? 'heroicon-s-arrow-circle-up' : 'heroicon-o-arrow-circle-up')
                     ->color(fn(Calendar $record) => $record->preset ? 'warning' : 'secondary')
                     ->action(fn(Calendar $record) => $record->preset ? $record->preset()->delete() : ConvertCalendarToPreset::dispatchSync($record)),
                 Tables\Actions\LinkAction::make('feature')
                     ->label('')
                     ->icon(fn(Calendar $record) => $record->preset?->featured ? 'heroicon-s-star' : 'heroicon-o-star')
+                    ->tooltip(fn(Calendar $record) => $record->preset?->featured ? 'Unfeature preset' : 'Feature preset')
                     ->color(fn(Calendar $record) => $record->preset?->featured ? 'warning' : 'secondary')
                     ->action(fn(Calendar $record) => $record->preset?->featured ? $record->preset->unFeature() : $record->preset->feature())
                     ->disabled(fn(Calendar $record) => (bool) !$record->preset),
