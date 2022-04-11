@@ -75,7 +75,6 @@ class CalendarResource extends Resource
     {
         return [
             'index' => Pages\ListCalendars::route('/'),
-            'create' => Pages\CreateCalendar::route('/create'),
             'edit' => Pages\EditCalendar::route('/{record}/edit'),
         ];
     }
