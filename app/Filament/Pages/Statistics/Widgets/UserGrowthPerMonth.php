@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Pages\Statistics\Widgets;
 
 use App\Models\User;
 use Filament\Widgets\LineChartWidget;
