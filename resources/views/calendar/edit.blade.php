@@ -36,6 +36,10 @@
 
     window.Perms = new Perms(...userData);
 
+    $(document).ready(() => {
+        set_up_context_menu();
+    });
+
     function sidebar() {
 
         return {

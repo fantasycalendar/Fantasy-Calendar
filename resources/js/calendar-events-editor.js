@@ -409,7 +409,7 @@ const calendar_events_editor = {
 		if (success) {
 
 			eval_apply_changes(function() {
-				rerender_calendar();
+
 			});
 
 		}
@@ -466,8 +466,6 @@ const calendar_events_editor = {
 		if(this.event_conditions_container) {
             this.event_conditions_container.empty();
         }
-
-		evaluate_save_button();
 
 	},
 
@@ -792,7 +790,7 @@ const calendar_events_editor = {
 
 		this.moons = [];
 		for (let index in window.calendar.static_data.moons) {
-			let moon = clone(window.calendar.moons[index])
+			let moon = clone(window.calendar.static_data.moons[index])
 			moon.index = index;
 			moon.hidden = false;
 			moon.shadow_color = moon.shadow_color ? moon.shadow_color : "#292b4a";

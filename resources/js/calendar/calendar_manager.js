@@ -60,38 +60,6 @@ function bind_calendar_events(){
 
 }
 
-function eval_apply_changes(output){
-
-	let apply_changes_immediately = $('#apply_changes_immediately');
-
-	if(apply_changes_immediately.length === 0){
-		output();
-	}else if(!apply_changes_immediately.is(':checked')){
-		if(!changes_applied){
-			evaluate_save_button();
-			show_changes_button();
-		}else{
-			hide_changes_button();
-			evaluate_save_button(true);
-			output();
-		}
-	}else{
-		evaluate_save_button();
-		output();
-	}
-
-}
-
-function pre_rebuild_calendar(action){
-
-	eval_apply_changes(function(){
-
-		rebuild_calendar(action);
-
-	});
-
-}
-
 async function testCalendarAccuracy(fromYear = -100, toYear = 100){
 
     execution_time.start();

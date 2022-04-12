@@ -73,6 +73,166 @@ function get_colors_for_season(season_name) {
 	}
 }
 
+function repopulate_timespan_select(select, val, change, max){
+
+    if(window.calendar.static_data.year_data.timespans.length == 0 || window.calendar.static_data.year_data.global_week.length == 0) return;
+
+    var select = select === undefined ? $('.timespan-list') : select;
+    var change = change === undefined ? true : change;
+    var max = max === undefined ? false : max;
+
+    select.each(function(){
+
+        var year = convert_year(window.calendar.static_data, $(this).closest('.date_control').find('.year-input').val()|0);
+
+        var special = $(this).hasClass('timespan_special');
+
+        var html = [];
+
+        for(var i = 0; i < window.calendar.static_data.year_data.timespans.length; i++){
+
+            var is_there = does_timespan_appear(window.calendar.static_data, year, i);
+
+            if(special){
+
+                html.push(`<option value='${i}'>${window.calendar.static_data.year_data.timespans[i].name}</option>`);
+
+            }else{
+
+                var days = get_days_in_timespan(window.calendar.static_data, year, i);
+
+                if(days.length == 0){
+                    is_there.result = false;
+                    is_there.reason = "no days";
+                }
+
+                if(max && i > max) break;
+
+                html.push(`<option ${!is_there.result ? 'disabled' : ''} value='${i}'>`);
+                html.push(window.calendar.static_data.year_data.timespans[i].name + (!is_there.result ? ` (${is_there.reason})` : ''));
+                html.push('</option>');
+
+            }
+        }
+
+        if(val === undefined){
+            var value = $(this).val()|0;
+        }else{
+            var value = val;
+        }
+
+        $(this).html(html.join('')).val(value);
+        if($(this).find('option:selected').prop('disabled') || $(this).val() == null){
+            internal_loop:
+                if(value >= $(this).children().length){
+                    var new_val = $(this).children().length-1;
+                }else{
+                    for(var i = value, j = value+1; i >= 0 || j < $(this).children().length; i--, j++){
+                        if(!$(this).children().eq(i).prop('disabled')){
+                            var new_val = i;
+                            break internal_loop;
+                        }
+                        if(!$(this).children().eq(j).prop('disabled')){
+                            var new_val = j;
+                            break internal_loop;
+                        }
+                    }
+                }
+            $(this).val(new_val);
+        }
+        if(change){
+            $(this).change();
+        }
+    });
+
+
+}
+
+function repopulate_day_select(select, val, change, no_leaps, max, filter_timespan){
+
+    if(window.calendar.static_data.year_data.timespans.length == 0 || window.calendar.static_data.year_data.global_week.length == 0) return;
+
+    var select = select === undefined ? $('.timespan-day-list') : select;
+    var change = change === undefined ? true : change;
+    var no_leaps = no_leaps === undefined ? false : no_leaps;
+    var max = max === undefined ? false : max;
+
+    select.each(function(){
+
+        var year = convert_year(window.calendar.static_data, $(this).closest('.date_control').find('.year-input').val()|0);
+        var timespan = $(this).closest('.date_control').find('.timespan-list').val()|0;
+        var special = $(this).hasClass('day_special');
+
+        if(filter_timespan === undefined || timespan == filter_timespan){
+
+            var exclude_self = $(this).hasClass('exclude_self');
+            var no_leaps = no_leaps || $(this).hasClass('no_leap');
+
+            if(exclude_self){
+
+                var self_object = get_calendar_data($(this).attr('data'));
+
+                if(self_object){
+                    var days = get_days_in_timespan(window.calendar.static_data, year, timespan, self_object, no_leaps, special);
+                }
+
+            }else{
+                var days = get_days_in_timespan(window.calendar.static_data, year, timespan, undefined, no_leaps, special);
+            }
+
+            var html = [];
+
+            if(!$(this).hasClass('date')){
+                html.push(`<option value="${0}">Before 1</option>`);
+            }
+
+            for(var i = 0, offset = 0; i < days.length; i++){
+
+                var day = days[i];
+                let number = i-offset+1;
+
+                if(!day.normal_day && day.not_numbered) offset++;
+
+                if(max && i >= max) break;
+
+                html.push(`<option value='${i+1}'>`);
+                html.push(day.normal_day ? `Day ${number}` : day.not_numbered ? day.text : `Day ${number} (${day.text})`);
+                html.push('</option>');
+
+            }
+
+            if(val === undefined){
+                var value = $(this).val()|0;
+            }else{
+                var value = val;
+            }
+
+            $(this).html(html.join('')).val(value);
+
+            if($(this).find('option:selected').prop('disabled') || $(this).val() == null){
+                internal_loop:
+                    for(var i = value, j = value+1; i >= 0 || j < $(this).children().length; i--, j++){
+                        if($(this).children().eq(i).length && !$(this).children().eq(i).prop('disabled')){
+                            var new_val = i;
+                            break internal_loop;
+                        }
+                        if($(this).children().eq(j).length && !$(this).children().eq(j).prop('disabled')){
+                            var new_val = j;
+                            break internal_loop;
+                        }
+                    }
+                $(this).val(new_val+1);
+            }
+            if(change){
+                $(this).change();
+            }
+        }
+
+    });
+
+}
+
+
 function fahrenheit_to_celcius(temp){
 
 	return precisionRound((temp-32)*(5/9), 4);
