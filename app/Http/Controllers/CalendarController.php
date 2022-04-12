@@ -143,7 +143,7 @@ class CalendarController extends Controller
         if(Gate::denies('view-image', $calendar)) {
 
             return response()->stream(function() use ($ext, $calendar) {
-                echo Storage::disk('assets')->get('resources/discord/premium-warning.png');
+                echo Storage::disk(config('filesystems.assets'))->get('resources/discord/premium-warning.png');
             }, 200, [
                 'Content-Disposition' => 'inline; filename="' . Str::slug(Str::ascii($calendar->name)) . '_' . Str::slug(Str::ascii($calendar->current_date)) . '.'. $ext .'"',
                 'Content-Type' => 'image/' . $ext,
