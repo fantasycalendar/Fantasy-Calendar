@@ -69,201 +69,205 @@
             }
         }
 
-        function dateSelector($data, date_object, { hasTime = true, hasButtons = true, previewDate = false }={}){
+        function dateSelector($data, date_object){
+
+            const date = clone(date_object);
 
             return {
 
-                date: date_object,
-                get hasTime(){
-                    return hasTime && $data.static_data.clock.enabled;
-                },
+                static_data: $data.static_data,
 
-                hasButtons: hasButtons,
+                current_year: date.year,
+                current_timespan: date.timespan,
+                current_day: date.day,
 
-                calendarTimespans: $data.static_data.year_data.timespans,
-                clock: $data.static_data.clock,
-
-                get currentTimespan(){
-                    return this.static_data.year_data.timespans[this.date.timespan];
-                },
-
-                get timespanInYearIndex(){
-                    return this.timespans.indexOf(this.currentTimespan);
-                },
-
-                _next_year_timespans: false,
-                get next_year_timespans(){
-                    if(!this._next_year_timespans) {
-                        this._next_year_timespans = window.calendar.getTimespansInYear(this.date.year + 1);
-                    }
-                    return this._next_year_timespans;
-                },
-
-                _prev_year_timespans: false,
-                get prev_year_timespans(){
-                    if(!this._prev_year_timespans) {
-                        this._prev_year_timespans = window.calendar.getTimespansInYear(this.date.year-1);
-                    }
-                    return this._prev_year_timespans;
-                },
-
-                prev_timespan: "",
                 timespans: [],
-                next_timespan: "",
-
-                _next_month_days: false,
-                get next_month_days(){
-                    if(!this._next_month_days) {
-                        if ((this.timespanInYearIndex + 1) > this.timespans.length - 1) {
-                            const firstMonthNextYear = this.next_year_timespans[0];
-                            this._next_month_days = window.calendar.getDaysForTimespanInYear(this.date.year + 1, firstMonthNextYear.index);
-                        }else{
-                            const nextMonth = this.timespans[this.timespanInYearIndex + 1];
-                            this._next_month_days = window.calendar.getDaysForTimespanInYear(this.date.year, nextMonth.index);
-                        }
-                    }
-                    return this._next_month_days;
-                },
-
-                _prev_month_days: false,
-                get prev_month_days() {
-                    if(!this._prev_month_days){
-                        if ((this.timespanInYearIndex - 1) < 0) {
-                            const lastMonthNextYear = this.prev_year_timespans[this.prev_year_timespans.length - 1];
-                            this._prev_month_days = window.calendar.getDaysForTimespanInYear(this.date.year - 1, lastMonthNextYear.index);
-                        } else {
-                            const lastMonthIndex = this.timespans[this.timespanInYearIndex - 1].index;
-                            this._prev_month_days = window.calendar.getDaysForTimespanInYear(this.date.year, lastMonthIndex);
-                        }
-                    }
-                    return this._prev_month_days;
-                },
-
-                prev_day: "",
                 days: [],
-                next_day: "",
+
+                prev: {
+                    year: 0,
+                    timespan: "Test",
+                    day: "1",
+                },
+
+                prev_year: { year: 0, timespan: 0, day: 0 },
+                prev_timespan: { year: 0, timespan: 0, day: 0 },
+                prev_day: { year: 0, timespan: 0, day: 0 },
+
+                next_year: { year: 0, timespan: 0, day: 0 },
+                next_timespan: { year: 0, timespan: 0, day: 0 },
+                next_day: { year: 0, timespan: 0, day: 0 },
 
                 init(){
-                    this.timespans = window.calendar.getTimespansInYear(this.date.year);
-                    this.days = window.calendar.getDaysForTimespanInYear(this.date.year, this.date.timespan);
-                    this.updatePrevNextTimespans();
-                    this.updatePrevNextDays();
+                    this.populateTimespans();
+                    this.populateDays();
+                    this.updatePlaceholders();
                 },
 
-                dateUpdated({ year, timespan, day, hour, minute }={}){
-                    this.date.year = year;
-                    this.date.timespan = timespan;
-                    this.date.day = day;
-                    this.date.hour = hour;
-                    this.date.minute = minute;
-                    this.updateTimespans();
+                populateTimespans(){
+                    this.timespans = window.calendar.getTimespansInYear(this.current_year);
                 },
 
-                updateTimespans(){
-                    this.timespans = window.calendar.getTimespansInYear(this.date.year);
-                    this.days = window.calendar.getDaysForTimespanInYear(this.date.year, this.date.timespan);
-                    this.clearCache();
+                populateDays(){
+                    this.days = window.calendar.getDaysForTimespanInYear(this.current_year, this.current_timespan);
                 },
 
-                clearCache(){
-                    this._next_month_days = false;
-                    this._prev_month_days = false;
-                    this._next_year_timespans = false;
-                    this._prev_year_timespans = false;
-                    this.updatePrevNextTimespans();
-                    this.updatePrevNextDays();
+                updatePlaceholders() {
+                    this.getYearPlaceholders();
+                    this.getTimespanPlaceholders();
+                    this.getDayPlaceholders();
                 },
 
-                updatePrevNextTimespans(){
+                getYearPlaceholders() {
 
-                    if((this.timespanInYearIndex+1) >= this.timespans.length){
-                        this.next_timespan = this.next_year_timespans[0].name;
-                    }else{
-                        this.next_timespan = this.timespans[this.timespanInYearIndex+1].name;
+                    /*  Years  */
+                    this.prev_year = {
+                        year: this.current_year - 1,
+                        timespan: this.current_timespan,
+                        day: this.current_day
+                    };
+
+                    const prevYearTimespans = Array.from(window.calendar.getTimespansInYear(this.prev_year.year)).map(timespan => timespan.index);
+                    if(!prevYearTimespans.includes(this.current_timespan)){
+                        this.prev_year.timespan = prevYearTimespans.reduce((prev, curr) => {
+                            return (Math.abs(curr - this.current_timespan) < Math.abs(prev - this.current_timespan) ? curr : prev);
+                        });
                     }
 
-                    if((this.timespanInYearIndex-1) < 0){
-                        this.prev_timespan = this.prev_year_timespans[this.prev_year_timespans.length-1].name;
-                    }else{
-                        this.prev_timespan = this.timespans[this.timespanInYearIndex-1].name;
+                    const prevDaysInPrevTimespan = window.calendar.getDaysForTimespanInYear(this.prev_year.year, this.prev_year.timespan);
+                    this.prev_year.day = Math.max(1, Math.min(prevDaysInPrevTimespan.length, this.current_day));
+
+
+                    this.next_year = {
+                        year: this.current_year + 1,
+                        timespan: this.current_timespan,
+                        day: this.current_day
+                    };
+
+                    const nextYearTimespans = window.calendar.getTimespansInYear(this.next_year.year).map(timespan => timespan.index);
+                    if(!nextYearTimespans.includes(this.current_timespan)){
+                        this.next_year.timespan = nextYearTimespans.reduce((prev, curr) => {
+                            return (Math.abs(curr - this.current_timespan) < Math.abs(prev - this.current_timespan) ? curr : prev);
+                        });
+                    }
+
+                    const nextDaysInNextTimespan = window.calendar.getDaysForTimespanInYear(this.next_year.year, this.next_year.timespan);
+                    this.next_year.day = Math.max(1, Math.min(nextDaysInNextTimespan.length, this.current_day));
+
+                },
+
+                getTimespanPlaceholders() {
+
+                    /*  Timespans  */
+                    const timespanIndexInYear = Array.from(this.timespans).find(timespan => timespan.index === this.current_timespan).index;
+
+                    const prevTimespanIsInLastYear = (timespanIndexInYear - 1) < 0;
+                    const prevTimespanYear = prevTimespanIsInLastYear ? this.current_year - 1 : this.current_year;
+                    const prevTimespan = prevTimespanIsInLastYear
+                        ? collect(window.calendar.getTimespansInYear(this.current_year - 1)).last()
+                        : this.timespans.get(timespanIndexInYear - 1);
+
+                    const prevTimespanDays = window.calendar.getDaysForTimespanInYear(prevTimespanYear, prevTimespan.index);
+
+                    this.prev_timespan = {
+                        year: prevTimespanYear,
+                        timespan: prevTimespan.index,
+                        day: Math.max(1, Math.min(prevTimespanDays.length, this.current_day))
+                    };
+
+                    const nextTimespanIsInNextYear = (timespanIndexInYear + 1) >= this.timespans.count();
+                    const nextTimespanYear = nextTimespanIsInNextYear ? this.current_year + 1 : this.current_year;
+                    const nextTimespan = nextTimespanIsInNextYear
+                        ? collect(window.calendar.getTimespansInYear(this.current_year + 1)).first()
+                        : this.timespans.get(timespanIndexInYear + 1);
+
+                    const nextTimespanDays = window.calendar.getDaysForTimespanInYear(nextTimespanYear, nextTimespan.index)
+
+                    this.next_timespan = {
+                        year: nextTimespanYear,
+                        timespan: nextTimespan.index,
+                        day: Math.max(1, Math.min(nextTimespanDays.length, this.current_day))
+                    };
+
+                },
+
+                getDayPlaceholders(){
+
+                    /*  Days  */
+                    const timespanIndexInYear = Array.from(this.timespans).find(timespan => timespan.index === this.current_timespan).index;
+
+                    this.prev_day = {
+                        year: this.current_year,
+                        timespan: this.current_timespan,
+                        day: this.current_day - 1
+                    }
+
+                    const prevDayIsInLastTimespan = (this.current_day - 1) < 1;
+                    if(prevDayIsInLastTimespan){
+
+                        const prevTimespanIsInLastYear = (timespanIndexInYear - 1) < 0;
+
+                        const prevYear = prevTimespanIsInLastYear ? this.current_year - 1 : this.current_year;
+
+                        const prevTimespan = prevTimespanIsInLastYear
+                            ? collect(window.calendar.getTimespansInYear(this.current_year - 1)).last()
+                            : this.timespans.get(timespanIndexInYear - 1);
+
+                        const days = window.calendar.getDaysForTimespanInYear(prevYear, prevTimespan.index);
+
+                        this.prev_day = {
+                            year: prevYear,
+                            timespan: prevTimespan.index,
+                            day: days.length
+                        };
+
+                    }
+
+
+                    this.next_day = {
+                        year: this.current_year,
+                        timespan: this.current_timespan,
+                        day: this.current_day + 1
+                    }
+
+                    const nextDayIsInNextTimespan = (this.current_day + 1) >= this.days.length;
+                    if(nextDayIsInNextTimespan){
+
+                        const nextTimespanIsInNextYear = (timespanIndexInYear + 1) >= this.timespans.count();
+                        const nextTimespan = nextTimespanIsInNextYear
+                            ? collect(window.calendar.getTimespansInYear(this.current_year + 1)).first()
+                            : this.timespans.get(timespanIndexInYear + 1);
+
+                        this.next_day = {
+                            year: nextTimespanIsInNextYear ? this.current_year + 1 : this.current_year,
+                            timespan: nextTimespan.index,
+                            day: 1
+                        };
+
                     }
 
                 },
 
-                updatePrevNextDays(){
-
-                    if(this.date.day >= this.days.length){
-                        this.next_day = this.next_month_days[0];
-                    }else{
-                        this.next_day = this.days[this.date.day];
+                changedDate($event){
+                    if($event.detail.year !== undefined){
+                        this.current_year = $event.detail.year;
+                        this.populateTimespans();
+                        if($event.detail.timespan === undefined){
+                            this.populateDays();
+                        }
                     }
-
-                    if((this.date.day-1) <= 0){
-                        this.prev_day = this.prev_month_days[this.prev_month_days.length-1];
-                    }else{
-                        this.prev_day = this.days[this.date.day-2];
+                    if($event.detail.timespan !== undefined){
+                        this.current_timespan = $event.detail.timespan;
+                        this.populateDays();
                     }
-
-                },
-
-                setYear(target){
-                    this.date.year = target;
-                    this.clearCache();
-                },
-
-                setMonth(target){
-
-                    this._next_month_days = false;
-                    this._prev_month_days = false;
-
-                    if(target >= this.timespans.length){
-                        this.setYear(this.date.year+1);
-                        this.timespans = window.calendar.getTimespansInYear(this.date.year);
-                        this.date.timespan = this.timespans[0].index;
-                    }else if(target < 0){
-                        this.setYear(this.date.year-1);
-                        this.timespans = window.calendar.getTimespansInYear(this.date.year);
-                        this.date.timespan = this.timespans[this.timespans.length-1].index;
-                    }else{
-                        this.date.timespan = this.timespans[target].index;
+                    if($event.detail.day !== undefined){
+                        this.current_day = $event.detail.day;
                     }
-
-                    this.days = window.calendar.getDaysForTimespanInYear(this.date.year, this.date.timespan);
-                    this.date.day = Math.min(this.date.day, this.days.length)
-
-                    this.updatePrevNextTimespans();
-                    this.updatePrevNextDays();
-
-                },
-
-                setDay(target){
-
-                    if(target > this.days.length){
-                        this.setMonth(this.timespanInYearIndex+1);
-                        this.date.day = 1;
-                    }else if(target <= 0){
-                        this.setMonth(this.timespanInYearIndex-1);
-                        this.date.day = this.days.length;
-                    }else{
-                        this.date.day = target;
-                    }
-
-                    this.updatePrevNextDays();
-
-                },
-
-                setHour(target){
-
-                    // TODO: We need to reimplement the time inputs
-
-                },
-
-                setMinute(target){
-
-                    // TODO: We need to reimplement the time inputs
-
+                    this.updatePlaceholders();
                 }
+
             }
+
         }
 
         function fixedUnitsHandler(){
@@ -347,7 +351,7 @@
 
                     const targetEpoch = this.targetEpoch;
 
-                    window.dispatchEvent(new CustomEvent("current-date-changed", { detail: {
+                    window.dispatchEvent(new CustomEvent("changed-current-date", { detail: {
                         year: year,
                         timespan: timespanIndex,
                         day: day,
@@ -357,7 +361,7 @@
                     }}));
 
                     if(window.calendar.preview_date.follow) {
-                        window.dispatchEvent(new CustomEvent("preview-date-changed", { detail: {
+                        window.dispatchEvent(new CustomEvent("changed-preview-date", { detail: {
                             year: year,
                             timespan: timespanIndex,
                             day: day,
@@ -455,7 +459,7 @@
 
             <div
                 x-data="dateSelector($data, dynamic_data)"
-                @current-date-changed.window="dateUpdated($event.detail)"
+                @changed-current-date.window="changedDate"
                 @calendar-structure-changed.window="updateTimespans()"
                 @timespan-name-changed.window="updateTimespans()"
             >
@@ -463,43 +467,43 @@
                 <div class="row my-2 divide-x divide-gray-500">
                     <div class="col-2">
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setDay(date.day - 1)" x-text="prev_day"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('changed-current-date', prev_day)" x-text="prev_day.day"></span>
                         </div>
                         <div class="row text-center py-1">
-                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="date.day">
+                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="current_day">
                                 <template x-for="(day, index) in days">
-                                    <option :selected="date.day === (index+1)" :value="index+1" x-text="day"></option>
+                                    <option :selected="current_day === (index+1)" :value="index+1" x-text="day"></option>
                                 </template>
                             </select>
                         </div>
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setDay(date.day + 1)" x-text="next_day"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('changed-current-date', next_day)" x-text="next_day.day"></span>
                         </div>
                     </div>
                     <div class="col-8">
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(timespanInYearIndex - 1)" x-text="prev_timespan"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('changed-current-date', prev_timespan)" x-text="static_data.year_data.timespans[prev_timespan.timespan].name"></span>
                         </div>
                         <div class="row text-center py-1">
-                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="date.timespan">
+                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="current_timespan">
                                 <template x-for="(timespan, index) in timespans">
-                                    <option :selected="date.timespan === timespan.index" :value="timespan.index" x-text="timespan.name"></option>
+                                    <option :selected="current_timespan === timespan.index" :value="timespan.index" x-text="timespan.name"></option>
                                 </template>
                             </select>
                         </div>
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(timespanInYearIndex + 1)" x-text="next_timespan"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('changed-current-date', next_timespan)" x-text="static_data.year_data.timespans[next_timespan.timespan].name"></span>
                         </div>
                     </div>
                     <div class="col-2">
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setYear(date.year - 1)" x-text="date.year - 1"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('changed-current-date', prev_year)" x-text="prev_year.year"></span>
                         </div>
                         <div class="row text-center py-1">
-                            <input type="number" class='no-spinner appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center' x-model.number="date.year">
+                            <input type="number" class='no-spinner appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center' x-model.number="current_year">
                         </div>
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setYear(date.year + 1)" x-text="date.year + 1"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('changed-current-date', next_year)" x-text="next_year.year"></span>
                         </div>
                     </div>
                 </div>
@@ -507,7 +511,7 @@
         </div>
 
 
-        <div class='date_inputs date_control preview_date_controls container mt-3'>
+        {{--<div class='date_inputs date_control preview_date_controls container mt-3'>
 
             <div class='row'>
                 <h5 class="my-0 py-0">Preview date:</h5>
@@ -515,7 +519,7 @@
 
             <div
                 x-data="dateSelector($data, preview_date, { hasButtons: true, previewDate: true})"
-                @preview-date-changed.window="dateUpdated($event.detail)"
+                @changed-preview-date.window="dateUpdated($event.detail)"
                 @calendar-structure-changed.window="updateTimespans()"
                 @timespan-name-changed.window="updateTimespans()"
             >
@@ -523,43 +527,43 @@
                 <div class="row my-2 divide-x divide-gray-500">
                     <div class="col-2">
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setDay(date.day - 1)" x-text="date.day - 1"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setDay(current_day - 1)" x-text="current_day - 1"></span>
                         </div>
                         <div class="row text-center py-1">
-                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="date.day">
+                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="current_day">
                                 <template x-for="(day, index) in days">
-                                    <option :selected="date.day === (index+1)" :value="index+1" x-text="day"></option>
+                                    <option :selected="current_day === (index+1)" :value="index+1" x-text="day"></option>
                                 </template>
                             </select>
                         </div>
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setDay(date.day + 1)" x-text="date.day + 1"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setDay(current_day + 1)" x-text="current_day + 1"></span>
                         </div>
                     </div>
                     <div class="col-8">
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(date.timespan - 1)" x-text="prev_timespan"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(current_timespan - 1)" x-text="prev_timespan"></span>
                         </div>
                         <div class="row text-center py-1">
-                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="date.timespan">
+                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="current_timespan">
                                 <template x-for="(timespan, index) in timespans">
-                                    <option :selected="date.timespan === index" :value="index" x-text="timespan.name"></option>
+                                    <option :selected="current_timespan === index" :value="index" x-text="timespan.name"></option>
                                 </template>
                             </select>
                         </div>
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(date.timespan + 1)" x-text="next_timespan"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(current_timespan + 1)" x-text="next_timespan"></span>
                         </div>
                     </div>
                     <div class="col-2">
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setYear(date.year - 1)" x-text="date.year - 1"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setYear(current_year - 1)" x-text="current_year - 1"></span>
                         </div>
                         <div class="row text-center py-1">
-                            <input type="number" class='no-spinner appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center' x-model.number="date.year">
+                            <input type="number" class='no-spinner appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center' x-model.number="current_year">
                         </div>
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setYear(date.year + 1)" x-text="date.year + 1"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setYear(current_year + 1)" x-text="date.year + 1"></span>
                         </div>
                     </div>
                 </div>
@@ -575,7 +579,7 @@
                     <div class='btn btn-info full' x-show="!preview_date.follow" @click="$dispatch('go-to-current-date')">Go To Current Date</div>
                 </div>
             </div>
-        </div>
+        </div>--}}
 
         <div class='wrap-collapsible card full' x-data="fixedUnitsHandler()">
             <input class="toggle" type="checkbox" id="collapsible_add_units">
