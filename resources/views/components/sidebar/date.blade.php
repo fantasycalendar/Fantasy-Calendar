@@ -230,7 +230,7 @@
                         day: this.current_day + 1
                     }
 
-                    const nextDayIsInNextTimespan = (this.current_day + 1) >= this.days.length;
+                    const nextDayIsInNextTimespan = (this.current_day + 1) > this.days.length;
                     if(nextDayIsInNextTimespan){
 
                         const nextTimespanIsInNextYear = (timespanIndexInYear + 1) >= this.timespans.count();
