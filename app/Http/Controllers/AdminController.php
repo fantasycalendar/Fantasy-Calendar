@@ -11,7 +11,6 @@ class AdminController extends Controller
         request()->session()->push('admin.id', Auth::user()->id);
 
         if(request()->has('returnPath')) {
-            ld(request()->get('returnPath'));
             request()->session()->put('return_path', request()->get('returnPath'));
         }
 
@@ -27,8 +26,6 @@ class AdminController extends Controller
         if(!request()->session()->has('admin.id')) {
             return redirect('/');
         }
-
-        ld(request()->session()->get('return_path'));
 
         Auth::logout();
         Auth::loginUsingId(request()->session()->get('admin.id'));

@@ -64,8 +64,6 @@ class UserResource extends Resource
 
     public static function table(Table $table): Table
     {
-        ld(request()->url());
-
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('username'),
