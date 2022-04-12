@@ -61,7 +61,8 @@ return [
         ],
 
         'assets' => [
-            'driver' => env('ASSETS_DRIVER', env('AWS_LAMBDA_FUNCTION_NAME') ? 's3' : 'local')
+            'driver' => env('ASSETS_DRIVER', env('AWS_LAMBDA_FUNCTION_NAME') ? 's3' : 'local'),
+            'root' => env('ASSETS_ROOT', env('AWS_LAMBDA_FUNCTION_NAME') ? '/' : public_path('/'))
         ],
 
         's3' => [
