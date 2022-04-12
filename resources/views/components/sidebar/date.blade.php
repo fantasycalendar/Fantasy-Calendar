@@ -351,7 +351,7 @@
 
                     const targetEpoch = this.targetEpoch;
 
-                    window.dispatchEvent(new CustomEvent("changed-current-date", { detail: {
+                    window.dispatchEvent(new CustomEvent("change-current-date", { detail: {
                         year: year,
                         timespan: timespanIndex,
                         day: day,
@@ -361,7 +361,7 @@
                     }}));
 
                     if(window.calendar.preview_date.follow) {
-                        window.dispatchEvent(new CustomEvent("changed-preview-date", { detail: {
+                        window.dispatchEvent(new CustomEvent("change-preview-date", { detail: {
                             year: year,
                             timespan: timespanIndex,
                             day: day,
@@ -467,7 +467,7 @@
                 <div class="row my-2 divide-x divide-gray-500">
                     <div class="col-2">
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('changed-current-date', prev_day)" x-text="prev_day.day"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('change-current-date', prev_day)" x-text="prev_day.day"></span>
                         </div>
                         <div class="row text-center py-1">
                             <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="current_day">
@@ -477,12 +477,12 @@
                             </select>
                         </div>
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('changed-current-date', next_day)" x-text="next_day.day"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('change-current-date', next_day)" x-text="next_day.day"></span>
                         </div>
                     </div>
                     <div class="col-8">
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('changed-current-date', prev_timespan)" x-text="static_data.year_data.timespans[prev_timespan.timespan].name"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('change-current-date', prev_timespan)" x-text="static_data.year_data.timespans[prev_timespan.timespan].name"></span>
                         </div>
                         <div class="row text-center py-1">
                             <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="current_timespan">
@@ -492,18 +492,18 @@
                             </select>
                         </div>
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('changed-current-date', next_timespan)" x-text="static_data.year_data.timespans[next_timespan.timespan].name"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('change-current-date', next_timespan)" x-text="static_data.year_data.timespans[next_timespan.timespan].name"></span>
                         </div>
                     </div>
                     <div class="col-2">
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('changed-current-date', prev_year)" x-text="prev_year.year"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('change-current-date', prev_year)" x-text="prev_year.year"></span>
                         </div>
                         <div class="row text-center py-1">
                             <input type="number" class='no-spinner appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center' x-model.number="current_year">
                         </div>
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('changed-current-date', next_year)" x-text="next_year.year"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('change-current-date', next_year)" x-text="next_year.year"></span>
                         </div>
                     </div>
                 </div>

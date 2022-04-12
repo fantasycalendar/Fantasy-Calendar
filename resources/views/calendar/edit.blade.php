@@ -139,6 +139,16 @@
 
             },
 
+            changeCurrentDate($event){
+
+                this.dynamic_data.year = $event.detail.year;
+                this.dynamic_data.timespan = $event.detail.timespan;
+                this.dynamic_data.day = $event.detail.day;
+
+                window.dispatchEvent(new CustomEvent('changed-current-date', { detail: clone(this.dynamic_data) } ));
+
+            }
+
         }
 
     }
@@ -200,7 +210,11 @@
 @endpush
 
 @section('content')
-    <div id="generator_container" x-data="sidebar()">
+    <div
+        id="generator_container"
+        x-data="sidebar()"
+        @change-current-date.window="changeCurrentDate"
+    >
         @include('layouts.layouts')
         @include('layouts.weather_tooltip')
         @include('layouts.day_data_tooltip')
