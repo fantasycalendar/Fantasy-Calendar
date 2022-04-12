@@ -258,7 +258,7 @@
                                 </a>
                             </div>
 
-                            <div class="absolute top-4 md:top-auto right-4" x-data="{open: false}" @click.outside="open = false">
+                            <div class="absolute top-4 md:top-auto right-4" x-data="{open: true}" @click.outside="open = false">
                                 <div class="h-full flex items-center">
                                     <button @click="open = ! open" type="button" class="dark:hover:bg-gray-700 flex rounded-full dark:text-gray-400 dark:hover:text-gray-300 p-2 items-center text-gray-400 hover:text-gray-600 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-700 focus:ring-primary-500" id="menu-button" aria-expanded="true" aria-haspopup="true">
                                         <span class="sr-only">Open options</span>
@@ -305,9 +305,9 @@
                                     </div>
                                     <div class="py-1" role="none">
                                         @feature('embed')
-                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.guided_embed', ['calendar' => $calendar->hash]) }}" role="menuitem" tabindex="-1">
-                                            Embed
-                                        </a>
+                                            <a class="@if(!auth()->user()->isPremium()) pointer-events-none bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 @else text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 @endif block px-4 py-2 text-md" href="{{ route('calendars.guided_embed', ['calendar' => $calendar->hash]) }}" role="menuitem" tabindex="-1">
+                                                <span class="inline-block">Embed <span class="pl-1 text-xs text-primary-400 dark:text-primary-500">(Subscriber-only)</span></span>
+                                            </a>
                                         @endfeature
                                         <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.show', ['calendar' => $calendar->hash, 'print' => 1]) }}"  >
                                             Print
