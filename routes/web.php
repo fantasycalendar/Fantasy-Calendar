@@ -27,7 +27,7 @@ use Intervention\Image\Facades\Image;
 |
 */
 
-Route::get('/embed/{calendar}', [EmbedController::class, 'embedCalendar']);
+Route::get('/embed/{calendar}', [EmbedController::class, 'embedCalendar'])->middleware('can:embedAny,App\Models\Calendar');
 
 Route::get('/', [WelcomeController::class, 'welcome'])->name('home');
 Route::view('/welcome', 'welcome')->name('welcome');
@@ -75,7 +75,7 @@ Route::prefix('invite')->group(function(){
 // Calendar management
 Route::middleware(['account.deletion', 'agreement'])->group(function(){
     Route::group(['as' => 'calendars.', 'prefix' => 'calendars'], function(){
-        Route::get('/{calendar}/guided_embed', [CalendarController::class, 'guidedEmbed'])->name('guided_embed');
+        Route::get('/{calendar}/guided_embed', [CalendarController::class, 'guidedEmbed'])->name('guided_embed')->middleware('can:embedAny,App\Models\Calendar');
         Route::get('/{calendar}/export', [CalendarController::class, 'export'])->name('export');
         Route::get('/{calendar}.{ext}', [CalendarController::class, 'renderImage'])->name('image');
     });

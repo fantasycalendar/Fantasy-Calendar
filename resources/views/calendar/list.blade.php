@@ -304,9 +304,11 @@
                                         </span>
                                     </div>
                                     <div class="py-1" role="none">
+                                        @feature('embed')
                                         <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.guided_embed', ['calendar' => $calendar->hash]) }}" role="menuitem" tabindex="-1">
                                             Embed
                                         </a>
+                                        @endfeature
                                         <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.show', ['calendar' => $calendar->hash, 'print' => 1]) }}"  >
                                             Print
                                         </a>
