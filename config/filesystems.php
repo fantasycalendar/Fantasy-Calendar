@@ -60,6 +60,10 @@ return [
             'visibility' => 'public',
         ],
 
+        'assets' => [
+            'driver' => env('ASSETS_DRIVER', env('AWS_LAMBDA_FUNCTION_NAME') ? 's3' : 'local')
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

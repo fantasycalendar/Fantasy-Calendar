@@ -14,6 +14,7 @@ use App\Models\Calendar;
 use App\Jobs\SaveEventCategories;
 use App\Jobs\SaveCalendarEvents;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CalendarController extends Controller
@@ -140,7 +141,7 @@ class CalendarController extends Controller
     public function renderImage(Calendar $calendar, $ext)
     {
         if(Gate::denies('view-image', $calendar) && !app()->environment('local')) {
-            $pathToFile = public_path('resources/discord/premium-warning.png');
+            $pathToFile = Storage::disk('assets')->get('resources/discord/premium-warning.png');
             $headers = ['Content-Type' => 'image/png'];
 
             return response()->file($pathToFile, $headers);
