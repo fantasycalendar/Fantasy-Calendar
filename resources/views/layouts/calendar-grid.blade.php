@@ -11,7 +11,6 @@
         @render-data-change.window="
             pre_render();
             load_calendar($event);
-            $nextTick(() => { post_render($dispatch) });
         "
         @update-epochs.window="update_epochs"
         x-for="(timespan, index) in render_data.timespans"

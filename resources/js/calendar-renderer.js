@@ -1,3 +1,20 @@
+const render_data_template = {
+    current_epoch: 0,
+    preview_epoch: 0,
+    render_style: "grid",
+    timespans: [],
+    event_epochs: [],
+    timespan_event_epochs: [],
+    only_reveal_today: false,
+    hide_moons: false,
+    hide_events: false,
+    hide_all_weather: false,
+    hide_future_weather: false,
+    add_month_number: false,
+    add_year_day_number: false,
+    hide_weekdays: false
+};
+
 const calendar_renderer = {
 
     loaded: false,
@@ -10,22 +27,7 @@ const calendar_renderer = {
     prev_current_epoch: 0,
     prev_preview_epoch: 0,
 
-    render_data: {
-        current_epoch: 0,
-        preview_epoch: 0,
-        render_style: "grid",
-        timespans: [],
-        event_epochs: [],
-        timespan_event_epochs: [],
-        only_reveal_today: false,
-        hide_moons: false,
-        hide_events: false,
-        hide_all_weather: false,
-        hide_future_weather: false,
-        add_month_number: false,
-        add_year_day_number: false,
-        hide_weekdays: false
-    },
+    render_data: JSON.parse(JSON.stringify(render_data_template)),
 
     register_render_callback(callback){
         this.render_callbacks.push(callback)
@@ -33,8 +35,13 @@ const calendar_renderer = {
 
     load_calendar: function(event){
         this.loading_message = "Building calendar...";
-        console.log(event.detail)
-        this.render_data = event.detail;
+        this.render_data = JSON.parse(JSON.stringify(render_data_template));
+        this.$nextTick(() => {
+            this.render_data = JSON.parse(JSON.stringify(event.detail));
+            this.$nextTick(() => {
+                this.post_render()
+            });
+        });
     },
 
     view_event: function(event) {
@@ -82,7 +89,7 @@ const calendar_renderer = {
         show_loading_screen_buffered();
     },
 
-    post_render: function($dispatch){
+    post_render: function(){
         this.loading_message = "Wrapping up rendering...";
 
         hide_loading_screen();
@@ -110,7 +117,7 @@ const calendar_renderer = {
         this.prev_current_epoch = this.render_data.current_epoch;
         this.prev_preview_epoch = this.render_data.preview_epoch;
 
-        $dispatch('layout-change', {apply: this.render_data.current_month_only ? 'single_month' : ''});
+        window.dispatchEvent(new CustomEvent('layout-change', { detail: {apply: this.render_data.current_month_only ? 'single_month' : '' }}));
 
 	    execution_time.end("Calculating and rendering calendar took:")
     },
