@@ -227,7 +227,12 @@ class User extends Authenticatable implements
         return $this;
     }
 
+    // If Stripe is not enabled as a feature, we just want all the premium things available.
     public function isPremium() {
+        if(!feature('stripe')) {
+            return true;
+        }
+
         return $this->paymentLevel() !== 'Free';
     }
 

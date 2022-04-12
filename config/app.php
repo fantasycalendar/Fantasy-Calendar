@@ -67,6 +67,8 @@ return [
 
     'mix_url' => env('MIX_ASSET_URL', null),
 
+    'features_enabled' => env('APP_FEATURES_ENABLED', null) ? explode(',', env('APP_FEATURES_ENABLED')) : '',
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

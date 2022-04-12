@@ -32,7 +32,9 @@
                         <x-nav-link href="{{ route('calendars.index') }}">My Calendars</x-nav-link>
                         <x-nav-link href="{{ route('calendars.create') }}">New Calendar</x-nav-link>
                         <x-nav-link href="{{ route('faq') }}">FAQs</x-nav-link>
-                        <x-nav-link href="{{ route('discord') }}">Discord Integration</x-nav-link>
+                        @feature('discord')
+                            <x-nav-link href="{{ route('discord') }}">Discord Integration</x-nav-link>
+                        @endfeature
                     </div>
                 </div>
                 <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
@@ -52,22 +54,8 @@
                     <!-- Mobile menu button -->
                     <button class="inline-flex items-center justify-center p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white" @click="menu = !menu">
                         <span class="sr-only">Open main menu</span>
-                        <!--
-                          Heroicon name: menu
-
-                          Menu open: "hidden", Menu closed: "block"
-                        -->
-                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                        <!--
-                          Heroicon name: x
-
-                          Menu open: "block", Menu closed: "hidden"
-                        -->
-                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <x-heroicon-o-menu ::class="{ 'hidden': !menu, 'block': menu }" class="block h-6 w-6"></x-heroicon-o-menu>
+                        <x-heroicon-o-x ::class="{ 'hidden': menu, 'block': !menu }" class="hidden h-6 w-6"></x-heroicon-o-x>
                     </button>
                 </div>
             </div>

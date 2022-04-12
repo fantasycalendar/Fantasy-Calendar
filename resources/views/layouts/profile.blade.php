@@ -5,11 +5,13 @@
                 <aside class="pb-6 px-2 sm:px-6 lg:pb-0 lg:px-0 lg:col-span-3">
                     <nav class="space-y-1">
                         <x-left-nav-item icon="cog" label="Account" route="profile"></x-left-nav-item>
-                        <x-left-nav-item icon="credit-card" label="Plan & Billing" route="profile.billing"></x-left-nav-item>
+                        @feature('stripe')
+                            <x-left-nav-item icon="credit-card" label="Plan & Billing" route="profile.billing"></x-left-nav-item>
+                        @endfeature
 
-                        @if(config('services.discord.enabled'))
+                        @feature('discord')
                             <x-left-nav-item icon="puzzle-piece" label="Integrations" route="profile.integrations"></x-left-nav-item>
-                        @endif
+                        @endfeature
 
                         @can('interact', \Laravel\Sanctum\PersonalAccessToken::class)
                             <div class="border-t dark:border-gray-800"></div>

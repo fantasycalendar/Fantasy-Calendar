@@ -82,29 +82,31 @@
             <x-alert type="warning" class="mb-4">{{ session('alert-warning') }}</x-alert>
         @endif
 
-        @if(!auth()->user()->acknowledged_discord_announcement)
-            <x-alert type="notice"
-                     icon="fab fa-discord"
-                     class="relative mb-4"
-                     x-data="{ show: true }"
-                     x-show="show"
-                     x-transition:enter="transform ease-out duration-300 transition"
-                     x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
-                     x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
-                     x-transition:leave="transition ease-in duration-100"
-                     x-transition:leave-start="opacity-100"
-                     x-transition:leave-end="opacity-0"
-            >
-                <i @click="axios.get('{{ route('discord-announcement-acknowledge') }}').then(() => { show = false; $dispatch('notification', { title: 'Dismissed!', body: `You can always check out the Discord integration via 'integrations' on your profile.` }) })" class="cursor-pointer fa fa-times float-right"></i>
-                <h4 class="font-semibold">Fantasy Calendar integrates with Discord!</h4>
+        @feature('discord')
+            @if(!auth()->user()->acknowledged_discord_announcement)
+                <x-alert type="notice"
+                         icon="fab fa-discord"
+                         class="relative mb-4"
+                         x-data="{ show: true }"
+                         x-show="show"
+                         x-transition:enter="transform ease-out duration-300 transition"
+                         x-transition:enter-start="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+                         x-transition:enter-end="translate-y-0 opacity-100 sm:translate-x-0"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                >
+                    <i @click="axios.get('{{ route('discord-announcement-acknowledge') }}').then(() => { show = false; $dispatch('notification', { title: 'Dismissed!', body: `You can always check out the Discord integration via 'integrations' on your profile.` }) })" class="cursor-pointer fa fa-times float-right"></i>
+                    <h4 class="font-semibold">Fantasy Calendar integrates with Discord!</h4>
 
-                @if(!auth()->user()->isPremium())
-                    <div>All the information about this subscriber feature (<a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('subscription.pricing') }}">only $2.49/month!</a>) can be found <a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('discord') }}">on this page</a>!</div>
-                @else
-                    <div>All the information can be found <a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('discord') }}">on this page</a> - as a subscriber, you have immediate <a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('profile.integrations') }}">access</a>!</div>
-                @endif
-            </x-alert>
-        @endif
+                    @if(!auth()->user()->isPremium())
+                        <div>All the information about this subscriber feature (<a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('subscription.pricing') }}">only $2.49/month!</a>) can be found <a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('discord') }}">on this page</a>!</div>
+                    @else
+                        <div>All the information can be found <a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('discord') }}">on this page</a> - as a subscriber, you have immediate <a class="font-semibold underline hover:text-blue-500 dark:hover:text-white" href="{{ route('profile.integrations') }}">access</a>!</div>
+                    @endif
+                </x-alert>
+            @endif
+        @endfeature
 
         @foreach($invitations as $invitation)
             <x-alert type="success" icon="" class="mb-10">
@@ -302,9 +304,11 @@
                                         </span>
                                     </div>
                                     <div class="py-1" role="none">
+                                        @feature('embed')
                                         <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.guided_embed', ['calendar' => $calendar->hash]) }}" role="menuitem" tabindex="-1">
                                             Embed
                                         </a>
+                                        @endfeature
                                         <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.show', ['calendar' => $calendar->hash, 'print' => 1]) }}"  >
                                             Print
                                         </a>

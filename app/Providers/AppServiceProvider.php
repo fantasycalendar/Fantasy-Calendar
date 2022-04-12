@@ -66,6 +66,10 @@ class AppServiceProvider extends ServiceProvider
             return auth()->check() && auth()->user()->setting($value);
         });
 
+        Blade::if('feature', function($value) {
+            return feature($value);
+        });
+
         if(app()->environment(['local'])) {
             URL::forceRootUrl(config('app.url'));
         }

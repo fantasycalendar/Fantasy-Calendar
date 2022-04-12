@@ -47,7 +47,9 @@
     @endif
 
     <script src="{{ mix('/js/app-tw.js') }}" defer></script>
-    <script src="https://js.stripe.com/v3/"></script>
+    @feature('stripe')
+        <script src="https://js.stripe.com/v3/"></script>
+    @endfeature
 
     <script>
 
