@@ -141,7 +141,6 @@ class CalendarController extends Controller
     public function renderImage(Calendar $calendar, $ext)
     {
         if(Gate::denies('view-image', $calendar)) {
-
             return response()->stream(function() use ($ext, $calendar) {
                 echo Storage::disk(config('filesystems.assets'))->get('resources/discord/premium-warning.png');
             }, 200, [

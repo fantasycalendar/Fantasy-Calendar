@@ -258,7 +258,7 @@
                                 </a>
                             </div>
 
-                            <div class="absolute top-4 md:top-auto right-4" x-data="{open: true}" @click.outside="open = false">
+                            <div class="absolute top-4 md:top-auto right-4" x-data="{open: false}" @click.outside="open = false">
                                 <div class="h-full flex items-center">
                                     <button @click="open = ! open" type="button" class="dark:hover:bg-gray-700 flex rounded-full dark:text-gray-400 dark:hover:text-gray-300 p-2 items-center text-gray-400 hover:text-gray-600 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-700 focus:ring-primary-500" id="menu-button" aria-expanded="true" aria-haspopup="true">
                                         <span class="sr-only">Open options</span>

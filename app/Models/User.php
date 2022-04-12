@@ -229,8 +229,6 @@ class User extends Authenticatable implements
 
     // If Stripe is not enabled as a feature, we just want all the premium things available.
     public function isPremium() {
-        return false;
-
         if(!feature('stripe')) {
             return true;
         }
