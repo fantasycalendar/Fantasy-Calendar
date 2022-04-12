@@ -105,7 +105,7 @@
                 },
 
                 populateTimespans(){
-                    this.timespans = window.calendar.getTimespansInYear(this.current_year);
+                    this.timespans = collect(window.calendar.getTimespansInYear(this.current_year));
                 },
 
                 populateDays(){
@@ -127,7 +127,7 @@
                         day: this.current_day
                     };
 
-                    const prevYearTimespans = Array.from(window.calendar.getTimespansInYear(this.prev_year.year)).map(timespan => timespan.index);
+                    const prevYearTimespans = window.calendar.getTimespansInYear(this.prev_year.year).map(timespan => timespan.index);
                     if(!prevYearTimespans.includes(this.current_timespan)){
                         this.prev_year.timespan = prevYearTimespans.reduce((prev, curr) => {
                             return (Math.abs(curr - this.current_timespan) < Math.abs(prev - this.current_timespan) ? curr : prev);
@@ -486,7 +486,7 @@
                         </div>
                         <div class="row text-center py-1">
                             <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="current_timespan">
-                                <template x-for="(timespan, index) in timespans">
+                                <template x-for="(timespan, index) in Array.from(timespans)">
                                     <option :selected="current_timespan === timespan.index" :value="timespan.index" x-text="timespan.name"></option>
                                 </template>
                             </select>
