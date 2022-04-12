@@ -77,9 +77,11 @@
 
                 static_data: $data.static_data,
 
-                current_year: date.year,
-                current_timespan: date.timespan,
-                current_day: date.day,
+                date: {
+                    year: date.year,
+                    timespan: date.timespan,
+                    day: date.day,
+                },
 
                 timespans: [],
                 days: [],
@@ -105,11 +107,11 @@
                 },
 
                 populateTimespans(){
-                    this.timespans = collect(window.calendar.getTimespansInYear(this.current_year));
+                    this.timespans = collect(window.calendar.getTimespansInYear(this.date.year));
                 },
 
                 populateDays(){
-                    this.days = window.calendar.getDaysForTimespanInYear(this.current_year, this.current_timespan);
+                    this.days = window.calendar.getDaysForTimespanInYear(this.date.year, this.date.timespan);
                 },
 
                 updatePlaceholders() {
@@ -122,49 +124,49 @@
 
                     /*  Years  */
                     this.prev_year = {
-                        year: this.current_year - 1,
-                        timespan: this.current_timespan,
-                        day: this.current_day
+                        year: this.date.year - 1,
+                        timespan: this.date.timespan,
+                        day: this.date.day
                     };
 
                     const prevYearTimespans = window.calendar.getTimespansInYear(this.prev_year.year).map(timespan => timespan.index);
-                    if(!prevYearTimespans.includes(this.current_timespan)){
+                    if(!prevYearTimespans.includes(this.date.timespan)){
                         this.prev_year.timespan = prevYearTimespans.reduce((prev, curr) => {
-                            return (Math.abs(curr - this.current_timespan) < Math.abs(prev - this.current_timespan) ? curr : prev);
+                            return (Math.abs(curr - this.date.timespan) < Math.abs(prev - this.date.timespan) ? curr : prev);
                         });
                     }
 
                     const prevDaysInPrevTimespan = window.calendar.getDaysForTimespanInYear(this.prev_year.year, this.prev_year.timespan);
-                    this.prev_year.day = Math.max(1, Math.min(prevDaysInPrevTimespan.length, this.current_day));
+                    this.prev_year.day = Math.max(1, Math.min(prevDaysInPrevTimespan.length, this.date.day));
 
 
                     this.next_year = {
-                        year: this.current_year + 1,
-                        timespan: this.current_timespan,
-                        day: this.current_day
+                        year: this.date.year + 1,
+                        timespan: this.date.timespan,
+                        day: this.date.day
                     };
 
                     const nextYearTimespans = window.calendar.getTimespansInYear(this.next_year.year).map(timespan => timespan.index);
-                    if(!nextYearTimespans.includes(this.current_timespan)){
+                    if(!nextYearTimespans.includes(this.date.timespan)){
                         this.next_year.timespan = nextYearTimespans.reduce((prev, curr) => {
-                            return (Math.abs(curr - this.current_timespan) < Math.abs(prev - this.current_timespan) ? curr : prev);
+                            return (Math.abs(curr - this.date.timespan) < Math.abs(prev - this.date.timespan) ? curr : prev);
                         });
                     }
 
                     const nextDaysInNextTimespan = window.calendar.getDaysForTimespanInYear(this.next_year.year, this.next_year.timespan);
-                    this.next_year.day = Math.max(1, Math.min(nextDaysInNextTimespan.length, this.current_day));
+                    this.next_year.day = Math.max(1, Math.min(nextDaysInNextTimespan.length, this.date.day));
 
                 },
 
                 getTimespanPlaceholders() {
 
                     /*  Timespans  */
-                    const timespanIndexInYear = Array.from(this.timespans).find(timespan => timespan.index === this.current_timespan).index;
+                    const timespanIndexInYear = Array.from(this.timespans).find(timespan => timespan.index === this.date.timespan).index;
 
                     const prevTimespanIsInLastYear = (timespanIndexInYear - 1) < 0;
-                    const prevTimespanYear = prevTimespanIsInLastYear ? this.current_year - 1 : this.current_year;
+                    const prevTimespanYear = prevTimespanIsInLastYear ? this.date.year - 1 : this.date.year;
                     const prevTimespan = prevTimespanIsInLastYear
-                        ? collect(window.calendar.getTimespansInYear(this.current_year - 1)).last()
+                        ? collect(window.calendar.getTimespansInYear(this.date.year - 1)).last()
                         : this.timespans.get(timespanIndexInYear - 1);
 
                     const prevTimespanDays = window.calendar.getDaysForTimespanInYear(prevTimespanYear, prevTimespan.index);
@@ -172,13 +174,13 @@
                     this.prev_timespan = {
                         year: prevTimespanYear,
                         timespan: prevTimespan.index,
-                        day: Math.max(1, Math.min(prevTimespanDays.length, this.current_day))
+                        day: Math.max(1, Math.min(prevTimespanDays.length, this.date.day))
                     };
 
                     const nextTimespanIsInNextYear = (timespanIndexInYear + 1) >= this.timespans.count();
-                    const nextTimespanYear = nextTimespanIsInNextYear ? this.current_year + 1 : this.current_year;
+                    const nextTimespanYear = nextTimespanIsInNextYear ? this.date.year + 1 : this.date.year;
                     const nextTimespan = nextTimespanIsInNextYear
-                        ? collect(window.calendar.getTimespansInYear(this.current_year + 1)).first()
+                        ? collect(window.calendar.getTimespansInYear(this.date.year + 1)).first()
                         : this.timespans.get(timespanIndexInYear + 1);
 
                     const nextTimespanDays = window.calendar.getDaysForTimespanInYear(nextTimespanYear, nextTimespan.index)
@@ -186,7 +188,7 @@
                     this.next_timespan = {
                         year: nextTimespanYear,
                         timespan: nextTimespan.index,
-                        day: Math.max(1, Math.min(nextTimespanDays.length, this.current_day))
+                        day: Math.max(1, Math.min(nextTimespanDays.length, this.date.day))
                     };
 
                 },
@@ -194,23 +196,23 @@
                 getDayPlaceholders(){
 
                     /*  Days  */
-                    const timespanIndexInYear = Array.from(this.timespans).find(timespan => timespan.index === this.current_timespan).index;
+                    const timespanIndexInYear = Array.from(this.timespans).find(timespan => timespan.index === this.date.timespan).index;
 
                     this.prev_day = {
-                        year: this.current_year,
-                        timespan: this.current_timespan,
-                        day: this.current_day - 1
+                        year: this.date.year,
+                        timespan: this.date.timespan,
+                        day: this.date.day - 1
                     }
 
-                    const prevDayIsInLastTimespan = (this.current_day - 1) < 1;
+                    const prevDayIsInLastTimespan = (this.date.day - 1) < 1;
                     if(prevDayIsInLastTimespan){
 
                         const prevTimespanIsInLastYear = (timespanIndexInYear - 1) < 0;
 
-                        const prevYear = prevTimespanIsInLastYear ? this.current_year - 1 : this.current_year;
+                        const prevYear = prevTimespanIsInLastYear ? this.date.year - 1 : this.date.year;
 
                         const prevTimespan = prevTimespanIsInLastYear
-                            ? collect(window.calendar.getTimespansInYear(this.current_year - 1)).last()
+                            ? collect(window.calendar.getTimespansInYear(this.date.year - 1)).last()
                             : this.timespans.get(timespanIndexInYear - 1);
 
                         const days = window.calendar.getDaysForTimespanInYear(prevYear, prevTimespan.index);
@@ -225,21 +227,21 @@
 
 
                     this.next_day = {
-                        year: this.current_year,
-                        timespan: this.current_timespan,
-                        day: this.current_day + 1
+                        year: this.date.year,
+                        timespan: this.date.timespan,
+                        day: this.date.day + 1
                     }
 
-                    const nextDayIsInNextTimespan = (this.current_day + 1) > this.days.length;
+                    const nextDayIsInNextTimespan = (this.date.day + 1) > this.days.length;
                     if(nextDayIsInNextTimespan){
 
                         const nextTimespanIsInNextYear = (timespanIndexInYear + 1) >= this.timespans.count();
                         const nextTimespan = nextTimespanIsInNextYear
-                            ? collect(window.calendar.getTimespansInYear(this.current_year + 1)).first()
+                            ? collect(window.calendar.getTimespansInYear(this.date.year + 1)).first()
                             : this.timespans.get(timespanIndexInYear + 1);
 
                         this.next_day = {
-                            year: nextTimespanIsInNextYear ? this.current_year + 1 : this.current_year,
+                            year: nextTimespanIsInNextYear ? this.date.year + 1 : this.date.year,
                             timespan: nextTimespan.index,
                             day: 1
                         };
@@ -250,20 +252,34 @@
 
                 changedDate($event){
                     if($event.detail.year !== undefined){
-                        this.current_year = $event.detail.year;
+                        this.date.year = $event.detail.year;
                         this.populateTimespans();
                         if($event.detail.timespan === undefined){
                             this.populateDays();
                         }
                     }
                     if($event.detail.timespan !== undefined){
-                        this.current_timespan = $event.detail.timespan;
+                        this.date.timespan = $event.detail.timespan;
                         this.populateDays();
                     }
                     if($event.detail.day !== undefined){
-                        this.current_day = $event.detail.day;
+                        this.date.day = $event.detail.day;
                     }
                     this.updatePlaceholders();
+                },
+
+                changeDate($event, type){
+                    let value = Number($event.target.value);
+
+                    if(type === "year" && value === 0 && !window.calendar.static_data.settings.year_zero_exists){
+                        value = this.date.year > 0 ? value-1 : value+1;
+                    }
+
+                    window.dispatchEvent(new CustomEvent('change-current-date', { detail: {
+                        year: type === "year" ? value : this.date.year,
+                        timespan: type === "timespan" ? value : this.date.timespan,
+                        day: type === "day" ? value : this.date.day
+                    }}));
                 }
 
             }
@@ -470,9 +486,9 @@
                             <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('change-current-date', prev_day)" x-text="prev_day.day"></span>
                         </div>
                         <div class="row text-center py-1">
-                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="current_day">
+                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' @change="changeDate($event, 'day')">
                                 <template x-for="(day, index) in days">
-                                    <option :selected="current_day === (index+1)" :value="index+1" x-text="day"></option>
+                                    <option :selected="date.day === (index+1)" :value="index+1" x-text="day"></option>
                                 </template>
                             </select>
                         </div>
@@ -485,25 +501,37 @@
                             <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('change-current-date', prev_timespan)" x-text="static_data.year_data.timespans[prev_timespan.timespan].name"></span>
                         </div>
                         <div class="row text-center py-1">
-                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="current_timespan">
+                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' @change="changeDate($event, 'timespan')">
                                 <template x-for="(timespan, index) in Array.from(timespans)">
-                                    <option :selected="current_timespan === timespan.index" :value="timespan.index" x-text="timespan.name"></option>
+                                    <option :selected="date.timespan === timespan.index" :value="timespan.index" x-text="timespan.name"></option>
                                 </template>
                             </select>
                         </div>
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('change-current-date', next_timespan)" x-text="static_data.year_data.timespans[next_timespan.timespan].name"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none"
+                                  @click="$dispatch('change-current-date', next_timespan)"
+                                  x-text="static_data.year_data.timespans[next_timespan.timespan].name">
+                            </span>
                         </div>
                     </div>
                     <div class="col-2">
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('change-current-date', prev_year)" x-text="prev_year.year"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none"
+                                  @click="$dispatch('change-current-date', prev_year)"
+                                  x-text="window.calendar.formatYearNumber(prev_year.year)">
+                            </span>
                         </div>
                         <div class="row text-center py-1">
-                            <input type="number" class='no-spinner appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center' x-model.number="current_year">
+                            <input type="number"
+                                   class='no-spinner appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center'
+                                   :value="window.calendar.formatYearNumber(date.year)"
+                                   @change="changeDate($event, 'year')">
                         </div>
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('change-current-date', next_year)" x-text="next_year.year"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none"
+                                  @click="$dispatch('change-current-date', next_year)"
+                                  x-text="window.calendar.formatYearNumber(next_year.year)">
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -527,32 +555,32 @@
                 <div class="row my-2 divide-x divide-gray-500">
                     <div class="col-2">
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setDay(current_day - 1)" x-text="current_day - 1"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setDay(day - 1)" x-text="day - 1"></span>
                         </div>
                         <div class="row text-center py-1">
-                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="current_day">
+                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="day">
                                 <template x-for="(day, index) in days">
-                                    <option :selected="current_day === (index+1)" :value="index+1" x-text="day"></option>
+                                    <option :selected="day === (index+1)" :value="index+1" x-text="day"></option>
                                 </template>
                             </select>
                         </div>
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setDay(current_day + 1)" x-text="current_day + 1"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setDay(day + 1)" x-text="day + 1"></span>
                         </div>
                     </div>
                     <div class="col-8">
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(current_timespan - 1)" x-text="prev_timespan"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(timespan - 1)" x-text="prev_timespan"></span>
                         </div>
                         <div class="row text-center py-1">
-                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="current_timespan">
+                            <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' x-model.number="timespan">
                                 <template x-for="(timespan, index) in timespans">
-                                    <option :selected="current_timespan === index" :value="index" x-text="timespan.name"></option>
+                                    <option :selected="timespan === index" :value="index" x-text="timespan.name"></option>
                                 </template>
                             </select>
                         </div>
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(current_timespan + 1)" x-text="next_timespan"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="setMonth(timespan + 1)" x-text="next_timespan"></span>
                         </div>
                     </div>
                     <div class="col-2">

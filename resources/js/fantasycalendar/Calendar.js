@@ -93,6 +93,12 @@ export default class Calendar{
         );
     }
 
+    formatYearNumber(year){
+        return !this.static_data.settings.year_zero_exists && year >= 0
+            ? year
+            : year-1;
+    }
+
     getTimespansInYear(year){
         return this.static_data.year_data.timespans.map((timespan, index) => {
             timespan.index = index;

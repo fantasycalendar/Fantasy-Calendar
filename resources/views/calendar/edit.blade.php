@@ -151,6 +151,8 @@
 
                 window.dispatchEvent(new CustomEvent('changed-current-date', { detail: clone(this.dynamic_data) } ));
 
+                // TODO Adam: set up secondary debounced event for re-render based on dates
+
             }
 
         }
