@@ -77,7 +77,7 @@ Route::middleware(['account.deletion', 'agreement'])->group(function(){
     Route::group(['as' => 'calendars.', 'prefix' => 'calendars'], function(){
         Route::get('/{calendar}/guided_embed', [CalendarController::class, 'guidedEmbed'])->name('guided_embed')->middleware('can:embedAny,App\Models\Calendar');
         Route::get('/{calendar}/export', [CalendarController::class, 'export'])->name('export');
-        Route::get('/{calendar}.{ext}', [CalendarController::class, 'renderImage'])->name('image');
+        Route::get('/{calendar}.{ext}', [CalendarController::class, 'renderImage'])->name('image')->middleware('feature:imagerenderer');
     });
 
     Route::resource('calendars', CalendarController::class);
