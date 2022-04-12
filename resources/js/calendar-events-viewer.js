@@ -29,9 +29,9 @@ const calendar_events_viewer = {
 		this.epoch = $event.detail.epoch;
 
 		if(this.era){
-			this.data = clone(static_data.eras[this.id]);
+			this.data = clone(window.calendar.static_data.eras[this.id]);
 		}else{
-			this.data = clone(events[this.id]);
+			this.data = clone(window.calendar.events[this.id]);
 			this.db_id = this.data.id !== undefined ? this.data.id : false;
 		}
 		if(this.data.description == ""){
