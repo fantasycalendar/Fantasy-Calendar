@@ -7,9 +7,9 @@
                         <x-left-nav-item icon="cog" label="Account" route="profile"></x-left-nav-item>
                         <x-left-nav-item icon="credit-card" label="Plan & Billing" route="profile.billing"></x-left-nav-item>
 
-                        @if(config('services.discord.enabled'))
+                        @feature('discord')
                             <x-left-nav-item icon="puzzle-piece" label="Integrations" route="profile.integrations"></x-left-nav-item>
-                        @endif
+                        @endfeature
 
                         @can('interact', \Laravel\Sanctum\PersonalAccessToken::class)
                             <div class="border-t dark:border-gray-800"></div>
