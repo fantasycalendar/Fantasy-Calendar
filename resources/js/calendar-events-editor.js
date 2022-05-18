@@ -1916,7 +1916,7 @@ const calendar_events_editor = {
 
 			html.push("<select class='event_select form-control'>")
 
-			for (let eventId in events) {
+			for (let eventId = 0; eventId < events.length; eventId++) {
 
 				let event = events[eventId];
 
