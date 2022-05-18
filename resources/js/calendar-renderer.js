@@ -11,6 +11,7 @@ const calendar_renderer = {
     prev_preview_epoch: 0,
 
     render_data: {
+        year: 0,
         current_epoch: 0,
         preview_epoch: 0,
         render_style: "grid",
@@ -89,7 +90,9 @@ const calendar_renderer = {
 
         this.rerendering = this.prev_current_epoch !== this.render_data.current_epoch || this.prev_preview_epoch !== this.render_data.preview_epoch;
 
-        if(!this.loaded || this.rerendering) this.scroll_to_epoch();
+        if(!this.loaded || this.rerendering){
+            this.scroll_to_epoch();
+        }
 
         CalendarYearHeader.update(
             static_data,
@@ -123,19 +126,23 @@ const calendar_renderer = {
         if(previewEpochElement.length && this.render_data.preview_epoch !== this.render_data.current_epoch){
 
             this.scroll_attempts = 0;
-            return previewEpochElement[0].scrollIntoView({block: "center", inline: "nearest"});
+            return setTimeout(() => {
+                previewEpochElement[0].scrollIntoView({block: "center", inline: "nearest"});
+            }, 350)
 
         }else if(currentEpochElement.length){
 
             this.scroll_attempts = 0;
-            return currentEpochElement[0].scrollIntoView({block: "center", inline: "nearest"});
+            return setTimeout(() => {
+                currentEpochElement[0].scrollIntoView({block: "center", inline: "nearest"});
+            }, 350)
 
         }
 
         this.scroll_attempts++;
 
         if(this.scroll_attempts < 10){
-            setTimeout(this.scroll_to_epoch.bind(this), 100);
+            setTimeout(this.scroll_to_epoch.bind(this), 500);
         }else{
             this.scroll_attempts = 0;
         }

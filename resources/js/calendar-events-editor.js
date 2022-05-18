@@ -561,13 +561,14 @@ const calendar_events_editor = {
 
 	create_event_data(){
 
+        this.working_event.data.connected_events = [];
         let conditions = Perms.player_at_least("co-owner")
             ? this.create_condition_array(this.event_conditions_container)
             : [['Date', '0', [this.epoch_data.year, this.epoch_data.timespan_index, this.epoch_data.day]]];
 
 		let search_distance = this.get_search_distance(conditions);
 
-		let date = []
+		let date = [];
 
 		if (conditions.length === 1 || conditions.length === 5) {
 
@@ -1318,10 +1319,10 @@ const calendar_events_editor = {
 
 				} else if (type === "Events") {
 
-					let event_id = $(this).find('.input_container').find("option:selected").val() | 0;
+					let event_id = Number($(this).find('.input_container').find("option:selected").val());
 
 					if (event_editor_ui.working_event.data.connected_events.indexOf(event_id) === -1) {
-						event_editor_ui.working_event.data.connected_events.push(event_id)
+						event_editor_ui.working_event.data.connected_events.push(event_id);
 					}
 
 					values.push(event_editor_ui.working_event.data.connected_events.indexOf(event_id));
@@ -2208,7 +2209,8 @@ const calendar_events_editor = {
 
 		let warnings = [];
 
-		for (let eventId in events) {
+		for (let eventId = 0; eventId < events.length; eventId++) {
+		    if(eventId === delete_event_id) continue;
 			if (events[eventId].data.connected_events !== undefined) {
 				let connected_events = events[eventId].data.connected_events;
 				if (connected_events.includes(String(delete_event_id)) || connected_events.includes(Number(delete_event_id))) {
@@ -2289,10 +2291,10 @@ const calendar_events_editor = {
 
 	delete_event(delete_event_id) {
 
-		for (let eventId in events) {
+        for (let eventId = 0; eventId < events.length; eventId++) {
 			if (events[eventId].data.connected_events !== undefined) {
-				for (let connectedId in events[eventId].data.connected_events) {
-					let number = Number(events[eventId].data.connected_events[connectedId])
+				for (let connectedId of events[eventId].data.connected_events) {
+					let number = Number(connectedId)
 					if (number > delete_event_id) {
 						events[eventId].data.connected_events[connectedId] = String(number - 1)
 					}

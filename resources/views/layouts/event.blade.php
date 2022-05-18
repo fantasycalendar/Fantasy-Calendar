@@ -187,7 +187,7 @@
 
                     <span class='hidden'></span>
 
-                    <div class='event_occurrences' x-show='working_event.data.conditions != []'>
+                    {{--<div class='event_occurrences' x-show='working_event.data.conditions != []'>
 
                         <div class='row no-gutters'>
                             <h5>Test event occurrences for the next:</h5>
@@ -229,9 +229,9 @@
                                     <button type='button' class='btn btn-info full' @click='next_page()' :disabled="event_testing.page == event_testing.max_page">Next</button>
                                 </div>
                             </div>
-                        </div>
+                        </div>--}}{{--
 
-                    </div>
+                    </div>--}}
 
                     <div x-show="moons.length > 0">
 
