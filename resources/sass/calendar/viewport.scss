@@ -255,6 +255,7 @@
     background-color: transparent !important;
     border: 4px dashed $btn-create-event-bg-color !important;
     color: $text-gray-500 !important;
+    z-index: 10;
 }
 
 .btn_create_event:hover{
