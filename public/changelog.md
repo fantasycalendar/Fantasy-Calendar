@@ -1,3 +1,21 @@
+### 2.2.9 - Courteous Couatl
+#### May 18th, 2022
+- Fixed rendering issue which was caused by advancing the current year
+- Fixed issue preventing the calendar from scrolling to the current date when first loaded
+- Fixed issue which could cause event-based-events to cause infinite recursion
+- Removed event-testing feature until we can solve a more deeply rooted issue
+
+### 2.2.8 - Contextual Couatl
+#### April 12th, 2022
+- Replace Sharp library with Filament for rewritten internal admin panel
+- Laid the basis for user API token management
+- App Feature Flags (For disabling things in development)
+- Upgrade some dependencies
+
+### 2.2.7 - Cackling Couatl
+#### April 1st, 2022
+- Enabled enhanced... wait, what?
+
 ### 2.2.6 - Contemporary Couatl
 #### March 23rd, 2022
 * Added: `/fc create event` - Create one-time events from Discord!
