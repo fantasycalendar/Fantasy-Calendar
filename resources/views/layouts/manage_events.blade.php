@@ -6,11 +6,14 @@
     >
 
         <div class="modal-basic-container">
-            <div class="modal-basic-wrapper">
-                <div class="modal-wrapper layout-wrapper container">
+            <div class="modal-basic-wrapper" @mousedown="open = false; search = ''">
+                <div class="modal-wrapper layout-wrapper container"
+                     @mousedown.stop="false"
+                     x-show="open"
+                     x-transition>
 
                     <div class="close-ui-btn-bg"></div>
-                    <i class="close_ui_btn fas fa-times-circle" @click="open = false"></i>
+                    <i class="close_ui_btn fas fa-times-circle" @click="open = false; search = ''"></i>
 
                     <div class="row no-gutters my-3 modal-form-heading">
                         <div class="col-12 col-md-3 mb-3 mb-md-0" style="display: grid; place-items: center start;">
@@ -35,8 +38,8 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-12">
-                            <template x-for="(event_group, index) in grouped" :key="index">
+                        <div class="col-12" style="max-height: 70vh; overflow-y: auto;">
+                            <template x-for="(event_group, index) in grouped.slice(0, 5)" :key="index">
                                 <div class="row mb-2">
                                     <div class="col-12">
                                         <h3 x-text="event_group.name"></h3>
@@ -45,7 +48,7 @@
                                     <hr>
 
                                     <div class="col-12">
-                                        <template x-for="event_data in event_group.events">
+                                        <template x-for="event_data in event_group.events.slice(0, 5)">
                                             <button type="button" class="w-100 rounded my-1 py-2 px-3 layout d-flex justify-content-between align-items-center text-left cursor-pointer" @click="$dispatch('event-editor-modal-edit-event', {event_id: event_data.sort_by})">
                                                 <div class="label">
                                                     <h4 x-html="highlight_match(event_data.name)" class="py-1 my-0"></h4>
@@ -59,6 +62,10 @@
                                                 </div>
                                             </button>
                                         </template>
+
+                                        <div class="text-center py-2" x-show="event_group.events.length > 5">
+                                            And <span x-text="event_group.events.length - 5"></span> more...
+                                        </div>
                                     </div>
                                 </div>
                             </template>
@@ -71,7 +78,7 @@
                                 <hr>
 
                                 <div class="col-12">
-                                    <template x-for="event_data in ungrouped" :key="event_data.id">
+                                    <template x-for="event_data in ungrouped.slice(0, 5)" :key="event_data.id">
                                         <button type="button" class="w-100 rounded my-1 py-2 px-3 layout d-flex justify-content-between align-items-center text-left cursor-pointer" @click="$dispatch('event-editor-modal-edit-event', {event_id: event_data.sort_by})">
                                             <div class="label">
                                                 <h4 x-html="highlight_match(event_data.name)" class="py-1 my-0"></h4>
@@ -85,6 +92,10 @@
                                             </div>
                                         </button>
                                     </template>
+
+                                    <div class="text-center py-2" x-show="ungrouped.length > 5">
+                                        And <span x-text="ungrouped.length - 5"></span> more...
+                                    </div>
                                 </div>
                             </div>
 

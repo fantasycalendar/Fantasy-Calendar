@@ -1,3 +1,10 @@
+/**
+ * TODO: Pagination?
+ * TODO: Fix call to edit in main blade template
+ * TODO: Limit height of result boxes
+ * TODO:
+ */
+
 const events_manager = {
     open: false,
 
@@ -8,11 +15,6 @@ const events_manager = {
     search: "",
 
     init() {
-        this.$watch('window.events', () => {
-            this.updateFilteredGroupedEvents();
-            this.updateFilteredUngroupedEvents();
-        });
-
         this.$watch('search', () => {
             this.$nextTick(() => {
                 this.updateFilteredGroupedEvents();
