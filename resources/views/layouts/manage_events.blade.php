@@ -22,7 +22,13 @@
                         </div>
                     </div>
 
-                    <div class="row" x-show="!filteredGroupedEvents.length && !filteredUngroupedEvents.length && search.length">
+                    <div class="row" x-show="!grouped.length && !ungrouped.length && !search.length">
+                        <div class="col-12 text-center py-5 py-2 search-empty">
+                            <h2>You have no events!</h2>
+                        </div>
+                    </div>
+
+                    <div class="row" x-show="search.length && !(grouped.length + ungrouped.length)">
                         <div class="col-12 text-center py-5 py-2 search-empty">
                             <h2>No events match search '<span x-text="search" class="event_manager_search"></span>'</h2>
                         </div>
@@ -30,7 +36,7 @@
 
                     <div class="row">
                         <div class="col-12">
-                            <template x-for="event_group in filteredGroupedEvents">
+                            <template x-for="(event_group, index) in grouped" :key="index">
                                 <div class="row mb-2">
                                     <div class="col-12">
                                         <h3 x-text="event_group.name"></h3>
@@ -40,7 +46,7 @@
 
                                     <div class="col-12">
                                         <template x-for="event_data in event_group.events">
-                                            <button type="button" class="w-100 rounded my-1 py-2 px-3 layout d-flex justify-content-between align-items-center text-left cursor-pointer" @click="window.edit_event_ui.edit_event(event_data.sort_by)">
+                                            <button type="button" class="w-100 rounded my-1 py-2 px-3 layout d-flex justify-content-between align-items-center text-left cursor-pointer" @click="$dispatch('event-editor-modal-edit-event', {event_id: event_data.sort_by})">
                                                 <div class="label">
                                                     <h4 x-html="highlight_match(event_data.name)" class="py-1 my-0"></h4>
                                                     <p class="my-0" x-show="event_data.description.length > 1">
@@ -57,7 +63,7 @@
                                 </div>
                             </template>
 
-                            <div class="row mb-2" x-show="filteredUngroupedEvents.length">
+                            <div class="row mb-2" x-show="ungrouped.length">
                                 <div class="col-12">
                                     <h3>No Category</h3>
                                 </div>
@@ -65,8 +71,8 @@
                                 <hr>
 
                                 <div class="col-12">
-                                    <template x-for="event_data in filteredUngroupedEvents">
-                                        <button type="button" class="w-100 rounded my-1 py-2 px-3 layout d-flex justify-content-between align-items-center text-left cursor-pointer" @click="window.edit_event_ui.edit_event(event_data.sort_by)">
+                                    <template x-for="event_data in ungrouped" :key="event_data.id">
+                                        <button type="button" class="w-100 rounded my-1 py-2 px-3 layout d-flex justify-content-between align-items-center text-left cursor-pointer" @click="$dispatch('event-editor-modal-edit-event', {event_id: event_data.sort_by})">
                                             <div class="label">
                                                 <h4 x-html="highlight_match(event_data.name)" class="py-1 my-0"></h4>
                                                 <p class="my-0" x-show="event_data.description.length > 1">

@@ -4,9 +4,26 @@ const events_manager = {
     calendar_events: [],
     event_categories: [],
     grouped: [],
+    ungrouped: [],
     search: "",
 
-    get filteredGroupedEvents() {
+    init() {
+        this.$watch('window.events', () => {
+            this.updateFilteredGroupedEvents();
+            this.updateFilteredUngroupedEvents();
+        });
+
+        this.$watch('search', () => {
+            this.$nextTick(() => {
+                this.updateFilteredGroupedEvents();
+                this.updateFilteredUngroupedEvents();
+            })
+        })
+    },
+
+    updateFilteredGroupedEvents() {
+        // console.log(window.events);
+
         if(!window.events || !window.events.length) {
             return [];
         }
@@ -24,8 +41,13 @@ const events_manager = {
                     .toLowerCase()
                     .includes(this.search.toLowerCase());
         });
+
+        // console.log(calendar_events);
+
         this.event_categories = clone(window.event_categories)
         this.grouped = [];
+
+        // console.log(this.grouped);
 
         for(let category in this.event_categories) {
             let category_data = this.event_categories[category];
@@ -48,16 +70,14 @@ const events_manager = {
                 });
             }
         }
-
-        return this.grouped;
     },
 
-    get filteredUngroupedEvents() {
+    updateFilteredUngroupedEvents() {
         if(!window.events || !window.events.length) {
             return [];
         }
 
-        return window.events.filter((item) => {
+        this.ungrouped = window.events.filter((item) => {
             return item.event_category_id < 1
                 &&
                 (item.name
@@ -76,23 +96,42 @@ const events_manager = {
 
     highlight_match: function(string) {
         let output = sanitizeHtml(string, {allowedTags: []});
+        let index = 0;
         if(output.length < 1) return;
 
+        // Using a dedicated variable for this because adding the "<mark>" to the HTML
+        // makes the final output have a higher length. We want to check length on the **unaltered** results,
+        // in case the original is, say, 99 characters, and the <mark> tag would result in
+        // unnecessary ellipsis.
         let ellipses = (output.length > 100);
 
         if(this.search.length && output.toLowerCase().includes(this.search.toLowerCase())) {
+            let found = output.toLowerCase().indexOf(this.search);
+
+            if(found > (100 - this.search.length)) {
+                index = found - 10;
+            }
+
             output = output.replace(new RegExp(this.search, 'gi'), function(str) { return `<mark>${str}</mark>`; })
         }
 
         if(ellipses) {
-            output = output.substring(0, 100) + '...';
+            output = output.substring(index, index + 100) + '...';
+        }
+
+        if(index) {
+            output = '...' + output;
         }
 
         return output;
     },
 
     open_modal: function($event){
-        this.open = true;
+        this.updateFilteredGroupedEvents();
+        this.updateFilteredUngroupedEvents();
+        this.$nextTick(() => {
+            this.open = true;
+        });
         setTimeout(() => {
             document.querySelector('input').focus();
         }); // has a default time value of 0
