@@ -1,31 +1,24 @@
-<div id='calendar' x-data="CalendarRenderer">
+<div id='calendar' x-data="CalendarRenderer" :class="{ 'single_month': render_data.current_month_only }" x-ref="calendar_renderer" x-init="$nextTick(() => $dispatch('layout-change', {apply: render_data.current_month_only ? 'single_month' : ''}))">
 
-    <template x-if="!loaded && render_data.timespans.length">
-        <div class="modal_background mt-5 pt-5">
-            <div id="modal" class="creation mt-5 py-5 d-flex flex-column align-items-center justify-content-center">
-                <h3 class="text-center" x-text="loading_message"></h3>
-                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-            </div>
+    <div class="modal_background w-100" x-show="!loaded && render_data.timespans.length">
+        <div id="modal" class="creation mt-5 py-5 d-flex flex-column align-items-center justify-content-center">
+            <h3 class="text-center" x-text="loading_message"></h3>
+            <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </div>
-    </template>
+    </div>
 
     <template
         @render-data-change.window="
             pre_render();
             load_calendar($event);
-            $nextTick(() => { post_render() });
-        "
-        @events-change.window="
-            pre_event_load();
-            register_events($event);
-            $nextTick(() => { post_event_load() });
+            $nextTick(() => { post_render($dispatch) });
         "
         @update-epochs.window="update_epochs"
-        x-if='loaded'
         x-for="timespan in render_data.timespans"
+        :key="index + '-' + render_data.year"
     >
 
-        <div class="timespan_container" :class='render_data.render_style'>
+        <div class="timespan_container" :class='render_data.render_style' x-show="loaded && render_data.timespans.length">
 
             <div class='timespan_name'x-text='timespan.title' x-show="timespan.show_title"></div>
 
@@ -35,14 +28,16 @@
                     'timespan_overflow': day.type == 'overflow',
                     'timespan_day empty_timespan_day': day.type == 'empty',
                     'current_day': day.epoch == render_data.current_epoch,
+                    'season_color_enabled': day.season_color,
                     'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
                     [day.extra_class]: day.extra_class
                 }" :epoch="day.epoch">
+                    <div class="day_row text" x-show="day.text" x-text="day.text"></div>
                     <div class="day_row d-flex justify-content-between">
 
                         <div class="d-flex">
                             <div class="number" x-text="day.number"></div>
-                            <div class="week_day_name" x-text="day.weekday"></div>
+                            <div class="week_day_name" x-text="day.weekday" x-show="day.weekday"></div>
                         </div>
 
                         <div class="weather_popup center"
@@ -66,8 +61,8 @@
                                     @mouseenter="moon_mouse_enter(moon, $event)"
                                     @mouseleave="moon_mouse_leave"
                             >
-                                <circle cx="16" cy="16" r="10" class="lunar_background"/>
-                                <path class="lunar_shadow" x-show="moon.path" :d="moon.path"/>
+                                <circle cx="16" cy="16" r="10" class="lunar_background" :style="`fill: ${moon.color};`" />
+                                <path class="lunar_shadow" :style="`fill: ${moon.shadow_color};`" x-show="moon.path" :d="moon.path"/>
                                 <circle cx="16" cy="16" r="10" class="lunar_border"/>
                             </svg>
                         </template>
@@ -75,11 +70,17 @@
 
                     <div class="day_row event_container" x-show="day.events">
                         <template x-for="calendar_event in day.events">
-                            <div class="event" :class="calendar_event.class" x-text="calendar_event.name" :event_id="calendar_event.index" @click="view_event($event)"></div>
+                            <div class="event"
+                                :class="calendar_event.class"
+                                x-text="calendar_event.name"
+                                :event_id="calendar_event.index"
+                                @click="$dispatch('event-viewer-modal-view-event', { id: calendar_event.index, era: calendar_event.era, epoch: day.epoch })"
+                            ></div>
                         </template>
                     </div>
 
-                    <button class="btn_create_event btn btn-success day_row flex-grow" @click="create_event(day.epoch)" :epoch="day.epoch" x-show="day.show_event_button">Create event</button>
+
+                    <button class="btn_create_event btn btn-success day_row flex-grow" @click="$dispatch('event-editor-modal-new-event', { epoch: day.epoch })" :epoch="day.epoch" x-show="day.show_event_button">Create event</button>
 
                     <div class="day_row">
                         <div class="number year_day" x-show="day.year_day" x-text="day.year_day"></div>

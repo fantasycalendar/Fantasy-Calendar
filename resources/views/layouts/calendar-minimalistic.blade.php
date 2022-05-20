@@ -1,31 +1,24 @@
-<div id='calendar' x-data="CalendarRenderer">
+<div id='calendar' class="minimalistic" x-data="CalendarRenderer" :class="{ 'single_month': render_data.current_month_only }" x-ref="calendar_renderer" x-init="$nextTick(() => $dispatch('layout-change', {apply: render_data.current_month_only ? 'single_month' : ''}))">
 
-    <template x-if="!loaded && render_data.timespans.length">
-        <div class="modal_background mt-5 pt-5">
-            <div id="modal" class="creation mt-5 py-5 d-flex flex-column align-items-center justify-content-center">
-                <h3 class="text-center" x-text="loading_message"></h3>
-                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-            </div>
+    <div class="modal_background w-100" x-show="!loaded && render_data.timespans.length">
+        <div id="modal" class="creation mt-5 py-5 d-flex flex-column align-items-center justify-content-center">
+            <h3 class="text-center" x-text="loading_message"></h3>
+            <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </div>
-    </template>
+    </div>
 
     <template
         @render-data-change.window="
             pre_render();
             load_calendar($event);
-            $nextTick(() => { post_render() });
-        "
-        @events-change.window="
-            pre_event_load();
-            register_events($event);
-            $nextTick(() => { post_event_load() });
+            $nextTick(() => { post_render($dispatch) });
         "
         @update-epochs.window="update_epochs"
-        x-if='loaded'
         x-for="timespan in render_data.timespans"
+        :key="index + '-' + render_data.year"
     >
 
-        <div class="timespan_outer_container">
+        <div class="timespan_outer_container" x-show="loaded && render_data.timespans.length">
 
             <div class="timespan_container" :class='render_data.render_style'>
 
@@ -47,15 +40,18 @@
                                 'current_day': day.epoch == render_data.current_epoch,
                                 'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
                                 'moon_popup': day.moons.length > 0,
+                                'day_title_popup': day.text != '',
                                 'has_weather_popup': day.weather_icon != '',
-                                'has_event': day.events.length > 0
+                                'has_event': day.events.length > 0,
+                                'minimalistic_odd_even_colored': day.type === 'day' && !day.season_color
                             }"
                             :epoch="day.epoch"
                             @click="weather_click(day, $event)"
                             @mouseenter="weather_mouse_enter(day, $event)"
                             @mouseleave="weather_mouse_leave"
                             >
-                                <div class="number" x-text="day.number"></div>
+                                <div class="number" x-text="day.number" style="z-index: 10;"></div>
+                                <div class="w-100 h-100" x-show="day.type !== 'overflow'" :style="`opacity: 0.2; position:absolute; flex:1; background-color: ${day.season_color};`"></div>
                             </div>
                         </template>
                     </div>

@@ -3,6 +3,7 @@
         class="layout_background clickable_background hidden"
         :class="{ 'hidden':!open }"
         x-show="open"
+        x-cloak
     >
         <div class="modal-basic-container">
             <div class="modal-basic-wrapper">

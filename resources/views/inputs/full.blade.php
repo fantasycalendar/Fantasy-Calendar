@@ -151,7 +151,7 @@
 				</div>
 
 
-				<div class='date_inputs date_control container mt-3'>
+				<div class='date_inputs date_control preview_date_controls container mt-3'>
 
 					<div class='row'>
 						<h5 class="my-0 py-0">Preview date:</h5>
@@ -252,8 +252,8 @@
 			<div class="collapsible-content card-body">
 
 				<div class='row'>
-					<div class='col-4 pr-0 bold-text'>Enable:</div>
-					<div class='col-2 pl-0'>
+					<div class='col-3 bold-text'>Enable:</div>
+					<div class='col-3 text-right'>
 						@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 							{{ Arr::get($calendar->static_data, 'clock.enabled') ? "Yes" : "No" }}
 						@else
@@ -263,8 +263,8 @@
 							</label>
 						@endif
 					</div>
-					<div class='render_clock col-4 p-0 bold-text'>Render:</div>
-					<div class='render_clock col-2 p-0'>
+					<div class='render_clock col-3 bold-text'>Render:</div>
+					<div class='render_clock col-3 text-right'>
 						<label class="custom-control custom-checkbox center-text">
 							<input type="checkbox" class="custom-control-input static_input" id='render_clock' refresh='clock' data='clock' fc-index='render'>
 							<span class="custom-control-indicator"></span>
@@ -378,14 +378,14 @@
 					This calendar has a custom week in some months or a leap day is adding a week-day, this will disable overflows between months, because it makes no sense for two weeks that do not go together to overflow into each other. Sorry.
 				</div>
 
-				<div class='row protip' data-pt-position="right" data-pt-title='Enabling this will continue the week in the next month, and disabling overflow will restart the week so that each month starts with the first week day.'>
-					<div class='col-auto pr-1 bold-text'>
+				<div class='row protip month_overflow_container' data-pt-position="right" data-pt-title='Enabling this will continue the week in the next month, and disabling overflow will restart the week so that each month starts with the first week day.'>
+					<div class='col-8 pr-1 bold-text'>
 						Overflow weekdays:
 					</div>
 					@if(request()->is('calendars/*/edit') && $calendar->isLinked())
 						{{ Arr::get($calendar->static_data, 'year_data.overflow') ? "Enabled" : "Disabled" }}
 					@else
-						<div class='col-2'>
+						<div class='col-4'>
 							<label class="custom-control custom-checkbox right-text">
 								<input type="checkbox" class="custom-control-input static_input" data='year_data' fc-index='overflow' id='month_overflow'>
 								<span class="custom-control-indicator"></span>
@@ -807,6 +807,8 @@
 
 				<div class='my-1 small-text' id='season_length_text'></div>
 
+				<div class='my-1 small-text warning' id='season_daylength_text'></div>
+
 				<div class='container season_offset_container'>
 					<div class='row mt-2'>
 						Season offset (days):
@@ -841,8 +843,8 @@
                 <div id='has_seasons_container' class='hidden'>
 
     				<div class='row no-gutters'>
-    					<div class='col-auto mr-2'>Enable weather:</div>
-    					<div class='col-auto'>
+    					<div class='col-8'>Enable weather:</div>
+    					<div class='col-4 text-right'>
     						<label class="custom-control custom-checkbox">
     							<input type="checkbox" class="custom-control-input static_input" id='enable_weather' refresh='false' data='seasons.global_settings' fc-index='enable_weather'>
     							<span class="custom-control-indicator"></span>
@@ -885,9 +887,9 @@
     						</div>
     					</div>
 
-    					<div class='row no-gutters my-2 protip' data-pt-position="right" data-pt-title="In addition of the temperature being shown, you'll also see the description for the temperature of that particular day.">
-    						<div class='col-auto mr-2'>Cinematic temperature description:</div>
-    						<div class='col-auto'>
+    					<div class='row no-gutters my-2 protip align-items-center' data-pt-position="right" data-pt-title="In addition of the temperature being shown, you'll also see the description for the temperature of that particular day.">
+    						<div class='col-8'>Cinematic temperature description:</div>
+    						<div class='col-4 text-right'>
     							<label class="custom-control custom-checkbox">
     								<input type="checkbox" class="custom-control-input static_input" refresh='false' data='seasons.global_settings' fc-index='cinematic'>
     								<span class="custom-control-indicator"></span>
@@ -922,8 +924,13 @@
 			<label for="collapsible_locations" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-compass"></i> Locations <a target="_blank" data-pt-position="right" data-pt-title='More Info: Locations' href='{{ helplink('locations') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 			<div class="collapsible-content card-body">
 
-                <div id='locations_warning' class='row no-gutters'>
+                <div id='locations_warning' class='row no-gutters mb-2'>
                     You need weather enabled (temperatures, precipitation) or the clock enabled (timezone, sunrise/sunset) for locations to function.
+                </div>
+
+                <div class='row no-gutters'>
+                    <p class="m-0">Preset locations work only with four or two seasons and weather enabled.</p>
+                    <p><small>If you name your seasons winter, spring, summer, and autumn/fall, the system matches them with the presets' seasons, no matter which order.</small></p>
                 </div>
 
                 <div id='locations_warning_hidden' class='hidden'>
@@ -932,7 +939,7 @@
     					Current location:
     				</div>
     				<div class='row no-gutters mb-2'>
-    					<select class='form-control protip' id='location_select' data-pt-position="right" data-pt-title="The presets work with four seasons (winter, spring, summer, autumn) or two seasons (winter, summer). If you call your seasons the same, the system matches them with the presets' seasons, no matter which order.">
+    					<select class='form-control' id='location_select'>
     					</select>
     				</div>
                     <div class='row no-gutters my-2'>
@@ -1055,7 +1062,7 @@
 						<input type='text' class='form-control name' id='event_name_input' placeholder='Event name'>
 					</div>
 					<div class="col-auto">
-						<button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+						<button type='button' class='btn btn-primary add' @click="$dispatch('event-editor-modal-new-event', { epoch: dynamic_data.epoch })"><i class="fa fa-plus"></i></button>
 					</div>
 				</div>
 
@@ -1292,8 +1299,9 @@
 
 					@if(Auth::user()->can('add-users', $calendar))
 
-						<div class='row no-gutters mt-1 mb-3'>
-							<p class='m-0'>Invite your friends to collaborate on this calendar! Once they accept your invite, you'll be able to assign them a role.</p>
+						<div class='row no-gutters'>
+							<p class='m-0'>Invite your friends to collaborate!</p>
+                            <p><small>Once they accept your invite, you'll be able to assign them a role.</small></p>
 						</div>
 
 						<div class='row no-gutters my-1'>
@@ -1334,15 +1342,19 @@
 			<!---------------------------------------------->
 			<div class='wrap-collapsible card settings-linking'>
 				<input id="collapsible_linking" class="toggle" type="checkbox">
+
 				<label for="collapsible_linking" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-link"></i> Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='More Info: Calendar Linking' href='{{ helplink('calendar_linking') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
-				<div class="collapsible-content card-body">
+
+                <div class="collapsible-content card-body">
+
+                    <div class='row no-gutters'>
+                        <p class="m-0">Calendar linking allows you to connect two calendar's dates, making one follow the other!</p>
+                        <p><small>This is a complex feature, we recommend you check out the article on <a href='{{ helplink('calendar_linking') }}' target="_blank"><i class="icon-question-sign"></i> Calendar Linking</a>.</small></p>
+                    </div>
 
 					@if(Auth::user()->can('link', $calendar))
 
 						<div id='calendar_link_hide'>
-							<div class='row no-gutters my-1'>
-								<p>Calendar linking is a complex feature, we recommend you check out the article on <a href='{{ helplink('calendar_linking') }}' target="_blank"><i class="icon-question-sign"></i> Calendar Linking</a>.</p>
-							</div>
 
 							@if($calendar->parent != null)
 								<div class='row no-gutters my-1 center-text hidden calendar_link_explanation'>
@@ -1397,7 +1409,7 @@
         <div class='p-2'><button type='button' class='btn btn-primary' id='apply_changes_btn'>Update preview</button></div>
     </div>
 
-	<div id="top_follower" class="step-hide">
+    <div id="top_follower" :class="{ 'single_month': apply == 'single_month' }" x-data="{ apply: '' }" @layout-change.window="apply = $event.detail.apply">
 
 		<div class='parent_button_container hidden d-print-none'>
 			<div class='container d-flex h-100 p-0'>
@@ -1408,8 +1420,11 @@
 		</div>
 
 		<div class='btn_container hidden'>
-			<button class='btn btn-danger btn_preview_date hidden d-print-none' disabled fc-index='year' value='-1'>< Year</button>
-			<button class='btn btn-danger btn_preview_date hidden d-print-none' disabled fc-index='timespan' value='-1'>< Month</button>
+			<button class='btn btn-danger btn_preview_date hidden d-print-none sub_year' disabled fc-index='year' value='-1'>< Year</button>
+            <button class='btn btn-danger btn_preview_date hidden d-print-none sub_month' disabled fc-index='timespan' value='-1'>
+                <span x-cloak x-show="apply != 'single_month'">< Month</span>
+                <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-left"></i></span>
+            </button>
 		</div>
 
 		<div class='reset_preview_date_container m-1 left'>
@@ -1425,9 +1440,12 @@
         </div>
 
 		<div class='btn_container hidden'>
-			<button class='btn btn-success btn_preview_date hidden d-print-none' disabled fc-index='year' value='1'>Year ></button>
-			<button class='btn btn-success btn_preview_date hidden d-print-none' disabled fc-index='timespan' value='1'>Month ></button>
-		</div>
+			<button class='btn btn-success btn_preview_date hidden d-print-none add_year' disabled fc-index='year' value='1'>Year ></button>
+            <button class='btn btn-success btn_preview_date hidden d-print-none add_month' disabled fc-index='timespan' value='1'>
+                <span x-cloak x-show="apply != 'single_month'">Month ></span>
+                <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-right"></i></span>
+            </button>
+        </div>
 
 	</div>
 

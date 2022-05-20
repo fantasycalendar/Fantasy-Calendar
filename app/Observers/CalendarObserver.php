@@ -2,13 +2,17 @@
 
 namespace App\Observers;
 
-use App\Calendar;
+use App\Models\Calendar;
+use App\Events\DateChanged;
 
 class CalendarObserver
 {
     public function saving(Calendar $calendar) {
         if($calendar->isDirty('dynamic_data')) {
             $calendar->last_dynamic_change = date('Y-m-d h:i:s');
+            $calendar->dynamic('epoch', $calendar->epoch->epoch);
+
+            DateChanged::dispatchIf($calendar->children()->exists(), $calendar, $calendar->dynamic('epoch'));
         }
 
         if($calendar->isDirty('static_data')) {

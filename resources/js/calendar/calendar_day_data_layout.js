@@ -3,7 +3,7 @@ day_data_tooltip = {
     elements: {},
 
     set_up: function(){
-        if(Object.keys(this.elements).length == 0){
+        if(Object.keys(this.elements).length === 0){
             this.tooltip_box = $('#day_data_tooltip_box');
             this.tooltip_box.find('.hidden').each(function(){
                 day_data_tooltip.elements[$(this).attr('data_key')] = {
@@ -21,7 +21,9 @@ day_data_tooltip = {
             return;
         }
 
-        if(event.path.indexOf(day_data_tooltip.tooltip_box[0]) > -1){
+
+
+        if($(event.target).closest(day_data_tooltip.tooltip_box[0]).length){
             return;
         }
 
@@ -60,8 +62,8 @@ day_data_tooltip = {
                 }else if(key.indexOf('moon') > -1){
                     for(var moon_index in data){
                         var moon = static_data.moons[moon_index];
-                        var name_array = moon_phases[moon.granularity];
                         if(key == "moon_phase"){
+                            var name_array = Object.keys(moon_phases[moon.granularity]);
                             var moon_data = `${moon.name}: ${name_array[data[moon_index]]}<br>`;
                         }else{
                             var moon_data = `${moon.name}: ${data[moon_index]}<br>`;
@@ -69,7 +71,7 @@ day_data_tooltip = {
                         html.push(moon_data)
                     }
                 }else if(key == "season"){
-                    
+
                     for(var season_key in data){
 
                         html = [];
@@ -114,7 +116,7 @@ day_data_tooltip = {
             }
 
         }
-        
+
         this.popper = new Popper(day_element, this.tooltip_box, {
             placement: 'right',
             modifiers: {

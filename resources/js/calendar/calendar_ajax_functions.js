@@ -1,4 +1,5 @@
 function update_date(new_date){
+
 	if(dynamic_data.year != new_date.year){
 		dynamic_data.day = new_date.day;
 		dynamic_data.timespan = new_date.timespan;
@@ -75,7 +76,6 @@ function update_view_dynamic(calendar_hash){
 		data: {_method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data)},
 		success: function ( result ){
 			last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
-			update_children_dynamic_data();
 		},
 		error: function ( error )
 		{
@@ -88,7 +88,7 @@ function update_view_dynamic(calendar_hash){
 }
 
 
-function update_dynamic(calendar_hash){
+function update_dynamic(calendar_hash, callback){
 
 	$.ajax({
 		url:window.baseurl+"calendars/"+calendar_hash,
@@ -105,7 +105,9 @@ function update_dynamic(calendar_hash){
 
 			last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
 
-			update_children_dynamic_data();
+            if(callback) {
+                callback();
+            }
 
 		},
 		error: function ( error )
@@ -181,11 +183,7 @@ function do_update_all(calendar_hash, success_callback, failure_callback){
 
 			calendar_saved();
 
-			update_children_dynamic_data(function(){
-				if(success_callback !== undefined){
-					success_callback();
-				}
-			});
+            if(success_callback) success_callback();
 
 		},
 		error: function ( error )
@@ -249,85 +247,61 @@ function link_child_calendar(child_hash, parent_link_date, parent_offset){
 
 	show_loading_screen();
 
-	do_update_all(hash, function(){
-
-		get_all_data(child_hash, function(result){
-
-			var child_static_data = result.static_data;
-			var child_dynamic_data = result.dynamic_data;
-			var converted_date = date_converter.get_date(
-				static_data,
-				child_static_data,
-				dynamic_data,
-				child_dynamic_data,
-				parent_offset
-			);
-
-			child_dynamic_data.year = converted_date.year;
-			child_dynamic_data.timespan = converted_date.timespan;
-			child_dynamic_data.day = converted_date.day;
-			child_dynamic_data.epoch = converted_date.epoch;
-			child_dynamic_data.hour = converted_date.hour;
-			child_dynamic_data.minute = converted_date.minute;
-			child_dynamic_data.current_era = get_current_era(child_static_data, child_dynamic_data.epoch);
-
-			$.ajax({
-				url:window.baseurl+"calendars/"+child_hash,
-				type: "post",
-				dataType: 'json',
-				data: {
-					_method: "PATCH",
-					parent_hash: hash,
-					parent_link_date: parent_link_date,
-					parent_offset: parent_offset,
-					dynamic_data: JSON.stringify(child_dynamic_data),
-				},
-				success: function(result){
-					window.location.reload();
-				},
-				error: function ( error )
-				{
-					$.notify(
-						error
-					);
-				}
-			});
-		});
-
-	});
+$.ajax({
+    url:window.baseurl+"calendars/"+child_hash,
+    type: "post",
+    dataType: 'json',
+    data: {
+        _method: "PATCH",
+        parent_hash: hash,
+        parent_link_date: parent_link_date,
+        parent_offset: parent_offset
+    },
+    success: function(result){
+        update_dynamic(hash, () => {
+            window.location.reload();
+        });
+    },
+    error: function ( error )
+    {
+        $.notify(
+            error
+        );
+    }
+});
 }
 
 function unlink_child_calendar(output, child_hash){
 
 	show_loading_screen();
 
-	do_update_all(hash, function(){
-		$.ajax({
-			url:window.baseurl+"calendars/"+child_hash,
-			type: "post",
-			dataType: 'json',
-			data: {
-				_method: "PATCH",
-				parent_hash: "",
-				parent_link_date: "",
-				parent_offset: "",
-			},
-			success: function(result){
-				window.location.reload();
-			},
-			error: function ( error )
-			{
-				$.notify(
-					error
-				);
-			}
-		});
-	});
+    $.ajax({
+        url:window.baseurl+"calendars/"+child_hash,
+        type: "post",
+        dataType: 'json',
+        data: {
+            _method: "PATCH",
+            parent_hash: "",
+            parent_link_date: "",
+            parent_offset: "",
+        },
+        success: function(result){
+            update_dynamic(hash, () => {
+                window.location.reload();
+            });
+        },
+        error: function ( error )
+        {
+            $.notify(
+                error
+            );
+        }
+    });
 }
 
 function get_calendar_users(callback) {
     $.ajax({
-        url: window.baseurl+"api/calendar/"+hash+"/users",
+        url: window.apiurl+"/calendar/"+hash+"/users",
         type: "get",
         dataType: "json",
         success: function (result) {
@@ -340,7 +314,7 @@ function get_calendar_users(callback) {
 }
 
 function add_calendar_user(email, output){
-    axios.post(window.baseurl+"api/calendar/"+hash+"/inviteUser", {email: email})
+    axios.post(window.apiurl+"/calendar/"+hash+"/inviteUser", {email: email})
         .then(function(result) {
             output(true, `Sent email to ${email}!`);
         })
@@ -351,7 +325,7 @@ function add_calendar_user(email, output){
 
 function update_calendar_user(user_id, permission, output){
 
-    axios.post(window.baseurl+"api/calendar/"+hash+"/changeUserRole", {user_role: permission, user_id: user_id})
+    axios.post(window.apiurl+"/calendar/"+hash+"/changeUserRole", {user_role: permission, user_id: user_id})
         .then(function(result) {
             output(true, 'Updated permissions!');
         })
@@ -367,7 +341,7 @@ function remove_calendar_user(user_id, remove_all, callback, email = null){
         userdata.email = email;
     }
 
-    axios.post(window.baseurl+"api/calendar/"+hash+"/removeUser", userdata)
+    axios.post(window.apiurl+"/calendar/"+hash+"/removeUser", userdata)
         .then(function(result){
             callback();
         })
@@ -433,7 +407,7 @@ function submit_hide_show_event(event_id){
         .then(function(result) {
             if(result.data.success) {
 				events[event_id].settings.hide = !events[event_id].settings.hide;
-				rebuild_events();
+				rerender_calendar();
 				evaluate_save_button();
 			}
 			$.notify(
@@ -496,9 +470,8 @@ function submit_delete_event(event_id, callback){
 
 
 function get_event_comments(event_id, callback){
-
 	$.ajax({
-		url: window.baseurl+"api/eventcomment/event/"+event_id,
+		url: window.apiurl+"/eventcomment/event/"+event_id,
 		type: "get",
 		dataType: "json",
 		success: function ( result ) {
@@ -513,7 +486,7 @@ function get_event_comments(event_id, callback){
 
 function submit_new_comment(content, event_id, callback) {
 
-    axios.post(window.baseurl+"api/eventcomment", {
+    axios.post(window.apiurl+"/eventcomment", {
         calendar_id: calendar_id,
         content: content,
         event_id: event_id
@@ -535,7 +508,7 @@ function submit_new_comment(content, event_id, callback) {
 
 function submit_edit_comment(comment_id, content, callback){
 
-    axios.patch(window.baseurl+"api/eventcomment/"+comment_id, {
+    axios.patch(window.apiurl+"/eventcomment/"+comment_id, {
 		content: content
 	})
         .then(function (result){
@@ -553,14 +526,14 @@ function submit_edit_comment(comment_id, content, callback){
 				$.notify(
 					result.data.message
 				);
-            } 
+            }
 		});
-		
+
 }
 
 function submit_delete_comment(comment_id, callback){
 
-    axios.delete(window.baseurl+"api/eventcomment/"+comment_id)
+    axios.delete(window.apiurl+"/eventcomment/"+comment_id)
         .then(function (result){
             if(!result.data.error && result.data != "") {
                 callback(result.data.message);
@@ -574,7 +547,7 @@ function submit_delete_comment(comment_id, callback){
 				);
             }
 		});
-		
+
 }
 
 
@@ -586,74 +559,6 @@ function get_owned_calendars(output){
 		data: {},
 		success: function(result){
 			output(result);
-		},
-		error: function ( error )
-		{
-			$.notify(
-				error
-			);
-		}
-	});
-}
-
-
-function update_children_dynamic_data(output){
-
-	$.ajax({
-		url:window.apiurl+"/calendar/"+hash+"/children",
-		type: "get",
-		dataType: 'json',
-		data: {hash: hash},
-		success: function(result){
-
-			var new_dynamic_data = {};
-
-			for(var i in result){
-
-				var child_hash = result[i].hash;
-
-				var child_static_data = result[i].static_data;
-				var parent_offset = result[i].parent_offset;
-				var child_dynamic_data = result[i].dynamic_data;
-				var converted_date = date_converter.get_date(
-					static_data,
-					child_static_data,
-					dynamic_data,
-					child_dynamic_data,
-					parent_offset
-				);
-
-				child_dynamic_data.year = converted_date.year;
-				child_dynamic_data.timespan = converted_date.timespan;
-				child_dynamic_data.day = converted_date.day;
-				child_dynamic_data.epoch = converted_date.epoch;
-				child_dynamic_data.hour = converted_date.hour;
-				child_dynamic_data.minute = converted_date.minute;
-				child_dynamic_data.current_era = get_current_era(child_static_data, child_dynamic_data.epoch);
-
-				new_dynamic_data[child_hash] = child_dynamic_data;
-
-			}
-
-			$.ajax({
-				url:window.apiurl+"/calendar/"+hash+"/updatechildren",
-				type: "post",
-				dataType: 'json',
-				data: {_method: 'PATCH', data: JSON.stringify(new_dynamic_data)},
-				success: function ( result )
-				{
-					if(output !== undefined){
-						output();
-					}
-				},
-				error: function ( error )
-				{
-					$.notify(
-						error
-					);
-				}
-			});
-
 		},
 		error: function ( error )
 		{
@@ -700,7 +605,7 @@ function delete_calendar(calendar_hash, calendar_name, callback){
 
             if (result.value !== calendar_name) throw `Sorry! "${result.value}" isn't the same as "${calendar_name}"`;
 
-            return axios.delete('/api/calendar/' + calendar_hash);
+            return axios.delete(window.apiurl + '/calendar/' + calendar_hash);
 
         })
         .then(results => {
@@ -754,7 +659,7 @@ function copy_calendar(calendar_hash, calendar_name, callback){
 
             return axios({
                 method: 'post',
-                url: '/api/calendar/' + calendar_hash + "/clone",
+                url: window.apiurl + '/calendar/' + calendar_hash + "/clone",
                 data: {
                     new_calendar_name: new_calendar_name
                 }
@@ -818,7 +723,7 @@ function create_calendar(callback){
 function get_event_comments(event_id, callback){
 
 	$.ajax({
-		url: window.baseurl+"api/eventcomment/event/"+event_id,
+		url: window.apiurl+"/eventcomment/event/"+event_id,
 		type: "get",
 		dataType: "json",
 		success: function ( result ) {
@@ -833,7 +738,7 @@ function get_event_comments(event_id, callback){
 
 function create_event_comment(content, event_id, callback) {
 
-    axios.post(window.baseurl+"api/eventcomment", {
+    axios.post(window.apiurl+"/eventcomment", {
         calendar_id: calendar_id,
         content: content,
         event_id: event_id

@@ -4,7 +4,7 @@
 namespace App\Services;
 
 
-use App\User;
+use App\Models\User;
 use Laravel\Cashier\Subscription;
 
 class Statistics

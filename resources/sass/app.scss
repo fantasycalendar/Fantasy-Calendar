@@ -1,5 +1,9 @@
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Montserrat:regular,600');
+@import url('https://rsms.me/inter/inter.css');
+html { font-family: 'Inter', sans-serif; }
+@supports (font-variation-settings: normal) {
+    html { font-family: 'Inter var', sans-serif; }
+}
 
 @import '~bootstrap/scss/bootstrap';
 
@@ -47,4 +51,18 @@ $hamburger-padding-y        :1rem;
 
 .btn-outline-secondary {
     border-color: rgb(108, 117, 125, 0.3);
+}
+
+.badge-accent{
+    color: #fff;
+    background-color: #6c757d;
+}
+
+#go_to_preview_date, #preview_date_btn {
+    background-color: $bg-amber-600;
+    border-color: $bg-amber-600;
+
+    &:hover {
+        background-color: $bg-amber-500;
+    }
 }

@@ -2,28 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\CalendarInvite;
+use App\Events\DateChanged;
 use App\Jobs\PrepCalendarForExport;
-use GrahamCampbell\Markdown\Facades\Markdown;
+use App\Services\RendererService\ImageRenderer;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 
 use Auth;
-use App\Calendar;
-use App\EventCategory;
-use App\CalendarEvent;
+use App\Models\Calendar;
 
 use App\Jobs\SaveEventCategories;
 use App\Jobs\SaveCalendarEvents;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
 class CalendarController extends Controller
 {
     public function __construct() {
-        $this->middleware('auth')->except('show', 'create');
+        $this->middleware('auth')->except('show', 'create', 'renderImage');
 
-        $this->middleware('verified')->except('show', 'create');
+        $this->middleware('verified')->except('show', 'create', 'renderImage');
 
         $this->authorizeResource(Calendar::class, 'calendar', ['except' => 'update']);
     }
@@ -31,32 +29,32 @@ class CalendarController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function index(Request $request)
     {
-        $user_calendars = Calendar::active()->search($request->input('search'))->orderBy('disabled');
-
-        $user_calendars = $user_calendars->where('user_id', Auth::user()->id);
-
-        $calendarSimplePagination = $user_calendars->simplePaginate(10);
-        $user_calendars = $user_calendars->paginate(10);
-
-
-        $shared_calendars = Auth::user()->related_calendars()->where('disabled', '=', 0)->search($request->input('search'));
-
-        $sharedCalendarSimplePagination = $shared_calendars->simplePaginate(10);
-        $shared_calendars = $shared_calendars->paginate(10);
-
-        $invitations = CalendarInvite::active()->forUser(Auth::user()->email)->get();
-
         return view('calendar.list', [
             'title' => "Fantasy Calendar",
-            'invitations' => $invitations,
-            'calendars' => $user_calendars,
-            'calendar_pagination' => $calendarSimplePagination,
-            'shared_calendars' => $shared_calendars,
-            'shared_pagination' => $sharedCalendarSimplePagination,
+            'invitations' => $request->user()->getInvitations(),
+            'calendars' => $request->user()
+                ->calendars()
+                ->without(['events', 'event_categories'])
+                ->with(['user'])
+                ->withCount(['events', 'event_categories', 'users'])
+                ->when($request->get('search'), function($query, $search) {
+                    $query->search($search);
+                })
+                ->paginate(10),
+            'shared_calendars' => $request->user()
+                ->related_calendars()
+                ->where('disabled', '=', 0)
+                ->without(['events', 'event_categories'])
+                ->with(['user'])
+                ->withCount(['events', 'event_categories', 'users'])
+                ->when($request->get('search'), function($query, $search) {
+                    $query->search($search);
+                })
+                ->paginate(10, ['*'], 'shared_page'),
             'search' => $request->input('search'),
         ]);
     }
@@ -119,6 +117,57 @@ class CalendarController extends Controller
         ]);
     }
 
+    public function guidedEmbed(Calendar $calendar)
+    {
+        return view('calendar.guided_embed', [
+            'calendar' => $calendar,
+            'sizes' => [
+                'auto' => 'Autofill available space',
+                'xs' => 'Tiny',
+                'sm' => 'Small',
+                'md' => 'Medium',
+                'lg' => 'Large',
+                'xl' => 'Extra Large',
+                '2xl' => 'Double Extra Large',
+                '3xl' => 'Triple Extra Large',
+                'custom' => 'Custom size'
+            ],
+            'themes' => ImageRenderer\ThemeFactory::getThemeNames(),
+            'themeValues' => ImageRenderer\ThemeFactory::getThemesRich()
+        ]);
+    }
+
+    public function renderImage(Calendar $calendar, $ext)
+    {
+        if(Gate::denies('view-image', $calendar) && !app()->environment('local')) {
+            $pathToFile = public_path('resources/discord/premium-warning.png');
+            $headers = ['Content-Type' => 'image/png'];
+
+            return response()->file($pathToFile, $headers);
+        }
+
+        if(!in_array($ext, ['png', 'jpg', 'jpeg'])) {
+            return redirect()->to(
+                route('calendars.image', request()->merge(['calendar' => $calendar->hash, 'ext' => 'png'])->all())
+            );
+        }
+
+        if(app()->environment('local') && request()->get('debug')) {
+            return ImageRenderer::renderMonth($calendar, collect(request()->merge(['ext' => $ext])->all()));
+        }
+
+        return response()->stream(function() use ($ext, $calendar) {
+            echo ImageRenderer::renderMonth($calendar, collect(request()->merge(['ext' => $ext])->all()));
+        }, 200, [
+            'Content-Disposition' => 'inline; filename="' . Str::slug(Str::ascii($calendar->name)) . '_' . Str::slug(Str::ascii($calendar->current_date)) . '.'. $ext .'"',
+            'Content-Type' => 'image/' . $ext,
+            'Last-Modified' => now(),
+            'Cache-control' => 'must-revalidate',
+            'Expires' => now()->addMinutes(5),
+            'Pragma' => 'public'
+        ]);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -143,7 +192,8 @@ class CalendarController extends Controller
     public function export(Calendar $calendar)
     {
         return view('calendar.export', [
-            'exportdata' => PrepCalendarForExport::dispatchNow($calendar)
+            'exportdata' => PrepCalendarForExport::dispatchNow($calendar),
+            'calendar' => $calendar
         ]);
     }
 
@@ -216,6 +266,10 @@ class CalendarController extends Controller
             return [ 'success' => false, 'error' => 'Unable to update calendar. Please try again later.'];
         }
 
+        if(isset($parent_calendar) && $parent_hash_exists && $parent_link_date_exists && $parent_offset_exists){
+            DateChanged::dispatch($parent_calendar, $parent_calendar->dynamic('epoch'));
+        }
+
         $last_changed = [
             'last_dynamic_change' => $calendar->last_dynamic_change,
             'last_static_change' => $calendar->last_static_change,
@@ -252,11 +306,5 @@ class CalendarController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function print(Calendar $calendar) {
-        return view('calendar.print', [
-            'calendar' => $calendar
-        ]);
     }
 }

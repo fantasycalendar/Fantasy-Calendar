@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Auth;
-use App\User;
+use App\Models\User;
 use Illuminate\Support\Facades\App;
 
 class BetaCheck

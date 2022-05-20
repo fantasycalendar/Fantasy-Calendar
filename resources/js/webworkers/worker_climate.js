@@ -6,25 +6,21 @@ importScripts('/js/calendar/calendar_season_generator.js?v='+version);
 
 
 onmessage = e => {
-	
-	var calendar_name = e.data.calendar_name;
 
-	var static_data = e.data.static_data;
-	
-	var dynamic_data = e.data.dynamic_data;
+	let static_data = e.data.static_data;
 
-	var preview_date = e.data.preview_date;
-	
-	var start_epoch = e.data.start_epoch;
+	let dynamic_data = e.data.dynamic_data;
 
-	var end_epoch = e.data.end_epoch;
+	let start_epoch = e.data.start_epoch;
 
-	var epoch_data = e.data.epoch_data;
+	let end_epoch = e.data.end_epoch;
 
-	climate_generator = new Climate(epoch_data, static_data, dynamic_data, dynamic_data.year, start_epoch, end_epoch);
+	let epoch_data = e.data.epoch_data;
+
+	let climate_generator = new Climate(epoch_data, static_data, dynamic_data, dynamic_data.year, start_epoch, end_epoch);
 
 	epoch_data = climate_generator.generate();
-	
+
 	postMessage({
 		epoch_data: epoch_data,
 		processed_seasons: climate_generator.process_seasons,

@@ -1,62 +1,47 @@
-@extends('templates._page')
-
-@push('page-class', 'page-export')
-
 @push('head')
     <script>
+        function ExportPage() {
+            return {
+                copy_export($dispatch) {
+                    this.$refs.exportbody.select();
+                    document.execCommand("copy");
 
-    $(document).ready(function(){
-        function copy_export(){
-            var copyText = document.querySelector(".export-body");
-            copyText.select();
-            document.execCommand("copy");
+                    $dispatch('notification', {
+                        title: 'JSON Copied',
+                        body: 'Calendar data copied to clipboard.'
+                    });
+                },
+                save_export() {
+                    let file = new Blob([JSON.stringify(JSON.parse(this.$refs.exportbody.value))], {type: "json"});
 
-            $.notify(
-                "Copied to clipboard!",
-                {
-                    className: "success",
-                    globalPosition: "right bottom"
+                    if (window.navigator.msSaveOrOpenBlob) // IE10+
+                        window.navigator.msSaveOrOpenBlob(file, "{{ Str::slug($calendar->name) }}.json");
+                    else { // Others
+                        let a = document.createElement("a");
+                        a.href = URL.createObjectURL(file);
+                        a.download = "{{ Str::slug($calendar->name) }}.json";
+                        document.body.appendChild(a);
+                        a.click();
+                    }
                 }
-            );
-        }
-
-        $("#btn_export_save").click(function(){
-            var file = new Blob([JSON.stringify(JSON.parse($('.export-body').text()))], {type: "json"});
-            if (window.navigator.msSaveOrOpenBlob) // IE10+
-                window.navigator.msSaveOrOpenBlob(file, "calendar.json");
-            else { // Others
-                var a = document.createElement("a"),
-                url = URL.createObjectURL(file);
-                a.href = url;
-                a.download = "calendar.json";
-                document.body.appendChild(a);
-                a.click();
             }
-        });
-
-        $('#btn_export_copy').click(copy_export);
-        $('.export-body').click(copy_export);
-
-    })
-
+        }
     </script>
 @endpush
 
-@section('content')
-    <div class="container">
-        <div class='row py-4'>
-            <div class='col-sm-6'>
-                <button type='button' class='btn btn-bg btn-primary btn-block' id='btn_export_save'>Save to file</button>
+<x-app-layout>
+    <div x-data="ExportPage()">
+        <div class='grid md:grid-cols-2 gap-4'>
+            <div class="w-full col-span-1">
+                <x-button class="w-full justify-center" size="lg" @click="save_export" role="secondary">Save to file</x-button>
             </div>
-            <div class='col-sm-6'>
-                <button type='button' class='btn btn-bg btn-success btn-block' id='btn_export_copy'>Copy to clipboard</button>
+            <div class="w-full col-span-1">
+                <x-button class="w-full justify-center" size="lg" @click="copy_export($dispatch)" role="primary">Copy to clipboard</x-button>
             </div>
-        </div>
+            <div class="mb-10 w-full h-full col-span-1 md:col-span-2">
+                <x-textarea class="w-full h-96" @click="copy_export($dispatch)" x-ref="exportbody" readonly>@json($exportdata, JSON_PRETTY_PRINT)</x-textarea>
+            </div>
 
-        <div class='row'>
-            <div class="col-sm-12">
-                <textarea readonly class="form-control export-body">@json($exportdata)</textarea>
-            </div>
         </div>
     </div>
-@endsection
+</x-app-layout>

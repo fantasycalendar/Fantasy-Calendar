@@ -25,7 +25,7 @@ var moon_tooltip = {
 	element: false,
 	title: "",
 	show: false,
-	
+
 	init: function(){
 		this.tooltip_box = $('#moon_tooltip_box');
 	},
@@ -64,6 +64,8 @@ var calendar_weather = {
 			this.weather_tooltip_box = $('#weather_tooltip_box');
 			this.base_height = parseInt(this.weather_tooltip_box.css('height'));
 			this.weather_title = $('.weather_title');
+			this.day_title = $('.day_title');
+			this.day_container = $('.day_container');
 			this.moon_title = $('.moon_title');
 			this.moon_container = $('.moon_container');
 			this.weather_temp_desc = $('.weather_temp_desc');
@@ -130,6 +132,20 @@ var calendar_weather = {
 
 			this.moon_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
 			this.moon_container.toggleClass('hidden', !icon.hasClass('moon_popup'));
+
+			this.day_title.toggleClass('hidden', !icon.hasClass('day_title_popup'));
+			this.day_container.toggleClass('hidden', !icon.hasClass('day_title_popup'));
+
+			if(icon.hasClass('day_title_popup')) {
+				let epoch_data = calendar_weather.epoch_data[epoch];
+				if(epoch_data.leap_day !== undefined) {
+					let index = epoch_data.leap_day;
+					leap_day = static_data.year_data.leap_days[index];
+					if(leap_day.show_text) {
+						this.day_container.text(leap_day.name);
+					}
+				}
+			}
 
 			if(icon.hasClass('moon_popup')){
 				this.moon_container.html(this.insert_moons(epoch));
@@ -252,36 +268,24 @@ var calendar_weather = {
 
 		insert_moons: function(epoch){
 
-			let epoch_data = calendar_weather.epoch_data[epoch];
+			let render_data = CalendarRenderer.render_data.event_epochs[epoch];
 
 			var moon_text = [];
 
-			if(Perms.player_at_least('co-owner') || !static_data.settings.hide_moons){
+			for(let index = 0; index < render_data.moons.length; index++){
 
-				for(moon_index = 0; moon_index < static_data.moons.length; moon_index++){
+				var moon = render_data.moons[index];
 
-					var moon = static_data.moons[moon_index];
-
-					if(!Perms.player_at_least('co-owner') && moon.hidden) continue;
-
-					var name_array = moon_phases[moon.granularity];
-
-					let phase_name = Object.keys(name_array)[epoch_data.moon_phase[moon_index]];
-
-					let moon_path = name_array[phase_name];
-
-					moon_text.push(`<svg class='moon protip' moon="${moon_index}" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32" data-pt-position="top" data-pt-title='${moon.name}, ${phase_name}'>`);
-						moon_text.push(`<circle cx="16" cy="16" r="9" class="lunar_background"/>`);
-						if(moon_path) moon_text.push(`<path class="lunar_shadow" d="${moon_path}"/>`);
-						moon_text.push(`<circle cx="16" cy="16" r="10" class="lunar_border"/>`);
-					moon_text.push("</svg>");
-
-				}
+				moon_text.push(`<svg class='moon protip' moon="${moon.index}" preserveAspectRatio="xMidYMid" width="32" height="32" viewBox="0 0 32 32" data-pt-position="top" data-pt-title='${moon.name}, ${moon.phase}'>`);
+					moon_text.push(`<circle cx="16" cy="16" r="10" style="fill: ${moon.color};"/>`);
+					if(moon.path) moon_text.push(`<path style="fill: ${moon.shadow_color};" d="${moon.path}"/>`);
+					moon_text.push(`<circle cx="16" cy="16" r="10" class="lunar_border"/>`);
+				moon_text.push("</svg>");
 
 			}
 
 			return moon_text.join('');
-			
+
 		},
 
 		hide: function(){

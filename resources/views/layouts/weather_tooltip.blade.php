@@ -1,4 +1,6 @@
 <div id='weather_tooltip_box'>
+	<div class='bold-text day_title hidden'>Day Title:</div>
+	<div class='day_container hidden'></div>
 	<div class='bold-text moon_title hidden'>Moons:</div>
 	<div class='moon_container hidden flex justify-content-center flex-wrap'></div>
 	<div class='weather_title bold-text'>Weather:</div>

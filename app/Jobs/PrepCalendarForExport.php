@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -46,7 +46,7 @@ class PrepCalendarForExport implements ShouldQueue
         }
 
         foreach($this->calendar->events as $key => $event) {
-            if($event->event_category_id ?? -1 >= 0) {
+            if(($event->event_category_id ?? -1) >= 0) {
                 $event->event_category_id = $categorymap[$event->event_category_id];
             }
 

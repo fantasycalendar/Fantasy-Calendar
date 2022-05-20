@@ -4,7 +4,7 @@
 namespace App\Transformer;
 
 
-use App\User;
+use App\Models\User;
 
 class CalendarUserTransformer extends \League\Fractal\TransformerAbstract
 {

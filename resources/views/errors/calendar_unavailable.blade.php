@@ -1,12 +1,3 @@
-@extends('errors.error')
-
-@section('content')
-    <div class="site">
-        <div class="sketch">
-            <div class="bee-sketch red"></div>
-            <div class="bee-sketch blue"></div>
-        </div>
-
-        <h1><small>{{ $title ?? "This calendar is unavailable" }}</small></h1>
-    </div>
-@endsection
+<x-error-layout>
+    <h1>{{ $title ?? "That calendar is unavailable." }}</h1>
+</x-error-layout>

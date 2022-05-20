@@ -2,7 +2,7 @@
 
 @push('head')
     <script>
-  
+
         hash = getUrlParameter('id');
 
         window.Perms = new Perms(
@@ -44,7 +44,7 @@
                     "wind_sys":"metric",
                     "cinematic":false,
                     "enable_weather":false,
-                    "periodic_seasons":false,
+                    "periodic_seasons":true,
                     "color_enabled": false
                 }
             },
@@ -65,8 +65,7 @@
                 "hide_future_weather":false,
                 "add_month_number":false,
                 "add_year_day_number":false,
-                "default_category":-1,
-                "comments": false
+                "default_category":-1
             },
             "cycles":{
                 "format":"",
@@ -89,6 +88,8 @@
             "location": "Equatorial"
         };
 
+        preview_date = clone(dynamic_data);
+
         $(document).ready(function(){
 
             if(static_data){
@@ -101,8 +102,6 @@
             set_up_edit_values();
 
             bind_calendar_events();
-            edit_event_ui.bind_events();
-            edit_HTML_ui.bind_events();
 
             const queryString = window.location.search;
             if(should_resume(queryString)){
@@ -131,7 +130,7 @@
         }
 
     </script>
-    
+
 @endpush
 
 @section('content')

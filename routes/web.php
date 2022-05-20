@@ -1,7 +1,20 @@
 <?php
 
+use App\Http\Controllers\AccountDeletionController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AgreementController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\EmbedController;
+use App\Http\Controllers\ErrorsController;
+use App\Http\Controllers\InviteController;
+use App\Http\Controllers\PolicyController;
+use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\WelcomeController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\StripeController;
+use Intervention\Image\Facades\Image;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,72 +27,85 @@ use App\Http\Controllers\StripeController;
 |
 */
 
+Route::get('/embed/{calendar}', [EmbedController::class, 'embedCalendar'])->middleware('can:embedAny,App\Models\Calendar');
 
-Route::get('/', 'WelcomeController@welcome')->name('home');
+Route::get('/', [WelcomeController::class, 'welcome'])->name('home');
 Route::view('/welcome', 'welcome')->name('welcome');
-Route::view('/whats-new', 'pages.whats-new')->name('whats-new');
 Route::view('/changelog', 'pages.changelog')->name('changelog');
 Route::view('/faq', 'pages.faq')->name('faq');
 Route::view('/donate', 'pages.donate', ['title'=>'Support the site']);
-Route::view('/discord', 'pages.discord', ['title' => 'Join Our Discord Server!'])->name('discord');
+Route::view('/discord-server', 'pages.discord-server', ['title' => 'Join Our Discord Server!'])->name('discord.server');
+Route::view('/discord', 'pages.discord')->name('discord');
+Route::get('/discord-announcement-acknowledge', [WelcomeController::class, 'discord_announcement_acknowledge'])->name('discord-announcement-acknowledge');
+Route::get('/terms-and-conditions', [AgreementController::class, 'view'])->name('terms-and-conditions');
+Route::get('/privacy-policy', [PolicyController::class, 'view'])->name('privacy-policy');
+Route::get('/prompt-tos', [AgreementController::class, 'show'])->name('prompt-tos');
+
+Route::middleware('auth')->group(function(){
+    Route::get('/account-migrated', fn() => redirect(route('account-migrated-acknowledge')))->name('account-migrated');
+    Route::get('/account-migrated-acknowledge', [WelcomeController::class, 'account_migrated_acknowledge'])->name('account-migrated-acknowledge');
+    Route::get('/agreement-accepted', [AgreementController::class, 'accept'])->name('agreement-accepted');
+
+    Route::view('/account-deletion-request', 'pages.account-deletion-request')->middleware(['account.deletion', 'agreement'])->name('account-deletion-request');
+    Route::post('/set-account-deletion', [AccountDeletionController::class, 'set'])->middleware(['account.deletion']);
+
+    Route::get('/cancel-account-deletion', [AccountDeletionController::class, 'cancel'])->name('cancel-account-deletion')->middleware();
+    Route::get('/account-deletion-warning', [AccountDeletionController::class, 'warning'])->name('account-deletion-warning')->middleware();
+});
 
 
-Route::get('/account-migrated', 'WelcomeController@account_migrated')->name('account-migrated');
-Route::get('/account-migrated-acknowledge', 'WelcomeController@account_migrated_acknowledge')->name('account-migrated-acknowledge');
-Route::view('/account-deletion-request', 'pages.account-deletion-request')->middleware(['auth', 'account.deletion', 'agreement']);
-Route::post('/set-account-deletion', 'AccountDeletionController@set')->middleware(['auth', 'account.deletion']);
-Route::get('/cancel-account-deletion', 'AccountDeletionController@cancel')->name('cancel-account-deletion')->middleware(['auth']);
-Route::get('/account-deletion-warning', 'AccountDeletionController@warning')->name('account-deletion-warning')->middleware(['auth']);
+Route::prefix('marketing')->as('marketing.')->middleware('auth')->group(function(){
+    Route::view('/manage-subscription/{user}', 'pages.unsubscribe-confirmation')->name('manage-subscription')->middleware('signed');
+    Route::post('/unsubscribe', [SettingsController::class, 'unsubscribeFromMarketing'])->name('unsubscribe');
+    Route::post('/resubscribe', [SettingsController::class, 'resubscribeToMarketing'])->name('resubscribe');
+    Route::view('/subscription-updated', 'pages.subscription-updated')->name('subscription-updated');
+});
 
+Route::prefix('invite')->group(function(){
+    Route::middleware(['auth', 'account.deletion', 'agreement'])->group(function(){
+        Route::get('accept', [InviteController::class, 'accept'])->name('invite.accept');
+        Route::get('reject', [InviteController::class, 'showRejectConfirmation'])->name('invite.reject-confirm');
+        Route::post('reject', [InviteController::class, 'reject'])->name('invite.reject');
+    });
 
-Route::get('/terms-and-conditions', 'AgreementController@view')->name('terms-and-conditions');
-Route::get('/privacy-policy', 'PolicyController@view')->name('privacy-policy');
-
-
-Route::get('/prompt-tos', 'AgreementController@show')->name('prompt-tos');
-Route::get('/agreement-accepted', 'AgreementController@accept')->name('agreement-accepted');
-
-
-Route::get('invite/accept', 'InviteController@accept')->name('invite.accept')->middleware(['auth', 'account.deletion', 'agreement']);
-Route::get('invite/reject', 'InviteController@showRejectConfirmation')->name('invite.reject-confirm')->middleware(['auth', 'account.deletion', 'agreement']);
-Route::post('invite/reject', 'InviteController@reject')->name('invite.reject')->middleware(['auth', 'account.deletion', 'agreement']);
-Route::get('invite/register', 'InviteController@register')->name('invite.register')->middleware(['register', 'signed:relative']);
+    Route::get('register', [InviteController::class, 'register'])->name('invite.register')->middleware(['register', 'signed:relative']);
+});
 
 
 // Calendar management
-Route::get('calendars/{calendar}/print', 'CalendarController@print')->name('calendars.print')->middleware(['account.deletion', 'agreement']);
-Route::get('calendars/{calendar}/export', 'CalendarController@export')->name('calendars.export')->middleware(['account.deletion', 'agreement']);
-Route::resource('calendars', 'CalendarController')->middleware(['account.deletion', 'agreement']);
+Route::middleware(['account.deletion', 'agreement'])->group(function(){
+    Route::group(['as' => 'calendars.', 'prefix' => 'calendars'], function(){
+        Route::get('/{calendar}/guided_embed', [CalendarController::class, 'guidedEmbed'])->name('guided_embed')->middleware('can:embedAny,App\Models\Calendar');
+        Route::get('/{calendar}/export', [CalendarController::class, 'export'])->name('export');
+        Route::get('/{calendar}.{ext}', [CalendarController::class, 'renderImage'])->name('image')->middleware('feature:imagerenderer');
+    });
+
+    Route::resource('calendars', CalendarController::class);
+});
 
 
 // User auth
 Auth::routes(['verify' => true]);
-Route::get('/logout', 'Auth\LoginController@logout');
-Route::get('/admin/loginas/{userid}', 'AdminController@loginas')->name('admin.loginas')->middleware('admin');
+Route::get('/logout', [LoginController::class, 'logout']);
 
+Route::middleware('admin')->as('admin.')->prefix('admin')->group(function() {
+    Route::get('/impersonate/{userid}', [AdminController::class, 'impersonate'])->name('impersonate');
+    Route::get('/reverse_impersonate/', [AdminController::class, 'reverseImpersonate'])->name('reverse_impersonate');
+});
+
+// Pricing page
+Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('subscription.pricing');
 
 // Subscription management
-// Pricing page
-Route::get('/pricing', 'SubscriptionController@pricing')->name('subscription.pricing');
+Route::prefix('subscription')->as('subscription.')->middleware(['account.deletion', 'agreement', 'feature:stripe'])->group(function(){
+    Route::get('/subscribe/{level}/{interval}', [SubscriptionController::class, 'subscribe'])->name('subscribe');
+    Route::post('/subscribe', [SubscriptionController::class, 'createsubscription'])->name('create');
+    Route::post('/cancel', [SubscriptionController::class, 'cancel'])->name('cancel');
+    Route::get('/resume', [SubscriptionController::class, 'resume'])->name('resume');
+    Route::post('/update/{level}/{plan}', [SubscriptionController::class, 'update'])->name('update');
+});
 
-// List current subscription
-Route::get('/subscription', 'SubscriptionController@index')->name('subscription.index');
-
-// They want to subscribe!
-Route::get('/subscription/subscribe/{level}/{interval}', 'SubscriptionController@subscribe')->name('subscription.subscribe')->middleware(['account.deletion', 'agreement']);
-Route::post('/subscription/subscribe', 'SubscriptionController@createsubscription')->name('subscription.create')->middleware(['account.deletion', 'agreement']);
-
-// They want to cancel =(
-Route::get('/subscription/cancel', 'SubscriptionController@cancellation')->name('subscription.cancel')->middleware(['account.deletion', 'agreement']);
-Route::post('/subscription/cancel', 'SubscriptionController@cancel')->name('subscription.cancelpost')->middleware(['account.deletion', 'agreement']);
-
-// They want to resume! =)
-Route::get('/subscription/resume', 'SubscriptionController@resume')->name('subscription.resume')->middleware(['account.deletion', 'agreement']);
-
-// They want to upgrade
-Route::post('/subscription/update/{level}/{plan}', 'SubscriptionController@update')->name('subscription.update')->middleware(['account.deletion', 'agreement']);
-
-Route::post('pricing/coupon', 'SubscriptionController@coupon');
+Route::post('pricing/coupon', [SubscriptionController::class, 'coupon']);
 
 // Extended Stripe Webhook
 Route::post(
@@ -88,17 +114,25 @@ Route::post(
 );
 
 // User profile
-Route::get('/profile', 'SettingsController@profile')->middleware(['auth', 'account.deletion', 'agreement'])->name('profile');
-Route::post('/profile', 'SettingsController@update')->name('settings.update')->middleware(['auth', 'account.deletion', 'agreement']);
-Route::post('/profile/password', 'SettingsController@updatePassword')->middleware(['auth', 'account.deletion', 'agreement']);
-Route::post('/profile/email', 'SettingsController@requestUpdateEmail')->middleware(['auth', 'account.deletion', 'agreement']);
-Route::get('/update-email/{user}', 'SettingsController@updateEmail')->name('update.email')->middleware(['auth', 'account.deletion', 'agreement']);
+Route::prefix('profile')->middleware(['auth', 'account.deletion', 'agreement'])->group(function(){
+    Route::view('/', 'profile.account')->name('profile');
+    Route::get('/billing', [SettingsController::class, 'billing'])->name('profile.billing');
+    Route::get('/billing-portal', [SettingsController::class, 'billingPortal'])->name('profile.billing-portal');
+    Route::view('/integrations','profile.integrations')->name('profile.integrations');
+    Route::get('/update-email/{user}', [SettingsController::class, 'updateEmail'])->name('update.email')->middleware('signed');
 
-Route::get('/error/unavailable', 'ErrorsController@calendarUnavailable')->name('errors.calendar_unavailable');
+    Route::get('/api-tokens', [SettingsController::class, 'apiTokens'])->name('profile.api-tokens')->middleware(['premium', 'can:interact,Laravel\Sanctum\PersonalAccessToken']);
+    Route::post('/api-tokens/create', [SettingsController::class, 'createApiToken'])->name('profile.api-tokens.create')->middleware(['premium', 'can:interact,Laravel\Sanctum\PersonalAccessToken']);
+    Route::delete('/api-tokens/delete/{personalAccessToken}', [SettingsController::class, 'deleteApiToken'])->name('profile.api-tokens.delete')->middleware(['premium', 'can:interact,Laravel\Sanctum\PersonalAccessToken']);
+
+    Route::post('/settings', [SettingsController::class, 'updateSettings'])->name('profile.updateSettings');
+    Route::post('/account', [SettingsController::class, 'updateAccount'])->name('profile.updateAccount');
+});
+
+Route::get('/error/unavailable', [ErrorsController::class, 'calendarUnavailable'])->name('errors.calendar_unavailable');
 // Manual error page routes for the moment
-Route::get('/403', 'ErrorsController@error403');
+Route::get('/403', [ErrorsController::class, 'error403']);
+Route::get('/404', [ErrorsController::class, 'error404']);
 
-Route::get('/404', 'ErrorsController@error404');
-
-Route::get('/{path}', 'CalendarController@legacy')->where(['url' => 'calendar.php|calendar']);
-Route::get('{path}', 'ErrorsController@error404');
+Route::get('/{path}', [CalendarController::class, 'legacy'])->where(['url' => 'calendar.php|calendar']);
+Route::get('{path}', [ErrorsController::class, 'error404']);

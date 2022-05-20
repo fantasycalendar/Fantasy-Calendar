@@ -2,11 +2,22 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 use Auth;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -32,20 +43,31 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Throwable  $exception
+     * @param Throwable $exception
      * @return void
+     * @throws Throwable
      */
     public function report(Throwable $exception)
     {
         parent::report($exception);
     }
 
+    public function register()
+    {
+        if(config('logging.discord.url')) {
+            $this->reportable(function(Throwable $e){
+                logger()->channel('discord')->error($e->getMessage()."\n".$e->getTraceAsString());
+            });
+        }
+    }
+
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Throwable  $exception
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Throwable $exception
+     * @return Application|JsonResponse|RedirectResponse|Response|Redirector
+     * @throws Throwable
      */
     public function render($request, Throwable $exception)
     {
@@ -57,9 +79,13 @@ class Handler extends ExceptionHandler
                 ], 422);
             }
 
+            $status = ($exception instanceof AuthenticationException)
+                ? 401
+                : 200;
+
             return response()->json([
                 'message' => $exception->getMessage()
-            ]);
+            ], $status);
         }
 
         if($exception instanceof AuthorizationException || $exception instanceof AuthenticationException) {
@@ -78,6 +104,10 @@ class Handler extends ExceptionHandler
             if($request->is('calendars/*')) {
                 return redirect(route('errors.calendar_unavailable'));
             }
+        }
+
+        if ($exception instanceof QueryException) {
+            return response()->view('errors.default');
         }
 
         if ($this->isHttpException($exception)) {
@@ -100,13 +130,17 @@ class Handler extends ExceptionHandler
                     'title' => $exception->getMessage()
                 ]);
             }
+
+            if (!view()->exists("errors.{$exception->getStatusCode()}")) {
+                return response()->view('errors.default', ['exception' => $exception], 200, $exception->getHeaders());
+            }
         }
 
         return parent::render($request, $exception);
     }
 
-    protected function isApiCall($request)
+    protected function isApiCall($request): bool
     {
-        return strpos($request->getUri(), '/api/') !== false;
+        return str_contains($request->getUri(), '/api/');
     }
 }

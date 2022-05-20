@@ -2,29 +2,51 @@
 
 #calendar {
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
-    align-content: flex-start;
+    align-items: center;
     margin-bottom:5px;
     width: 100%;
     color: $main-text-color;
-    min-height: 85%;
     justify-content: center;
+    flex: 1;
+
+    &:not(.single_month) {
+        padding: 0 14px;
+    }
+
+    &.single_month {
+        justify-content: stretch;
+
+        .timespan_container {
+            min-width: 100%;
+            min-height: 100%;
+            justify-self: stretch;
+            align-self: stretch;
+            margin: 0;
+            border-radius: 0;
+            box-shadow: none;
+            border-bottom: 1px solid $card-border-color;
+
+            &.vertical {
+                border-radius: 0;
+                align-self: stretch;
+                margin: 0;
+            }
+        }
+    }
 }
 
 .timespan {
-
     &_container{
-
+        display: flex;
+        flex-direction: column;
         align-self: flex-start;
         text-align: center;
-        display: inline-flex;
-        flex-direction: column;
-        flex: 1 0 85%;
         position: relative;
         background-color: $card-bg-color;
         border-radius: 4px;
         margin: 24px 20px;
+        min-width: calc(100% - 40px);
         overflow: hidden;
         box-shadow: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05);
         transition: all 0.3s cubic-bezier(.25,.8,.25,1);
@@ -34,7 +56,7 @@
             text-align:center;
             overflow: hidden;
             text-overflow: ellipsis;
-            min-width: 5rem;
+            min-width: 7rem;
         }
 
         .week_day_name:not(:last-child){
@@ -53,8 +75,12 @@
     }
 
     &_row {
-        display: flex;
-        flex-direction: row;
+        display: grid;
+        grid-auto-columns: 1fr;
+        grid-auto-flow: column;
+        flex: 1;
+        background-image: $disabled-crosshatch;
+        z-index: 8;
 
         &.intercalary{
 
@@ -64,14 +90,16 @@
         }
 
         &_names{
-            display: flex;
-            flex-direction: row;
+            display: grid;
+            grid-auto-columns: 1fr;
+            grid-auto-flow: column;
         }
 
         &_container{
             display: flex;
             flex-direction: column;
             overflow-x: auto;
+            flex: 1;
 
             &:not(.intercalary){
                 border-top: 1px solid $calendar-border-color;
@@ -80,14 +108,16 @@
     }
 
     &_day {
+        box-sizing: border-box;
         display: flex;
         flex-direction: column;
         min-height:8rem;
-        flex: 1;
+        flex: 1 1 0px;
         background-color: $card-bg-color;
-        min-width: 5rem;
+        min-width: 7rem;
         position: relative;
         border-top:1px solid $calendar-border-color;
+	    padding: 2px;
 
         &.empty_timespan_day{
             background-color:$gray-secondary;
@@ -105,11 +135,12 @@
     }
 
     &_intercalary{
+        box-sizing: border-box;
         background-color: $card-bg-color;
         display: flex;
         flex-direction: column;
         min-height:8rem;
-        flex: 1;
+        flex: 1 1 0px;
         min-width: 5rem;
 
         &:not(:first-child){
@@ -128,9 +159,8 @@
         min-height:8rem;
         flex: 1;
         color: rgba(#98a0a6, 0.6);
-        background-image: $disabled-crosshatch;
         cursor: not-allowed;
-        min-width: 5rem;
+        min-width: 7rem;
         border-top:1px solid $calendar-border-color;
 
         &.intercalary{
@@ -158,11 +188,28 @@
     margin:0 0 0.2rem 0;
 
     .number{
-        margin-left:5px;
+        margin-left: 6px;
+        margin-top: 6px;
+        border-radius: 100%;
+        width: 26px;
+        height: 26px;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        line-height: 26px;
     }
 
     .year_day{
         font-size:0.75rem;
+        margin-left:5px;
+    }
+
+    &.text{
+        display:inline;
+        text-align:center;
+        border-bottom:1px solid $calendar-border-color;
+        padding:4px 5px;
+        font-size:0.8rem;
     }
 }
 
@@ -177,9 +224,9 @@
 .weather_popup {
     position: absolute;
     width: 28px;
-    left: calc(50% - 14px);
+    right: 7px;
+    top: 10px;
 }
-
 .day_row .title{
     text-align:center;
     -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
@@ -187,6 +234,10 @@
     -webkit-flex: 1;          /* Chrome */
     -ms-flex: 1;              /* IE 10 */
     flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
+}
+
+#event_show_background img {
+    max-width: 100%;
 }
 
 .btn_create_event{
@@ -199,11 +250,17 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 0 0.2rem;
+    margin: 0 4px 8px;
+    min-height: 32px;
+    background-color: transparent !important;
+    border: 4px dashed $btn-create-event-bg-color !important;
+    color: $text-gray-500 !important;
+    z-index: 10;
 }
 
 .btn_create_event:hover{
     cursor: pointer;
+    border: 4px dashed $btn-create-event-hover-bg-color !important;
 }
 
 .day_row .weather{
@@ -212,12 +269,17 @@
 }
 
 .day_row .season_color {
-    width: 10px;
-    height: 10px;
-    margin-top: 0.3rem;
-    margin-right: 0.3rem;
-    border-radius: 50%;
-    opacity: 0.8;
+    position: absolute;
+    //width: 100%;
+    height: 5px;
+    opacity: 0.7;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+}
+
+.timespan_day.current_day .day_row .season_color {
+    display: none;
 }
 
 .weather_icon{
@@ -236,14 +298,13 @@
 }
 
 .event{
-    font-size: 0.8rem;
-    word-break: break-word;
-    padding: 0.4rem 0.3rem;
+    font-size: 12px;
+    padding: 0.4rem 0.5rem;
     margin: 0.3rem 0 0;
-    border-left: 0.2rem solid white;
-    font-family: "Montserrat", serif;
     text-align: left;
     width: 100%;
+    border-radius: 4px;
+    word-break: break-word;
 
     &_container{
         align-self: center;
@@ -254,8 +315,6 @@
 
     &:hover{
         cursor: pointer;
-        background-color: lightgray;
-        border-color: #737373;
     }
 
     &.Dark{
@@ -374,8 +433,30 @@
 
     .timespan_day{
         text-align:left;
+        min-height: fit-content;
+
+        &:not(:last-child) {
+            border-right: 0;
+        }
+
         &.week_end {
             border-bottom:2px solid $calendar-border-color;
+        }
+
+        &.season_color_enabled {
+            padding-right: 7px;
+            padding-left: 7px;
+
+            .season_color {
+                position: absolute;
+                width: 5px;
+                opacity: 0.7;
+                bottom: 2px;
+                top: 2px;
+                left: auto;
+                right: 2px;
+                height: auto;
+            }
         }
     }
 
@@ -384,8 +465,7 @@
     }
 
     .number{
-        border-right:1px solid lightgrey;
-        padding-right:5px;
+        margin-right:5px;
     }
 
     .timespan_day:first-child{
@@ -393,8 +473,10 @@
     }
 
     .week_day_name{
-        padding-left:5px;
+        padding-left:7px;
+        margin-top: 8px;
         text-align: left;
+        border-left:1px solid $calendar-border-color;
     }
 
     .event_container{
@@ -418,10 +500,21 @@
         align-content: center;
     }
 
+    .btn_create_event {
+        min-height:55px;
+        font-size: 12pt;
+    }
 }
 
 
 /* ---------------- Minimalistic layout ------------------ */
+
+#calendar.minimalistic {
+    flex-direction: row;
+    align-content: flex-start;
+    justify-content: center;
+    color: $main-text-color;
+}
 
 .timespan_outer_container{
 
@@ -471,6 +564,7 @@
     }
 
     .week_day_name {
+        border-top: 1px solid $calendar-border-color;
         border-bottom: 2px solid $calendar-border-color;
     }
 
@@ -479,17 +573,26 @@
     }
 
     .timespan_row{
-        &:nth-child(even) .timespan_day{
+
+
+        &:nth-child(even) .minimalistic_odd_even_colored{
             background-color: $m-even-bg;
         }
 
-        &:nth-child(odd) .timespan_day{
+        &:nth-child(odd) .minimalistic_odd_even_colored{
             background-color: $m-odd-bg;
         }
 
         .timespan_day{
-            &.preview_day{
-                box-shadow: inset 0 0 0 3px rgba(191.0, 99.0, 71.0, 0.5);
+            padding:0;
+
+            .number {
+                flex: 1;
+                line-height: 24px;
+            }
+
+            &.preview_day:hover:after {
+                background-color: lighten($preview-day-color, 10%);
             }
 
             &.current_day {
@@ -498,7 +601,7 @@
 
                 &:hover {
                     cursor:pointer;
-                    background-color: $current-day-color;
+                    background-color: lighten($current-day-color, 10%);
                 }
                 &:after {
                     height:0px;
@@ -518,19 +621,42 @@
 }
 .current_day{
     background-image: linear-gradient(to right, rgba($current-day-color, 0.2), rgba($current-day-color, 0.2));
+
+
+    & .number:not(.year_day) {
+        background-color: $current-day-number-color;
+        color: white;
+    }
 }
 
-.current_day:after {
+.current_day:not(.season_color_enabled):after {
     background-color: $current-day-color;
     display: block;
     content: ' ';
     height: 5px;
-    width: 100%;
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    left: 2px;
 }
 
-
 .preview_day{
-    box-shadow: inset 0 0 0 10px rgba(191.0, 99.0, 71.0, 0.5);
+    &:before {
+        background-color: rgba($preview-day-color, 0.2);
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        z-index: 5;
+    }
+
+    & .number:not(.year_day) {
+        background-color: $preview-day-number-color;
+        color: white;
+    }
 }
 
 /** Loading animation */

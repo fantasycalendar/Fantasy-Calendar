@@ -1,5 +1,3 @@
-@extends('templates._page')
-
 @push('head')
 	<script>
 
@@ -8,7 +6,7 @@
                 valid_form: false,
                 username: "{{ old('username') }}",
                 email: "{{ old('email') ?? session('email') }}",
-                agreed: false,
+                policy_acceptance: false,
 
                 password: '',
                 password_confirmation: '',
@@ -29,104 +27,74 @@
 	</script>
 @endpush
 
-@section('content')
-<div class="container pt-4" x-data='register_form()'>
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header">{{ __('Register') }}</div>
-
-                <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}" class="container-fluid">
-                        @csrf
-                        @honeypot
-
-                        <div class="form-group row">
-                            <label for="username" class="col-md-4 col-form-label text-md-right">{{ __('Username') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" x-model='username' name="username" value="{{ old('username') }}" required autocomplete="username" autofocus>
-
-                                @error('username')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" x-model='email' name="email" value="{{ old('email') ?? session('email') }}" required autocomplete="email">
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" x-model="password" name="password" required autocomplete="new-password" @blur="validate_password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password"
-                                    x-model="password_confirmation"
-                                    :class="{ 'is-invalid': password_was_validated && !password_valid }"
-                                    @keyup="validate_password"
-                                    @blur="validate_password">
-
-                                <div class="invalid-feedback" x-show="password_was_validated && password.length < 7">Password must be 8 characters long.</div>
-
-                                <div class="invalid-feedback" x-show="password_was_validated && password !== password_confirmation">Passwords do not match.</div>
-                            </div>
-                        </div>
-
-                        <input type='hidden' name='dark_theme' x-model='dark_theme'>
-
-                        <div class="form-check p-2">
-                            <input type="checkbox" class="form-check-input" name="policy_acceptance" id="policy_acceptance" x-model="agreed" required>
-                            <label class="form-check-label" for="policy_acceptance">I agree to the <a target="_blank" href="{{ route('terms-and-conditions') }}">Terms and Conditions</a>, and the <a target="_blank" href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</a></label>
-                            <small>Residents of the EU are legally entitled to a 14-day cool off period, as explained in the T&Cs</small>
-                        </div>
-
-                        <div class="form-check p-2 mb-3">
-                            <input type="checkbox" class="form-check-input" name="marketing_acceptance" id="marketing_acceptance">
-                            <label class="form-check-label" for="marketing_acceptance">
-                                <strong>(Optional)</strong> I would like to receive occasional emails about products and special offers
-                                <small>(You can withdraw consent at any time on your profile)<small>
-                            </label>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" :disabled="username === '' || email === '' || !password_valid || !agreed" class="btn btn-primary">
-                                    {{ __('Register') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+<x-app-fullwidth-layout body-class="flex flex-col bg-gray-100 dark:bg-gray-900">
+        <div class="max-w-md w-full mx-auto my-6 md:my-12 lg:my-16" x-data="register_form()">
+            <div>
+                <div class="text-primary-700">
+                    <x-app-logo class="mx-auto h-16 w-auto"></x-app-logo>
                 </div>
+
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-gray-200">Register for your free account</h2>
+                <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+                    Or
+                    <x-app-link href="{{ route('register') }}"> sign in to an existing account </x-app-link>
+                </p>
             </div>
+
+            <x-panel class="mt-8">
+                <form method="POST" action="{{ route('register') }}" class="space-y-4">
+                    @csrf
+                    @honeypot
+
+                    <div>
+                        <x-text-input id="username" type="text" x-model='username' :placeholder="__('Username')" name="username" value="{{ old('username') }}" required autocomplete="username" autofocus></x-text-input>
+                    </div>
+
+                    <div>
+                        <x-text-input id="email" type="email" x-model='email' :placeholder="__('Email')" name="email" value="{{ old('email') ?? session('email') }}" required autocomplete="email"></x-text-input>
+                    </div>
+
+                    <div>
+                        <x-text-input id="password" type="password" x-model="password" :placeholder="__('Password')" name="password" required autocomplete="new-password" @blur="validate_password"></x-text-input>
+                    </div>
+
+                    <div>
+                        <x-text-input id="password-confirm" type="password" class="form-control" :placeholder="__('Confirm Password')" name="password_confirmation" required autocomplete="new-password"
+                            x-model="password_confirmation"
+                            ::class="{ 'is-invalid': password_was_validated && !password_valid }"
+                            @keyup="validate_password"
+                            @blur="validate_password"></x-text-input>
+
+                            <div x-cloak class="pt-2 text-red-500" x-show="password_was_validated && password.length < 7"><i class="fa fa-times-circle text-red-600"></i> Password must be 8 characters long.</div>
+                            <div x-cloak class="pt-2 text-red-500" x-show="password_was_validated && password !== password_confirmation"><i class="fa fa-times-circle text-red-600"></i> Passwords do not match.</div>
+                    </div>
+
+                    <input type='hidden' name='dark_theme' x-model='dark_theme'>
+
+                    <div>
+                        <x-input-toggle right class="flex-row-reverse space-x-6 space-x-reverse" name="policy_acceptance" id="policy_acceptance" x-model="policy_acceptance" required>
+                            <div class="text-gray-600 dark:text-gray-400 -mr-6">
+                                I agree to the <x-app-link target="_blank" href="{{ route('terms-and-conditions') }}">Terms and Conditions</x-app-link>,
+                                and the <x-app-link target="_blank" href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</x-app-link>
+                            </div>
+                        </x-input-toggle>
+
+                    </div>
+
+                    <div class="pb-4">
+                        <x-input-toggle right class="flex-row-reverse space-x-6 space-x-reverse" name="marketing_acceptance" id="marketing_acceptance">
+                            <div class="text-gray-600 dark:text-gray-400 -mr-6">
+                                <strong>(Optional)</strong> I would like to receive occasional emails about products and special offers
+                            </div>
+                        </x-input-toggle>
+                    </div>
+
+                    <x-button type="submit" ::disabled="username === '' || email === '' || !password_valid || !policy_acceptance" class="w-full justify-center">
+                        {{ __('Register') }}
+                    </x-button>
+                </form>
+            </x-panel>
+
+            <div class="text-xs mt-6 px-10 text-center text-gray-400 dark:text-gray-600">You can withdraw marketing consent at any time on your profile. Residents of the EU are legally entitled to a 14-day cool off period, as explained in the T&Cs.</div>
         </div>
-    </div>
-</div>
-@endsection
+</x-app-fullwidth-layout>

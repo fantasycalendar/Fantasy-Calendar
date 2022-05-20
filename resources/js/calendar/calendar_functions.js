@@ -8,7 +8,7 @@ function escapeHtml(unsafe) {
          .replace(/"/g, "&quot;")
          .replace(/'/g, "&#039;");
  }
- 
+
 function unescapeHtml(safe) {
 	if(!isNaN(safe)) return safe;
 	return safe
@@ -69,7 +69,7 @@ function get_colors_for_season(season_name) {
 		else if(index == 2 || index == 4) return "#eabf14";
 		else if(index == 3) return "#0bcfe9";
 	} else {
-		return "#" + Math.floor(Math.random() * 16777215).toString(16);
+		return "#" + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0');
 	}
 }
 
@@ -312,6 +312,9 @@ function replaceAt(string, index, replacement) {
 	return string.substr(0, index) + replacement+ string.substr(index + replacement.length);
 }
 
+function mod(n, m) {
+    return ((n % m) + m) % m;
+}
 
 /**
  * This class is used to generate a pseudo-random number based on a seed
@@ -450,9 +453,9 @@ function  bezierCubic(p0, p1, p2, p3, t)
 /**
  * This function is used to clamp a floating point's fraction to a certain number of digits
  *
- * @param  {float}  number      The float to be precisio-rounded
- * @param  {int}    precision   An int to determine how many digits to keep in the fraction of the number
- * @return {float}              The precisio-rounded value
+ * @param  {number}  number      The float to be precisio-rounded
+ * @param  {number}  precision   An int to determine how many digits to keep in the fraction of the number
+ * @return {number}              The precision-rounded value
  */
 function precisionRound(number, precision) {
 	var factor = Math.pow(10, precision);
@@ -533,90 +536,6 @@ function norm(v, min, max)
 function inv_norm(v, min, max)
 {
 	return (max - v) / (max - min);
-}
-
-
-/**
- * Greatest common divisor is the largest positive integer that divides each of the integers.
- *
- * @param  {int}    x   The first number
- * @param  {int}    y   The second number
- * @return {int}        The greatest common divisor
- */
-function gcd(x, y){
-	return x ? gcd(y % x, x) : y;
-}
-
-
-/**
- * Least Common Multiple is the smallest positive integer that is divisible by both x and y.
- *
- * @param  {int}    x   The first number
- * @param  {int}    y   The second number
- * @return {int}        The least common multiple
- */
-function lcm(x, y){
-	if ((typeof x !== 'number') || (typeof y !== 'number'))
-		return false;
-	return (!x || !y) ? 0 : Math.abs((x * y) / gcd(x, y));
-}
-
-/**
- * Least Common Multiple Offset (bool) will calculate whether two intervals with individual offsets will ever collide
- *
- * @param  {int}    x   The first interval
- * @param  {int}    y   The second interval
- * @param  {int}    a   The first interval's offset
- * @param  {int}    b   The second interval's offset
- * @return {bool}       Whether these two intervals will ever collide
- */
-function lcmo_bool(x, y, a, b){
-	return Math.abs(a - b) == 0 || Math.abs(a - b) % gcd(x, y) == 0;
-}
-
-/**
- * Least Common Multiple Offset will calculate whether two intervals with individual offsets will ever collide,
- * and return an object containing the starting point of their repitition and how often they repeat
- *
- * @param  {int}    x   The first interval
- * @param  {int}    y   The second interval
- * @param  {int}    a   The first interval's offset
- * @param  {int}    b   The second interval's offset
- * @return {object}		An object with the interval's  starting point and LCM
- */
-function lcmo(x, y, a, b){
-
-	// If they never repeat, return false
-	if(!lcmo_bool(x, y, a, b)){
-		return false;
-	}
-
-	// Store the respective interval's starting points
-	x_start = (Math.abs(x + a) % x)
-	y_start = (Math.abs(y + b) % y)
-
-	// If the starts aren't the same, then we need to search for the first instance the intervals' starting points line up
-	if(x_start != y_start){
-
-		// Until the starting points line up, keep increasing them until they do
-		while(x_start != y_start){
-
-			while(x_start < y_start){
-				x_start += x;
-			}
-
-			while(y_start < x_start){
-				y_start += y;
-			}
-
-		}
-	}
-
-	return {
-		"offset": x_start,
-		"interval": lcm(x, y)
-	}
-
 }
 
 
@@ -972,12 +891,12 @@ function valid_preview_date(year, timespan, day){
 			return false;
 		}
 
-		if(year == dynamic_data.year){
+		if(year === dynamic_data.year){
 			if(timespan > dynamic_data.timespan){
 				return false;
 			}
 
-			if(timespan == dynamic_data.timespan && day > dynamic_data.day){
+			if(timespan === dynamic_data.timespan && day > dynamic_data.day){
 				return false;
 			}
 		}
@@ -985,18 +904,17 @@ function valid_preview_date(year, timespan, day){
 	}else if(static_data.settings.only_backwards){
 
         if(!static_data.settings.show_current_month && year > dynamic_data.year){
-
 			return false;
-
         }
 
-		if(timespan > dynamic_data.timespan){
-			return false;
-		}
-
-		if(timespan == dynamic_data.timespan && day > dynamic_data.day){
-			return false;
-		}
+        if(year >= dynamic_data.year) {
+            if (timespan > dynamic_data.timespan) {
+                return false;
+            }
+            if (timespan === dynamic_data.timespan && day > dynamic_data.day) {
+                return false;
+            }
+        }
     }
 
     return true;
@@ -1071,17 +989,21 @@ function get_cycle(static_data, epoch_data){
  *
  * @param  {object}     static_data     A calendar static data object
  * @param  {int}        year            A number of a year passed through the convert_year function.
- * @param  {int}        Timespan        The index of the timespan
- * @param  {int}        leap_day        The index of the leap day
+ * @param  {int}        timespan_index  The index of the timespan
+ * @param  {int}        leap_day_index  The index of the leap day
  * @return {bool}                       A boolean, indicating if the leap day appears on that month
  */
-function does_leap_day_appear(static_data, year, timespan, leap_day){
+function does_leap_day_appear(static_data, year, timespan_index, leap_day_index){
 
-	var timespan_appears = does_timespan_appear(static_data, year, timespan).result;
+	let timespan_appears = does_timespan_appear(static_data, year, timespan_index).result;
 
-	var leap_day = static_data.year_data.leap_days[leap_day];
+	let leap_day = static_data.year_data.leap_days[leap_day_index];
 
-	return timespan_appears && is_leap(static_data, year, leap_day.interval, leap_day.offset);
+	let timespan = static_data.year_data.timespans[timespan_index];
+
+	let timespan_occurrences = get_timespan_occurrences(static_data, year, timespan.interval, timespan.offset);
+
+	return timespan_appears && IntervalsCollection.make(leap_day).intersectsYear(timespan_occurrences, static_data.settings.year_zero_exists);
 
 }
 
@@ -1144,7 +1066,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 	for(var i = 1; i <= timespan.length; i++){
 		var appears = does_day_appear(static_data, year, timespan_index, i);
 		if(appears.result || special){
-			days.push("");
+			days.push({ normal_day: true });
 		}
 	}
 
@@ -1185,9 +1107,10 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 					if(leaping){
 
-						days.splice(leap_day.day+offset, 0, `${leap_day.name}`);
+						days.splice(leap_day.day + offset, 0, { normal_day: false, text: `${leap_day.name}`, not_numbered: leap_day.not_numbered });
 						day++;
 						offset++;
+
 					}
 
 				}
@@ -1202,7 +1125,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
 
 					if(leaping){
 
-						days.push("");
+						days.push({ normal_day: true });
 						day++;
 
 					}
@@ -1254,7 +1177,7 @@ function get_timespans_in_year(static_data, year, inclusive){
  *
  * @param  {object}     static_data     A calendar static data object
  * @param  {int}        year            The number of a year passed through the convert_year function.
- * @param  {int}        Timespan        The index of the timespan
+ * @param  {int}        timespan        The index of the timespan
  * @return {object}                     An object containing:
  *                                          result - boolean, true if the timespan appears on the given date
  *                                          reason - reason for the timespan to gone, only present if result is false
@@ -1265,7 +1188,9 @@ function does_timespan_appear(static_data, year, timespan){
 
 		var era = static_data.eras[era_index];
 
-		if(era.settings.ends_year && year == convert_year(static_data, era.date.year)){
+        if(era.settings.starting_era) continue;
+
+		if(era.settings.ends_year && year === convert_year(static_data, era.date.year)){
 
 			if(timespan > era.date.timespan){
 
@@ -1280,9 +1205,9 @@ function does_timespan_appear(static_data, year, timespan){
 
 	}
 
-	var timespan = static_data.year_data.timespans[timespan];
+	const timespan_obj = static_data.year_data.timespans[timespan];
 
-	if(is_leap_simple(static_data, year, timespan.interval, timespan.offset)){
+	if(is_leap_simple(static_data, year, timespan_obj.interval, timespan_obj.offset)){
 
 		return {
 			result: true
@@ -1306,7 +1231,7 @@ function does_timespan_appear(static_data, year, timespan){
  *
  * @param  {object}     static_data     A calendar static data object
  * @param  {int}        year            The number of a year passed through the convert_year function.
- * @param  {int}        Timespan        The index of the timespan
+ * @param  {int}        timespan        The index of the timespan
  * @param  {int}        day             The day in that timespan
  * @return {object}                     An object containing:
  *                                          result - boolean, true if the day appears on the given date
@@ -1317,6 +1242,8 @@ function does_day_appear(static_data, year, timespan, day){
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
 		var era = static_data.eras[era_index];
+
+        if(era.settings.starting_era) continue;
 
 		if(era.settings.ends_year && year == convert_year(static_data, era.date.year) && timespan == era.date.timespan && day > era.date.day){
 
@@ -1338,26 +1265,26 @@ function does_day_appear(static_data, year, timespan, day){
 /**
  * This function is used to calculate the average length of a year in the current calendar.
  *
- * @param  {object}     obj     A calendar static data object
- * @return {float}              The current calendar's average year length
+ * @param  {object}    static_data     A calendar static data object
+ * @return {float}                     The current calendar's average year length
  */
-function fract_year_length(static_data){
+function avg_year_length(static_data){
 
-	var avg_length = 0;
+	let avg_length = 0;
 
-	for(var timespan_index = 0; timespan_index < static_data.year_data.timespans.length; timespan_index++){
+	for(let timespan_index = 0; timespan_index < static_data.year_data.timespans.length; timespan_index++){
 
-		var timespan = static_data.year_data.timespans[timespan_index];
+		let timespan = static_data.year_data.timespans[timespan_index];
 
 		avg_length += timespan.length/timespan.interval;
 
-		for(var leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++){
+		for(let leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++){
 
-			var leap_day = static_data.year_data.leap_days[leap_day_index];
+			let leap_day = static_data.year_data.leap_days[leap_day_index];
 
-			if(leap_day.timespan == timespan_index){
+			if(leap_day.timespan === timespan_index){
 
-				avg_length += get_interval_fractions(leap_day.interval, leap_day.offset)/timespan.interval;
+				avg_length += IntervalsCollection.make(leap_day).totalFraction;
 
 			}
 		}
@@ -1371,35 +1298,38 @@ function fract_year_length(static_data){
  * This function is used to calculate the average length of all of the months in the current calendar.
  * This is only used to display it to the user, mostly as a means for them to deduct the a moon's cycle length.
  *
- * @param  {object}     obj     A calendar static data object
- * @return {float}              The current calendar's average month length
+ * @param  {object}     static_data     A calendar static data object
+ * @return {number}                     The current calendar's average month length
  */
 function avg_month_length(static_data){
 
-	var length = 0;
-	var num_months = 0;
+	let length = 0;
+	let num_months = 0;
 
-	for(var i = 0; i < static_data.year_data.timespans.length; i++){
+	for(let i = 0; i < static_data.year_data.timespans.length; i++){
 
 		if(static_data.year_data.timespans[i].type === 'month'){
 
 			num_months++;
 
 			length += static_data.year_data.timespans[i].length/static_data.year_data.timespans[i].interval;
+
 		}
 	}
 
-	for(var i = 0; i < static_data.year_data.leap_days.length; i++){
+	for(let i = 0; i < static_data.year_data.leap_days.length; i++){
 
-		var leap_day = static_data.year_data.leap_days[i];
+		const leap_day = static_data.year_data.leap_days[i];
 
-		length += get_interval_fractions(leap_day.interval, leap_day.offset)
+        const interval = IntervalsCollection.make(leap_day);
+
+        length += interval.totalFraction
 
 	}
 
-	var result = !isNaN(precisionRound(length/num_months, 10)) ? precisionRound(length/num_months, 10) : 0;
+	const average_month_length = precisionRound(length / num_months, 10);
 
-	return result;
+    return average_month_length ?? 0;
 
 }
 
@@ -1443,201 +1373,6 @@ function clone(obj) {
 	throw new Error("Unable to copy obj! Its type isn't supported.");
 }
 
-/**
- * This object is used when calculating the difference between two calendar's dates.
- */
-var date_converter = {
-
-   /**
-     * This function is used when you want to calculate the difference between two calendars' dates.
-     *
-     * @param  {object}		parent_static_data 		A calendar static data object, primary, to be used to calculate the secondary calendar's date
-     * @param  {object}		child_static_data  		A calendar static data object, secondary, to be used to calculate its new date
-     * @param  {object}		parent_dynamic_data		A calendar dynamic data object, primary, to be used to calculate the secondary calendar's date
-     * @param  {object}		child_dynamic_data 		A calendar dynamic data object, secondary, used only to adjust the outgoing date's timezone
-     * @return {object}		                   		A calendar dynamic data object, adjusted from the primary calendar to be used on the secondary calendar
-     */
-
-	get_date: function(parent_static_data, child_static_data, parent_dynamic_data, child_dynamic_data, parent_offset){
-
-		this.parent_static_data = parent_static_data;
-		this.child_static_data = child_static_data;
-
-		this.parent_dynamic_data = parent_dynamic_data;
-		this.child_dynamic_data = child_dynamic_data;
-
-		var hour = 0;
-		var minute = 0;
-
-		if(this.parent_static_data.clock.enabled && this.child_static_data.clock.enabled){
-
-			var child_minutes_per_day = this.child_static_data.clock.hours * this.child_static_data.clock.minutes;
-			var parent_minutes_per_day = this.parent_static_data.clock.hours * this.parent_static_data.clock.minutes;
-
-			var time_scale = parent_minutes_per_day / child_minutes_per_day;
-
-			this.target_epoch = Math.floor((this.parent_dynamic_data.epoch-parent_offset)*time_scale);
-
-			var current_minute = this.parent_dynamic_data.hour*this.parent_static_data.clock.minutes+this.parent_dynamic_data.minute;
-
-			var child_current_hours = current_minute / this.child_static_data.clock.minutes;
-
-			if(child_current_hours >= this.child_static_data.clock.hours){
-				this.target_epoch++;
-				child_current_hours -= this.child_static_data.clock.hours;
-			}
-
-			var hour = Math.floor(child_current_hours);
-
-			var minute = Math.floor(this.child_static_data.clock.minutes*fract(child_current_hours))+1;
-
-		}else{
-
-			this.target_epoch = Math.floor((this.parent_dynamic_data.epoch-parent_offset));
-
-		}
-
-		this.year = Math.floor(this.target_epoch / fract_year_length(this.child_static_data))-2;
-		this.timespan = 0;
-		this.day = 1;
-
-		this.loops = 0;
-
-		while(this.loops < 1000){
-
-			var first_suggested_epoch = evaluate_calendar_start(this.child_static_data, this.year).epoch;
-
-			if(first_suggested_epoch < this.target_epoch){
-				this.year++;
-			}else{
-				this.year--;
-				break;
-			}
-
-			this.loops++;
-
-		}
-
-
-		while(this.loops < 1000){
-
-			if(!does_timespan_appear(this.child_static_data, this.year, this.timespan).result){
-
-				this.increase_month();
-
-			}else{
-
-				this.suggested_epoch = evaluate_calendar_start(this.child_static_data, this.year, this.timespan).epoch;
-
-				if(this.suggested_epoch < this.target_epoch){
-					this.increase_month();
-				}else{
-					this.decrease_month();
-					this.suggested_epoch = evaluate_calendar_start(this.child_static_data, this.year, this.timespan).epoch;
-					break;
-				}
-
-			}
-
-			this.loops++;
-
-		}
-
-		while(this.loops < 1000){
-
-			this.suggested_epoch = evaluate_calendar_start(this.child_static_data, this.year, this.timespan, this.day).epoch;
-
-			if(this.suggested_epoch < this.target_epoch){
-				this.increase_day();
-			}else if(this.suggested_epoch > this.target_epoch){
-				this.decrease_day();
-			}else{
-				break;
-			}
-
-			this.loops++;
-
-		}
-
-		this.year = unconvert_year(this.child_static_data, this.year);
-
-		return {
-			"year": this.year,
-			"timespan": this.timespan,
-			"day": this.day,
-			"epoch": this.suggested_epoch,
-			"hour": hour,
-			"minute": minute
-		};
-
-	},
-
-	increase_day: function(){
-
-		this.day++;
-
-		if(this.day > this.timespan_length.length){
-
-			this.increase_month();
-			this.day = 1;
-
-		}
-
-	},
-
-	decrease_day: function(){
-
-		this.day--;
-
-		if(this.day < 1){
-
-			this.decrease_month();
-			this.day = this.timespan_length.length;
-
-		}
-
-	},
-
-	increase_month: function(){
-
-		this.timespan++;
-
-		if(this.timespan >= this.child_static_data.year_data.timespans.length){
-
-			this.year++;
-			this.timespan = 0;
-
-		}
-
-		if(!does_timespan_appear(this.child_static_data, this.year, this.timespan).result){
-			this.increase_month();
-		}
-
-		this.timespan_length = get_days_in_timespan(this.child_static_data, this.year, this.timespan);
-
-	},
-
-	decrease_month: function(){
-
-		this.timespan--;
-
-		if(this.timespan < 0){
-
-			this.year--;
-			this.timespan = this.child_static_data.year_data.timespans.length-1;
-
-		}
-
-		if(!does_timespan_appear(this.child_static_data, this.year, this.timespan).result){
-			this.decrease_month();
-		}
-
-		this.timespan_length = get_days_in_timespan(this.child_static_data, this.year, this.timespan);
-
-	}
-
-}
-
 function time_data_to_string(static_data, time){
 
 	var minutes = (Math.round(fract(time)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(time)*this.static_data.clock.minutes)).toString() : (Math.round(fract(time)*this.static_data.clock.minutes));
@@ -1646,365 +1381,47 @@ function time_data_to_string(static_data, time){
 
 }
 
+function is_leap_simple(static_data, year, interval, offset, debug) {
 
-/**
- * This function is used when you need to calculate if a leap day or a leap month has happened on any given year.
- *
- * @param  {string} intervals   A formatted string of ints, in this format: 400,!100,4 - Large to small, comma separating the intervals, ! in front of the int indicating an exclusive interval (subtracting). Could include a single number.
- * @param  {int}    offsets     An int used to offset the contextual starting point of the intervals - Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35.
- * @return {object}             An object containing the leap days that are left over after stripping unessecary ones (100,10 would strip away 100, because 10 fits in that)
- */
-function strip_intervals(_intervals, _offset){
+    if(interval === 1) return true;
 
-	var intervals = _intervals.split(',')
-	var processed = _intervals.split(',');
+    let cleanYear = unconvert_year(static_data, year);
 
-	// Remove all negators at the end of the intervals as they won't affect the overall interval occurrence
-	while(processed[processed.length-1].indexOf("!") > -1){
-		processed.splice(processed.length-1, 1)
-		intervals.splice(intervals.length-1, 1)
-	}
+    let mod = cleanYear - (offset % interval);
 
-	for(var outer_index = 0; outer_index < intervals.length; outer_index++){
+    if(cleanYear < 0 && !static_data.settings.year_zero_exists) mod++;
 
-		var outer_interval_raw = intervals[outer_index];
-		var outer_offset = outer_interval_raw.indexOf('+') > -1 ? 0 : _offset ;
-		var outer_negator = outer_interval_raw.indexOf('!') > -1;
-		var outer_interval = Number(outer_interval_raw.replace('!','').replace('+',''));
-		outer_offset = outer_interval == 1 ? 0 : (outer_interval+outer_offset)%outer_interval;
-
-		for(var inner_index = outer_index+1; inner_index < intervals.length; inner_index++){
-
-			var inner_interval_raw = intervals[inner_index];
-			var inner_offset = inner_interval_raw.indexOf('+') > -1 ? 0 : _offset;
-			var inner_negator = inner_interval_raw.indexOf('!') > -1;
-			var inner_interval = Number(inner_interval_raw.replace('!','').replace('+',''));
-			inner_offset = inner_interval == 1 ? 0 : (inner_interval+inner_offset)%inner_interval;
-
-			// Magic
-			var data = lcmo(outer_interval, inner_interval, outer_offset, inner_offset);
-
-			// If the intervals actually will meet at some point
-			if(data){
-
-				// But if the outer interval has the same LCM as the inner one, remove the outer interval, provided if neither or both are negators.
-				if(outer_interval == data.interval && outer_offset == data.offset && ((!outer_negator && !inner_negator) || (outer_negator && inner_negator))){
-					if(processed.indexOf(outer_interval_raw) > -1){
-						processed.splice(processed.indexOf(outer_interval_raw), 1)
-					}
-					break;
-				}
-
-				// If they match, but the next
-				if(outer_negator ^ inner_negator){
-					break;
-				}
-
-			}else{
-
-				// If the outer interval did not match the inner interval, and it is a negator, and there are no more intervals, remove this interval
-				if(outer_index+2 >= intervals.length && outer_negator){
-
-					if(processed.indexOf(outer_interval_raw) > -1){
-						processed.splice(processed.indexOf(outer_interval_raw), 1)
-					}
-
-					break;
-				}
-			}
-		}
-	}
-
-	var new_intervals = [];
-
-	for(index in processed){
-
-		var interval_raw = processed[index];
-		var offset = interval_raw.indexOf('+') > -1 ? 0 : _offset;
-		var negator = interval_raw.indexOf('!') > -1;
-		var interval = Number(interval_raw.replace('!','').replace('+',''));
-		offset = interval == 1 ? 0 : (interval+offset)%interval;
-
-		new_intervals.push({
-			interval: interval,
-			offset: offset,
-			negator: negator
-		});
-
-	}
-
-	for(var outer_index = new_intervals.length-2; outer_index >= 0; outer_index--){
-
-		var outer = new_intervals[outer_index];
-
-		outer.children = [];
-
-		for(var inner_index = outer_index+1; inner_index < new_intervals.length; inner_index++){
-
-			var inner = new_intervals[inner_index];
-
-			if((outer.negator && !inner.negator) || (!outer.negator && !inner.negator)){
-
-				var data = lcmo(outer.interval, inner.interval, outer.offset, inner.offset);
-
-				if(data){
-
-					var negator = ((outer.negator && !inner.negator) || (!outer.negator && !inner.negator))
-
-					var index = outer.children.findIndex(x => x.interval == data.interval && x.offset == data.offset && x.negator != negator)
-
-					if(index > -1){
-
-						outer.children.splice(index, 1);
-
-					}else{
-
-						outer.children.push({
-							interval: data.interval,
-							offset: data.offset,
-							negator: negator
-						});
-
-					}
-
-				}
-
-			}
-
-			innermost_loop:
-			for(var innermost_index in inner.children){
-
-				var innermost = inner.children[innermost_index];
-
-				var data = lcmo(outer.interval, innermost.interval, outer.offset, innermost.offset);
-
-				if(data){
-
-					var negator = ((outer.negator && !innermost.negator) || (!outer.negator && !innermost.negator));
-
-					var index = outer.children.findIndex(x => x.interval == data.interval && x.offset == data.offset && x.negator != negator)
-
-					if(index > -1){
-
-						outer.children.splice(index, 1);
-
-					}else{
-
-						outer.children.push({
-							interval: data.interval,
-							offset: data.offset,
-							negator: negator
-						});
-
-					}
-
-				}
-
-			}
-
-		}
-
-	}
-
-	return new_intervals;
+    return mod % interval === 0;
 
 }
 
+function get_timespan_occurrences(static_data, year, interval, offset){
 
-/**
- * This function is used when you need to calculate if a leap day or a leap month has happened on any given year.
- *
- * @param  {int}    year        The number of a year passed through the convert_year function.
- * @param  {string} intervals   A formatted string of ints, in this format: 400,!100,4 - Large to small, comma separating the intervals, ! in front of the int indicating an exclusive interval (subtracting). Could include a single number.
- * @param  {int}    offsets     An int used to offset the contextual starting point of the intervals - Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35.
- * @return {bool}               A boolean determining whether this interval happens on the year
- */
-function is_leap(static_data, _parent_occurrences, _intervals, _offset) {
+    if(interval === 1) return year;
 
-	var intervals = strip_intervals(_intervals, _offset);
+    let boundOffset = offset % interval;
 
-	var year = unconvert_year(static_data, _parent_occurrences);
+    if(static_data.settings.year_zero_exists) {
 
-	for(index in intervals){
+        return Math.ceil((year - boundOffset) / interval);
 
-		var i = intervals[index];
+    }else if(year < 0) {
 
-		let offset = i.offset;
-		if(!static_data.settings.year_zero_exists && year < 0) {
-			offset--;
-		}
+        let timespan_occurrences = Math.ceil((year - (boundOffset-1)) / interval);
 
-		if((year-offset) % i.interval == 0){
-			return !i.negator;
-		}
+        if(boundOffset === 0){
+            timespan_occurrences--;
+        }
 
-	}
+        return timespan_occurrences;
 
-	return false;
+    }else if(boundOffset > 0){
 
-}
+        return Math.floor((year + interval - boundOffset) / interval);
 
-function is_leap_simple(static_data, year, interval, offset) {
+    }
 
-	var year = unconvert_year(static_data, year);
-
-	var offset = offset%interval;
-
-	if(!static_data.settings.year_zero_exists && year < 0){
-		offset--;
-	}
-
-	return (year-offset) % interval == 0;
-
-}
-
-
-/**
- * This function is used when you need to calculate the fraction of an interval
- *
- * @param  {string} _intervals  A formatted string of ints, in this format: 400,!100,4 - Large to small, comma separating the intervals, + in front of the int indicating an interval not using the offset (defaulting to 0), ! in front of the int indicating an exclusive interval (subtracting). Could include a single number.
- * @param  {int}    _offset     An int used to offset the contextual starting point of the intervals. Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35
- * @return {float}              A float of the fraction of days this interval will add up to each day
- */
-function get_interval_fractions(_intervals, _offset){
-
-	var intervals = strip_intervals(_intervals, _offset);
-
-	var occurrences = 0;
-
-	for(var index = 0; index < intervals.length; index++){
-
-		var interval = intervals[index];
-
-		var result = 1 / interval.interval;
-
-		occurrences += interval.negator ? result*-1 : result;
-
-	}
-
-	return occurrences;
-
-}
-
-
-/**
- * This function is used when you need to calculate how often a leap day has appeared,
- * which the function will return as float indicating the number of days. The fractional
- * part of the value may be used to calculate the average year length.
- *
- * @param  {object} _static_data      		The number of a year passed through the convert_year function.
- * @param  {int}    _parent_occurrences     The number of a year passed through the convert_year function.
- * @param  {string} _intervals  			A formatted string of ints, in this format: 400,!100,4 - Large to small, comma separating the intervals, + in front of the int indicating an interval not using the offset (defaulting to 0), ! in front of the int indicating an exclusive interval (subtracting). Could include a single number.
- * @param  {int}    _offset     			An int used to offset the contextual starting point of the intervals. Interval of 10 and offset of 5 means this interval starts at 5, continuing to 15, 25, 35
- * @return {int}                			An int of how many days this interval has added up to before that year
- */
-
-function get_interval_occurrences(static_data, _parent_occurrences, _intervals, _offset){
-
-	var intervals = strip_intervals(_intervals, _offset);
-
-	var occurrences = 0;
-
-	if(_parent_occurrences == 0){
-		return 0;
-	}
-
-	if(_parent_occurrences > 0){
-
-		if(static_data.settings.year_zero_exists){
-
-			var negator_zero_offset = false;
-			var add_zero_offset = false;
-
-			for(var outer_index = intervals.length-1; outer_index >= 0; outer_index--){
-
-				var outer = intervals[outer_index];
-
-				if(outer.negator && outer.offset == 0){
-					negator_zero_offset = true;
-					add_zero_offset = false;
-				}else if(!outer.negator && outer.offset == 0){
-					negator_zero_offset = false;
-					add_zero_offset = true;
-				}
-
-			}
-
-			if(add_zero_offset && !negator_zero_offset){
-				occurrences++;
-			}
-
-		}
-
-		for(var index = 0; index < intervals.length; index++){
-
-			var outer = intervals[index];
-
-			var year = outer.offset > 0 ? _parent_occurrences-outer.offset+outer.interval : _parent_occurrences;
-
-			year = static_data.settings.year_zero_exists ? year-1 : year;
-
-			var result = year / outer.interval;
-
-			occurrences += outer.negator ? 0 : Math.floor(result);
-
-			for(var inner_index in outer.children){
-
-				var inner = outer.children[inner_index];
-
-				var year = inner.offset > 0 ? _parent_occurrences-inner.offset+inner.interval : _parent_occurrences;
-
-				year = static_data.settings.year_zero_exists ? year-1 : year;
-
-				var result = year / inner.interval;
-
-				occurrences += inner.negator ? Math.floor(result)*-1 : Math.floor(result);
-
-			}
-
-		}
-
-	}else{
-
-		for(var index = 0; index < intervals.length; index++){
-
-			var outer = intervals[index];
-
-			let offset = outer.offset;
-			if(!static_data.settings.year_zero_exists) {
-				offset--;
-			}
-
-			var year = offset > 0 ? _parent_occurrences - offset : _parent_occurrences;
-
-			var result = year / outer.interval;
-
-			if(!outer.negator){
-				occurrences += Math.ceil(result);
-			}
-
-			for(var inner_index in outer.children){
-
-				var inner = outer.children[inner_index];
-
-				let offset = inner.offset;
-				if(!static_data.settings.year_zero_exists) {
-					offset--;
-				}
-
-				var year = offset > 0 ? _parent_occurrences - offset : _parent_occurrences;
-
-				var result = year / inner.interval;
-
-				occurrences += inner.negator ? Math.ceil(result)*-1 : Math.ceil(result);
-
-			}
-
-		}
-
-	}
-
-	return occurrences;
+    return Math.floor(year / interval);
 
 }
 
@@ -2013,8 +1430,9 @@ function get_interval_occurrences(static_data, _parent_occurrences, _intervals, 
  *
  * @param  {object}     static_data     The calendar's static_data object.
  * @param  {int}        year            The number of a year passed through the convert_year function.
- * @param  {int}        month           The index of a timespan
- * @param  {int}        day             The day of a that timespan
+ * @param  {int}        _timespan       The index of a timespan
+ * @param  {int}        _day            The day of a that timespan
+ * @param  {boolean}    debug           A boolean flag set to true used in the initial calendar setup for debugging
  * @return {array}                      An array containing:
  *                                          0: Epoch - The number of days since year 1
  *                                          1: Intercalary - The number of intercalary days since year 1
@@ -2022,20 +1440,20 @@ function get_interval_occurrences(static_data, _parent_occurrences, _intervals, 
  *                                          3: num_timespans - The total number of timespans since year 1
  *                                          4: total_week_num - The number of weeks since year 1
  */
-function get_epoch(static_data, year, timespan, day, debug){
+function get_epoch(static_data, year, _timespan, _day, debug){
 
 	// Set up variables
-	var epoch = 0;
-	var timespan = !isNaN(timespan) ? timespan : 0;
-	var day = !isNaN(day) ? day : 0;
-	var intercalary = 0;
-	var actual_year = year;
-	var num_timespans = 0;
-	var count_timespans = [];
-	var total_week_num = 1;
+	let epoch = 0;
+	let timespan = !isNaN(_timespan) ? _timespan : 0;
+	let day = !isNaN(_day) ? _day : 0;
+	let intercalary = 0;
+	let actual_year = year;
+	let num_timespans = 0;
+	let count_timespans = [];
+	let total_week_num = 1;
 
 	// Loop through each timespan
-	for(timespan_index = 0; timespan_index < static_data.year_data.timespans.length; timespan_index++){
+	for(let timespan_index = 0; timespan_index < static_data.year_data.timespans.length; timespan_index++){
 
 		// If the timespan index is lower than the timespan parameter, add a year so we can get the exact epoch for a timespan within a year
 		if(timespan_index < timespan){
@@ -2045,78 +1463,52 @@ function get_epoch(static_data, year, timespan, day, debug){
 		}
 
 		// Get the current timespan's data
-		var timespan_obj = static_data.year_data.timespans[timespan_index];
+		let timespan_obj = static_data.year_data.timespans[timespan_index];
 
-		if(timespan_obj.interval == 1){
-
-			var timespan_fraction = year;
-
-		}else{
-
-			var offset = timespan_obj.offset%timespan_obj.interval;
-
-			offset = offset ? offset : 0;
-
-			if(year < 0 || static_data.settings.year_zero_exists) {
-				if(!static_data.settings.year_zero_exists) {
-					offset--;
-				}
-				var timespan_fraction = Math.ceil((year - offset) / timespan_obj.interval);
-			}else{
-				if(offset > 0){
-					var timespan_fraction = Math.floor((year + timespan_obj.interval - offset) / timespan_obj.interval);
-				}else{
-					var timespan_fraction = Math.floor(year / timespan_obj.interval);
-				}
-			}
-
-			/* if(debug) {
-				console.log(timespan_index, timespan_fraction, offset)
-			} */
-		}
+        let timespan_occurrences = get_timespan_occurrences(static_data, year, timespan_obj.interval, timespan_obj.offset);
 
 		// Get the number of weeks for that month (check if it has a custom week or not)
 		if(!static_data.year_data.overflow){
 			if(timespan_obj.week){
-				total_week_num += Math.abs(Math.floor((timespan_obj.length * timespan_fraction)/timespan_obj.week.length));
+				total_week_num += Math.abs(Math.floor((timespan_obj.length * timespan_occurrences)/timespan_obj.week.length));
 			}else{
-				total_week_num += Math.abs(Math.floor((timespan_obj.length * timespan_fraction)/static_data.year_data.global_week.length));
+				total_week_num += Math.abs(Math.floor((timespan_obj.length * timespan_occurrences)/static_data.year_data.global_week.length));
 			}
 		}
 
 		// Count the number of times each month has appeared
-		count_timespans[timespan_index] = Math.abs(timespan_fraction);
+		count_timespans[timespan_index] = Math.abs(timespan_occurrences);
 
 		// Add the month's length to the epoch, adjusted by its interval
-		epoch += timespan_obj.length * timespan_fraction;
+		epoch += timespan_obj.length * timespan_occurrences;
 
 		// If the month is intercalary, add it to the variable to be subtracted when calculating first day of the year
 		if(timespan_obj.type === "intercalary"){
-			intercalary += timespan_obj.length * timespan_fraction;
+			intercalary += timespan_obj.length * timespan_occurrences;
 		}
 
-		num_timespans += timespan_fraction;
+		num_timespans += timespan_occurrences;
 
 		// Loop through each leap day
-		for(leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++){
+		for(let leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++){
 
 			// Get the current leap day data
-			var leap_day = static_data.year_data.leap_days[leap_day_index];
-
-			var added_leap_day = 0;
+			const leap_day = static_data.year_data.leap_days[leap_day_index];
 
 			if(timespan_index === leap_day.timespan){
 
-				added_leap_day = get_interval_occurrences(static_data, timespan_fraction, leap_day.interval, leap_day.offset);
+			    const interval = IntervalsCollection.make(leap_day);
+
+				const leap_day_occurrences = interval.occurrences(timespan_occurrences, static_data.settings.year_zero_exists);
 
 				// If we have leap days days that are intercalary (eg, do not affect the flow of the static_data, add them to the overall epoch, but remove them from the start of the year week day selection)
 				if(leap_day.intercalary || timespan_obj.type === "intercalary"){
-					intercalary += added_leap_day;
+					intercalary += leap_day_occurrences;
 				}
 
-			}
+                epoch += leap_day_occurrences;
 
-			epoch += added_leap_day;
+			}
 
 		}
 
@@ -2137,9 +1529,10 @@ function get_epoch(static_data, year, timespan, day, debug){
  * Further expands on the spine of the calendar calculation. It calculates how many days there has been since day 1, and returns a complex data object.
  *
  * @param  {object}     static_data     The calendar's static_data object.
- * @param  {int}        year            The number of a year passed through the convert_year function.
- * @param  {int}        month           The index of a timespan
- * @param  {int}        day             The day of a that timespan
+ * @param  {int}        _year           The number of a year passed through the convert_year function.
+ * @param  {int}        _timespan       The index of a timespan
+ * @param  {int}        _day            The day of a that timespan (1 indexed)
+ * @param  {bool}       debug           Whether debugging is enabled
  * @return {object}                     An object containing:
  *                                          "epoch" - The number of days since year 1
  *                                          "era_year" - The current era year, if the year count has been reset by eras terminating the year
@@ -2148,37 +1541,40 @@ function get_epoch(static_data, year, timespan, day, debug){
  *                                          "num_timespans" - The total number of timespans since year 1
  *                                          "total_week_num" - The number of weeks since year 1
  */
-function evaluate_calendar_start(static_data, year, timespan, day, debug){
+function evaluate_calendar_start(static_data, _year, _timespan, _day, debug){
 
 	//Initiatlize variables
-	var year = (year|0);
-	var timespan = !isNaN(timespan) ? (timespan|0) : 0;
-	var day = !isNaN(day) ? (day|0)-1 : 0;
+	let year = (_year|0);
+	let timespan = !isNaN(_timespan) ? (_timespan|0) : 0;
+	let day = !isNaN(_day) ? (_day|0)-1 : 0;
 
-	var era_year = year;
+	let era_year = (_year|0);
 
-	tmp = get_epoch(static_data, year, timespan, day, debug);
-	var epoch = tmp[0];
-	var intercalary = tmp[1];
-	var count_timespans = tmp[2];
-	var num_timespans = tmp[3];
-	var total_week_num = tmp[4];
-	var era_years = [];
+	let tmp = get_epoch(static_data, year, timespan, day, debug);
+	let epoch = tmp[0];
+	let intercalary = tmp[1];
+	let count_timespans = tmp[2];
+	let num_timespans = tmp[3];
+	let total_week_num = tmp[4];
+	let era_years = [];
+	let current_era = -1;
 
 	// For each era, check if they end the year, subtract the remaining days of that year from the epoch total so we can get proper start of the year
-	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
+	for(let era_index = 0; era_index < static_data.eras.length; era_index++){
 
-		var era = static_data.eras[era_index];
+		let era = static_data.eras[era_index];
+
+        if(era.settings.starting_era) continue;
 
 		if(era.settings.ends_year && year > convert_year(static_data, era.date.year)){
 
-			era_epoch = get_epoch(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day);
-			normal_epoch_during_era = get_epoch(static_data, convert_year(static_data, era.date.year)+1);
+			let era_epoch = get_epoch(static_data, convert_year(static_data, era.date.year), era.date.timespan, era.date.day);
+			let normal_epoch_during_era = get_epoch(static_data, convert_year(static_data, era.date.year)+1);
 
 			epoch -= (normal_epoch_during_era[0] - era_epoch[0]);
 
 			intercalary -= (normal_epoch_during_era[1] - era_epoch[1]);
-			for(var i = 0; i < normal_epoch_during_era[2].length; i++){
+			for(let i = 0; i < normal_epoch_during_era[2].length; i++){
 				count_timespans[i] = (normal_epoch_during_era[2][i] - era_epoch[2][i]);
 			}
 
@@ -2189,9 +1585,9 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 
 	}
 
-	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
+	for(let era_index = 0; era_index < static_data.eras.length; era_index++){
 
-		var era = static_data.eras[era_index];
+		let era = static_data.eras[era_index];
 
 		era_years[era_index] = convert_year(static_data, era.date.year);
 
@@ -2200,17 +1596,17 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 			(
 				year > convert_year(static_data, era.date.year)
 				||
-				(year == convert_year(static_data, era.date.year) && timespan > era.date.timespan)
+				(year === convert_year(static_data, era.date.year) && timespan > era.date.timespan)
 				||
-				(year == convert_year(static_data, era.date.year) && timespan == era.date.timespan && day == era.date.day)
+				(year === convert_year(static_data, era.date.year) && timespan === era.date.timespan && day === era.date.day)
 				||
-				(epoch == era.date.epoch)
+				(epoch === era.date.epoch)
 			)
 		){
 
-			for(var i = 0; i < era_index; i++){
+			for(let i = 0; i < era_index; i++){
 
-				var prev_era = static_data.eras[i];
+				let prev_era = static_data.eras[i];
 
 				if(prev_era.settings.restart){
 
@@ -2228,19 +1624,33 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 
 		}
 
+        if(epoch >= era.date.epoch){
+            current_era = era_index;
+        }
+
 	}
+
+    if(static_data.eras[0] && current_era === -1 && static_data.eras[0].settings.starting_era){
+        current_era = 0;
+    }
+
+    if(static_data.eras[current_era] && epoch === static_data.eras[current_era].date.epoch && static_data.eras[current_era].settings.restart){
+        era_year = 0;
+    }
+
+	let week_day = 0;
 
 	// Calculate the start of week
 	if(static_data.year_data.overflow){
 
-		var week_day = (epoch-1-intercalary+(Number(static_data.year_data.first_day))) % static_data.year_data.global_week.length;
+		week_day = (epoch-1-intercalary+(Number(static_data.year_data.first_day))) % static_data.year_data.global_week.length;
 
 		if (week_day < 0) week_day += static_data.year_data.global_week.length;
 
 		week_day += 1;
 
 	}else{
-		var week_day = 1;
+		week_day = 1;
 	}
 
 	return {"epoch": epoch,
@@ -2248,7 +1658,8 @@ function evaluate_calendar_start(static_data, year, timespan, day, debug){
 			"week_day": week_day,
 			"count_timespans": count_timespans,
 			"num_timespans": num_timespans,
-			"total_week_num": total_week_num
+			"total_week_num": total_week_num,
+            "current_era": current_era
 		};
 
 }
@@ -2277,6 +1688,8 @@ function has_year_ending_era(static_data, year){
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
 		var era = static_data.eras[era_index];
+
+        if(era.settings.starting_era) continue;
 
 		if(era.settings.ends_year && year == convert_year(static_data, era.date.year)){
 

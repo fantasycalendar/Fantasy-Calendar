@@ -1,5 +1,9 @@
 @media print {
 
+    @page {
+        size: auto;
+    }
+
     * {
         border-color: rgba(0,0,0,0.1) !important;
         color:black !important;
@@ -70,14 +74,6 @@
     #top_follower{
         border:1px rgba(0,0,0,0.1) solid !important;
         border-top: 0 !important;
-    }
-
-    .lunar_background{
-        fill: white !important;
-    }
-
-    .lunar_shadow{
-        fill: black !important;
     }
 
     .timespan_overflow {

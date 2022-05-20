@@ -1,0 +1,3 @@
+[submodule "setup/extra-preset-jsons"]
+	path = setup/extra-preset-jsons
+	url = git@github.com:fantasycalendar/extra-preset-jsons

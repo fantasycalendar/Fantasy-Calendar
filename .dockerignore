@@ -13,3 +13,4 @@ docker-compose.yml
 .editorconfig
 Dockerfile
 .dockerignore
+./cache

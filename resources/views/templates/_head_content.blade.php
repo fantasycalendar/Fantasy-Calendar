@@ -47,13 +47,13 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.6.0/dist/alpine.min.js" defer></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.js"></script>
 
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css">
-    
+
     <link
         rel="stylesheet"
         href="https://unpkg.com/simplebar@latest/dist/simplebar.css"
@@ -63,7 +63,7 @@
     <script>
 
     window.baseurl = '{{ getenv('WEBADDRESS') }}';
-    window.apiurl = '{{ getenv('WEBADDRESS') }}'+'api';
+    window.apiurl = '{{ getenv('WEBADDRESS') }}'+'api/v1';
 
     function isMobile() {
         try{ document.createEvent("TouchEvent"); return true; }
@@ -141,27 +141,33 @@
             evaluate_background_size();
         }
 
-        if(window.navigator.userAgent.indexOf("LM-G850") > 0) {
+        if(window.navigator.userAgent.includes("LM-G850")) {
             $("#input_container").addClass('sidebar-mobile-half');
+        }
+
+        if(window.navigator.userAgent.includes('Surface Duo') && !window.navigator.userAgent.includes('Surface Duo 2')) {
+            $("#input_container").addClass('sidebar-surface-duo');
+            $("#input_collapse_btn").addClass('sidebar-surface-duo');
+        }
+
+        if(window.navigator.userAgent.includes('Surface Duo 2')) {
+            $("#input_container").addClass('sidebar-surface-duo-2');
+            $("#input_collapse_btn").addClass('sidebar-surface-duo-2');
         }
     });
 
     </script>
-
-    <script src="{{ asset("/js/login.js") }}"></script>
 
     <script src="{{ asset("/js/vendor/sortable/jquery-sortable-min.js") }}"></script>
     <script src="{{ asset("/js/vendor/spectrum/spectrum.js") }}"></script>
 
     <script src="{{ mix('js/calendar/header.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_event_ui.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_functions.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_variables.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_weather_layout.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_day_data_layout.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_season_generator.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_layout_builder.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_inputs_visitor.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_inputs_view.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_inputs_edit.js') }}"></script>

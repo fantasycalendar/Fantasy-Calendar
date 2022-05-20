@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 
 services:
   fantasydb:
@@ -6,49 +6,49 @@ services:
     container_name: fc-mariadb
     volumes:
       - fantasy-calendar-db:/var/lib/mysql
-      - ./setup/database.sql:/docker-entrypoint-initdb.d/dump.sql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: fantasy-calendar
     ports:
       - "13306:3306"
 
-  fantasy-calendar:
-    container_name: fantasy_calendar
-    depends_on:
-      - fantasy-calendar-php
+  fc-bref-web:
+    image: bref/fpm-dev-gateway
     ports:
-      - "9987:8080"
-    build:
-      context: .
-      dockerfile: setup/nginx/nginx.Dockerfile
-    user: "1000:1000"
+      - ${FC_WEB_PORT:-9980}:80
     volumes:
-      - ./:/fantasy-calendar
+      - .:/var/task
+#      - ./setup/nginx/bref.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    environment:
+      HANDLER: public/index.php
+      DOCUMENT_ROOT: public
 
-  fantasy-calendar-php:
+  php:
     container_name: fantasy_calendar_php
-    image: fc-php
+    image: fc-bref-php
     build:
       context: .
       dockerfile: setup/php/php.Dockerfile
     volumes:
-      - ./:/fantasy-calendar
+      - ./:/var/task
+      - ./cache:/var/task/cache
     user: "1000:1000"
-    environment:
-      - "APP_ENV=local"
-      - "APP_KEY=base64:ECSIURhDQnHBdx7nRVlwGtPwBU+RZrQCQpmGHesaIUM="
-      - "APP_DEBUG=true"
-      - "APP_URL=/"
-      - "COOKIEADDRESS=/"
-      - "DB_HOST=fantasydb"
-      - "DB_DATABASE=fantasy-calendar"
-      - "DB_USERNAME=root"
-      - "DB_PASSWORD=root"
-      - "REDIS_HOST=fcredis"
-      - "SESSION_DRIVER=redis"
-      - "VIEW_COMPILED_PATH=/fantasy-calendar/storage/framework/views"
-      - "LOG_CHANNEL=docker"
+
+  queue-worker:
+    container_name: fc_queue_worker
+    image: fc-bref-php
+    depends_on:
+      - php
+    build:
+      context: .
+      dockerfile: setup/php/php.Dockerfile
+    volumes:
+      - ./:/var/task
+      - ./cache:/var/task/cache
+    user: "1000:1000"
+    command: ["php", "artisan", "queue:listen"]
 
   selenium:
     image: selenium/standalone-chrome
@@ -59,31 +59,42 @@ services:
   fcredis:
     image: redis
     container_name: fcredis
+    ports:
+      - "6378:6379"
     depends_on:
-      - fantasy-calendar-php
+      - php
 
-  fantasy-calendar-composer-install:
-    image: composer
+  composer:
+    image: fc-bref-composer
+    build:
+      context: .
+      dockerfile: setup/php/composer.Dockerfile
     user: "1000:1000"
     volumes:
-      - ./:/app
-    command: ["install"]
+      - ./:/var/task
+    command: ["composer", "install"]
 
-  fantasy-calendar-npm-install:
-    image: node
+  npm:
+    image: node:14
     user: "1000:1000"
-    mem_limit: 1024m
+    mem_limit: 2048m
     ports:
-      - "9980:9980"
+      - ${FC_BROWSERSYNC_PORT:-9987}:9980
       - "9988:3001"
     working_dir: "/fantasy-calendar"
     volumes:
       - ./:/fantasy-calendar
     command: ["npm", "run", "dev-install-watch"]
     environment:
-      - "BROWSERSYNC=true"
+      - BROWSERSYNC=${FC_BROWSERSYNC:-false}
       - "MIXVERSION=true"
       - "NODE_OPTIONS=--max-old-space-size=4096"
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025"
+      - "1025:1025"
 
 volumes:
   fantasy-calendar-db:

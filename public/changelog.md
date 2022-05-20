@@ -1,6 +1,179 @@
-### 2.0.15 - Coordinating Efreet
-#### TBD
-* Added - New, searchable events list 
+### 2.2.9 - Courteous Couatl
+#### May 18th, 2022
+- Fixed rendering issue which was caused by advancing the current year
+- Fixed issue preventing the calendar from scrolling to the current date when first loaded
+- Fixed issue which could cause event-based-events to cause infinite recursion
+- Removed event-testing feature until we can solve a more deeply rooted issue
+
+### 2.2.8 - Contextual Couatl
+#### April 12th, 2022
+- Replace Sharp library with Filament for rewritten internal admin panel
+- Laid the basis for user API token management
+- App Feature Flags (For disabling things in development)
+- Upgrade some dependencies
+
+### 2.2.7 - Cackling Couatl
+#### April 1st, 2022
+- Enabled enhanced... wait, what?
+
+### 2.2.6 - Contemporary Couatl
+#### March 23rd, 2022
+* Added: `/fc create event` - Create one-time events from Discord!
+* Added: `/fc overview` - **Experimental** "show me all of it" command, intended to (one day) include moons, weather, etc. Currently just includes one-time events (e.g. "Date is exactly" condition)
+* Added: Admin action to manually verify user email addresses
+* Reworked: Error pages into new theme
+* Reworked: Discord account connection process to fit into into new theme
+* Reworked: Various small UI bits to reduce the number of page reloads throughout the app
+* Reworked: Moved existing, undocumented API to /api/v1, in preparation for public API availability
+* Upgraded: Alpine.js to v3
+* Upgraded: Laravel to v9
+* Removed: A bunch of old cruft pages and code that was unnecessary
+
+### 2.2.5 - Cozy Couatl
+#### February 27th, 2022
+- Updated: Reworked the calendar list into our new visual style
+
+### 2.2.4 - Charismatic Couatl
+#### February 25th, 2022
+- Added official support for spanning on the Microsoft Surface Duo and Surface Duo 2 (Improvements will come later ... for now I just wanted the gap to not cover things with the sidebar open)
+- Updated landing page and launch of https://fantasy-calendar.com/ separate from the primary app
+- Rewrote Discord feature page into using the new style/theming system
+- Fixed season colors looking odd in minimalistic layout
+- Fixed hex color generator sometimes generating invalid colors
+- Fixed `'on' is not defined` error on login page in specific scenarios
+
+### 2.2.3 - Captivating Couatl
+#### February 16th, 2022
+- Beautified the login and registration pages
+- Improved the readability and looks of the T&C and Privacy Policy pages
+- Added beautified footer to all reworked pages
+
+### 2.2.2 - Prismatic Couatl
+#### February 13th, 2022
+- App theme rebuilt from the ground up
+- Improved dark theme event coloration
+- Made season colors vivid
+- Added season colors to minimalistic layout
+- General edit input improvements
+- Fixed images overflowing event window
+
+### 2.2.1 - Concise Couatl
+#### February 11th, 2022
+- Updated - Fully reworked Profile, Pricing and Billing pages
+- Added - Support for the Stripe billing portal
+
+### 2.2.0 - Compatible Couatl
+#### January 29th, 2022 
+* Added - Calendar Embedding!
+* Fixed - Fixed erroneously taking starting eras into account when calculating epoch
+* Fixed - Fixed starting eras that were previously ending and restarting still maintaining their ending and starting status even after becoming starting eras
+* Fixed - Era year sometimes being off by one
+
+### 2.1.6 - Nitpicking Djinn
+#### January 9th, 2022 
+* Fixed - Fixed some linked calendars not syncing properly
+* Fixed - Fixed month number not being accurate when with one-month layout
+
+### 2.1.5 - Festive Djinn
+#### December 17th, 2021 
+* Fixed - Fixed month header number count being off
+* Fixed - Fixed limited repetition events acting wonky when show only current month was active
+* Fixed - Fixed show only current month breaking first weekday flow
+
+### 2.1.4 - Investigative Djinn
+#### November 25th, 2021
+* Added - Warning under seasons when a custom location with custom sunrise and sunset times is active 
+* Fixed - Locking a custom location's sunrise and sunset times would cause it to not be saved correctly
+* Fixed - Calendars with only intercalary months would fail to build
+
+### 2.1.3 - Curious Djinn
+#### November 16th, 2021
+* Tweaked - Lowered the sensitivity of the auto-scroll that would scroll to the current date
+* Fixed - Some event condition presets resulting in broken conditions
+* Fixed - An intercalary month at the start of the year would break the entire year's weekday flow
+* Fixed - Leap months causing the following months to have incorrect IDs which would break some events
+
+### 2.1.2 - Scrutinizing Djinn
+#### November 7th, 2021
+* Tweaked - Slightly improved leap day calculation speed
+* Tweaked - General backend upgrades and improvements
+* Tweaked - Added additional error checking surrounding the clock durations
+* Tweaked - Made length based seasons default on new calendars
+* Fixed - Users who were added as players to calendars were not able to create events
+* Fixed - Leap day calculation on very specific interval setups
+* Fixed - Date not updating properly when changing leap day intervals or deleting leap days
+* Fixed - Fixed season type mapping would sometimes not work when adding multiple seasons in a row
+* Fixed - Fixed ends year prematurely option on eras looking disabled after switching season type
+
+### 2.1.1 - Tranquil Djinn
+#### October 19th, 2021
+* Fixed - Discord Integration error caused by users not having set their discord avatar
+* Fixed - Calendar presets sometimes not loading correctly
+* Fixed - Year header error appearing if eras were present on calendar load
+* Fixed - Leap day intervals not sorting correctly, causing avg. year length and month length to be off
+* Fixed - Week day number in month being incorrectly set, causing events that were using it to not appear
+* Fixed - Superwide calendars not scrolling horizontally far enough
+
+### 2.1.0 - Discordant Djinn
+#### October 15th, 2021
+* Added - Discord integration!
+* Added - Event moon overrides - Change your moons with events, such as color, phase, phase name, and visibility! 
+* Reworked - Year header no longer updates current era when scrolling - now based entirely on current date
+* Reworked - Completely reworked the event editor and event viewer UI
+* Tweaked - Renamed the "Create Calendar" button to "Save Calendar" to avoid confusion
+* Tweaked - Location list now shows all preset locations, but disable them if requirements are not met
+* Fixed - Linked child calendars sometimes not having the correct date & time, should now be accurate down to the minute
+* Fixed - Day data previewer not working in certain browsers
+* Fixed - Date dropdowns in date selectors (such as in events and eras) being incorrectly set up 
+* Fixed - Vastly improved calendar accuracy - this fixes a lot of issues such as moon drifting and weekday weirdness over years  
+* Fixed - Issues surrounding the overflow weekdays checkbox, as it would not disable when it should have
+* Fixed - Season day flow should be more accurate - some calendars with crazy setups may still be inaccurate across years due to floating point errors (curse you javascript!)
+* Fixed - Season colors sometimes not appearing in the right order
+* Fixed - Leap day and leap month appearing on the wrong cycles on negative years or on calendars with year zero enabled
+* Fixed - Issues with the Custom JSON loader when loading calendars exported from Fantasy-Calendar
+* Fixed - Toggling between date-based and length-based season type would sometimes break custom locations
+* Fixed - Improved accuracy of moon repetitions that are used in event conditions
+* Fixed - Average year length and month lengths not being accurate
+* Fixed - Copying the link to dates on calendars would sometimes not work
+* Fixed - Rare issue with event-based-events that would cause a recursion error
+
+### 2.0.20 - Typesetting Efreet
+#### May 15, 2021
+* Tweaked - Default era formatting tweaked to utilize era year instead of absolute year when era restarts the year count 
+* Fixed - Date-based events not properly filling out their data when edited 
+* Fixed - Browser print customization options are no longer disabled. Users can now select portrait or landscape, as well as page sizes and color options.
+
+### 2.0.19 - Facepalming Efreet
+#### May 10, 2021
+* Fixed - Intercalary leap days would not properly set their month, causing all sorts of havoc 
+
+### 2.0.18 - Attentive Efreet
+#### May 9, 2021
+* Fixed - "Calendar Unavailable" page now loads correctly
+* Fixed - Generalized error page actually loads when appropriate 
+
+### 2.0.17 - Calm Efreet
+#### May 7, 2021
+* Tweaked - Improved error pages (that we hope you won't see!)
+* Fixed - Season type being visible even when automatic mapping was found
+* Fixed - Issue where season boolean conditions would not show up correctly
+* Fixed - Leap day fractional numbers not being accurate - you might have to double-check your season durations
+* Fixed - Season colors causing errors on certain calendars
+
+### 2.0.16 - Stressed Efreet
+#### April 26, 2021
+* Tweaked - Greatly improved database performance when loading certain pages to try and address recent downtime issues
+* Tweaked - Intercalary leap days can now exist without changing the order of numbered days in a month, or display its own custom name above the day
+* Fixed - Enabling *Custom year header formatting* on eras causing error
+* Fixed - Weekday leap days not being ordered correcly on their months
+* Fixed - Season type selection dropdown visible with more than 4 seasons
+* Fixed - Moon names sometimes breaking on the advanced day data modal
+* Fixed - Cycle type resetting for all cycles when re-ordering or deleting cycles
+* Fixed - Calculation of leaping months with leap days on negative years
+
+### 2.0.15 - Industrious Efreet
+#### February 25, 2021
+* Fixed - Calendar export being broken on some calendars
 
 ### 2.0.14 - Time-traveling Efreet
 #### January 28, 2021

@@ -6,7 +6,7 @@ div:focus, button:focus, * button.btn.btn-stock:focus {
 }
 
 #protip_container{
-    z-index:300;
+    z-index:1100;
     position: absolute !important;
 }
 
@@ -160,6 +160,10 @@ select.invalid {
     background-color: $gray-secondary;
 }
 
+.sortable-container.intercalary .border{
+    border-color: lightgray !important;
+}
+
 .sortable-container.moon_inputs{
     border-radius: 4px;
 }
@@ -177,6 +181,7 @@ select.invalid {
 }
 
 .main-container > .handle, .main-container > .expand{
+    color: $handle-color;
     margin:0 2% 0 0;
     font-size:15pt;
     min-width:20px;
@@ -509,12 +514,11 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     content: "";
     display: inline-block;
     position: relative;
-    width: 30px;
-    height: 10px;
-    background-color: #818181;
+    width: 50px;
+    height: 24px;
+    background-color: #374151;
     border-radius: 15px;
-    -webkit-transition: background .0s cubic-bezier(.25,.8,.25,1);
-    transition: background .0s cubic-bezier(.25,.8,.25,1);
+    transition: background 0s cubic-bezier(0.25, 0.8, 0.25, 1);
     vertical-align: middle;
     box-shadow: none;
 }
@@ -524,22 +528,20 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     display: inline-block;
     width: 18px;
     height: 18px;
-    background-color: #f1f1f1;
+    background-color: $gray-100;
     border-radius: 21px;
-    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4);
-    left: -2px;
-    top: -4px;
-    -webkit-transition: left .0s ease, background .0s ease, box-shadow .1s cubic-bezier(.25,.8,.25,1);
-    transition: left .0s ease, background .0s ease, box-shadow .1s cubic-bezier(.25,.8,.25,1);
+    box-shadow: 0 1px 3px 1px rgb(0 0 0 / 40%);
+    left: 3px;
+    top: 3px;
+    transition: transform .3s ease, background .3s ease, box-shadow 0.1s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 .custom-checkbox .custom-control-input:checked ~ .custom-control-indicator {
-    background-color: #818181;
+    background-color: $accent-color;
     background-image: none;
     box-shadow: none !important;
 }
 .custom-checkbox .custom-control-input:checked ~ .custom-control-indicator:after {
-    background-color: #84c7c1;
-    left: 15px;
+    transform: translateX(26px);
 }
 .custom-checkbox .custom-control-input:focus ~ .custom-control-indicator {
     box-shadow: none !important;
@@ -565,7 +567,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     position: fixed;
     top: 0;
     bottom: 0;
-    background-color:rgba(75, 75, 75, 0.75);
+    background-color:rgba($modal-bg-color, 0.60);
     width: 100%;
     height:100%;
     z-index:1000;
@@ -599,10 +601,6 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
         background-color: $modal-bg-color;
         min-height: 100vh;
     }
-}
-
-.active_layout {
-    //background-color: rgba(250, 224, 66, .2) !important;
 }
 
 /* ------------------ Preset forms ----------------- */
@@ -736,6 +734,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     height: 150px;
     max-height: 150px;
     min-height: 150px;
+    overflow:hidden;
 }
 
 #event_comment_mastercontainer .trumbowyg-editor {
@@ -837,7 +836,7 @@ body .event_comment .comment_context_btn:not(:hover) {
     color:#B71C1C;
 }
 
-.view_event_btn, .edit_event_btn {
+.event_header_action {
     font-size:1.5rem;
     opacity:0.35;
     margin-left:0.5rem;
@@ -847,6 +846,17 @@ body .event_comment .comment_context_btn:not(:hover) {
     }
 }
 
+.color_container{
+    height: 2rem;
+}
+
+.event-moon-text{
+    opacity:0.65;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    font-size:1.4rem;
+    white-space: nowrap;
+}
 
 @media screen and (max-width: 768px) {
     .clickable_background {
@@ -1385,6 +1395,24 @@ ol.example li.placeholder:before {
 .moon_inputs .sp-preview {
     min-height: 30px;
 }
+
+body .sp-replacer {
+    padding: 0;
+    height: 100% !important;
+    border: 1px solid $input-border-color;
+    border-radius: 7px;
+    background: transparent;
+}
+
+body .sp-preview {
+    background-image: none;
+    border: 0;
+}
+
 .season .sp-preview {
-    min-height: 10px;
+    min-height: 100%;
+}
+
+.form-control .color {
+    padding: 2px 4px;
 }

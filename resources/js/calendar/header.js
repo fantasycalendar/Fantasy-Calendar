@@ -184,7 +184,7 @@ function show_loading_screen_timed(loading_bar, cancel_button_callback){
 
 }
 
-function show_loading_screen(loading_bar, cancel_button_callback){
+function show_loading_screen(loading_bar, cancel_button_callback, object){
 
 	$('#loading_background').removeClass('hidden');
 
@@ -198,7 +198,7 @@ function show_loading_screen(loading_bar, cancel_button_callback){
 
 	if(cancel_button_callback !== undefined){
 		$('.loading_cancel_button').removeClass('hidden').click(function(){
-			cancel_button_callback();
+			cancel_button_callback(object);
 		});
 	}
 

@@ -11,9 +11,10 @@ const mix = require('laravel-mix');
  |
  */
 
-if(process.env.BROWSERSYNC) {
+if(process.env.BROWSERSYNC === 'true') {
     mix.browserSync({
-        proxy: 'fantasy-calendar:8080',
+        injectChanges: true,
+        proxy: 'fc-bref-web:80',
         port: 9980,
         open: false,
         files: [
@@ -42,13 +43,11 @@ mix.copyDirectory('resources/images', 'public/resources');
 // Calendar scripts
 mix.copy('resources/js/calendar/header.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_ajax_functions.js', 'public/js/calendar');
-mix.copy('resources/js/calendar/calendar_event_ui.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_functions.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_variables.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_weather_layout.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_day_data_layout.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_season_generator.js', 'public/js/calendar');
-mix.copy('resources/js/calendar/calendar_layout_builder.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_inputs_visitor.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_inputs_view.js', 'public/js/calendar');
 mix.copy('resources/js/calendar/calendar_inputs_edit.js', 'public/js/calendar');
@@ -63,7 +62,7 @@ mix.copy('resources/js/webworkers/worker_events.js', 'public/js/webworkers');
 mix.copy('resources/js/webworkers/worker_event_tester.js', 'public/js/webworkers');
 
 // Misc
-mix.copy('resources/js/login.js', 'public/js');
+mix.copy('resources/js/embed.js', 'public/js');
 
 // Vendor
 mix.copy('node_modules/trumbowyg/dist/ui/icons.svg', 'public/images');
@@ -73,6 +72,15 @@ mix.js('resources/js/app.js', 'public/js')
 
     .sass('resources/sass/app.scss', 'public/css')
     .sass('resources/sass/app-dark.scss', 'public/css');
+
+mix.js('resources/js/app-tw.js', 'public/js');
+
+// require('mix-tailwindcss');
+
+mix.postCss('resources/sass/app-tw.css', 'public/css', [
+    require("tailwindcss"),
+]);
+
 
 if (mix.inProduction() || process.env.MIXVERSION) {
     mix.version();

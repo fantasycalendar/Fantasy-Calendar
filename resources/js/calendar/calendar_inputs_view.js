@@ -305,6 +305,8 @@ function set_up_view_inputs(){
 
 		do_error_check('seasons');
 
+        evaluate_season_daylength_warning();
+
 	});
 
 
@@ -446,7 +448,6 @@ function evaluate_dynamic_change(){
 		if(data.rebuild || (!Perms.owner && static_data.settings.only_reveal_today) || !apply_changes_immediately){
 			pre_rebuild_calendar('calendar', dynamic_data)
 		}else{
-			scroll_to_epoch();
 			update_current_day(false);
 		}
 
@@ -464,13 +465,6 @@ function evaluate_dynamic_change(){
 
 	evaluate_save_button();
 
-}
-
-
-function fix_date(){
-	if(current_day.children('option:enabled').length == 0){
-		sub_curr_day.click();
-	}
 }
 
 function repopulate_location_select_list(){
@@ -491,14 +485,13 @@ function repopulate_location_select_list(){
 
 	}
 
-	html.push('<optgroup label="Location Presets" value="preset">');
-	if((static_data.seasons.data.length == 2 || static_data.seasons.data.length == 4) && static_data.seasons.global_settings.enable_weather){
-		for(var i = 0; i < Object.keys(preset_data.locations[static_data.seasons.data.length]).length; i++){
-			html.push(`<option>${Object.keys(preset_data.locations[static_data.seasons.data.length])[i]}</option>`);
-		}
-	}else{
-		html.push(`<option disabled>Presets require two or four seasons and weather enabled.</option>`);
-	}
+    let validSeasons = (static_data.seasons.data.length === 2 || static_data.seasons.data.length === 4) && static_data.seasons.global_settings.enable_weather;
+    let length = validSeasons ? static_data.seasons.data.length : 4;
+
+	html.push(`<optgroup label="Location Presets" value="preset">`);
+    for(var i = 0; i < Object.keys(preset_data.locations[length]).length; i++){
+        html.push(`<option ${!validSeasons ? "disabled" : ""}>${Object.keys(preset_data.locations[length])[i]}</option>`);
+    }
 	html.push('</optgroup>');
 
 
@@ -523,10 +516,6 @@ function repopulate_location_select_list(){
 
 function set_up_view_values(){
 
-    preview_date = clone(dynamic_data);
-
-    preview_date.follow = true;
-
 	dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
 	current_year.val(dynamic_date_manager.adjusted_year);
@@ -545,5 +534,7 @@ function set_up_view_values(){
 	repopulate_location_select_list();
 
 	evaluate_clock_inputs();
+
+	dynamic_data.epoch = dynamic_date_manager.epoch;
 
 }

@@ -1,65 +1,35 @@
-@extends('templates._page')
-
-@section('content')
-<div class="container pt-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
-
-                <div class="card-body">
-                    <form method="POST" action="{{ route('password.update') }}">
-                        @csrf
-
-                        <input type="hidden" name="token" value="{{ $token }}">
-
-                        <div class="form-group row">
-                            <label for="email" class="col-md-4 col-form-label text-md-right">{{ __('E-Mail Address') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
-
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password" class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                            </div>
-                        </div>
-
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Reset Password') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+<x-app-fullwidth-layout body-class="flex flex-col bg-gray-100 dark:bg-gray-900">
+    <div class="max-w-md w-full mx-auto my-6 md:my-12 lg:my-16">
+        <div class="text-primary-700">
+            <x-app-logo class="mx-auto h-16 w-auto"></x-app-logo>
         </div>
+
+        <x-panel class="mt-8">
+            <form method="POST" action="{{ route('password.update') }}" class="space-y-4">
+                @csrf
+                @honeypot
+
+                <input type="hidden" name="token" value="{{ request()->route('token') }}">
+
+                <div class="block">
+                    <x-text-input id="email" :placeholder="__('Email')" class="block mt-1 w-full" type="email" name="email" :value="old('email', request()->email)" required autofocus />
+                </div>
+
+                <div class="mt-4">
+                    <x-text-input id="password" :placeholder="__('Password')" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
+                </div>
+
+                <div class="mt-4">
+                    <x-text-input id="password_confirmation" :placeholder="__('Confirm Password')" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
+                </div>
+
+                <x-button type="submit" class="w-full justify-center">
+                    {{ __('Reset Password') }}
+                </x-button>
+            </form>
+        </x-panel>
+
+        <div class="text-xs mt-6 px-10 text-center text-gray-400 dark:text-gray-700">You can withdraw marketing consent at any time on your profile. Residents of the EU are legally entitled to a 14-day cool off period, as explained in the T&Cs.</div>
     </div>
-</div>
-@endsection
+    </div>
+</x-app-fullwidth-layout>

@@ -13,9 +13,21 @@
 .btn.btn-accent {
     background-color: $accent-color;
     border-color: $accent-color;
+    color: white;
 
     &:hover {
         background-color: $accent-color-darker;
+        border-color: $accent-color;
+        color: white;
+    }
+}
+
+.btn.btn-outline-accent {
+    background-color: transparent;
+    border-color: $accent-color;
+
+    &:hover {
+        background-color: $accent-color;
         border-color: $accent-color;
     }
 }
@@ -23,19 +35,7 @@
 html {
     overflow-x: hidden;
 
-    @media screen and (min-width: 900px) {
-        font-size: 14px;
-    }
-
-    @media screen and (min-width: 1200px) {
-        font-size: 17px;
-    }
-
-    @media screen and (min-width: 1400px) {
-        font-size: 18px;
-    }
-
-    @media screen and (min-width: 1600px) {
+    @media screen and (max-width: 768px) {
         font-size: 18px;
     }
 }
@@ -46,7 +46,7 @@ body{
     height: 100vh;
     min-height: 100vh;
     max-height: 100vh;
-    font-family:'Fira Sans', sans-serif;
+    font-family:'Inter', sans-serif;
 
     a {
         color: $accent-color-light;
@@ -115,6 +115,21 @@ body{
     @media (min-width: 768px) and (hover: none) {
         min-height: 3.6rem;
     }
+
+    .new-nav-item {
+        position: relative;
+
+        & a:after {
+            content: "New!";
+            display: inline;
+            color: $text-green-400;
+            background-color: $bg-green-800;
+            font-size: .8rem;
+            padding: .2rem .6rem;
+            border-radius: 999px;
+            margin-left: .4rem;
+        }
+    }
 }
 
 .page-calendars-edit {
@@ -167,6 +182,10 @@ body.page-calendars-index {
     flex-basis: $sidebar-width;
     max-width: 25rem;
     flex-grow: 1;
+
+    @media (screen and min-width: 768px) {
+        min-width: 320px;
+    }
 }
 
 #input_container.sidebar-mobile-half:not(.inputs_collapsed){
@@ -181,6 +200,7 @@ body.page-calendars-index {
     padding: 0;
     min-width: 0;
     max-width: 0;
+    margin-right: 0;
 }
 
 #input_container > .accordion > .wrap-collapsible:last-child {
@@ -219,16 +239,62 @@ body.page-calendars-index {
     }
 }
 
+
 #calendar_container{
+    display: flex;
+    flex-direction: column;
     order:3;
-    padding:0 10px 0 10px;
-    flex-grow: 999;
+    padding:0;
+    flex-grow: 1;
     flex-basis: 0;
     transition: width 0.5s ease;
     overflow-y: auto;
     max-height: 100%;
     box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
     background-color: $calendar-bg-color;
+}
+
+@media (horizontal-viewport-segments: 2) {
+    #input_container:not(.inputs_collapsed) {
+        min-width: env(viewport-segment-right 0 0);
+        margin-right: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
+    }
+
+    #input_collapse_btn.is-active {
+        right: calc(100vw - env(viewport-segment-right 0 0));
+        left: auto;
+    }
+
+
+    #calendar_container{
+        flex-basis: env(viewport-segment-right 0 0);
+    }
+}
+
+@media screen and (min-width: 799px) {
+    #input_container.sidebar-surface-duo:not(.inputs_collapsed) {
+        min-width: calc(50% - 46px);
+        margin-right: 87px;
+    }
+
+    #input_collapse_btn.sidebar-surface-duo {
+        &.is-active {
+            right: calc(50% + 46px);
+            left: auto;
+        }
+    }
+
+    #input_container.sidebar-surface-duo-2:not(.inputs_collapsed) {
+        min-width: calc(50% - 16px);
+        margin-right: 32px;
+    }
+
+    #input_collapse_btn.sidebar-surface-duo-2 {
+        &.is-active {
+            right: calc(50% + 16px);
+            left: auto;
+        }
+    }
 }
 
 /************/
