@@ -1479,11 +1479,13 @@ function set_up_edit_inputs(){
 
 			case "events_sortable":
 
-				var warnings = [];
+				let warnings = [];
 
-				for(var eventId in events){
-					if(events[eventId].data.connected_events !== undefined){
-						var connected_events = events[eventId].data.connected_events;
+				for(let eventId = 0; eventId < events.length; eventId++){
+				    const event = events[eventId];
+					if(event.data.connected_events !== undefined){
+						let connected_events = event.data.connected_events;
+						console.log(connected_events, index)
 						if(connected_events.includes(String(index)) || connected_events.includes(index)){
 							warnings.push(eventId);
 						}
@@ -1494,13 +1496,12 @@ function set_up_edit_inputs(){
 
 					callback = true;
 
-					var html = [];
+					let html = [];
 					html.push(`<div class='text-left'>`)
 					html.push(`<h5>You are trying to delete "${events[index].name}" which referenced in the following events:</h5>`)
 					html.push(`<ul>`);
-					for(var i = 0; i < warnings.length; i++){
-						var event_id = warnings[i];
-						html.push(`<li>• ${events[event_id].name}</li>`);
+					for(let i = 0; i < warnings.length; i++){
+						html.push(`<li>${events[warnings[i]].name}</li>`);
 					}
 					html.push(`</ul>`);
 					html.push(`<p>Please remove the conditions referencing "${events[index].name}" in these events before deleting.</p>`)
@@ -1521,12 +1522,13 @@ function set_up_edit_inputs(){
 
 					events_sortable.children("[index='"+index+"']").remove();
 
-					for(var eventId in events){
-						if(events[eventId].data.connected_events !== undefined){
-							for(connectedId in events[eventId].data.connected_events){
-								var number = Number(events[eventId].data.connected_events[connectedId])
-								if(Number(events[eventId].data.connected_events[connectedId]) > index){
-									events[eventId].data.connected_events[connectedId] = String(number-1)
+					for(let eventId = 0; eventId < events.length; eventId++){
+					    const event = events[eventId];
+						if(event.data.connected_events !== undefined && event.data.connected_events.length > 0){
+							for(let connectedId = 0; connectedId < event.data.connected_events.length; connectedId++){
+							    const parentId = event.data.connected_events[connectedId];
+								if(Number(parentId) > index){
+                                    event.data.connected_events[parentId] = Number(parentId)-1;
 								}
 							}
 						}
