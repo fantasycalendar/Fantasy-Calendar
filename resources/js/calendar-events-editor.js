@@ -1320,7 +1320,6 @@ const calendar_events_editor = {
 				} else if (type === "Events") {
 
 					let event_id = Number($(this).find('.input_container').find("option:selected").val());
-
 					if (event_id !== null && !isNaN(event_id) && event_editor_ui.working_event.data.connected_events.indexOf(event_id) === -1 && typeof event_id === "number") {
 						event_editor_ui.working_event.data.connected_events.push(event_id);
 					}
