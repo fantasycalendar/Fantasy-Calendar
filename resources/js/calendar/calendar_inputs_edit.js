@@ -5425,16 +5425,13 @@ function reindex_events_sortable(){
 
 	});
 
-	for(var event_id in events){
-
-		var event = events[event_id];
+	for(let event of events){
 
 		if(event.data.connected_events.length > 0){
-
-			for(var connected_id in event.data.connected_events){
-
-				event.data.connected_events[connected_id] = new_order[event.data.connected_events[connected_id]];
-
+			for(let connected_id = 0; connected_id < event.data.connected_events.length; connected_id++){
+			    const old_index = event.data.connected_events[connected_id];
+			    if(old_index === null) continue;
+                event.data.connected_events[connected_id] = new_order[old_index];
 			}
 
 		}

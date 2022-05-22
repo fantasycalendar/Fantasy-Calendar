@@ -1,3 +1,7 @@
+### 2.2.10 - Concerned Couatl
+#### May 22nd, 2022
+- Fixed critical issue with event-based-events that could cause them to contain incorrect event links
+
 ### 2.2.9 - Courteous Couatl
 #### May 18th, 2022
 - Fixed rendering issue which was caused by advancing the current year
