@@ -1,6 +1,7 @@
 ### 2.2.10 - Concerned Couatl
 #### May 22nd, 2022
-- Fixed critical issue with event-based-events that could cause them to contain incorrect event links
+- Fixed critical issue with event-based-events that could cause them to sometimes contain incorrect event
+- Improved handling of said event-based-events when events get removed
 
 ### 2.2.9 - Courteous Couatl
 #### May 18th, 2022
