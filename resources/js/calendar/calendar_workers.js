@@ -1410,10 +1410,6 @@ var event_evaluator = {
 
 				lookback = 0;
 
-				if(current_event.data.date !== undefined && current_event.data.date.length === 3){
-				    return;
-                }
-
 				if(current_event.data.limited_repeat){
 					lookback = current_event.data.limited_repeat_num;
 				}
