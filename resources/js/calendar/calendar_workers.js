@@ -179,6 +179,8 @@ const calendar_data_generator = {
 		for(let event_index = 0; event_index < this.events.length; event_index++){
 			let event = this.events[event_index];
 
+			if(event.data.date !== undefined && event.data.date.length === 3) continue;
+
 			this.pre_search = event.data.has_duration ? Math.max(event.data.duration, this.pre_search) : this.pre_search;
 			this.pre_search = event.data.limited_repeat ? Math.max(event.data.limited_repeat_num, this.pre_search) : this.pre_search;
 			this.pre_search = event.data.search_distance ? Math.max(event.data.search_distance, this.pre_search) : this.pre_search;
@@ -1371,7 +1373,7 @@ var event_evaluator = {
 
 					for(var duration = 1; duration < event.data.duration; duration++)
 					{
-						if(event_evaluator.event_data.valid[event_index].indexOf(epoch+duration-1) === -1 && epoch+duration >= event_evaluator.start_epoch) {
+						if(event_evaluator.event_data.valid[event_index].indexOf(epoch+duration-1) === -1 && epoch+duration >= event_evaluator.start_epoch && epoch+duration <= event_evaluator.end_epoch+1) {
 							event_evaluator.event_data.valid[event_index].push(epoch+duration-1);
 						}
 					}

@@ -1,3 +1,9 @@
+### 2.2.11 - Confident Couatl
+#### June 1st, 2022
+- Fixed date-based events to not cause calendar to look simulate past years if it has a duration
+- Date-based events now supports insanely long durations (still HEAVILY discouraged)
+- Backend updates to be able to verify people's emails remotely 
+
 ### 2.2.10 - Concerned Couatl
 #### May 22nd, 2022
 - Fixed critical issue with event-based-events that could cause them to sometimes contain incorrect event

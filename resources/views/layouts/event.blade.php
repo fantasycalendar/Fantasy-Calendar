@@ -376,8 +376,8 @@
                             </div>
                         </div>
 
-                        <div class='limit_for_warning hidden row no-gutters p-2 mb-2 border rounded'>
-                            <p class='m-0'><strong>Use with caution.</strong> This setting will simulate to check dates backward to ensure consistency across the beginning of years. That process can take a while if this number is particularly high, like 50 or more.</p>
+                        <div x-show="working_event.data.limited_repeat" class='row no-gutters p-2 mb-2 border rounded'>
+                            <p class='m-0'><strong>Use with caution.</strong> This setting will simulate to check dates backward to ensure consistency across the beginning of years. That process can take a while if this number is particularly high, like 50 or more. Extremely high numbers <strong>could make your calendar unusable</strong>.</p>
                         </div>
 
                         <div class='row no-gutters'>
@@ -398,8 +398,8 @@
                             </div>
                         </div>
 
-                        <div class='duration_warning hidden row no-gutters p-2 mb-2 border rounded'>
-                            <p class='m-0'><strong>Use with caution.</strong> This setting will simulate to check dates backward/forward to ensure consistency across the beginning/end of years. That process can take a while if this number is particularly high, like 50 or more.</p>
+                        <div x-show="working_event.data.has_duration" class='row no-gutters p-2 mb-2 border rounded'>
+                            <p class='m-0'><strong>Use with caution.</strong> This setting will simulate to check dates backward/forward to ensure consistency across the beginning/end of years. That process can take a while if this number is particularly high, like 50 or more. Extremely high numbers <strong>could make your calendar unusable</strong>.</p>
                         </div>
 
                         <div class='row no-gutters mb-2'>
