@@ -46,9 +46,9 @@ class UserResource extends Resource
                 Forms\Components\Section::make('Personal Info')->schema([
                     Forms\Components\TextInput::make('username'),
                     Forms\Components\TextInput::make('email'),
-                    Forms\Components\DatePicker::make('email_verified_at')->label('Verified At'),
-                    Forms\Components\DatePicker::make('date_register')->label('Created at')->disabled(),
-                    Forms\Components\DatePicker::make('last_visited')->disabled(),
+                    Forms\Components\DateTimePicker::make('email_verified_at')->label('Verified At'),
+                    Forms\Components\DateTimePicker::make('date_register')->label('Created at')->disabled(),
+                    Forms\Components\DateTimePicker::make('last_visited')->disabled(),
                 ])->columns(),
                 Forms\Components\Section::make('Access Info')->schema([
                     Forms\Components\Select::make('permissions')
