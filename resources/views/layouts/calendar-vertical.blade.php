@@ -15,7 +15,7 @@
         "
         @update-epochs.window="update_epochs"
         x-for="timespan in render_data.timespans"
-        :key="timespan.name + '-' + render_data.year + '-' + index"
+        :key="timespan.name + '-' + render_data.year + '-' + index + '-' + timespan.days[0].epoch + '-' + timespan.weekdays.join('-')"
     >
 
         <div class="timespan_container" :class='render_data.render_style' x-show="loaded && render_data.timespans.length">

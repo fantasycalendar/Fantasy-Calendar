@@ -536,6 +536,7 @@
                             </div>
 
                             <div class='grid grid-cols-2 gap-2'>
+                                {{-- TODO: We need to change this to a lazy change event instead, as constant model updates causes the calendar to re-render --}}
                                 <x-color-picker input-class="form-control" model="season.color[0]" name="season_color_start"></x-color-picker>
                                 <x-color-picker input-class="form-control" model="season.color[1]" name="season_color_start"></x-color-picker>
                             </div>

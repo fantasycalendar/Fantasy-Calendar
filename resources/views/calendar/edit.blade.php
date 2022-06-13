@@ -80,7 +80,10 @@
 
             init(){
                 const self = this;
-                this.$watch(this.rerenderableProperties.join(', '), () => { this.calendarChanged(true) });
+                this.$watch(this.rerenderableProperties.join(', '), () => {
+                    console.log('yes?')
+                    this.calendarChanged(true)
+                });
                 this.$watch(this.watchProperties.join(', '), () => { this.calendarChanged() });
                 this.$nextTick(() => {
                     window.calendar.render();

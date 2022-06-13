@@ -35,6 +35,9 @@ const calendar_renderer = {
     load_calendar: function(event){
         this.loading_message = "Building calendar...";
         this.render_data = event.detail;
+        this.$nextTick(() => {
+            this.post_render();
+        })
     },
 
     view_event: function(event) {

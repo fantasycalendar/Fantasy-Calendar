@@ -247,6 +247,7 @@
                             </div>
 
                             <div class='row no-gutters mb-1'>
+                                {{-- TODO: We need to change this to a lazy change event instead, as constant model updates causes the calendar to re-render --}}
                                 <div class='col-6 pr-1'>
                                     <x-color-picker input-class="form-control" model="moon.color" name="Moon color"></x-color-picker>
                                 </div>

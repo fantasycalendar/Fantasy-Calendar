@@ -8,15 +8,15 @@
             return {
 
                 weekdayName: "",
-                weekdays: $data.static_data.year_data.global_week,
                 deleting: null,
 
                 add(name){
-                    this.weekdays.push(name || `Weekday ${this.weekdays.length}`);
+                    $data.static_data.year_data.global_week.push(name || `Weekday ${$data.static_data.year_data.global_week.length}`);
                 },
 
                 remove(index){
-                    this.weekdays.splice(index, 1);
+                    $data.static_data.year_data.global_week.splice(index, 1);
+                    this.deleting = false;
                 }
             }
         }
@@ -126,23 +126,23 @@
             </div>
 
             <div class="sortable list-group border-t border-gray-600" x-ref="weekdays-sortable">
-                <template x-for="(weekday, index) in weekdays" x-ref="weekdays-sortable-template">
+                <template x-for="(weekday, index) in $data.static_data.year_data.global_week" x-ref="weekdays-sortable-template">
                     <div class='sortable-container border-t -mt-px list-group-item draggable-source' :data-id="index">
 
-                        <div class='main-container' x-show="deleting !== weekday">
+                        <div class='main-container' x-show="deleting !== index">
                             <div class='handle icon-reorder' x-show="reordering"></div>
                             <div class='name-container input-group'>
-                                <input type='text' :disabled="reordering" class='form-control name-input small-input' x-model="weekday"/>
+                                <input type='text' :disabled="reordering" class='form-control name-input small-input' :value="$data.static_data.year_data.global_week[index]" @change="$data.static_data.year_data.global_week[index] = $event.target.value"/>
                                 <div class="input-group-append">
-                                    <div class='btn_remove btn btn-danger icon-trash' :disabled="reordering" @click.prevent="deleting = weekday" x-show="deleting !== weekday"></div>
+                                    <div class='btn_remove btn btn-danger icon-trash' :disabled="reordering" @click.prevent="deleting = index" x-show="deleting !== index"></div>
                                 </div>
                             </div>
                         </div>
 
                         <div class='remove-container'>
-                            <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === weekday"></div>
-                            <div class='remove-container-text' x-show="deleting === weekday">Are you sure?</div>
-                            <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === weekday"></div>
+                            <div class='btn_cancel btn btn-danger icon-remove' @click="deleting = null" x-show="deleting === index"></div>
+                            <div class='remove-container-text' x-show="deleting === index">Are you sure?</div>
+                            <div class='btn_accept btn btn-success icon-ok' @click="remove(index)" x-show="deleting === index"></div>
                         </div>
                     </div>
                 </template>
