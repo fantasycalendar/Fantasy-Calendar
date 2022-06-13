@@ -3,6 +3,8 @@
 namespace App\Http;
 
 use App\Http\Middleware\CheckAccountDeletionRequested;
+use App\Http\Middleware\EnsureFeatureIsEnabled;
+use App\Http\Middleware\RequirePremium;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -72,6 +74,8 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateRelativeSignedUrl::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'premium' => RequirePremium::class,
+        'feature' => EnsureFeatureIsEnabled::class,
     ];
 
     /**

@@ -64,6 +64,11 @@ class CalendarPolicy
         return true;
     }
 
+    public function embedAny(?User $user)
+    {
+        return feature('embed');
+    }
+
     /**
      * Determine whether the user can update the calendar.
      *

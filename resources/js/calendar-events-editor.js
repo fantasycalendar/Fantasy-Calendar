@@ -559,13 +559,14 @@ const calendar_events_editor = {
 
 	create_event_data(){
 
+        this.working_event.data.connected_events = [];
         let conditions = Perms.player_at_least("co-owner")
             ? this.create_condition_array(this.event_conditions_container)
             : [['Date', '0', [this.epoch_data.year, this.epoch_data.timespan_index, this.epoch_data.day]]];
 
 		let search_distance = this.get_search_distance(conditions);
 
-		let date = []
+		let date = [];
 
 		if (conditions.length === 1 || conditions.length === 5) {
 
@@ -1316,10 +1317,9 @@ const calendar_events_editor = {
 
 				} else if (type === "Events") {
 
-					let event_id = $(this).find('.input_container').find("option:selected").val() | 0;
-
-					if (event_editor_ui.working_event.data.connected_events.indexOf(event_id) === -1) {
-						event_editor_ui.working_event.data.connected_events.push(event_id)
+					let event_id = Number($(this).find('.input_container').find("option:selected").val());
+					if (event_id !== null && !isNaN(event_id) && event_editor_ui.working_event.data.connected_events.indexOf(event_id) === -1 && typeof event_id === "number") {
+						event_editor_ui.working_event.data.connected_events.push(event_id);
 					}
 
 					values.push(event_editor_ui.working_event.data.connected_events.indexOf(event_id));
@@ -1913,7 +1913,7 @@ const calendar_events_editor = {
 
 			html.push("<select class='event_select form-control'>")
 
-			for (let eventId in window.calendar.events) {
+			for (let eventId = 0; eventId < window.calendar.events.length; eventId++) {
 
 				let event = window.calendar.events[eventId];
 
@@ -1922,6 +1922,7 @@ const calendar_events_editor = {
 					html.push(`${event.name} (this event)`);
 					html.push("</option>");
 				} else {
+				    this.event_chain_looked_at = [];
 					if (this.look_through_event_chain(this.event_id | 0, eventId)) {
 						html.push(`<option value="${eventId}">`);
 						html.push(event.name);
@@ -2206,9 +2207,11 @@ const calendar_events_editor = {
 
 		let warnings = [];
 
-		for (let eventId in window.calendar.events) {
-			if (window.calendar.events[eventId].data.connected_events !== undefined) {
-				let connected_events = events[eventId].data.connected_events;
+		for (let eventId = 0; eventId < window.calendar.events.length; eventId++) {
+		    if(eventId === delete_event_id) continue;
+            const event = window.calendar.events[eventId];
+			if (event.data.connected_events !== undefined) {
+				let connected_events = event.data.connected_events;
 				if (connected_events.includes(String(delete_event_id)) || connected_events.includes(Number(delete_event_id))) {
 					warnings.push(eventId);
 				}
@@ -2287,10 +2290,10 @@ const calendar_events_editor = {
 
 	delete_event(delete_event_id) {
 
-		for (let eventId in window.calendar.events) {
+        for (let eventId = 0; eventId < window.calendar.events.length; eventId++) {
 			if (window.calendar.events[eventId].data.connected_events !== undefined) {
-				for (let connectedId in events[eventId].data.connected_events) {
-					let number = Number(events[eventId].data.connected_events[connectedId])
+				for (let connectedId of window.calendar.events[eventId].data.connected_events) {
+					let number = Number(connectedId)
 					if (number > delete_event_id) {
                         window.calendar.events[eventId].data.connected_events[connectedId] = String(number - 1)
 					}
@@ -2535,12 +2538,10 @@ const calendar_events_editor = {
 
 		if (current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false") {
 
-			for (let connectedId in current_event.data.connected_events) {
-
-				let parent_id = current_event.data.connected_events[connectedId];
-
-				this.check_event_chain(parent_id, false);
-
+			for (let parent_id of current_event.data.connected_events) {
+			    if(parent_id !== null && parent_id === event_id) {
+			        this.check_event_chain(parent_id, false);
+                }
 			}
 
 		}
@@ -2549,21 +2550,25 @@ const calendar_events_editor = {
 
 	look_through_event_chain(child, parent_id) {
 
-		if (window.calendar.events[parent_id].data.connected_events !== undefined && window.calendar.events[parent_id].data.connected_events.length > 0) {
+	    if(this.event_chain_looked_at.indexOf(parent_id) === -1){
+	        return true;
+        }
 
-			if (window.calendar.events[parent_id].data.connected_events.includes(child)) {
+        this.event_chain_looked_at.push(parent_id);
+
+        const parent_event = window.calendar.events[parent_id];
+
+		if (parent_event.data.connected_events !== undefined && parent_event.data.connected_events.length > 0) {
+
+			if (parent_event.data.connected_events.includes(child)) {
 
 				return false;
 
 			} else {
 
-				for (let i = 0; i < window.calendar.events[parent_id].data.connected_events.length; i++) {
-
-					let id = window.calendar.events[parent_id].data.connected_events[i];
-
-					let result = this.look_through_event_chain(child, id);
-
-					if (!result) {
+				for (let id of parent_event.data.connected_events) {
+				    if(id === null || !isNaN(id) || child === parent_id || !events[id]) continue;
+					if (!this.look_through_event_chain(child, id)) {
 						return false;
 					}
 				}

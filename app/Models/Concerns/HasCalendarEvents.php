@@ -16,7 +16,8 @@ trait HasCalendarEvents
             'description' => Purifier::clean($description),
             'calendar_id' => $this->id,
             'event_category_id' => $category?->id ?? '-1',
-            'settings' => $category?->event_settings ?? ["color" => "Dark-Solid", "text" => "text", "hide" => false, "hide_full" => false, "print" => false]
+            'settings' => $category?->event_settings ?? ["color" => "Dark-Solid", "text" => "text", "hide" => false, "hide_full" => false, "print" => false],
+            'sort_by' => $this->events()->count()
         ]);
 
         $event->oneTime($this->year, $this->month_id, $this->day);

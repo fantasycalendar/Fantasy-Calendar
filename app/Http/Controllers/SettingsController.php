@@ -6,6 +6,7 @@ use App\Http\Requests\UpdateAccountRequest;
 use App\Notifications\RequestEmailUpdate;
 use App\Http\Requests\StoreUserSettings;
 use App\Http\Requests\UpdateEmailRequest;
+use Laravel\Sanctum\PersonalAccessToken;
 use Stripe\BillingPortal\Session as StripeBillingPortalSession;
 use Illuminate\Http\Request;
 use Hash;
@@ -74,5 +75,25 @@ class SettingsController extends Controller
         $request->user()->setMarketingStatus(true);
 
         return redirect(route('marketing.subscription-updated'));
+    }
+
+    public function apiTokens(Request $request) {
+        return view('profile.api_tokens');
+    }
+
+    public function createApiToken(Request $request) {
+        $token = $request->user()->createToken($request->get('name'));
+
+        return [
+            'plain_text_token' => $token->plainTextToken
+        ];
+    }
+
+    public function deleteApiToken(Request $request, PersonalAccessToken $personalAccessToken) {
+        $personalAccessToken->delete();
+
+        return response()->json([
+            'message' => 'Success'
+        ]);
     }
 }

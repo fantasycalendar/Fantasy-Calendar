@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -21,6 +22,7 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\Calendar::class => 'App\Policies\CalendarPolicy',
         \App\Models\CalendarEvent::class => 'App\Policies\EventPolicy',
         \App\Models\CalendarEventComment::class => 'App\Policies\EventCommentPolicy',
+        PersonalAccessToken::class => 'App\Policies\PersonalAccessTokenPolicy',
     ];
 
     /**

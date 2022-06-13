@@ -1,3 +1,32 @@
+### 2.2.11 - Confident Couatl
+#### June 1st, 2022
+- Fixed date-based events to not cause calendar to look simulate past years if it has a duration
+- Date-based events now supports insanely long durations (still HEAVILY discouraged)
+- Backend updates to be able to verify people's emails remotely 
+
+### 2.2.10 - Concerned Couatl
+#### May 22nd, 2022
+- Fixed critical issue with event-based-events that could cause them to sometimes contain incorrect event
+- Improved handling of said event-based-events when events get removed
+
+### 2.2.9 - Courteous Couatl
+#### May 18th, 2022
+- Fixed rendering issue which was caused by advancing the current year
+- Fixed issue preventing the calendar from scrolling to the current date when first loaded
+- Fixed issue which could cause event-based-events to cause infinite recursion
+- Removed event-testing feature until we can solve a more deeply rooted issue
+
+### 2.2.8 - Contextual Couatl
+#### April 12th, 2022
+- Replace Sharp library with Filament for rewritten internal admin panel
+- Laid the basis for user API token management
+- App Feature Flags (For disabling things in development)
+- Upgrade some dependencies
+
+### 2.2.7 - Cackling Couatl
+#### April 1st, 2022
+- Enabled enhanced... wait, what?
+
 ### 2.2.6 - Contemporary Couatl
 #### March 23rd, 2022
 * Added: `/fc create event` - Create one-time events from Discord!

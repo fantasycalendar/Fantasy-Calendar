@@ -226,6 +226,9 @@ const render_data_generator = {
         this.epoch_data = this.processed_data.epoch_data;
 
         this.render_data = {
+            "year": window.calendar.preview_date.year !== dynamic_data.year
+                ? window.calendar.preview_date.year
+                : window.calendar.dynamic_data.year,
             "current_epoch": window.calendar.dynamic_data.epoch,
             "preview_epoch": window.calendar.preview_date.epoch,
             "render_style": window.calendar.static_data.settings.layout,

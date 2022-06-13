@@ -42,8 +42,6 @@ class DiscordServiceProvider extends ServiceProvider
     private function registerRoutes()
     {
         Route::prefix('discord')->group(function(){
-            Route::view('account', 'Discord::pages.connect-account')->middleware(['web','auth'])->name('discord.index');
-
             Route::prefix('hooks')->middleware([VerifyDiscordSignature::class])->group(function(){
                 Route::any('/', DiscordController::class.'@hook');
             });

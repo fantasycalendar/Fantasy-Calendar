@@ -32,12 +32,14 @@
                         <x-nav-link href="{{ route('calendars.index') }}">My Calendars</x-nav-link>
                         <x-nav-link href="{{ route('calendars.create') }}">New Calendar</x-nav-link>
                         <x-nav-link href="{{ route('faq') }}">FAQs</x-nav-link>
-                        <x-nav-link href="{{ route('discord') }}">Discord Integration</x-nav-link>
+                        @feature('discord')
+                            <x-nav-link href="{{ route('discord') }}">Discord Integration</x-nav-link>
+                        @endfeature
                     </div>
                 </div>
                 <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
                     @can('administer-app', auth()->user())
-                        <x-nav-link href="{{ route('code16.sharp.home') }}">Admin Panel</x-nav-link>
+                        <x-nav-link href="{{ route('filament.pages.dashboard') }}">Admin Panel</x-nav-link>
                     @endcan
                     @auth
                         <x-nav-link href="{{ route('profile') }}">Profile</x-nav-link>
@@ -52,22 +54,8 @@
                     <!-- Mobile menu button -->
                     <button class="inline-flex items-center justify-center p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white" @click="menu = !menu">
                         <span class="sr-only">Open main menu</span>
-                        <!--
-                          Heroicon name: menu
-
-                          Menu open: "hidden", Menu closed: "block"
-                        -->
-                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                        <!--
-                          Heroicon name: x
-
-                          Menu open: "block", Menu closed: "hidden"
-                        -->
-                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <x-heroicon-o-menu ::class="{ 'hidden': !menu, 'block': menu }" class="block h-6 w-6"></x-heroicon-o-menu>
+                        <x-heroicon-o-x ::class="{ 'hidden': menu, 'block': !menu }" class="hidden h-6 w-6"></x-heroicon-o-x>
                     </button>
                 </div>
             </div>
@@ -86,7 +74,7 @@
                 <x-mobile-nav-link href="{{ route('discord') }}">Discord Integration</x-mobile-nav-link>
 
                 @can('administer-app', auth()->user())
-                    <x-mobile-nav-link href="{{ route('code16.sharp.home') }}">Admin Panel</x-mobile-nav-link>
+                    <x-mobile-nav-link href="{{ route('filament.pages.dashboard') }}">Admin Panel</x-mobile-nav-link>
                 @endcan
 
                 @auth
@@ -174,10 +162,12 @@
                 <div class="p-4" :class="{ 'mb-2' : !info.sticky }">
                     <div class="flex items-start">
                         <div class="flex-shrink-0">
-                            <!-- Heroicon name: outline/check-circle -->
-                            <svg class="h-6 w-6 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <i class="fa" :class="{
+                                'fa-check-circle': !info.icon,
+                                'text-green-400': !info.icon_color,
+                                [info.icon]: info.icon,
+                                [info.icon_color]: info.icon_color,
+                            }"></i>
                         </div>
                         <div class="ml-3 w-0 flex-1 pt-0.5">
                             <p class="text-sm font-medium text-gray-900 dark:text-gray-300" x-text="info.title"></p>
@@ -196,7 +186,11 @@
                 </div>
 
                 <div class="absolute inset-x-0 bottom-0 bg-gray-700 h-2" x-show="!info.sticky">
-                    <div class="absolute inset-x-0 left-0 h-full bg-primary-500"
+                    <div class="absolute inset-x-0 left-0 h-full"
+                         :class="{
+                            'bg-primary-500': !info.icon_color,
+                            [info.icon_color?.replace('text-', 'bg-')]: info.icon_color
+                         }"
                         x-show="!show"
                         x-transition:leave="transition-all ease-linear duration-[2900ms]"
                         x-transition:leave-start="w-full"

@@ -262,13 +262,8 @@ function rerender_calendar(processed_data) {
 
 	RenderDataGenerator.create_render_data(processed_data).then((result) => {
         window.dispatchEvent(new CustomEvent('render-data-change', { detail: result }));
-        setTimeout(() => {
-            window.dispatchEvent(new CustomEvent('update-epochs', {
-                detail: {
-                    current_epoch: window.calendar.dynamic_data.epoch,
-                    preview_epoch: window.calendar.preview_date.follow ? window.calendar.dynamic_data.epoch : window.calendar.preview_date.epoch
-                }
-            }));
-        }, 250);
+    }).catch((err) => {
+        $.notify(err);
+        console.error(err)
     });
 }

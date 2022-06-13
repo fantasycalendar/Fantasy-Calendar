@@ -179,6 +179,8 @@ const calendar_data_generator = {
 		for(let event_index = 0; event_index < this.events.length; event_index++){
 			let event = this.events[event_index];
 
+			if(event.data.date !== undefined && event.data.date.length === 3) continue;
+
 			this.pre_search = event.data.has_duration ? Math.max(event.data.duration, this.pre_search) : this.pre_search;
 			this.pre_search = event.data.limited_repeat ? Math.max(event.data.limited_repeat_num, this.pre_search) : this.pre_search;
 			this.pre_search = event.data.search_distance ? Math.max(event.data.search_distance, this.pre_search) : this.pre_search;
@@ -1362,7 +1364,7 @@ var event_evaluator = {
 
 			if(event.data.has_duration){
 
-				if(event_evaluator.event_data.valid[event_index].indexOf(epoch) == -1 && epoch >= event_evaluator.start_epoch) {
+				if(event_evaluator.event_data.valid[event_index].indexOf(epoch) === -1 && epoch >= event_evaluator.start_epoch) {
 					event_evaluator.event_data.valid[event_index].push(epoch);
 					event_evaluator.event_data.starts[event_index].push(epoch);
 				}
@@ -1371,20 +1373,20 @@ var event_evaluator = {
 
 					for(var duration = 1; duration < event.data.duration; duration++)
 					{
-						if(event_evaluator.event_data.valid[event_index].indexOf(epoch+duration-1) == -1 && epoch+duration >= event_evaluator.start_epoch) {
+						if(event_evaluator.event_data.valid[event_index].indexOf(epoch+duration-1) === -1 && epoch+duration >= event_evaluator.start_epoch && epoch+duration <= event_evaluator.end_epoch+1) {
 							event_evaluator.event_data.valid[event_index].push(epoch+duration-1);
 						}
 					}
 				}
 
-				if(event_evaluator.event_data.valid[event_index].indexOf(epoch+event.data.duration-1) == -1 && epoch+event.data.duration-1 >= event_evaluator.start_epoch) {
+				if(event_evaluator.event_data.valid[event_index].indexOf(epoch+event.data.duration-1) === -1 && epoch+event.data.duration-1 >= event_evaluator.start_epoch) {
 					event_evaluator.event_data.valid[event_index].push(epoch+event.data.duration-1);
 					event_evaluator.event_data.ends[event_index].push(epoch+event.data.duration-1);
 				}
 
 			}else{
 
-				if(event_evaluator.event_data.valid[event_index].indexOf(epoch) == -1){
+				if(event_evaluator.event_data.valid[event_index].indexOf(epoch) === -1){
 					event_evaluator.event_data.valid[event_index].push(epoch);
 				}
 
@@ -1394,11 +1396,19 @@ var event_evaluator = {
 
 		function check_event_chain(id, lookback, lookahead){
 
+		    if(id === null || id > event_evaluator.events.length){
+		        return;
+            }
+
 			var current_event = event_evaluator.events[id];
+
+			if(!current_event){
+			    return;
+            }
 
 			if(lookback === undefined && lookahead === undefined){
 
-				var lookback = 0;
+				lookback = 0;
 
 				if(current_event.data.limited_repeat){
 					lookback = current_event.data.limited_repeat_num;
@@ -1408,7 +1418,7 @@ var event_evaluator = {
 					lookback = current_event.data.search_distance;
 				}
 
-				var lookahead = current_event.data.search_distance ? current_event.data.search_distance : 0;
+				lookahead = current_event.data.search_distance ? current_event.data.search_distance : 0;
 
 			}
 
@@ -1417,20 +1427,16 @@ var event_evaluator = {
 
 			if(current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false"){
 
-				for(var connectedId in current_event.data.connected_events){
-
-					var parent_id = current_event.data.connected_events[connectedId];
-
-					check_event_chain(parent_id, current_event.lookback, current_event.lookahead);
-
+				for(let parent_id of current_event.data.connected_events){
+				    if(parent_id !== null && id !== parent_id) {
+                        check_event_chain(parent_id, current_event.lookback, current_event.lookahead);
+                    }
 				}
 
 			}
 
 			if(event_evaluator.event_data.valid[id] === undefined){
-
 				evaluate_event(id);
-
 			}
 
 		}
@@ -1438,6 +1444,10 @@ var event_evaluator = {
 		function get_number_of_events(id){
 
 			var current_event = event_evaluator.events[id];
+
+			if(!current_event){
+			    return;
+            }
 
 			if(current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false"){
 
@@ -1488,19 +1498,19 @@ var event_evaluator = {
 				check_event_chain(event_id);
 			}
 
-			if(this.events[event_id].data.connected_events === undefined || this.events[event_id].data.connected_events.length == 0){
+			if(this.events[event_id].data.connected_events === undefined || this.events[event_id].data.connected_events.length === 0){
 				evaluate_event(event_id);
 			}
 
 		}else{
 
-			for(var event_index in this.events){
+			for(let event_index = 0; event_index < this.events.length; event_index++){
 				if(this.events[event_index].data.connected_events !== undefined && this.events[event_index].data.connected_events.length > 0){
 					check_event_chain(event_index);
 				}
 			}
 
-			for(var event_index in this.events){
+            for(let event_index = 0; event_index < this.events.length; event_index++){
 				if(this.events[event_index].data.connected_events === undefined || this.events[event_index].data.connected_events.length == 0){
 					evaluate_event(event_index);
 				}
