@@ -20,12 +20,14 @@
                         type: "get",
                         dataType: "json",
                         success: (result) => {
-                            this.users = clone(result).map(user => {
-                                user.alertText = "";
-                                user.alertSuccess = true;
-                                user.previous_role = user.user_role;
-                                return user;
-                            });
+                            if(Array.isArray(result)) {
+                                this.users = clone(result).map(user => {
+                                    user.alertText = "";
+                                    user.alertSuccess = true;
+                                    user.previous_role = user.user_role;
+                                    return user;
+                                });
+                            }
                             this.opened = true;
                         },
                         error: (error) => {
