@@ -52,6 +52,7 @@
             events: window.calendar.events,
             event_categories: window.calendar.event_categories,
             link_data: window.calendar.link_data,
+            apply_changes_immediately: true,
 
             // Defaults
             calendar_changed: false,
@@ -64,7 +65,7 @@
                 "events",
                 "event_categories",
                 "dynamic_data.year",
-                "preview_date.year",
+                "preview_date.year"
             ],
 
             watchProperties: [
@@ -75,7 +76,8 @@
                 "dynamic_data.hour",
                 "dynamic_data.minute",
                 "dynamic_data.current_location",
-                "dynamic_data.custom_location"
+                "dynamic_data.custom_location",
+                "apply_changes_immediately"
             ],
 
             init(){
@@ -102,7 +104,7 @@
                 this.calendar_changed = window.calendar.hasDataChanged();
                 this.errors = window.calendar.getErrors();
                 this.calendar_valid = !this.errors.length;
-                if(!this.calendar_valid) return;
+                if(!this.calendar_valid || !this.apply_changes_immediately) return;
                 window.calendar.calendarChanged(rerender);
             },
 
@@ -126,6 +128,8 @@
             moveClock($event, location){
 
                 const { checked } = $event.target;
+
+                if(checked === undefined) return;
 
                 if(location === "date"){
                     this.dateOpen = checked;

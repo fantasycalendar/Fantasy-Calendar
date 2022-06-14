@@ -865,13 +865,13 @@ const calendar_data_generator = {
             if(!init.success) reject(init);
 
             this.timespans[this.current_year] = this.get_timespans_in_year(this.dynamic_data.year);
-            let timespans_to_build = this.timespans[this.current_year].filter(timespan => timespan.render)
             let should_add_timespans = this.check_pre_post_calculation();
             if (should_add_timespans.pre) this.evaluate_pre_calculation(this.dynamic_data.year);
             if (should_add_timespans.post) this.evaluate_post_calculation(this.dynamic_data.year);
 
             this.evaluate_years();
 
+            let timespans_to_build = this.timespans[this.current_year].filter(timespan => timespan.render)
             const first_timespan = timespans_to_build[0];
             const last_timespan = timespans_to_build[timespans_to_build.length - 1];
             const start_epochs = Object.keys(first_timespan.epochs);

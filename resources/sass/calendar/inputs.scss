@@ -1363,7 +1363,7 @@ ol.example li.placeholder:before {
     align-items: center;
     text-align:center;
     overflow:hidden;
-    display:none;
+    display:flex;
 
     &.transparent{
         background-color: rgba(0, 0, 0, 0.0);

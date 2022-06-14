@@ -36,28 +36,6 @@ function error_message(message){
 
 }
 
-function creation_message(message){
-
-	$('#modal_text').empty().append(message);
-	$('#modal_background').removeClass().addClass('flexible_background transparent').css('display', 'flex');
-	$('#modal').removeClass().addClass('creation');
-
-	evaluate_background_size();
-
-}
-
-function close_message_modal(){
-	$('#modal_background').removeClass().addClass('flexible_background').css('display', 'none');
-}
-
-function show_changes_button(){
-	$('#reload_background').removeClass('hidden').css('display', 'flex');
-}
-
-function hide_changes_button(){
-	$('#reload_background').addClass('hidden').css('display', 'none');
-}
-
 var loading_screen_texts = [
 	`Calculating start of the next war...`,
 	`Preparing "Kill All Players" event...`,

@@ -16,7 +16,7 @@
         <div class="d-flex mb-2 w-100">
             <label class="row no-gutters setting border rounded py-2 px-3 protip w-100" data-pt-position="right" data-pt-title="If unchecked, you will be prompted to apply changes after making them, instead of loading the calendar every time.">
                 <div class='col'>
-                    <input type='checkbox' class='margin-right' data='settings' id='apply_changes_immediately' checked>
+                    <input type='checkbox' class='margin-right' x-model="apply_changes_immediately">
                     <span>
                         Apply changes immediately
                     </span>
@@ -167,9 +167,12 @@
         </div>
     </div>
 
-    <div id="reload_background" class='flexible_background blurred_background d-flex flex-column justify-content-center hidden d-print-none'>
-        <div class='p-2 text-white'>You have made changes to your calendar.</div>
-        <div class='p-2'><button type='button' class='btn btn-primary' id='apply_changes_btn'>Update preview</button></div>
+    <div class='flexible_background blurred_background flex-column justify-content-center d-print-none' x-show="!apply_changes_immediately" x-cloak>
+        <div class='p-2 text-white'>
+            <p>"Apply Changes Immediately" is unticked, the calendar preview will be disabled until it is ticked.</p>
+            <p>You can make changes to the calendar without it re-rendering.</p>
+        </div>
+        <div class='p-2'><button type='button' class='btn btn-primary' @click="apply_changes_immediately = true">Update preview</button></div>
     </div>
 
     <div id="top_follower" x-show="currentViewType !== 'weather'" :class="{ 'single_month': apply == 'single_month' }" x-data="{ apply: '' }" @layout-change.window="apply = $event.detail.apply">

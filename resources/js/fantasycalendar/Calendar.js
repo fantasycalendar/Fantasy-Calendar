@@ -95,8 +95,8 @@ export default class Calendar{
 
     formatYearNumber(year){
         return !this.static_data.settings.year_zero_exists && year >= 0
-            ? year
-            : year-1;
+            ? year+1
+            : year;
     }
 
     getTimespansInYear(year){

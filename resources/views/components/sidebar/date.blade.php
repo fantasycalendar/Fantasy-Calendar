@@ -496,9 +496,13 @@
                             <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('change-current-date', next_day)" x-text="next_day.day"></span>
                         </div>
                     </div>
+
                     <div class="col-8">
                         <div class="row text-center py-1">
-                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none" @click="$dispatch('change-current-date', prev_timespan)" x-text="static_data.year_data.timespans[prev_timespan.timespan].name"></span>
+                            <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none"
+                                  @click="$dispatch('change-current-date', prev_timespan)"
+                                  x-text="static_data.year_data.timespans[prev_timespan.timespan].name">
+                            </span>
                         </div>
                         <div class="row text-center py-1">
                             <select class='ring-0 ring-offset-0 appearance-none w-100 border-0 bg-gray-800 text-inherit px-1 text-center truncate' @change="changeDate($event, 'timespan')">
@@ -514,6 +518,7 @@
                             </span>
                         </div>
                     </div>
+
                     <div class="col-2">
                         <div class="row text-center py-1">
                             <span class="opacity-40 hover:opacity-100 w-100 cursor-pointer select-none"
