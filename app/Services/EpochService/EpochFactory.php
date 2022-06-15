@@ -157,6 +157,11 @@ class EpochFactory
         return $this->epochs->keys();
     }
 
+    public function flush(): void
+    {
+        $this->epochs = new EpochsCollection();
+    }
+
     /**
      * Processes an entire year
      *
