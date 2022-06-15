@@ -63,18 +63,11 @@ class HeaderBlock
 
         $wrappedNameLines->prepend($yearLine);
 
-        // OK So... I know this is weird.
-        // In short, our TextRenderer::SHADE character is **technically** 3 characters.
-        // So since strlen(TextRenderer::SHADE) = 3, even though it shows as one in a monospace font, the disparity of
-        // 3 in the data versus 1 in display means, if we want to have our endcaps all line up on that text line visually,
-        // then on whichever of our lines contains the shade, we have to offset the max length by the the 3 shade characters.
-        // We **WOULD** offset by 6, except that is further offset by 2 in the opposite direction by the endcaps.
         $wrappedNameLines->each(function($line) {
-            $limit = Str::contains($line, TextRenderer::SHADE)
-                ? $this->internalLength + 4
-                : $this->internalLength;
-
-            $this->lines[] = sprintf(TextRenderer::SEPARATOR_VERTICAL . '%s' . TextRenderer::SEPARATOR_VERTICAL, Str::padBoth($line, $limit, TextRenderer::SPACER));
+            $this->lines[] = sprintf(
+                TextRenderer::SEPARATOR_VERTICAL . '%s' . TextRenderer::SEPARATOR_VERTICAL,
+                Str::padBoth($line, $this->internalLength, TextRenderer::SPACER)
+            );
         });
     }
 }
