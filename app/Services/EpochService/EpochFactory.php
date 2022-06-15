@@ -77,15 +77,10 @@ class EpochFactory
      */
     public function forDate($year, $month, $day): Epoch
     {
-//        logger()->debug("Getting for date: " . date_slug($year, $month, $day));
         if($this->needsDate($year, $month, $day)) {
-//            logger()->debug("DOES need date generated");
             $epochs = $this->generateForDate($year, $month, $day);
-//            logger()->debug("Generated " . $epochs->count() . " epochs:");
-//            logger()->debug($epochs->map->slug);
 
             $this->rememberEpochs($epochs);
-//            logger()->debug("Remembered");
         }
 
         return $this->getByDate($year, $month, $day);
