@@ -98,7 +98,7 @@ class CalendarPolicy
             return true;
         }
 
-        return !$calendar->disabled && $user->id === $calendar->user_id;
+        return $user->id === $calendar->user_id;
     }
 
     /**
