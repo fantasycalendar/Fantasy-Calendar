@@ -27,7 +27,7 @@ class Response
     private int $flags = 0;
 
     private string $text_content;
-    private string $type;
+    private int $type;
     private Collection $components;
     private Collection $embeds;
     private int $user_id = 0;
