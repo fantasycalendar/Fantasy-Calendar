@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\AdvanceCalendarWithRealTime;
+use App\Models\Calendar;
 use Illuminate\Console\Command;
 
 class AdvanceRealTimeCalendars extends Command
@@ -27,22 +29,11 @@ class AdvanceRealTimeCalendars extends Command
      */
     public function handle()
     {
-        // Add listener to calendar to clear or update the next_update if they ever change the unit
+        // TODO: Add listener to calendar to clear or update the next_update if they ever change the unit
 
-        // Get all calendars with setting enabled _AND_ where next_update <= now(), each()
-            // $unit = ucfirst($calendar->advanceByUnit);
-
-            // $method = "add{$unit}"
-
-            // $subRateMethod = "sub{$calendar->advancementRateUnit}"
-            // $calendar->$method($calendar->advanceByCount * now() - now()->$subRateMethod($calendar->advancementRateUnit)) <- take into account the unit
-
-
-            // $rateMethod = "add{$calendar->advancementRateUnit}"
-
-            // $rateMethod -> 'addDay'
-            // $calendar->next_update = now()->$rateMethod();
-            // $calendar->save();
+        Calendar::dueForAdvancement()->each(function(Calendar $calendar){
+            AdvanceCalendarWithRealTime::dispatch($calendar);
+        });
 
         return 0;
     }

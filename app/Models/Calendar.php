@@ -87,7 +87,15 @@ class Calendar extends Model
         'parent_offset',
         'hash',
         'converted_at',
-        'conversion_batch'
+        'conversion_batch',
+        'advancement_enabled',
+        'advancement_next_due',
+        'advancement_time',
+        'advancement_timezone',
+        'advancement_scale',
+        'advancement_rate',
+        'advancement_webhook_url',
+        'advancement_webhook_format',
     ];
 
     public Collection $leap_days_cached;

@@ -75,7 +75,7 @@ class CalendarResource extends Resource
                     DateTimePicker::make('advancement_next_due'),
                     TimePicker::make('advancement_time'),
                     Select::make('advancement_timezone')
-                        ->options(DateTimeZone::listIdentifiers())
+                        ->options(collect(DateTimeZone::listIdentifiers())->mapWithKeys(fn($tz) => [$tz => $tz]))
                         ->searchable(),
                     TextInput::make('advancement_scale'),
                     TextInput::make('advancement_rate_count'),
