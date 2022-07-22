@@ -30,20 +30,36 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
      */
     public function handle()
     {
-        logger()->info('We would have advanced ' . $this->calendar->name);
-        // $unit = ucfirst($calendar->advanceByUnit);
+         $unit = ucfirst($this->calendar->advancement_rate_unit);
 
-        // $method = "add{$unit}"
+         logger()->info($unit);
 
-        // $subRateMethod = "sub{$calendar->advancementRateUnit}"
-        // $calendar->$method($calendar->advanceByCount * now() - now()->$subRateMethod($calendar->advancementRateUnit)) <- take into account the unit
+         $method = "add{$unit}";
+         $diffMethod = "diffIn{$unit}";
+
+         $subRateMethod = "sub{$unit}";
+
+         logger()->info($this->calendar->current_date);
+
+         dump(
+             $method,
+             $diffMethod,
+             $subRateMethod,
+             $this->calendar->advancement_rate,
+             now()->$subRateMethod($this->calendar->advancement_rate ?? 1),
+             $this->calendar->advancement_next_due->$diffMethod(now()->$subRateMethod($this->calendar->advancement_rate)) / $this->calendar->advancement_rate
+         );
+
+         $this->calendar->$method(now()->$diffMethod(now()->$subRateMethod($this->calendar->advancement_rate)) / $this->calendar->advancement_rate);
+
+         logger()->info($this->calendar->current_date);
 
 
-        // $rateMethod = "add{$calendar->advancementRateUnit}"
+        // $rateMethod = "add{$this->calendar->advancement_rate_unit}"
 
         // $rateMethod -> 'addDay'
-        // $calendar->next_update = now()->$rateMethod();
-        // $calendar->save();
+        // $this->calendar->next_update = now()->$rateMethod();
+        // $this->calendar->save();
 
     }
 }

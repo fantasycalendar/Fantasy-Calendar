@@ -81,7 +81,7 @@ class CalendarResource extends Resource
                         ->options(collect(DateTimeZone::listIdentifiers())->mapWithKeys(fn($tz) => [$tz => $tz]))
                         ->searchable(),
                     TextInput::make('advancement_scale'),
-                    TextInput::make('advancement_rate_count'),
+                    TextInput::make('advancement_rate'),
                     Select::make('advancement_rate_unit')->options([
                         'minutes' => 'Minutes',
                         'hours' => 'Hours',

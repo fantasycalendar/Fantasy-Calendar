@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('advancement_timezone')->nullable();
             $table->float('advancement_scale')->default(1);
             $table->string('advancement_rate')->nullable();
+            $table->string('advancement_rate_unit')->nullable();
             $table->string('advancement_webhook_url')->nullable();
             $table->string('advancement_webhook_format')->nullable();
         });
@@ -40,6 +41,7 @@ return new class extends Migration
                 'advancement_timezone',
                 'advancement_scale',
                 'advancement_rate',
+                'advancement_rate_unit',
                 'advancement_webhook_url',
                 'advancement_webhook_format',
             ]);

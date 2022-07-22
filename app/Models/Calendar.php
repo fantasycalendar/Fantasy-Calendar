@@ -100,6 +100,7 @@ class Calendar extends Model
         'advancement_timezone',
         'advancement_scale',
         'advancement_rate',
+        'advancement_rate_unit',
         'advancement_webhook_url',
         'advancement_webhook_format',
     ];
