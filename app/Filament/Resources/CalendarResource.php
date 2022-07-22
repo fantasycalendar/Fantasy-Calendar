@@ -72,7 +72,10 @@ class CalendarResource extends Resource
                 ])->columns(),
                 Section::make('Real-Time Advancement')->schema([
                     Checkbox::make('advancement_enabled'),
-                    DateTimePicker::make('advancement_next_due'),
+                    DateTimePicker::make('advancement_next_due')
+                        ->timezone(function($record){
+                            return $record->advancement_timezone ?? 'UTC';
+                        }),
                     TimePicker::make('advancement_time'),
                     Select::make('advancement_timezone')
                         ->options(collect(DateTimeZone::listIdentifiers())->mapWithKeys(fn($tz) => [$tz => $tz]))

@@ -30,6 +30,7 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
      */
     public function handle()
     {
+        logger()->info('We would have advanced ' . $this->calendar->name);
         // $unit = ucfirst($calendar->advanceByUnit);
 
         // $method = "add{$unit}"

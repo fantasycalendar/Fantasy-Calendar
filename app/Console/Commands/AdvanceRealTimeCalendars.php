@@ -13,7 +13,7 @@ class AdvanceRealTimeCalendars extends Command
      *
      * @var string
      */
-    protected $signature = 'calendars:advance';
+    protected $signature = 'calendar:advance';
 
     /**
      * The console command description.

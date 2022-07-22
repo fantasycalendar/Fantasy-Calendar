@@ -50,6 +50,8 @@ class Kernel extends ConsoleKernel
                  ->everyFifteenMinutes()->onOneServer();
 
         $schedule->command('queue:prune-batches')->daily();
+
+        $schedule->command('calendar:advance')->everyMinute();
     }
 
     /**

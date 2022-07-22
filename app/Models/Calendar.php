@@ -14,7 +14,9 @@ use App\Services\CalendarService\RenderMonth;
 use App\Services\CalendarService\Moon;
 use App\Services\CalendarService\Timespan;
 use App\Services\CalendarService\Month;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -73,6 +75,10 @@ class Calendar extends Model
     protected $casts = [
         'dynamic_data' => 'array',
         'static_data' => 'array',
+    ];
+
+    protected $dates = [
+        'advancement_next_due'
     ];
 
     public $timestamps = false;
@@ -740,6 +746,12 @@ class Calendar extends Model
     public function scopeDisabled(Builder $query): Builder
     {
         return $query->where('disabled', '=', true);
+    }
+
+    public function scopeDueForAdvancement(Builder $query): Builder
+    {
+        return $query->where('advancement_enabled', true)
+            ->where('advancement_next_due', '<=', now());
     }
 
     /**
