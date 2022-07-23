@@ -32,34 +32,35 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
     {
          $unit = ucfirst($this->calendar->advancement_rate_unit);
 
-         logger()->info($unit);
+         $calendarMethod = "add{$unit}";
+         $realWorldDiffMethod = "diffIn{$unit}";
+         $realWorldSubMethod = "sub{$unit}";
 
-         $method = "add{$unit}";
-         $diffMethod = "diffIn{$unit}";
+         $unitsSinceLastUpdate = 1+ $this->calendar
+                 ->advancement_next_due
+                 ->$realWorldDiffMethod(
+                     now()->$realWorldSubMethod(
+                         $this->calendar->advancement_rate ?? 1
+                     )
+                 ) / $this->calendar->advancement_rate ?? 1;
 
-         $subRateMethod = "sub{$unit}";
-
-         logger()->info($this->calendar->current_date);
-
-         dump(
-             $method,
-             $diffMethod,
-             $subRateMethod,
-             $this->calendar->advancement_rate,
-             now()->$subRateMethod($this->calendar->advancement_rate ?? 1),
-             $this->calendar->advancement_next_due->$diffMethod(now()->$subRateMethod($this->calendar->advancement_rate)) / $this->calendar->advancement_rate
-         );
-
-         $this->calendar->$method(now()->$diffMethod(now()->$subRateMethod($this->calendar->advancement_rate)) / $this->calendar->advancement_rate);
-
-         logger()->info($this->calendar->current_date);
+         $this->calendar
+             ->$calendarMethod(
+                 $unitsSinceLastUpdate
+             );
 
 
-        // $rateMethod = "add{$this->calendar->advancement_rate_unit}"
-
-        // $rateMethod -> 'addDay'
-        // $this->calendar->next_update = now()->$rateMethod();
-        // $this->calendar->save();
+         $this->calendar->advancement_next_due = now()->$calendarMethod($this->calendar->advancement_rate ?? 1)->startOfMinute();
+         $this->calendar->save();
+         
+//         logger()->channel('discord')->info("
+//         ```
+//{$this->calendar->name}
+//
+//-----------------------------
+//The time is now {$this->calendar->current_time} on {$this->calendar->current_date}
+//-----------------------------```
+//         ");
 
     }
 }
