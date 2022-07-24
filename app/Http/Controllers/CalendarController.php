@@ -217,7 +217,7 @@ class CalendarController extends Controller
             throw new AuthorizationException('Not allowed.');
         }
 
-        $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset', 'event_categories', 'events']);
+        $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset', 'event_categories', 'events', 'advancement']);
         $categoryids = [];
 
         if(array_key_exists('dynamic_data', $update_data)) {
@@ -254,6 +254,23 @@ class CalendarController extends Controller
 
         if(array_key_exists('event_categories', $update_data)) {
             $categoryids = SaveEventCategories::dispatchNow(json_decode($update_data['event_categories'], true), $calendar->id);
+        }
+
+        if(array_key_exists('advancement', $update_data)) {
+            if($calendar->isLinked()){
+                return response()->json(['error' => 'Calendar real-time advancement cannot be edited while linked.'], 403);
+            }
+            $advancement_data = json_decode($update_data['advancement'], true);
+            unset($update_data['advancement']);
+            $update_data["advancement_enabled"] = $advancement_data["advancement_enabled"];
+            if($update_data["advancement_enabled"]) {
+                $update_data["advancement_real_rate"] = $advancement_data["advancement_real_rate"];
+                $update_data["advancement_real_rate_unit"] = $advancement_data["advancement_real_rate_unit"];
+                $update_data["advancement_rate"] = $advancement_data["advancement_rate"];
+                $update_data["advancement_rate_unit"] = $advancement_data["advancement_rate_unit"];
+                $update_data["advancement_webhook_url"] = $advancement_data["advancement_webhook_url"];
+                $update_data["advancement_timezone"] = $advancement_data["advancement_timezone"];
+            }
         }
 
         if(array_key_exists('events', $update_data)) {

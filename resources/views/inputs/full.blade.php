@@ -364,6 +364,125 @@
 		</div>
 
 
+        @if(request()->is('calendars/*/edit'))
+            <!---------------------------------------------->
+            <!------------ REAL TIME ADVANCEMENT ----------->
+            <!---------------------------------------------->
+            <div class='wrap-collapsible card settings-real-time-advancement'>
+                <input id="collapsible_real-time-advancement" class="toggle" type="checkbox" checked>
+                <label for="collapsible_real-time-advancement" class="lbl-toggle py-2 px-3 card-header">
+                    <i class="fas fa-history mr-2" style="transform: scaleX(-1);"></i>
+                    Real-Time Advancement
+                    @if(isset($calendar) && !$calendar->isPremium())
+                        <span style="color: rgb(56, 161, 105);" class="ml-2 protip" data-pt-position="right" data-pt-title="Subscriber-only feature">
+                            <x-app-logo class="hover-opacity" width="20" height="20"></x-app-logo>
+                        </span>
+                    @endif
+                    <a target="_blank" data-pt-position="right" data-pt-title='More Info: Clock' href='{{ helplink('real-time-advancement') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+                <div class="collapsible-content card-body">
+
+                    @if(isset($calendar) && $calendar->isPremium())
+                        @if(request()->is('calendars/*/edit') && $calendar->isLinked())
+                            <p class="mb-0 mt-3"><a onclick="linked_popup();" href='#'>Why can't I edit the real time advancement?</a></p>
+                        @else
+                            <div x-data="function(){
+                                return {
+                                    data: {
+                                        advancement_enabled: {{ $calendar->advancement_enabled ? "true" : "false" }},
+                                        advancement_real_rate: {{ $calendar->advancement_real_rate ?? 1 }},
+                                        advancement_real_rate_unit: '{{ $calendar->advancement_real_rate_unit ?? "minutes" }}',
+                                        advancement_rate: {{ $calendar->advancement_rate ?? 1 }},
+                                        advancement_rate_unit: '{{ $calendar->advancement_rate_unit ?? "minutes" }}',
+                                        advancement_webhook_url: '{{ $calendar->advancement_webhook_url }}',
+                                        advancement_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                                    },
+                                    toJSON(){
+                                        return JSON.parse(JSON.stringify(this.data));
+                                    }
+                                }
+                            }" @change="$dispatch('advancement-changed', { data: toJSON() })">
+
+                                <div class='row mb-1'>
+                                    <div class='col bold-text'>Enable real-time advancement:</div>
+                                    <div class='col-auto text-right'>
+                                        @if(request()->is('calendars/*/edit') && $calendar->isLinked())
+                                            <span x-text="data.advancement_enabled ? 'Yes' : 'No'"></span>
+                                        @else
+                                            <label class="custom-control custom-checkbox center-text">
+                                                <input type="checkbox" class="custom-control-input" x-model="data.advancement_enabled">
+                                                <span class="custom-control-indicator"></span>
+                                            </label>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div x-show="data.advancement_enabled">
+
+                                    <div class='row mt-2 mb-1 bold-text no-gutters'>
+                                        Advancement Rate:
+                                    </div>
+
+                                    <div class='row no-gutters protip' data-pt-position="right" data-pt-title="This is how often in real world time that the calendar's time will be updated with the amount configured above">
+                                        <div class="input-group col">
+                                            <input type='number' class='form-control input-group-prepend' placeholder='1' x-model.number="data.advancement_real_rate"/>
+                                            <label class="input-group-text form-control text-black">real world</label>
+                                            <select class='custom-select form-control input-group-append' x-model.number="data.advancement_real_rate_unit">
+                                                <option selected value='minutes'>minutes</option>
+                                                <option value='hours'>hours</option>
+                                                <option value='days'>days</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class='row bold-text no-gutters text-center h4 my-2 pr-4'>
+                                        <i class="fas fa-equals col"></i>
+                                    </div>
+
+                                    <div class='row no-gutters protip' data-pt-position="right" data-pt-title="This is the amount of time that will be added to the calendar's date, based on the real-time amount configured above">
+                                        <div class="input-group col">
+                                            <input type='number' class='form-control input-group-prepend' placeholder='1' x-model.number="data.advancement_rate"/>
+                                            <label class="input-group-text form-control text-black">calendar</label>
+                                            <select class='custom-select form-control input-group-append' x-model.number="data.advancement_rate_unit">
+                                                <option selected value='minutes'>minutes</option>
+                                                <option value='hours'>hours</option>
+                                                <option value='days'>days</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row no-gutters mt-3">
+                                        <div class="separator"></div>
+                                    </div>
+
+                                    <div class='row mt-2 mb-1 bold-text no-gutters'>
+                                        <div class="col">
+                                            Webhook URL:
+                                        </div>
+                                    </div>
+
+                                    <div class='row no-gutters'>
+                                        <div class="col">
+                                            <input type='text' x-model="data.advancement_webhook_url" class='form-control' placeholder='http://my-web-hook.com/'>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        @endif
+                    @else
+
+                        <div class='row no-gutters my-1'>
+                            <p>Make your calendar advance its time automatically, with settings to control how fast or slow it should advance!</p>
+                            <p class='m-0'><a href="{{ route('subscription.pricing') }}" target="_blank">Subscribe now</a> to unlock this feature!</p>
+                        </div>
+
+                    @endif
+                </div>
+            </div>
+        @endif
+
+
 
 		<!---------------------------------------------->
 		<!------------------- WEEKDAYS ----------------->
@@ -1287,7 +1406,15 @@
 			<!---------------------------------------------->
 			<div class='wrap-collapsible card settings-users'>
 				<input id="collapsible_users" class="toggle" type="checkbox">
-				<label for="collapsible_users" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-user"></i> User Management <a target="_blank" data-pt-position="right" data-pt-title='More Info: User Management' href='{{ helplink('user_management') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+				<label for="collapsible_users" class="lbl-toggle py-2 px-3 card-header">
+                    <i class="mr-2 fas fa-user"></i>
+                    User Management
+                    @if(isset($calendar) && !$calendar->isPremium())
+                        <span style="color: rgb(56, 161, 105);" class="ml-2 protip" data-pt-position="right" data-pt-title="Subscriber-only feature">
+                            <x-app-logo class="hover-opacity" width="20" height="20"></x-app-logo>
+                        </span>
+                    @endif
+                    <a target="_blank" data-pt-position="right" data-pt-title='More Info: User Management' href='{{ helplink('user_management') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
 				<div class="collapsible-content card-body">
 
 					@if(Auth::user()->can('add-users', $calendar))
@@ -1336,7 +1463,16 @@
 			<div class='wrap-collapsible card settings-linking'>
 				<input id="collapsible_linking" class="toggle" type="checkbox">
 
-				<label for="collapsible_linking" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-link"></i> Calendar Linking <a target="_blank" data-pt-position="right" data-pt-title='More Info: Calendar Linking' href='{{ helplink('calendar_linking') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+				<label for="collapsible_linking" class="lbl-toggle py-2 px-3 card-header">
+                    <i class="mr-2 fas fa-link"></i>
+                    Calendar Linking
+                    @if(isset($calendar) && !$calendar->isPremium())
+                        <span style="color: rgb(56, 161, 105);" class="ml-2 protip" data-pt-position="right" data-pt-title="Subscriber-only feature">
+                            <x-app-logo class="hover-opacity" width="20" height="20"></x-app-logo>
+                        </span>
+                    @endif
+                    <a target="_blank" data-pt-position="right" data-pt-title='More Info: Calendar Linking' href='{{ helplink('calendar_linking') }}' class="wiki protip"><i class="icon-question-sign"></i></a>
+                </label>
 
                 <div class="collapsible-content card-body">
 

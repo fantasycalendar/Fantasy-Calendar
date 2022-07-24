@@ -18,8 +18,9 @@ return new class extends Migration
             $table->dateTime('advancement_next_due')->nullable();
             $table->time('advancement_time')->nullable();
             $table->string('advancement_timezone')->nullable();
-            $table->float('advancement_scale')->default(1);
-            $table->string('advancement_rate')->nullable();
+            $table->integer('advancement_real_rate')->nullable();
+            $table->string('advancement_real_rate_unit')->nullable();
+            $table->integer('advancement_rate')->nullable();
             $table->string('advancement_rate_unit')->nullable();
             $table->string('advancement_webhook_url')->nullable();
             $table->string('advancement_webhook_format')->nullable();
@@ -39,7 +40,8 @@ return new class extends Migration
                 'advancement_next_due',
                 'advancement_time',
                 'advancement_timezone',
-                'advancement_scale',
+                'advancement_real_rate',
+                'advancement_real_rate_unit',
                 'advancement_rate',
                 'advancement_rate_unit',
                 'advancement_webhook_url',
