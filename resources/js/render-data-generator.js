@@ -255,7 +255,7 @@ const render_data_generator = {
 
                 let timespan_data = {
                     "title": "",
-                    "id": [index, timespan.name, timespan.index, epoch, dynamic_data.year, filtered_leap_days_beforestart.length].join('.'),
+                    "id": [index, JSON.stringify(timespan), epoch, dynamic_data.year, filtered_leap_days_beforestart.length].join('.'),
                     "show_title": false,
                     "short_weekdays": timespan.truncated_week,
                     "weekdays": static_data.year_data.global_week,
@@ -302,7 +302,7 @@ const render_data_generator = {
 
             let timespan_data = {
                 "title": static_data.settings.add_month_number ? `${timespan.name} - Month ${timespan_epoch_data.timespan_number + 1}` : timespan.name,
-                "id": [index, timespan.name, timespan.index, epoch, dynamic_data.year].join('.'),
+                "id": [index, JSON.stringify(timespan), epoch, dynamic_data.year].join('.'),
                 "show_title": true,
                 "weekdays": timespan.week,
                 "short_weekdays": timespan.truncated_week,
@@ -392,6 +392,7 @@ const render_data_generator = {
 
                             timespan_data = {
                                 "title": static_data.settings.add_month_number ? `${timespan.name} - Month ${index+1}` : timespan.name,
+                                "id": [index, JSON.stringify(timespan), epoch, dynamic_data.year].join('.'),
                                 "show_title": true,
                                 "weekdays": timespan.week,
                                 "short_weekdays": timespan.truncated_week,
@@ -446,7 +447,7 @@ const render_data_generator = {
 
                     let timespan_data = {
                         "title": "",
-                        "id": [index, timespan.name, timespan.index, epoch, dynamic_data.year, filtered_leap_days_end.length].join('.'),
+                        "id": [index, JSON.stringify(timespan), epoch, dynamic_data.year, filtered_leap_days_end.length].join('.'),
                         "show_title": false,
                         "short_weekdays": timespan.truncated_week,
                         "weekdays": static_data.year_data.global_week,
