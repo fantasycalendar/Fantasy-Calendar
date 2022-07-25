@@ -479,7 +479,7 @@
                                             advancement_real_rate: {{ $calendar->advancement_real_rate ?? 1 }},
                                             advancement_real_rate_unit: '{{ $calendar->advancement_real_rate_unit ?? "minutes" }}',
                                             advancement_rate: {{ $calendar->advancement_rate ?? 1 }},
-                                            advancement_rate_unit: '{{ $calendar->advancement_rate_unit ?? $calendar->clock_enabled ? "minutes" : "days" }}',
+                                            advancement_rate_unit: '{{ $calendar->advancement_rate_unit ?? $calendar->clock_enabled ? $calendar->advancement_rate_unit : "days" }}',
                                             advancement_webhook_url: '{{ $calendar->advancement_webhook_url }}',
                                             advancement_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
                                         },
@@ -505,7 +505,8 @@
                                         @else
                                             <label class="custom-control custom-checkbox center-text">
                                                 <input type="checkbox" class="custom-control-input"
-                                                       x-model="data.advancement_enabled">
+                                                       x-model="data.advancement_enabled"
+                                                    >
                                                 <span class="custom-control-indicator"></span>
                                             </label>
                                         @endif
@@ -522,10 +523,12 @@
                                          data-pt-title="This is how often in real world time that the calendar's time will be updated with the amount configured above">
                                         <div class="input-group col">
                                             <input type='number' class='form-control input-group-prepend'
-                                                   placeholder='1' x-model.number="data.advancement_real_rate"/>
+                                                   placeholder='1'
+                                                   x-model="data.advancement_real_rate"
+                                                   @change="($event) => { data.advancement_real_rate = Math.max(1, Number($event.target.value)) }"/>
                                             <label class="input-group-text form-control text-black">real world</label>
                                             <select class='custom-select form-control input-group-append'
-                                                    x-model.number="data.advancement_real_rate_unit">
+                                                    x-model="data.advancement_real_rate_unit">
                                                 <option selected value='minutes'>minutes</option>
                                                 <option value='hours'>hours</option>
                                                 <option value='days'>days</option>
@@ -541,10 +544,12 @@
                                          data-pt-title="This is the amount of time that will be added to the calendar's date, based on the real-time amount configured above">
                                         <div class="input-group col">
                                             <input type='number' class='form-control input-group-prepend'
-                                                   placeholder='1' x-model.number="data.advancement_rate"/>
+                                                   placeholder='1'
+                                                   x-model="data.advancement_rate"
+                                                   @change="($event) => { data.advancement_rate = Math.max(1, Number($event.target.value)) }"/>
                                             <label class="input-group-text form-control text-black">calendar</label>
                                             <select class='custom-select form-control input-group-append'
-                                                    x-model.number="data.advancement_rate_unit">
+                                                    x-model="data.advancement_rate_unit">
                                                 <option :disabled='!clock_enabled' value='minutes'>minutes</option>
                                                 <option :disabled='!clock_enabled' value='hours'>hours</option>
                                                 <option value='days'>days</option>
