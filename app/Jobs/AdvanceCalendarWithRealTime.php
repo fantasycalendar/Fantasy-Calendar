@@ -30,37 +30,31 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
      */
     public function handle()
     {
-         $unit = ucfirst($this->calendar->advancement_rate_unit);
 
-         $calendarMethod = "add{$unit}";
-         $realWorldDiffMethod = "diffIn{$unit}";
-         $realWorldSubMethod = "sub{$unit}";
+        $real_unit = ucfirst($this->calendar->advancement_real_rate_unit);
 
-         $unitsSinceLastUpdate = 1+ $this->calendar
-                 ->advancement_next_due
-                 ->$realWorldDiffMethod(
-                     now()->$realWorldSubMethod(
-                         $this->calendar->advancement_rate ?? 1
-                     )
-                 ) / $this->calendar->advancement_rate ?? 1;
+        $realWorldMethod = "add{$real_unit}";
+        $realWorldDiffMethod = "diffIn{$real_unit}";
+        $realWorldSubMethod = "sub{$real_unit}";
 
-         $this->calendar
-             ->$calendarMethod(
-                 $unitsSinceLastUpdate
-             );
+        $unitsSinceLastUpdate = 1 + $this->calendar
+                ->advancement_next_due
+                ->$realWorldDiffMethod(
+                    now()->$realWorldSubMethod(
+                        $this->calendar->advancement_real_rate ?? 1
+                    )
+                ) / $this->calendar->advancement_real_rate ?? 1;
 
+        $calendar_unit = ucfirst($this->calendar->advancement_rate_unit);
+        $calendarMethod = "add{$calendar_unit}";
 
-         $this->calendar->advancement_next_due = now()->$calendarMethod($this->calendar->advancement_rate ?? 1)->startOfMinute();
-         $this->calendar->save();
-         
-//         logger()->channel('discord')->info("
-//         ```
-//{$this->calendar->name}
-//
-//-----------------------------
-//The time is now {$this->calendar->current_time} on {$this->calendar->current_date}
-//-----------------------------```
-//         ");
+        $this->calendar
+            ->$calendarMethod(
+                $unitsSinceLastUpdate
+            );
+
+        $this->calendar->advancement_next_due = now()->$realWorldMethod($this->calendar->advancement_real_rate ?? 1)->startOfMinute();
+        $this->calendar->save();
 
     }
 }
