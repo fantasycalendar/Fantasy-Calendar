@@ -307,6 +307,8 @@ function set_up_edit_inputs(){
 		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 		eval_clock();
+        
+        window.dispatchEvent(new CustomEvent("clock-changed", { detail: { enabled: static_data.clock.enabled } }));
 
 	});
 

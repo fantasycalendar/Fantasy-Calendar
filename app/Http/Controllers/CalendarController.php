@@ -257,9 +257,6 @@ class CalendarController extends Controller
         }
 
         if(array_key_exists('advancement', $update_data)) {
-            if($calendar->isLinked()){
-                return response()->json(['error' => 'Calendar real-time advancement cannot be edited while linked.'], 403);
-            }
             $advancement_data = json_decode($update_data['advancement'], true);
             unset($update_data['advancement']);
             $update_data["advancement_enabled"] = $advancement_data["advancement_enabled"];
