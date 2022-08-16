@@ -42,6 +42,8 @@ class HitCalendarUpdateWebhook implements ShouldQueue
 
     public function discord()
     {
+        $client = new Client();
+
         // Ok this is a hack ... but hey! If it works, it works =]
         $dateString = sprintf("%s, %s", $this->calendar->epoch->weekdayName, $this->calendar->current_date);
         $text = "```\n";
@@ -55,7 +57,24 @@ class HitCalendarUpdateWebhook implements ShouldQueue
         $text .= $dateString . "\n";
         $text .= "```";
 
-        $client = new Client();
-        $client->hitWebhook($text, $this->calendar->advancement_webhook_url);
+        $shouldCreateNewWebhook = true;
+        // Note: This is an experiment.
+        if($this->calendar->advancement_discord_token) {
+            try {
+                $client->updateWebhookMessage($text, $this->calendar->advancement_webhook_url, $this->calendar->advancement_discord_token);
+                $shouldCreateNewWebhook = false;
+            } catch (\Throwable $e) {
+                // Just silently fail for now.
+            }
+        }
+
+        if($shouldCreateNewWebhook) {
+            $response = $client->hitWebhook($text, $this->calendar->advancement_webhook_url);
+            $payload = json_decode($response->getBody(), true);
+
+            $this->calendar->update([
+                'advancement_discord_token' => $payload['id']
+            ]);
+        }
     }
 }

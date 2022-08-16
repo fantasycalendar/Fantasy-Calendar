@@ -13,7 +13,7 @@ class Client
     protected $api_url = 'https://discord.com/api/v9';
     protected HttpClient $api_client;
 
-    public function __construct()
+    public function __construct(private $passErrors = false)
     {
         $this->application_id = config('services.discord.client_id');
         $this->application_secret = config('services.discord.client_secret');
@@ -22,10 +22,17 @@ class Client
 
     public function hitWebhook(string $message, string $webhookUrl)
     {
-        $this->post($webhookUrl, [
+        return $this->post($webhookUrl . "?wait=true", [
             'content' => $message,
             'username' => config('app.name'),
             'avatar_url' => 'https://app.fantasy-calendar.com/resources/apple-touch-icon.png'
+        ]);
+    }
+
+    public function updateWebhookMessage(string $text, mixed $webhookUrl, mixed $messageId)
+    {
+        return $this->patch($webhookUrl . '/messages/' . $messageId, [
+            'content' => $text
         ]);
     }
 
@@ -61,7 +68,9 @@ class Client
 
     private function patch($url, $payload)
     {
-        return $this->request($url, $payload, 'PATCH');
+        return $this->request($url, [
+            'json' => $payload
+        ], 'PATCH');
     }
 
     private function request($url, $payload, $method = 'GET')
@@ -72,7 +81,11 @@ class Client
         try {
             return $this->api_client->request($method, $url, $payload);
         } catch (\Throwable $e) {
-            throw new DiscordException($e->getResponse()->getBody()->getContents(true));
+            if(!$this->passErrors) {
+                throw new DiscordException($e->getResponse()->getBody()->getContents(true));
+            }
+
+            throw $e;
         }
     }
 }
