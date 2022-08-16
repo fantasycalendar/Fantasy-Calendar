@@ -20,10 +20,19 @@ class Client
         $this->prepareForRequests();
     }
 
+    public function hitWebhook(string $message, string $webhookUrl)
+    {
+        $this->post($webhookUrl, [
+            'content' => $message,
+            'username' => config('app.name'),
+            'avatar_url' => 'https://app.fantasy-calendar.com/resources/apple-touch-icon.png'
+        ]);
+    }
+
     public function followupMessage(Response $response, $token)
     {
         logger()->debug(json_encode($response->getMessage()));
-        $this->patch(sprintf('%s/webhooks/%s/%s/messages/@original', $this->api_url, $this->application_id, $token), [
+        return $this->patch(sprintf('%s/webhooks/%s/%s/messages/@original', $this->api_url, $this->application_id, $token), [
             'json' => $response->getMessage()['data']
         ]);
     }
@@ -40,17 +49,19 @@ class Client
 
     private function get($url)
     {
-        return $this->request($url,'');
+        return $this->request($url,[]);
     }
 
     private function post($url, $payload)
     {
-        $this->request($url, $payload, 'POST');
+        return $this->request($url, [
+            'json' => $payload
+        ], 'POST');
     }
 
     private function patch($url, $payload)
     {
-        $this->request($url, $payload, 'PATCH');
+        return $this->request($url, $payload, 'PATCH');
     }
 
     private function request($url, $payload, $method = 'GET')

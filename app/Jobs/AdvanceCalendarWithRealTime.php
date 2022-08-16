@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Models\Calendar;
+use App\Services\Discord\API\Client;
+use App\Services\Discord\Commands\Command\Response;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,6 +15,8 @@ use Illuminate\Queue\SerializesModels;
 class AdvanceCalendarWithRealTime implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    private Client $api;
 
     /**
      * Create a new job instance.
@@ -30,12 +34,16 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
      */
     public function handle()
     {
-
+        $this->api = new Client();
         $real_unit = ucfirst($this->calendar->advancement_real_rate_unit);
 
         $realWorldMethod = "add{$real_unit}";
         $realWorldDiffMethod = "diffIn{$real_unit}";
         $realWorldSubMethod = "sub{$real_unit}";
+
+        if(!$this->calendar->advancement_next_due) {
+            $this->calendar->advancement_next_due = now()->startOfMinute();
+        }
 
         $unitsSinceLastUpdate = 1 + $this->calendar
                 ->advancement_next_due
@@ -56,5 +64,8 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
         $this->calendar->advancement_next_due = now()->$realWorldMethod($this->calendar->advancement_real_rate ?? 1)->startOfMinute();
         $this->calendar->save();
 
+        if($this->calendar->advancement_webhook_url) {
+            HitCalendarUpdateWebhook::dispatch($this->calendar);
+        }
     }
 }

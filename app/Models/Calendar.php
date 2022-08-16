@@ -104,6 +104,7 @@ class Calendar extends Model
         'advancement_rate_unit',
         'advancement_webhook_url',
         'advancement_webhook_format',
+        'advancement_discord_token',
     ];
 
     public Collection $leap_days_cached;
@@ -753,7 +754,10 @@ class Calendar extends Model
     public function scopeDueForAdvancement(Builder $query): Builder
     {
         return $query->where('advancement_enabled', true)
-            ->where('advancement_next_due', '<=', now());
+            ->where(function(Builder $query) {
+                $query->where('advancement_next_due', '<=', now())
+                    ->orWhereNull('advancement_next_due');
+            });
     }
 
     /**
@@ -833,5 +837,23 @@ class Calendar extends Model
                 'calendar' => $this,
                 'ext' => $ext,
             ]));
+    }
+
+    public function ensureAdvancmentIsInitialized()
+    {
+        collect([
+            'advancement_timezone' => 'America/New_York',
+            'advancement_real_rate' => 1,
+            'advancement_real_rate_unit' => 'minutes',
+            'advancement_rate' => 1,
+            'advancement_rate_unit' => 'minutes',
+            'advancement_webhook_format' => 'discord',
+        ])->each(function($value, $attribute){
+            if(!$this->$attribute) {
+                $this->$attribute = $value;
+            }
+        });
+
+        $this->save();
     }
 }
