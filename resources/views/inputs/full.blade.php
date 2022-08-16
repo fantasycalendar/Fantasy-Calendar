@@ -450,7 +450,7 @@
             <!------------ REAL TIME ADVANCEMENT ----------->
             <!---------------------------------------------->
             <div class='wrap-collapsible card settings-real-time-advancement'>
-                <input id="collapsible_real-time-advancement" class="toggle" type="checkbox" checked>
+                <input id="collapsible_real-time-advancement" class="toggle" type="checkbox">
                 <label for="collapsible_real-time-advancement" class="lbl-toggle py-2 px-3 card-header">
                     <i class="fas fa-history mr-2" style="transform: scaleX(-1);"></i>
                     Real-Time Advancement
@@ -481,7 +481,13 @@
                                             advancement_rate: {{ $calendar->advancement_rate ?? 1 }},
                                             advancement_rate_unit: '{{ $calendar->advancement_rate_unit ?? $calendar->clock_enabled ? $calendar->advancement_rate_unit : "days" }}',
                                             advancement_webhook_url: '{{ $calendar->advancement_webhook_url }}',
+                                            advancement_webhook_format: '{{ $calendar->advancement_webhook_format }}',
                                             advancement_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                                        },
+                                        check_webhook_url_format(){
+                                            if(this.data.advancement_webhook_url.toLowerCase().startsWith('https://discord.com/api/webhooks/')){
+                                                this.data.advancement_webhook_format = 'discord';
+                                            }
                                         },
                                         toggle_clock($event){
                                             this.clock_enabled = $event.detail.enabled;
@@ -491,6 +497,7 @@
                                         },
                                         clock_enabled: {{ $calendar->clock_enabled ? "true" : "false" }},
                                         toJSON(){
+                                            this.check_webhook_url_format();
                                             return JSON.parse(JSON.stringify(this.data));
                                         }
                                     }
@@ -574,9 +581,12 @@
                                     </div>
 
                                     <div class='row no-gutters'>
-                                        <div class="col">
-                                            <input type='text' x-model="data.advancement_webhook_url"
-                                                   class='form-control' placeholder='http://my-web-hook.com/'>
+                                        <div class="col input-group">
+                                            <input type='text' x-model="data.advancement_webhook_url" class='form-control form-control-sm input-group-prepend flex-grow-2' style="flex:2;" placeholder='http://my-web-hook.com/'>
+                                            <select x-model="data.advancement_webhook_format" class='form-control form-control-sm input-group-append'>
+                                                <option value="json">Raw JSON</option>
+                                                <option value="discord">Discord</option>
+                                            </select>
                                         </div>
                                     </div>
 
