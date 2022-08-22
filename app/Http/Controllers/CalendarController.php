@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\DateChanged;
 use App\Jobs\PrepCalendarForExport;
+use App\Services\EpochService\EpochCalculator;
 use App\Services\RendererService\ImageRenderer;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
@@ -207,7 +208,7 @@ class CalendarController extends Controller
     public function update(Request $request, Calendar $calendar)
     {
         // Yes, I know. This isn't how you're supposed to do this. but ... Well. Just look away if you need to.
-        if($request->hasAny(['name', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset', 'event_categories', 'events'])) {
+        if($request->hasAny(['name', 'static_data', 'parent_hash', 'parent_link_type', 'parent_link_date', 'parent_offset', 'event_categories', 'events'])) {
             if(!Auth::user()->can('update', $calendar)) {
                 throw new AuthorizationException('Not allowed.');
             }
@@ -217,27 +218,39 @@ class CalendarController extends Controller
             throw new AuthorizationException('Not allowed.');
         }
 
-        $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset', 'event_categories', 'events']);
+        $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'parent_hash', 'parent_link_type', 'parent_link_date', 'parent_offset', 'event_categories', 'events']);
         $categoryids = [];
 
         if(array_key_exists('dynamic_data', $update_data)) {
             $update_data['dynamic_data'] = json_decode($update_data['dynamic_data']);
+            $current_epoch = $update_data['dynamic_data']->epoch;
+        }else{
+            $current_epoch = $calendar->dynamic_data['epoch'];
         }
 
+        $parent_link_type_exists = array_key_exists('parent_link_type', $update_data);
         $parent_hash_exists = array_key_exists('parent_hash', $update_data);
         $parent_link_date_exists = array_key_exists('parent_link_date', $update_data);
         $parent_offset_exists = array_key_exists('parent_offset', $update_data);
 
-        if($parent_hash_exists && $parent_link_date_exists && $parent_offset_exists) {
+        if($parent_link_type_exists && $parent_hash_exists && $parent_link_date_exists && $parent_offset_exists) {
 
             if($update_data['parent_hash'] != ""){
                 $parent_calendar = Calendar::hash($update_data['parent_hash'])->firstOrFail();
+
+                if($update_data['parent_link_type'] == "relative"){
+                    $update_data['parent_offset'] = $parent_calendar->dynamic_data['epoch'] - $current_epoch;
+                    $epoch = EpochCalculator::forCalendar($calendar)->calculate($update_data['parent_offset']);
+                    $update_data['parent_link_date'] = [$epoch->year, $epoch->monthId, $epoch->day];
+                }
+
                 unset($update_data['parent_hash']);
                 $update_data['parent_id'] = $parent_calendar->id;
             }else{
                 $update_data['parent_id'] = null;
                 $update_data['parent_link_date'] = null;
                 $update_data['parent_offset'] = null;
+                $update_data['parent_link_type'] = null;
             }
 
         }

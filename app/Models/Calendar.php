@@ -83,6 +83,7 @@ class Calendar extends Model
         'dynamic_data',
         'static_data',
         'parent_id',
+        'parent_link_type',
         'parent_link_date',
         'parent_offset',
         'hash',
