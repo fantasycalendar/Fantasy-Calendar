@@ -5,6 +5,7 @@ namespace App\Services\Discord\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use App\Jobs\HitCalendarUpdateWebhook;
 use App\Models\Calendar;
 use App\Services\Discord\API\Client;
 use App\Services\Discord\Commands\Command\Response;
@@ -108,17 +109,18 @@ class DiscordController extends Controller
                     ->with('error', 'Whoops! It looks like you somehow landed here without a chosen calendar. The developers should probably know about this.');
             }
 
-            Calendar::hash(session()->get('webhook_calendar'))
-                ->firstOrfail()
-                ->update([
-                    'advancement_webhook_url' => $body['webhook']['url']
-                ]);
+            $calendar = Calendar::hash(session()->get('webhook_calendar'))
+                ->firstOrfail();
+
+            $calendar->update([
+                'advancement_webhook_url' => $body['webhook']['url']
+            ]);
         } catch (\Throwable $e) {
             return redirect(route('profile.integrations'))
                 ->with('error', 'There was an error creating your webhook: ' . $e->getMessage());
         }
 
-
+        HitCalendarUpdateWebhook::dispatch($calendar, "Your Discord webhook for {$calendar->name} has been setup, " . auth()->user()->discord_auth->discord_username . "!\n\n This message will be updated as your calendar advances in real-time. You may even want to pin it!");
 
         return redirect(route('profile.integrations'))
             ->with('message', 'Your Discord webhook has been setup!');

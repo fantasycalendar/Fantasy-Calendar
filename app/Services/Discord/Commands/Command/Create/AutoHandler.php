@@ -2,6 +2,7 @@
 
 namespace App\Services\Discord\Commands\Command\Create;
 
+use App\Jobs\HitCalendarUpdateWebhook;
 use App\Services\Discord\Commands\Command;
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
@@ -49,5 +50,17 @@ class AutoHandler extends Command
                     'calendarHash' => $calendar->hash
                 ]), 'Setup a webhook for a real-time message!');
             });
+    }
+
+    public function disable()
+    {
+        $calendar = $this->getDefaultCalendar();
+        $calendar->update([
+            'advancement_disabled' => 1
+        ]);
+
+        HitCalendarUpdateWebhook::dispatch($calendar, "Auto-advancement disabled.");
+
+        return Command\Response::make("Auto-advancement disabled, your calendar will no longer auto-advance.");
     }
 }
