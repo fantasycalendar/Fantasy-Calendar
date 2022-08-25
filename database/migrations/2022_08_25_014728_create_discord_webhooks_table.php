@@ -18,10 +18,14 @@ return new class extends Migration
 
             $table->string("name");
             $table->string("access_token");
+            $table->string("webhook_id");
             $table->string("webhook_token");
             $table->string("refresh_token");
             $table->string("expires_in");
             $table->boolean('active')->default(0);
+
+            $table->boolean('error')->default(false);
+            $table->string('error_message')->nullable();
 
             $table->foreignIdFor(\App\Models\Calendar::class);
             $table->foreignIdFor(\App\Models\User::class);

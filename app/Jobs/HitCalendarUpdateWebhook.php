@@ -43,28 +43,10 @@ class HitCalendarUpdateWebhook implements ShouldQueue
 
     public function discord()
     {
-        $client = new Client();
-
         $text = $this->message ?? $this->buildMessage();
 
-        $shouldCreateNewWebhook = true;
-        // Note: This is an experiment.
-        if($this->calendar->advancement_discord_message_id) {
-            try {
-                $client->updateWebhookMessage($text, $this->calendar->advancement_webhook_url, $this->calendar->advancement_discord_message_id);
-                $shouldCreateNewWebhook = false;
-            } catch (\Throwable $e) {
-                // Just silently fail for now.
-            }
-        }
-
-        if($shouldCreateNewWebhook) {
-            $response = $client->hitWebhook($text, $this->calendar->advancement_webhook_url);
-            $payload = json_decode($response->getBody(), true);
-
-            $this->calendar->update([
-                'advancement_discord_message_id' => $payload['id']
-            ]);
+        if($this->calendar->discord_webhooks()->where('persistent_message', true)->count()) {
+            $this->calendar->discord_webhooks->each->post($text);
         }
     }
 

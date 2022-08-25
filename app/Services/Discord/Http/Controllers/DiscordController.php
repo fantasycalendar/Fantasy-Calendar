@@ -115,8 +115,17 @@ class DiscordController extends Controller
             $calendar = Calendar::hash(session()->get('webhook_calendar'))
                 ->firstOrfail();
 
-            $calendar->discord_webhooks()->create(
+
+            $payload = array_merge(
+                [
+                    'persistent_message' => 1,
+                ],
                 DiscordWebhook::fromPayload($body)
+            );
+            logger()->info($payload);
+
+            $calendar->discord_webhooks()->create(
+                $payload
             );
         } catch (\Throwable $e) {
             return redirect(route('profile.integrations'))

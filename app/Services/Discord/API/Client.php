@@ -35,18 +35,18 @@ class Client
         return json_decode($contents, true);
     }
 
-    public function hitWebhook(string $message, string $webhookUrl)
+    public function hitWebhook(string $message, string $webhookId, string $webhookToken)
     {
-        return $this->post($webhookUrl . "?wait=true", [
+        return $this->post(sprintf("%s/webhooks/%s/%s", $this->api_url, $webhookId, $webhookToken) . "?wait=true", [
             'content' => $message,
             'username' => config('app.name'),
             'avatar_url' => 'https://app.fantasy-calendar.com/resources/apple-touch-icon.png'
         ]);
     }
 
-    public function updateWebhookMessage(string $text, mixed $webhookUrl, mixed $messageId)
+    public function updateWebhookMessage(string $text, string $webhookId, string $webhookToken, mixed $messageId)
     {
-        return $this->patch($webhookUrl . '/messages/' . $messageId, [
+        return $this->patch(sprintf("%s/webhooks/%s/%s/messages/%s", $this->api_url, $webhookId, $webhookToken, $messageId), [
             'content' => $text
         ]);
     }

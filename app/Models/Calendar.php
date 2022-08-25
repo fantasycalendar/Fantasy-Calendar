@@ -178,6 +178,11 @@ class Calendar extends Model
         return $this->hasMany(DiscordWebhook::class);
     }
 
+    public function updateWebhooks(string $message)
+    {
+        $this->discord_webhooks->each->post($message);
+    }
+
 
     public function ensureCurrentEpoch(): Calendar
     {

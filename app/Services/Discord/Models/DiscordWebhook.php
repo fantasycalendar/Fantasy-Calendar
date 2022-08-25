@@ -4,9 +4,10 @@ namespace App\Services\Discord\Models;
 
 use App\Models\Calendar;
 use App\Models\User;
+use App\Services\Discord\API\Client;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
 
 class DiscordWebhook extends Model
 {
@@ -24,6 +25,7 @@ class DiscordWebhook extends Model
             'active' => 1,
             'channel_id' => $body['webhook']['channel_id'],
             'webhook_token' => $body['webhook']['token'],
+            'webhook_id' => $body['webhook']['id'],
             'avatar' => $body['webhook']['avatar'],
             'type' => $body['webhook']['type'],
             'user_id' => auth()->user()->id,
@@ -61,5 +63,46 @@ class DiscordWebhook extends Model
     public function guild()
     {
         return $this->belongsTo(DiscordGuild::class);
+    }
+
+    public function post(string $content)
+    {
+        logger()->info($this->name . " - webhook updating persistent message.");
+
+        if($this->persistent_message) {
+            $client = new Client();
+
+            if($this->persistent_message_id) {
+                try {
+                    $client->updateWebhookMessage(
+                        $content,
+                        $this->webhook_id,
+                        $this->webhook_token,
+                        $this->persistent_message_id
+                    );
+
+                    return;
+                } catch (\Throwable $e) {
+                    logger()->error($e->getMessage());
+
+                    $this->update([
+                        'persistent_message_id' => null
+                    ]);
+                }
+            }
+
+            try {
+                $response = $client->hitWebhook($content, $this->webhook_id, $this->webhook_token);
+                $payload = json_decode($response->getBody()->getContents(), true);
+
+                $this->update([
+                    'persistent_message_id' => $payload['id']
+                ]);
+            } catch (\Throwable $e) {
+                $this->update([
+                    'persistent_message' => false,
+                ]);
+            }
+        }
     }
 }
