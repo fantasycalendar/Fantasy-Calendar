@@ -120,7 +120,10 @@ class DiscordController extends Controller
                 ->with('error', 'There was an error creating your webhook: ' . $e->getMessage());
         }
 
-        HitCalendarUpdateWebhook::dispatch($calendar, "Your Discord webhook for {$calendar->name} has been setup, " . auth()->user()->discord_auth->discord_username . "!\n\n This message will be updated as your calendar advances in real-time. You may even want to pin it!");
+        HitCalendarUpdateWebhook::dispatch(
+            $calendar,
+            "Your Discord webhook for {$calendar->name} has been setup, " . auth()->user()->discord_auth->discord_username . "!\n\n This message will be updated as your calendar advances in real-time. You may even want to pin it!"
+        );
 
         return redirect(route('profile.integrations'))
             ->with('message', 'Your Discord webhook has been setup!');

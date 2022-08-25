@@ -49,14 +49,15 @@ class AutoHandler extends Command
                 return $row->addButton(route('discord.webhookRedirect', [
                     'calendarHash' => $calendar->hash
                 ]), 'Setup a webhook for a real-time message!');
-            });
+            })
+            ->ephemeral();
     }
 
     public function disable()
     {
         $calendar = $this->getDefaultCalendar();
         $calendar->update([
-            'advancement_disabled' => 1
+            'advancement_enabled' => 0
         ]);
 
         HitCalendarUpdateWebhook::dispatch($calendar, "Auto-advancement disabled.");
