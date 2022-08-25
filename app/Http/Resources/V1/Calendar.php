@@ -32,7 +32,9 @@ class Calendar extends JsonResource
             'name' => $this->name,
             'hash' => $this->hash,
             'parent_hash' => $parent_hash,
+            'parent_link_type' => $this->parent_link_type,
             'parent_link_date' => $this->parent_link_date,
+            'current_epoch' => $this->dynamic_data["epoch"],
             'children' => $children
         ];
     }

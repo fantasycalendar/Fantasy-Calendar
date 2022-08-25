@@ -243,7 +243,7 @@ function get_dynamic_data(calendar_hash, output){
 
 }
 
-function link_child_calendar(child_hash, parent_link_date, parent_offset){
+function link_child_calendar(child_hash, parent_link_type, parent_offset, parent_link_date){
 
 	show_loading_screen();
 
@@ -255,6 +255,7 @@ $.ajax({
         _method: "PATCH",
         parent_hash: hash,
         parent_link_date: parent_link_date,
+        parent_link_type: parent_link_type,
         parent_offset: parent_offset
     },
     success: function(result){
@@ -283,6 +284,7 @@ function unlink_child_calendar(output, child_hash){
             _method: "PATCH",
             parent_hash: "",
             parent_link_date: "",
+            parent_link_type: "",
             parent_offset: "",
         },
         success: function(result){
