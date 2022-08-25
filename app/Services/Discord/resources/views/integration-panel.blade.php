@@ -1,4 +1,4 @@
-<x-panel>
+<x-panel x-data="{ openDiscordWebhooksSidebar: true }">
     <div class>
         <h2 id="billing-history-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Discord Integration</h2>
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Connect your Discord account to Fantasy Calendar for quick access to common features.</p>
@@ -8,13 +8,18 @@
 
     <div class="flex items-center justify-between">
         @if(auth()->user()->hasDiscord())
-            <div class="flex items-center">
+            <div class="flex items-center w-full">
                 <div class="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden mr-3 bg-gray-900 dark:bg-gray-500 border-2 border-gray-900 dark:border-gray-500">
                     <img src="{{ auth()->user()->discord_auth->avatar }}" alt="" class="bg-white h-full w-full">
                 </div>
-                <div>
+                <div class="flex-grow">
                     <h4 class="font-medium">Discord Integration <span class="ml-0.5 py-0.5 px-2 bg-green-200 text-green-800 font-bold text-xs rounded-lg dark:bg-green-900 dark:text-green-500">Connected</span></h4>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Integrated with discord as <strong>{{ auth()->user()->discord_auth->discord_username }}</strong>.</p>
+                </div>
+                <div class="justify-self-end">
+                    <x-button @click="openDiscordWebhooksSidebar = true">
+                        Manage webhooks
+                    </x-button>
                 </div>
             </div>
             <x-slot name="footer">
@@ -145,4 +150,52 @@
             </x-slot>
         @endif
     </div>
+
+    <template x-teleport="body">
+        <x-slide-over model="openDiscordWebhooksSidebar">
+            <x-slot name="title">Discord webhooks</x-slot>
+
+            <x-slot name="description">
+                Manage webhooks you've setup for sending information to Discord
+            </x-slot>
+
+            <x-slot name="footer">
+                <x-button role="secondary" @click="openDiscordWebhooksSidebar = false"></x-button>
+            </x-slot>
+
+            <!-- This example requires Tailwind CSS v2.0+ -->
+            <nav class="h-full overflow-y-auto" aria-label="Webhooks list">
+                @foreach(auth()->user()->calendars()->whereHas('discord_webhooks')->with('discord_webhooks')->get() as $calendar)
+                    <div class="relative">
+                        <div class="z-10 sticky top-0 border-t border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-600 px-6 py-1 text-sm font-medium text-gray-500 dark:text-gray-300">
+                            <h3>{{ $calendar->name }}</h3>
+                        </div>
+                        <ul role="list" class="relative z-0 divide-y divide-gray-200 dark:divide-gray-600">
+                            @foreach($calendar->discord_webhooks as $webhook)
+                                <li class="bg-white dark:bg-gray-700" x-data="{ expand: true, name: `{{ $webhook->name }}` }">
+                                    <div class="relative px-6 pt-5 flex items-center space-x-3 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
+                                        <div class="flex-1 min-w-0">
+                                            <x-text-input x-model="name" x-show="expand"></x-text-input>
+                                            <p class="text-sm font-medium dark:text-gray-200 text-gray-900" x-text="name" x-show="!expand"></p>
+                                            <p class="text-sm text-gray-500 dark:text-gray-400 truncate">Created {{ $webhook->created_at->format('Y-m-d') }}</p>
+                                        </div>
+                                        <div class="flex-shrink-0" @click="expand = !expand">
+                                            <i class="fa fa-pencil-alt text-primary-600 pr-2"></i>
+                                            <i class="fa fa-trash text-red-600" x-show="expand"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-white dark:bg-gray-700 px-6 pb-5">
+                                        <div x-show="expand" class="pt-4">
+                                            <x-input-toggle name="enabled" id="enabled" label="Enabled" value="{{ $webhook->enabled }}"></x-input-toggle>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endforeach
+            </nav>
+        </x-slide-over>
+    </template>
 </x-panel>
