@@ -10,6 +10,7 @@ use App\Models\Calendar;
 use App\Services\Discord\API\Client;
 use App\Services\Discord\Commands\Command\Response;
 use App\Services\Discord\Commands\CommandDispatcher;
+use App\Services\Discord\Models\DiscordWebhook;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -103,6 +104,8 @@ class DiscordController extends Controller
 
         $body = $apiClient->webhookAuthTokenExchange(request()->get('code'));
 
+        logger()->info(json_encode($body));
+
         try {
             if(!session()->has('webhook_calendar')) {
                 return redirect(route('profile.integrations'))
@@ -112,9 +115,9 @@ class DiscordController extends Controller
             $calendar = Calendar::hash(session()->get('webhook_calendar'))
                 ->firstOrfail();
 
-            $calendar->update([
-                'advancement_webhook_url' => $body['webhook']['url']
-            ]);
+            $calendar->discord_webhooks()->create(
+                DiscordWebhook::fromPayload($body)
+            );
         } catch (\Throwable $e) {
             return redirect(route('profile.integrations'))
                 ->with('error', 'There was an error creating your webhook: ' . $e->getMessage());

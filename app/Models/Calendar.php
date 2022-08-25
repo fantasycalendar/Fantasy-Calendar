@@ -14,6 +14,7 @@ use App\Services\CalendarService\RenderMonth;
 use App\Services\CalendarService\Moon;
 use App\Services\CalendarService\Timespan;
 use App\Services\CalendarService\Month;
+use App\Services\Discord\Models\DiscordWebhook;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -170,6 +171,11 @@ class Calendar extends Model
     public function preset(): HasOne
     {
         return $this->hasOne(Preset::class, 'source_calendar_id');
+    }
+
+    public function discord_webhooks(): HasMany
+    {
+        return $this->hasMany(DiscordWebhook::class);
     }
 
 
