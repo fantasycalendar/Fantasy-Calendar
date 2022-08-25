@@ -101,6 +101,9 @@ class DiscordWebhook extends Model
             } catch (\Throwable $e) {
                 $this->update([
                     'persistent_message' => false,
+                    'error' => 1,
+                    'error_message' => $e->getMessage(),
+                    'active' => false
                 ]);
             }
         }
