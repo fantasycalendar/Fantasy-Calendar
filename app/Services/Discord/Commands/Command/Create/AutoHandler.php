@@ -35,6 +35,19 @@ class AutoHandler extends Command
             'advancement_enabled' => 1,
         ]);
 
-        return Command\Response::make("Your calendar is now set to auto-advance. To get automatic updates in a channel when time advances");
+        return Command\Response::make(
+                sprintf(
+                    "Your calendar is now set to auto-advance, and will move forward in real-time at a rate of %s %s %s per every %s %s in the real-world. You can change these values from the calendar edit page.",
+                    $calendar->advancement_rate,
+                    $calendar->name,
+                    $calendar->advancement_rate_unit,
+                    $calendar->advancement_real_rate,
+                    $calendar->advancement_real_rate_unit,
+                )
+            )->addRow(function(ActionRow $row) use ($calendar) {
+                return $row->addButton(route('discord.webhookRedirect', [
+                    'calendarHash' => $calendar->hash
+                ]), 'Setup a webhook for a real-time message!');
+            });
     }
 }

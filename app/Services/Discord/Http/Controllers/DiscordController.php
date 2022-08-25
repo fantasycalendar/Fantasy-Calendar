@@ -5,9 +5,12 @@ namespace App\Services\Discord\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\Calendar;
+use App\Services\Discord\API\Client;
 use App\Services\Discord\Commands\Command\Response;
 use App\Services\Discord\Commands\CommandDispatcher;
 use GuzzleHttp\Exception\ClientException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
@@ -81,6 +84,44 @@ class DiscordController extends Controller
         return Socialite::driver('discord')
             ->scopes(['applications.commands'])
             ->redirect();
+    }
+
+    public function webhookRedirect($calendarHash)
+    {
+        session()->put('webhook_calendar', $calendarHash);
+
+        return Socialite::driver('discord')
+            ->with(['redirect_uri' => route('discord.webhookCallback')])
+            ->scopes(['webhook.incoming'])
+            ->redirect();
+    }
+
+    public function webhookCallback()
+    {
+        $apiClient = new Client();
+
+        $body = $apiClient->webhookAuthTokenExchange(request()->get('code'));
+
+        try {
+            if(!session()->has('webhook_calendar')) {
+                return redirect(route('profile.integrations'))
+                    ->with('error', 'Whoops! It looks like you somehow landed here without a chosen calendar. The developers should probably know about this.');
+            }
+
+            Calendar::hash(session()->get('webhook_calendar'))
+                ->firstOrfail()
+                ->update([
+                    'advancement_webhook_url' => $body['webhook']['url']
+                ]);
+        } catch (\Throwable $e) {
+            return redirect(route('profile.integrations'))
+                ->with('error', 'There was an error creating your webhook: ' . $e->getMessage());
+        }
+
+
+
+        return redirect(route('profile.integrations'))
+            ->with('message', 'Your Discord webhook has been setup!');
     }
 
     /**

@@ -10,7 +10,7 @@ class Client
 {
     private string $application_id;
     private $application_secret;
-    protected $api_url = 'https://discord.com/api/v9';
+    protected $api_url = 'https://discord.com/api/v10';
     protected HttpClient $api_client;
 
     public function __construct(private $passErrors = false)
@@ -18,6 +18,21 @@ class Client
         $this->application_id = config('services.discord.client_id');
         $this->application_secret = config('services.discord.client_secret');
         $this->prepareForRequests();
+    }
+
+    public function webhookAuthTokenExchange(string $code)
+    {
+        $results = $this->post(sprintf('%s/oauth2/token', $this->api_url), [
+            'grant_type' => 'authorization_code',
+            'code' => $code,
+            'client_id' => $this->application_id,
+            'client_secret' => $this->application_secret,
+            'redirect_uri' => route('discord.webhookCallback'),
+        ], 'form_params');
+
+        $contents = $results->getBody()->getContents();
+
+        return json_decode($contents, true);
     }
 
     public function hitWebhook(string $message, string $webhookUrl)
@@ -59,11 +74,15 @@ class Client
         return $this->request($url,[]);
     }
 
-    private function post($url, $payload)
+    private function post($url, $payload, $contentType = 'json')
     {
-        return $this->request($url, [
-            'json' => $payload
-        ], 'POST');
+        if($contentType != 'raw') {
+            $payload = [
+                $contentType => $payload
+            ];
+        }
+
+        return $this->request($url, $payload, 'POST');
     }
 
     private function patch($url, $payload)

@@ -23,7 +23,8 @@ class HitCalendarUpdateWebhook implements ShouldQueue
      * @return void
      */
     public function __construct(
-        public Calendar $calendar
+        public Calendar $calendar,
+        public ?string $message = null
     ) {}
 
     /**
@@ -44,6 +45,31 @@ class HitCalendarUpdateWebhook implements ShouldQueue
     {
         $client = new Client();
 
+        $text = $this->message ?? $this->buildMessage();
+
+        $shouldCreateNewWebhook = true;
+        // Note: This is an experiment.
+        if($this->calendar->advancement_discord_message_id) {
+            try {
+                $client->updateWebhookMessage($text, $this->calendar->advancement_webhook_url, $this->calendar->advancement_discord_message_id);
+                $shouldCreateNewWebhook = false;
+            } catch (\Throwable $e) {
+                // Just silently fail for now.
+            }
+        }
+
+        if($shouldCreateNewWebhook) {
+            $response = $client->hitWebhook($text, $this->calendar->advancement_webhook_url);
+            $payload = json_decode($response->getBody(), true);
+
+            $this->calendar->update([
+                'advancement_discord_message_id' => $payload['id']
+            ]);
+        }
+    }
+
+    private function buildMessage()
+    {
         // Ok this is a hack ... but hey! If it works, it works =]
         $dateString = sprintf("%s, %s", $this->calendar->epoch->weekdayName, $this->calendar->current_date);
         $text = "```\n";
@@ -57,24 +83,8 @@ class HitCalendarUpdateWebhook implements ShouldQueue
         $text .= $dateString . "\n";
         $text .= "```";
 
-        $shouldCreateNewWebhook = true;
-        // Note: This is an experiment.
-        if($this->calendar->advancement_discord_token) {
-            try {
-                $client->updateWebhookMessage($text, $this->calendar->advancement_webhook_url, $this->calendar->advancement_discord_token);
-                $shouldCreateNewWebhook = false;
-            } catch (\Throwable $e) {
-                // Just silently fail for now.
-            }
-        }
+        logger()->info($text);
 
-        if($shouldCreateNewWebhook) {
-            $response = $client->hitWebhook($text, $this->calendar->advancement_webhook_url);
-            $payload = json_decode($response->getBody(), true);
-
-            $this->calendar->update([
-                'advancement_discord_token' => $payload['id']
-            ]);
-        }
+        return $text;
     }
 }

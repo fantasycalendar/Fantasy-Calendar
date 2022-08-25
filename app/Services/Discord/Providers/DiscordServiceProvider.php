@@ -50,6 +50,8 @@ class DiscordServiceProvider extends ServiceProvider
                 Route::get('user-redirect', DiscordController::class.'@user_redirect')->name('discord.auth.user');
                 Route::get('server-owner-redirect',DiscordController::class.'@server_owner_redirect')->name('discord.auth.admin');
                 Route::get('callback', DiscordController::class.'@callback')->name('discord.callback');
+                Route::get('webhookCallback', DiscordController::class.'@webhookCallback')->name('discord.webhookCallback');
+                Route::get('webhookRedirect/{calendarHash}', DiscordController::class.'@webhookRedirect')->name('discord.webhookRedirect');
                 Route::get('success', DiscordController::class.'@success')->name('discord.success');
                 Route::get('remove', DiscordController::class.'@remove')->name('discord.auth.remove');
             });

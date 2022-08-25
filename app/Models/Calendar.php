@@ -104,7 +104,7 @@ class Calendar extends Model
         'advancement_rate_unit',
         'advancement_webhook_url',
         'advancement_webhook_format',
-        'advancement_discord_token',
+        'advancement_discord_message_id',
     ];
 
     public Collection $leap_days_cached;

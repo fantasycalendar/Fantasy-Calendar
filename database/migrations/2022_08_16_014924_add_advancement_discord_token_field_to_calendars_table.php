@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('calendars', function (Blueprint $table) {
-            $table->string('advancement_discord_token')->nullable();
+            $table->string('advancement_discord_message_id')->nullable();
         });
     }
 
