@@ -12,7 +12,7 @@ class Calendar extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request)
+    public function toArray($request = null)
     {
         $parent_hash = false;
         $children = false;

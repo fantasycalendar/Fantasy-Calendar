@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Calendar;
 use App\Services\Discord\API\Client;
 use App\Services\Discord\Commands\Command\Show\DateHandler;
+use App\Services\Webhooks\Webhook;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -35,38 +36,12 @@ class HitCalendarUpdateWebhook implements ShouldQueue
     public function handle()
     {
         if($this->calendar->advancement_webhook_url) {
-            $method = $this->calendar->advancement_webhook_format ?? 'discord';
+            $method = $this->calendar->advancement_webhook_format;
+            $webhook = Webhook::make($method, '', $this->calendar);
 
-            $this->$method();
+            $webhook->send([
+                'event' => 'calendarUpdated'
+            ]);
         }
-    }
-
-    public function discord()
-    {
-        $text = $this->message ?? $this->buildMessage();
-
-        if($this->calendar->discord_webhooks()->where('persistent_message', true)->count()) {
-            $this->calendar->discord_webhooks->each->post($text);
-        }
-    }
-
-    private function buildMessage()
-    {
-        // Ok this is a hack ... but hey! If it works, it works =]
-        $dateString = sprintf("%s, %s", $this->calendar->epoch->weekdayName, $this->calendar->current_date);
-        $text = "```\n";
-        $text .= Str::padBoth(" {$this->calendar->name} ", strlen($dateString), '=');
-
-        if($this->calendar->clock_enabled) {
-            $text .= "\n" . Str::padBoth(" {$this->calendar->current_time} ", strlen($dateString));
-        }
-
-        $text .= "\n\n";
-        $text .= $dateString . "\n";
-        $text .= "```";
-
-        logger()->info($text);
-
-        return $text;
     }
 }
