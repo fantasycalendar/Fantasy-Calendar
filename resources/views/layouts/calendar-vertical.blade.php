@@ -15,6 +15,7 @@
         "
         @update-epochs.window="update_epochs"
         x-for="timespan in render_data.timespans"
+        :key="timespan.id"
     >
 
         <div class="timespan_container" :class='render_data.render_style' x-show="loaded && render_data.timespans.length">

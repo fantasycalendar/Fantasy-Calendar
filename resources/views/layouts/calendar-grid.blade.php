@@ -15,6 +15,7 @@
         "
         @update-epochs.window="update_epochs"
         x-for="(timespan, index) in render_data.timespans"
+        :key="timespan.id"
     >
         <div class="timespan_container"
              :class='render_data.render_style'
@@ -31,7 +32,7 @@
                     </template>
                 </div>
 
-                <template x-for="week in timespan.days">
+                <template x-for="(week, index) in timespan.days">
                     <div class="timespan_row">
                         <template x-for="day in week">
                             <div :class="{

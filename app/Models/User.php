@@ -50,6 +50,7 @@ class User extends Authenticatable implements
         'agreed_at',
         'marketing_opt_in_at',
         'marketing_opt_out_at',
+        'email_verified_at',
         'has_sent_announcement',
         'last_interaction',
         'last_login',
