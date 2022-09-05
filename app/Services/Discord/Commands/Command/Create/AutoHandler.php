@@ -6,6 +6,7 @@ use App\Jobs\HitCalendarUpdateWebhook;
 use App\Services\Discord\Commands\Command;
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
+use App\Services\Discord\Exceptions\DiscordCalendarLinkedException;
 
 class AutoHandler extends Command
 {
@@ -16,6 +17,17 @@ class AutoHandler extends Command
         return "auto";
     }
 
+    public function authorize(): bool
+    {
+        $calendar = $this->getDefaultCalendar();
+
+        if($calendar->isLinked()) {
+            throw new DiscordCalendarLinkedException($calendar);
+        }
+
+        return $this->user->isPremium();
+    }
+
     public function handle()
     {
         $action = explode(' ',$this->called_command)[2];
@@ -23,7 +35,6 @@ class AutoHandler extends Command
         logger()->debug($action);
 
         return $this->$action();
-//        return "Would have tried to $action stuff here";
     }
 
     public function enable()
