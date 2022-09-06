@@ -14,6 +14,7 @@ use App\Models\Calendar;
 use App\Jobs\SaveEventCategories;
 use App\Jobs\SaveCalendarEvents;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CalendarController extends Controller
@@ -139,11 +140,17 @@ class CalendarController extends Controller
 
     public function renderImage(Calendar $calendar, $ext)
     {
-        if(Gate::denies('view-image', $calendar) && !app()->environment('local')) {
-            $pathToFile = public_path('resources/discord/premium-warning.png');
-            $headers = ['Content-Type' => 'image/png'];
-
-            return response()->file($pathToFile, $headers);
+        if(Gate::denies('view-image', $calendar)) {
+            return response()->stream(function() use ($ext, $calendar) {
+                echo Storage::disk(config('filesystems.assets'))->get('resources/discord/premium-warning.png');
+            }, 200, [
+                'Content-Disposition' => 'inline; filename="' . Str::slug(Str::ascii($calendar->name)) . '_' . Str::slug(Str::ascii($calendar->current_date)) . '.'. $ext .'"',
+                'Content-Type' => 'image/' . $ext,
+                'Last-Modified' => now(),
+                'Cache-control' => 'must-revalidate',
+                'Expires' => now()->addMinutes(5),
+                'Pragma' => 'public'
+            ]);
         }
 
         if(!in_array($ext, ['png', 'jpg', 'jpeg'])) {

@@ -41,11 +41,18 @@ return [
     |
     */
 
+    'assets' => env('ASSETS_DRIVER', env('AWS_LAMBDA_FUNCTION_NAME') ? 's3_public' : 'local_assets'),
+
     'disks' => [
 
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
+        ],
+
+        'local_assets' => [
+            'driver' => 'local',
+            'root' => public_path()
         ],
 
         'base' => [
@@ -65,8 +72,8 @@ return [
             'key' => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'token' => env('AWS_SESSION_TOKEN'),
-            'region' => env('AWS_DEFAULT_REGION'),
-            'bucket' => env('AWS_BUCKET'),
+            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+            'bucket' => env('AWS_USER_BUCKET'),
             'url' => env('AWS_URL'),
         ],
 
@@ -75,7 +82,7 @@ return [
             'key' => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'token' => env('AWS_SESSION_TOKEN'),
-            'region' => env('AWS_DEFAULT_REGION'),
+            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
         ],
