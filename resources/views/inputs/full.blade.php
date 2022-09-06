@@ -450,7 +450,7 @@
             <!------------ REAL TIME ADVANCEMENT ----------->
             <!---------------------------------------------->
             <div class='wrap-collapsible card settings-real-time-advancement'>
-                <input id="collapsible_real-time-advancement" class="toggle" type="checkbox" checked>
+                <input id="collapsible_real-time-advancement" class="toggle" type="checkbox">
                 <label for="collapsible_real-time-advancement" class="lbl-toggle py-2 px-3 card-header">
                     <i class="fas fa-history mr-2" style="transform: scaleX(-1);"></i>
                     Real-Time Advancement
@@ -589,23 +589,25 @@
                                                 @endfeature
                                                 type='text' x-model="data.advancement_webhook_url" class='form-control form-control-sm input-group-append flex-grow-2' style="flex:2;" placeholder='http://my-web-hook.com/'>
                                             @feature('discord')
-                                                <a x-show="data.advancement_webhook_format == 'discord'" class="btn btn-sm flex-grow input-group-append px-3" style="background-color: #5865F2; border-color: #5865F2;" href="{{ route('discord.webhookRedirect', ['calendarHash' => $calendar->hash]) }}">
+                                                <a target="_blank" x-show="data.advancement_webhook_format == 'discord'" class="btn btn-sm flex-grow input-group-append px-3" style="background-color: #5865F2; border-color: #5865F2;" href="{{ route('discord.webhookRedirect', ['calendarHash' => $calendar->hash]) }}">
                                                     Setup a Discord webhook
                                                 </a>
                                             @endfeature
                                         </div>
                                     </div>
 
-                                    @if($calendar->discord_webhooks()->exists())
-                                        <div class="row no-gutters mt-3 alert alert-info px-3" style="background-color: #5865F2;">
-                                            <div class="col-1">
-                                                <i class="fab fa-discord"></i>
+                                    @feature('discord')
+                                        @if($calendar->discord_webhooks()->exists())
+                                            <div class="row no-gutters mt-3 alert alert-info px-3" style="background-color: #5865F2;">
+                                                <div class="col-1">
+                                                    <i class="fab fa-discord"></i>
+                                                </div>
+                                                <div class="col-11">
+                                                    This calendar also has webhooks configured through the Discord integration. You can manage them via <a href="{{ route('profile.integrations') }}">your profile</a>.
+                                                </div>
                                             </div>
-                                            <div class="col-11">
-                                                This calendar also has webhooks configured through the Discord integration. You can manage them via <a href="{{ route('profile.integrations') }}">your profile</a>.
-                                            </div>
-                                        </div>
-                                    @endif
+                                        @endif
+                                    @endfeature
 
                                 </div>
 
