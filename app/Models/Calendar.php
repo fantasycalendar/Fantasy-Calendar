@@ -239,7 +239,7 @@ class Calendar extends Model
      */
     public function isLinked(): bool
     {
-        return $this->parent()->exists() || $this->children_count;
+        return $this->parent()->exists() || $this->children()->exists();
     }
 
     public function yearIsValid($year): bool

@@ -466,7 +466,7 @@
                 <div class="collapsible-content card-body">
 
                     @if(isset($calendar) && $calendar->isPremium())
-                        @if(request()->is('calendars/*/edit') && $calendar->isLinked())
+                        @if(request()->is('calendars/*/edit') && $calendar->parent()->exists())
                             <p class="mb-0 mt-3"><a onclick="linked_popup();" href='#'>Why can't I edit the real time
                                     advancement?</a></p>
                         @else
