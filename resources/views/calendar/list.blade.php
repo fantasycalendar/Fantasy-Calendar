@@ -340,9 +340,9 @@
                                     </div>
                                     <div class="py-1" role="none">
                                         @feature('embed')
-                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md @if($calendar->disabled) pointer-events-none opacity-50 @endif" href="{{ route('calendars.guided_embed', ['calendar' => $calendar->hash]) }}" role="menuitem" tabindex="-1">
-                                            Embed
-                                        </a>
+                                            <a class="@if(!auth()->user()->isPremium()) pointer-events-none bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 @else text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 @endif block px-4 py-2 text-md" href="{{ route('calendars.guided_embed', ['calendar' => $calendar->hash]) }}" role="menuitem" tabindex="-1">
+                                                <span class="inline-block">Embed <span class="pl-1 text-xs text-primary-400 dark:text-primary-500">(Subscriber-only)</span></span>
+                                            </a>
                                         @endfeature
                                         <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md @if($calendar->disabled) pointer-events-none opacity-50 @endif" href="{{ route('calendars.show', ['calendar' => $calendar->hash, 'print' => 1]) }}"  >
                                             Print
