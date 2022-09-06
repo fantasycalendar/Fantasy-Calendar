@@ -257,17 +257,9 @@ class CalendarController extends Controller
         }
 
         if(array_key_exists('advancement', $update_data)) {
-            $advancement_data = json_decode($update_data['advancement'], true);
+            $update_data = array_merge($update_data, json_decode($update_data['advancement'], true));
+
             unset($update_data['advancement']);
-            $update_data["advancement_enabled"] = $advancement_data["advancement_enabled"];
-            if($update_data["advancement_enabled"]) {
-                $update_data["advancement_real_rate"] = $advancement_data["advancement_real_rate"];
-                $update_data["advancement_real_rate_unit"] = $advancement_data["advancement_real_rate_unit"];
-                $update_data["advancement_rate"] = $advancement_data["advancement_rate"];
-                $update_data["advancement_rate_unit"] = $advancement_data["advancement_rate_unit"];
-                $update_data["advancement_webhook_url"] = $advancement_data["advancement_webhook_url"];
-                $update_data["advancement_timezone"] = $advancement_data["advancement_timezone"];
-            }
         }
 
         if(array_key_exists('events', $update_data)) {
