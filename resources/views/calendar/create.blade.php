@@ -88,6 +88,8 @@
             "location": "Equatorial"
         };
 
+        advancement = {}
+
         preview_date = clone(dynamic_data);
 
         $(document).ready(function(){
