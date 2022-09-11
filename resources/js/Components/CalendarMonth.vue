@@ -1,11 +1,11 @@
 <template>
-    <div class="grid h-full flex-1 divide-y divide-gray-700 bg-gray-800 border-t border-gray-700" :style="'grid-template-rows: 30px repeat(' + timespans.days.length + ', 1fr);'">
-        <div class="w-full grid divide-x divide-gray-700" :style="'grid-template-columns: repeat(' + timespans.days[0].length + ', 1fr);'">
+    <div class="grid h-full flex-1 divide-y divide-gray-700 bg-gray-800 border-t border-gray-700" :style="'grid-template-rows: 30px repeat(' + timespans.rows.length + ', 1fr);'">
+        <div class="w-full grid divide-x divide-gray-700" :style="'grid-template-columns: repeat(' + timespans.rows[0].length + ', 1fr);'">
             <div v-for="name in timespans.weekdays" class="grid place-items-center">
                 {{ name }}
             </div>
         </div>
-        <div v-for="week in timespans.days" class="w-full grid divide-x divide-gray-700" :style="'grid-template-columns: repeat(' + week.length + ', 1fr);'">
+        <div v-for="week in timespans.rows" class="w-full grid divide-x divide-gray-700" :style="'grid-template-columns: repeat(' + week.length + ', 1fr);'">
             <div v-for="day in week" class="relative flex flex-col pb-1" :class="{ 'bg-gray-900': day.type === 'overflow', 'bg-orange-400 bg-opacity-[13%]' : day.epoch == currentEpoch }">
                 <div class="absolute top-1 right-2 h-6 grid place-items-center text-xs xl:text-base">
                     {{ day.number }}

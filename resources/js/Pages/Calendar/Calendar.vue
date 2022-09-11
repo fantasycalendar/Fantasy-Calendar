@@ -258,9 +258,15 @@
                 </div>
 
                 <main class="flex-1 h-full flex flex-col">
+
+<!--                    <pre class="m-5 p-4 bg-gray-800 overflow-auto">-->
+<!--<code>-->
+<!--{{ calendar.renderStructure() }}-->
+<!--</code>-->
+<!--                    </pre>-->
                     <CalendarViewport
                         :layout="layout"
-                        :timespans="renderdata.timespans"
+                        :timespans="renderable_data"
                         :visible-timespan="visibleTimespan"
                         :visible-week="visibleWeek"
                         :current-epoch="renderdata.current_epoch"
@@ -276,7 +282,7 @@
 <script setup>
 import CalendarLayout from '@/Layouts/CalendarLayout.vue';
 import Calendar from '@/calendar/calendar';
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
@@ -287,9 +293,12 @@ const props = defineProps({
     renderdata: Object,
 })
 
+const renderable_data = computed(() => {
+    return calendar.renderStructure();
+})
 const calendar = new Calendar(props.calendar_attributes);
 const showSidebar = ref(false);
-const layout = ref('month');
+const layout = ref('year');
 const visibleTimespan = ref(8);
 const visibleWeek = ref(1);
 

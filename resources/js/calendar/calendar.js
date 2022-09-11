@@ -21,11 +21,49 @@ export default class Calendar {
         this.advancement_enabled = calendar_attributes.advancement_enabled;
     };
 
-    output() {
-        console.log('here we are in ' + this.name);
+    renderStructure() {
+        let rendered_timespans = [];
 
-        console.log(this.year_structure);
+        this.year_structure.timespans.forEach((timespan) => {
+            let weekdays = [];
+            if(timespan.type === 'intercalary') {
+                weekdays = Array(timespan.length).fill('');
+            } else {
+                weekdays = timespan.weekdays ?? this.year_structure.global_week
+            }
 
-        return this.calendar_attributes;
+            let rowCount = Math.ceil(timespan.length / weekdays.length);
+            let days = Array(timespan.length)
+                .fill(null)
+                .map((day, index) => {
+                    let intercalaryDay = ((index + 1) > timespan.length);
+
+                    return {
+                        number: intercalaryDay ? null : index + 1,
+                        name: weekdays[index % weekdays.length],
+                        type: intercalaryDay ? "overflow" : "day",
+                        events: [],
+                    };
+                });
+
+            let rows = [];
+            for (let i = 0; i < days.length; i += weekdays.length) {
+                rows.push(days.slice(i, i + weekdays.length));
+            }
+
+            let short_weekdays = weekdays.map((weekday) => weekday.substring(0, 3));
+
+            rendered_timespans.push({
+                name: timespan.name,
+                show_title: true,
+                weekdays,
+                short_weekdays,
+                show_weekdays: true,
+                rows: rows,
+                rowCount,
+            })
+        })
+
+        return rendered_timespans;
     }
 }

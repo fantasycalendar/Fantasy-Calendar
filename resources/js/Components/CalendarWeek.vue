@@ -46,7 +46,7 @@ const props = defineProps({
 });
 
 const week = computed(() => {
-    return props.timespans.days[props.visibleWeek];
+    return props.timespans.rows[props.visibleWeek];
 });
 </script>
 
