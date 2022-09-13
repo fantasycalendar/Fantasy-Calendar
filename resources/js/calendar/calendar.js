@@ -1,4 +1,5 @@
 import Timespan from "@/calendar/timespan";
+import Leapday from "@/calendar/leapday";
 
 export default class Calendar {
     constructor(calendar_attributes) {
@@ -22,6 +23,7 @@ export default class Calendar {
         this.parent_id = calendar_attributes.parent_id;
         this.advancement_enabled = calendar_attributes.advancement_enabled;
 
+        this.leap_days = this.buildLeapdays();
         this.timespans = this.buildTimespans();
     };
 
@@ -30,7 +32,9 @@ export default class Calendar {
     }
 
     leapDaysFor(timespan) {
-        return [];
+        return this.leap_days.filter((leap_day) => {
+            return leap_day.timespanIs(timespan);
+        });
     }
 
     renderStructure() {
@@ -73,6 +77,12 @@ export default class Calendar {
     buildTimespans() {
         return this.year_structure.timespans.map((attributes) => {
             return new Timespan(attributes, this);
+        });
+    }
+
+    buildLeapdays() {
+        return this.year_structure.leap_days.map((attributes) => {
+            return new Leapday(attributes, this);
         });
     }
 }
