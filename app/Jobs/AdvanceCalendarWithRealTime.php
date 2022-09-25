@@ -26,6 +26,9 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
     /**
      * Execute the job.
      *
+     * TODO: Take into account the `advancement_time` and `advancement_timezone`,
+     *  representing user's local time when the calendar should advance
+     *
      * @return void
      */
     public function handle()
