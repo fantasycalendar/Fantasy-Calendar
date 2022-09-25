@@ -15,6 +15,10 @@ class AdvancementTest extends TestCase
     {
         $calendars = $this->getEdgeCases('advancement_testcases')->map->static_data;
 
+        if(!$calendars->count()) {
+            return;
+        }
+
         dd($calendars);
     }
 }
