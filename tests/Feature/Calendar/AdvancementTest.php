@@ -23,9 +23,16 @@ class AdvancementTest extends TestCase
         }
 
         $calendars->each(function(Calendar $calendar){
-            dump("Testing advancement for {$calendar->name}");
-
             collect($calendar->static_data['advancement_testcases'])->each(function($testCase) use ($calendar) {
+                dump(sprintf(
+                    "Verifying a test case for %s with at ratio %d real-world %s to %d in-universe %s",
+                    $calendar->name,
+                    $testCase['advancement_settings']['advancement_real_rate'],
+                    $testCase['advancement_settings']['advancement_real_rate_unit'],
+                    $testCase['advancement_settings']['advancement_rate'],
+                    $testCase['advancement_settings']['advancement_rate_unit'],
+                ));
+                
                 $testCalendar = clone($calendar);
 
                 /**
