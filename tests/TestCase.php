@@ -12,7 +12,7 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    protected function getEdgeCases()
+    protected function getEdgeCases(string $staticDataFilterKey = null)
     {
         $user = User::Factory()->create();
 
@@ -22,7 +22,10 @@ abstract class TestCase extends BaseTestCase
                 return Str::replace('.json', '', $file);
             })->map(function($filename){
                 return $this->retrieveJson($filename);
-            })->map(function($calendarData) use ($user) {
+            })->when(
+                $staticDataFilterKey,
+                fn($collection) => $collection->filter(fn($calendar) => array_key_exists($staticDataFilterKey, $calendar['static_data']))
+            )->map(function($calendarData) use ($user) {
                 return Calendar::Factory()
                     ->for($user)
                     ->create($calendarData);
