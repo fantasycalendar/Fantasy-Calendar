@@ -62,13 +62,14 @@ class AdvancementTest extends TestCase
                 );
 
 
+                $realRateMethod = "sub" . ucfirst($testCase['advancement_settings']['advancement_real_rate_unit']);
                 $testCalendar->update([
                     'advancement_enabled' => $testCase['advancement_settings']['advancement_enabled'],
                     'advancement_real_rate' => $testCase['advancement_settings']['advancement_real_rate'],
                     'advancement_real_rate_unit' => $testCase['advancement_settings']['advancement_real_rate_unit'],
                     'advancement_rate' => $testCase['advancement_settings']['advancement_rate'],
                     'advancement_rate_unit' => $testCase['advancement_settings']['advancement_rate_unit'],
-                    'advancement_next_due' => now()->subMinute()->startOfMinute(),
+                    'advancement_next_due' => now()->$realRateMethod($testCase['advancement_settings']['advancement_real_rate'])->startOfMinute(),
                 ]);
 
                 /**
