@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Exceptions\ClockNotEnabledException;
 use App\Models\Calendar;
 use App\Services\Discord\API\Client;
 use Illuminate\Bus\Queueable;
@@ -33,6 +34,8 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
      */
     public function handle()
     {
+        $this->ensureCalendarShouldAdvance();
+
         $real_unit = ucfirst($this->calendar->advancement_real_rate_unit);
 
         $realWorldMethod = "add{$real_unit}";
@@ -64,6 +67,13 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
 
         if($this->calendar->advancement_webhook_url) {
             HitCalendarUpdateWebhook::dispatch($this->calendar);
+        }
+    }
+
+    private function ensureCalendarShouldAdvance()
+    {
+        if(!$this->calendar->clock_enabled) {
+            throw new ClockNotEnabledException("Tried to advance a calendar that does not have the clock enabled.");
         }
     }
 }
