@@ -14,11 +14,8 @@
                 },
                 modal_ok($event) {
                     switch($event.detail.name) {
-                        case 'update_webhook':
-                            this.update_webhook($event.detail.id, $event.detail.payload);
-                            break;
                         case 'delete_webhook_confirmation':
-                            this.delete_webhook($event.detail.id);
+                            this.delete_webhook($event.detail.url);
                             break;
                         case 'delete_webhook_confirm':
                             const url = new URL(location.href);
