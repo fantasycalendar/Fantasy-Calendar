@@ -25,7 +25,7 @@
     <button
         @click="{{ $attributes->get('name') }} = !{{ $attributes->get('name') }}"
         type="button"
-        :class="{'bg-gray-200 dark:bg-gray-700': !{{ $attributes->get('name') }}, 'bg-primary-600': {{ $attributes->get('name') }}}"
+        :class="{'bg-gray-200 dark:bg-gray-700 dark:border-gray-800': !{{ $attributes->get('name') }}, 'bg-primary-600 dark:bg-primary-800': {{ $attributes->get('name') }}}"
         class="bg-gray-200 dark:bg-gray-700 relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
         role="switch"
         aria-checked="false"

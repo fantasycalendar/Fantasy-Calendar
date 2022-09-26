@@ -36,6 +36,7 @@ class Discord extends Handler
 
         $this->calendar
             ->discord_webhooks()
+            ->active()
             ->where('persistent_message', true)
             ->each(function($webhook) use ($message) {
                 $webhook->post($message);
