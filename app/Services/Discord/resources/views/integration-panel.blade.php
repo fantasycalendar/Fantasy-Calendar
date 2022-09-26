@@ -2,15 +2,19 @@
     <script>
         function WebhooksList() {
             return {
+                expanded: -1,
                 init() {
                     let url = new URL(location.href);
-                    url.searchParams.delete('discord_panel_open');
 
-                    window.history.replaceState(
-                        history.state,
-                        document.title,
-                        url.toString()
-                    );
+                    if(url.searchParams.get('discord_panel_open')) {
+                        url.searchParams.delete('discord_panel_open');
+
+                        window.history.replaceState(
+                            history.state,
+                            document.title,
+                            url.toString()
+                        );
+                    }
                 },
                 modal_ok($event) {
                     switch($event.detail.name) {
@@ -45,6 +49,7 @@
 
                             this.dispatch('notification', {
                                 title: 'Webhook updated!',
+                                body: "",
                                 sticky: false,
                             });
                         })
@@ -83,7 +88,7 @@
     </script>
 @endpush
 
-<x-panel x-data="{ openDiscordWebhooksSidebar: true }">
+<x-panel x-data="{ openDiscordWebhooksSidebar: false }" x-init="openDiscordWebhooksSidebar = (new URL(location.href)).searchParams.get('discord_panel_open')">
     <div class>
         <h2 id="billing-history-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Discord Integration</h2>
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Connect your Discord account to Fantasy Calendar for quick access to common features.</p>
@@ -256,9 +261,9 @@
                         </div>
                         <ul role="list" class="relative z-0 divide-y divide-gray-200 dark:divide-gray-600">
                             @foreach($calendar->discord_webhooks as $webhook)
-                                <li class="bg-white relative dark:bg-gray-700" x-data="{ expand: {{ $webhook->id == 3 ? 'true' : 'false' }}, name: `{{ $webhook->name }}`, active: {{ $webhook->active ? 'true' : 'false' }} }">
+                                <li class="bg-white relative dark:bg-gray-700" x-data="{ name: `{{ $webhook->name }}`, active: {{ $webhook->active ? 'true' : 'false' }} }">
                                     <div class="px-5 pt-5 flex items-center">
-                                        <div class="flex-shrink-0 pr-2" x-show="expand">
+                                        <div class="flex-shrink-0 pr-2" x-show="expanded === {{ $webhook->id }}">
                                             <i class="fa fa-trash text-red-400 dark:text-red-600 hover:text-red-600 dark:hover:text-red-400 hover:cursor-pointer"
                                                title="Delete this webhook"
                                                @click="$dispatch('modal', {
@@ -270,32 +275,32 @@
                                             ></i>
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <x-text-input x-model="name" x-show="expand"></x-text-input>
-                                            <p class="text-sm font-medium dark:text-gray-200 text-gray-900" x-text="name" x-show="!expand"></p>
+                                            <x-text-input x-model="name" x-show="expanded === {{ $webhook->id }}"></x-text-input>
+                                            <p class="text-sm font-medium dark:text-gray-200 text-gray-900" x-text="name" x-show="expanded !== {{ $webhook->id }}"></p>
                                         </div>
-                                        <div class="flex-shrink-0 pl-2" x-show="!expand">
-                                            <i @click="expand = true" class="fa fa-pencil-alt text-primary-600 dark:text-primary-700 hover:text-primary-400 dark:hover:text-primary-500 hover:cursor-pointer" title="Edit this webhook"></i>
+                                        <div class="flex-shrink-0 pl-2" x-show="expanded !== {{ $webhook->id }}">
+                                            <i @click="expanded = {{ $webhook->id }}" class="fa fa-pencil-alt text-primary-600 dark:text-primary-700 hover:text-primary-400 dark:hover:text-primary-500 hover:cursor-pointer" title="Edit this webhook"></i>
                                         </div>
                                     </div>
 
-                                    <div class="px-5 pb-1.5" x-show="expand">
+                                    <div class="px-5 pb-1.5" x-show="expanded === {{ $webhook->id }}">
                                         <p class="text-xs pt-1 text-gray-500 dark:text-gray-400 truncate">Created {{ $webhook->created_at->format('Y-m-d') }}</p>
                                     </div>
 
                                     <div class="px-5 pb-5">
-                                        <div x-show="expand" class="pt-4">
+                                        <div x-show="expanded === {{ $webhook->id }}" class="pt-4">
                                             <x-input-toggle x-model="active" name="active" id="active" label="Enabled" value="{{ $webhook->active ? 'true' : 'false' }}"></x-input-toggle>
                                         </div>
                                     </div>
 
-                                    <div class="flex justify-end px-5 pb-2 space-x-2" x-show="expand">
+                                    <div class="flex justify-end px-5 pb-2 space-x-2" x-show="expanded === {{ $webhook->id }}">
                                         <x-button role="secondary"
-                                                  @click="expand = false"
+                                                  @click="expanded = -1"
                                         >
                                             <i class="fa fa-times pr-1.5"></i> Cancel
                                         </x-button>
                                         <x-button role="primary"
-                                                  @click="update_webhook('{{ route('discord.webhooks.update', ['discordWebhook' => $webhook]) }}', { name, active }); expand = false;"
+                                                  @click="update_webhook('{{ route('discord.webhooks.update', ['discordWebhook' => $webhook]) }}', { name, active }); expanded = -1;"
                                         >
                                             <i class="fa fa-save pr-1.5"></i> Save
                                         </x-button>
