@@ -24,7 +24,7 @@ abstract class TestCase extends BaseTestCase
      *
      * Rather than having a single test for every one of the edge cases
      * we can think of, we've just got a bunch of test **calendars** we use for
-     * testing, which are looped through by this test.
+     * testing that we know can be tricky, which are looped through by our tests.
      *
      * @param string|null $staticDataFilterKey
      * @return mixed
