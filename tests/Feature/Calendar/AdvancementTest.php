@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Calendar;
 
+use App\Exceptions\AdvancedNotEnabledException;
 use App\Exceptions\ClockNotEnabledException;
 use App\Jobs\AdvanceCalendarWithRealTime;
 use App\Models\Calendar;
@@ -25,7 +26,7 @@ class AdvancementTest extends TestCase
         $calendars->each(function(Calendar $calendar){
             collect($calendar->static_data['advancement_testcases'])->each(function($testCase) use ($calendar) {
                 dump(sprintf(
-                    "Verifying a test case for %s with at ratio %d real-world %s to %d in-universe %s",
+                    "Verifying a real-time advancement test case for %s with at ratio %d real-world %s to %d in-universe %s",
                     $calendar->name,
                     $testCase['advancement_settings']['advancement_real_rate'],
                     $testCase['advancement_settings']['advancement_real_rate_unit'],
@@ -92,6 +93,9 @@ class AdvancementTest extends TestCase
                 try {
                     (new AdvanceCalendarWithRealTime($testCalendar))->handle();
                 } catch (\Throwable $thrown) {
+                    if(!$testCalendar->advancement_enabled) {
+                        $this->assertTrue($thrown instanceof AdvancedNotEnabledException);
+                    }
                     if(!$testCalendar->clock_enabled) {
                         $this->assertTrue($thrown instanceof ClockNotEnabledException);
                     }

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Exceptions\AdvancedNotEnabledException;
 use App\Exceptions\ClockNotEnabledException;
 use App\Models\Calendar;
 use App\Services\Discord\API\Client;
@@ -46,7 +47,7 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
             $this->calendar->advancement_next_due = now()->startOfMinute();
         }
 
-        $unitsSinceLastUpdate = 1 + $this->calendar
+        $unitsSinceLastUpdate = $this->calendar->advancement_rate + $this->calendar
                 ->advancement_next_due
                 ->$realWorldDiffMethod(
                     now()->$realWorldSubMethod(
@@ -72,6 +73,9 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
 
     private function ensureCalendarShouldAdvance()
     {
+        if(!$this->calendar->advancement_enabled) {
+            throw new AdvancedNotEnabledException("Tried to advance a calendar that does not have advancement enabled.");
+        }
         if(!$this->calendar->clock_enabled) {
             throw new ClockNotEnabledException("Tried to advance a calendar that does not have the clock enabled.");
         }
