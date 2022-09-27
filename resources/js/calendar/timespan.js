@@ -2,6 +2,7 @@ export default class Timespan {
     constructor(attributes, calendar) {
         this.attributes = attributes;
 
+        this.name = attributes['name'] ?? '';
         // Best guess at all the attributes we'll need:
         this.interval = attributes['interval'] ?? 1;
         this.offset = attributes['offset'] ?? 0;
@@ -34,6 +35,39 @@ export default class Timespan {
         }
 
         return (mod % this.interval) === 0;
+    }
+
+    structureForYear(year) {
+        console.log(this);
+
+        let rowCount = Math.ceil(this.length / this.weekdays.length);
+        let days = Array(this.length)
+            .fill(null)
+            .map((day, index) => {
+                let intercalaryDay = ((index + 1) > this.length);
+
+                return {
+                    number: intercalaryDay ? null : index + 1,
+                    name: this.weekdays[index % this.weekdays.length],
+                    type: intercalaryDay ? "overflow" : "day",
+                    events: [],
+                };
+            });
+
+        let rows = [];
+        for (let i = 0; i < days.length; i += this.weekdays.length) {
+            rows.push(days.slice(i, i + this.weekdays.length));
+        }
+
+        return {
+            name: this.name,
+            show_title: true,
+            weekdays: this.weekdays,
+            short_weekdays: this.short_weekdays,
+            show_weekdays: true,
+            rows: rows,
+            rowCount,
+        };
     }
 
     /**

@@ -38,40 +38,9 @@ export default class Calendar {
     }
 
     renderStructure() {
-        let rendered_timespans = [];
-
-        this.timespans.forEach((timespan) => {
-            let rowCount = Math.ceil(timespan.length / timespan.weekdays.length);
-            let days = Array(timespan.length)
-                .fill(null)
-                .map((day, index) => {
-                    let intercalaryDay = ((index + 1) > timespan.length);
-
-                    return {
-                        number: intercalaryDay ? null : index + 1,
-                        name: timespan.weekdays[index % timespan.weekdays.length],
-                        type: intercalaryDay ? "overflow" : "day",
-                        events: [],
-                    };
-                });
-
-            let rows = [];
-            for (let i = 0; i < days.length; i += timespan.weekdays.length) {
-                rows.push(days.slice(i, i + timespan.weekdays.length));
-            }
-
-            rendered_timespans.push({
-                name: timespan.name,
-                show_title: true,
-                weekdays: timespan.weekdays,
-                short_weekdays: timespan.short_weekdays,
-                show_weekdays: true,
-                rows: rows,
-                rowCount,
-            })
-        })
-
-        return rendered_timespans;
+        return this.timespans
+            .filter(timespan => timespan.intersectsYear(this.currentYear()))
+            .map(timespan => timespan.structureForYear(this.currentYear()));
     }
 
     buildTimespans() {
@@ -84,5 +53,9 @@ export default class Calendar {
         return this.year_structure.leap_days.map((attributes) => {
             return new Leapday(attributes, this);
         });
+    }
+
+    currentYear() {
+        return this.dynamic_data.year;
     }
 }

@@ -233,6 +233,7 @@
                             </template>
 
                             <template #content>
+                                <DropdownLink class="pointer-events-none bg-gray-800 dark:text-gray-800 opacity-70" as="button" @click="layout = 'day'" preserve-state>Day (not impl.)</DropdownLink>
                                 <DropdownLink as="button" @click="layout = 'week'" preserve-state>Week</DropdownLink>
                                 <DropdownLink as="button" @click="layout = 'month'" preserve-state>Month</DropdownLink>
                                 <DropdownLink as="button" @click="layout = 'year'" preserve-state>Year</DropdownLink>
