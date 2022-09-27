@@ -33,7 +33,15 @@ class AdvancementTest extends TestCase
                     $testCase['advancement_settings']['advancement_rate'],
                     $testCase['advancement_settings']['advancement_rate_unit'],
                 ));
-                
+
+                if(isset($testCase['advancement_settings']['advancement_next_due_offset'])) {
+                    dump(sprintf(
+                        " - Additionally, pretending we were behind on updates by %d %s",
+                        $testCase['advancement_settings']['advancement_next_due_offset'],
+                        $testCase['advancement_settings']['advancement_next_due_offset_unit'],
+                    ));
+                }
+
                 $testCalendar = clone($calendar);
 
                 /**
@@ -71,13 +79,21 @@ class AdvancementTest extends TestCase
 
 
                 $realRateMethod = "sub" . ucfirst($testCase['advancement_settings']['advancement_real_rate_unit']);
+                $realRateOffset = $testCase['advancement_settings']['advancement_real_rate'];
+
+                if(isset($testCase['advancement_settings']['advancement_next_due_offset'])) {
+                    $realRateMethod = "sub" . ucfirst($testCase['advancement_settings']['advancement_next_due_offset_unit']);
+                    $realRateOffset = $testCase['advancement_settings']['advancement_next_due_offset'];
+                }
+
+
                 $testCalendar->update([
                     'advancement_enabled' => $testCase['advancement_settings']['advancement_enabled'],
                     'advancement_real_rate' => $testCase['advancement_settings']['advancement_real_rate'],
                     'advancement_real_rate_unit' => $testCase['advancement_settings']['advancement_real_rate_unit'],
                     'advancement_rate' => $testCase['advancement_settings']['advancement_rate'],
                     'advancement_rate_unit' => $testCase['advancement_settings']['advancement_rate_unit'],
-                    'advancement_next_due' => now()->$realRateMethod($testCase['advancement_settings']['advancement_real_rate'])->startOfMinute(),
+                    'advancement_next_due' => now()->$realRateMethod($realRateOffset)->startOfMinute(),
                 ]);
 
                 /**
