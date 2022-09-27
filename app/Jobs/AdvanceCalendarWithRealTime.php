@@ -47,7 +47,7 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
             $this->calendar->advancement_next_due = now()->startOfMinute();
         }
 
-        $unitsSinceLastUpdate = $this->calendar->advancement_rate + $this->calendar
+        $unitsSinceLastUpdate = 1 + $this->calendar
                 ->advancement_next_due
                 ->$realWorldDiffMethod(
                     now()->$realWorldSubMethod(
@@ -60,7 +60,7 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
 
         $this->calendar
             ->$calendarMethod(
-                $unitsSinceLastUpdate
+                $unitsSinceLastUpdate * $this->calendar->advancement_rate
             );
 
         $this->calendar->advancement_next_due = now()->$realWorldMethod($this->calendar->advancement_real_rate ?? 1)->startOfMinute();
