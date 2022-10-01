@@ -32,6 +32,7 @@ class AdvanceRealTimeCalendars extends Command
         // TODO: Add listener to calendar to clear or update the next_update if they ever change the unit
 
         Calendar::dueForAdvancement()->each(function(Calendar $calendar){
+            logger()->info("Advancing {$calendar->name}");
             AdvanceCalendarWithRealTime::dispatch($calendar);
         });
 

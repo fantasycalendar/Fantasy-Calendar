@@ -37,6 +37,8 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
     {
         $this->ensureCalendarShouldAdvance();
 
+        logger()->info("{$this->calendar->name} should advance.");
+
         $real_unit = ucfirst($this->calendar->advancement_real_rate_unit);
 
         $realWorldMethod = "add{$real_unit}";
@@ -66,7 +68,12 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
         $this->calendar->advancement_next_due = now()->$realWorldMethod($this->calendar->advancement_real_rate ?? 1)->startOfMinute();
         $this->calendar->save();
 
-        if($this->calendar->advancement_webhook_url || $this->calendar->discord_webhooks()->exists()) {
+
+        $hasWebhook = $this->calendar->advancement_webhook_url || $this->calendar->discord_webhooks()->exists();
+
+        logger()->info("HasWebhook? " . $hasWebhook ? "yes" : "no");
+
+        if($hasWebhook) {
             HitCalendarUpdateWebhook::dispatch($this->calendar);
         }
     }
