@@ -1,3 +1,24 @@
+### 2.2.15 - Certain Couatl
+#### September 24th, 2022
+- Fixed issue with multiple Intercalary Leap days causing calendars to not load properly 
+
+### 2.2.14 - Continual Couatl
+#### September 21st, 2022
+- Fixed: Messaging/placeholder regarding embedding as a premium feature 
+- Updated: Dependencies.
+
+### 2.2.13 - Confused Couatl
+#### July 7th, 2022
+- Fixed: Discord interactions not working due to int -> string cast during response
+- Updated: A few dependencies
+- Updated: Adjustment to some admin tools
+
+### 2.2.12 - Commercial Couatl
+#### July 6th, 2022
+- Fixed rendering issue on calendars when changing certain calendar properties
+- Fixed adjusting month lengths would cause the current date to slide
+- Fixed Discord calendar renderer being off by one when the year started with an intercalary month
+ 
 ### 2.2.11 - Confident Couatl
 #### June 1st, 2022
 - Fixed date-based events to not cause calendar to look simulate past years if it has a duration

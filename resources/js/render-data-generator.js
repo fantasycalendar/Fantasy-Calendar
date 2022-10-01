@@ -241,6 +241,7 @@ const render_data_generator = {
         let epoch = year_data.start_epoch;
         let week_day = year_data.week_day;
 
+        let renderIndex = 0;
         for(let index = 0; index < timespans_to_build.length; index++){
 
             this.day_offset = 0;
@@ -255,6 +256,7 @@ const render_data_generator = {
 
                 let timespan_data = {
                     "title": "",
+                    "id": [renderIndex++, JSON.stringify(timespan), epoch, dynamic_data.year, JSON.stringify(filtered_leap_days_beforestart)].join('.'),
                     "show_title": false,
                     "short_weekdays": timespan.truncated_week,
                     "weekdays": static_data.year_data.global_week,
@@ -301,6 +303,7 @@ const render_data_generator = {
 
             let timespan_data = {
                 "title": static_data.settings.add_month_number ? `${timespan.name} - Month ${timespan_epoch_data.timespan_number + 1}` : timespan.name,
+                "id": [renderIndex++, JSON.stringify(timespan), epoch, dynamic_data.year].join('.'),
                 "show_title": true,
                 "weekdays": timespan.week,
                 "short_weekdays": timespan.truncated_week,
@@ -350,6 +353,7 @@ const render_data_generator = {
 
                             timespan_data = {
                                 "title": "",
+                                "id": [renderIndex++, JSON.stringify(timespan), epoch, dynamic_data.year, JSON.stringify(filtered_leap_days)].join('.'),
                                 "show_title": false,
                                 "weekdays": static_data.year_data.global_week,
                                 "short_weekdays": timespan.truncated_week,
@@ -390,6 +394,7 @@ const render_data_generator = {
 
                             timespan_data = {
                                 "title": static_data.settings.add_month_number ? `${timespan.name} - Month ${index+1}` : timespan.name,
+                                "id": [renderIndex++, JSON.stringify(timespan), epoch, dynamic_data.year].join('.'),
                                 "show_title": true,
                                 "weekdays": timespan.week,
                                 "short_weekdays": timespan.truncated_week,
@@ -444,6 +449,7 @@ const render_data_generator = {
 
                     let timespan_data = {
                         "title": "",
+                        "id": [renderIndex++, JSON.stringify(timespan), epoch, dynamic_data.year, JSON.stringify(filtered_leap_days_end)].join('.'),
                         "show_title": false,
                         "short_weekdays": timespan.truncated_week,
                         "weekdays": static_data.year_data.global_week,

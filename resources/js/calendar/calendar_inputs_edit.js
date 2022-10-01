@@ -2244,6 +2244,8 @@ function set_up_edit_inputs(){
 	$(document).on('change', '.timespan_length', function(){
 		var index = $(this).closest('.sortable-container').attr('index')|0;
 		repopulate_day_select($(`.timespan-day-list`), undefined, undefined, undefined, undefined, index);
+        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+        preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
 	});
 
 	$('#enable_weather').change(function(){
@@ -2286,6 +2288,9 @@ function set_up_edit_inputs(){
 		$('.timespan-day-list').each(function(){
 			repopulate_day_select($(this), $(this).val(), changed_days == $(this));
 		});
+        
+        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+        preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
 
 	});
 

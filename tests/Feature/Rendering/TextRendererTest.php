@@ -38,7 +38,7 @@ class TextRendererTest extends TestCase
 
                 $renderedMonth = TextRenderer::renderMonth($calendar);
 
-                $this->assertTrue($renderedMonth == $testCase['expected_result']);
+                $this->assertEquals($renderedMonth, $testCase['expected_result']);
 
             });
         });

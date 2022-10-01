@@ -58,6 +58,12 @@ class EdgeCaseCalendarsTest extends TestCase
 
             });
 
+            EpochFactory::flush();
+
+            // Important, because otherwise the process of testing all these calendars will use way too much memory.
+            $calendar->months_cached = [];
+            $calendar->timespans_cached = collect();
+            $calendar->leap_days_cached = collect();
         });
     }
 
@@ -83,7 +89,6 @@ class EdgeCaseCalendarsTest extends TestCase
 
         $fromYear++;
         for($year = $fromYear; $year < $toYear; $year++){
-
             $calendar->setDate($year);
             if(!$calendar->setting("year_zero_exists") && $year === 0){
                 continue;

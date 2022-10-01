@@ -3,7 +3,7 @@
 
 Dear {{ $user->username }},
 
-We are excited to announce that we have created one of the most requested features thus far; Real-Time Advancement - your calendars can now be configured to automatically increment the date!
+We are excited to announce that we have created one of the most requested features thus far; Real-Time Advancement - calendars can now be configured to automatically increment the date!
 
 @if($user->isPremium())
 It's quick to set up, easy to use, and available **right now** on all of your calendars!
@@ -13,9 +13,7 @@ As always, thank you for your support through your subscription - Fantasy-Calend
 Quick to set up, easy to use, and available **right now** for subscribers. Only $2.49/month (or $24.99/year)!
 @endif
 
-@component('mail::button', ['url' => URL::route('discord')])
-    Check it out!
-@endcomponent
+<img src="{{ $message->embedData(\Illuminate\Support\Facades\Storage::disk(config('filesystems.assets'))->get('resources/screenshots/advancement.png'), 'advancement.png') }}" alt="Where it's at">
 
 Thanks,<br>
 The {{ config('app.name') }} team

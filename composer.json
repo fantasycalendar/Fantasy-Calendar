@@ -33,6 +33,7 @@
         "laravel/sanctum": "^2.14",
         "laravel/socialite": "^5.2",
         "laravel/ui": "^3.0",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "league/fractal": "^0.18.0",
         "marvinlabs/laravel-discord-logger": "^1.1",
         "mews/purifier": "3.3.7",
