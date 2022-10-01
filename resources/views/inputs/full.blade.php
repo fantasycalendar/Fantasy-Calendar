@@ -581,7 +581,11 @@
                                     <div class='row no-gutters'>
                                         <div class="col input-group">
                                             <select x-model="data.advancement_webhook_format" class='form-control form-control-sm'>
-                                                <option value="raw_json">Raw JSON</option>
+                                                <option value="raw_json"
+                                                    @if($calendar->discord_webhooks()->exists())
+                                                        disabled
+                                                    @endif
+                                                >Raw JSON</option>
                                                 @feature('discord')
                                                     <option value="discord">Discord</option>
                                                 @endfeature
