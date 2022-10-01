@@ -13,7 +13,12 @@ As always, thank you for your support through your subscription - Fantasy-Calend
 Quick to set up, easy to use, and available **right now** for subscribers. Only $2.49/month (or $24.99/year)!
 @endif
 
-<img src="{{ $message->embedData(\Illuminate\Support\Facades\Storage::disk(config('filesystems.assets'))->get('resources/screenshots/advancement.png'), 'advancement.png') }}" alt="Where it's at">
+<img src="data:image/png;base64,{{
+	base64_encode(
+		\Illuminate\Support\Facades\Storage::disk(config('filesystems.assets'))
+		    ->get('resources/screenshots/advancement.png')
+    )
+}}" alt="Where it's at">
 
 Thanks,<br>
 The {{ config('app.name') }} team

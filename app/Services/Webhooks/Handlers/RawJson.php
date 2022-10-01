@@ -11,6 +11,7 @@ class RawJson extends Handler
 {
 	public function send(array $eventDetails): void
 	{
+        logger()->debug($this->url);
 		Http::post($this->url, [
             'calendar' => new Calendar($this->calendar),
             'event' => $eventDetails

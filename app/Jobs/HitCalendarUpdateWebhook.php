@@ -37,10 +37,16 @@ class HitCalendarUpdateWebhook implements ShouldQueue
     {
         if($this->calendar->advancement_webhook_url) {
             $method = $this->calendar->advancement_webhook_format;
-            $webhook = Webhook::make($method, '', $this->calendar);
+            $webhook = Webhook::make($method, $this->calendar->advancement_webhook_url, $this->calendar);
 
             $webhook->send([
-                'event' => 'calendarUpdated'
+                'event' => 'calendarUpdated',
+                'current_date' => $this->calendar->current_date,
+                'year' => $this->calendar->year,
+                'monthId' => $this->calendar->month_id,
+                'day' => $this->calendar->day,
+                'hour' => $this->calendar->clockEnabled ? $this->calendar->dynamic_data['hour'] : null,
+                'minute' => $this->calendar->clockEnabled ? $this->calendar->dynamic_data['minute'] : null,
             ]);
         }
     }

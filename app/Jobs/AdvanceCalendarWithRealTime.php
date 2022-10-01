@@ -76,7 +76,11 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
         if(!$this->calendar->advancement_enabled) {
             throw new AdvancedNotEnabledException("Tried to advance a calendar that does not have advancement enabled.");
         }
-        if(!$this->calendar->clock_enabled) {
+        if(!$this->calendar->clock_enabled && in_array($this->calendar->advancement_rate_unit, ['minutes', 'hours'])) {
+            $this->calendar->update([
+                'advancement_enabled' => false
+            ]);
+
             throw new ClockNotEnabledException("Tried to advance a calendar that does not have the clock enabled.");
         }
     }
