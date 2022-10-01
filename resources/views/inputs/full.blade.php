@@ -575,7 +575,7 @@
 
                                     <div class='row mt-2 mb-1 bold-text no-gutters'>
                                         <div class="col">
-                                            Webhooks
+                                            Notification webhooks
                                         </div>
                                     </div>
 
