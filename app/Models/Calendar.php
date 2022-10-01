@@ -776,7 +776,9 @@ class Calendar extends Model
     public function scopeDueForAdvancement(Builder $query): Builder
     {
         return $query->where('advancement_enabled', true)
-            ->where(function(Builder $query) {
+            ->whereHas('user', function(Builder $query) {
+                return $query->premium();
+            })->where(function(Builder $query) {
                 $query->where('advancement_next_due', '<=', now())
                     ->orWhereNull('advancement_next_due');
             });
