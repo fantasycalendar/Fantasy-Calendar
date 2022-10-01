@@ -474,6 +474,7 @@
                                  @clock-changed.window="toggle_clock"
                                  x-data="function(){
                                     return {
+                                        discord_webhooks: {{ $calendar->discord_webhooks()->count() }},
                                         data: {
                                             advancement_enabled: {{ $calendar->advancement_enabled ? "true" : "false" }},
                                             advancement_real_rate: {{ $calendar->advancement_real_rate ?? 1 }},
@@ -581,11 +582,7 @@
                                     <div class='row no-gutters'>
                                         <div class="col input-group">
                                             <select x-model="data.advancement_webhook_format" class='form-control form-control-sm'>
-                                                <option value="raw_json"
-                                                    @if($calendar->discord_webhooks()->exists())
-                                                        disabled
-                                                    @endif
-                                                >Raw JSON</option>
+                                                <option value="raw_json" :disabled="discord_webhooks > 0">Raw JSON</option>
                                                 @feature('discord')
                                                     <option value="discord">Discord</option>
                                                 @endfeature
@@ -605,16 +602,14 @@
                                     </div>
 
                                     @feature('discord')
-                                        @if($calendar->discord_webhooks()->exists())
-                                            <div class="row no-gutters mt-3 alert alert-info px-3" style="background-color: #5865F2;">
-                                                <div class="col-1">
-                                                    <i class="fab fa-discord"></i>
-                                                </div>
-                                                <div class="col-11">
-                                                    This calendar also has webhooks configured through the Discord integration. You can manage them via <a href="{{ route('profile.integrations') }}">your profile</a>.
-                                                </div>
+                                        <div class="row no-gutters mt-3 alert alert-info px-3" style="background-color: #5865F2;" x-show="discord_webhooks > 0">
+                                            <div class="col-1">
+                                                <i class="fab fa-discord"></i>
                                             </div>
-                                        @endif
+                                            <div class="col-11">
+                                                This calendar has <strong x-text="discord_webhooks"></strong> <span x-text="discord_webhooks > 1 ? 'webhooks' : 'webhook'"></span> configured through the Discord integration. You can manage <span x-text="discord_webhooks > 1 ? 'them' : 'it'"></span> via <a target="_blank" href="{{ route('profile.integrations', ['discord_panel_open' => true]) }}">your profile</a>.
+                                            </div>
+                                        </div>
                                     @endfeature
 
                                 </div>
