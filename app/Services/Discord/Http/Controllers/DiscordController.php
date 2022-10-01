@@ -127,6 +127,11 @@ class DiscordController extends Controller
             $calendar->discord_webhooks()->create(
                 $payload
             );
+
+            $calendar->update([
+                'advancement_webhook_format' => 'discord',
+                'advancement_webhook_url' => '',
+            ]);
         } catch (\Throwable $e) {
             return redirect(route('profile.integrations'))
                 ->with('error', 'There was an error creating your webhook: ' . $e->getMessage());
