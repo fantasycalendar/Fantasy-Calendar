@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Services\Discord\Models\DiscordAuthToken;
 use App\Services\Discord\Models\DiscordGuild;
 use App\Services\Discord\Models\DiscordInteraction;
+use App\Services\Discord\Models\DiscordWebhook;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -115,6 +116,10 @@ class User extends Authenticatable implements
 
     public function discord_interactions() {
         return $this->hasMany(DiscordInteraction::class);
+    }
+
+    public function discord_webhooks() {
+        return $this->hasMany(DiscordWebhook::class);
     }
 
     /**

@@ -450,7 +450,7 @@
             <!------------ REAL TIME ADVANCEMENT ----------->
             <!---------------------------------------------->
             <div class='wrap-collapsible card settings-real-time-advancement'>
-                <input id="collapsible_real-time-advancement" class="toggle" type="checkbox">
+                <input id="collapsible_real-time-advancement" class="toggle" type="checkbox" checked>
                 <label for="collapsible_real-time-advancement" class="lbl-toggle py-2 px-3 card-header">
                     <i class="fas fa-history mr-2" style="transform: scaleX(-1);"></i>
                     Real-Time Advancement
@@ -501,7 +501,7 @@
                                 <div class='row mb-1'>
                                     <div class='col bold-text'>Enable real-time advancement:</div>
                                     <div class='col-auto text-right'>
-                                        @if(request()->is('calendars/*/edit') && $calendar->isLinked())
+                                        @if(request()->is('calendars/*/edit') && $calendar->isChild())
                                             <span x-text="data.advancement_enabled ? 'Yes' : 'No'"></span>
                                         @else
                                             <label class="custom-control custom-checkbox center-text">
@@ -516,13 +516,17 @@
 
                                 <div x-show="data.advancement_enabled">
 
-                                    <div class='row mt-2 mb-1 bold-text no-gutters'>
-                                        Advancement Rate:
+                                    <div class="row no-gutters mt-3">
+                                        <div class="separator"></div>
+                                    </div>
+
+                                    <div class='row mt-2 mb-1 bold-text no-gutters text-center w-100'>
+                                        For every
                                     </div>
 
                                     <div class='row no-gutters protip' data-pt-position="right"
                                          data-pt-title="This is how often in real world time that the calendar's time will be updated with the amount configured above">
-                                        <div class="input-group col">
+                                        <div class="input-group-sm input-group">
                                             <input type='number' class='form-control input-group-prepend'
                                                    placeholder='1'
                                                    x-model="data.advancement_real_rate"
@@ -530,20 +534,20 @@
                                             <label class="input-group-text form-control text-black">real world</label>
                                             <select class='custom-select form-control input-group-append'
                                                     x-model="data.advancement_real_rate_unit">
-                                                <option selected value='minutes'>minutes</option>
-                                                <option value='hours'>hours</option>
-                                                <option value='days'>days</option>
+                                                <option selected value='minutes' x-text="data.advancement_real_rate > 1 ? 'minutes' : 'minute'">minutes</option>
+                                                <option value='hours' x-text="data.advancement_real_rate > 1 ? 'hours' : 'hour'">hours</option>
+                                                <option value='days' x-text="data.advancement_real_rate > 1 ? 'days' : 'day'">days</option>
                                             </select>
                                         </div>
                                     </div>
 
-                                    <div class='row bold-text no-gutters text-center h4 my-2 pr-4'>
-                                        <i class="fas fa-equals col"></i>
+                                    <div class='row bold-text no-gutters text-center w-100 my-2 pr-4'>
+                                        Advance this calendar by
                                     </div>
 
                                     <div class='row no-gutters protip' data-pt-position="right"
                                          data-pt-title="This is the amount of time that will be added to the calendar's date, based on the real-time amount configured above">
-                                        <div class="input-group col">
+                                        <div class="input-group-sm input-group">
                                             <input type='number' class='form-control input-group-prepend'
                                                    placeholder='1'
                                                    x-model="data.advancement_rate"
@@ -551,9 +555,9 @@
                                             <label class="input-group-text form-control text-black">calendar</label>
                                             <select class='custom-select form-control input-group-append'
                                                     x-model="data.advancement_rate_unit">
-                                                <option :disabled='!clock_enabled' value='minutes'>minutes</option>
-                                                <option :disabled='!clock_enabled' value='hours'>hours</option>
-                                                <option value='days'>days</option>
+                                                <option :disabled='!clock_enabled' value='minutes' x-text="data.advancement_rate > 1 ? 'minutes' : 'minute'">minutes</option>
+                                                <option :disabled='!clock_enabled' value='hours' x-text="data.advancement_rate > 1 ? 'hours' : 'hour'">hours</option>
+                                                <option value='days' x-text="data.advancement_rate > 1 ? 'days' : 'day'">days</option>
                                             </select>
                                         </div>
                                     </div>
@@ -1764,9 +1768,9 @@
 
                             @if($calendar->parent != null)
                                 <div class='row no-gutters my-1 center-text hidden calendar_link_explanation'>
-                                    <p class='m-0'>This calendar is already linked to a <a
-                                                href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent
-                                            calendar</a>. Before linking any calendars to this one, you must unlink this
+                                    <p class='m-0'>This calendar is a child of
+                                        <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">{{ $calendar->parent->name }}</a>.
+                                        Before linking any calendars to this one, you must unlink this
                                         calendar from its parent.</p>
                                 </div>
                             @else

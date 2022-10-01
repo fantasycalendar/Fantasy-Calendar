@@ -107,7 +107,7 @@
                     <p class="text-sm text-gray-500 dark:text-gray-400">Integrated with discord as <strong>{{ auth()->user()->discord_auth->discord_username }}</strong>.</p>
                 </div>
                 <div class="justify-self-end">
-                    <x-button @click="openDiscordWebhooksSidebar = true">
+                    <x-button @click="openDiscordWebhooksSidebar = true" :disabled="!auth()->user()->discord_webhooks()->exists()">
                         Manage webhooks
                     </x-button>
                 </div>
