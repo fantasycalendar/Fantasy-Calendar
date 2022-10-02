@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Calendar;
 
-use App\Exceptions\AdvancedNotEnabledException;
+use App\Exceptions\AdvancementNotEnabledException;
 use App\Exceptions\ClockNotEnabledException;
 use App\Jobs\AdvanceCalendarWithRealTime;
 use App\Models\Calendar;
@@ -110,7 +110,7 @@ class AdvancementTest extends TestCase
                     (new AdvanceCalendarWithRealTime($testCalendar))->handle();
                 } catch (\Throwable $thrown) {
                     if(!$testCalendar->advancement_enabled) {
-                        $this->assertTrue($thrown instanceof AdvancedNotEnabledException);
+                        $this->assertTrue($thrown instanceof AdvancementNotEnabledException);
                     }
                     if(!$testCalendar->clock_enabled) {
                         $this->assertTrue($thrown instanceof ClockNotEnabledException);
