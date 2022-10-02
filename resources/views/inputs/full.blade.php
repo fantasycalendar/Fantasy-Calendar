@@ -480,7 +480,7 @@
                                             advancement_real_rate: {{ $calendar->advancement_real_rate ?? 1 }},
                                             advancement_real_rate_unit: '{{ $calendar->advancement_real_rate_unit ?? "minutes" }}',
                                             advancement_rate: {{ $calendar->advancement_rate ?? 1 }},
-                                            advancement_rate_unit: '{{ $calendar->advancement_rate_unit ?? $calendar->clock_enabled ? $calendar->advancement_rate_unit : "days" }}',
+                                            advancement_rate_unit: '{{ $calendar->advancement_rate_unit ?? ($calendar->clock_enabled ? "minutes" : "days") }}',
                                             advancement_webhook_url: '{{ $calendar->advancement_webhook_url }}',
                                             advancement_webhook_format: '{{ $calendar->advancement_webhook_format }}',
                                             advancement_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
