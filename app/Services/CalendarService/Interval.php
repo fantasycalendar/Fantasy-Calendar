@@ -33,6 +33,12 @@ class Interval
 
         // If this interval is not 1 and does not ignore offset, normalize offset to the interval
         $ignores_offset = str_contains($interval, '+');
+        
+        // If somehow we get an interval of 0 ... Just assume it was supposed to be 1.
+        // If it's not obvious, this **should** be impossible. However, it has happened a time or two.
+        if($this->interval < 1) {
+            $this->interval = 1;
+        }
         $this->offset = $this->interval == 1 || $ignores_offset ? 0 : ($this->interval + $offset) % $this->interval;
 
         $this->bumpsYearZero = ($this->offset === 0 && !$this->subtracts);
