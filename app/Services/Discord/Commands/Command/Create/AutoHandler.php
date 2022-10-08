@@ -7,6 +7,7 @@ use App\Services\Discord\Commands\Command;
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
 use App\Services\Discord\Commands\Command\Traits\PremiumCommand;
 use App\Services\Discord\Exceptions\DiscordCalendarLinkedException;
+use Illuminate\Support\Str;
 
 class AutoHandler extends Command
 {
@@ -47,9 +48,13 @@ class AutoHandler extends Command
                     "**%s** is already set to auto-advance at a rate of %s in-universe %s per every %s real-world %s.",
                     $calendar->name,
                     $calendar->advancement_rate,
-                    $calendar->advancement_rate_unit,
+                    Str::of($calendar->advancement_rate_unit)
+                        ->singular()
+                        ->plural($calendar->advancement_rate),
                     $calendar->advancement_real_rate,
-                    $calendar->advancement_real_rate_unit,
+                    Str::of($calendar->advancement_real_rate_unit)
+                        ->singular()
+                        ->plural($calendar->advancement_real_rate),
                 )
             )->ephemeral();
         }
@@ -65,9 +70,13 @@ class AutoHandler extends Command
                     "**%s** is now set to auto-advance, and will move forward in real-time at a rate of %s in-universe %s per every %s real-world %s. You can change these values from the calendar edit page.",
                     $calendar->name,
                     $calendar->advancement_rate,
-                    $calendar->advancement_rate_unit,
+                    Str::of($calendar->advancement_rate_unit)
+                        ->singular()
+                        ->plural($calendar->advancement_rate),
                     $calendar->advancement_real_rate,
-                    $calendar->advancement_real_rate_unit,
+                    Str::of($calendar->advancement_real_rate_unit)
+                        ->singular()
+                        ->plural($calendar->advancement_real_rate),
                 )
             )->addRow(function(ActionRow $row) use ($calendar) {
                 return $row->addButton(route('discord.webhookRedirect', [
