@@ -7,6 +7,7 @@ function set_up_edit_inputs(){
 	prev_static_data = clone(static_data);
 	prev_events = clone(events);
 	prev_event_categories = clone(event_categories);
+    prev_advancement = clone(advancement);
 
 	owned_calendars = {};
 
@@ -15,6 +16,7 @@ function set_up_edit_inputs(){
 	dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
 	events_same = JSON.stringify(events) === JSON.stringify(prev_events);
 	event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
+	advancement_same = JSON.stringify(advancement) === JSON.stringify(advancement);
 
 	window.onbeforeunload = function(e){
 
@@ -23,8 +25,9 @@ function set_up_edit_inputs(){
 		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
 		events_same = JSON.stringify(events) === JSON.stringify(prev_events);
 		event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
+		advancement_same = JSON.stringify(advancement) === JSON.stringify(prev_advancement);
 
-		var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same;
+		var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same && advancement_same;
 
 		if(!not_changed){
 
@@ -45,7 +48,7 @@ function set_up_edit_inputs(){
 
 		calendar_saving();
 
-		if(!events_same || !event_categories_same || !static_same){
+		if(!events_same || !event_categories_same || !static_same || !advancement_same){
 			update_all();
 		}else if(!dynamic_same){
 			update_dynamic(hash);
@@ -304,6 +307,8 @@ function set_up_edit_inputs(){
 		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 		eval_clock();
+        
+        window.dispatchEvent(new CustomEvent("clock-changed", { detail: { enabled: static_data.clock.enabled } }));
 
 	});
 
@@ -2685,6 +2690,12 @@ function set_up_edit_inputs(){
 		update_data(e);
 
 	});
+    
+    
+    document.addEventListener("advancement-changed", function(event){
+        advancement = event.detail.data;
+        evaluate_save_button();
+    });
 }
 
 function update_data(e){
@@ -5603,8 +5614,9 @@ function evaluate_save_button(override){
 			dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
 			events_same = JSON.stringify(events) === JSON.stringify(prev_events);
 			event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
+			advancement_same = JSON.stringify(advancement) === JSON.stringify(prev_advancement);
 
-			var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same;
+			var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same && advancement_same;
 
 			var text = not_changed ? "No changes to save" : "Save calendar";
 

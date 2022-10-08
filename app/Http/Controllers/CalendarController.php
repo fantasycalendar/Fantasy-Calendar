@@ -224,7 +224,7 @@ class CalendarController extends Controller
             throw new AuthorizationException('Not allowed.');
         }
 
-        $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset', 'event_categories', 'events']);
+        $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset', 'event_categories', 'events', 'advancement']);
         $categoryids = [];
 
         if(array_key_exists('dynamic_data', $update_data)) {
@@ -261,6 +261,14 @@ class CalendarController extends Controller
 
         if(array_key_exists('event_categories', $update_data)) {
             $categoryids = SaveEventCategories::dispatchNow(json_decode($update_data['event_categories'], true), $calendar->id);
+        }
+
+        if(array_key_exists('advancement', $update_data)) {
+            $update_data = array_merge($update_data, json_decode($update_data['advancement'], true));
+
+            $update_data['advancement_next_due'] = null;
+
+            unset($update_data['advancement']);
         }
 
         if(array_key_exists('events', $update_data)) {
