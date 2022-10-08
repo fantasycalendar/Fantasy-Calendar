@@ -41,6 +41,19 @@ class AutoHandler extends Command
     {
         $calendar = $this->getDefaultCalendar();
 
+        if($calendar->advancement_enabled) {
+            return Command\Response::make(
+                sprintf(
+                    "**%s** is already set to auto-advance at a rate of %s in-universe %s per every %s real-world %s.",
+                    $calendar->name,
+                    $calendar->advancement_rate,
+                    $calendar->advancement_rate_unit,
+                    $calendar->advancement_real_rate,
+                    $calendar->advancement_real_rate_unit,
+                )
+            )->ephemeral();
+        }
+
         $calendar->ensureAdvancmentIsInitialized();
 
         $calendar->update([
@@ -67,12 +80,22 @@ class AutoHandler extends Command
     public function disable()
     {
         $calendar = $this->getDefaultCalendar();
+
+        if(!$calendar->advancement_enabled) {
+            return Command\Response::make(sprintf("Auto-advancement is already disabled on **%s**.", $calendar->name))->ephemeral();
+        }
+
         $calendar->update([
             'advancement_enabled' => 0
         ]);
 
         HitCalendarUpdateWebhook::dispatch($calendar, "Auto-advancement disabled.");
 
-        return Command\Response::make("Auto-advancement disabled, your calendar will no longer auto-advance.")->ephemeral();
+        return Command\Response::make(
+            sprintf(
+                "Auto-advancement disabled, **%s** will no longer auto-advance.",
+                $calendar->name
+            )
+        )->ephemeral();
     }
 }
