@@ -266,6 +266,8 @@ class CalendarController extends Controller
         if(array_key_exists('advancement', $update_data)) {
             $update_data = array_merge($update_data, json_decode($update_data['advancement'], true));
 
+            $update_data['advancement_next_due'] = null;
+
             unset($update_data['advancement']);
         }
 
