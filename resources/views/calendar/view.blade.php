@@ -35,9 +35,9 @@
             check_dates();
         })
 
-        registered_mousemove_callbacks['view_update'] = function(){
+        registered_mousemove_callbacks['view_update'] = function () {
             last_mouse_move = Date.now();
-            if(instapoll){
+            if (instapoll) {
                 instapoll = false;
                 check_dates();
             }
@@ -93,7 +93,7 @@
 
     function check_dates(){
 
-        if(document.hasFocus() && (Date.now() - last_mouse_move) < 10000){
+        if((document.hasFocus() && (Date.now() - last_mouse_move) < 10000) || advancement.advancement_enabled){
 
             instapoll = false;
 
@@ -132,7 +132,6 @@
                         if(result.error){
                             throw result.message;
                         }
-
                         dynamic_data = clone(result.dynamic_data);
 
                         check_update(false);

@@ -1,4 +1,94 @@
-<x-panel>
+@push('head')
+    <script>
+        function WebhooksList() {
+            return {
+                expanded: -1,
+                init() {
+                    let url = new URL(location.href);
+
+                    if(url.searchParams.get('discord_panel_open')) {
+                        url.searchParams.delete('discord_panel_open');
+
+                        window.history.replaceState(
+                            history.state,
+                            document.title,
+                            url.toString()
+                        );
+                    }
+                },
+                modal_ok($event) {
+                    switch($event.detail.name) {
+                        case 'delete_webhook_confirmation':
+                            this.delete_webhook($event.detail.url);
+                            break;
+                        case 'delete_webhook_confirm':
+                            const url = new URL(location.href);
+                            url.searchParams.set('discord_panel_open', 'true');
+
+                            location.assign(url.toString());
+                            break;
+                        default:
+                            console.log(`Unhandled event named ${$event.detail.name}`);
+                            break;
+                    }
+                },
+                modal_cancel($event) {
+                    if($event.detail.name === 'copy_confirm') {
+                        location.reload();
+                    }
+                },
+                update_webhook(url, payload) {
+                    console.log(`Updating ${url} with info`, payload);
+
+                    axios
+                        .patch(url, payload)
+                        .then(results => {
+                            if(results.data.error) {
+                                throw "Error: " + results.data.message;
+                            }
+
+                            this.dispatch('notification', {
+                                title: 'Webhook updated!',
+                                body: "",
+                                sticky: false,
+                            });
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                },
+                delete_webhook(url) {
+                    console.log(`Would have tried to delete ${url}`);
+                    axios
+                        .delete(url)
+                        .then(results => {
+                            if(results.data.error) {
+                                throw "Error: " + results.data.message;
+                            }
+
+                            this.dispatch('modal', {
+                                name: 'delete_webhook_confirm',
+                            });
+                        })
+                        .catch(err => {
+                            console.error(err);
+                        });
+                },
+                // Yea replicating $dispatch here, like this, is sorta a hack
+                // However, it's easier (and cleaner, imho) than just passing
+                // $dispatch around through various layers of function scopes
+                dispatch(name, event) {
+                    this.$el.dispatchEvent(new CustomEvent(name, {
+                        bubbles: true,
+                        detail: event
+                    }));
+                }
+            }
+        }
+    </script>
+@endpush
+
+<x-panel x-data="{ openDiscordWebhooksSidebar: false }" x-init="openDiscordWebhooksSidebar = (new URL(location.href)).searchParams.get('discord_panel_open')">
     <div class>
         <h2 id="billing-history-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Discord Integration</h2>
         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Connect your Discord account to Fantasy Calendar for quick access to common features.</p>
@@ -8,13 +98,18 @@
 
     <div class="flex items-center justify-between">
         @if(auth()->user()->hasDiscord())
-            <div class="flex items-center">
+            <div class="flex items-center w-full">
                 <div class="flex-shrink-0 h-12 w-12 rounded-full overflow-hidden mr-3 bg-gray-900 dark:bg-gray-500 border-2 border-gray-900 dark:border-gray-500">
                     <img src="{{ auth()->user()->discord_auth->avatar }}" alt="" class="bg-white h-full w-full">
                 </div>
-                <div>
+                <div class="flex-grow">
                     <h4 class="font-medium">Discord Integration <span class="ml-0.5 py-0.5 px-2 bg-green-200 text-green-800 font-bold text-xs rounded-lg dark:bg-green-900 dark:text-green-500">Connected</span></h4>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Integrated with discord as <strong>{{ auth()->user()->discord_auth->discord_username }}</strong>.</p>
+                </div>
+                <div class="justify-self-end">
+                    <x-button @click="openDiscordWebhooksSidebar = true" :disabled="!auth()->user()->discord_webhooks()->exists()">
+                        Manage webhooks
+                    </x-button>
                 </div>
             </div>
             <x-slot name="footer">
@@ -145,4 +240,88 @@
             </x-slot>
         @endif
     </div>
+
+    <template x-teleport="body">
+        <x-slide-over model="openDiscordWebhooksSidebar">
+            <x-slot name="title">Discord webhooks</x-slot>
+
+            <x-slot name="description">
+                Manage webhooks you've setup for sending information to Discord
+            </x-slot>
+
+            <x-slot name="footer">
+                <x-button role="secondary" @click="openDiscordWebhooksSidebar = false">Close</x-button>
+            </x-slot>
+
+            <nav class="h-full rounded overflow-y-auto" aria-label="Webhooks list" x-data="WebhooksList()" @modal-ok.window="modal_ok">
+                @foreach(auth()->user()->calendars()->whereHas('discord_webhooks')->with('discord_webhooks')->get() as $calendar)
+                    <div class="relative">
+                        <div class="z-10 sticky top-0 border-t border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-600 px-6 py-1 text-sm font-medium text-gray-500 dark:text-gray-300">
+                            <h3>{{ $calendar->name }}</h3>
+                        </div>
+                        <ul role="list" class="relative z-0 divide-y divide-gray-200 dark:divide-gray-600">
+                            @foreach($calendar->discord_webhooks as $webhook)
+                                <li class="bg-white relative dark:bg-gray-700" x-data="{ name: `{{ $webhook->name }}`, active: {{ $webhook->active ? 'true' : 'false' }} }">
+                                    <div class="px-5 pt-5 flex items-center">
+                                        <div class="flex-shrink-0 pr-2" x-show="expanded === {{ $webhook->id }}">
+                                            <i class="fa fa-trash text-red-400 dark:text-red-600 hover:text-red-600 dark:hover:text-red-400 hover:cursor-pointer"
+                                               title="Delete this webhook"
+                                               @click="$dispatch('modal', {
+                                                    name: 'delete_webhook_confirmation',
+                                                    title: 'Are you sure?',
+                                                    body: 'Are you sure you want to delete <strong>{{ addslashes($webhook->name) }}</strong>?',
+                                                    ok_event: { url: '{{ route('discord.webhooks.delete', ['discordWebhook' => $webhook]) }}' },
+                                                })"
+                                            ></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <x-text-input x-model="name" x-show="expanded === {{ $webhook->id }}"></x-text-input>
+                                            <p class="text-sm font-medium dark:text-gray-200 text-gray-900" x-text="name" x-show="expanded !== {{ $webhook->id }}"></p>
+                                        </div>
+                                        <div class="flex-shrink-0 pl-2" x-show="expanded !== {{ $webhook->id }}">
+                                            <i @click="expanded = {{ $webhook->id }}" class="fa fa-pencil-alt text-primary-600 dark:text-primary-700 hover:text-primary-400 dark:hover:text-primary-500 hover:cursor-pointer" title="Edit this webhook"></i>
+                                        </div>
+                                    </div>
+
+                                    <div class="px-5 pb-1.5" x-show="expanded === {{ $webhook->id }}">
+                                        <p class="text-xs pt-1 text-gray-500 dark:text-gray-400 truncate">Created {{ $webhook->created_at->format('Y-m-d') }}</p>
+                                    </div>
+
+                                    <div class="px-5 pb-5">
+                                        <div x-show="expanded === {{ $webhook->id }}" class="pt-4">
+                                            <x-input-toggle x-model="active" name="active" id="active" label="Enabled" value="{{ $webhook->active ? 'true' : 'false' }}"></x-input-toggle>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-end px-5 pb-2 space-x-2" x-show="expanded === {{ $webhook->id }}">
+                                        <x-button role="secondary"
+                                                  @click="expanded = -1"
+                                        >
+                                            <i class="fa fa-times pr-1.5"></i> Cancel
+                                        </x-button>
+                                        <x-button role="primary"
+                                                  @click="update_webhook('{{ route('discord.webhooks.update', ['discordWebhook' => $webhook]) }}', { name, active }); expanded = -1;"
+                                        >
+                                            <i class="fa fa-save pr-1.5"></i> Save
+                                        </x-button>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endforeach
+
+                <x-modal name="delete_webhook_confirmation"
+                         icon="exclamation-triangle"
+                         icon-color="red"
+                         affirmative-color="red"
+                         affirmative-label="Yep, delete it."
+                         noteleport
+                ></x-modal>
+
+                <x-modal name="delete_webhook_confirm" title="Webhook deleted" noteleport></x-modal>
+                <x-modal name="delete_error" noteleport></x-modal>
+            </nav>
+        </x-slide-over>
+    </template>
 </x-panel>

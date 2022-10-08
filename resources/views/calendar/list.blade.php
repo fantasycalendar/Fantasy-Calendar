@@ -205,13 +205,42 @@
             <div class="bg-white dark:bg-gray-800 shadow sm:rounded-md">
                 <ul role="list" class="divide-y divide-gray-200 dark:divide-gray-700">
                     @foreach($calendars as $index => $calendar)
-                        <li class="relative flex items-center">
-                            <a href="{{ route('calendars.show', ['calendar'=> $calendar]) }}" class="block flex-grow hover:bg-gray-50 dark:hover:bg-gray-700 @if($loop->first) rounded-t-md @endif @if($loop->last) rounded-b-md @endif">
+                        <li
+                            class="relative flex items-center"
+                            @if($calendar->disabled)
+                                title="Subscribe for more than {{ auth()->user()->isEarlySupporter() ? 15 : 2 }} calendars."
+                            @endif
+                        >
+                            <a href="{{ route('calendars.show', ['calendar'=> $calendar]) }}"
+                               class="block flex-grow hover:bg-gray-50 dark:hover:bg-gray-700
+                                    @if($loop->first)
+                                        rounded-t-md
+                                    @endif
+                                    @if($loop->last)
+                                        rounded-b-md
+                                    @endif
+                                    @if($calendar->disabled)
+                                        pointer-events-none opacity-50
+                                    @endif
+                                ">
                                 <div class="flex items-center px-4 py-4 sm:px-6">
                                     <div class="min-w-0 flex-1 md:grid md:grid-cols-3 md:gap-4">
                                         <div>
-                                            <p class="text-lg font-medium text-primary-700 dark:text-primary-500 pr-24 md:pr-0">{{ $calendar->name }}</p>
-                                            <p class="mt-1 flex items-center text-md text-gray-500 dark:text-gray-400">
+                                            <p class="text-lg font-medium pr-24 md:pr-0
+                                                @if($calendar->disabled)
+                                                    text-orange-300 dark:text-orange-700
+                                                @else
+                                                    text-primary-700 dark:text-primary-500
+                                                @endif
+                                            ">
+                                                @if($calendar->disabled)
+                                                    <i class="fa fa-exclamation-triangle text-orange-300 dark:text-orange-700"
+                                                        title="Subscribe for more than {{ auth()->user()->isEarlySupporter() ? 15 : 2 }} calendars."
+                                                    ></i>
+                                                @endif
+                                                {{ $calendar->name }}
+                                            </p>
+                                            <p class="mt-1 flex items-center text-md">
                                                 <!-- Heroicon name: solid/user-circle -->
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-8 md:w-5 flex-shrink-0 md:mr-1.5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd" />
@@ -224,31 +253,37 @@
                                                 </span>
                                             </p>
                                         </div>
-                                        <div class="flex-grow">
-                                            <div class="flex text-md text-gray-600 dark:text-gray-400 mb-1 md:pt-0">
-                                                <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-calendar"></i> <div>{{ $calendar->current_date }}</div>
-                                            </div>
-                                            @if($calendar->current_era_valid)
+                                        @unless($calendar->disabled)
+                                            <div class="flex-grow">
                                                 <div class="flex text-md text-gray-600 dark:text-gray-400 mb-1 md:pt-0">
-                                                    <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-infinity"></i> <div>{{ $calendar->current_era }}</div>
+                                                    <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-calendar"></i> <div>{{ $calendar->current_date }}</div>
                                                 </div>
-                                            @endif
-                                        </div>
-                                        <div class="text-gray-900 dark:text-gray-400 text-md">
-                                            @if($calendar->clock_enabled)
-                                                <div class="flex text-md text-gray-600 dark:text-gray-400 mb-1 md:pt-0">
-                                                    <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-clock"></i> <div>{{ $calendar->current_time }}</div>
-                                                </div>
-                                            @endif
-                                            <div class="flex text-md text-gray-600 dark:text-gray-400 mb-1 md:pt-0">
-                                                <i class="flex-shrink-0 pt-1 w-8 text-gray-400 text-center fa fa-calendar-alt"></i> <div>{{ $calendar->events_count }} {{ \Illuminate\Support\Str::plural('Event', $calendar->events_count) }}</div>
+                                                @if($calendar->current_era_valid)
+                                                    <div class="flex text-md text-gray-600 dark:text-gray-400 mb-1 md:pt-0">
+                                                        <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-infinity"></i> <div>{{ $calendar->current_era }}</div>
+                                                    </div>
+                                                @endif
                                             </div>
-                                        </div>
+                                            <div class="text-gray-900 dark:text-gray-400 text-md">
+                                                @if($calendar->clock_enabled)
+                                                    <div class="flex text-md text-gray-600 dark:text-gray-400 mb-1 md:pt-0">
+                                                        <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-clock"></i> <div>{{ $calendar->current_time }}</div>
+                                                    </div>
+                                                @endif
+                                                <div class="flex text-md text-gray-600 dark:text-gray-400 mb-1 md:pt-0">
+                                                    <i class="flex-shrink-0 pt-1 w-8 text-gray-400 text-center fa fa-calendar-alt"></i> <div>{{ $calendar->events_count }} {{ \Illuminate\Support\Str::plural('Event', $calendar->events_count) }}</div>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="flex-grow">
+                                                Subscribe for more than {{ auth()->user()->isEarlySupporter() ? 15 : 2 }} calendars.
+                                            </div>
+                                        @endunless
                                     </div>
                                 </div>
                             </a>
 
-                            <div class="absolute top-4 md:top-auto right-16">
+                            <div class="absolute top-4 md:top-auto right-16 @if($calendar->disabled) pointer-events-none opacity-50 @endif">
                                 <a href="{{ route('calendars.edit', ['calendar' => $calendar]) }}" class="cursor-pointer dark:hover:bg-gray-700 flex rounded-full dark:text-gray-400 dark:hover:text-gray-300 p-2 items-center text-gray-400 hover:text-gray-600 focus:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-700 focus:ring-primary-500">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none"
                                          viewBox="0 0 24 24" stroke="currentColor">
@@ -284,13 +319,13 @@
                                      x-cloak
                                 >
                                     <div class="py-1" role="none">
-                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href='{{ route('calendars.edit', ['calendar'=> $calendar ]) }}' role="menuitem" tabindex="-1">
+                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md @if($calendar->disabled) pointer-events-none opacity-50 @endif" href='{{ route('calendars.edit', ['calendar'=> $calendar ]) }}' role="menuitem" tabindex="-1">
                                             Edit
                                         </a>
-                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href='{{ route('calendars.show', ['calendar'=> $calendar ]) }}' role="menuitem" tabindex="-1">
+                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md @if($calendar->disabled) pointer-events-none opacity-50 @endif" href='{{ route('calendars.show', ['calendar'=> $calendar ]) }}' role="menuitem" tabindex="-1">
                                             View
                                         </a>
-                                        <span class="cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}" role="menuitem"
+                                        <span class="cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md @if($calendar->disabled) pointer-events-none opacity-50 @endif" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}" role="menuitem"
                                               @click="$dispatch('modal', {
                                                     name: 'copy_confirmation',
                                                     title: `Copying {{ addslashes($calendar->name) }}`,
@@ -305,14 +340,14 @@
                                     </div>
                                     <div class="py-1" role="none">
                                         @feature('embed')
-                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.guided_embed', ['calendar' => $calendar->hash]) }}" role="menuitem" tabindex="-1">
-                                            Embed
-                                        </a>
+                                            <a class="@if(!auth()->user()->isPremium()) pointer-events-none bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 @else text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 @endif block px-4 py-2 text-md" href="{{ route('calendars.guided_embed', ['calendar' => $calendar->hash]) }}" role="menuitem" tabindex="-1">
+                                                <span class="inline-block">Embed <span class="pl-1 text-xs text-primary-400 dark:text-primary-500">(Subscriber-only)</span></span>
+                                            </a>
                                         @endfeature
-                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.show', ['calendar' => $calendar->hash, 'print' => 1]) }}"  >
+                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md @if($calendar->disabled) pointer-events-none opacity-50 @endif" href="{{ route('calendars.show', ['calendar' => $calendar->hash, 'print' => 1]) }}"  >
                                             Print
                                         </a>
-                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}"  >
+                                        <a class="text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md @if($calendar->disabled) pointer-events-none opacity-50 @endif" href="{{ route('calendars.export', ['calendar' => $calendar->hash]) }}"  >
                                             Export
                                         </a>
                                     </div>

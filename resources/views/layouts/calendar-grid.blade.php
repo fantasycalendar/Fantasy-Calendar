@@ -15,7 +15,7 @@
         "
         @update-epochs.window="update_epochs"
         x-for="(timespan, index) in render_data.timespans"
-        :key="index + '-' + render_data.year"
+        :key="timespan.id"
     >
         <div class="timespan_container"
              :class='render_data.render_style'

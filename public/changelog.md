@@ -1,3 +1,49 @@
+### 2.3.0 - Momentary Marid
+#### October 8th, 2022
+- Added: Real-time calendar advancement
+- Fixed: Modulo by 0 when an interval is somehow set to 0
+- Fixed: Invalid category IDs upon Calendar import/export
+
+### 2.2.17 - Careful Couatl
+#### September 29th, 2022
+- Fixed: Error trying to log certain requests
+
+### 2.2.16 - Catchable Couatl
+#### September 28th, 2022
+- Fixed: Active ability to log errors to a Discord channel - Don't try to use the word "Discord" in a webhook name
+
+### 2.2.15 - Certain Couatl
+#### September 24th, 2022
+- Fixed issue with multiple Intercalary Leap days causing calendars to not load properly 
+
+### 2.2.14 - Continual Couatl
+#### September 21st, 2022
+- Fixed: Messaging/placeholder regarding embedding as a premium feature 
+- Updated: Dependencies.
+
+### 2.2.13 - Confused Couatl
+#### July 7th, 2022
+- Fixed: Discord interactions not working due to int -> string cast during response
+- Updated: A few dependencies
+- Updated: Adjustment to some admin tools
+
+### 2.2.12 - Commercial Couatl
+#### July 6th, 2022
+- Fixed rendering issue on calendars when changing certain calendar properties
+- Fixed adjusting month lengths would cause the current date to slide
+- Fixed Discord calendar renderer being off by one when the year started with an intercalary month
+ 
+### 2.2.11 - Confident Couatl
+#### June 1st, 2022
+- Fixed date-based events to not cause calendar to look simulate past years if it has a duration
+- Date-based events now supports insanely long durations (still HEAVILY discouraged)
+- Backend updates to be able to verify people's emails remotely 
+
+### 2.2.10 - Concerned Couatl
+#### May 22nd, 2022
+- Fixed critical issue with event-based-events that could cause them to sometimes contain incorrect event
+- Improved handling of said event-based-events when events get removed
+
 ### 2.2.9 - Courteous Couatl
 #### May 18th, 2022
 - Fixed rendering issue which was caused by advancing the current year

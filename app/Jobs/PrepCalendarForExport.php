@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Calendar;
+use App\Models\EventCategory;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -14,16 +15,13 @@ class PrepCalendarForExport implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $calendar;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Calendar $calendar)
+    public function __construct(public Calendar $calendar)
     {
-        $this->calendar = $calendar;
     }
 
     /**
@@ -33,34 +31,42 @@ class PrepCalendarForExport implements ShouldQueue
      */
     public function handle()
     {
-        $categorymap = [];
+        $categorymap = collect();
         $calendarId = Str::slug($this->calendar->name);
+        
+        $categories = $this->calendar
+            ->event_categories
+            ->map(function(EventCategory $category) use ($categorymap, $calendarId) {
+                $categoryAttributes = $category->toArray();
+                $categoryName = Str::slug($category->name);
+                $categorymap->put($category->id, $categoryName);
+            
+                unset($categoryAttributes['id']);
 
-        foreach($this->calendar->event_categories as $key => $category) {
-            $categorymap[$category->id] = Str::slug($category->name);
+                $categoryAttributes['id'] = $categoryName;
+                $categoryAttributes['calendar_id'] = $calendarId;
+            
+                return $categoryAttributes; 
+            });
+        
+        $events = $this->calendar
+            ->events
+            ->map(function($event) use ($categorymap, $calendarId) {
+                $eventAttributes = $event->toArray();
+                
+                $eventAttributes['event_category_id'] = $categorymap[$event->event_category_id] ?? -1;
+                $eventAttributes['calendar_id'] = $calendarId;
+                
+                return $eventAttributes; 
+            });
 
-            $category->id = Str::slug($category->name);
-            $category->calendar_id = $calendarId;
-
-            $this->calendar->event_categories[$key] = $category;
-        }
-
-        foreach($this->calendar->events as $key => $event) {
-            if(($event->event_category_id ?? -1) >= 0) {
-                $event->event_category_id = $categorymap[$event->event_category_id];
-            }
-
-            $event->calendar_id = $calendarId;
-
-            $this->calendar->events[$key] = $event;
-        }
 
         return [
             'name' => $this->calendar->name,
             'static_data' => $this->calendar->static_data,
             'dynamic_data' => $this->calendar->dynamic_data,
-            'events' => $this->calendar->events,
-            'categories' => $this->calendar->event_categories
+            'events' => $events,
+            'categories' => $categories
         ];
     }
 }

@@ -14,6 +14,7 @@ use App\Models\Calendar;
 use App\Jobs\SaveEventCategories;
 use App\Jobs\SaveCalendarEvents;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CalendarController extends Controller
@@ -139,11 +140,17 @@ class CalendarController extends Controller
 
     public function renderImage(Calendar $calendar, $ext)
     {
-        if(Gate::denies('view-image', $calendar) && !app()->environment('local')) {
-            $pathToFile = public_path('resources/discord/premium-warning.png');
-            $headers = ['Content-Type' => 'image/png'];
-
-            return response()->file($pathToFile, $headers);
+        if(Gate::denies('view-image', $calendar)) {
+            return response()->stream(function() use ($ext, $calendar) {
+                echo Storage::disk(config('filesystems.assets'))->get('resources/discord/premium-warning.png');
+            }, 200, [
+                'Content-Disposition' => 'inline; filename="' . Str::slug(Str::ascii($calendar->name)) . '_' . Str::slug(Str::ascii($calendar->current_date)) . '.'. $ext .'"',
+                'Content-Type' => 'image/' . $ext,
+                'Last-Modified' => now(),
+                'Cache-control' => 'must-revalidate',
+                'Expires' => now()->addMinutes(5),
+                'Pragma' => 'public'
+            ]);
         }
 
         if(!in_array($ext, ['png', 'jpg', 'jpeg'])) {
@@ -217,7 +224,7 @@ class CalendarController extends Controller
             throw new AuthorizationException('Not allowed.');
         }
 
-        $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset', 'event_categories', 'events']);
+        $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset', 'event_categories', 'events', 'advancement']);
         $categoryids = [];
 
         if(array_key_exists('dynamic_data', $update_data)) {
@@ -254,6 +261,14 @@ class CalendarController extends Controller
 
         if(array_key_exists('event_categories', $update_data)) {
             $categoryids = SaveEventCategories::dispatchNow(json_decode($update_data['event_categories'], true), $calendar->id);
+        }
+
+        if(array_key_exists('advancement', $update_data)) {
+            $update_data = array_merge($update_data, json_decode($update_data['advancement'], true));
+
+            $update_data['advancement_next_due'] = null;
+
+            unset($update_data['advancement']);
         }
 
         if(array_key_exists('events', $update_data)) {

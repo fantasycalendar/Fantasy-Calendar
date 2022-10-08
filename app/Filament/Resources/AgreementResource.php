@@ -30,7 +30,7 @@ class AgreementResource extends Resource
                 Forms\Components\Placeholder::make('updated_at')->content(fn(?Agreement $record) => $record->updated_at),
                 Forms\Components\Placeholder::make('in_effect_at')->content(fn(?Agreement $record) => $record->in_effect_at),
                 Forms\Components\Section::make('Full Content')->schema([
-                    Forms\Components\RichEditor::make('content'),
+                    Forms\Components\MarkdownEditor::make('content'),
                 ])
             ]);
     }

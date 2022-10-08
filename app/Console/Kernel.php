@@ -27,6 +27,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('queue:prune-batches')->daily();
+
+        $schedule->command('calendar:advance')->everyMinute();
+
         if(app()->environment('development')) {
             return;
         }
@@ -48,8 +52,6 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('calendar:demand-payment')
                  ->everyFifteenMinutes()->onOneServer();
-
-        $schedule->command('queue:prune-batches')->daily();
     }
 
     /**

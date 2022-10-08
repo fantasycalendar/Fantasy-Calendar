@@ -1320,8 +1320,7 @@ const calendar_events_editor = {
 				} else if (type === "Events") {
 
 					let event_id = Number($(this).find('.input_container').find("option:selected").val());
-
-					if (event_editor_ui.working_event.data.connected_events.indexOf(event_id) === -1) {
+					if (event_id !== null && !isNaN(event_id) && event_editor_ui.working_event.data.connected_events.indexOf(event_id) === -1 && typeof event_id === "number") {
 						event_editor_ui.working_event.data.connected_events.push(event_id);
 					}
 
@@ -1925,6 +1924,7 @@ const calendar_events_editor = {
 					html.push(`${event.name} (this event)`);
 					html.push("</option>");
 				} else {
+				    this.event_chain_looked_at = [];
 					if (this.look_through_event_chain(this.event_id | 0, eventId)) {
 						html.push(`<option value="${eventId}">`);
 						html.push(event.name);
@@ -2539,19 +2539,25 @@ const calendar_events_editor = {
 
 		if (current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false") {
 
-			for (let connectedId in current_event.data.connected_events) {
-
-				let parent_id = current_event.data.connected_events[connectedId];
-
-				this.check_event_chain(parent_id, false);
-
+			for (let parent_id of current_event.data.connected_events) {
+			    if(parent_id !== null && parent_id === event_id) {
+			        this.check_event_chain(parent_id, false);
+                }
 			}
 
 		}
 
 	},
 
+
+
 	look_through_event_chain(child, parent_id) {
+
+	    if(this.event_chain_looked_at.indexOf(parent_id) === -1){
+	        return true;
+        }
+
+        this.event_chain_looked_at.push(parent_id);
 
 		if (events[parent_id].data.connected_events !== undefined && events[parent_id].data.connected_events.length > 0) {
 
@@ -2561,13 +2567,9 @@ const calendar_events_editor = {
 
 			} else {
 
-				for (let i = 0; i < events[parent_id].data.connected_events.length; i++) {
-
-					let id = events[parent_id].data.connected_events[i];
-
-					let result = this.look_through_event_chain(child, id);
-
-					if (!result) {
+				for (let id of events[parent_id].data.connected_events) {
+				    if(id === null || !isNaN(id) || child === parent_id || !events[id]) continue;
+					if (!this.look_through_event_chain(child, id)) {
 						return false;
 					}
 				}

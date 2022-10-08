@@ -6,6 +6,12 @@ use App\Models\Calendar;
 use App\Models\CalendarEvent;
 use App\Models\EventCategory;
 use App\Models\User;
+use App\Policies\CalendarPolicy;
+use App\Policies\EventCommentPolicy;
+use App\Policies\EventPolicy;
+use App\Policies\PersonalAccessTokenPolicy;
+use App\Services\Discord\Models\DiscordWebhook;
+use App\Services\Discord\Policies\DiscordWebhookPolicy;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -19,10 +25,13 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        \App\Models\Calendar::class => 'App\Policies\CalendarPolicy',
-        \App\Models\CalendarEvent::class => 'App\Policies\EventPolicy',
-        \App\Models\CalendarEventComment::class => 'App\Policies\EventCommentPolicy',
-        PersonalAccessToken::class => 'App\Policies\PersonalAccessTokenPolicy',
+        \App\Models\Calendar::class => CalendarPolicy::class,
+        \App\Models\CalendarEvent::class => EventPolicy::class,
+        \App\Models\CalendarEventComment::class => EventCommentPolicy::class,
+        PersonalAccessToken::class => PersonalAccessTokenPolicy::class,
+
+        // Discord module
+        DiscordWebhook::class => DiscordWebhookPolicy::class,
     ];
 
     /**

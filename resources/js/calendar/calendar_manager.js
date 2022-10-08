@@ -326,5 +326,6 @@ function rerender_calendar(processed_data) {
         window.dispatchEvent(new CustomEvent('render-data-change', { detail: result }));
     }).catch((err) => {
         $.notify(err);
+        console.error(err)
     });
 }

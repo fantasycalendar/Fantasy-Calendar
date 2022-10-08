@@ -22,9 +22,6 @@ class CalendarController extends Controller
 {
     public function __construct() {
         $this->authorizeResource(Calendar::class, 'calendar');
-
-        $this->manager = new Manager();
-        $this->manager->setSerializer(new DataArraySerializer());
     }
 
     public function index(Request $request) {
