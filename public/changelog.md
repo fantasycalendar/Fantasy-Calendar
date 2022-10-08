@@ -2,6 +2,7 @@
 #### October 8th, 2022
 - Added: Real-time calendar advancement
 - Fixed: Modulo by 0 when an interval is somehow set to 0
+- Fixed: Invalid category IDs upon Calendar import/export
 
 ### 2.2.17 - Careful Couatl
 #### September 29th, 2022
