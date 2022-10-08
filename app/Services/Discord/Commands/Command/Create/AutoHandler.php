@@ -49,9 +49,9 @@ class AutoHandler extends Command
 
         return Command\Response::make(
                 sprintf(
-                    "Your calendar is now set to auto-advance, and will move forward in real-time at a rate of %s %s %s per every %s %s in the real-world. You can change these values from the calendar edit page.",
-                    $calendar->advancement_rate,
+                    "**%s** is now set to auto-advance, and will move forward in real-time at a rate of %s in-universe %s per every %s real-world %s. You can change these values from the calendar edit page.",
                     $calendar->name,
+                    $calendar->advancement_rate,
                     $calendar->advancement_rate_unit,
                     $calendar->advancement_real_rate,
                     $calendar->advancement_real_rate_unit,
