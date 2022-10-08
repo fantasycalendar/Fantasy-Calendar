@@ -73,6 +73,6 @@ class AutoHandler extends Command
 
         HitCalendarUpdateWebhook::dispatch($calendar, "Auto-advancement disabled.");
 
-        return Command\Response::make("Auto-advancement disabled, your calendar will no longer auto-advance.");
+        return Command\Response::make("Auto-advancement disabled, your calendar will no longer auto-advance.")->ephemeral();
     }
 }
