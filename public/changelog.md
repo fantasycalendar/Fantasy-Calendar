@@ -1,6 +1,7 @@
-### 2.3.0 - ??? Marid
+### 2.3.0 - Momentary Marid
 #### October 8th, 2022
-- 
+- Added: Real-time calendar advancement
+- Fixed: Modulo by 0 when an interval is somehow set to 0
 
 ### 2.2.17 - Careful Couatl
 #### September 29th, 2022
