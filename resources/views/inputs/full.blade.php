@@ -450,7 +450,7 @@
             <!------------ REAL TIME ADVANCEMENT ----------->
             <!---------------------------------------------->
             <div class='wrap-collapsible card settings-real-time-advancement'>
-                <input id="collapsible_real-time-advancement" class="toggle" type="checkbox" checked>
+                <input id="collapsible_real-time-advancement" class="toggle" type="checkbox">
                 <label for="collapsible_real-time-advancement" class="lbl-toggle py-2 px-3 card-header">
                     <i class="fas fa-history mr-2" style="transform: scaleX(-1);"></i>
                     Real-Time Advancement
@@ -478,9 +478,9 @@
                                         data: {
                                             advancement_enabled: {{ $calendar->advancement_enabled ? "true" : "false" }},
                                             advancement_real_rate: {{ $calendar->advancement_real_rate ?? 1 }},
-                                            advancement_real_rate_unit: '{{ $calendar->advancement_real_rate_unit ?? "minutes" }}',
+                                            advancement_real_rate_unit: '{{ $calendar->advancement_real_rate_unit ?? "hours" }}',
                                             advancement_rate: {{ $calendar->advancement_rate ?? 1 }},
-                                            advancement_rate_unit: '{{ $calendar->advancement_rate_unit ?? ($calendar->clock_enabled ? "minutes" : "days") }}',
+                                            advancement_rate_unit: '{{ $calendar->advancement_rate_unit ?? ($calendar->clock_enabled ? "hours" : "days") }}',
                                             advancement_webhook_url: '{{ $calendar->advancement_webhook_url }}',
                                             advancement_webhook_format: '{{ $calendar->advancement_webhook_format }}',
                                             advancement_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -535,8 +535,8 @@
                                             <label class="input-group-text form-control text-black">real world</label>
                                             <select class='custom-select form-control input-group-append'
                                                     x-model="data.advancement_real_rate_unit">
-                                                <option selected value='minutes' x-text="data.advancement_real_rate > 1 ? 'minutes' : 'minute'">minutes</option>
-                                                <option value='hours' x-text="data.advancement_real_rate > 1 ? 'hours' : 'hour'">hours</option>
+                                                <option value='minutes' x-text="data.advancement_real_rate > 1 ? 'minutes' : 'minute'">minutes</option>
+                                                <option selected value='hours' x-text="data.advancement_real_rate > 1 ? 'hours' : 'hour'">hours</option>
                                                 <option value='days' x-text="data.advancement_real_rate > 1 ? 'days' : 'day'">days</option>
                                             </select>
                                         </div>

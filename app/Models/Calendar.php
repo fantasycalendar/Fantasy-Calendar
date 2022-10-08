@@ -868,9 +868,9 @@ class Calendar extends Model
         collect([
             'advancement_timezone' => 'America/New_York',
             'advancement_real_rate' => 1,
-            'advancement_real_rate_unit' => $this->clockEnabled ? 'minutes' : 'days',
+            'advancement_real_rate_unit' => $this->clockEnabled ? 'hours' : 'days',
             'advancement_rate' => 1,
-            'advancement_rate_unit' => $this->clockEnabled ? 'minutes' : 'days',
+            'advancement_rate_unit' => $this->clockEnabled ? 'hours' : 'days',
             'advancement_webhook_format' => 'discord',
         ])->each(function($value, $attribute){
             if(!$this->$attribute) {

@@ -1,3 +1,15 @@
+### 2.3.0 - ??? Marid
+#### October 8th, 2022
+- 
+
+### 2.2.17 - Careful Couatl
+#### September 29th, 2022
+- Fixed: Error trying to log certain requests
+
+### 2.2.16 - Catchable Couatl
+#### September 28th, 2022
+- Fixed: Active ability to log errors to a Discord channel - Don't try to use the word "Discord" in a webhook name
+
 ### 2.2.15 - Certain Couatl
 #### September 24th, 2022
 - Fixed issue with multiple Intercalary Leap days causing calendars to not load properly 
