@@ -21,7 +21,7 @@ class AutoHandler extends Command
     {
         $calendar = $this->getDefaultCalendar();
 
-        if($calendar->isLinked()) {
+        if($calendar->isChild()) {
             throw new DiscordCalendarLinkedException($calendar);
         }
 
