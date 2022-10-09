@@ -1417,7 +1417,7 @@
                             document.querySelector('.event_manager_search').focus();
                         }); // has a default time value of 0
                     });
-                ">Manage Events</button>
+                ">Search</button>
 
 				<div class='sortable list-group' id='events_sortable'></div>
             </div>

@@ -54,11 +54,15 @@ $input-group-text-color: $text-gray-300;
 
 // Modal colors
 $modal-bg-color: $bg-gray-900;
-$modal-content-bg-color: $text-gray-800;
-$modal-content-hover-bg-color: $text-gray-700;
+$modal-overlay-bg-color: $bg-gray-900;
+$modal-inlay-bg-color: $bg-gray-900;
+$modal-content-bg-color: $text-gray-700;
+$modal-content-hover-bg-color: $text-gray-800;
 $modal-action-color: $text-gray-100;
-$modal-accent-background: $bg-gray-800;
+$modal-accent-background: $bg-gray-900;
+$modal-accent-foreground: $bg-gray-600;
 $modal-accent-hover-background: $bg-gray-800;
+$modal-accent-hover-foreground: $bg-gray-400;
 $modal-content-border-color: $text-gray-800;
 
 $btn-color: $accent-color-darker;

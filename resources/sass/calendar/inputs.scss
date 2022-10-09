@@ -206,8 +206,8 @@ select.invalid {
     -webkit-user-select: none;
 }
 
-input[type=number]::-webkit-inner-spin-button:not(.spinner),
-input[type=number]::-webkit-outer-spin-button:not(.spinner) {
+input[type=number]:not(.spinner)::-webkit-inner-spin-button,
+input[type=number]:not(.spinner)::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
@@ -576,7 +576,7 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     position: fixed;
     top: 0;
     bottom: 0;
-    background-color:rgba($modal-bg-color, 0.60);
+    background-color:rgba($modal-overlay-bg-color, 0.8);
     width: 100%;
     height:100%;
     z-index:1000;
@@ -592,6 +592,11 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     background-color: $card-bg-color;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius:7px;
+}
+
+.modal-inlay {
+    background: $modal-inlay-bg-color;
+    padding: 12px 30px;
 }
 
 /* ------------------ Layout forms ----------------- */
@@ -646,10 +651,10 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     }
 }
 
-.preset, .layout {
+.preset, .layout, .managed_event {
     border: 0;
     transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     background-color: $modal-content-bg-color;
     position: relative;
     padding-left: 80px !important;
@@ -664,13 +669,12 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
         bottom: -2px;
         width: 64px;
         background-color: rgba($modal-accent-background, 0.7);
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        display: grid;
+        place-items: center;
         transition: all 0.3s cubic-bezier(.25,.8,.25,1);
 
         i {
-            color: $bg-gray-100;
+            color: $modal-accent-foreground;
         }
     }
 
@@ -679,15 +683,15 @@ input[type=number]::-webkit-outer-spin-button:not(.spinner) {
     }
 
     &:hover:not(:disabled) {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        //transform: translateY(-4px);
+        filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
         background-color: $modal-content-hover-bg-color;
 
         .icon {
             background-color: $modal-accent-hover-background;
 
             i {
-                color: white;
+                color: $modal-accent-hover-foreground;
             }
         }
     }

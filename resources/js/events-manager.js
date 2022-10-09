@@ -6,94 +6,53 @@
  */
 
 const events_manager = {
-    open: false,
+    open: true,
 
     calendar_events: [],
     event_categories: [],
-    grouped: [],
-    ungrouped: [],
+    groupFilter: "",
+    groupedEvents: [],
     search: "",
 
     init() {
-        this.$watch('search', () => {
-            this.$nextTick(() => {
-                this.updateFilteredGroupedEvents();
-                this.updateFilteredUngroupedEvents();
-            })
-        })
+        this.$watch('window.events', () => { this.refreshEvents() });
+        this.$watch('search', () => { this.refreshEvents() });
     },
 
-    updateFilteredGroupedEvents() {
-        // console.log(window.events);
+    refreshEvents() {
+        let results = (clone(window.events) ?? []).reduce((categorized, event) => {
+            if(this.search.length && !this.inSearch(event)) {
+                return categorized;
+            }
 
-        if(!window.events || !window.events.length) {
-            return [];
-        }
+            const categoryName = get_category(event.event_category_id)?.name ?? "No category";
+            categorized[categoryName] = categorized[categoryName] ?? [];
+            categorized[categoryName].push(event);
+            return categorized;
+        }, {});
 
-        let calendar_events = window.events.filter((item) => {
-            return item.name
-                    .toLowerCase()
-                    .includes(this.search.toLowerCase())
-                ||
-                item.description
-                    .toLowerCase()
-                    .includes(this.search.toLowerCase())
-                ||
-                item.author && item.author
-                    .toLowerCase()
-                    .includes(this.search.toLowerCase());
+        results = Object.entries(results).map(([category, events]) => {
+            return {
+                name: category,
+                events: events
+            }
         });
 
-        // console.log(calendar_events);
-
-        this.event_categories = clone(window.event_categories)
-        this.grouped = [];
-
-        // console.log(this.grouped);
-
-        for(let category in this.event_categories) {
-            let category_data = this.event_categories[category];
-            let events = [];
-
-            for(let event in calendar_events) {
-                let event_data = calendar_events[event];
-
-                if(event_data.event_category_id === category_data.id) {
-                    events.push(event_data);
-
-                    delete calendar_events[event];
-                }
-            }
-
-            if(events.length > 0) {
-                this.grouped.push({
-                    name: category_data.name,
-                    events: events
-                });
-            }
-        }
+        this.groupedEvents = results;
     },
 
-    updateFilteredUngroupedEvents() {
-        if(!window.events || !window.events.length) {
-            return [];
-        }
-
-        this.ungrouped = window.events.filter((item) => {
-            return item.event_category_id < 1
-                &&
-                (item.name
-                    .toLowerCase()
-                    .includes(this.search.toLowerCase())
-                ||
-                item.description
-                    .toLowerCase()
-                    .includes(this.search.toLowerCase())
-                ||
-                item.author && item.author
-                    .toLowerCase()
-                    .includes(this.search.toLowerCase()));
-        });
+    inSearch(event) {
+        return (event.name
+                .toLowerCase()
+                .includes(this.search.toLowerCase())
+            ||
+            event.description
+                .toLowerCase()
+                .includes(this.search.toLowerCase())
+            ||
+            event.author && event.author
+                .toLowerCase()
+                .includes(this.search.toLowerCase()))
     },
 
     highlight_match: function(string) {
@@ -129,12 +88,7 @@ const events_manager = {
     },
 
     open_modal: function($event){
-        this.updateFilteredGroupedEvents();
-        this.updateFilteredUngroupedEvents();
-        this.$nextTick(() => {
-            this.open = true;
-        });
-        setTimeout(() => {
+       setTimeout(() => {
             document.querySelector('input').focus();
         }); // has a default time value of 0
     },
