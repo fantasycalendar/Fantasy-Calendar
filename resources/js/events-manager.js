@@ -11,7 +11,7 @@ const events_manager = {
     calendar_events: [],
     event_categories: [],
     groupFilter: "",
-    groupedEvents: [],
+    categorizedEvents: [],
     search: "",
 
     init() {
@@ -31,14 +31,14 @@ const events_manager = {
             return categorized;
         }, {});
 
-        results = Object.entries(results).map(([category, events]) => {
-            return {
-                name: category,
-                events: events
-            }
-        });
+        // results = Object.entries(results).map(([category, events]) => {
+        //     return {
+        //         name: category,
+        //         events: events
+        //     }
+        // });
 
-        this.groupedEvents = results;
+        this.categorizedEvents = results;
     },
 
     inSearch(event) {
