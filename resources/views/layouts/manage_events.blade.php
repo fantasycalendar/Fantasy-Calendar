@@ -22,12 +22,12 @@
                             <select x-model="groupFilter">
                                 <option value="-1">All Categories</option>
                                 <template x-for="([category_name, category_events]) in Object.entries(categorizedEvents)">
-                                    <option value="category_name" x-text="category_name"></option>
+                                    <option :value="category_name" x-text="category_name"></option>
                                 </template>
                             </select>
                         </div>
                         <div class="text-center text-md-right col-12 col-md-9">
-                            <h3 style="opacity: 0.5; line-height: 0.8;">Calendar Events</h3>
+                            <h3 style="opacity: 0.5; line-height: 0.8;">Events</h3>
                         </div>
                     </div>
 
@@ -50,7 +50,12 @@
                                     pageIndex: 1,
                                     perpage: 5,
                                     get matchedEvents() {
-                                        return category_events.filter(event => inSearch(event));
+                                        return category_events.filter(event => !search || inSearch(event));
+                                    },
+                                    get shownEvents() {
+                                        return (groupFilter === '-1')
+                                            ? this.currentPage
+                                            : this.matchedEvents;
                                     },
                                     get currentPage() {
                                         if(!this.matchedEvents) return 0;
@@ -61,17 +66,17 @@
 
                                         return this.matchedEvents.slice(currentPageStart, currentPageEnd)
                                     },
-                                }" x-show="matchedEvents.length">
+                                }" x-show="matchedEvents.length && (groupFilter === '-1' || category_name === groupFilter)">
 
                                     <div class="col-12 row no-gutters d-flex align-items-center mb-2 mt-3">
                                         <h5 class="col-12 col-md-6" >
                                            <span x-text="category_name"></span>
 
-                                            <span class="small" x-text="`(${matchedEvents.length} matchedEvents)`"></span>
+                                            <span class="small" x-text="(groupFilter === '-1') ? `(${matchedEvents.length} events)` : `(${matchedEvents.length}/${category_events.length} events)`"></span>
                                         </h5>
 
                                         <div class="col-12 col-md-6 d-flex justify-content-end">
-                                            <div x-show="matchedEvents.length > perpage">
+                                            <div x-show="matchedEvents.length > perpage && groupFilter === '-1'">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
                                                         <button class="btn btn-secondary" @click="pageIndex--" :disabled="pageIndex <= 1" title="previous">
@@ -84,7 +89,7 @@
                                                         <span class="input-group-text form-control">
                                                             <span x-text="pageIndex"></span>&nbsp;/&nbsp;<span x-text="Math.ceil(matchedEvents.length / perpage)"></span>
                                                         </span>
-                                                        <button class="btn btn-secondary" @click="pageIndex++" :disabled="pageIndex >= (Math.ceil(matchedEvents.length / perpage) + 1)" title="previous">
+                                                        <button class="btn btn-secondary" @click="pageIndex++" :disabled="pageIndex >= Math.ceil(matchedEvents.length / perpage)" title="previous">
                                                             &raquo;
                                                             <span class="sr-only">Previous</span>
                                                         </button>
@@ -97,7 +102,7 @@
                                     <hr>
 
                                     <div class="col-12 rounded overflow-hidden">
-                                        <template x-for="event_data in currentPage" :key="event_data.id">
+                                        <template x-for="event_data in shownEvents" :key="event_data.id">
                                             <button type="button" style="margin-bottom: 1px;" class="w-100 py-2 px-2 managed_event position-relative d-flex justify-content-between align-items-center text-left cursor-pointer" @click="$dispatch('event-editor-modal-edit-event', {event_id: event_data.sort_by})">
                                                 <div class="icon">
                                                     <i class="fa fa-calendar-day"></i>

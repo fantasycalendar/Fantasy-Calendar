@@ -10,7 +10,7 @@ const events_manager = {
 
     calendar_events: [],
     event_categories: [],
-    groupFilter: "",
+    groupFilter: '-1',
     categorizedEvents: [],
     search: "",
 
@@ -20,8 +20,8 @@ const events_manager = {
     },
 
     refreshEvents() {
-        let results = (clone(window.events) ?? []).reduce((categorized, event) => {
-            if(this.search.length && !this.inSearch(event)) {
+        this.categorizedEvents = (clone(window.events) ?? []).reduce((categorized, event) => {
+            if (this.search.length && !this.inSearch(event)) {
                 return categorized;
             }
 
@@ -30,15 +30,6 @@ const events_manager = {
             categorized[categoryName].push(event);
             return categorized;
         }, {});
-
-        // results = Object.entries(results).map(([category, events]) => {
-        //     return {
-        //         name: category,
-        //         events: events
-        //     }
-        // });
-
-        this.categorizedEvents = results;
     },
 
     inSearch(event) {
