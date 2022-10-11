@@ -6,7 +6,7 @@
  */
 
 const events_manager = {
-    open: true,
+    open: false,
 
     calendar_events: [],
     event_categories: [],
