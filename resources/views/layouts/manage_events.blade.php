@@ -79,7 +79,7 @@
                                             <div x-show="matchedEvents.length > perpage && groupFilter === '-1'">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <button class="btn btn-secondary" @click="pageIndex--" :disabled="pageIndex <= 1" title="previous">
+                                                        <button class="btn btn-stock btn-secondary" @click="pageIndex--" :disabled="pageIndex <= 1" title="previous">
                                                             &laquo;
                                                             <span class="sr-only">Previous</span>
                                                         </button>
@@ -89,7 +89,7 @@
                                                         <span class="input-group-text form-control">
                                                             <span x-text="pageIndex"></span>&nbsp;/&nbsp;<span x-text="Math.ceil(matchedEvents.length / perpage)"></span>
                                                         </span>
-                                                        <button class="btn btn-secondary" @click="pageIndex++" :disabled="pageIndex >= Math.ceil(matchedEvents.length / perpage)" title="previous">
+                                                        <button class="btn btn-stock btn-secondary" @click="pageIndex++" :disabled="pageIndex >= Math.ceil(matchedEvents.length / perpage)" title="previous">
                                                             &raquo;
                                                             <span class="sr-only">Previous</span>
                                                         </button>
@@ -101,28 +101,19 @@
 
                                     <hr>
 
-                                    <div class="col-12 rounded overflow-hidden">
+                                    <div class="col-12 rounded overflow-hidden d-flex flex-column">
                                         <template x-for="event_data in shownEvents" :key="event_data.id">
-                                            <button type="button" style="margin-bottom: 1px;" class="w-100 py-2 px-2 managed_event position-relative d-flex justify-content-between align-items-center text-left cursor-pointer" @click="$dispatch('event-editor-modal-edit-event', {event_id: event_data.sort_by})">
-                                                <div class="icon">
-                                                    <i class="fa fa-calendar-day"></i>
+                                            <div class="managed_event">
+                                                <div class="d-flex align-items-center justify-self-start bold-text text-left" style="white-space: nowrap;" >
+                                                    <div class="icon" style="padding: 0.8rem;"><i class="fa fa-calendar-day"></i></div>
+                                                    <span style="padding-left: 0.8rem;" x-html="highlight_match(event_data.name)"></span>
+                                                    <span class="px-2" style="opacity: 0.4;">&bull;</span>
                                                 </div>
-
-
-                                                <div class="label">
-                                                    <strong x-html="highlight_match(event_data.name)" class="py-1 my-0"></strong>
-                                                    <p class="my-0" x-show="event_data.description?.length > 1">
-                                                        <span style="opacity: 0.8;" x-html="highlight_match(event_data.description)"></span>
-                                                    </p>
-                                                    <p class="my-0" x-show="event_data.description?.length < 1">
-                                                        <span style="opacity: 0.4; font-style: italic;">Event has no description</span>
-                                                    </p>
+                                                <div class="managed_event_description" style="opacity: 0.8; font-size: 90%;" x-html="highlight_match(event_data.description)"></div>
+                                                <div class="managed_event_action_icon">
+                                                    <i class="fa fa-edit"></i>
                                                 </div>
-
-                                                <div class="edit-icon" style="position: absolute; top: 6px; right: 14px; opacity: 0.6;">
-                                                    <i class="fa fa-edit py-1"></i>
-                                                </div>
-                                            </button>
+                                            </div>
                                         </template>
                                     </div>
                                 </div>
@@ -132,6 +123,5 @@
                 </div>
             </div>
         </div>
-
     </div>
 </div>

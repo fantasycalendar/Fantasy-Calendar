@@ -55,12 +55,12 @@ const events_manager = {
         // makes the final output have a higher length. We want to check length on the **unaltered** results,
         // in case the original is, say, 99 characters, and the <mark> tag would result in
         // unnecessary ellipsis.
-        let ellipses = (output.length > 100);
+        let ellipses = (output.length > 900);
 
         if(this.search.length && output.toLowerCase().includes(this.search.toLowerCase())) {
             let found = output.toLowerCase().indexOf(this.search);
 
-            if(found > (100 - this.search.length)) {
+            if(found > (900 - this.search.length)) {
                 index = found - 10;
             }
 
@@ -68,7 +68,7 @@ const events_manager = {
         }
 
         if(ellipses) {
-            output = output.substring(index, index + 100) + '...';
+            output = output.substring(index, index + 900) + '...';
         }
 
         if(index) {
