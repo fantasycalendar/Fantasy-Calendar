@@ -79,7 +79,7 @@
                                             <div x-show="matchedEvents.length > perpage && groupFilter === '-1'">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
-                                                        <button class="btn btn-stock btn-secondary" @click="pageIndex--" :disabled="pageIndex <= 1" title="previous">
+                                                        <button class="btn btn-stock btn-outline-secondary" @click="pageIndex--" :disabled="pageIndex <= 1" title="previous">
                                                             &laquo;
                                                             <span class="sr-only">Previous</span>
                                                         </button>
@@ -89,7 +89,7 @@
                                                         <span class="input-group-text form-control">
                                                             <span x-text="pageIndex"></span>&nbsp;/&nbsp;<span x-text="Math.ceil(matchedEvents.length / perpage)"></span>
                                                         </span>
-                                                        <button class="btn btn-stock btn-secondary" @click="pageIndex++" :disabled="pageIndex >= Math.ceil(matchedEvents.length / perpage)" title="previous">
+                                                        <button class="btn btn-stock btn-outline-secondary" @click="pageIndex++" :disabled="pageIndex >= Math.ceil(matchedEvents.length / perpage)" title="previous">
                                                             &raquo;
                                                             <span class="sr-only">Previous</span>
                                                         </button>
@@ -101,15 +101,15 @@
 
                                     <hr>
 
-                                    <div class="col-12 rounded overflow-hidden d-flex flex-column">
+                                    <div class="col-12 rounded overflow-hidden d-flex flex-column drop-shadow">
                                         <template x-for="event_data in shownEvents" :key="event_data.id">
                                             <div class="managed_event">
-                                                <div class="d-flex align-items-center justify-self-start bold-text text-left" style="white-space: nowrap;" >
-                                                    <div class="icon" style="padding: 0.8rem;"><i class="fa fa-calendar-day"></i></div>
-                                                    <span style="padding-left: 0.8rem;" x-html="highlight_match(event_data.name)"></span>
-                                                    <span class="px-2" style="opacity: 0.4;">&bull;</span>
+                                                <div class="d-flex align-items-center justify-self-start text-left" style="white-space: nowrap;" >
+                                                    <div class="icon d-none d-md-block" style="padding: 0.8rem;"><i class="fa fa-calendar-day"></i></div>
+                                                    <span class="py-1" style="padding-left: 0.8rem;" x-html="highlight_match(event_data.name)"></span>
+                                                    <span class="px-2 d-none d-sm-inline" style="opacity: 0.4;">&bull;</span>
                                                 </div>
-                                                <div class="managed_event_description" style="opacity: 0.8; font-size: 90%;" x-html="highlight_match(event_data.description)"></div>
+                                                <div class="managed_event_description d-none d-sm-block" :class="{'opacity-70': event_data.description, 'opacity-30': !event_data.description }" style="font-size: 90%;" x-html="event_data.description ? highlight_match(event_data.description) : 'Event has no description'"></div>
                                                 <div class="managed_event_action_icon">
                                                     <i class="fa fa-edit"></i>
                                                 </div>

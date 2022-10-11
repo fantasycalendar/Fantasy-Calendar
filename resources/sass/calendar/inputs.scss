@@ -655,7 +655,6 @@ input[type=number]:not(.spinner)::-webkit-outer-spin-button {
     background-color: $modal-content-bg-color;
     color: $modal-action-color;
     transition: all 0.3s cubic-bezier(.25,.8,.25,1);
-    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     display: flex;
     position: relative;
     align-items: center;
@@ -667,6 +666,7 @@ input[type=number]:not(.spinner)::-webkit-outer-spin-button {
 
         .icon {
             background-color: $modal-content-hover-bg-color;
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
         }
     }
 
@@ -696,7 +696,7 @@ input[type=number]:not(.spinner)::-webkit-outer-spin-button {
         margin-right: 0.4rem;
         margin-top: 0.3rem;
         padding-left: 0.7rem;
-        opacity: 0.6;
+        opacity: 0.5;
     }
 
     .icon {
