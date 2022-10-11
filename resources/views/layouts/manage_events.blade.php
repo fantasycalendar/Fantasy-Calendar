@@ -16,19 +16,25 @@
                     <i class="close_ui_btn fas fa-times-circle" @click="open = false; search = ''"></i>
 
                     <div class="row no-gutters my-3 modal-form-heading">
-                        <div class="col-12 col-md-3 mb-3 mb-md-0" style="display: grid; place-items: center start;">
-                            <span style="position: absolute; right: 0px; cursor: pointer; height: 50px; width: 50px; opacity: 0.8; line-height: 50px; text-align: center;" @click="search = ''" x-show="search.length"><i class="fa fa-times"></i></span>
-                            <input type="text" name="search" x-model="search" class="form-control" placeholder="Search...">
-                            <select x-model="groupFilter">
-                                <option value="-1">All Categories</option>
-                                <template x-for="([category_name, category_events]) in Object.entries(categorizedEvents)">
-                                    <option :value="category_name" x-text="category_name"></option>
-                                </template>
+                         <div class="col-12 mb-2">
+                            <h4 style="opacity: 0.8; line-height: 0.8;">Events</h4>
+                        </div>
+
+                        <div class="col-12 col-sm-6 mb-1 mb-sm-0 pr-1" style="display: grid; place-items: end;">
+                            <div class="w-100">
+                                <span style="position: absolute; right: 0px; cursor: pointer; height: 50px; width: 50px; opacity: 0.8; line-height: 50px; text-align: center;" @click="search = ''" x-show="search.length"><i class="fa fa-times"></i></span>
+                                <input type="text" name="search" x-model="search" class="form-control" placeholder="Search...">
+                            </div>
+                        </div>
+
+                         <div class="col-12 col-sm-6 d-flex place-items-start align-items-stretch pl-1">
+                             <select x-model="groupFilter" class="form-control w-100 w-sm-auto">
+                                    <option value="-1">All Categories</option>
+                                    <template x-for="([category_name, category_events]) in Object.entries(categorizedEvents)">
+                                        <option :value="category_name" x-text="category_name"></option>
+                                    </template>
                             </select>
-                        </div>
-                        <div class="text-center text-md-right col-12 col-md-9">
-                            <h3 style="opacity: 0.5; line-height: 0.8;">Events</h3>
-                        </div>
+                       </div>
                     </div>
 
                     <div class="row" x-show="!Object.keys(categorizedEvents).length && !search.length">
@@ -44,11 +50,11 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-12 modal-inlay" style="max-height: 70vh; overflow-y: auto;">
+                        <div class="col-12 modal-inlay px-md-3 py-md-2" style="max-height: 70vh; overflow-y: auto;">
                             <template x-for="([category_name, category_events]) in Object.entries(categorizedEvents)" :key="category_name">
                                 <div class="row mb-2" x-data="{
                                     pageIndex: 1,
-                                    perpage: 5,
+                                    perpage: 7,
                                     get matchedEvents() {
                                         return category_events.filter(event => !search || inSearch(event));
                                     },
@@ -69,7 +75,7 @@
                                 }" x-show="matchedEvents.length && (groupFilter === '-1' || category_name === groupFilter)">
 
                                     <div class="col-12 row no-gutters d-flex align-items-center mb-2 mt-3">
-                                        <h5 class="col-12 col-md-6" >
+                                        <h5 class="col-12 col-md-6 mb-0">
                                            <span x-text="category_name"></span>
 
                                             <span class="small" x-text="(groupFilter === '-1') ? `(${matchedEvents.length} events)` : `(${matchedEvents.length}/${category_events.length} events)`"></span>
@@ -103,9 +109,9 @@
 
                                     <div class="col-12 rounded overflow-hidden d-flex flex-column drop-shadow">
                                         <template x-for="event_data in shownEvents" :key="event_data.id">
-                                            <div class="managed_event">
+                                            <div class="managed_event" @click="$dispatch('event-editor-modal-edit-event', {event_id: event_data.sort_by, epoch: window.dynamic_data.epoch})">
                                                 <div class="d-flex align-items-center justify-self-start text-left" style="white-space: nowrap;" >
-                                                    <div class="icon d-none d-md-block" style="padding: 0.8rem;"><i class="fa fa-calendar-day"></i></div>
+                                                    <div class="icon d-none d-md-block"><i class="fa fa-calendar-day"></i></div>
                                                     <span class="py-1" style="padding-left: 0.8rem;" x-html="highlight_match(event_data.name)"></span>
                                                     <span class="px-2 d-none d-sm-inline" style="opacity: 0.4;">&bull;</span>
                                                 </div>

@@ -79,6 +79,7 @@ const events_manager = {
     },
 
     open_modal: function($event){
+        this.open = true;
        setTimeout(() => {
             document.querySelector('input').focus();
         }); // has a default time value of 0
