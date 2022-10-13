@@ -38,6 +38,8 @@
 
         }
 
+        window.dispatchEvent(new CustomEvent("events-changed"));
+
     });
 
     function check_dates(){

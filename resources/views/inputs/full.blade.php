@@ -1386,7 +1386,7 @@
         <!---------------------------------------------->
 
         <div class='wrap-collapsible card settings-events'>
-            <input id="collapsible_events" class="toggle" type="checkbox">
+            <input id="collapsible_events" class="toggle" type="checkbox" checked>
             <label for="collapsible_events" class="lbl-toggle py-2 px-3 card-header"><i
                         class="mr-2 fas fa-calendar-check"></i> Events <a target="_blank" data-pt-position="right"
                                                                           data-pt-title='More Info: Events'
@@ -1419,7 +1419,55 @@
                     });
                 ">Search</button>
 
-				<div class='sortable list-group' id='events_sortable'></div>
+                <div x-data='{
+                    events: [],
+                    dragging: null,
+                    dropping: null,
+                    timer: null,
+                    refresh_events() {
+                        this.events = [...window.events];
+                        console.log("refreshing events");
+                    },
+                    get_current_epoch() {
+                        let epoch = window.dynamic_data.epoch;
+                        if (typeof window.preview_date !== "undefined" && window.preview_date.follow) {
+                            epoch = window.dynamic_date_manager.epoch;
+                        } else if (typeof window.preview_date_manager !== "undefined") {
+                            epoch = window.preview_date_manager.epoch;
+                        }
+                        return epoch;
+                    }
+                }'
+                @events-changed.window="refresh_events"
+                >
+                    <div x-text="`Drag=${String(dragging)} Drop=${String(dropping)}`"></div>
+                    <template x-for="(event, index) in events" :key="index">
+                        <div class='sortable-container events_input list-group-item'
+                             @dragend="dragging = null"
+                             @dragenter.prevent="if(index !== dragging) {dropping = index}"
+                             @dragleave="if(dropping === index) dropping = null"
+                        >
+                            <div class='main-container'>
+                                <div class='handle icon-reorder'
+                                     @dragstart="dragging = index"
+                                     draggable="true"
+                                ></div>
+                                <div class='btn btn-outline-primary open-edit-event-ui event_name'
+                                     x-text="event.name"
+                                     @click="$dispatch('event-editor-modal-edit-event', {
+                                         event_id: Number(index),
+                                         epoch: get_current_epoch()
+                                     });">
+                                </div>
+                                <div class="remove-spacer"></div>
+                            </div>
+                                <button class='btn btn-danger icon-trash' type="button"
+                                     @click="$dispatch('event-editor-modal-delete-event', { event_id: index })"
+                                ></button>
+                        </div>
+                    </template>
+                </div>
+
             </div>
         </div>
 

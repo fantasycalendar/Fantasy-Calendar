@@ -1357,7 +1357,6 @@ function set_up_edit_inputs(){
 			}
 		}
 
-		window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id, epoch: epoch } }));
 	});
 
 	$(document).on('click', '.btn_remove', function(){
@@ -6151,6 +6150,8 @@ function autoload(popup){
 				text: "The calendar " + calendar_name + " has been loaded."
 			});
 		}
+
+        window.dispatchEvent(new CustomEvent("events-changed"));
 
 	}
 

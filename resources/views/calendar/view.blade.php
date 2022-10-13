@@ -43,6 +43,8 @@
             }
         }
 
+        window.dispatchEvent(new CustomEvent("events-changed"));
+
     });
 
     function evaluate_queryString(queryString){
