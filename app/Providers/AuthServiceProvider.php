@@ -2,13 +2,14 @@
 
 namespace App\Providers;
 
-use App\Calendar;
-use App\CalendarEvent;
-use App\EventCategory;
-use App\User;
+use App\Models\Calendar;
+use App\Models\CalendarEvent;
+use App\Models\EventCategory;
+use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -18,9 +19,10 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Calendar' => 'App\Policies\CalendarPolicy',
-        'App\CalendarEvent' => 'App\Policies\EventPolicy',
-        'App\CalendarEventComment' => 'App\Policies\EventCommentPolicy',
+        \App\Models\Calendar::class => 'App\Policies\CalendarPolicy',
+        \App\Models\CalendarEvent::class => 'App\Policies\EventPolicy',
+        \App\Models\CalendarEventComment::class => 'App\Policies\EventCommentPolicy',
+        PersonalAccessToken::class => 'App\Policies\PersonalAccessTokenPolicy',
     ];
 
     /**

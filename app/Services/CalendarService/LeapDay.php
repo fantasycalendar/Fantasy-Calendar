@@ -4,7 +4,7 @@
 namespace App\Services\CalendarService;
 
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Collections\IntervalsCollection;
 use App\Exceptions\InvalidLeapDayIntervalException;
 use FontLib\Table\Type\post;

@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-use App\User;
+use App\Models\User;
 use App\Mail\AccountDeletionLastWarning;
 use Illuminate\Support\Facades\Mail;
 

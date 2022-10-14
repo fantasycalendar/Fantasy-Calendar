@@ -1,3 +1,99 @@
+### 2.2.15 - Certain Couatl
+#### September 24th, 2022
+- Fixed issue with multiple Intercalary Leap days causing calendars to not load properly 
+
+### 2.2.14 - Continual Couatl
+#### September 21st, 2022
+- Fixed: Messaging/placeholder regarding embedding as a premium feature 
+- Updated: Dependencies.
+
+### 2.2.13 - Confused Couatl
+#### July 7th, 2022
+- Fixed: Discord interactions not working due to int -> string cast during response
+- Updated: A few dependencies
+- Updated: Adjustment to some admin tools
+
+### 2.2.12 - Commercial Couatl
+#### July 6th, 2022
+- Fixed rendering issue on calendars when changing certain calendar properties
+- Fixed adjusting month lengths would cause the current date to slide
+- Fixed Discord calendar renderer being off by one when the year started with an intercalary month
+ 
+### 2.2.11 - Confident Couatl
+#### June 1st, 2022
+- Fixed date-based events to not cause calendar to look simulate past years if it has a duration
+- Date-based events now supports insanely long durations (still HEAVILY discouraged)
+- Backend updates to be able to verify people's emails remotely 
+
+### 2.2.10 - Concerned Couatl
+#### May 22nd, 2022
+- Fixed critical issue with event-based-events that could cause them to sometimes contain incorrect event
+- Improved handling of said event-based-events when events get removed
+
+### 2.2.9 - Courteous Couatl
+#### May 18th, 2022
+- Fixed rendering issue which was caused by advancing the current year
+- Fixed issue preventing the calendar from scrolling to the current date when first loaded
+- Fixed issue which could cause event-based-events to cause infinite recursion
+- Removed event-testing feature until we can solve a more deeply rooted issue
+
+### 2.2.8 - Contextual Couatl
+#### April 12th, 2022
+- Replace Sharp library with Filament for rewritten internal admin panel
+- Laid the basis for user API token management
+- App Feature Flags (For disabling things in development)
+- Upgrade some dependencies
+
+### 2.2.7 - Cackling Couatl
+#### April 1st, 2022
+- Enabled enhanced... wait, what?
+
+### 2.2.6 - Contemporary Couatl
+#### March 23rd, 2022
+* Added: `/fc create event` - Create one-time events from Discord!
+* Added: `/fc overview` - **Experimental** "show me all of it" command, intended to (one day) include moons, weather, etc. Currently just includes one-time events (e.g. "Date is exactly" condition)
+* Added: Admin action to manually verify user email addresses
+* Reworked: Error pages into new theme
+* Reworked: Discord account connection process to fit into into new theme
+* Reworked: Various small UI bits to reduce the number of page reloads throughout the app
+* Reworked: Moved existing, undocumented API to /api/v1, in preparation for public API availability
+* Upgraded: Alpine.js to v3
+* Upgraded: Laravel to v9
+* Removed: A bunch of old cruft pages and code that was unnecessary
+
+### 2.2.5 - Cozy Couatl
+#### February 27th, 2022
+- Updated: Reworked the calendar list into our new visual style
+
+### 2.2.4 - Charismatic Couatl
+#### February 25th, 2022
+- Added official support for spanning on the Microsoft Surface Duo and Surface Duo 2 (Improvements will come later ... for now I just wanted the gap to not cover things with the sidebar open)
+- Updated landing page and launch of https://fantasy-calendar.com/ separate from the primary app
+- Rewrote Discord feature page into using the new style/theming system
+- Fixed season colors looking odd in minimalistic layout
+- Fixed hex color generator sometimes generating invalid colors
+- Fixed `'on' is not defined` error on login page in specific scenarios
+
+### 2.2.3 - Captivating Couatl
+#### February 16th, 2022
+- Beautified the login and registration pages
+- Improved the readability and looks of the T&C and Privacy Policy pages
+- Added beautified footer to all reworked pages
+
+### 2.2.2 - Prismatic Couatl
+#### February 13th, 2022
+- App theme rebuilt from the ground up
+- Improved dark theme event coloration
+- Made season colors vivid
+- Added season colors to minimalistic layout
+- General edit input improvements
+- Fixed images overflowing event window
+
+### 2.2.1 - Concise Couatl
+#### February 11th, 2022
+- Updated - Fully reworked Profile, Pricing and Billing pages
+- Added - Support for the Stripe billing portal
+
 ### 2.2.0 - Compatible Couatl
 #### January 29th, 2022 
 * Added - Calendar Embedding!

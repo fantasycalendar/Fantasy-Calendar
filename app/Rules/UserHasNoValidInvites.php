@@ -2,8 +2,8 @@
 
 namespace App\Rules;
 
-use App\Calendar;
-use App\CalendarInvite;
+use App\Models\Calendar;
+use App\Models\CalendarInvite;
 use Illuminate\Contracts\Validation\Rule;
 
 class UserHasNoValidInvites implements Rule

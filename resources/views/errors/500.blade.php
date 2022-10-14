@@ -1,1 +1,1 @@
-@extends('errors.default')
+<x-error-layout></x-error-layout>

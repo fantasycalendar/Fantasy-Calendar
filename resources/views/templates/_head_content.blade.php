@@ -47,8 +47,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.6.0/dist/alpine.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/gh/alpine-collective/alpine-magic-helpers@1.0.x/dist/index.min.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.js"></script>
 
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
@@ -64,7 +63,7 @@
     <script>
 
     window.baseurl = '{{ getenv('WEBADDRESS') }}';
-    window.apiurl = '{{ getenv('WEBADDRESS') }}'+'api';
+    window.apiurl = '{{ getenv('WEBADDRESS') }}'+'api/v1';
 
     function isMobile() {
         try{ document.createEvent("TouchEvent"); return true; }
@@ -158,8 +157,6 @@
     });
 
     </script>
-
-    <script src="{{ asset("/js/login.js") }}"></script>
 
     <script src="{{ asset("/js/vendor/sortable/jquery-sortable-min.js") }}"></script>
     <script src="{{ asset("/js/vendor/spectrum/spectrum.js") }}"></script>

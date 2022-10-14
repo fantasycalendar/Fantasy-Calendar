@@ -13,7 +13,7 @@ class DiscordUserInvalidException extends DiscordException
         return ($message instanceof Response)
             ? $message
             :Response::make($message)
-            ->singleButton(route('discord.index'), 'Subscribe and connect your Fantasy Calendar account today!')
+            ->singleButton(route('profile.integrations'), 'Subscribe and connect your Fantasy Calendar account today!')
             ->ephemeral();
     }
 }

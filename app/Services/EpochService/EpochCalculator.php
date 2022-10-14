@@ -3,7 +3,7 @@
 namespace App\Services\EpochService;
 
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Facades\Epoch as EpochFactory;
 use App\Services\EpochService\Processor\InitialStateWithEras;
 

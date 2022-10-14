@@ -5,7 +5,7 @@ namespace App\Services\Discord\Exceptions;
 use App\Services\Discord\Commands\Command\ChooseHandler;
 use App\Services\Discord\Commands\Command\Response;
 use App\Services\Discord\Commands\Command\Response\Component\ActionRow;
-use App\User;
+use App\Models\User;
 use Throwable;
 
 class DiscordCalendarNotSetException extends DiscordException

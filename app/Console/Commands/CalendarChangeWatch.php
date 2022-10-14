@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Illuminate\Console\Command;
 
 class CalendarChangeWatch extends Command

@@ -1,13 +1,11 @@
-<div id='calendar' x-data="CalendarRenderer" :class="{ 'single_month': render_data.current_month_only }" x-ref="calendar_renderer" x-init="$nextTick(() => $dispatch('layout-change', {apply: render_data.current_month_only ? 'single_month' : ''}))">
+<div id='calendar' x-data="CalendarRenderer" :class="{ 'single_month': render_data.current_month_only }" x-ref="calendar_renderer">
 
-    <template x-if="!loaded && render_data.timespans.length">
-        <div class="modal_background w-100">
-            <div id="modal" class="creation mt-5 py-5 d-flex flex-column align-items-center justify-content-center">
-                <h3 class="text-center" x-text="loading_message"></h3>
-                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-            </div>
+    <div class="modal_background w-100" x-show="!loaded && render_data.timespans.length">
+        <div id="modal" class="creation mt-5 py-5 d-flex flex-column align-items-center justify-content-center">
+            <h3 class="text-center" x-text="loading_message"></h3>
+            <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </div>
-    </template>
+    </div>
 
     <template
         @render-data-change.window="
@@ -16,13 +14,16 @@
             $nextTick(() => { post_render($dispatch) });
         "
         @update-epochs.window="update_epochs"
-        x-if='loaded'
-        x-for="timespan in render_data.timespans"
+        x-for="(timespan, index) in render_data.timespans"
+        :key="timespan.id"
     >
+        <div class="timespan_container"
+             :class='render_data.render_style'
+             x-show='loaded && render_data.timespans.length'
+             x-cloak
+        >
 
-        <div class="timespan_container" :class='render_data.render_style'>
-
-            <div class='timespan_name'x-text='timespan.title' x-show="timespan.show_title"></div>
+            <div class='timespan_name' x-text='timespan.title' x-show="timespan.show_title"></div>
 
             <div class="timespan_row_container">
                 <div class="timespan_row_names" x-show="timespan.show_weekdays">
@@ -31,7 +32,7 @@
                     </template>
                 </div>
 
-                <template x-for="week in timespan.days">
+                <template x-for="(week, index) in timespan.days">
                     <div class="timespan_row">
                         <template x-for="day in week">
                             <div :class="{

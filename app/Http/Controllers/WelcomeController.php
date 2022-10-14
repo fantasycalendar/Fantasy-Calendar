@@ -15,22 +15,6 @@ class WelcomeController extends Controller
         return view('welcome');
     }
 
-    public function account_migrated() {
-        if(!Auth::check()) {
-            return redirect('/');
-        }
-
-        if(!Auth::user()->migrated) {
-            return redirect('https://www.fantasy-calendar.com/');
-        }
-
-        if(Auth::user()->acknowledged_migration) {
-            return redirect(route('calendars.index'));
-        }
-
-        return view('pages.account-migrated');
-    }
-
     public function account_migrated_acknowledge() {
         Auth::user()->acknowledgeMigration();
 
@@ -40,6 +24,8 @@ class WelcomeController extends Controller
     public function discord_announcement_acknowledge() {
         Auth::user()->acknowledgedDiscordAnnouncement();
 
-        return redirect(route('calendars.index'));
+        return [
+            'message' => 'Acknowledged'
+        ];
     }
 }

@@ -1,4 +1,4 @@
-<div class='preset_background clickable_background hidden' :class="{ 'hidden':!open }" x-show='open'>
+<div class='preset_background clickable_background hidden' :class="{ 'hidden':!open }" x-show='open' x-cloak>
     <div class='modal-basic-container'>
         <div class='modal-basic-wrapper'>
             <form id="preset-form" class="modal-wrapper preset-wrapper container" action="post">
@@ -23,12 +23,11 @@
 
                 <hr>
 
-                <div class="row py-2" x-show="featured.length && !search.length && page_number==0">
+                <div class="row py-2" x-show="loaded && featured.length && !search.length && page_number === 0">
                     <div class="col-12">
                         <h4 class="text-center w-100" style="opacity: 0.8;">Featured by the Fantasy Calendar team</h4>
                     </div>
-
-                    <template x-if="loaded && featured.length" x-for="feature in featured" :key="feature.id">
+                    <template x-for="feature in featured" :key="feature.id">
                         <div class="col-12 col-md-6">
                             <button type="button" @click="fetch_preset(feature.id, feature.name)" class="full rounded my-1 py-2 px-3 preset flex-grow text-left">
                                 <div class="icon">
@@ -54,8 +53,8 @@
                     </div>
                 </div>
 
-                <div class='row justify-content-start'>
-                    <template x-if="loaded" x-for="preset in filteredPresets" :key="preset.id">
+                <div class='row justify-content-start' x-show="loaded">
+                    <template x-for="preset in filteredPresets" :key="preset.id">
                         <div class="col-12 col-md-6 pb-2 d-flex">
                             <button type="button" @click="fetch_preset(preset.id, preset.name)" class="full rounded my-1 py-2 px-3 preset flex-grow text-left">
                                 <div class="icon">

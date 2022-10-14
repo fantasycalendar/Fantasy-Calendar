@@ -1,10 +1,14 @@
+const colors = require('tailwindcss/colors')
+
 module.exports = {
     darkMode: 'class',
     content: [
         "./resources/**/*.blade.php",
+        "./app/Services/Discord/resources/**/*.blade.php",
         "./resources/**/*.js",
         "./resources/**/*.vue",
         "./app/View/Components/**/*.php",
+        './vendor/filament/**/*.blade.php',
     ],
     safelist: [
         {
@@ -34,12 +38,19 @@ module.exports = {
                     700: '#2f855a',
                     800: '#276749',
                     900: '#22543d',
-                }
+                },
+                danger: colors.rose,
+                success: colors.green,
+                warning: colors.yellow,
             }
         },
+        fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+        }
     },
     plugins: [
         require('@tailwindcss/forms'),
         require('@tailwindcss/typography'),
+        require('@tailwindcss/aspect-ratio'),
     ],
 }

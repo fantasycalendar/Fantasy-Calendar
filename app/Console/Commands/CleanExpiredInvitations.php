@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\CalendarInvite;
+use App\Models\CalendarInvite;
 use Illuminate\Console\Command;
 
 class CleanExpiredInvitations extends Command

@@ -4,7 +4,7 @@
 namespace App\Services\EpochService;
 
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Collections\EpochsCollection;
 use App\Exceptions\InvalidDateException;
 use App\Services\EpochService\Processor\State;

@@ -1,18 +1,6 @@
-@extends('errors.default')
+<x-error-layout>
+    <h1>{{ $title ?? "That calendar is unavailable." }}</h1>
 
-@section('content')
-    <div class="container py-5 px-3 error-container">
-        <div class="row">
-            <div class="d-none d-lg-flex col-lg-5 flex-column justify-content-center">
-                <div class="sketch">
-                    <div class="bee-sketch red"></div>
-                    <div class="bee-sketch blue"></div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-7 d-flex flex-column justify-content-center">
-                <h1>{{ $title ?? "That calendar is unavailable." }}</h1>
-            </div>
-        </div>
-    </div>
-@endsection
+    <p>Free accounts have a limited number of calendars, and the owner of this calendar is no longer a premium user.</p>
+    <p>As a result, this calendar is no longer available.</p>
+</x-error-layout>

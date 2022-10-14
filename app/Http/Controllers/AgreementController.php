@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Agreement;
-use GrahamCampbell\Markdown\Facades\Markdown;
+use App\Models\Agreement;
+use League\CommonMark\GithubFlavoredMarkdownConverter;
 use Arr;
 
 class AgreementController extends Controller
@@ -20,7 +20,7 @@ class AgreementController extends Controller
                 'title' => "Terms and Conditions",
                 'date' => sprintf("Effective date: %s", $tos->in_effect_at->format('jS \\of F, Y')),
                 'version' => $tos->id,
-                'markdown' => Markdown::convertToHtml($tos->content)
+                'markdown' => (new GithubFlavoredMarkdownConverter())->convert($tos->content)
             ]
         );
     }
@@ -38,7 +38,7 @@ class AgreementController extends Controller
                 'title' => "Terms and Conditions",
                 'date' => sprintf("Effective date: %s", $tos->in_effect_at->format('jS \\of F, Y')),
                 'version' => $tos->id,
-                'markdown' => Markdown::convertToHtml($tos->content),
+                'markdown' => (new GithubFlavoredMarkdownConverter())->convert($tos->content),
                 'intended' => $request->input('intended') ?? 'calendars'
             ]
         );

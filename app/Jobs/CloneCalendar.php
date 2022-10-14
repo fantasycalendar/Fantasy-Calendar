@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -61,6 +61,10 @@ class CloneCalendar implements ShouldQueue
             $newEvent->push();
         }
 
-        return ['success' => true, 'message' => 'Calendar cloned successfully'];
+        return [
+            'success' => true,
+            'message' => 'Calendar cloned successfully',
+            'hash' => $newCalendar->hash,
+        ];
     }
 }

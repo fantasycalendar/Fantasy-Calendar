@@ -9,10 +9,10 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Str;
 
-use App\Calendar;
-use App\Preset;
-use App\PresetEvent;
-use App\PresetEventCategory;
+use App\Models\Calendar;
+use App\Models\Preset;
+use App\Models\PresetEvent;
+use App\Models\PresetEventCategory;
 
 class ConvertCalendarToPreset implements ShouldQueue
 {

@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Authtoken;
+use \App\Models\Authtoken;
 
 class CleanAuthTokens extends Command
 {

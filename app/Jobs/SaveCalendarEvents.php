@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Calendar;
+use App\Models\Calendar;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,7 +13,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Mews\Purifier\Facades\Purifier;
 
-use App\CalendarEvent;
+use App\Models\CalendarEvent;
 
 class SaveCalendarEvents implements ShouldQueue
 {
@@ -52,7 +52,7 @@ class SaveCalendarEvents implements ShouldQueue
                 $event['settings'] = json_encode($event['settings']);
                 CalendarEvent::where('id', $event['id'])->update($event);
             } else {
-                $event['creator_id'] = Auth::user()->id ?? auth('api')->user()->id ?? Calendar::find($this->calendarId)->user->id;
+                $event['creator_id'] = Auth::user()->id ?? auth()->user()->id ?? Calendar::find($this->calendarId)->user->id;
                 $event['calendar_id'] = $this->calendarId;
                 $event = CalendarEvent::Create($event);
                 $eventids[] = $event->id;

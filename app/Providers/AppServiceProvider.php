@@ -2,11 +2,12 @@
 
 namespace App\Providers;
 
-use App\CalendarEvent;
+use App\Models\CalendarEvent;
 use App\Console\Commands\DownCommand;
 use App\Console\Commands\UpCommand;
 use App\Observers\CalendarEventObserver;
 use App\Services\EpochService\EpochFactory;
+use Filament\Facades\Filament;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 use App\Observers\CalendarObserver;
-use App\Calendar;
+use App\Models\Calendar;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,6 +42,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Filament::serving(function () {
+            Filament::registerTheme(mix('css/app-tw.css'));
+        });
+
         /**
          * Override Laravel's "php artisan down" command to put the application in maintenance mode
          * using our custom Redis based lock.
@@ -61,11 +66,13 @@ class AppServiceProvider extends ServiceProvider
             return auth()->check() && auth()->user()->setting($value);
         });
 
+        Blade::if('feature', function($value) {
+            return feature($value);
+        });
+
         if(app()->environment(['local'])) {
             URL::forceRootUrl(config('app.url'));
         }
-
-        Paginator::useBootstrap();
 
         \Illuminate\Pagination\AbstractPaginator::currentPathResolver(function () {
             /** @var \Illuminate\Routing\UrlGenerator $url */
@@ -103,6 +110,25 @@ class AppServiceProvider extends ServiceProvider
                 if(!is_string($item)) throw new \Exception("I can't search an unstringable object like it's a string!");
 
                 return str_contains($item, $search);
+            });
+        });
+
+        Collection::macro('withRunningTotal', function(string $field){
+            $total = 0;
+            $newFieldName = "${field}_running_total";
+
+            return $this->map(function($item) use (&$total, $newFieldName, $field) {
+                if(is_array($item)) {
+                    $total += $item[$field];
+                    $item[$newFieldName] = $total;
+
+                    return $total;
+                }
+
+                $total += $item->$field;
+                $item->$newFieldName = $total;
+
+                return $item;
             });
         });
 

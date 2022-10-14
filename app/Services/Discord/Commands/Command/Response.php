@@ -20,16 +20,19 @@ class Response
         'basic' => 4,
         'deferred' => 5,
         'deferred_update' => 6,
-        'update' => 7
+        'update' => 7,
+        'modal' => 9,
     ];
 
     private int $flags = 0;
 
     private string $text_content;
-    private string $type;
+    private int $type;
     private Collection $components;
     private Collection $embeds;
     private int $user_id = 0;
+    public string $target;
+    public string $title;
 
     /**
      * @param string $text_content Text content to accompany a message
@@ -98,6 +101,14 @@ class Response
             'type' => $this->type,
         ];
 
+        if($this->hasTitle()) {
+            $response['data']['title'] = $this->title;
+        }
+
+        if($this->hasTarget()) {
+            $response['data']['custom_id'] = config('services.discord.global_command') . '.' . $this->target . ':' . $this->user_id;
+        }
+
         if($this->hasTextContent()) {
             $response['data']['content'] = $this->getTextContent();
         }
@@ -131,6 +142,16 @@ class Response
         ]);
 
         return $this;
+    }
+
+    public function hasTarget(): bool
+    {
+        return !empty($this->target);
+    }
+
+    public function hasTitle(): bool
+    {
+        return !empty($this->title);
     }
 
     public function hasEmbeds(): bool

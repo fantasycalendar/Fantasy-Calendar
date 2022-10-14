@@ -2,9 +2,9 @@
 
 namespace App\Notifications;
 
-use App\Calendar;
-use App\CalendarInvite;
-use App\User;
+use App\Models\Calendar;
+use App\Models\CalendarInvite;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;

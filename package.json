@@ -22,6 +22,7 @@
         "resolve-url-loader": "^3.1.2",
         "sass": "^1.49.0",
         "sass-loader": "^12.4.0",
+        "tippy.js": "^6.3.7",
         "webpack": "^5.67.0"
     },
     "optionalDependencies": {
@@ -31,6 +32,7 @@
         "@alpinejs/intersect": "^3.8.1",
         "@fortawesome/fontawesome-free": "^5.15.1",
         "@jaames/iro": "^5.5.2",
+        "@tailwindcss/aspect-ratio": "^0.4.0",
         "@tailwindcss/forms": "^0.4.0",
         "@tailwindcss/typography": "^0.5.2",
         "alpine-editor": "^0.3.1",
@@ -39,11 +41,10 @@
         "bootswatch": "^4.5.0",
         "chart.js": "^2.9.3",
         "collect.js": "^4.29.0",
-        "fsevents": "^2.3.2",
         "fuzzysort": "^1.1.4",
         "hamburgers": "^1.1.3",
         "jquery-contextmenu": "^2.9.2",
-        "moment": "^2.29.1",
+        "moment": "^2.29.4",
         "mustache": "^3.2.1",
         "notifyjs": "^3.0.0",
         "postcss": "^8.4.5",

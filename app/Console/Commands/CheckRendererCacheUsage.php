@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Services\RendererService\ImageRenderer;
-use App\User;
+use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

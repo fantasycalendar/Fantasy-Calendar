@@ -2,10 +2,10 @@
 
 namespace App\Policies;
 
-use App\Calendar;
-use App\CalendarEvent;
-use App\CalendarEventComment;
-use App\User;
+use App\Models\Calendar;
+use App\Models\CalendarEvent;
+use App\Models\CalendarEventComment;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class EventCommentPolicy

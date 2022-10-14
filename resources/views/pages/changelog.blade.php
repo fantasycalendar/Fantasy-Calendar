@@ -1,5 +1,3 @@
-@extends('templates._page')
-
 @push('head')
     <style>
         html {
@@ -8,12 +6,16 @@
     </style>
 @endpush
 
-@section('content')
-    <div class="container">
+<x-app-layout>
+    <div class="container markdown_container">
 
-        <h1 class="pt-5">What's Changed with Fantasy Calendar</h1>
+        <div class="py-5 prose dark:prose-invert m-auto">
 
-        {!! Markdown::convertToHtml(Storage::disk('base')->get('public/changelog.md')); !!}
+            <h1 class="pt-5">What's Changed with Fantasy Calendar</h1>
+
+            {!! mdToHtml(Storage::disk('base')->get('public/changelog.md')); !!}
+
+        </div>
 
     </div>
-@endsection
+</x-app-layout>

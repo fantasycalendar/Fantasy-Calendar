@@ -4,7 +4,7 @@
 namespace App\Collections;
 
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Services\CalendarService\Era;
 use App\Services\CalendarService\Month;
 

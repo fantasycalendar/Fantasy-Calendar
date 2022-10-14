@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Agreement;
+use App\Models\Agreement;
 use Illuminate\Database\Seeder;
 
 class AgreementsSeeder extends Seeder

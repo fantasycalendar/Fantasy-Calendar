@@ -40,7 +40,7 @@ provider:
     SESSION_DRIVER: redis
     REDIS_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/redis_host}
     REDIS_PORT: 6379
-    MAIL_DRIVER: smtp
+    MAIL_MAILER: smtp
     MAIL_HOST: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_host}
     MAIL_PORT: 587
     MAIL_USERNAME: ${ssm:/${self:custom.ssm.${self:custom.stage}}/mail_username}
@@ -104,9 +104,11 @@ package:
     - .git/**
     - .idea/**
     - setup/**
+    - dist/**
     - cache/**
     - node_modules/**
     - public/storage/**
+    - public/resources/**
     - public/vendor/sharp/fonts/*
     - public/vendor/sharp/vendor.js
     - resources/images/**
@@ -305,7 +307,7 @@ resources:
             # Assets will be served under the `/assets/` prefix
             - PathPattern: '/.well-known/apple-developer-merchantid-domain-association'
               AllowedMethods: [GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE]
-              TargetOriginId: Website # the PHP application
+              TargetOriginId: Assets # the PHP application
               # Disable caching for the PHP application https://aws.amazon.com/premiumsupport/knowledge-center/prevent-cloudfront-from-caching-files/
               DefaultTTL: 0
               MinTTL: 0

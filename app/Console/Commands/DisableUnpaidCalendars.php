@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\User;
+use App\Models\Calendar;
+use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
 
 class DisableUnpaidCalendars extends Command
 {
@@ -38,26 +40,40 @@ class DisableUnpaidCalendars extends Command
      */
     public function handle()
     {
-        $users = User::whereHas('subscriptions')->whereHas('calendars')->chunk(100, function($users){
-            foreach ($users as $user) {
-                if($user->isPremium()) {
-                    $user->calendars()->disabled()->update([
-                        'disabled' => false
-                    ]);
+        $updated = Calendar::with(['user', 'user.subscriptions'])
+            ->where('disabled', '=', true)
+            ->whereHas('user.subscriptions', function(Builder $query) {
+                $query->where('stripe_status', '=', 'active');
+            })
+            ->update([
+                'disabled' => false
+            ]);
 
-                    return;
+        if($updated > 0) {
+            $this->info("Re-enabled " . $updated . " calendars.");
+        }
+
+        User::with('subscriptions')
+            ->whereHas('subscriptions', function(Builder $query) {
+                $query->where('stripe_status', '!=', 'active');
+            })
+            ->whereHas('calendars', function(Builder $query){
+                $query->where('disabled', '=', true);
+            }, '>', '2')
+            ->chunk(100, function($users){
+                foreach ($users as $user) {
+                    $this->info('Processing ' . $user->username);
+
+                    $max_calendars = $user->isEarlySupporter() ? 15 : 2;
+
+                    $user->calendars()->orderBy('date_created', 'ASC')->each(function($calendar, $index) use ($max_calendars){
+                        $calendar->disabled = ($index < $max_calendars) ? 0 : 1;
+                        $calendar->parent_id = Null;
+                        $calendar->parent_offset = Null;
+                        $calendar->parent_link_date = Null;
+                        $calendar->save();
+                    });
                 }
-
-                $max_calendars = $user->isEarlySupporter() ? 15 : 2;
-
-                $user->calendars()->orderBy('date_created', 'ASC')->each(function($calendar, $index) use ($max_calendars){
-                    $calendar->disabled = ($index < $max_calendars) ? 0 : 1;
-                    $calendar->parent_id = Null;
-                    $calendar->parent_offset = Null;
-                    $calendar->parent_link_date = Null;
-                    $calendar->save();
-                });
-            }
-        });
+            });
     }
 }

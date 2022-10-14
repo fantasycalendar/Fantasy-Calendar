@@ -2,22 +2,16 @@
 
 namespace App\Providers;
 
-use App\Calendar;
+use App\Models\Calendar;
 use App\Facades\Epoch;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    /**
-     * This namespace is applied to your controller routes.
-     *
-     * In addition, it is set as the URL generator's root namespace.
-     *
-     * @var string
-     */
-    protected $namespace = 'App\Http\Controllers';
-
     /**
      * Define your route model bindings, pattern filters, etc.
      *
@@ -40,6 +34,10 @@ class RouteServiceProvider extends ServiceProvider
             Epoch::forCalendar($calendar);
 
             return $calendar;
+        });
+
+        Route::bind('personalAccessToken', function($id) {
+            return auth()->user()->tokens()->findOrFail($id);
         });
 
         parent::boot();
@@ -69,7 +67,6 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes()
     {
         Route::middleware('web')
-             ->namespace($this->namespace)
              ->group(base_path('routes/web.php'));
     }
 
@@ -82,9 +79,19 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes()
     {
-        Route::prefix('api')
-             ->middleware('api')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/api.php'));
+        Route::prefix('api/v1')
+             ->middleware(['api', 'api_version:v1'])
+             ->group(base_path('routes/api_v1.php'));
+
+        Route::prefix('api/v2')
+            ->middleware(['api', 'api_version:v2', 'auth:sanctum'])
+            ->group(base_path('routes/api_v2.php'));
+    }
+
+    protected function configureRateLimiting()
+    {
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
     }
 }

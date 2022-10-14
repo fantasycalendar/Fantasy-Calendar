@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Policy;
+use App\Models\Policy;
 use Illuminate\Database\Seeder;
 
 class PoliciesSeeder extends Seeder
