@@ -1,4 +1,8 @@
-<div x-data="EventsManager" x-ref="events-manager" @open-events-manager.window="open_modal" @render-data-change.window="refreshEvents">
+<div x-data="EventsManager"
+     x-ref="events-manager"
+     @open-events-manager.window="open_modal"
+     @events-changed.window="refreshEvents"
+>
     <div
         class="layout_background clickable_background hidden"
         :class="{'hidden': !open}"
@@ -76,6 +80,7 @@
 
                                     <div class="col-12 row no-gutters d-flex align-items-center mb-2 mt-3">
                                         <h5 class="col-12 col-md-6 mb-0">
+                                            <button type="button" x-text="multiselect ? 'Stop' : 'Select multiple'" @click="multiselect = !multiselect"></button>
                                            <span x-text="category_name"></span>
 
                                             <span class="small" x-text="(groupFilter === '-1') ? `(${matchedEvents.length} events)` : `(${matchedEvents.length}/${category_events.length} events)`"></span>
@@ -109,15 +114,22 @@
 
                                     <div class="col-12 rounded overflow-hidden d-flex flex-column drop-shadow">
                                         <template x-for="event_data in shownEvents" :key="event_data.id">
-                                            <div class="managed_event" @click="$dispatch('event-editor-modal-edit-event', {event_id: event_data.sort_by, epoch: window.dynamic_data.epoch})">
+                                            <div class="managed_event" @click="selectEvent(event_data.id, $dispatch)">
                                                 <div class="d-flex align-items-center justify-self-start text-left" style="white-space: nowrap;" >
-                                                    <div class="icon d-none d-md-block"><i class="fa fa-calendar-day"></i></div>
+                                                    <div class="icon d-none d-md-block"><i :class="{
+                                                        'fas fa-calendar': !multiselect,
+                                                        'far fa-calendar': multiselect && !isSelected(event_data.id),
+                                                        'far fa-calendar-check': multiselect && isSelected(event_data.id)
+                                                    }"></i></div>
                                                     <span class="py-1" style="padding-left: 0.8rem;" x-html="highlight_match(event_data.name)"></span>
                                                     <span class="px-2 d-none d-sm-inline" style="opacity: 0.4;">&bull;</span>
                                                 </div>
                                                 <div class="managed_event_description d-none d-sm-block" :class="{'opacity-70': event_data.description, 'opacity-30': !event_data.description }" style="font-size: 90%;" x-html="event_data.description ? highlight_match(event_data.description) : 'Event has no description'"></div>
-                                                <div class="managed_event_action_icon">
-                                                    <i class="fa fa-edit"></i>
+                                                <div class="managed_event_action_icon" x-show="!multiselect" @click="$dispatch('event-editor-modal-edit-event', {event_id: event_data.sort_by, epoch: window.dynamic_data.epoch})">
+                                                    <i class="fa fa-edit px-2"></i>
+                                                </div>
+                                                <div class="managed_event_action_icon" @click="$dispatch('event-editor-modal-delete-event', { event_id: event_data.sort_by })">
+                                                    <i class="fa fa-trash px-2"></i>
                                                 </div>
                                             </div>
                                         </template>

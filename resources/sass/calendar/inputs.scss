@@ -673,6 +673,7 @@ input[type=number]:not(.spinner)::-webkit-outer-spin-button {
         overflow-x: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        flex-grow: 1;
     }
 
     &:first-of-type {
@@ -690,12 +691,6 @@ input[type=number]:not(.spinner)::-webkit-outer-spin-button {
     }
 
     .managed_event_action_icon {
-        margin-left: auto;
-        align-self: start;
-        margin-right: 0.4rem;
-        margin-top: 0.3rem;
-        padding-left: 0.7rem;
-        opacity: 0.5;
     }
 
     .icon {

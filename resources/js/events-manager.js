@@ -6,13 +6,15 @@
  */
 
 const events_manager = {
-    open: false,
+    open: true,
 
     calendar_events: [],
     event_categories: [],
     groupFilter: '-1',
     categorizedEvents: [],
     search: "",
+    multiselect: false,
+    selected: [],
 
     init() {
         this.$watch('window.events', () => { this.refreshEvents() });
@@ -44,6 +46,28 @@ const events_manager = {
             event.author && event.author
                 .toLowerCase()
                 .includes(this.search.toLowerCase()))
+    },
+
+    isSelected(id) {
+        return this.selected[id] === true;
+    },
+
+    selectEvent(id, $dispatch) {
+        if (this.multiselect) {
+            this.toggleSelected(id);
+            return;
+        }
+
+        console.log("here: ", id);
+        $dispatch('event-viewer-modal-view-event', {event_id: id, epoch: window.dynamic_data.epoch})
+    },
+
+    toggleSelected(id) {
+        if (this.isSelected(id)){
+           this.selected[id] = false;
+        } else {
+            this.selected[id] = true;
+        }
     },
 
     highlight_match: function(string) {
