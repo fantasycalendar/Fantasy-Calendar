@@ -12,16 +12,41 @@ const events_manager = {
     event_categories: [],
     groupFilter: '-1',
     categorizedEvents: [],
+    categories: [],
     search: "",
     multiselect: false,
-    selected: [],
+    selected: {},
 
     init() {
         this.$watch('window.events', () => { this.refreshEvents() });
         this.$watch('search', () => { this.refreshEvents() });
     },
 
+    updateCategory($event, $dispatch) {
+        let desiredId = $event.target.value;
+
+        // Only doing this because IDs can be non-numeric. Whoot!
+        if(!isNaN(desiredId)) {
+            desiredId = Number(desiredId);
+        }
+
+        Object.entries(this.selected)
+            .filter(entry => entry[1])
+            .forEach(event => {
+                let canonicalEvent = window.events.find(canonicalEvent => canonicalEvent.id.toString() === event[0]);
+
+                console.log(event, desiredId, canonicalEvent);
+
+                canonicalEvent.event_category_id = desiredId;
+        });
+
+        $dispatch('events-changed');
+    },
+    refreshCategories() {
+        this.categories = (clone(window.event_categories) ?? []);
+    },
     refreshEvents() {
+        this.refreshCategories();
         this.categorizedEvents = (clone(window.events) ?? []).reduce((categorized, event) => {
             if (this.search.length && !this.inSearch(event)) {
                 return categorized;

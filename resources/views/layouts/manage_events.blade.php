@@ -2,6 +2,7 @@
      x-ref="events-manager"
      @open-events-manager.window="open_modal"
      @events-changed.window="refreshEvents"
+     @events-changed.window="refreshCategories"
 >
     <div
         class="layout_background clickable_background hidden"
@@ -53,6 +54,26 @@
                         </div>
                     </div>
 
+                    <div class="d-flex border rounded-sm align-items-center py-2">
+                        <div class="px-2 border-right">
+                            <input type="checkbox" x-model="multiselect">
+                        </div>
+                        <div class="px-2 border-right">
+                            <select name="" id="" @change="updateCategory($event, $dispatch)">
+                                <option value="">Add selected to category...</option>
+                                <option value="-1">Remove from category</option>
+                                <template x-for="category in categories">
+                                    <option :value="category.id" x-text="category.name"></option>
+                                </template>
+                            </select>
+                        </div>
+                        <div class="px-2 border-right">
+                            <i class="fa fa-eye-slash" title="Toggle visibility"></i>
+                        </div>
+                        <div class="px-2">
+                            <i class="fa fa-trash" title="Delete"></i>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-12 modal-inlay px-md-3 py-md-2" style="max-height: 70vh; overflow-y: auto;">
                             <template x-for="([category_name, category_events]) in Object.entries(categorizedEvents)" :key="category_name">
@@ -80,7 +101,6 @@
 
                                     <div class="col-12 row no-gutters d-flex align-items-center mb-2 mt-3">
                                         <h5 class="col-12 col-md-6 mb-0">
-                                            <button type="button" x-text="multiselect ? 'Stop' : 'Select multiple'" @click="multiselect = !multiselect"></button>
                                            <span x-text="category_name"></span>
 
                                             <span class="small" x-text="(groupFilter === '-1') ? `(${matchedEvents.length} events)` : `(${matchedEvents.length}/${category_events.length} events)`"></span>
@@ -119,7 +139,7 @@
                                                     <div class="icon d-none d-md-block"><i :class="{
                                                         'fas fa-calendar': !multiselect,
                                                         'far fa-calendar': multiselect && !isSelected(event_data.id),
-                                                        'far fa-calendar-check': multiselect && isSelected(event_data.id)
+                                                        'far fa-calendar-check valid': multiselect && isSelected(event_data.id)
                                                     }"></i></div>
                                                     <span class="py-1" style="padding-left: 0.8rem;" x-html="highlight_match(event_data.name)"></span>
                                                     <span class="px-2 d-none d-sm-inline" style="opacity: 0.4;">&bull;</span>
@@ -128,7 +148,7 @@
                                                 <div class="managed_event_action_icon" x-show="!multiselect" @click="$dispatch('event-editor-modal-edit-event', {event_id: event_data.sort_by, epoch: window.dynamic_data.epoch})">
                                                     <i class="fa fa-edit px-2"></i>
                                                 </div>
-                                                <div class="managed_event_action_icon" @click="$dispatch('event-editor-modal-delete-event', { event_id: event_data.sort_by })">
+                                                <div class="managed_event_action_icon" x-show="!multiselect" @click="$dispatch('event-editor-modal-delete-event', { event_id: event_data.sort_by })">
                                                     <i class="fa fa-trash px-2"></i>
                                                 </div>
                                             </div>

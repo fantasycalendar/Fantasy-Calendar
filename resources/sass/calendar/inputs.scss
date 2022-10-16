@@ -702,7 +702,7 @@ input[type=number]:not(.spinner)::-webkit-outer-spin-button {
         font-size: 22px;
         padding: 0.5rem 0.8rem;
 
-        i {
+        i:not(.valid) {
             color: $modal-accent-foreground;
         }
     }
