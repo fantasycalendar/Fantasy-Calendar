@@ -62,8 +62,9 @@ class LeapDay
         $this->offset = Arr::get($attributes, "offset", "0");
         $this->not_numbered = Arr::get($attributes, "not_numbered", false);
         $this->show_text = Arr::get($attributes, "show_text", false);
+        $this->cyclic_interval = Arr::get($attributes, "cyclic_interval", false);
 
-        $this->intervals = IntervalsCollection::fromString($this->interval, $this->offset)->normalize();
+        $this->intervals = IntervalsCollection::fromString($this->interval, $this->offset, $this->cyclic_interval)->normalize();
     }
 
     /**
@@ -74,21 +75,7 @@ class LeapDay
      */
     public function intersectsYear(int $year): bool
     {
-        // We need to un-normalize the year as otherwise 0 month occurrences results in leap day appearing
-        $year = $year >= 0 && !$this->yearZeroExists
-            ? $year + 1
-            : $year;
-
-        $votes = collect(explode(',', $this->interval))->map(function($interval) use ($year) {
-            return (new Interval($interval, $this->offset))->voteOnYear($year);
-        });
-
-        foreach($votes as $vote) {
-            if($vote == 'allow') return true;
-            if($vote == 'deny') return false;
-        }
-
-        return false;
+        return $this->intervals->intersectsYear($year, $this->yearZeroExists);
     }
 
     /**
