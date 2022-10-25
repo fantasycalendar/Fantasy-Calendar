@@ -43,6 +43,8 @@ export default class IntervalsCollection extends Collection{
 
     static fromCycleString(cycleString, length) {
 
+        length = Math.max(length, Math.min(...cycleString.split(",").map(n => Number(n))));
+
         const cachedIntervalsCollection = intervalCache.get(cycleString, length);
         if (cachedIntervalsCollection) return cachedIntervalsCollection;
 
@@ -58,8 +60,8 @@ export default class IntervalsCollection extends Collection{
 
     static make(object) {
 
-        if (object.cycleLength) {
-            return this.fromCycleString(object.cycleIntervals, object.cycleLength);
+        if (object.cyclic_interval) {
+            return this.fromCycleString(object.interval, object.offset);
         }
 
         return this.fromIntervalString(object.interval, object.offset);
