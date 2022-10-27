@@ -10,8 +10,8 @@ const intervalCache = {
         return this._cache[`${intervals}-${offset}`];
     },
 
-    set(intervalsCollection, intervals, offset){
-        this._cache[`${intervals}-${offset}`] = intervalsCollection;
+    set(intervalsCollection, intervals, offset, cyclic){
+        this._cache[`${intervals}-${offset}-${cyclic ? "yes" : "no"}`] = intervalsCollection;
         return intervalsCollection;
     }
 
@@ -38,7 +38,7 @@ export default class IntervalsCollection extends Collection{
             .reverse()
             .normalize();
 
-        return intervalCache.set(intervalsCollection, intervalString, offset);
+        return intervalCache.set(intervalsCollection, intervalString, offset, false);
     }
 
     static fromCycleString(cycleString, length) {
@@ -54,7 +54,7 @@ export default class IntervalsCollection extends Collection{
 
         const intervalsCollection = new IntervalsCollection(intervals).normalize();
 
-        return intervalCache.set(intervalsCollection, cycleString, length);
+        return intervalCache.set(intervalsCollection, cycleString, length, true);
 
     }
 
