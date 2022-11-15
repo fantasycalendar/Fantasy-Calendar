@@ -104,7 +104,6 @@ function set_up_edit_inputs(){
 	cycle_sortable = $('#cycle_sortable');
 	era_list = $('#era_list');
 	event_category_list = $('#event_category_list');
-	events_sortable = $('#events_sortable');
 	location_list = $('#location_list');
 	calendar_link_select = $('#calendar_link_select');
 	calendar_link_list = $('#calendar_link_list');
@@ -231,19 +230,6 @@ function set_up_edit_inputs(){
 		update: function(){
 			input_container.change();
 			reindex_cycle_sortable();
-		},
-		start: function(e, ui){
-			ui.placeholder.height(ui.item.height());
-		}
-	});
-
-	events_sortable.sortable({
-		placeholder: "highlight",
-		handle: '.handle',
-		opacity: 0.5,
-		update: function(){
-			reindex_events_sortable();
-			do_error_check();
 		},
 		start: function(e, ui){
 			ui.placeholder.height(ui.item.height());
@@ -637,7 +623,7 @@ function set_up_edit_inputs(){
 		reindex_season_sortable();
 		populate_preset_season_list();
 		evaluate_season_lengths();
-        evaluate_season_daylength_warning();
+      evaluate_season_daylength_warning();
 		reindex_location_list();
 		name.val("");
 		do_error_check();
@@ -726,8 +712,9 @@ function set_up_edit_inputs(){
 
 					for(index in season_events) {
 						events.push(season_events[index])
-						add_event_to_sortable(events_sortable, events.length - 1, events[events.length - 1]);
 					}
+
+          window.dispatchEvent(new CustomEvent("events-changed"));
 
 					do_error_check();
 
@@ -1322,43 +1309,6 @@ function set_up_edit_inputs(){
 		evaluate_save_button();
 	});
 
-
-	$('.add_inputs.events .add').click(function(){
-
-		var name = $('#event_name_input');
-
-		var name_val = name.val();
-
-		var epoch = undefined;
-
-		if(typeof preview_date !== "undefined" && preview_date.follow){
-			var epoch = dynamic_date_manager.epoch;
-		}else{
-			if(typeof preview_date_manager !== "undefined"){
-				var epoch = preview_date_manager.epoch;
-			}
-		}
-
-		window.dispatchEvent(new CustomEvent('event-editor-modal-new-event', { detail: { name: name_val, epoch: epoch } }));
-
-		name.val('');
-
-	});
-
-	$(document).on('click', '.open-edit-event-ui', function() {
-		let event_id = $(this).closest('.sortable-container').attr('index') | 0;
-
-		let epoch = dynamic_data.epoch;
-		if (typeof preview_date !== "undefined" && preview_date.follow) {
-			epoch = dynamic_date_manager.epoch;
-		} else {
-			if (typeof preview_date_manager !== "undefined") {
-				epoch = preview_date_manager.epoch;
-			}
-		}
-
-	});
-
 	$(document).on('click', '.btn_remove', function(){
 
 		if(!$(this).hasClass('disabled')){
@@ -1479,72 +1429,7 @@ function set_up_edit_inputs(){
 				event_categories = event_categories.filter(function(category) { return category; });
 				repopulate_event_category_lists();
 
-				break;
-
-			case "events_sortable":
-
-				let warnings = [];
-
-				for(let eventId = 0; eventId < events.length; eventId++){
-				    const event = events[eventId];
-					if(event.data.connected_events !== undefined){
-						let connected_events = event.data.connected_events;
-						if(connected_events.includes(String(index)) || connected_events.includes(index)){
-							warnings.push(eventId);
-						}
-					}
-				}
-
-				if(warnings.length > 0){
-
-					callback = true;
-
-					let html = [];
-					html.push(`<div class='text-left'>`)
-					html.push(`<h5>You are trying to delete "${events[index].name}" which referenced in the following events:</h5>`)
-					html.push(`<ul>`);
-					for(let i = 0; i < warnings.length; i++){
-						html.push(`<li>${events[warnings[i]].name}</li>`);
-					}
-					html.push(`</ul>`);
-					html.push(`<p>Please remove the conditions referencing "${events[index].name}" in these events before deleting.</p>`)
-					html.push(`</div>`)
-
-					swal.fire({
-						title: "Warning!",
-						html: html.join(''),
-						showCancelButton: false,
-						confirmButtonColor: '#3085d6',
-						confirmButtonText: 'OK',
-						icon: "warning",
-					})
-
-					$(this).closest('.sortable-container').find('.btn_cancel').click();
-
-				}else{
-
-					events_sortable.children("[index='"+index+"']").remove();
-
-					for(let eventId = 0; eventId < events.length; eventId++){
-					    const event = events[eventId];
-						if(event.data.connected_events !== undefined && event.data.connected_events.length > 0){
-							for(let connectedId = 0; connectedId < event.data.connected_events.length; connectedId++){
-							    const parentId = event.data.connected_events[connectedId];
-								if(Number(parentId) > index){
-                                    event.data.connected_events[parentId] = Number(parentId)-1;
-								}
-							}
-						}
-					}
-
-					events.splice(index, 1);
-
-					events_sortable.children().each(function(i){
-						events[i].sort_by = i;
-						$(this).attr('index', i);
-					});
-
-				}
+        window.dispatchEvent(new CustomEvent("events-changed"));
 
 				break;
 
@@ -2812,6 +2697,9 @@ function update_data(e){
 					events[eventkey].settings.text = event_categories[key].event_settings.text;
 				}
 			}
+
+      window.dispatchEvent(new CustomEvent("events-changed"));
+      
 			repopulate_event_category_lists();
 		}
 
@@ -5424,40 +5312,6 @@ function reindex_event_category_list(){
 	return;
 }
 
-function reindex_events_sortable(){
-
-	var new_order = []
-	var new_events = []
-
-	events_sortable.children().each(function(i){
-
-		var id = Number($(this).attr('index'));
-
-		new_order[id] = i;
-		new_events[i] = events[id];
-		new_events[i].sort_by = i;
-
-		$(this).attr('index', i);
-
-	});
-
-	for(let event of events){
-
-		if(event.data.connected_events.length > 0){
-			for(let connected_id = 0; connected_id < event.data.connected_events.length; connected_id++){
-			    const old_index = event.data.connected_events[connected_id];
-			    if(old_index === null) continue;
-                event.data.connected_events[connected_id] = new_order[old_index];
-			}
-
-		}
-
-	}
-
-	events = clone(new_events);
-
-}
-
 function recreate_moon_colors(){
 
 	$('.moon_inputs .color').spectrum({
@@ -5995,12 +5849,6 @@ function set_up_edit_values(){
 		}
 	}
 
-	if(events){
-		for(var eventId in events){
-			add_event_to_sortable(events_sortable, eventId, events[eventId]);
-		}
-	}
-
 
 	$('.weather_inputs').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather);
 	$('.weather_inputs').find('select, input').prop('disabled', !static_data.seasons.global_settings.enable_weather);
@@ -6062,7 +5910,6 @@ function empty_edit_values(){
 	cycle_sortable.empty()
 	era_list.empty()
 	event_category_list.empty()
-	events_sortable.empty()
 	location_list.empty()
 	calendar_link_select.empty()
 	calendar_link_list.empty()

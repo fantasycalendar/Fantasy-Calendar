@@ -1422,6 +1422,8 @@
                 <div x-data='{
                     events: [],
                     timer: null,
+                    dragging: null,
+                    dropping: null,
 
                     refresh_events() {
                         this.events = [...window.events];
@@ -1437,8 +1439,6 @@
                         }
                         return epoch;
                     },
-                    dragging: null,
-                    dropping: null,
 
                     dropped(){
 
@@ -1487,7 +1487,8 @@
 
 	                    evaluate_save_button();
 
-                    }
+                    },
+
                 }'
                 @events-changed.window="refresh_events"
                 @dragover.prevent="$event.dataTransfer.dropEffect = 'move';"
