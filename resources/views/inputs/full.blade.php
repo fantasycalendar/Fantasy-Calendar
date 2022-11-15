@@ -1421,13 +1421,13 @@
 
                 <div x-data='{
                     events: [],
-                    dragging: null,
-                    dropping: null,
                     timer: null,
+
                     refresh_events() {
                         this.events = [...window.events];
                         console.log("refreshing events");
                     },
+
                     get_current_epoch() {
                         let epoch = window.dynamic_data.epoch;
                         if (typeof window.preview_date !== "undefined" && window.preview_date.follow) {
@@ -1436,16 +1436,67 @@
                             epoch = window.preview_date_manager.epoch;
                         }
                         return epoch;
+                    },
+                    dragging: null,
+                    dropping: null,
+
+                    dropped(){
+
+                        if(this.dragging === this.dropping || this.dragging === null || this.dropping === null){
+                            this.dragging = null;
+                            this.dropping = null;
+                            return;
+                        }
+
+                        if (this.dragging < this.dropping) {
+                            this.events = [
+                                ...this.events.slice(0, this.dragging),
+                                ...this.events.slice(this.dragging + 1, this.dropping + 1),
+                                this.events[this.dragging],
+                                ...this.events.slice(this.dropping + 1)
+                            ];
+                        }else{
+                            this.events = [
+                                ...this.events.slice(0, this.dropping),
+                                this.events[this.dragging],
+                                ...this.events.slice(this.dropping, this.dragging),
+                                ...this.events.slice(this.dragging + 1)
+                            ];
+                        }
+
+                        for(let i = 0; i < this.events.length; i++){
+                            const event = this.events[i];
+                            if(event.data.connected_events.length > 0){
+                                for(let connected_id = 0; connected_id < event.data.connected_events.length; connected_id++){
+                                    const old_index = event.data.connected_events[connected_id];
+                                    if(old_index === null) continue;
+                                    event.data.connected_events[connected_id] = this.events.findIndex(event => event.sort_by === old_index);
+                                }
+                            }
+                        }
+
+                        for(let i = 0; i < this.events.length; i++){
+                            const event = this.events[i];
+                            event.sort_by = i;
+                        }
+
+                        this.dragging = null;
+                        this.dropping = null;
+
+	                    window.events = clone(this.events);
+
+	                    evaluate_save_button();
+
                     }
                 }'
                 @events-changed.window="refresh_events"
+                @dragover.prevent="$event.dataTransfer.dropEffect = 'move';"
+                @drop.prevent="dropped"
                 >
-                    <div x-text="`Drag=${String(dragging)} Drop=${String(dropping)}`"></div>
                     <template x-for="(event, index) in events" :key="index">
                         <div class='sortable-container events_input list-group-item'
+                             @dragenter.prevent="dropping = index"
                              @dragend="dragging = null"
-                             @dragenter.prevent="if(index !== dragging) {dropping = index}"
-                             @dragleave="if(dropping === index) dropping = null"
                         >
                             <div class='main-container'>
                                 <div class='handle icon-reorder'

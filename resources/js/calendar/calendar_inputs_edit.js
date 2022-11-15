@@ -1489,7 +1489,6 @@ function set_up_edit_inputs(){
 				    const event = events[eventId];
 					if(event.data.connected_events !== undefined){
 						let connected_events = event.data.connected_events;
-						console.log(connected_events, index)
 						if(connected_events.includes(String(index)) || connected_events.includes(index)){
 							warnings.push(eventId);
 						}
@@ -6151,7 +6150,7 @@ function autoload(popup){
 			});
 		}
 
-        window.dispatchEvent(new CustomEvent("events-changed"));
+    window.dispatchEvent(new CustomEvent("events-changed"));
 
 	}
 
