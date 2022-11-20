@@ -134,7 +134,7 @@
 
                                     <div class="col-12 rounded overflow-hidden d-flex flex-column drop-shadow">
                                         <template x-for="event_data in shownEvents" :key="event_data.id">
-                                            <div class="managed_event" @click="selectEvent(event_data.id, $dispatch)">
+                                            <div class="managed_event" @click="selectEvent(event_data, $dispatch)">
                                                 <div class="d-flex align-items-center justify-self-start text-left" style="white-space: nowrap;" >
                                                     <div class="icon d-none d-md-block"><i :class="{
                                                         'fas fa-calendar': !multiselect,
@@ -145,10 +145,10 @@
                                                     <span class="px-2 d-none d-sm-inline" style="opacity: 0.4;">&bull;</span>
                                                 </div>
                                                 <div class="managed_event_description d-none d-sm-block" :class="{'opacity-70': event_data.description, 'opacity-30': !event_data.description }" style="font-size: 90%;" x-html="event_data.description ? highlight_match(event_data.description) : 'Event has no description'"></div>
-                                                <div class="managed_event_action_icon" x-show="!multiselect" @click="$dispatch('event-editor-modal-edit-event', {event_id: event_data.sort_by, epoch: window.dynamic_data.epoch})">
+                                                <div class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-edit-event', { event_id: event_data.sort_by, epoch: window.dynamic_data.epoch })">
                                                     <i class="fa fa-edit px-2"></i>
                                                 </div>
-                                                <div class="managed_event_action_icon" x-show="!multiselect" @click="$dispatch('event-editor-modal-delete-event', { event_id: event_data.sort_by })">
+                                                <div class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-delete-event', { event_id: event_data.sort_by })">
                                                     <i class="fa fa-trash px-2"></i>
                                                 </div>
                                             </div>

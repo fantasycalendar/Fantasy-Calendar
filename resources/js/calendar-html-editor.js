@@ -86,12 +86,12 @@ const calendar_html_editor = {
 				icon: "warning",
 			}).then((result) => {
 				if (!result.dismiss) {
-					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.era_id, era: true } }));
+					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.era_id, era: true } }));
 					this.close();
 				}
 			});
 		} else {
-			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.era_id, era: true } }));
+			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.era_id, era: true } }));
 			this.close();
 		}
 

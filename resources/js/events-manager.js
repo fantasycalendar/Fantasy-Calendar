@@ -60,39 +60,30 @@ const events_manager = {
     },
 
     inSearch(event) {
-        return (event.name
-                .toLowerCase()
-                .includes(this.search.toLowerCase())
+        const searchComponents = this.search.toLowerCase().split(" ");
+        return searchComponents.every(search => (
+            event.name.toLowerCase().includes(search)
             ||
-            event.description
-                .toLowerCase()
-                .includes(this.search.toLowerCase())
+            event.description.toLowerCase().includes(search)
             ||
-            event.author && event.author
-                .toLowerCase()
-                .includes(this.search.toLowerCase()))
+            event.author && event.author.toLowerCase().includes(search)
+        ));
     },
 
     isSelected(id) {
         return this.selected[id] === true;
     },
 
-    selectEvent(id, $dispatch) {
+    selectEvent(event_data, $dispatch) {
         if (this.multiselect) {
-            this.toggleSelected(id);
+            this.toggleSelected(event_data.id);
             return;
         }
-
-        console.log("here: ", id);
-        $dispatch('event-viewer-modal-view-event', {event_id: id, epoch: window.dynamic_data.epoch})
+        $dispatch('event-viewer-modal-view-event', { event_id: event_data.sort_by, epoch: window.dynamic_data.epoch})
     },
 
     toggleSelected(id) {
-        if (this.isSelected(id)){
-           this.selected[id] = false;
-        } else {
-            this.selected[id] = true;
-        }
+        this.selected[id] = !this.isSelected(id);
     },
 
     highlight_match: function(string) {

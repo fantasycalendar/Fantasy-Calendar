@@ -24,8 +24,8 @@ const calendar_events_viewer = {
 
 	view_event($event){
 
-		this.id = $event.detail.id;
-		this.era = $event.detail.era;
+		this.id = $event.detail.event_id;
+		this.era = $event.detail.era ?? false;
 		this.epoch = $event.detail.epoch;
 
 		if(this.era){
