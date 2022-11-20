@@ -1401,12 +1401,12 @@
                     </div>
                 </div>
 
-                <div class='add_inputs events row no-gutters'>
-                    <div class="col">
+                <div class='add_inputs events row no-gutters input-group'>
+                    <div class="col input-group-prepend">
                         <input type='text' class='form-control name' id='event_name_input' placeholder='Event name'>
                     </div>
-                    <div class="col-auto">
-                        <button type='button' class='btn btn-primary add'
+                    <div class="col-auto input-group-append">
+                        <button type='button' class='btn btn-primary add' x-data
                                 @click="$dispatch('event-editor-modal-new-event', { epoch: dynamic_data.epoch })"><i
                                     class="fa fa-plus"></i></button>
                     </div>
@@ -1420,14 +1420,22 @@
                 ">Search</button>
 
                 <div x-data='{
+
                     events: [],
-                    timer: null,
-                    dragging: null,
-                    dropping: null,
+                    draggable: null,
+
+                    init(){
+                        this.draggable = Sortable.create(this.$refs["events-sortable"], {
+                            animation: 150,
+                            handle: ".handle",
+                            onEnd: (event) => {
+                                this.dropped(event.oldIndex, event.newIndex);
+                            }
+                        });
+                    },
 
                     refresh_events() {
                         this.events = [...window.events];
-                        console.log("refreshing events");
                     },
 
                     get_current_epoch() {
@@ -1440,29 +1448,15 @@
                         return epoch;
                     },
 
-                    dropped(){
+                    dropped(start, end){
 
-                        if(this.dragging === this.dropping || this.dragging === null || this.dropping === null){
-                            this.dragging = null;
-                            this.dropping = null;
-                            return;
-                        }
+                        if(start === end) return;
 
-                        if (this.dragging < this.dropping) {
-                            this.events = [
-                                ...this.events.slice(0, this.dragging),
-                                ...this.events.slice(this.dragging + 1, this.dropping + 1),
-                                this.events[this.dragging],
-                                ...this.events.slice(this.dropping + 1)
-                            ];
-                        }else{
-                            this.events = [
-                                ...this.events.slice(0, this.dropping),
-                                this.events[this.dragging],
-                                ...this.events.slice(this.dropping, this.dragging),
-                                ...this.events.slice(this.dragging + 1)
-                            ];
-                        }
+                        let order = this.draggable.toArray();
+                        order.shift()
+                        const elem = this.events.splice(start, 1)[0];
+                        this.events.splice(end, 0, elem);
+                        this.$refs["events-sortable-template"]._x_prevKeys = order;
 
                         for(let i = 0; i < this.events.length; i++){
                             const event = this.events[i];
@@ -1480,44 +1474,36 @@
                             event.sort_by = i;
                         }
 
-                        this.dragging = null;
-                        this.dropping = null;
-
 	                    window.events = clone(this.events);
 
 	                    evaluate_save_button();
 
-                    },
+                    }
 
                 }'
-                @events-changed.window="refresh_events"
-                @dragover.prevent="$event.dataTransfer.dropEffect = 'move';"
-                @drop.prevent="dropped"
+                    @events-changed.window="refresh_events"
                 >
-                    <template x-for="(event, index) in events" :key="index">
-                        <div class='sortable-container events_input list-group-item'
-                             @dragenter.prevent="dropping = index"
-                             @dragend="dragging = null"
-                        >
-                            <div class='main-container'>
-                                <div class='handle icon-reorder'
-                                     @dragstart="dragging = index"
-                                     draggable="true"
-                                ></div>
-                                <div class='btn btn-outline-primary open-edit-event-ui event_name'
-                                     x-text="event.name"
-                                     @click="$dispatch('event-editor-modal-edit-event', {
-                                         event_id: Number(index),
-                                         epoch: get_current_epoch()
-                                     });">
+                    <div class="sortable list-group border-t border-gray-600" x-ref="events-sortable">
+                        <template x-for="(event, index) in events" :key="index" x-ref="events-sortable-template">
+                            <div class='sortable-container border-t -mt-px list-group-item draggable-source' :data-id="index">
+                                <div class='main-container'>
+                                    <i class='handle icon-reorder'></i>
+                                    <div class="input-group row no-gutters">
+                                        <div class="input-group-prepend col">
+                                            <button type="button"
+                                                    class='btn btn-outline-accent open-edit-event-ui event_name'
+                                                    x-text="event.name"
+                                                    @click="$dispatch('event-editor-modal-edit-event', { event_id: index, epoch: get_current_epoch() })">
+                                            </button>
+                                        </div>
+                                        <div class="input-group-append col-auto">
+                                            <div class='btn btn-danger icon-trash' @click="$dispatch('event-editor-modal-delete-event', { event_id: index })"></div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="remove-spacer"></div>
                             </div>
-                                <button class='btn btn-danger icon-trash' type="button"
-                                     @click="$dispatch('event-editor-modal-delete-event', { event_id: index })"
-                                ></button>
-                        </div>
-                    </template>
+                        </template>
+                    </div>
                 </div>
 
             </div>

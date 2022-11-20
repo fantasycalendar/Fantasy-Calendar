@@ -22,3 +22,6 @@ window.CalendarYearHeader = require('./calendar-year-header')
 // Calendar specific modules
 import IntervalsCollection from "./fantasycalendar/Collections/IntervalsCollection.js";
 window.IntervalsCollection = IntervalsCollection;
+
+import Sortable from 'sortablejs';
+window.Sortable = Sortable;

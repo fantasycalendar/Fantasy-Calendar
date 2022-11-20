@@ -2699,7 +2699,7 @@ function update_data(e){
 			}
 
       window.dispatchEvent(new CustomEvent("events-changed"));
-      
+
 			repopulate_event_category_lists();
 		}
 
