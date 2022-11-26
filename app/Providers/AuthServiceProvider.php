@@ -50,6 +50,8 @@ class AuthServiceProvider extends ServiceProvider
 
             return $user->can('update', $calendar)
 
+                || $calendar->userHasPerms($user, 'co-owner')
+
                 || ($calendar->userHasPerms($user, 'player')
 
                     && collect($event->data)->has('date') && $event->data['date'] != []
