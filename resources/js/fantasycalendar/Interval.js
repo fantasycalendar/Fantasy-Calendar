@@ -5,6 +5,9 @@ export default class Interval {
 
     constructor(interval, offset) {
         if(typeof interval === "number") interval = interval.toString();
+        if(interval < 1){
+          interval = 1;
+        }
         this.intervalString = interval;
         this.interval = Number(interval.replace("!", "").replace("+", ""));
         this.subtracts = interval.includes("!");
