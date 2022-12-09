@@ -5,8 +5,10 @@ namespace App\Models;
 use App\Services\Discord\Models\DiscordAuthToken;
 use App\Services\Discord\Models\DiscordGuild;
 use App\Services\Discord\Models\DiscordInteraction;
+use App\Services\Discord\Models\DiscordWebhook;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -115,6 +117,10 @@ class User extends Authenticatable implements
 
     public function discord_interactions() {
         return $this->hasMany(DiscordInteraction::class);
+    }
+
+    public function discord_webhooks() {
+        return $this->hasMany(DiscordWebhook::class);
     }
 
     /**
@@ -353,6 +359,13 @@ class User extends Authenticatable implements
         $this->calendars()->update([
             'disabled' => 0
         ]);
+    }
+
+    public function scopePremium(Builder $query)
+    {
+        return $query->whereHas('subscriptions', function(Builder $query){
+            return $query->whereStripeStatus('active');
+        })->orWhere('beta_authorised', '=', true);
     }
 
     public function scopeVerified($query)

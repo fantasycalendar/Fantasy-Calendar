@@ -14,7 +14,10 @@ use App\Services\CalendarService\RenderMonth;
 use App\Services\CalendarService\Moon;
 use App\Services\CalendarService\Timespan;
 use App\Services\CalendarService\Month;
+use App\Services\Discord\Models\DiscordWebhook;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -75,6 +78,10 @@ class Calendar extends Model
         'static_data' => 'array',
     ];
 
+    protected $dates = [
+        'advancement_next_due'
+    ];
+
     public $timestamps = false;
 
     public $fillable = [
@@ -87,7 +94,18 @@ class Calendar extends Model
         'parent_offset',
         'hash',
         'converted_at',
-        'conversion_batch'
+        'conversion_batch',
+        'advancement_enabled',
+        'advancement_next_due',
+        'advancement_time',
+        'advancement_timezone',
+        'advancement_real_rate',
+        'advancement_real_rate_unit',
+        'advancement_rate',
+        'advancement_rate_unit',
+        'advancement_webhook_url',
+        'advancement_webhook_format',
+        'advancement_discord_message_id',
     ];
 
     public Collection $leap_days_cached;
@@ -155,6 +173,16 @@ class Calendar extends Model
         return $this->hasOne(Preset::class, 'source_calendar_id');
     }
 
+    public function discord_webhooks(): HasMany
+    {
+        return $this->hasMany(DiscordWebhook::class);
+    }
+
+    public function updateWebhooks(string $message)
+    {
+        $this->discord_webhooks->each->post($message);
+    }
+
 
     public function ensureCurrentEpoch(): Calendar
     {
@@ -211,7 +239,18 @@ class Calendar extends Model
      */
     public function isLinked(): bool
     {
-        return $this->parent_count || $this->children_count;
+        return $this->isParent()
+            || $this->isChild();
+    }
+
+    public function isParent(): bool
+    {
+        return $this->children()->exists();
+    }
+
+    public function isChild(): bool
+    {
+        return $this->parent()->exists();
     }
 
     public function yearIsValid($year): bool
@@ -734,6 +773,17 @@ class Calendar extends Model
         return $query->where('disabled', '=', true);
     }
 
+    public function scopeDueForAdvancement(Builder $query): Builder
+    {
+        return $query->where('advancement_enabled', true)
+            ->whereHas('user', function(Builder $query) {
+                return $query->premium();
+            })->where(function(Builder $query) {
+                $query->where('advancement_next_due', '<=', now())
+                    ->orWhereNull('advancement_next_due');
+            });
+    }
+
     /**
      * Determine whether a user has a particular role on this calendar
      *
@@ -811,5 +861,23 @@ class Calendar extends Model
                 'calendar' => $this,
                 'ext' => $ext,
             ]));
+    }
+
+    public function ensureAdvancmentIsInitialized()
+    {
+        collect([
+            'advancement_timezone' => 'America/New_York',
+            'advancement_real_rate' => 1,
+            'advancement_real_rate_unit' => $this->clockEnabled ? 'hours' : 'days',
+            'advancement_rate' => 1,
+            'advancement_rate_unit' => $this->clockEnabled ? 'hours' : 'days',
+            'advancement_webhook_format' => 'discord',
+        ])->each(function($value, $attribute){
+            if(!$this->$attribute) {
+                $this->$attribute = $value;
+            }
+        });
+
+        $this->save();
     }
 }

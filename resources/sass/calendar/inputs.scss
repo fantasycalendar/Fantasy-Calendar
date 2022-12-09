@@ -5,6 +5,15 @@ div:focus, button:focus, * button.btn.btn-stock:focus {
     box-shadow: none;
 }
 
+.hover-opacity:not(:hover) {
+  opacity: 0.6;
+}
+
+.input-group-text{
+  background-color: $input-group-text-bg !important;
+  color: $input-group-text-color !important;
+}
+
 #protip_container{
     z-index:1100;
     position: absolute !important;

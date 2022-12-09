@@ -1,4 +1,4 @@
-<div class="fixed inset-0 overflow-hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true" x-cloak x-show="{{ $attributes->get('model') }}">
+<div class="fixed inset-0 overflow-hidden z-40" aria-labelledby="slide-over-title" role="dialog" aria-modal="true" x-cloak x-show="{{ $attributes->get('model') }}">
     <div class="absolute inset-0 overflow-hidden">
         <div class="absolute inset-0 bg-gray-500 dark:bg-gray-900 dark:bg-opacity-75 bg-opacity-75 transition-opacity" aria-hidden="true"
              x-transition:enter="ease-in-out duration-500"

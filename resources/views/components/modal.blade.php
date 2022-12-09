@@ -1,4 +1,6 @@
+@unless($attributes->has('noteleport'))
 <template x-teleport="body">
+@endunless
     <div class="fixed z-50 inset-0 overflow-y-auto"
          aria-labelledby="modal-title"
          role="dialog"
@@ -123,4 +125,6 @@
             </div>
         </div>
     </div>
+@unless($attributes->has('noteleport'))
 </template>
+@endunless

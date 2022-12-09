@@ -6,7 +6,15 @@ use App\Filament\Resources\CalendarResource\Pages;
 use App\Filament\Resources\CalendarResource\RelationManagers;
 use App\Jobs\ConvertCalendarToPreset;
 use App\Models\Calendar;
+use DateTimeZone;
 use Filament\Forms;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\TimePicker;
 use Filament\Pages\Actions\ButtonAction;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -14,6 +22,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class CalendarResource extends Resource
 {
@@ -44,21 +53,45 @@ class CalendarResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name'),
-                Forms\Components\Placeholder::make('owner')
-                    ->label('Owner')
-                    ->content(fn (?Calendar $record): string => $record ? $record->user->username : '-'),
-                Forms\Components\TextInput::make('dynamic_data.year')->numeric()
-                    ->label('Current Year'),
-                Forms\Components\Select::make('dynamic_data.timespan')
-                    ->label('Current Timespan')
-                    ->options(fn(?Calendar $record): array => $record?->timespans->mapWithKeys(fn($timespan) => [$timespan->id => $timespan->name])->toArray()),
-                Forms\Components\Select::make('dynamic_data.day')
-                    ->label('Current Day')
-                    ->options(fn(?Calendar $record): array => range(1, $record?->month->length)),
-                Forms\Components\TextInput::make('dynamic_data.epoch')->disabled(),
-                Forms\Components\TextInput::make('dynamic_data.location')->disabled(),
-                Forms\Components\TextInput::make('dynamic_data.current_era')->disabled(),
+                Section::make('General')->schema([
+                    TextInput::make('name'),
+                    Placeholder::make('owner')
+                        ->label('Owner')
+                        ->content(fn (?Calendar $record): string => $record ? $record->user->username : '-'),
+                    TextInput::make('dynamic_data.year')->numeric()
+                        ->label('Current Year'),
+                    Select::make('dynamic_data.timespan')
+                        ->label('Current Timespan')
+                        ->options(fn(?Calendar $record): array => $record?->timespans->mapWithKeys(fn($timespan) => [$timespan->id => $timespan->name])->toArray()),
+                    Select::make('dynamic_data.day')
+                        ->label('Current Day')
+                        ->options(fn(?Calendar $record): array => range(1, $record?->month->length)),
+                    TextInput::make('dynamic_data.epoch')->disabled(),
+                    TextInput::make('dynamic_data.location')->disabled(),
+                    TextInput::make('dynamic_data.current_era')->disabled(),
+                ])->columns(),
+                Section::make('Real-Time Advancement')->schema([
+                    Checkbox::make('advancement_enabled'),
+                    DateTimePicker::make('advancement_next_due')
+                        ->timezone(function($record){
+                            return $record->advancement_timezone ?? 'UTC';
+                        }),
+                    TimePicker::make('advancement_time'),
+                    Select::make('advancement_timezone')
+                        ->options(collect(DateTimeZone::listIdentifiers())->mapWithKeys(fn($tz) => [$tz => $tz]))
+                        ->searchable(),
+                    TextInput::make('advancement_scale'),
+                    TextInput::make('advancement_rate'),
+                    Select::make('advancement_rate_unit')->options([
+                        'minutes' => 'Minutes',
+                        'hours' => 'Hours',
+                        'days' => 'Days',
+                    ]),
+                    TextInput::make('advancement_webhook_url'),
+                    Select::make('advancement_webhook_format')->options([
+                        'discord'
+                    ])->default('discord')
+                ])->columns()
             ]);
     }
 

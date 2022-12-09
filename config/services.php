@@ -87,6 +87,23 @@ return [
                         ]
                     ],
                     [
+                        'name' => 'auto',
+                        'description' => 'Enable or disable automatic time advancement',
+                        'type' => 2,
+                        'options' => [
+                            [
+                                'name' => 'enable',
+                                'description' => 'Enables automatic time advancement',
+                                'type' => 1
+                            ],
+                            [
+                                'name' => 'disable',
+                                'description' => 'Disables automatic time advancement',
+                                'type' => 1
+                            ],
+                        ]
+                    ],
+                    [
                         'name' => 'show',
                         'description' => 'Displays information from your selected calendar',
                         'type' => 2,
@@ -464,6 +481,7 @@ return [
                 'create' => [
                     'event' => \App\Services\Discord\Commands\Command\Create\EventHandler::class,
                 ],
+                'auto' => \App\Services\Discord\Commands\Command\Create\AutoHandler::class,
                 'show' => [
                     'date' => \App\Services\Discord\Commands\Command\Show\DateHandler::class,
                     'month' => \App\Services\Discord\Commands\Command\Show\MonthHandler::class,
