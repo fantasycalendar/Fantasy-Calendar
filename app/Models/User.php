@@ -75,7 +75,6 @@ class User extends Authenticatable implements
         'card_last_four',
         'trial_ends_at',
         'date_update_pass',
-        'date_register',
         'reg_ip',
         'api_token'
     ];

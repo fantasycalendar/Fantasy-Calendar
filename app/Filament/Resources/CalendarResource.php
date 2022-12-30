@@ -104,6 +104,12 @@ class CalendarResource extends Resource
                 Tables\Columns\TextColumn::make('events_count')->counts('events'),
                 Tables\Columns\TextColumn::make('date_created')->label('Created at')->date('Y-m-d'),
                 Tables\Columns\TextColumn::make('last_dynamic_change')->label('Last Updated')->date('Y-m-d'),
+                Tables\Columns\IconColumn::make('deleted_at')
+                    ->label('Deleted')
+                    ->default(false)
+                    ->trueColor('secondary')
+                    ->falseColor('danger')
+                    ->tooltip(fn($record) => $record->deleted_at ? 'Deleted at ' . $record->deleted_at->format('Y-m-d H:i:s') : 'Record is active.'),
             ])
             ->filters([
                 Tables\Filters\Filter::make('is_preset')
