@@ -42,6 +42,8 @@ class EdgeCaseCalendarsTest extends TestCase
 
                     $epoch = $epochs->getByDate($testCaseYear, $testCaseMonth, $testCaseDay);
 
+                    dump("testEdgeCaseCalendars - Testing " . $calendar->name . " - " . $testCaseYear . "-" . $testCaseMonth . "-" . $testCaseDay . " should resolve to " . $key . " " . $value . " - resolved to " . $key .  " " . $epoch->$key);
+
                     $this->assertTrue($epoch->$key === $value);
 
                 }
@@ -107,6 +109,8 @@ class EdgeCaseCalendarsTest extends TestCase
                     ($thisYearStartEpoch->visualWeekdayIndex === 0 && $thisYearStartEpoch->isIntercalary)
                 );
             }
+
+            dump("testEdgeCaseCalendars - Testing " . $calendar->name . " - year " . $year . " should start with epoch " . $lastYearEndEpoch->epoch+1 . " - calculated " .  $thisYearStartEpoch->epoch);
 
             $this->assertTrue($lastYearEndEpoch->epoch == $thisYearStartEpoch->epoch-1);
 

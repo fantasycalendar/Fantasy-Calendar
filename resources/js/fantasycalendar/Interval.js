@@ -43,11 +43,11 @@ export default class Interval {
         });
     }
 
-    voteOnYear(year){
+    voteOnYear(year, yearZeroExist){
 
         let mod = year - this.offset;
 
-        if(year < 0) {
+        if(!yearZeroExist && year < 0){
             mod++;
         }
 
@@ -114,27 +114,30 @@ export default class Interval {
 
         if(year === 0) return 0;
 
-        if(year > 0){
+        const isPositiveYear = year >= 0;
 
-            year = this.offset > 0 ? year - this.offset + this.interval : year;
-
-            year = yearZeroExists ? year - 1 : year;
-
-            const result = year / this.interval;
-
-            return this.subtracts ? Math.floor(result) * -1 : Math.floor(result);
-
-        }
+        const roundingMethod = isPositiveYear ? Math.floor : Math.ceil;
 
         const outerOffset = this.offset % this.interval;
 
-        let result = (year - (outerOffset-1)) / this.interval;
-
-        if(outerOffset === 0){
-            result--;
+        year -= outerOffset;
+        if(!yearZeroExists && !isPositiveYear){
+            year++;
+            if (outerOffset === 0) {
+                year -= this.interval;
+            }
+        }else if(isPositiveYear){
+            if(yearZeroExists){
+                year--;
+            }
+            if(outerOffset > 0) {
+                year += this.interval;
+            }
         }
 
-        return this.subtracts ? Math.ceil(result) * -1 : Math.ceil(result);
+        const result = roundingMethod(year / this.interval);
+
+        return this.subtracts ? result * -1 : result;
 
     }
 

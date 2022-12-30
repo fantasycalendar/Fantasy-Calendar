@@ -156,14 +156,21 @@ export default class IntervalsCollection extends Collection{
             ? year + 1
             : year;
 
-        const votes = this.map(interval => interval.voteOnYear(year));
+        const votes = this.map(interval => interval.voteOnYear(year, yearZeroExists));
 
-        for (let vote of votes) {
-            if (vote === 'allow') return true;
-            if (vote === 'deny') return false;
-        }
-
-        return false;
+        return !!votes.reduce((acc, item) => {
+            switch (item) {
+                case "abstain":
+                    return acc;
+                case "allow":
+                    return acc + 1;
+                case "deny":
+                    return acc - 1;
+                default:
+                    console.log("BRUH WHAT");
+                    return acc;
+            }
+        }, 0);
     }
 
     occurrences(year, yearZeroExists) {

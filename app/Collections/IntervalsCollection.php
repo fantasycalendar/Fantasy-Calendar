@@ -245,16 +245,14 @@ class IntervalsCollection extends \Illuminate\Support\Collection
             ? $year + 1
             : $year;
 
-        $votes = $this->map(function($interval) use ($year) {
-            return $interval->voteOnYear($year);
-        });
-
-        foreach($votes as $vote) {
-            if($vote == 'allow') return true;
-            if($vote == 'deny') return false;
-        }
-
-        return false;
+        return $this->map
+            ->voteOnYear($year, $yearZeroExists)
+            ->reduce(fn($acc, $item) => match($item) {
+               "abstain" => $acc,
+               "allow" => $acc + 1,
+               "deny" => $acc - 1,
+                default => throw new \Exception("BRUH WHAT"),
+            }, 0);
 
     }
 
