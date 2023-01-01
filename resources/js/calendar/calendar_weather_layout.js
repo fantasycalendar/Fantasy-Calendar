@@ -56,6 +56,7 @@ var calendar_weather = {
 	end_epoch: null,
 
 	processed_weather: true,
+	processed_seasons: true,
 
 	tooltip: {
 
@@ -63,17 +64,19 @@ var calendar_weather = {
 
 			this.weather_tooltip_box = $('#weather_tooltip_box');
 			this.base_height = parseInt(this.weather_tooltip_box.css('height'));
-			this.weather_title = $('.weather_title');
-			this.day_title = $('.day_title');
-			this.day_container = $('.day_container');
-			this.moon_title = $('.moon_title');
-			this.moon_container = $('.moon_container');
-			this.weather_temp_desc = $('.weather_temp_desc');
-			this.weather_temp = $('.weather_temp');
-			this.weather_wind = $('.weather_wind');
-			this.weather_precip = $('.weather_precip');
-			this.weather_clouds = $('.weather_clouds');
-			this.weather_feature = $('.weather_feature');
+			this.weather_title = this.weather_tooltip_box.find('.weather_title');
+			this.day_title = this.weather_tooltip_box.find('.day_title');
+			this.day_container = this.weather_tooltip_box.find('.day_container');
+			this.moon_title = this.weather_tooltip_box.find('.moon_title');
+			this.moon_container = this.weather_tooltip_box.find('.moon_container');
+			this.weather_temp_desc = this.weather_tooltip_box.find('.weather_temp_desc');
+			this.weather_temp = this.weather_tooltip_box.find('.weather_temp');
+			this.weather_wind = this.weather_tooltip_box.find('.weather_wind');
+			this.weather_precip = this.weather_tooltip_box.find('.weather_precip');
+			this.weather_clouds = this.weather_tooltip_box.find('.weather_clouds');
+			this.weather_feature = this.weather_tooltip_box.find('.weather_feature');
+			this.sunrise_container = this.weather_tooltip_box.find('.sunrise');
+			this.sunset_container = this.weather_tooltip_box.find('.sunset');
 			this.stop_hide = false;
 			this.sticky_icon = false;
 
@@ -118,6 +121,8 @@ var calendar_weather = {
 
 		show: function(icon){
 
+            let show_tooltip = false;
+
 			if(registered_click_callbacks['sticky_weather_ui']){
 				return;
 			}
@@ -148,6 +153,7 @@ var calendar_weather = {
 			}
 
 			if(icon.hasClass('moon_popup')){
+                show_tooltip = true;
 				this.moon_container.html(this.insert_moons(epoch));
 			}
 
@@ -155,6 +161,7 @@ var calendar_weather = {
 			this.sticky_icon = false;
 
 			if(calendar_weather.processed_weather && !icon.hasClass('noweather')){
+                show_tooltip = true;
 
 				this.weather_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
 				this.weather_temp_desc.parent().toggleClass('hidden', false);
@@ -246,7 +253,20 @@ var calendar_weather = {
 				this.weather_feature.parent().toggleClass('hidden', true);
 			}
 
-            if((calendar_weather.processed_weather && !icon.hasClass('noweather')) || icon.hasClass('moon_popup')){
+            if(static_data.clock.enabled && calendar_weather.processed_seasons) {
+                show_tooltip = true;
+                this.sunrise_container.each(function () {
+                    $(this).text(calendar_weather.epoch_data[epoch].season.time.sunrise.string);
+                });
+                this.sunset_container.each(function () {
+                    $(this).text(calendar_weather.epoch_data[epoch].season.time.sunset.string);
+                });
+            }else{
+                this.sunrise_container.parent().toggleClass('hidden', true);
+                this.sunset_container.parent().toggleClass('hidden', true);
+            }
+
+            if(show_tooltip){
 
 				this.popper = new Popper(icon, this.weather_tooltip_box, {
 				    placement: 'top',

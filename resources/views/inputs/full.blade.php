@@ -1156,8 +1156,7 @@
                         <div class='col-8'>Enable weather:</div>
                         <div class='col-4 text-right'>
                             <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input static_input" id='enable_weather'
-                                       refresh='false' data='seasons.global_settings' fc-index='enable_weather'>
+                                <input type="checkbox" class="custom-control-input static_input" id='enable_weather' data='seasons.global_settings' fc-index='enable_weather'>
                                 <span class="custom-control-indicator"></span>
                             </label>
                         </div>

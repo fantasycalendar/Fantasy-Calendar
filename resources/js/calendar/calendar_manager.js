@@ -267,6 +267,7 @@ async function rebuild_calendar(action, dynamic_data){
 
         calendar_weather.epoch_data = evaluated_static_data.epoch_data;
         calendar_weather.processed_weather = evaluated_static_data.processed_weather;
+        calendar_weather.processed_seasons = evaluated_static_data.processed_seasons;
         calendar_weather.start_epoch = evaluated_static_data.year_data.start_epoch;
         calendar_weather.end_epoch = evaluated_static_data.year_data.end_epoch;
 
@@ -300,22 +301,20 @@ async function rebuild_climate(){
     let prev_seasons = calendar_weather.processed_seasons;
     let prev_weather = calendar_weather.processed_weather;
 
-    climate_generator.generate().then((result) => {
+    const result = climate_generator.generate();
 
-        calendar_weather.epoch_data = result;
-        evaluated_static_data.epoch_data = result;
+    calendar_weather.epoch_data = result;
+    evaluated_static_data.epoch_data = result;
 
-        climate_charts.evaluate_day_length_chart();
-        climate_charts.evaluate_weather_charts();
+    climate_charts.evaluate_day_length_chart();
+    climate_charts.evaluate_weather_charts();
 
-        if(prev_seasons !== climate_generator.process_seasons || prev_weather !== climate_generator.process_weather) {
-            rerender_calendar();
-            eval_clock();
-        }else{
-            eval_current_time();
-        }
-
-    })
+    if(prev_seasons !== climate_generator.process_seasons || prev_weather !== climate_generator.process_weather) {
+        rerender_calendar();
+        eval_clock();
+    }else{
+        eval_current_time();
+    }
 }
 
 function rerender_calendar(processed_data) {

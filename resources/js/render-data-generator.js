@@ -4,22 +4,27 @@ const render_data_generator = {
 
 		let epoch_data = this.epoch_data[epoch];
         let weather = epoch_data.weather;
+        let season = epoch_data.season;
 
-        if(weather === undefined ||
-			(!Perms.player_at_least('co-owner')
-				&&
-				(
-					static_data.settings.hide_all_weather
-					||
-					(
-						static_data.settings.hide_future_weather
-						&&
-						epoch > dynamic_data.epoch
-					)
-				)
-			)
-		){
-			return "";
+        if(weather === undefined){
+            if(!Perms.player_at_least('co-owner')
+                &&
+                (
+                    static_data.settings.hide_all_weather
+                    ||
+                    (
+                        static_data.settings.hide_future_weather
+                        &&
+                        epoch > dynamic_data.epoch
+                    )
+                )
+            ){
+                return "";
+            }
+            if(static_data.clock.enabled && season) {
+                return "wi wi-sunset"
+            }
+            return "";
 		}
 
 		if(weather.clouds === "Clear"){
