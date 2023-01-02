@@ -10,6 +10,8 @@
 	<div><span class='bold-text'>Precipitation:</span> <span class='weather_precip'></span></div>
 	<div><span class='bold-text'>Clouds:</span> <span class='weather_clouds'></span></div>
 	<div><span class='bold-text'>Feature:</span> <span class='weather_feature'></span></div>
+	<div><span class='bold-text'>Sunrise:</span> <span class='sunrise'></span></div>
+	<div><span class='bold-text'>Sunset:</span> <span class='sunset'></span></div>
 </div>
 
 <div id="weather_background" class='basic-background'>

@@ -63,6 +63,7 @@
                 "hide_eras":false,
                 "hide_all_weather":false,
                 "hide_future_weather":false,
+                "hide_future_sunrise_sunset":false,
                 "add_month_number":false,
                 "add_year_day_number":false,
                 "default_category":-1

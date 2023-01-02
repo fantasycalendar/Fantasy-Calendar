@@ -1156,8 +1156,7 @@
                         <div class='col-8'>Enable weather:</div>
                         <div class='col-4 text-right'>
                             <label class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input static_input" id='enable_weather'
-                                       refresh='false' data='seasons.global_settings' fc-index='enable_weather'>
+                                <input type="checkbox" class="custom-control-input static_input" id='enable_weather' data='seasons.global_settings' fc-index='enable_weather'>
                                 <span class="custom-control-indicator"></span>
                             </label>
                         </div>
@@ -1543,6 +1542,17 @@
                                    fc-index='hide_clock' refresh='false'>
                             <span>
 								Hide time from guest viewers
+							</span>
+                        </div>
+                    </label>
+
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
+                           data-pt-title="Prevents any future sunrise and sunset times from appearing on the calendar for guest viewers">
+                        <div class='col'>
+                            <input type='checkbox' class='margin-right static_input' data='settings'
+                                   fc-index='hide_future_sunrise_sunset' refresh='false'>
+                            <span>
+								Hide future sunrise/set from guest viewers
 							</span>
                         </div>
                     </label>

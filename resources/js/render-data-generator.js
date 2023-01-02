@@ -3,24 +3,40 @@ const render_data_generator = {
 	get_weather_icon: function(epoch){
 
 		let epoch_data = this.epoch_data[epoch];
-        let weather = epoch_data.weather;
 
-        if(weather === undefined ||
-			(!Perms.player_at_least('co-owner')
-				&&
-				(
-					static_data.settings.hide_all_weather
-					||
-					(
-						static_data.settings.hide_future_weather
-						&&
-						epoch > dynamic_data.epoch
-					)
-				)
-			)
-		){
-			return "";
-		}
+        const showSunriseSunsetTimes = epoch_data.season && static_data.clock.enabled
+            &&
+            (
+                Perms.player_at_least('co-owner')
+                ||
+                !(
+                    static_data.settings.hide_clock
+                    ||
+                    (static_data.settings.hide_future_sunrise_sunset && epoch > dynamic_data.epoch)
+                )
+            )
+
+        const showWeather = epoch_data.weather
+            &&
+            (
+                Perms.player_at_least('co-owner')
+                ||
+                !(
+                    static_data.settings.hide_all_weather
+                    ||
+                    (static_data.settings.hide_future_weather && epoch > dynamic_data.epoch)
+                )
+            )
+
+        if(!showSunriseSunsetTimes && !showWeather){
+            return "";
+        }
+
+        if(showSunriseSunsetTimes && !showWeather){
+            return "wi wi-sunset"
+        }
+
+        let weather = epoch_data.weather;
 
 		if(weather.clouds === "Clear"){
 			if(weather.feature === "Fog"){
