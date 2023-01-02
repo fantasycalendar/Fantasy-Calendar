@@ -160,7 +160,14 @@ var calendar_weather = {
 			this.stop_hide = false;
 			this.sticky_icon = false;
 
-			if(calendar_weather.processed_weather && !icon.hasClass('noweather')){
+
+
+			if(calendar_weather.processed_weather
+                && !icon.hasClass('noweather')
+                && !static_data.settings.hide_all_weather
+                && !(static_data.settings.hide_future_weather && epoch > dynamic_data.epoch)
+            ){
+
                 show_tooltip = true;
 
 				this.weather_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
@@ -253,7 +260,11 @@ var calendar_weather = {
 				this.weather_feature.parent().toggleClass('hidden', true);
 			}
 
-            if(static_data.clock.enabled && calendar_weather.processed_seasons) {
+            if(static_data.clock.enabled
+                && calendar_weather.processed_seasons
+                && !static_data.settings.hide_clock
+                && !(static_data.settings.hide_future_sunrise_sunset && epoch > dynamic_data.epoch)
+            ) {
                 show_tooltip = true;
                 this.sunrise_container.each(function () {
                     $(this).text(calendar_weather.epoch_data[epoch].season.time.sunrise.string);

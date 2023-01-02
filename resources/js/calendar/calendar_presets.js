@@ -331,6 +331,7 @@ function parse_json(json) {
 				"hide_eras": false,
 				"hide_all_weather": false,
 				"hide_future_weather": false,
+				"hide_future_sunrise_sunset": false,
 				"hide_weather_temp": false,
 				"hide_wind_velocity": false,
 				"hide_weekdays": false,

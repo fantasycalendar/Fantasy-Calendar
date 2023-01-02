@@ -1547,6 +1547,17 @@
                     </label>
 
                     <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
+                           data-pt-title="Prevents any future sunrise and sunset times from appearing on the calendar for guest viewers">
+                        <div class='col'>
+                            <input type='checkbox' class='margin-right static_input' data='settings'
+                                   fc-index='hide_future_sunrise_sunset' refresh='false'>
+                            <span>
+								Hide future sunrise/set from guest viewers
+							</span>
+                        </div>
+                    </label>
+
+                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
                            data-pt-title="Hides all events from guest viewers">
                         <div class='col'>
                             <input type='checkbox' class='margin-right static_input' data='settings'
