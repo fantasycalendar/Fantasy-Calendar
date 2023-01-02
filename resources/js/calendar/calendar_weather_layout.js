@@ -129,7 +129,7 @@ var calendar_weather = {
 
 			var day_container = icon.closest(".timespan_day");
 
-			var epoch = day_container.attr('epoch');
+			var epoch = Number(day_container.attr('epoch'));
 
 			if(epoch === undefined){
 				return;
@@ -272,6 +272,8 @@ var calendar_weather = {
                 this.sunset_container.each(function () {
                     $(this).text(calendar_weather.epoch_data[epoch].season.time.sunset.string);
                 });
+                this.sunrise_container.parent().toggleClass('hidden', false);
+                this.sunset_container.parent().toggleClass('hidden', false);
             }else{
                 this.sunrise_container.parent().toggleClass('hidden', true);
                 this.sunset_container.parent().toggleClass('hidden', true);
