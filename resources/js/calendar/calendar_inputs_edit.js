@@ -1490,7 +1490,6 @@ function set_up_edit_inputs(){
 				    const event = events[eventId];
 					if(event.data.connected_events !== undefined){
 						let connected_events = event.data.connected_events;
-						console.log(connected_events, index)
 						if(connected_events.includes(String(index)) || connected_events.includes(index)){
 							warnings.push(eventId);
 						}
@@ -2190,12 +2189,10 @@ function set_up_edit_inputs(){
                     if(!is_cyclic){
                         $(this).attr('error_msg', `${static_data.year_data.leap_days[index].name} has an invalid interval formula. Plus before exclamation point.`);
                     }else{
-                        console.log('here?')
                         $(this).attr('error_msg', `${static_data.year_data.leap_days[index].name} has an invalid interval formula.`);
                     }
 					return;
 				}
-                console.log(is_cyclic, Number(values[i]), offset_val, is_cyclic && Number(values[i]) > offset_val);
                 if(is_cyclic && Number(values[i]) > offset_val){
                     $(this).toggleClass('invalid', true).attr('error_msg', `${static_data.year_data.leap_days[index].name} - Cyclic leap days cannot have an interval number greater than its its cycle length.`);
                     return;
