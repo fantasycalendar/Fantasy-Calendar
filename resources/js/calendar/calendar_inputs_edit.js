@@ -1730,7 +1730,7 @@ function set_up_edit_inputs(){
             ? 'Every nth year this leap day appears. Multiple intervals can be separated by commas, like the gregorian leap day: 400,!100,4. Every 4th year, unless it is divisible by 100, but again if it is divisible by 400.'
             : "A comma-separated list of year numbers within the cycle length on which you want this leap day to appear. For example: A length of 10 and an interval of 3,5 means this leap day appears on years 3, 5, 13, 15, 23, and so on.";
 
-        container.find('.leap_day_occurance_input.interval').val("1").attr("data-pt-title", tooltip).change();
+        container.find('.leap_day_occurance_input.interval').val("1").protipSet({ title: tooltip }).change();
         container.find('.leap_day_occurance_input.offset').val(1).change();
     });
 
