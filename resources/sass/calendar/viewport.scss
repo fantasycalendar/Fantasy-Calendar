@@ -651,6 +651,7 @@
         bottom: 0;
         top: 0;
         z-index: 5;
+        pointer-events: none;
     }
 
     & .number:not(.year_day) {

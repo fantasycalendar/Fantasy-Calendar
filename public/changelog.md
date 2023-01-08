@@ -1,8 +1,12 @@
 ### 2.3.0 - Momentary Marid
 #### October 8th, 2022
 - Added: Real-time calendar advancement
+- Added: The ability for leap day intervals to operate within a limited cycle
 - Fixed: Modulo by 0 when an interval is somehow set to 0
 - Fixed: Invalid category IDs upon Calendar import/export
+- Fixed: Cases where calendar co-owners couldn't create events
+- Fixed: Previewing a date would prevent you from clicking on events on that day
+- Fixed: Trying to insert a link or image into event's description would result in being prompted to close the event
 
 ### 2.2.17 - Careful Couatl
 #### September 29th, 2022
