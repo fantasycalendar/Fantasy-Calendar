@@ -1490,7 +1490,6 @@ function set_up_edit_inputs(){
 				    const event = events[eventId];
 					if(event.data.connected_events !== undefined){
 						let connected_events = event.data.connected_events;
-						console.log(connected_events, index)
 						if(connected_events.includes(String(index)) || connected_events.includes(index)){
 							warnings.push(eventId);
 						}
@@ -1721,6 +1720,19 @@ function set_up_edit_inputs(){
 		container.find('.internal-list-name').change();
         evaluate_custom_weeks();
 	});
+
+    $(document).on('change', '.cyclic-interval-input', function(){
+        const is_cyclic = $(this).is(":checked");
+        const container = $(this).closest('.sortable-container');
+        container.find('.offset-text').text(is_cyclic ? "Length:" : "Offset:");
+
+        let tooltip = !is_cyclic
+            ? 'Every nth year this leap day appears. Multiple intervals can be separated by commas, like the gregorian leap day: 400,!100,4. Every 4th year, unless it is divisible by 100, but again if it is divisible by 400.'
+            : "A comma-separated list of year numbers within the cycle length on which you want this leap day to appear. For example: A length of 10 and an interval of 3,5 means this leap day appears on years 3, 5, 13, 15, 23, and so on.";
+
+        container.find('.leap_day_occurance_input.interval').val("1").attr("data-pt-title", tooltip).change();
+        container.find('.leap_day_occurance_input.offset').val(1).change();
+    });
 
 	$('#month_overflow').change(function(){
 		var checked = $(this).is(':checked');
@@ -2131,6 +2143,7 @@ function set_up_edit_inputs(){
 		var offset_val = (offset.val()|0);
 		var timespan = $(this).closest('.sortable-container').find('.timespan-list');
 		var timespan_val = timespan.val();
+        var is_cyclic = $(this).closest('.sortable-container').find('.cyclic-interval-input').is(':checked');
 
 		interval_val = interval_val.replace(/,\s*$/, "");
 
@@ -2146,54 +2159,73 @@ function set_up_edit_inputs(){
 			return;
 		}
 
-		if(offset_val < 0){
-			offset.toggleClass('invalid', true).attr('error_msg', true ? `${static_data.year_data.leap_days[index].name} cannot have a negative offset number.` : '');
-			return;
-		}
+        if(offset_val < 0){
+            offset.toggleClass('invalid', true).attr('error_msg', true ? `${static_data.year_data.leap_days[index].name} cannot have a negative offset number.` : '');
+            return;
+        }
 
-		var global_regex = /[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g;
-		var local_regex = /^\+*\!*[1-9]+[0-9]{0,}$/;
-		var numbers_regex = /([1-9]+[0-9]{0,})/;
+        if(is_cyclic && offset_val < 1) {
+            offset.toggleClass('invalid', true).attr('error_msg', true ? `${static_data.year_data.leap_days[index].name} cannot have a cycle length below 1.` : '');
+            return;
+        }
+
+		var global_regex = is_cyclic ? /[ +!`~@#$%^&*()_|\-=?;:'".<>{}\[\]\\\/A-Za-z]/g : /[ `~@#$%^&*()_|\-=?;:'".<>{}\[\]\\\/A-Za-z]/g;
+		var local_regex = is_cyclic ? /^[1-9]+\d*$/ : /^\+*!*[1-9]+\d*$/;
+		var numbers_regex = /([1-9]+\d*)/;
 
 		var invalid = global_regex.test(interval_val);
+
 		var values = interval_val.split(',');
 
 		$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.year_data.leap_days[index].name} has an invalid interval formula.` : '');
 
 		if(invalid) return;
 
-		if($(this).hasClass('interval')){
+		if($(this).hasClass('interval') || $(this).hasClass('offset')){
 
 			for(var i = 0; i < values.length; i++){
 				if(!local_regex.test(values[i])){
-					invalid = true;
-					break;
+                    $(this).toggleClass('invalid', true)
+                    if(!is_cyclic){
+                        $(this).attr('error_msg', `${static_data.year_data.leap_days[index].name} has an invalid interval formula. Plus before exclamation point.`);
+                    }else{
+                        $(this).attr('error_msg', `${static_data.year_data.leap_days[index].name} has an invalid interval formula.`);
+                    }
+					return;
 				}
+                if(is_cyclic && Number(values[i]) > offset_val){
+                    $(this).toggleClass('invalid', true).attr('error_msg', `${static_data.year_data.leap_days[index].name} - Cyclic leap days cannot have an interval number greater than its its cycle length.`);
+                    return;
+                }
 			}
 
-			$(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.year_data.leap_days[index].name} has an invalid interval formula. Plus before exclamation point.` : '');
+            var unsorted = [];
 
-			if(invalid) return;
+            for (var i = 0; i < values.length; i++) {
+                unsorted.push(Number(values[i].match(numbers_regex)[0]));
+            }
 
-			var unsorted = [];
+            var sorted = unsorted.slice(0).sort(sorter).reverse();
 
-			for(var i = 0; i < values.length; i++){
-				unsorted.push(Number(values[i].match(numbers_regex)[0]));
-			}
+            var result = [];
 
-			var sorted = unsorted.slice(0).sort(sorter).reverse();
+            for (var i = 0; i < sorted.length; i++) {
+                var index = unsorted.indexOf(sorted[i]);
+                result.push(values[index]);
+                delete unsorted[index];
+            }
 
-			var result = [];
+            if (is_cyclic) {
+                result = result.reverse();
+            }
 
-			for(var i = 0; i < sorted.length; i++){
-				var index = unsorted.indexOf(sorted[i]);
-				result.push(values[index]);
-				delete unsorted[index];
-			}
+            if(!$(this).hasClass('offset')) {
 
-			$(this).val(result.join(','));
+                $(this).val(result.join(','));
 
-			values = result;
+                values = result;
+
+            }
 
 		}else{
 
@@ -2216,10 +2248,14 @@ function set_up_edit_inputs(){
 
 		}
 
-		var values = values.reverse();
+        if(is_cyclic){
+            sorted.reverse();
+        }
+
+		values = values.reverse();
 		sorted = sorted.reverse();
 
-		if(values.length == 1 && Number(values[0]) == 1){
+		if(values.length == 1 && Number(values[0]) == 1 && !is_cyclic){
 			offset.val(0).prop('disabled', true);
 		}else{
 			offset.prop('disabled', false);
@@ -2228,14 +2264,15 @@ function set_up_edit_inputs(){
 		var data = {
 			'interval': interval_val,
 			'offset': offset_val,
-			'timespan': timespan_val
+			'timespan': timespan_val,
+            'cyclic_interval': is_cyclic
 		}
 
 		$(this).toggleClass('invalid', false).attr('error_msg', '');
 
 		$(this).closest('.sortable-container').find('.leap_day_variance_output').html(get_interval_text(false, data));
 
-        dynamic_data.epoch = dynamic_date_manager.epoch;
+        //dynamic_data.epoch = dynamic_date_manager.epoch;
 
 		do_error_check();
 
@@ -3188,17 +3225,30 @@ function add_leap_day_to_list(parent, key, data){
 					element.push("</div>");
 				element.push("</div>");
 
-				element.push("<div class='row no-gutters mt-2'>");
-					element.push("<div class='col-8'>Interval:</div>");
-					element.push("<div class='col-4'>Offset:</div>");
+				element.push(`<div class='row no-gutters my-1'>`);
+					element.push("<div class='form-check col-12 py-2 border rounded'>");
+						element.push(`<input type='checkbox' id='${key}_cyclic_interval' class='form-check-input cyclic-interval-input dynamic_input' data='year_data.leap_days.${key}' fc-index='cyclic_interval' ${(data.cyclic_interval ? "checked" : "")} />`);
+						element.push(`<label for='${key}_cyclic_interval' class='form-check-label ml-1'>`);
+							element.push("Interval repeats on a cycle");
+						element.push("</label>");
+					element.push("</div>");
 				element.push("</div>");
+
+				element.push("<div class='row no-gutters mt-2'>");
+					element.push("<div class='col-8 interval-text'>Interval:</div>");
+					element.push(`<div class='col-4 offset-text'>${data.cyclic_interval ? "Length:" : "Offset:"}</div>`);
+				element.push("</div>");
+
+                let tooltip = !data.cyclic_interval
+                    ? 'Every nth year this leap day appears. Multiple intervals can be separated by commas, like the gregorian leap day: 400,!100,4. Every 4th year, unless it is divisible by 100, but again if it is divisible by 400.'
+                    : "A comma-separated list of year numbers within the cycle length on which you want this leap day to appear. For example: A length of 10 and an interval of 3,5 means this leap day appears on years 3, 5, 13, 15, 23, and so on.";
 
 				element.push("<div class='row no-gutters mb-2'>");
 					element.push("<div class='col-8 pr-1'>");
-						element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input protip' data-pt-position="top" data-pt-title='Every nth year this leap day appears. Multiple intervals can be separated by commas, like the gregorian leap day: 400,!100,4. Every 4th year, unless it is divisible by 100, but again if it is divisible by 400.' data='year_data.leap_days.${key}' fc-index='interval' value='${data.interval}' />`);
+						element.push(`<input type='text' class='form-control leap_day_occurance_input interval dynamic_input protip' data-pt-position="top" data-pt-title='${tooltip}' data='year_data.leap_days.${key}' fc-index='interval' value='${data.interval}' />`);
 					element.push("</div>");
 					element.push("<div class='col-4 pl-1 '>");
-						element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.interval == "1" ? 0 : data.offset}'/>`);
+						element.push(`<input type='number' step="1" class='form-control leap_day_occurance_input offset dynamic_input' min='0' data='year_data.leap_days.${key}' fc-index='offset' value='${data.interval == "1" && !data.cyclic_interval ? 0 : data.offset}'/>`);
 					element.push("</div>");
 				element.push("</div>");
 
@@ -4818,6 +4868,7 @@ function reindex_leap_day_list(){
 			'intercalary': intercalary,
 			'timespan': Number($(this).find('.timespan-list').val()),
 			'adds_week_day': $(this).find('.adds-week-day').is(':checked'),
+			'cyclic_interval': $(this).find('.cyclic-interval-input').is(':checked'),
 			'day': intercalary ? Number($(this).find('.timespan-day-list').val()) : Number($(this).find('.week-day-select').val()),
 			'week_day': $(this).find('.internal-list-name').val(),
 			'interval': $(this).find('.interval').val(),
@@ -6181,6 +6232,10 @@ function refresh_interval_texts(){
 function get_interval_text(timespan, data){
 
 	var text = "";
+
+    if(data.cyclic_interval){
+        return "";
+    }
 
 	if(timespan){
 
