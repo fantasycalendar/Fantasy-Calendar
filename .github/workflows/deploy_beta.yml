@@ -36,7 +36,7 @@ jobs:
         id: extract_branch
       - uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "latest"
+          php-version: "8.1"
       - uses: "ramsey/composer-install@v2"
       - name: Install NPM dependencies
         run: npm install
