@@ -2272,7 +2272,8 @@ function set_up_edit_inputs(){
 
 		$(this).closest('.sortable-container').find('.leap_day_variance_output').html(get_interval_text(false, data));
 
-        dynamic_data.epoch = dynamic_date_manager.epoch;
+        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+        preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
 
 		do_error_check();
 
