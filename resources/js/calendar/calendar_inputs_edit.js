@@ -2149,23 +2149,23 @@ function set_up_edit_inputs(){
 
 		if(offset_val === undefined || interval_val === undefined) return;
 
-		if(interval_val == ""){
-			interval.toggleClass('invalid', true).attr('error_msg', true ? `${static_data.year_data.leap_days[index].name} interval is empty, please enter at least one number.` : '');
+        interval.toggleClass('invalid', interval_val == "").attr('error_msg', interval_val == "" ? `${static_data.year_data.leap_days[index].name} interval is empty, please enter at least one number.` : '');
+        if(interval_val == ""){
 			return;
 		}
 
+        interval.toggleClass('invalid', interval_val == "0").attr('error_msg', interval_val == "0" ? `${static_data.year_data.leap_days[index].name}'s interval is 0, please enter a positive number.` : '');
 		if(interval_val == "0"){
-			interval.toggleClass('invalid', true).attr('error_msg', true ? `${static_data.year_data.leap_days[index].name}'s interval is 0, please enter a positive number.` : '');
 			return;
 		}
 
+        offset.toggleClass('invalid', offset_val < 0).attr('error_msg', offset_val < 0 ? `${static_data.year_data.leap_days[index].name} cannot have a negative offset number.` : '');
         if(offset_val < 0){
-            offset.toggleClass('invalid', true).attr('error_msg', true ? `${static_data.year_data.leap_days[index].name} cannot have a negative offset number.` : '');
             return;
         }
 
+        offset.toggleClass('invalid', is_cyclic && offset_val < 1).attr('error_msg', is_cyclic && offset_val < 1 ? `${static_data.year_data.leap_days[index].name} cannot have a cycle length below 1.` : '');
         if(is_cyclic && offset_val < 1) {
-            offset.toggleClass('invalid', true).attr('error_msg', true ? `${static_data.year_data.leap_days[index].name} cannot have a cycle length below 1.` : '');
             return;
         }
 
@@ -2272,7 +2272,7 @@ function set_up_edit_inputs(){
 
 		$(this).closest('.sortable-container').find('.leap_day_variance_output').html(get_interval_text(false, data));
 
-        //dynamic_data.epoch = dynamic_date_manager.epoch;
+        dynamic_data.epoch = dynamic_date_manager.epoch;
 
 		do_error_check();
 
