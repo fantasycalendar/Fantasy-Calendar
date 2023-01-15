@@ -29,11 +29,11 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('queue:prune-batches')->daily();
 
-        $schedule->command('calendar:advance')->everyMinute();
-
         if(app()->environment('development')) {
             return;
         }
+
+        $schedule->command('calendar:advance')->everyMinute();
 
         $schedule->command('clean:authtokens')
                  ->daily()->onOneServer();
