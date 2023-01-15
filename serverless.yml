@@ -171,7 +171,7 @@ functions:
       - ${bref:layer.console} # Console layer
     events:
       - schedule:
-          rate: rate(1 minute)
+          rate: cron(* * * * ? *)
           input: '"schedule:run"'
     vpc:
       securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
