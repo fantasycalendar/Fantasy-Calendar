@@ -33,7 +33,8 @@ class Calendar extends JsonResource
             'hash' => $this->hash,
             'parent_hash' => $parent_hash,
             'parent_link_date' => $this->parent_link_date,
-            'children' => $children
+            'children' => $children,
+            'advancement_enabled' => (bool)$this->advancement_enabled
         ];
     }
 }

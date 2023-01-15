@@ -307,7 +307,7 @@ function set_up_edit_inputs(){
 		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 		eval_clock();
-        
+
         window.dispatchEvent(new CustomEvent("clock-changed", { detail: { enabled: static_data.clock.enabled } }));
 
 	});
@@ -2326,7 +2326,7 @@ function set_up_edit_inputs(){
 		$('.timespan-day-list').each(function(){
 			repopulate_day_select($(this), $(this).val(), changed_days == $(this));
 		});
-        
+
         dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
         preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
 
@@ -2728,8 +2728,8 @@ function set_up_edit_inputs(){
 		update_data(e);
 
 	});
-    
-    
+
+
     document.addEventListener("advancement-changed", function(event){
         advancement = event.detail.data;
         evaluate_save_button();
@@ -5769,32 +5769,42 @@ function populate_calendar_lists(){
 
 		html.push(`<option>None</option>`);
 
-		for(var calendar_hash in owned_calendars){
+		for(let [child_hash, child_calendar] of Object.entries(owned_calendars)){
 
-			var child_calendar = owned_calendars[calendar_hash];
+            let disabled = false;
+            let message = "";
 
-			if(child_calendar.hash != hash){
+            if (child_hash !== hash) {
 
-				if(child_calendar.parent_hash){
+                if (child_calendar.parent_hash) {
 
-					var calendar_owner = clone(owned_calendars[child_calendar.parent_hash]);
+                    let calendar_owner = clone(owned_calendars[child_calendar.parent_hash]);
 
-					if(calendar_owner.hash == hash){
-						calendar_owner.name = "this calendar";
-					}
+                    if (calendar_owner.hash === hash) {
+                        disabled = true;
+                        message = " | Linked to this calendar";
+                    } else {
+                        disabled = true;
+                        message = ` | Linked to ${calendar_owner.name}`;
+                    }
 
-				}else{
+                } else {
 
-					var calendar_owner = false;
+                    if (child_calendar.advancement_enabled) {
+                        disabled = true;
+                        message = " | Has Real-Time Advancement Enabled";
+                    }
 
-				}
+                }
 
-				html.push(`<option ${calendar_owner ? "disabled" : ""} value="${child_calendar.hash}">${child_calendar.name}${calendar_owner ? ` | Linked to ${calendar_owner.name}` : ""}</option>`);
-			}
-		}
+                html.push(`<option ${disabled ? "disabled" : ""} value="${child_hash}">${child_calendar.name}${message}</option>`);
 
-		calendar_link_select.html(html.join(''));
-		calendar_link_select.prop('disabled', false);
+            }
+
+        }
+
+        calendar_link_select.html(html.join(''));
+        calendar_link_select.prop('disabled', false);
 
 	});
 

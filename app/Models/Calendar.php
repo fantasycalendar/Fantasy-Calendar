@@ -208,23 +208,23 @@ class Calendar extends Model
             return false;
         }
 
-        if ($this->static_data['clock']['enabled'] != $static_data['clock']['enabled']) {
+        if (Arr::get($this->static_data, 'clock.enabled') != Arr::get($static_data, 'clock.enabled')) {
             return true;
         }
 
-        if ($this->static_data['clock']['hours'] != $static_data['clock']['hours']) {
+        if (Arr::get($this->static_data, 'clock.hours') != Arr::get($static_data, 'clock.hours')) {
             return true;
         }
 
-        if ($this->static_data['clock']['minutes'] != $static_data['clock']['minutes']) {
+        if (Arr::get($this->static_data, 'clock.minutes') != Arr::get($static_data, 'clock.minutes')) {
             return true;
         }
 
-        if ($this->static_data['year_data'] != $static_data['year_data']) {
+        if (Arr::get($this->static_data, 'year_data') != Arr::get($static_data, 'year_data')) {
             return true;
         }
 
-        if ($this->static_data['eras'] != $static_data['eras']) {
+        if (Arr::get($this->static_data, 'eras') != Arr::get($static_data, 'eras')) {
             return true;
         }
 
