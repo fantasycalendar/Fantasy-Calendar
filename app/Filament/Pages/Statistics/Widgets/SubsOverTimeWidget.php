@@ -68,11 +68,19 @@ class SubsOverTimeWidget extends LineChartWidget
                 return [$result->date => $result->count];
             });
 
-        $period = CarbonPeriod::create(
-            min($monthly->keys()->first(), $yearly->keys()->first()),
-            '1 month',
-            max($monthly->keys()->last(), $yearly->keys()->last())
-        );
+        if($monthly->count() > 0) {
+            $period = CarbonPeriod::create(
+                min($monthly->keys()->first(), $yearly->keys()->first()),
+                '1 month',
+                max($monthly->keys()->last(), $yearly->keys()->last())
+            );
+        } else {
+            $period = CarbonPeriod::create(
+                now()->subMonths(12),
+                '1 month',
+                now()
+            );
+        }
 
         $monthly_subscriptions_over_time = [];
         $monthly_subscriptions_per_month = [];

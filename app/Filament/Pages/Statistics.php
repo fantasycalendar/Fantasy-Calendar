@@ -28,7 +28,6 @@ class Statistics extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            StatsOverviewWidget::class,
             SubRatio::class,
             SubsByTypeEachMonth::class,
             SubsOverTimeWidget::class,
