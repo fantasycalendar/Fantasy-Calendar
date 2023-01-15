@@ -39,6 +39,7 @@
         "mustache/mustache": "^2.14",
         "nesbot/carbon": "^2.65",
         "restcord/restcord": "dev-develop",
+        "laravel/ui": "^3.4",
         "socialiteproviders/discord": "^4.1",
         "spatie/laravel-export": "^0.3.10",
         "spatie/laravel-honeypot": "^4.1",
