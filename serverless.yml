@@ -222,7 +222,7 @@ resources:
       Type: AWS::SQS::Queue
       Properties:
         RedrivePolicy:
-          maxReceiveCount: 3 # jobs will be retried up to 3 times
+          maxReceiveCount: 1 # jobs will be retried up to 3 times
           # Failed jobs (after the retries) will be moved to the other queue for storage
           deadLetterTargetArn:
             Fn::GetAtt: [ DeadLetterQueue, Arn ]
