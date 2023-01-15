@@ -2,6 +2,7 @@
 #### October 8th, 2022
 - Added: Real-time calendar advancement
 - Added: The ability for leap day intervals to operate within a limited cycle
+- Fixed: Rare bugs with complex leap day interval calculations
 - Fixed: Modulo by 0 when an interval is somehow set to 0
 - Fixed: Invalid category IDs upon Calendar import/export
 - Fixed: Cases where calendar co-owners couldn't create events
