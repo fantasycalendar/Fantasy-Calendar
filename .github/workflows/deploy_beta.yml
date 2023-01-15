@@ -34,6 +34,12 @@ jobs:
             ./node_modules/
           key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
       - uses: actions/cache@v3
+        id: cache-assets
+        with:
+          path: |
+            ./public
+          key: ${{ runner.os }}-${{ hashFiles('**/resources') }}
+      - uses: actions/cache@v3
         id: cache-composer
         with:
           path: |
@@ -61,6 +67,7 @@ jobs:
         if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm install
       - name: Build production assets
+        if: steps.cache-assets.outputs.cache-hit != 'true'
         run: npm run production
       - name: Create env file
         if: steps.cache-env.outputs.cache-hit != 'true'
