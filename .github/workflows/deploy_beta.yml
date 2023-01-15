@@ -39,6 +39,12 @@ jobs:
           path: |
             ./vendor/
           key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+      - uses: actions/cache@v3
+        id: cache-env
+        with:
+          path: |
+            ./.env
+          key: ${{ runner.os }}-${{ hashFiles('**/.env.github') }}
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
@@ -57,9 +63,11 @@ jobs:
       - name: Build production assets
         run: npm run production
       - name: Create env file
+        if: steps.cache-env.outputs.cache-hit != 'true'
         run: |
           php -r "file_exists('.env') || copy('.env.github', '.env');"
       - name: Generate app_key
+        if: steps.cache-env.outputs.cache-hit != 'true'
         run: php artisan key:generate
 #      - name: Run unit tests
 #        run: php artisan test
