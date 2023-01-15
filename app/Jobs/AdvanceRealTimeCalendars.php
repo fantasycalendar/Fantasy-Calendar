@@ -9,6 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\Middleware\RateLimitedWithRedis;
 
 class AdvanceRealTimeCalendars implements ShouldQueue
 {
@@ -22,6 +23,11 @@ class AdvanceRealTimeCalendars implements ShouldQueue
     public function __construct()
     {
         //
+    }
+
+    public function middleware()
+    {
+        return [(new RateLimitedWithRedis('advancement'))->dontRelease()];
     }
 
     /**
