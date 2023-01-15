@@ -17,10 +17,32 @@ class SubsOverTimeWidget extends LineChartWidget
 
     protected function getData(): array
     {
-        if(app()->environment(['local', 'development'])){
-            return [];
-        }
+        [$monthly_subscriptions_over_time, $yearly_subscriptions_over_time] = cache()->remember('subs_over_time', 300, function(){
+            return self::queryData();
+        });
 
+        return [
+            'datasets' => [
+                [
+                    'label' => 'Monthly',
+                    'data' => $monthly_subscriptions_over_time,
+                    'fill' => true,
+                    'backgroundColor' => 'rgb(22 78 99)',
+                    'borderColor' => 'rgb(8 145 178)',
+                ],
+                [
+                    'label' => 'Yearly',
+                    'data' => $yearly_subscriptions_over_time,
+                    'fill' => true,
+                    'backgroundColor' => 'rgb(127 29 29)',
+                    'borderColor' => 'rgb(185 28 28)'
+                ],
+            ]
+        ];
+    }
+
+    private static function queryData()
+    {
         /* Total subscriptions per day */
         $monthly_subscriptions = Subscription::where('stripe_plan', '=', 'timekeeper_monthly')
             ->where('created_at', '<', now()->subMonth()->lastOfMonth())
@@ -72,23 +94,6 @@ class SubsOverTimeWidget extends LineChartWidget
             $totalYearlyCount += $yearly[$dateString] ?? 0;
         }
 
-        return [
-            'datasets' => [
-                [
-                    'label' => 'Monthly',
-                    'data' => $monthly_subscriptions_over_time,
-                    'fill' => true,
-                    'backgroundColor' => 'rgb(22 78 99)',
-                    'borderColor' => 'rgb(8 145 178)',
-                ],
-                [
-                    'label' => 'Yearly',
-                    'data' => $yearly_subscriptions_over_time,
-                    'fill' => true,
-                    'backgroundColor' => 'rgb(127 29 29)',
-                    'borderColor' => 'rgb(185 28 28)'
-                ],
-            ]
-        ];
+        return [$monthly_subscriptions_over_time, $yearly_subscriptions_over_time];
     }
 }

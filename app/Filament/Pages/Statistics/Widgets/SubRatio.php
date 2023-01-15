@@ -8,8 +8,8 @@ use Laravel\Cashier\Subscription;
 class SubRatio extends PieChartWidget
 {
     protected static ?string $heading = 'Subscription ratio';
-    protected static ?int $sort = 3;
-    protected int | string | array $columnSpan = 2;
+    protected static ?int $sort = 2;
+    protected int | string | array $columnSpan = 4;
 
     protected function getData(): array
     {

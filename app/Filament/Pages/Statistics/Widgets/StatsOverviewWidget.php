@@ -20,6 +20,42 @@ class StatsOverviewWidget extends BaseWidget
 
     protected function getCards(): array
     {
+        $values = cache()->remember('stats_overview_widget_data', 300, function() {
+            return self::generateStats();
+        });
+
+        extract($values);
+
+        return [
+            Card::make('Users', User::verified()->count())
+                ->description(User::verified()->where('created_at', '>', now()->subDays(30))->count() . ' - 30-day increase')
+                ->descriptionIcon('heroicon-s-trending-up')
+                ->chart($user_count_over_time)
+                ->color('success'),
+            Card::make('Calendars', $calendars_created_total)
+                ->description($calendars_created_in_last_thirty_days . ' - 30-day increase')
+                ->descriptionIcon('heroicon-s-trending-up')
+                ->chart([$calendars_created_total - $calendars_created_in_last_thirty_days, $calendars_created_total])
+                ->color('success'),
+            Card::make('Events', $events_created_total)
+                ->description($events_created_in_last_thirty_days . ' - 30-day increase')
+                ->descriptionIcon('heroicon-s-trending-up')
+                ->chart([$events_created_total - $events_created_in_last_thirty_days, $events_created_total])
+                ->color('success'),
+            Card::make('Active Users - Last 30 days', $users_active_in_last_thirty_days)
+                ->description($users_active_in_year_to_date . " active year to date")
+                ->color('success'),
+            Card::make('Subscriptions', $total_subscriptions)
+                ->description($user_percentage_subscribers . "% of all users")
+                ->color('success'),
+            Card::make('Projected Yearly Income', "$" . round($monthly_income_projection)*12)
+                ->description("$${monthly_income_projection} monthly projected x12")
+                ->color('success'),
+        ];
+    }
+
+    private static function generateStats()
+    {
         $last30Days = now()->subDays(30);
 
         $userQuery = User::query();
@@ -109,31 +145,17 @@ class StatsOverviewWidget extends BaseWidget
         }
 
         return [
-            Card::make('Users', User::verified()->count())
-                ->description(User::verified()->where('created_at', '>', now()->subDays(30))->count() . ' - 30-day increase')
-                ->descriptionIcon('heroicon-s-trending-up')
-                ->chart($user_count_over_time)
-                ->color('success'),
-            Card::make('Calendars', $calendars_created_total)
-                ->description($calendars_created_in_last_thirty_days . ' - 30-day increase')
-                ->descriptionIcon('heroicon-s-trending-up')
-                ->chart([$calendars_created_total - $calendars_created_in_last_thirty_days, $calendars_created_total])
-                ->color('success'),
-            Card::make('Events', $events_created_total)
-                ->description($events_created_in_last_thirty_days . ' - 30-day increase')
-                ->descriptionIcon('heroicon-s-trending-up')
-                ->chart([$events_created_total - $events_created_in_last_thirty_days, $events_created_total])
-                ->color('success'),
-            Card::make('Active Users - Last 30 days', $users_active_in_last_thirty_days)
-                ->description($users_active_in_year_to_date . " active year to date")
-                ->color('success'),
-            Card::make('Subscriptions', $total_subscriptions)
-                ->description($user_percentage_subscribers . "% of all users")
-                ->color('success'),
-            Card::make('Projected Yearly Income', "$" . round($monthly_income_projection)*12)
-                ->description("$${monthly_income_projection} monthly projected x12")
-                ->color('success'),
-        ];
+            'user_count_over_time' => $user_count_over_time,
+            'calendars_created_total' => $calendars_created_total,
+            'calendars_created_in_last_thirty_days' => $calendars_created_in_last_thirty_days,
+            'events_created_in_last_thirty_days' => $events_created_in_last_thirty_days,
+            'events_created_total' => $events_created_total,
+            'users_active_in_last_thirty_days' => $users_active_in_last_thirty_days,
+            'users_active_in_year_to_date' => $users_active_in_year_to_date,
+            'total_subscriptions' => $total_subscriptions,
+            'user_percentage_subscribers' => $user_percentage_subscribers,
+            'monthly_income_projection' => $monthly_income_projection,
+       ];
     }
 
     private function subscriptionsCard()
