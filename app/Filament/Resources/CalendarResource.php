@@ -110,6 +110,10 @@ class CalendarResource extends Resource
                     ->tooltip(fn($record) => $record->deleted_at ? 'Deleted at ' . $record->deleted_at->format('Y-m-d H:i:s') : 'Record is active.'),
             ])
             ->filters([
+                Tables\Filters\Filter::make('advancement_enabled')
+                    ->label('Has auto advancement enabled')
+                    ->default(false)
+                    ->query(fn(Builder $query): Builder => $query->whereAdvancementEnabled(true)),
                 Tables\Filters\Filter::make('is_preset')
                     ->label('Is a preset')
                     ->default(false)
