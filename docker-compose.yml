@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   fantasydb:
-    image: mariadb:10.3
+    image: mariadb:10.6
     container_name: fc-mariadb
     volumes:
       - fantasy-calendar-db:/var/lib/mysql
