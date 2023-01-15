@@ -80,12 +80,12 @@ class CalendarController extends Controller
      */
     public function store(Request $request)
     {
-        $hash = md5(request('calendar_name').request('dynamic_data').request('static_data').(Auth::user()->id).date("D M d, Y G:i").Str::random(10));
+        $hash = md5(request('calendar_name').request('dynamic_data').request('static_data').(auth()->user()->id).date("D M d, Y G:i").Str::random(10));
 
         $static_data = json_decode(request('static_data'), true);
 
         $calendar = Calendar::create([
-            'user_id' => Auth::user()->id,
+            'user_id' => auth()->user()->id,
             'name' => request('name'),
             'dynamic_data' => json_decode(request('dynamic_data')),
             'static_data' => $static_data,
@@ -183,7 +183,7 @@ class CalendarController extends Controller
      */
     public function edit(Calendar $calendar)
     {
-        Auth::user()->acknowledgeMigration();
+        auth()->user()->acknowledgeMigration();
 
         return view('calendar.edit', [
             'calendar' => $calendar,
@@ -215,14 +215,15 @@ class CalendarController extends Controller
     {
         // Yes, I know. This isn't how you're supposed to do this. but ... Well. Just look away if you need to.
         if($request->hasAny(['name', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset', 'event_categories', 'events'])) {
-            if(!Auth::user()->can('update', $calendar)) {
-                throw new AuthorizationException('Not allowed.');
+            if(!auth()->user()->can('update', $calendar)) {
+                return response()->json(['message' => "You cannot make changes to this calendar's structure."], 403);
             }
         }
 
-        if(!Auth::user()->can('advance-date', $calendar)) {
-            throw new AuthorizationException('Not allowed.');
+        if(!auth()->user()->can('advance-date', $calendar)) {
+            return response()->json(['message' => "You can't advance this calendar's date."], 403);
         }
+
 
         $update_data = $request->only(['name', 'dynamic_data', 'static_data', 'parent_hash', 'parent_link_date', 'parent_offset', 'event_categories', 'events', 'advancement']);
         $categoryids = [];
@@ -238,6 +239,10 @@ class CalendarController extends Controller
         if($parent_hash_exists && $parent_link_date_exists && $parent_offset_exists) {
 
             if($update_data['parent_hash'] != ""){
+                if(!auth()->user()->can('enable-linking', $calendar)) {
+                    return response()->json(['message' => "{$calendar->name} cannot be linked"], 405);
+                }
+
                 $parent_calendar = Calendar::hash($update_data['parent_hash'])->firstOrFail();
                 unset($update_data['parent_hash']);
                 $update_data['parent_id'] = $parent_calendar->id;
@@ -255,7 +260,7 @@ class CalendarController extends Controller
             $update_data['static_data'] = $static_data;
 
             if($calendar->isLinked() && $calendar->structureWouldBeModified($static_data)){
-                return response()->json(['error' => 'Calendar structure cannot be edited while linked.'], 403);
+                return response()->json(['message' => 'Calendar structure cannot be edited while linked.'], 405);
             }
         }
 
@@ -265,6 +270,10 @@ class CalendarController extends Controller
 
         if(array_key_exists('advancement', $update_data)) {
             $update_data = array_merge($update_data, json_decode($update_data['advancement'], true));
+
+            if($update_data['advancement_enabled'] && !auth()->user()->can('enable-advancement', $calendar)) {
+                return response()->json(['message' => 'Advancement cannot be enabled'], 405);
+            }
 
             $update_data['advancement_next_due'] = null;
 
@@ -278,7 +287,7 @@ class CalendarController extends Controller
         $calendar_was_updated = $calendar->update($update_data);
 
         if($calendar_was_updated == 0) {
-            return [ 'success' => false, 'error' => 'Unable to update calendar. Please try again later.'];
+            return response()->json(['message' => 'Unable to update calendar. Please try again later.'], 403);
         }
 
         if(isset($parent_calendar) && $parent_hash_exists && $parent_link_date_exists && $parent_offset_exists){
@@ -291,7 +300,6 @@ class CalendarController extends Controller
         ];
 
         return [ 'success' => true, 'data'=> true, 'last_changed' => $last_changed ];
-
     }
 
     /**

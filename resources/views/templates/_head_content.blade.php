@@ -108,7 +108,11 @@
             return;
         }
 
-        $.notify(thrownError + " (F12 to see more detail)");
+        if(jqxhr.responseJSON.message.length > 0) {
+            $.notify("Error: " + jqxhr.responseJSON.message);
+        } else {
+            $.notify(thrownError + " (F12 to see more detail)");
+        }
     });
 
     $(document).ready(function(){

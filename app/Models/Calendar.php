@@ -232,6 +232,12 @@ class Calendar extends Model
 
     }
 
+    public function isLinkable(): bool
+    {
+        return !$this->isChild()
+            && !$this->advancement_enabled;
+    }
+
     /**
      * Determine whether or not this calendar is linked to another
      *

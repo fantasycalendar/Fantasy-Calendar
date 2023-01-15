@@ -197,12 +197,6 @@ function do_update_all(calendar_hash, success_callback, failure_callback){
 				failure_callback();
 			}else{
 				calendar_save_failed();
-				if(error?.responseJSON?.error){
-					$.notify(error.responseJSON.error);
-                    console.error(error.responseJSON.error);
-				}else{
-                    $.notify("Something went really wrong!");
-                }
 			}
 		}
 	});
@@ -270,9 +264,7 @@ $.ajax({
     },
     error: function ( error )
     {
-        $.notify(
-            error
-        );
+        hide_loading_screen();
     }
 });
 }
