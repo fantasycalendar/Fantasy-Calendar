@@ -267,7 +267,7 @@ const render_data_generator = {
 
                 let weekday_number = 1;
 
-                for(var leap_day_index in filtered_leap_days_beforestart){
+                for(let leap_day_index in filtered_leap_days_beforestart){
 
                     if(filtered_leap_days_beforestart[leap_day_index].not_numbered) this.day_offset++;
 
