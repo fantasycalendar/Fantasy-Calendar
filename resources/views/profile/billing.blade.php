@@ -127,7 +127,7 @@
             <div class="bg-white dark:bg-gray-800 pt-6 shadow sm:rounded-md sm:overflow-hidden">
                 <div class="px-4 sm:px-6">
                     <h2 id="billing-history-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Billing history</h2>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Here's a quick glance at your last few payments. For more info you can check out <a class="text-primary-600 hover:text-primary-900" href="{{ route('profile.billing-portal') }}">the Stripe billing portal</a>.</p>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Here's a quick glance at your last few payments. For more info you can check out <a target="_blank" class="text-primary-600 hover:text-primary-900" href="{{ route('profile.billing-portal') }}">the Stripe billing portal</a>.</p>
                 </div>
                 <div class="mt-6 flex flex-col">
                     <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
