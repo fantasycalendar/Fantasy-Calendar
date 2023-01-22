@@ -267,7 +267,7 @@ class User extends Authenticatable implements
      */
     public function paymentLevel() {
 
-        if ($this->subscribedToPlan(['timekeeper_monthly', 'timekeeper_yearly'], 'Timekeeper') || $this->betaAccess()) {
+        if ($this->subscribedToPrice(['timekeeper_monthly', 'timekeeper_yearly'], 'Timekeeper') || $this->betaAccess()) {
             return 'Timekeeper';
         }
 

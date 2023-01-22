@@ -83,7 +83,7 @@
                                             <a href="{{ route('register') }}" class="flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-800 hover:bg-primary-900"> Register to Subscribe </a>
                                         @else
                                             @if(!$betaAccess)
-                                                @if(!$betaAccess && Auth::user()->subscribedToPlan('timekeeper_monthly', 'Timekeeper'))
+                                                @if(!$betaAccess && Auth::user()->subscribedToPrice('timekeeper_monthly', 'Timekeeper'))
                                                     @if(Auth::user()->subscriptions->first()->onGracePeriod())
                                                         <a href="{{ route('subscription.resume', ['level' => 'Timekeeper']) }}" class="flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-800 hover:bg-primary-900" x-show="!yearly">Resume monthly</a>
                                                     @else
@@ -93,7 +93,7 @@
                                                     <a href="{{ route('subscription.subscribe', ['level' => 'Timekeeper', 'interval' => 'monthly']) }}" class="flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-800 hover:bg-primary-900" x-show="!yearly"> Get Subscribed</a>
                                                 @endif
 
-                                                @if(!$betaAccess && Auth::user()->subscribedToPlan('timekeeper_yearly', 'Timekeeper'))
+                                                @if(!$betaAccess && Auth::user()->subscribedToPrice('timekeeper_yearly', 'Timekeeper'))
                                                     @if(Auth::user()->subscriptions->first()->onGracePeriod())
                                                         <a href="{{ route('subscription.resume', ['level' => 'Timekeeper']) }}" class="flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-800 hover:bg-primary-900" x-show="yearly">Resume yearly</a>
                                                     @else
