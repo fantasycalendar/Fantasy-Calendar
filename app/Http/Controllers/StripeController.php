@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Laravel\Cashier\Http\Controllers\WebhookController as CashierController;
 use App\Mail\SubscriptionCreated;
 use Illuminate\Support\Facades\Mail;
-use Laravel\Cashier\Subscription;
 
 class StripeController extends CashierController
 {

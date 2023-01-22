@@ -7,13 +7,12 @@ use App\Notifications\RequestEmailUpdate;
 use App\Http\Requests\StoreUserSettings;
 use App\Http\Requests\UpdateEmailRequest;
 use Laravel\Sanctum\PersonalAccessToken;
-use Stripe\BillingPortal\Session as StripeBillingPortalSession;
 use Illuminate\Http\Request;
 use Hash;
 
 class SettingsController extends Controller
 {
-    public function billing(Request $request) {
+    public function billing() {
         return view('profile.billing', [
             'subscription' => auth()->user()->subscriptions()->active()->first(),
             'subscription_renews_at' => format_timestamp(auth()->user()->subscription_end)
