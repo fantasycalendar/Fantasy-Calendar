@@ -6,7 +6,6 @@ use App\Events\UserSubscribedEvent;
 use Stripe;
 use Illuminate\Http\Request;
 use Laravel\Cashier\Exceptions\IncompletePayment;
-use Stripe\Exceptions\InvalidRequestException;
 
 class SubscriptionController extends Controller
 {
@@ -58,7 +57,7 @@ class SubscriptionController extends Controller
             return redirect()->route(
                 'cashier.payment',
                 [$exception->payment->id, 'redirect' => route('profile.billing')]
-            );
+            )->with('error', 'Error processing payment: ' . $exception->getMessage());
         }
 
         UserSubscribedEvent::dispatch($request->user(), $plan);
