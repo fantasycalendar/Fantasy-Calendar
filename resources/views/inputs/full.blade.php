@@ -460,8 +460,8 @@
                             <x-app-logo class="hover-opacity" width="20" height="20"></x-app-logo>
                         </span>
                     @endif
-                    <a target="_blank" data-pt-position="right" data-pt-title='More Info: Clock'
-                       href='{{ helplink('real-time-advancement') }}' class="wiki protip"><i
+                    <a target="_blank" data-pt-position="right" data-pt-title='More Info: Real-Time Advancement'
+                       href='{{ helplink('real_time_advancement') }}' class="wiki protip"><i
                                 class="icon-question-sign"></i></a></label>
                 <div class="collapsible-content card-body">
 
