@@ -31,18 +31,16 @@ class SubscriptionController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
     public function subscribe(Request $request, $level, $interval) {
-        if ($request->user()
-            ->subscriptions()
-            ->where('ends_at', '>=', now())
-            ->get()
-            ->count()
-        ) {
+        $stripeCustomer = auth()->user()->createOrGetStripeCustomer();
+        $stripe = new Stripe\StripeClient(config('cashier.secret'));
+
+        if ($stripe->subscriptions->all(['customer' => $stripeCustomer->id])->count()) {
             redirect()->route('profile.billing'); // They're subscribed already, send 'em to the subscriptions list;
         }
 
         return $request->user()
             ->newSubscription(
-                $level, 
+                $level,
                 strtolower($level . "_" . $interval)
             )->checkout([
                 'success_url' => route('profile.billing'),

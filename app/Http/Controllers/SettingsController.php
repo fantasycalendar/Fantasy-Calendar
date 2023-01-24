@@ -9,13 +9,22 @@ use App\Http\Requests\UpdateEmailRequest;
 use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Http\Request;
 use Hash;
+use Stripe\StripeClient;
 
 class SettingsController extends Controller
 {
     public function billing() {
+        $incompleteSubscriptions = (new StripeClient(config('cashier.secret')))
+            ->subscriptions
+            ->all([
+                'customer' => auth()->user()->createOrGetStripeCustomer()->id,
+                'status' => 'incomplete'
+            ]);
+
         return view('profile.billing', [
             'subscription' => auth()->user()->subscriptions()->active()->first(),
-            'subscription_renews_at' => format_timestamp(auth()->user()->subscription_end)
+            'subscription_renews_at' => format_timestamp(auth()->user()->subscription_end),
+            'incompleteSubscriptions' => $incompleteSubscriptions->count() > 0
         ]);
     }
 

@@ -1,10 +1,18 @@
 <x-profile-layout>
+    @if($incompleteSubscriptions)
+        <x-alert type="warning">
+            <div>
+                You have a subscription that is still pending. Visit the <a class="font-bold underline" href="{{ route('profile.billing-portal') }}">billing portal</a> for more information.
+            </div>
+        </x-alert>
+    @endif
+
     <x-panel>
         <div>
             <h2 id="user-details-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Subscription</h2>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 @if($subscription)
-                    <i class="pr-1 fa fa-credit-card"></i> {{ strtoupper(auth()->user()->card_brand) }} (...{{ auth()->user()->card_last_four }})
+                    <i class="pr-1 fa fa-credit-card"></i> {{ strtoupper(auth()->user()->pm_type) }} (...{{ auth()->user()->pm_last_four }})
                     @unless($subscription->onGracePeriod())
                         <i class="fa fa-ellipsis-h px-2"></i><i class="pr-1 fa fa-calendar"></i> Renews on: {{ $subscription_renews_at }}
                     @else
@@ -52,12 +60,14 @@
 
         <x-slot name="footer">
             <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800 dark:border-t dark:border-gray-600 text-right sm:px-6 flex sm:justify-end items-center gap-x-2">
-                @empty($subscription)
+                @if(empty($subscription) && !$incompleteSubscriptions)
                     @unless(auth()->user()->betaAccess())
                         <x-button-link href="{{ route('subscription.pricing') }}">Get subscribed</x-button-link>
                     @else
                         <x-button-link href="{{ route('subscription.pricing', ['beta_override' => '1']) }}">Subscribe anyway</x-button-link>
                     @endunless
+                @elseif($incompleteSubscriptions)
+                    <x-button-link role="secondary" href="{{ route('profile.billing-portal') }}">Visit the billing portal</x-button-link>
                 @else
                     @unless($subscription->onGracePeriod())
                         <div x-data="{ cancelling: false }"

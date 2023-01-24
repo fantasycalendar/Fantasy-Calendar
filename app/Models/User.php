@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\SyncsSubscriptions;
 use App\Services\Discord\Models\DiscordAuthToken;
 use App\Services\Discord\Models\DiscordGuild;
 use App\Services\Discord\Models\DiscordInteraction;
@@ -15,7 +16,6 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Redis;
 use Laravel\Cashier\Billable;
 use Carbon\Carbon;
 use Arr;
@@ -31,6 +31,7 @@ class User extends Authenticatable implements
 {
     use Notifiable,
         Billable,
+        SyncsSubscriptions,
         SoftDeletes,
         HasFactory,
         HasApiTokens;
