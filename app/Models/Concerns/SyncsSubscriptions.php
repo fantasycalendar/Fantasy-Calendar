@@ -11,7 +11,6 @@ trait SyncsSubscriptions {
     public function syncSubscriptions()
     {
         if(!$this->stripe_id) {
-            dump('ere');
             return;
         }
 
@@ -28,7 +27,6 @@ trait SyncsSubscriptions {
         ]);
 
         if($customer->isDeleted()) {
-            dump('here');
             $this->stripe_id = null;
             $this->save();
 

@@ -12,9 +12,8 @@
             <h2 id="user-details-heading" class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">Subscription</h2>
             <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 @if($subscription)
-                    <i class="pr-1 fa fa-credit-card"></i> {{ strtoupper(auth()->user()->pm_type) }} (...{{ auth()->user()->pm_last_four }})
                     @unless($subscription->onGracePeriod())
-                        <i class="fa fa-ellipsis-h px-2"></i><i class="pr-1 fa fa-calendar"></i> Renews on: {{ $subscription_renews_at }}
+                        <i class="pr-1 fa fa-calendar"></i> Renews on: {{ $subscription_renews_at }}
                     @else
                         <p class="text-red-500 dark:text-red-600"><i class="fa fa-exclamation-triangle"></i> Cancelled, ending {{ $subscription->ends_at->format('Y-m-d') }}</p>
                     @endunless
