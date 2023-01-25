@@ -17,6 +17,7 @@ provider:
     APP_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/app_key}
     APP_DEBUG: ${self:custom.environment.${self:custom.stage}.APP_DEBUG}
     APP_ENV: ${self:custom.environment.${self:custom.stage}.APP_ENV}
+    LOG_LEVEL: ${self:custom.environment.${self:custom.stage}.LOG_LEVEL}
     AWS_BUCKET:
       Ref: Assets
     SQS_QUEUE:
@@ -85,10 +86,12 @@ custom:
     prod:
       APP_DEBUG: 'false'
       APP_ENV: 'production'
+      LOG_LEVEL: 'info'
       DISCORD_COMMAND: 'fc'
     dev:
       APP_DEBUG: 'true'
       APP_ENV: 'development'
+      LOG_LEVEL: 'debug'
       DISCORD_COMMAND: 'fc-beta'
   ssm:
     prod: 'fantasy-calendar'
@@ -108,9 +111,15 @@ package:
     - cache/**
     - node_modules/**
     - public/storage/**
+    - public/fonts/**
+    - public/js/**
+    - public/css/**
     - public/resources/**
     - public/vendor/sharp/fonts/*
     - public/vendor/sharp/vendor.js
+    - resources/js/**
+    - resources/fonts/**
+    - resources/sass/**
     - resources/images/**
     - resources/image-sourcefiles/**
     - storage/**

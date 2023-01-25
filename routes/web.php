@@ -107,12 +107,6 @@ Route::prefix('subscription')->as('subscription.')->middleware(['account.deletio
 
 Route::post('pricing/coupon', [SubscriptionController::class, 'coupon']);
 
-// Extended Stripe Webhook
-Route::post(
-    'stripe/webhook',
-    [StripeController::class, 'handleWebhook']
-);
-
 // User profile
 Route::prefix('profile')->middleware(['auth', 'account.deletion', 'agreement'])->group(function(){
     Route::view('/', 'profile.account')->name('profile');

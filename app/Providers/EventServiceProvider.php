@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Events\DateChanged;
+use App\Listeners\StripeEventListener;
 use App\Listeners\SubscriptionEventListener;
 use App\Listeners\UpdateChildCalendars;
 use App\Listeners\UserEventSubscriber;
@@ -31,6 +32,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         DateChanged::class => [
             UpdateChildCalendars::class
+        ],
+        WebhookReceived::class => [
+            StripeEventListener::class
         ]
     ];
 
