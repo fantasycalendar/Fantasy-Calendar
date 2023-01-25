@@ -1,5 +1,17 @@
+### 2.3.2 - Mindful Marid
+#### January 24, 2023
+- Fixed: Bug causing the "close" button on events to not function correctly in some cases
+- Updated: Guest pages are now dark theme by default
+- Updated: Laravel Cashier from v12.7 -> v14
+- Updated: Various other dependencies
+
+### 2.3.1 - Meaningful Marid
+#### January 23, 2023
+- Fixed: Real-time helpdocs link
+- Updated: A few dependencies
+
 ### 2.3.0 - Momentary Marid
-#### October 8th, 2022
+#### January 15th, 2023
 - Added: Real-time calendar advancement
 - Added: The ability for leap day intervals to operate within a limited cycle
 - Fixed: Rare bugs with complex leap day interval calculations
