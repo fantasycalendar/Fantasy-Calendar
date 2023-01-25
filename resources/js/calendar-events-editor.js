@@ -512,12 +512,12 @@ const calendar_events_editor = {
     },
 
 	confirm_close($event) {
-
-        const possibleTrumbowyg = [$event.target.id, $event.target.parentElement.id].concat(
-            Array.from($event.target.classList),
-            Array.from($event.target.parentElement.classList),
-            Array.from($event.target.parentElement.parentElement.classList),
+        const possibleTrumbowyg = [$event.target.id, $event.target.parentElement?.id].concat(
+            Array.from($event.target?.classList),
+            Array.from($event.target?.parentElement?.classList ?? []),
+            Array.from($event.target?.parentElement?.parentElement?.classList ?? []),
         );
+
         if(possibleTrumbowyg.some(entry => entry.startsWith('trumbowyg-'))) return false;
 
 	    // Don't do anything if a swal is open or the user is deleting conditions
