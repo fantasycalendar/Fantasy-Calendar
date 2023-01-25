@@ -18,7 +18,7 @@
 			<div class='modal-wrapper' @mousedown.outside="confirm_close($event)" x-transition x-show="open">
 
 				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close(close)'></i>
+				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close($event)'></i>
 
 				<div class='row no-gutters modal-form-heading'>
 					<h2>
