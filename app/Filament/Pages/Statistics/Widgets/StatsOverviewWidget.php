@@ -82,10 +82,10 @@ class StatsOverviewWidget extends BaseWidget
             ->where("subscriptions.stripe_status", "=", "active")
             ->selectRaw(
                 'CASE
-                    WHEN (subscriptions.stripe_plan = "timekeeper_yearly" and users.created_at < "2020-11-08") THEN 1.66
-                    WHEN (subscriptions.stripe_plan = "timekeeper_yearly" and users.created_at >= "2020-11-08") THEN 2.04
-                    WHEN (subscriptions.stripe_plan = "timekeeper_monthly" and users.created_at < "2020-11-08") THEN 1.99
-                    WHEN (subscriptions.stripe_plan = "timekeeper_monthly" and users.created_at >= "2020-11-08") THEN 2.49
+                    WHEN (subscriptions.stripe_price = "timekeeper_yearly" and users.created_at < "2020-11-08") THEN 1.66
+                    WHEN (subscriptions.stripe_price = "timekeeper_yearly" and users.created_at >= "2020-11-08") THEN 2.04
+                    WHEN (subscriptions.stripe_price = "timekeeper_monthly" and users.created_at < "2020-11-08") THEN 1.99
+                    WHEN (subscriptions.stripe_price = "timekeeper_monthly" and users.created_at >= "2020-11-08") THEN 2.49
                 END as value
             ')->get()->sum('value');
 

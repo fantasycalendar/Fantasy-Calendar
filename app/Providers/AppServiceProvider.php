@@ -18,6 +18,7 @@ use Illuminate\Support\ServiceProvider;
 
 use App\Observers\CalendarObserver;
 use App\Models\Calendar;
+use Spatie\LaravelIgnition\Facades\Flare;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -48,6 +49,7 @@ class AppServiceProvider extends ServiceProvider
             URL::forceRootUrl(config('app.url'));
         }
 
+        $this->setupFlare();
         $this->setupQueueRateLimiters();
         $this->setupObservers();
         $this->setupCustomBladeDirectives();
@@ -55,6 +57,13 @@ class AppServiceProvider extends ServiceProvider
         $this->setupPaginationFixes();
         $this->setupMaintenanceMode();
         $this->setupCollectionMacros();
+    }
+
+    private function setupFlare()
+    {
+        Flare::determineVersionUsing(function() {
+            return '2.3.4';
+        });
     }
 
     private function setupQueueRateLimiters()

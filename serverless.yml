@@ -18,6 +18,7 @@ provider:
     APP_DEBUG: ${self:custom.environment.${self:custom.stage}.APP_DEBUG}
     APP_ENV: ${self:custom.environment.${self:custom.stage}.APP_ENV}
     LOG_LEVEL: ${self:custom.environment.${self:custom.stage}.LOG_LEVEL}
+    FLARE_KEY: ${self:custom.environment.${self:custom.stage}.flare_key}
     AWS_BUCKET:
       Ref: Assets
     SQS_QUEUE:

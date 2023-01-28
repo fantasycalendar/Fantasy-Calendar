@@ -44,11 +44,11 @@ class SubsOverTimeWidget extends LineChartWidget
     private static function queryData()
     {
         /* Total subscriptions per day */
-        $monthly_subscriptions = Subscription::where('stripe_plan', '=', 'timekeeper_monthly')
+        $monthly_subscriptions = Subscription::where('stripe_price', '=', 'timekeeper_monthly')
             ->where('created_at', '<', now()->subMonth()->lastOfMonth())
             ->where("stripe_status", "=", "active");
 
-        $yearly_subscriptions = Subscription::where('stripe_plan', '=', 'timekeeper_yearly')
+        $yearly_subscriptions = Subscription::where('stripe_price', '=', 'timekeeper_yearly')
             ->where('created_at', '<', now()->subMonth()->lastOfMonth())
             ->where("stripe_status", "=", "active");
 
