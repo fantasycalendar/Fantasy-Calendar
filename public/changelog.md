@@ -1,3 +1,7 @@
+### 2.3.3 - Mellow Marid
+#### January 28, 2023
+- Fixed: Image rendering error
+
 ### 2.3.2 - Mindful Marid
 #### January 24, 2023
 - Fixed: Bug causing the "close" button on events to not function correctly in some cases
