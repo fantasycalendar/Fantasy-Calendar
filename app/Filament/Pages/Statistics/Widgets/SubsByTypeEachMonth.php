@@ -49,7 +49,7 @@ class SubsByTypeEachMonth extends BarChartWidget
     private static function monthlyQueryData()
     {
         return Trend::query(
-            Subscription::where('stripe_plan', 'timekeeper_monthly')->where('created_at', '<', now()->subMonth()->lastOfMonth())
+            Subscription::where('stripe_price', 'timekeeper_monthly')->where('created_at', '<', now()->subMonth()->lastOfMonth())
         )->between(
             start: Carbon::parse('2020-10-01'),
             end: now()
@@ -62,7 +62,7 @@ class SubsByTypeEachMonth extends BarChartWidget
     private static function yearlyQueryData()
     {
         return Trend::query(
-            Subscription::where('stripe_plan', 'timekeeper_yearly')->where('created_at', '<', now()->subMonth()->lastOfMonth())
+            Subscription::where('stripe_price', 'timekeeper_yearly')->where('created_at', '<', now()->subMonth()->lastOfMonth())
         )->between(
             start: Carbon::parse('2020-10-01'),
             end: now()

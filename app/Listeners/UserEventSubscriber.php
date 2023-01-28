@@ -53,7 +53,7 @@ class UserEventSubscriber
         $planInterval = explode('_', $plan)[1];
 
         logger()->channel('discord')->info("'{$user->username}' subscribed on a $planInterval basis!");
-        $planActiveCount = Subscription::where("stripe_status", "=", "active")->where("stripe_plan", "=", $plan)->count();
+        $planActiveCount = Subscription::where("stripe_status", "=", "active")->where("stripe_price", "=", $plan)->count();
 
         if($planActiveCount % 10 == 0 && $planActiveCount < 100) {
             logger()->channel('discord')->info("That's a total of $planActiveCount $planInterval subscribers.");

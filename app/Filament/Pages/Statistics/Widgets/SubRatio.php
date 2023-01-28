@@ -22,8 +22,8 @@ class SubRatio extends PieChartWidget
                 [
                     'label' => 'Subscription ratio',
                     'data' => [
-                        Subscription::where('stripe_status', '=','active')->where('stripe_plan', '=', 'timekeeper_monthly')->count(),
-                        Subscription::where('stripe_status', '=','active')->where('stripe_plan', '=', 'timekeeper_yearly')->count(),
+                        Subscription::where('stripe_status', '=','active')->where('stripe_price', '=', 'timekeeper_monthly')->count(),
+                        Subscription::where('stripe_status', '=','active')->where('stripe_price', '=', 'timekeeper_yearly')->count(),
                     ],
                     'backgroundColor' => [
                         'rgb(8 145 178)',
