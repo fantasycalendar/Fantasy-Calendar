@@ -118,7 +118,6 @@ package:
     - public/vendor/sharp/fonts/*
     - public/vendor/sharp/vendor.js
     - resources/js/**
-    - resources/fonts/**
     - resources/sass/**
     - resources/images/**
     - resources/image-sourcefiles/**
