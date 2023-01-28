@@ -1,4 +1,4 @@
-FROM php:7-fpm
+FROM php:8.1-fpm
 
 COPY . /fantasy-calendar
 COPY --chown=www-data:www-data setup/nginx/fantasy-calendar.conf /etc/nginx/conf.d/default.conf
