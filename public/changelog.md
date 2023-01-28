@@ -1,3 +1,7 @@
+### 2.3.4 - Melodramatic Marid
+#### January 28, 2023
+- Added: Support for the [Flare](https://flareapp.io/) error reporting service
+
 ### 2.3.3 - Mellow Marid
 #### January 28, 2023
 - Fixed: Image rendering error
