@@ -34,6 +34,10 @@ class RealTimeAnnouncement extends Mailable
      */
     public function build()
     {
+        $this->user->update([
+            'has_sent_announcement' => true
+        ]);
+
         return $this->markdown('emails.realtime-announcement', [
             'user' => $this->user
         ])->subject('Fantasy Calendar: Throughout Time');

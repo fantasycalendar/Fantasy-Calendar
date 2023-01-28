@@ -41,39 +41,30 @@ class SendRealtimeAnnouncementEmail extends Command
      */
     public function handle()
     {
-        $users = User::whereNull('deleted_at');
+        $users = User::where('has_sent_announcement', '=', false);
 
-        if($where = $this->option('where')) {
+        if ($where = $this->option('where')) {
             $users = $users->whereNull('agreed_at')->whereRaw($where);
         } else if($ids = $this->option('ids')) {
             $users = $users->whereIn('id', explode(',', $ids));
-        }else{
-            $users = $users->where(function($query){
-                    $query->whereNotNull('marketing_opt_in_at')
-                        ->whereNull('marketing_opt_out_at');
-                })->orWhere(function($query){
-                    $query->where("marketing_opt_in_at", ">", "marketing_opt_out_at");
-                });
+        } else {
+            $users = $users->marketingEnabled();
         }
 
         $total = $users->count();
 
-        if(!$total) {
+        if (!$total) {
             $this->error("No users matched your search. Check your SQL or your IDs and try again.");
             exit(1);
         }
 
-        if(!$this->option('force') && $total > 500 && !$this->confirm(sprintf('Found %d users, send them all?', $total))) {
+        if (!$this->option('force') && $total > 500 && !$this->confirm(sprintf('Found %d users, send them all?', $total))) {
             $this->warn('Stopping here, no users were sent to.');
             exit(1);
         }
 
         $users->each(function($user){
-            $this->info($user->email);
             Mail::to($user)->queue(new RealTimeAnnouncement($user));
-            $user->update([
-                'has_sent_announcement' => true
-            ]);
         });
 
 

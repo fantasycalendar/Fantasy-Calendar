@@ -361,16 +361,26 @@ class User extends Authenticatable implements
         ]);
     }
 
-    public function scopePremium(Builder $query)
+    public function scopeMarketingEnabled(Builder $query): Builder
+    {
+        return $query->where(function($query){
+            $query->whereNotNull('marketing_opt_in_at')
+                ->whereNull('marketing_opt_out_at');
+        })->orWhere(function($query){
+            $query->where("marketing_opt_in_at", ">", "marketing_opt_out_at");
+        });
+    }
+
+    public function scopePremium(Builder $query): Builder
     {
         return $query->whereHas('subscriptions', function(Builder $query){
             return $query->whereStripeStatus('active');
         })->orWhere('beta_authorised', '=', true);
     }
 
-    public function scopeVerified($query)
+    public function scopeVerified($query): Builder
     {
-        $query->whereNotNull('email_verified_at');
+        return $query->whereNotNull('email_verified_at');
     }
 
     public function canAccessFilament(): bool
