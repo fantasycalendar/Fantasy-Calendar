@@ -44,12 +44,12 @@
         "socialiteproviders/discord": "^4.1",
         "spatie/laravel-export": "^0.3.10",
         "spatie/laravel-honeypot": "^4.1",
-        "spatie/laravel-log-dumper": "^1.4"
+        "spatie/laravel-log-dumper": "^1.4",
+        "spatie/laravel-ignition": "^1.6"
     },
     "require-dev": {
         "laravel/tinker": "^2.8",
         "barryvdh/laravel-debugbar": "^3.7",
-        "spatie/laravel-ignition": "^1.6",
         "laravel/dusk": "^7.4",
         "mockery/mockery": "^1.5",
         "fakerphp/faker": "^1.21",
