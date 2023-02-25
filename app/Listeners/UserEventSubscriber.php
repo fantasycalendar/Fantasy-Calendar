@@ -48,20 +48,18 @@ class UserEventSubscriber
 
     public function handleUserSubscribed($event)
     {
-        $user = $event->user;
         $plan = $event->plan;
         $planInterval = explode('_', $plan)[1];
 
-        logger()->channel('discord')->info("'{$user->username}' subscribed on a $planInterval basis!");
         $planActiveCount = Subscription::where("stripe_status", "=", "active")->where("stripe_price", "=", $plan)->count();
 
         if($planActiveCount % 10 == 0 && $planActiveCount < 100) {
-            logger()->channel('discord')->info("That's a total of $planActiveCount $planInterval subscribers.");
+            logger()->channel('discord')->info("We've reached a total of $planActiveCount $planInterval subscribers.");
             return;
         }
 
         if($planActiveCount % 100 == 0 && $planActiveCount < 1000) {
-            logger()->channel('discord')->info("Whoa! That's a total of $planActiveCount active $planInterval subscribers!");
+            logger()->channel('discord')->info("Whoa! We've reached a total of $planActiveCount active $planInterval subscribers!");
             return;
         }
 

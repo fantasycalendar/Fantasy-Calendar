@@ -38,7 +38,7 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
     {
         $this->ensureCalendarShouldAdvance();
 
-        logger()->info("{$this->calendar->name} should advance.");
+        logger()->debug("{$this->calendar->name} should advance.");
 
         $real_unit = ucfirst($this->calendar->advancement_real_rate_unit);
 
@@ -72,7 +72,7 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
 
         $hasWebhook = $this->calendar->advancement_webhook_url || $this->calendar->discord_webhooks()->exists();
 
-        logger()->info("HasWebhook? " . $hasWebhook ? "yes" : "no");
+        logger()->debug("HasWebhook? " . $hasWebhook ? "yes" : "no");
 
         if($hasWebhook) {
             HitCalendarUpdateWebhook::dispatch($this->calendar);
@@ -81,10 +81,17 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
 
     private function ensureCalendarShouldAdvance()
     {
+        // Make sure advancement is enabled
         if(!$this->calendar->advancement_enabled) {
             throw new AdvancementNotEnabledException($this->calendar);
         }
 
+        // Make sure we haven't accidentally doubled up on running the job
+        if(!$this->calendar->advancement_next_due <= now()->startOfMinute()) {
+            throw new AdvancementNotReadyException($this->calendar);
+        }
+
+        // Make sure all of the advancement settings are set
         collect([
             'advancement_rate',
             'advancement_rate_unit',
@@ -96,6 +103,7 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
             }
         });
 
+        // Make sure the calendar doesn't expect to advance in units of hours or minutes without the clock enabled
         if(!$this->calendar->clock_enabled && in_array($this->calendar->advancement_rate_unit, ['minutes', 'hours'])) {
             throw new ClockNotEnabledException($this->calendar);
         }

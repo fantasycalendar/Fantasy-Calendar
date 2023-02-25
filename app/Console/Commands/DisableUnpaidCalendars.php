@@ -62,7 +62,7 @@ class DisableUnpaidCalendars extends Command
             }, '>', '2')
             ->chunk(100, function($users){
                 foreach ($users as $user) {
-                    $this->info('Processing ' . $user->username);
+                    $this->debug('Processing ' . $user->username);
 
                     $max_calendars = $user->isEarlySupporter() ? 15 : 2;
 

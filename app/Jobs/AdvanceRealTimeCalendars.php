@@ -38,7 +38,7 @@ class AdvanceRealTimeCalendars implements ShouldQueue
     public function handle()
     {
         Calendar::dueForAdvancement()->each(function(Calendar $calendar){
-            logger()->info("Advancing {$calendar->name}");
+            logger()->debug("Advancing {$calendar->name}");
             AdvanceCalendarWithRealTime::dispatch($calendar);
         });
     }

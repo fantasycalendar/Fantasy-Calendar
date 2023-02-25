@@ -50,7 +50,6 @@ class PreventRequestsDuringMaintenance extends Middleware
             }
 
             if($request->is('discord/hooks')) {
-                logger()->info($request->fullUrl());
                 return response(
                     Response::make($data['message'])->getMessage()
                 );

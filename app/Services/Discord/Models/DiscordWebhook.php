@@ -63,7 +63,7 @@ class DiscordWebhook extends Model
 
     public function post(string $content)
     {
-        logger()->info($this->name . " - webhook updating persistent message.");
+        logger()->debug($this->name . " - webhook updating persistent message.");
 
         if($this->persistent_message) {
             $client = new Client();

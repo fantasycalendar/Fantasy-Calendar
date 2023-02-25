@@ -104,7 +104,7 @@ class DiscordController extends Controller
 
         $body = $apiClient->webhookAuthTokenExchange(request()->get('code'));
 
-        logger()->info(json_encode($body));
+        logger()->debug(json_encode($body));
 
         try {
             if(!session()->has('webhook_calendar')) {
@@ -122,7 +122,7 @@ class DiscordController extends Controller
                 ],
                 DiscordWebhook::fromPayload($body)
             );
-            logger()->info($payload);
+            logger()->debug($payload);
 
             $calendar->discord_webhooks()->create(
                 $payload
