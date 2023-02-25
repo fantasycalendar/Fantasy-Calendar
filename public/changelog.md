@@ -1,3 +1,8 @@
+### 2.3.5 - Micromanaging Marid
+#### February 25, 2023
+- Updated: Set calendar advancement period upon saving
+- Fixed: Attempt to avoid advancement drift by double-checking that a calendar should advance in the queued job
+
 ### 2.3.4 - Melodramatic Marid
 #### January 28, 2023
 - Added: Support for the [Flare](https://flareapp.io/) error reporting service
