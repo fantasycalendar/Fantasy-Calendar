@@ -93,8 +93,8 @@ services:
   mailhog:
     image: mailhog/mailhog
     ports:
-      - "8025:8025"
-      - "1025:1025"
+      - "${MAILHOG_WEBUI_FORWARD_PORT:-8025}:8025"
+      - "${MAILHOG_SMTP_FORWARD_PORT:-1025}:1025"
 
 volumes:
   fantasy-calendar-db:
