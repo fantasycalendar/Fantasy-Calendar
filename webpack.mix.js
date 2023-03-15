@@ -66,6 +66,7 @@ mix.copy('resources/js/embed.js', 'public/js');
 
 // Vendor
 mix.copy('node_modules/trumbowyg/dist/ui/icons.svg', 'public/images');
+mix.copy('node_modules/jquery-ui-dist/jquery-ui.min.js', 'public/js/vendor');
 
 // Compiled assets
 mix.js('resources/js/app.js', 'public/js')
