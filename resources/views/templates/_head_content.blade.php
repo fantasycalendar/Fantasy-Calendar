@@ -32,11 +32,11 @@
 
 
     <script src="{{ mix('/js/app.js') }}"></script>
-    <script src="https://js.stripe.com/v3/"></script>
 
     <script src="{{ asset("/js/vendor/jquery-ui.min.js") }}"></script>
     <script src="{{ asset("/js/vendor/notify.js") }}"></script>
     <script src="{{ asset("/js/vendor/jquery.validate.min.js") }}"></script>
+    <script src="{{ asset("/js/vendor/alpine/cdn.js") }}" defer></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css">
 

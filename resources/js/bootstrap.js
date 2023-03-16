@@ -1,5 +1,3 @@
-window._ = require('lodash');
-
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
  * for JavaScript based Bootstrap features such as modals and tabs. This
@@ -12,7 +10,6 @@ try {
 
     require('chart.js');
     require('trumbowyg');
-    require('notifyjs');
 
     /**
      * Protip is a tooltip solution that works well with jQuery, but takes a modern
@@ -30,11 +27,6 @@ try {
  * to our Laravel back-end. This library automatically handles sending the
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
-
-import Alpine from 'alpinejs';
-
-window.Alpine = Alpine;
-Alpine.start();
 
 window.axios = require('axios');
 
@@ -109,8 +101,6 @@ window.sanitizeHtml = require('sanitize-html');
  */
 
 window.contextMenu = require('jquery-contextmenu')
-
-window.AlpineEditor = require('alpine-editor')
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

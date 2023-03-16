@@ -68,6 +68,7 @@ mix.copy('resources/js/embed.js', 'public/js');
 mix.copy('node_modules/trumbowyg/dist/ui/icons.svg', 'public/images');
 mix.copy('node_modules/jquery-ui-dist/jquery-ui.min.js', 'public/js/vendor');
 mix.copy('node_modules/notifyjs/dist/notify.js', 'public/js/vendor');
+mix.copy('node_modules/alpinejs/dist/cdn.js', 'public/js/vendor/alpine');
 mix.copy('node_modules/jquery-validation/dist/jquery.validate.min.js', 'public/js/vendor');
 
 // Compiled assets
