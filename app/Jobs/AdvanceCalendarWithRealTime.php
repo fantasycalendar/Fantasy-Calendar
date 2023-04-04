@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Exceptions\AdvancementNotEnabledException;
 use App\Exceptions\AdvancementNotReadyException;
+use App\Exceptions\AdvancementTooEarlyException;
 use App\Exceptions\ClockNotEnabledException;
 use App\Models\Calendar;
 use App\Services\Discord\API\Client;
@@ -87,8 +88,8 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
         }
 
         // Make sure we haven't accidentally doubled up on running the job
-        if(!$this->calendar->advancement_next_due <= now()->startOfMinute()) {
-            throw new AdvancementNotReadyException($this->calendar);
+        if($this->calendar->advancement_next_due >= now()->startOfMinute()) {
+            throw new AdvancementTooEarlyException($this->calendar);
         }
 
         // Make sure all of the advancement settings are set

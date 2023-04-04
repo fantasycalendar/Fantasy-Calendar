@@ -3,6 +3,8 @@
 namespace Tests\Feature\Calendar;
 
 use App\Exceptions\AdvancementNotEnabledException;
+use App\Exceptions\AdvancementNotReadyException;
+use App\Exceptions\AdvancementTooEarlyException;
 use App\Exceptions\ClockNotEnabledException;
 use App\Jobs\AdvanceCalendarWithRealTime;
 use App\Models\Calendar;
@@ -19,12 +21,12 @@ class AdvancementTest extends TestCase
     {
         $calendars = $this->getEdgeCases('advancement_testcases');
 
-        if(!$calendars->count()) {
+        if (!$calendars->count()) {
             return;
         }
 
-        $calendars->each(function(Calendar $calendar){
-            collect($calendar->static_data['advancement_testcases'])->each(function($testCase) use ($calendar) {
+        $calendars->each(function (Calendar $calendar) {
+            collect($calendar->static_data['advancement_testcases'])->each(function ($testCase) use ($calendar) {
                 dump(sprintf(
                     "Verifying a real-time advancement test case for %s with at ratio %d real-world %s to %d in-universe %s",
                     $calendar->name,
@@ -34,7 +36,7 @@ class AdvancementTest extends TestCase
                     $testCase['advancement_settings']['advancement_rate_unit'],
                 ));
 
-                if(isset($testCase['advancement_settings']['advancement_next_due_offset'])) {
+                if (isset($testCase['advancement_settings']['advancement_next_due_offset'])) {
                     dump(sprintf(
                         " - Additionally, pretending we were behind on updates by %d %s",
                         $testCase['advancement_settings']['advancement_next_due_offset'],
@@ -42,7 +44,7 @@ class AdvancementTest extends TestCase
                     ));
                 }
 
-                $testCalendar = clone($calendar);
+                $testCalendar = clone ($calendar);
 
                 /**
                  * 1. Set the current date ✓
@@ -81,11 +83,16 @@ class AdvancementTest extends TestCase
                 $realRateMethod = "sub" . ucfirst($testCase['advancement_settings']['advancement_real_rate_unit']);
                 $realRateOffset = $testCase['advancement_settings']['advancement_real_rate'];
 
-                if(isset($testCase['advancement_settings']['advancement_next_due_offset'])) {
+                if (isset($testCase['advancement_settings']['advancement_next_due_offset'])) {
                     $realRateMethod = "sub" . ucfirst($testCase['advancement_settings']['advancement_next_due_offset_unit']);
                     $realRateOffset = $testCase['advancement_settings']['advancement_next_due_offset'];
                 }
 
+                $advancementNextDue = now()->$realRateMethod($realRateOffset)->startOfMinute();
+                if (array_key_exists('advancement_next_due_delta', $testCase['advancement_settings'])) {
+                    $deltaMethod = str_replace('sub', 'add', $realRateMethod);
+                    $advancementNextDue = now()->$deltaMethod($testCase['advancement_settings']['advancement_next_due_delta']);
+                }
 
                 $testCalendar->update([
                     'advancement_enabled' => $testCase['advancement_settings']['advancement_enabled'],
@@ -93,7 +100,7 @@ class AdvancementTest extends TestCase
                     'advancement_real_rate_unit' => $testCase['advancement_settings']['advancement_real_rate_unit'],
                     'advancement_rate' => $testCase['advancement_settings']['advancement_rate'],
                     'advancement_rate_unit' => $testCase['advancement_settings']['advancement_rate_unit'],
-                    'advancement_next_due' => now()->$realRateMethod($realRateOffset)->startOfMinute(),
+                    'advancement_next_due' => $advancementNextDue,
                 ]);
 
                 /**
@@ -109,10 +116,13 @@ class AdvancementTest extends TestCase
                 try {
                     (new AdvanceCalendarWithRealTime($testCalendar))->handle();
                 } catch (\Throwable $thrown) {
-                    if(!$testCalendar->advancement_enabled) {
+                    if ($testCase['advancement_settings']['advancement_next_due_delta'] ?? false) {
+                        $this->assertTrue($thrown instanceof AdvancementTooEarlyException);
+                    }
+                    if (!$testCalendar->advancement_enabled) {
                         $this->assertTrue($thrown instanceof AdvancementNotEnabledException);
                     }
-                    if(!$testCalendar->clock_enabled) {
+                    if (!$testCalendar->clock_enabled) {
                         $this->assertTrue($thrown instanceof ClockNotEnabledException);
                     }
                 }
