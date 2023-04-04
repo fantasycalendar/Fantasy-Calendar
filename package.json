@@ -36,7 +36,7 @@
         "@tailwindcss/forms": "^0.4.0",
         "@tailwindcss/typography": "^0.5.9",
         "alpine-editor": "^0.3.1",
-        "alpinejs": "^3.12.0",
+        "alpinejs": "^3.10.5",
         "autoprefixer": "^10.4.13",
         "bootswatch": "^4.6.2",
         "chart.js": "^2.9.3",
@@ -44,8 +44,6 @@
         "fuzzysort": "^1.9.0",
         "hamburgers": "^1.1.3",
         "jquery-contextmenu": "^2.9.2",
-        "jquery-ui-dist": "^1.13.2",
-        "jquery-validation": "^1.19.5",
         "moment": "^2.29.4",
         "mustache": "^3.2.1",
         "notifyjs": "^3.0.0",
@@ -56,13 +54,12 @@
         "select2": "^4.0.13",
         "select2-bootstrap-theme": "0.1.0-beta.10",
         "serverless-s3-sync": "^1.14.4",
-        "simplebar": "^6.2.1",
         "sortable": "^2.0.0",
         "sweetalert": "^2.1.2",
         "sweetalert2": "^9.17.4",
         "tailwindcss": "^3.2.4",
         "trumbowyg": "^2.26.0",
-        "weather-icons": "fantasycalendar/weather-icons"
+        "weather-icons": "github:fantasycalendar/weather-icons"
     },
     "name": "app"
 }

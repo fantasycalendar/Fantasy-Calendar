@@ -1,3 +1,5 @@
+window._ = require('lodash');
+
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
  * for JavaScript based Bootstrap features such as modals and tabs. This
@@ -10,6 +12,7 @@ try {
 
     require('chart.js');
     require('trumbowyg');
+    require('notifyjs');
 
     /**
      * Protip is a tooltip solution that works well with jQuery, but takes a modern
@@ -107,6 +110,8 @@ window.contextMenu = require('jquery-contextmenu')
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.
  */
+
+window.AlpineEditor = require('alpine-editor')
 
 // import Echo from 'laravel-echo'
 

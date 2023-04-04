@@ -84,7 +84,7 @@ services:
     working_dir: "/fantasy-calendar"
     volumes:
       - ./:/fantasy-calendar
-    command: ["npm", "run", "watch"]
+    command: ["npm", "run", "dev-install-watch"]
     environment:
       - BROWSERSYNC=${FC_BROWSERSYNC:-false}
       - "MIXVERSION=true"

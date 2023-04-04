@@ -31,14 +31,34 @@
     <meta name="theme-color" content="#2f855a">
 
 
-    <script src="{{ mix('/js/app.js') }}"></script>
+    @if(getenv('APP_ENV') == "production")
+        <script src="//d2wy8f7a9ursnm.cloudfront.net/v6/bugsnag.min.js"></script>
+        <script>window.bugsnagClient = bugsnag('98440cbeef759631f3d987ab45b26a79')</script>
+    @endif
 
-    <script src="{{ asset("/js/vendor/jquery-ui.min.js") }}"></script>
-    <script src="{{ asset("/js/vendor/notify.js") }}"></script>
-    <script src="{{ asset("/js/vendor/jquery.validate.min.js") }}"></script>
-    <script src="{{ asset("/js/vendor/alpine/cdn.js") }}" defer></script>
+    <script src="{{ mix('/js/app.js') }}"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+    <script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css">
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/simplebar@latest/dist/simplebar.css"
+    />
+    <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
 
     <script>
 
