@@ -37,7 +37,6 @@
     @endif
 
     <script src="{{ mix('/js/app.js') }}"></script>
-    <script src="https://js.stripe.com/v3/"></script>
 
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -47,18 +46,18 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.js"></script>
+    {{-- <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.js"></script> --}}
 
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css">
 
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/simplebar@latest/dist/simplebar.css"
-    />
-    <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script>
+    {{-- <link --}}
+    {{--     rel="stylesheet" --}}
+    {{--     href="https://unpkg.com/simplebar@latest/dist/simplebar.css" --}}
+    {{-- /> --}}
+    {{-- <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script> --}}
 
     <script>
 
@@ -164,6 +163,8 @@
 
     <script src="{{ asset("/js/vendor/sortable/jquery-sortable-min.js") }}"></script>
     <script src="{{ asset("/js/vendor/spectrum/spectrum.js") }}"></script>
+    <script src="{{ asset("/js/vendor/alpine/cdn.js") }}" defer></script>
+    <script src="{{ asset("/js/vendor/simplebar/simplebar.min.js") }}" defer></script>
 
     <script src="{{ mix('js/calendar/header.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>
@@ -185,6 +186,7 @@
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     @endif
     <link rel="stylesheet" href="{{ asset("/js/vendor/spectrum/spectrum.css") }}">
+    <link rel="stylesheet" href="{{ asset("/js/vendor/simplebar/simplebar.css") }}">
 
     @stack('head')
 </head>
