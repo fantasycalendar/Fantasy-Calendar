@@ -41,11 +41,9 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerPolicies();
+        Gate::define('administer-app', fn ($user) => $user->isAdmin());
 
-        Gate::define('administer-app', fn($user) => $user->isAdmin());
-
-        Gate::define('attach-event', function($user, $event) {
+        Gate::define('attach-event', function ($user, $event) {
             $calendar = Calendar::findOrFail($event->calendar_id);
 
             return $user->can('update', $calendar)
@@ -62,44 +60,43 @@ class AuthServiceProvider extends ServiceProvider
                 );
         });
 
-        Gate::define('add-comment', function($user, $data) {
-            if(!Arr::has($data, ['event_id', 'calendar_id', 'content'])) {
+        Gate::define('add-comment', function ($user, $data) {
+            if (!Arr::has($data, ['event_id', 'calendar_id', 'content'])) {
                 return false;
             }
 
             $calendar = Calendar::findOrFail(Arr::get($data, 'calendar_id'));
             $event = CalendarEvent::findOrFail(Arr::get($data, 'event_id'));
 
-            if(!$calendar->events->contains($event)) {
+            if (!$calendar->events->contains($event)) {
                 return false;
             }
 
-            if($calendar->user->is($user)) {
+            if ($calendar->user->is($user)) {
                 return true;
             }
 
             return $calendar->setting('comments') && $calendar->userHasPerms($user, 'player');
-
         });
 
-        Gate::define('advance-date', function($user, $calendar) {
+        Gate::define('advance-date', function ($user, $calendar) {
             return $user->can('update', $calendar)
                 || $calendar->userHasPerms($user, 'co-owner');
         });
 
-        Gate::define('add-users', function($user, $calendar) {
+        Gate::define('add-users', function ($user, $calendar) {
             return $user->is($calendar->user) && $calendar->isPremium();
         });
 
-        Gate::define('update-settings', function($user, $calendar) {
+        Gate::define('update-settings', function ($user, $calendar) {
             return !empty($calendar) && $user->can('delete', $calendar);
         });
 
-        Gate::define('link', function($user, $calendar) {
+        Gate::define('link', function ($user, $calendar) {
             return $user->is($calendar->user) && $calendar->isPremium();
         });
 
-        Gate::define('view-image', function(?User $user, $calendar) {
+        Gate::define('view-image', function (?User $user, $calendar) {
             return $calendar->isPremium();
         });
     }
