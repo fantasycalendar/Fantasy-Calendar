@@ -94,11 +94,11 @@ class CalendarController extends Controller
         ]);
 
         // Split out Categories first
-        $categoryids = SaveEventCategories::dispatchNow(json_decode(request('event_categories'), true), $calendar->id);
+        $categoryids = SaveEventCategories::dispatchSync(json_decode(request('event_categories'), true), $calendar->id);
 
 
         // Now split out events
-        $eventids = SaveCalendarEvents::dispatchNow(json_decode(request('events'), true), $categoryids, $calendar->id);
+        $eventids = SaveCalendarEvents::dispatchSync(json_decode(request('events'), true), $categoryids, $calendar->id);
 
         return [
             'success' => true,
@@ -200,7 +200,7 @@ class CalendarController extends Controller
     public function export(Calendar $calendar)
     {
         return view('calendar.export', [
-            'exportdata' => PrepCalendarForExport::dispatchNow($calendar),
+            'exportdata' => PrepCalendarForExport::dispatchSync($calendar),
             'calendar' => $calendar
         ]);
     }
@@ -265,7 +265,7 @@ class CalendarController extends Controller
         }
 
         if (array_key_exists('event_categories', $update_data)) {
-            $categoryids = SaveEventCategories::dispatchNow(json_decode($update_data['event_categories'], true), $calendar->id);
+            $categoryids = SaveEventCategories::dispatchSync(json_decode($update_data['event_categories'], true), $calendar->id);
         }
 
         if (array_key_exists('advancement', $update_data)) {
@@ -284,7 +284,7 @@ class CalendarController extends Controller
         }
 
         if (array_key_exists('events', $update_data)) {
-            SaveCalendarEvents::dispatchNow(json_decode($update_data['events'], true), $categoryids, $calendar->id);
+            SaveCalendarEvents::dispatchSync(json_decode($update_data['events'], true), $categoryids, $calendar->id);
         }
 
         $calendar_was_updated = $calendar->update($update_data);
