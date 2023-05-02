@@ -76,10 +76,7 @@ class Calendar extends Model
     protected $casts = [
         'dynamic_data' => 'array',
         'static_data' => 'array',
-    ];
-
-    protected $dates = [
-        'advancement_next_due'
+        'advancement_next_due' => 'datetime'
     ];
 
     public $timestamps = false;
@@ -229,7 +226,6 @@ class Calendar extends Model
         }
 
         return false;
-
     }
 
     public function isLinkable(): bool
@@ -282,10 +278,8 @@ class Calendar extends Model
      */
     public function getOwnedAttribute(): bool
     {
-        return (
-            Auth::check()
-            && (
-                $this->user->id == Auth::user()->id
+        return (Auth::check()
+            && ($this->user->id == Auth::user()->id
                 || Auth::user()->isAdmin()
             )
         );
@@ -336,8 +330,7 @@ class Calendar extends Model
      */
     public function getCurrentEraValidAttribute(): bool
     {
-        return (
-            count($this->static_data['eras'] ?? []) > 0
+        return (count($this->static_data['eras'] ?? []) > 0
 
             && ($this->dynamic_data['current_era'] ?? -1) > -1
         );
@@ -368,7 +361,7 @@ class Calendar extends Model
      */
     public function getCurrentDateAttribute(): string
     {
-        if(!$this->current_date_valid) {
+        if (!$this->current_date_valid) {
             return "N/A";
         }
 
@@ -386,7 +379,7 @@ class Calendar extends Model
      */
     public function getRawDateAttribute(): array
     {
-        if(!$this->current_date_valid) {
+        if (!$this->current_date_valid) {
             return [];
         }
 
@@ -411,14 +404,14 @@ class Calendar extends Model
 
     public function getYearLengthAttribute(): int
     {
-        return $this->months->sum(function($month){
+        return $this->months->sum(function ($month) {
             return $month->daysInYear->count();
         });
     }
 
     public function getAverageMonthsCountAttribute(): float
     {
-        return $this->timespans->sum(function($timespan){
+        return $this->timespans->sum(function ($timespan) {
             return 1 / $timespan->interval;
         });
     }
@@ -455,8 +448,8 @@ class Calendar extends Model
      */
     public function getTimespansAttribute(): Collection
     {
-        if(!isset($this->timespans_cached)) {
-            $this->timespans_cached = collect(Arr::get($this->static_data, 'year_data.timespans'))->map(function($timespan_details, $timespan_key){
+        if (!isset($this->timespans_cached)) {
+            $this->timespans_cached = collect(Arr::get($this->static_data, 'year_data.timespans'))->map(function ($timespan_details, $timespan_key) {
                 return new Timespan(array_merge($timespan_details, ['id' => $timespan_key]));
             })->each->setCalendar($this);
         }
@@ -471,7 +464,7 @@ class Calendar extends Model
      */
     public function getMonthsAttribute(): MonthsCollection
     {
-        if(isset($this->months_cached[$this->year])) return $this->months_cached[$this->year];
+        if (isset($this->months_cached[$this->year])) return $this->months_cached[$this->year];
 
         $yearEndingEra = $this->eras
             ->reject->isStartingEra()
@@ -502,7 +495,7 @@ class Calendar extends Model
      */
     public function getMonthIndexAttribute(): int
     {
-        return $this->months->filter(function($timespan){
+        return $this->months->filter(function ($timespan) {
             return $timespan->id == $this->month_id;
         })
             ->keys()
@@ -517,10 +510,10 @@ class Calendar extends Model
     public function getMonthTrueLengthAttribute(): int
     {
         return $this->month_length + $this->leap_days
-                ->where('timespan', '=', $this->month_id)
-                ->filter(function($leapDay){
-                    return $leapDay->intersectsYear($this->year);
-                })->count();
+            ->where('timespan', '=', $this->month_id)
+            ->filter(function ($leapDay) {
+                return $leapDay->intersectsYear($this->year);
+            })->count();
     }
 
     /**
@@ -531,11 +524,15 @@ class Calendar extends Model
      */
     public function getMonthIdAttribute(): int
     {
-        return Arr::get($this->dynamic_data,
+        return Arr::get(
+            $this->dynamic_data,
             'timespan',
-            Arr::get($this->dynamic_data,
+            Arr::get(
+                $this->dynamic_data,
                 'month',
-                0));
+                0
+            )
+        );
     }
 
     /**
@@ -580,7 +577,7 @@ class Calendar extends Model
 
     public function getMonthAttribute(): Month
     {
-        return $this->months->sole(function($month){
+        return $this->months->sole(function ($month) {
             return $month->id === $this->month_id;
         });
     }
@@ -612,7 +609,7 @@ class Calendar extends Model
      */
     public function getMoonsAttribute(): Collection
     {
-        return collect(Arr::get($this->static_data, 'moons'))->map(function($moon){
+        return collect(Arr::get($this->static_data, 'moons'))->map(function ($moon) {
             return new Moon($moon);
         });
     }
@@ -634,8 +631,8 @@ class Calendar extends Model
      */
     public function getLeapDaysAttribute(): Collection
     {
-        if(!isset($this->leap_days_cached)) {
-            $this->leap_days_cached = collect(Arr::get($this->static_data, 'year_data.leap_days'))->map(function($leap_day){
+        if (!isset($this->leap_days_cached)) {
+            $this->leap_days_cached = collect(Arr::get($this->static_data, 'year_data.leap_days'))->map(function ($leap_day) {
                 return new LeapDay($this, $leap_day);
             });
         }
@@ -650,7 +647,7 @@ class Calendar extends Model
      */
     public function getCurrentTimeAttribute(): string
     {
-        if(!$this->clock_enabled) {
+        if (!$this->clock_enabled) {
             return "N/A";
         }
 
@@ -670,7 +667,7 @@ class Calendar extends Model
      */
     public function getCurrentEraAttribute(): string
     {
-        if(!$this->current_era_valid){
+        if (!$this->current_era_valid) {
             return 'N/A';
         }
 
@@ -688,7 +685,7 @@ class Calendar extends Model
      */
     public function getErasAttribute(): ErasCollection
     {
-        return (new ErasCollection(Arr::get($this->static_data, 'eras')))->map(function($era){
+        return (new ErasCollection(Arr::get($this->static_data, 'eras')))->map(function ($era) {
             return new Era($era);
         })->sortBy('year');
     }
@@ -702,14 +699,14 @@ class Calendar extends Model
     {
         if (is_string($input) && $value === null) return Arr::get($this->dynamic_data, $input);
 
-        if(!is_array($input)) {
+        if (!is_array($input)) {
             $input = [
                 $input => $value
             ];
         }
 
         $dynamic_data = $this->dynamic_data;
-        foreach($input as $key => $value) {
+        foreach ($input as $key => $value) {
             $dynamic_data[$key] = $value;
         }
 
@@ -734,7 +731,8 @@ class Calendar extends Model
      * @param $setting_name
      * @param $new_value
      */
-    public function setSetting($setting_name, $new_value) {
+    public function setSetting($setting_name, $new_value)
+    {
         $this->static_data['settings'][$setting_name] = $new_value;
     }
 
@@ -782,9 +780,9 @@ class Calendar extends Model
     public function scopeDueForAdvancement(Builder $query): Builder
     {
         return $query->where('advancement_enabled', true)
-            ->whereHas('user', function(Builder $query) {
+            ->whereHas('user', function (Builder $query) {
                 return $query->premium();
-            })->where(function(Builder $query) {
+            })->where(function (Builder $query) {
                 $query->where('advancement_next_due', '<=', now())
                     ->orWhereNull('advancement_next_due');
             });
@@ -806,11 +804,11 @@ class Calendar extends Model
             'co-owner' => 30
         ];
 
-        if(!$this->isPremium()) {
+        if (!$this->isPremium()) {
             return false;
         }
 
-        if(!$this->users->contains($user)) {
+        if (!$this->users->contains($user)) {
             return false;
         }
 
@@ -842,18 +840,18 @@ class Calendar extends Model
     {
         $id = ($user instanceof User) ? $user->id : $user;
 
-        if($this->users()->where('users.id', $id)->exists()) {
+        if ($this->users()->where('users.id', $id)->exists()) {
             $this->users()->detach($id);
             $this->save();
         }
 
-        if($email) {
-            $this->invitations()->where('email', $email)->each(function($invitation) {
+        if ($email) {
+            $this->invitations()->where('email', $email)->each(function ($invitation) {
                 $invitation->reject();
             });
         }
 
-        if($remove_all) {
+        if ($remove_all) {
             $this->events()->where('creator_id', $id)->delete();
         }
 
@@ -862,11 +860,13 @@ class Calendar extends Model
 
     public function imageLink($ext, $attributes = [])
     {
-        return route('calendars.image',
+        return route(
+            'calendars.image',
             array_merge($attributes, [
                 'calendar' => $this,
                 'ext' => $ext,
-            ]));
+            ])
+        );
     }
 
     public function ensureAdvancmentIsInitialized()
@@ -878,8 +878,8 @@ class Calendar extends Model
             'advancement_rate' => 1,
             'advancement_rate_unit' => $this->clockEnabled ? 'hours' : 'days',
             'advancement_webhook_format' => 'discord',
-        ])->each(function($value, $attribute){
-            if(!$this->$attribute) {
+        ])->each(function ($value, $attribute) {
+            if (!$this->$attribute) {
                 $this->$attribute = $value;
             }
         });
