@@ -57,7 +57,7 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected $routeMiddleware = [
+    protected $middlewareAliases = [
         'agreement' => \App\Http\Middleware\AgreementCheck::class,
         'api_version' => \App\Http\Middleware\APIVersion::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
