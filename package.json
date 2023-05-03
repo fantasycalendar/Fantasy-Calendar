@@ -23,7 +23,7 @@
         "sass": "^1.57.1",
         "sass-loader": "^12.4.0",
         "tippy.js": "^6.3.7",
-        "webpack": "^5.75.0"
+        "webpack": "^5.76.0"
     },
     "optionalDependencies": {
         "fsevents": "^2.3.2"
