@@ -15,9 +15,7 @@ use App\Services\CalendarService\Moon;
 use App\Services\CalendarService\Timespan;
 use App\Services\CalendarService\Month;
 use App\Services\Discord\Models\DiscordWebhook;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -269,6 +267,22 @@ class Calendar extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('deleted', 0);
+    }
+
+    public function getStaticDataAttribute(): array
+    {
+        $original = json_decode($this->attributes['static_data'], true);
+
+        array_walk_recursive(
+            $original,
+            function (&$value) {
+                if (is_string($value)) {
+                    $value = trim($value) ?? '';
+                }
+            }
+        );
+
+        return $original;
     }
 
     /**
