@@ -34,7 +34,7 @@ services:
     volumes:
       - ./:/var/task
       - ./cache:/var/task/cache
-    user: "1000:1000"
+    user: "${FC_USER_ID:-1000}:${FC_GROUP_ID:-1000}"
 
   queue-worker:
     container_name: fc_queue_worker
@@ -47,7 +47,7 @@ services:
     volumes:
       - ./:/var/task
       - ./cache:/var/task/cache
-    user: "1000:1000"
+    user: "${FC_USER_ID:-1000}:${FC_GROUP_ID:-1000}"
     command: ["php", "artisan", "queue:listen"]
 
   selenium:
@@ -69,14 +69,14 @@ services:
     build:
       context: .
       dockerfile: setup/php/composer.Dockerfile
-    user: "1000:1000"
+    user: "${FC_USER_ID:-1000}:${FC_GROUP_ID:-1000}"
     volumes:
       - ./:/var/task
     command: ["composer", "install"]
 
   npm:
     image: node:14
-    user: "1000:1000"
+    user: "${FC_USER_ID:-1000}:${FC_GROUP_ID:-1000}"
     mem_limit: 2048m
     ports:
       - ${FC_BROWSERSYNC_PORT:-9987}:9980
