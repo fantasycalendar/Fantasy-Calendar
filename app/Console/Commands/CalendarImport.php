@@ -44,14 +44,14 @@ class CalendarImport extends Command
     public function handle(Client $client)
     {
         // Make sure we have an FC api key
-        if(!env('FC_API_KEY')) {
+        if (!env('FC_API_KEY')) {
             $this->error('You have no api key set. Add it as FC_API_KEY to your .env and try again.');
             return 1;
         }
 
         // Make sure we get a hash
         $beta_hash = $this->argument('hash');
-        while(!$beta_hash) {
+        while (!$beta_hash) {
             $this->info('No valid hash specified.');
             $beta_hash = $this->ask("What's the hash of the calendar you want to import?");
         }
@@ -71,7 +71,7 @@ class CalendarImport extends Command
         $originalCategoryIds = [];
         $categories = $calendar_data['event_categories'];
 
-        foreach($categories as $index => $category) {
+        foreach ($categories as $index => $category) {
             $originalCategoryIds[$categories[$index]['id']] = Str::slug($category['name']);
             $categories[$index]['id'] = Str::slug($category['name']);
         }
@@ -80,13 +80,12 @@ class CalendarImport extends Command
         // then set each event's category ID to the slug-name we set earlier.
         $events = $calendar_data['events'];
 
-        foreach($events as $index => $event) {
+        foreach ($events as $index => $event) {
             unset($events[$index]['id']);
 
-            if(is_numeric($events[$index]['event_category_id']) && $events[$index]['event_category_id'] > -1) {
+            if (is_numeric($events[$index]['event_category_id']) && $events[$index]['event_category_id'] > -1) {
                 $events[$index]['event_category_id'] = $originalCategoryIds[$events[$index]['event_category_id']];
             }
-
         }
 
         $calendarFound = Calendar::where("hash", $beta_hash);
@@ -100,12 +99,12 @@ class CalendarImport extends Command
 
         // Now that we've done the above, we can create the calendar
         $overwrite = false;
-        if($calendarFound->count()){
-            while(!($overwrite == "y" || $overwrite == "n")) {
+        if ($calendarFound->count()) {
+            while (!($overwrite == "y" || $overwrite == "n")) {
                 $overwrite = strtolower($this->ask("Calendar already exists locally. Do you want to overwrite the existing calendar (Y) or create a new hash for the incoming calendar (N)?\nY/N"));
             }
-            if($overwrite === "n"){
-                $calendar_data['hash'] = md5($calendar_data['name'].json_encode($calendar_data['dynamic_data']).json_encode($calendar_data['static_data']).(1).date("D M d, Y G:i").Str::random(10));
+            if ($overwrite === "n") {
+                $calendar_data['hash'] = md5($calendar_data['name'] . json_encode($calendar_data['dynamic_data']) . json_encode($calendar_data['static_data']) . (1) . date("D M d, Y G:i") . Str::random(10));
             }
         }
 
@@ -115,15 +114,15 @@ class CalendarImport extends Command
         );
 
         // We need to tell all categories to use the ID.
-        foreach($categories as $index => $category) {
+        foreach ($categories as $index => $category) {
             $categories[$index]['calendar_id'] = $calendar->id;
         }
 
         // Create our categories first, then make an array of our local numeric IDs => slug-name
-        $categoryids = SaveEventCategories::dispatchNow($categories, $calendar->id);
+        $categoryids = SaveEventCategories::dispatchSync($categories, $calendar->id);
 
         // Now we can create our events, providing the above IDs => slug-name map
-        $eventids = SaveCalendarEvents::dispatchNow($events, $categoryids, $calendar->id);
+        $eventids = SaveCalendarEvents::dispatchSync($events, $categoryids, $calendar->id);
 
         $this->info(
             sprintf(

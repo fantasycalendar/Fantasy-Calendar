@@ -142,9 +142,21 @@
 					<textarea class='form-control event_desc editable' x-ref='description' placeholder='Event description' autofocus=''></textarea>
 				</div>
 
+                @if(!isset($calendar) || count($calendar->event_categories) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
+                    <h5 class='modal-form-heading mt-3 mb-1'>Category</h5>
+
+                    <div class='row mb-3 no-gutters'>
+                        <select class="form-control event-category-list" x-model='working_event.event_category_id' @change="event_category_changed" placeholder='Event Category'> </select>
+                    </div>
+                @endif
+
                 @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('advance-date', $calendar)))
 
-                    <h5 class='row no-gutters mt-2 modal-form-heading' x-show="new_event && !cloning_event">Condition presets:</h5>
+                    <div class='row no-gutters mt-2'>
+                        <div class='separator'></div>
+                    </div>
+
+                    <h5 class='row no-gutters mt-3 mb-1 modal-form-heading' x-show="new_event && !cloning_event">Condition preset</h5>
 
                     <div class='row no-gutters mb-1' x-show="new_event && !cloning_event">
                         <select class="form-control" @change='condition_preset_changed' x-model="preset" x-ref="condition_presets">
@@ -163,9 +175,9 @@
                         <input type='number' class='form-control' @change='nth_input_changed' x-model='nth' min='1' value="1" x-ref="nth_input" placeholder='Every nth' />
                     </div>
 
-                    <h5 class='row no-gutters my-2 modal-form-heading'>Conditions:</h5>
+                    <h5 class='row no-gutters mt-3 mb-1 modal-form-heading'>Conditions</h5>
 
-                    <div class='row no-gutters my-2' id='non_preset_buttons'>
+                    <div class='row no-gutters mb-2' id='non_preset_buttons'>
                         <div class='col-11 pr-1'>
                             <div class='row p-0'>
                                 <div class='col-6 pr-1'>
@@ -180,9 +192,9 @@
                             <button type='button' @click='remove_clicked' @mouseenter='remove_mouseover' @mouseleave='remove_mouseout' id='condition_remove_button' class='btn btn-danger full'><i class="icon fas fa-trash-alt"></i></button>
                         </div>
                     </div>
-                    <div class='row no-gutters my-2'>
-                        <ol class='form-control group_list_root' id='event_conditions_container' x-ref='event_conditions_container'>
-                        </ol>
+
+                    <div class='row no-gutters mt-2'>
+                        <ol class='form-control group_list_root mb-0' id='event_conditions_container' x-ref='event_conditions_container'></ol>
                     </div>
 
                     <span class='hidden'></span>
@@ -415,18 +427,6 @@
                         <div class='separator'></div>
                     </div>
 
-                    @if(!isset($calendar) || count($calendar->event_categories) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
-                        <div class='row mb-2 no-gutters'>
-                            <div class='col-auto pl-0 pr-1'>
-                                <h5 class='modal-form-heading'>Event Category:</h5>
-                            </div>
-                            <div class='col pl-0 pl-1'>
-                                <select class="form-control event-category-list" x-model='working_event.event_category_id' @change="event_category_changed" placeholder='Event Category'>
-
-                                </select>
-                            </div>
-                        </div>
-                    @endif
 
                     @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
                         <div class='row no-gutters'>

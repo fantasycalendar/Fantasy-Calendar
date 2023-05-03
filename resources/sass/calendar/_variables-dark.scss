@@ -2,7 +2,7 @@
 $body-bg: #121212;
 
 // Typography
-$font-family-sans-serif: 'Nunito', sans-serif;
+$font-family-sans-serif: "Nunito", sans-serif;
 $font-size-base: 0.9rem;
 $line-height-base: 1.6;
 
@@ -32,8 +32,8 @@ $current-day-number-color: $accent-color;
 $preview-day-color: $bg-amber-900;
 $preview-day-number-color: $bg-amber-700;
 
-$sidebar-width: 28%;
-$wiki-link-color: rgba(255,255,255,0.2);
+$sidebar-width: 400px;
+$wiki-link-color: rgba(255, 255, 255, 0.2);
 $wiki-link-hover-color: white;
 $main-text-color: rgba(255, 255, 255, 0.8);
 $gray-secondary: $gray-600;
@@ -66,7 +66,6 @@ $btn-border: $accent-color-darker;
 
 $btn-color-hover: $accent-color;
 $btn-border-hover: $accent-color;
-
 
 // Minimalist colors
 $m-even-bg: rgba(255, 255, 255, 0.05);

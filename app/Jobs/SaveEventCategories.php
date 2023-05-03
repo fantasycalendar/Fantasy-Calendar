@@ -2,27 +2,22 @@
 
 namespace App\Jobs;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-
 use App\Models\EventCategory;
 
-class SaveEventCategories implements ShouldQueue
+class SaveEventCategories
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($categories, $calendarId)
+    public function __construct(public $categories, public $calendarId)
     {
-        $this->categories = $categories;
-        $this->calendarId = $calendarId;
+    }
+
+    public static function dispatchSync($categories, $calendarId)
+    {
+        return (new static($categories, $calendarId))->handle();
     }
 
     /**
@@ -34,10 +29,10 @@ class SaveEventCategories implements ShouldQueue
     {
         $categoryids = [];
 
-        foreach($this->categories as $sort_by => $category) {
+        foreach ($this->categories as $sort_by => $category) {
             $category['sort_by'] = $sort_by;
 
-            if(array_key_exists('id', $category) && is_numeric($category['id'])) {
+            if (array_key_exists('id', $category) && is_numeric($category['id'])) {
                 $categoryids[] = $category['id'];
                 $category['category_settings'] = json_encode($category['category_settings']);
                 $category['event_settings'] = json_encode($category['event_settings']);
