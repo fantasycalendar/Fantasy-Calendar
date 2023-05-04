@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0547c81915ab4869ee4b30dd68a61456",
+    "content-hash": "3f796f2a2747ae4e0b6da4fb8e687b0f",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -131,16 +131,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.269.4",
+            "version": "3.269.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "1f9661f019cb4173e527f0c30fdd6efe190a413e"
+                "reference": "66a1f27159a92f1a6f6b0916e714ca68c23309b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/1f9661f019cb4173e527f0c30fdd6efe190a413e",
-                "reference": "1f9661f019cb4173e527f0c30fdd6efe190a413e",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/66a1f27159a92f1a6f6b0916e714ca68c23309b1",
+                "reference": "66a1f27159a92f1a6f6b0916e714ca68c23309b1",
                 "shasum": ""
             },
             "require": {
@@ -220,9 +220,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.269.4"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.269.5"
             },
-            "time": "2023-05-02T18:22:12+00:00"
+            "time": "2023-05-03T18:27:52+00:00"
         },
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -12601,7 +12601,7 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
