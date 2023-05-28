@@ -36,8 +36,10 @@ Route::get('presets', [PresetController::class, 'list']);
 Route::get('preset/{id}', [PresetController::class, 'show']);
 Route::get('presets.html', [PresetController::class, 'listHtml']);
 
+Route::any('/calendar/{calendar}/core', [CalendarController::class, 'core']);
+
 // Any routes in here require authentication
-Route::middleware(['auth:sanctum'])->group(function(){
+Route::middleware(['auth:sanctum'])->group(function () {
     Route::any('/user', [UserController::class, 'user']);
 
     Route::any('/calendar/{calendar}/clone', [CalendarController::class, 'clone']);
@@ -58,7 +60,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
         'event' => CalendarEventController::class,
     ]);
 
-    Route::prefix('render/{calendar}')->group(function() {
+    Route::prefix('render/{calendar}')->group(function () {
         Route::get('/month/{year?}/{month?}/{day?}', [CalendarRendererController::class, 'month']);
     });
 });

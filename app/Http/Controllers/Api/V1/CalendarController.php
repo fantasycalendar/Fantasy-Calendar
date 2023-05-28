@@ -13,10 +13,12 @@ use App\Transformer\CalendarUserTransformer;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\CalendarCollection;
 use App\Models\Calendar;
+use App\Transformer\CalendarCoreTransformer;
 use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Serializer\DataArraySerializer;
 use Illuminate\Http\Request;
+use League\Fractal\Resource\Item;
 
 class CalendarController extends Controller
 {
@@ -35,6 +37,13 @@ class CalendarController extends Controller
         CalendarCollection::withoutWrapping();
 
         return new CalendarCollection($request->user()->calendars);
+    }
+
+    public function core(Calendar $calendar)
+    {
+        return $this->manager->createData(
+            new Item($calendar, new CalendarCoreTransformer()),
+        )->toArray()['data'];
     }
 
     public function show(Calendar $calendar)
