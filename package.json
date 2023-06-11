@@ -60,7 +60,7 @@
         "sweetalert2": "^9.17.4",
         "tailwindcss": "^3.2.4",
         "trumbowyg": "^2.26.0",
-        "weather-icons": "github:fantasycalendar/weather-icons"
+        "weather-icons": "https://github.com/fantasycalendar/weather-icons"
     },
     "name": "app"
 }
