@@ -266,7 +266,7 @@ function set_up_edit_inputs() {
     /* ------------------- Dynamic and static callbacks ------------------- */
 
     $('#calendar_name').change(function() {
-        calendar_name = _.escape($(this).val());
+        calendar_name = sanitizeHtml($(this).val());
         do_error_check();
     });
 
@@ -1286,7 +1286,7 @@ function set_up_edit_inputs() {
 
         let category_index = $(this).closest('.sortable-container').attr('index') | 0;
 
-        event_categories[category_index].name = new_name;
+        event_categories[category_index].name = sanitizeHtml(new_name);
 
         if (isNaN(event_categories[category_index].id)) {
             let slug = slugify(new_name);
@@ -1500,14 +1500,14 @@ function set_up_edit_inputs() {
 
                     callback = true;
 
-                    let event_name = _.escape(events[index].name);
+                    let event_name = sanitizeHtml(events[index].name);
 
                     let html = [];
                     html.push(`<div class='text-left'>`)
                     html.push(`<h5>You are trying to delete "${event_name}" which referenced in the following events:</h5>`)
                     html.push(`<ul>`);
                     for (let i = 0; i < warnings.length; i++) {
-                        let name = _.escape(events[warnings[i]].name);
+                        let name = sanitizeHtml(events[warnings[i]].name);
                         html.push(`<li>${name}</li>`);
                     }
                     html.push(`</ul>`);
@@ -2082,7 +2082,7 @@ function set_up_edit_inputs() {
 
             cycle_name_list.append(element.join(""));
             cycle_name_list.children().each(function(i) {
-                $(this).val(cycle.names[i]);
+                $(this).val(sanitizeHtml(cycle.names[i]));
             })
 
             do_error_check('calendar');
@@ -2152,22 +2152,22 @@ function set_up_edit_inputs() {
 
         if (offset_val === undefined || interval_val === undefined) return;
 
-        interval.toggleClass('invalid', interval_val == "").attr('error_msg', interval_val == "" ? `${static_data.year_data.leap_days[index].name} interval is empty, please enter at least one number.` : '');
+        interval.toggleClass('invalid', interval_val == "").attr('error_msg', interval_val == "" ? `${sanitizeHtml(static_data.year_data.leap_days[index].name)} interval is empty, please enter at least one number.` : '');
         if (interval_val == "") {
             return;
         }
 
-        interval.toggleClass('invalid', interval_val == "0").attr('error_msg', interval_val == "0" ? `${static_data.year_data.leap_days[index].name}'s interval is 0, please enter a positive number.` : '');
+        interval.toggleClass('invalid', interval_val == "0").attr('error_msg', interval_val == "0" ? `${sanitizeHtml(static_data.year_data.leap_days[index].name)}'s interval is 0, please enter a positive number.` : '');
         if (interval_val == "0") {
             return;
         }
 
-        offset.toggleClass('invalid', offset_val < 0).attr('error_msg', offset_val < 0 ? `${static_data.year_data.leap_days[index].name} cannot have a negative offset number.` : '');
+        offset.toggleClass('invalid', offset_val < 0).attr('error_msg', offset_val < 0 ? `${sanitizeHtml(static_data.year_data.leap_days[index].name)} cannot have a negative offset number.` : '');
         if (offset_val < 0) {
             return;
         }
 
-        offset.toggleClass('invalid', is_cyclic && offset_val < 1).attr('error_msg', is_cyclic && offset_val < 1 ? `${static_data.year_data.leap_days[index].name} cannot have a cycle length below 1.` : '');
+        offset.toggleClass('invalid', is_cyclic && offset_val < 1).attr('error_msg', is_cyclic && offset_val < 1 ? `${sanitizeHtml(static_data.year_data.leap_days[index].name)} cannot have a cycle length below 1.` : '');
         if (is_cyclic && offset_val < 1) {
             return;
         }
@@ -2180,7 +2180,7 @@ function set_up_edit_inputs() {
 
         var values = interval_val.split(',');
 
-        $(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${static_data.year_data.leap_days[index].name} has an invalid interval formula.` : '');
+        $(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${sanitizeHtml(static_data.year_data.leap_days[index].name)} has an invalid interval formula.` : '');
 
         if (invalid) return;
 
@@ -2190,14 +2190,14 @@ function set_up_edit_inputs() {
                 if (!local_regex.test(values[i])) {
                     $(this).toggleClass('invalid', true)
                     if (!is_cyclic) {
-                        $(this).attr('error_msg', `${static_data.year_data.leap_days[index].name} has an invalid interval formula. Plus before exclamation point.`);
+                        $(this).attr('error_msg', `${sanitizeHtml(static_data.year_data.leap_days[index].name)} has an invalid interval formula. Plus before exclamation point.`);
                     } else {
-                        $(this).attr('error_msg', `${static_data.year_data.leap_days[index].name} has an invalid interval formula.`);
+                        $(this).attr('error_msg', `${sanitizeHtml(static_data.year_data.leap_days[index].name)} has an invalid interval formula.`);
                     }
                     return;
                 }
                 if (is_cyclic && Number(values[i]) > offset_val) {
-                    $(this).toggleClass('invalid', true).attr('error_msg', `${static_data.year_data.leap_days[index].name} - Cyclic leap days cannot have an interval number greater than its its cycle length.`);
+                    $(this).toggleClass('invalid', true).attr('error_msg', `${sanitizeHtml(static_data.year_data.leap_days[index].name)} - Cyclic leap days cannot have an interval number greater than its its cycle length.`);
                     return;
                 }
             }
@@ -2869,7 +2869,7 @@ function update_data(e) {
                 $(this).find('.location_season').each(function(j) {
                     $(this).prop('key', j);
                     $(this).children().first().prop('id', `collapsible_seasons_${i}_${j}`);
-                    $(this).children().first().next().prop('for', `collapsible_seasons_${i}_${j}`).text(`Season name: ${static_data.seasons.data[j].name}`);
+                    $(this).children().first().next().prop('for', `collapsible_seasons_${i}_${j}`).text(`Season name: ${sanitizeHtml(static_data.seasons.data[j].name)}`);
                 });
             });
             repopulate_location_select_list();
@@ -2905,7 +2905,7 @@ function update_data(e) {
                 break;
 
             default:
-                value = _.escape(target.val());
+                value = sanitizeHtml(target.val());
                 break;
         }
 
@@ -2962,7 +2962,7 @@ function add_weekday_to_sortable(parent, key, name) {
 
     element = $(element.join(""))
 
-    element.find('.name-input').val(_.escape(name));
+    element.find('.name-input').val(sanitizeHtml(name));
 
     parent.append(element);
 
@@ -3083,11 +3083,11 @@ function add_timespan_to_sortable(parent, key, data) {
 
     element = $(element.join(""))
 
-    element.find('.name-input').val(_.escape(data.name));
+    element.find('.name-input').val(sanitizeHtml(data.name));
 
     if (data.week) {
         element.find('.week_list').children().each(function(i) {
-            $(this).val(_.escape(data.week[i]));
+            $(this).val(sanitizeHtml(data.week[i]));
         });
     }
 
@@ -3137,7 +3137,7 @@ function add_leap_day_to_list(parent, key, data) {
     element.push("Month to add to:");
     element.push(`<select type='number' class='custom-select form-control leap_day_occurance_input timespan-list dynamic_input full timespan_special' data='year_data.leap_days.${key}' fc-index='timespan'>`);
     for (var j = 0; j < static_data.year_data.timespans.length; j++) {
-        element.push(`<option value="${j}" ${(j == data.timespan ? "selected" : "")}>${static_data.year_data.timespans[j].name}</option>`);
+        element.push(`<option value="${j}" ${(j == data.timespan ? "selected" : "")}>${sanitizeHtml(static_data.year_data.timespans[j].name)}</option>`);
     }
     element.push("</select>");
     element.push("</div>");
@@ -3199,10 +3199,10 @@ function add_leap_day_to_list(parent, key, data) {
         }
     }
     if (data.adds_week_day) {
-        element.push(`<option ${data.day == 0 ? 'selected' : ''} value='0'>Before ${week[0]}</option>`);
+        element.push(`<option ${data.day == 0 ? 'selected' : ''} value='0'>Before ${sanitizeHtml(week[0])}</option>`);
     }
     for (var i = 0; i < week.length; i++) {
-        element.push(`<option ${data.day == i ? 'selected' : ''} value='${i + 1}'>${week[i]}</option>`);
+        element.push(`<option ${data.day == i ? 'selected' : ''} value='${i + 1}'>${sanitizeHtml(week[i])}</option>`);
     }
 
     element.push("</select>");
@@ -3270,8 +3270,8 @@ function add_leap_day_to_list(parent, key, data) {
 
     element = $(element.join(""))
 
-    element.find('.name-input').val(_.escape(data.name));
-    element.find('.internal-list-name').val(_.escape(`${data.week_day && !data.intercalary ? data.week_day : 'Weekday'}`))
+    element.find('.name-input').val(sanitizeHtml(data.name));
+    element.find('.internal-list-name').val(sanitizeHtml(`${data.week_day && !data.intercalary ? data.week_day : 'Weekday'}`))
     element.find('.leap_day_occurance_input.offset').prop('disabled', data.interval == "1" || data.interval == 1)
 
     parent.append(element);
@@ -3410,7 +3410,7 @@ function add_moon_to_list(parent, key, data) {
 
     element = $(element.join(""))
 
-    element.find('.name-input').val(_.escape(data.name));
+    element.find('.name-input').val(sanitizeHtml(data.name));
 
     parent.append(element);
 }
@@ -3575,7 +3575,7 @@ function add_season_to_sortable(parent, key, data) {
 
     element = $(element.join(""))
 
-    element.find('.name-input').val(_.escape(data.name));
+    element.find('.name-input').val(sanitizeHtml(data.name));
 
     parent.append(element);
 }
@@ -3605,7 +3605,7 @@ function add_location_to_list(parent, key, data) {
 
         element.push(`<div class='m-0 my-2 cycle-container wrap-collapsible location_season' fc-index='${i}'>`);
         element.push(`<input id='collapsible_seasons_${key}_${i}' class='toggle location_toggle' type='checkbox'>`);
-        element.push(`<label for='collapsible_seasons_${key}_${i}' class='lbl-toggle location_name'><div class='icon icon-expand'></div> Weather settings: ${static_data.seasons.data[i].name}</label>`);
+        element.push(`<label for='collapsible_seasons_${key}_${i}' class='lbl-toggle location_name'><div class='icon icon-expand'></div> Weather settings: ${sanitizeHtml(static_data.seasons.data[i].name)}</label>`);
 
         element.push("<div class='collapsible-content container p-0'>");
 
@@ -3842,7 +3842,7 @@ function add_location_to_list(parent, key, data) {
 
     element = $(element.join(""))
 
-    element.find('.name-input').val(_.escape(data.name));
+    element.find('.name-input').val(sanitizeHtml(data.name));
 
     parent.append(element);
 }
@@ -3929,7 +3929,7 @@ function add_cycle_to_sortable(parent, key, data) {
     element = $(element.join(""));
 
     element.find('.cycle_list').children().each(function(i) {
-        $(this).val(_.escape(data.names[i]))
+        $(this).val(sanitizeHtml(data.names[i]))
     });
 
     parent.append(element);
@@ -4000,7 +4000,7 @@ function add_era_to_list(parent, key, data) {
     element.push("Event category:");
     element.push(`<select type='text' class='custom-select form-control event-category-list dynamic_input' data='eras.${key}.settings' fc-index='event_category_id'>`);
     for (var catkey in event_categories) {
-        var name = event_categories[catkey].name;
+        var name = sanitizeHtml(event_categories[catkey].name);
         var id = event_categories[catkey].id;
         element.push(`<option value="${id}" ${(catkey == data.event_category_id ? "selected" : "")}>${name}</option>`);
     }
@@ -4093,10 +4093,10 @@ function add_era_to_list(parent, key, data) {
 
     var element = $(element.join(""));
 
-    element.find('.name-input').val(_.escape(data.name));
+    element.find('.name-input').val(sanitizeHtml(data.name));
 
     var formatting = data.settings.use_custom_format ? data.formatting : 'Year {{year}} - {{era_name}}';
-    element.find('.era_formatting').val(_.escape(formatting));
+    element.find('.era_formatting').val(sanitizeHtml(formatting));
 
     parent.append(element);
 
@@ -4249,7 +4249,7 @@ function add_category_to_list(parent, key, data) {
 
     element = $(element.join(""))
 
-    element.find('.name-input').val(_.escape(data.name));
+    element.find('.name-input').val(sanitizeHtml(data.name));
 
     parent.append(element);
 }
@@ -4276,7 +4276,7 @@ function add_event_to_sortable(parent, key, data) {
 
     element = $(element.join(""))
 
-    let name = _.escape(data.name);
+    let name = sanitizeHtml(data.name);
     element.find('.event_name').html(`Edit - ${name}`);
 
     parent.append(element);
@@ -4292,7 +4292,7 @@ function add_link_to_list(parent, key, locked, calendar) {
     element.push("<div class='main-container'>");
     element.push(`<div class='expand icon-${locked ? "expand" : "collapse"} ml-2'></div>`);
     element.push("<div class='name-container'>");
-    element.push(`<div><a href="${window.baseurl}calendars/${calendar.hash}/edit" target="_blank">${calendar.name}</a></div>`);
+    element.push(`<div><a href="${window.baseurl}calendars/${calendar.hash}/edit" target="_blank">${sanitizeHtml(calendar.name)}</a></div>`);
     element.push(`</div>`);
     element.push("</div>");
 
@@ -4439,13 +4439,13 @@ function get_errors() {
                 var appears = does_timespan_appear(static_data, convert_year(static_data, era.date.year), era.date.timespan);
                 if (!appears.result) {
                     if (appears.reason == 'era ended') {
-                        errors.push(`Era <i>${era.name}</i> is on a date that doesn't exist due to a previous era ending the year. Please move it to another year.`);
+                        errors.push(`Era <i>${sanitizeHtml(era.name)}</i> is on a date that doesn't exist due to a previous era ending the year. Please move it to another year.`);
                     } else {
-                        errors.push(`Era <i>${era.name}</i> is currently on a month that is leaping on that year. Please change its year or move it to another month.`);
+                        errors.push(`Era <i>${sanitizeHtml(era.name)}</i> is currently on a month that is leaping on that year. Please change its year or move it to another month.`);
                     }
                 }
             } else {
-                errors.push(`Era <i>${era.name}</i> doesn't have a valid month.`);
+                errors.push(`Era <i>${sanitizeHtml(era.name)}</i> doesn't have a valid month.`);
             }
         }
 
@@ -4454,10 +4454,10 @@ function get_errors() {
             var next = static_data.eras[era_i + 1];
             if (!curr.settings.starting_era && !next.settings.starting_era) {
                 if (curr.year == next.date.year && curr.settings.ends_year && next.settings.ends_year) {
-                    errors.push(`Eras <i>${curr.name}</i> and <i>${next.name}</i> both end the same year. This is not possible.`);
+                    errors.push(`Eras <i>${sanitizeHtml(curr.name)}</i> and <i>${sanitizeHtml(next.name)}</i> both end the same year. This is not possible.`);
                 }
                 if (curr.date.year == next.date.year && curr.date.timespan == next.date.timespan && curr.date.day == next.date.day) {
-                    errors.push(`Eras <i>${static_data.eras[era_i].name}</i> and <i>${static_data.eras[era_i + 1].name}</i> both share the same date. One has to come after another.`);
+                    errors.push(`Eras <i>${sanitizeHtml(static_data.eras[era_i].name)}</i> and <i>${sanitizeHtml(static_data.eras[era_i + 1].name)}</i> both share the same date. One has to come after another.`);
                 }
             }
         }
@@ -4470,11 +4470,11 @@ function get_errors() {
                 var season = static_data.seasons.data[season_i];
                 if (static_data.seasons.global_settings.periodic_seasons) {
                     if (season.transition_length == 0) {
-                        errors.push(`Season <i>${season.name}</i> can't have 0 transition length.`);
+                        errors.push(`Season <i>${sanitizeHtml(season.name)}</i> can't have 0 transition length.`);
                     }
                 } else {
                     if (static_data.year_data.timespans[season.timespan].interval != 1) {
-                        errors.push(`Season <i>${season.name}</i> can't be on a leaping month.`);
+                        errors.push(`Season <i>${sanitizeHtml(season.name)}</i> can't be on a leaping month.`);
                     }
                 }
             }
@@ -4484,7 +4484,7 @@ function get_errors() {
                 var curr_season = static_data.seasons.data[season_i];
                 var next_season = static_data.seasons.data[season_i + 1];
                 if (curr_season.timespan == next_season.timespan && curr_season.day == next_season.day) {
-                    errors.push(`Season <i>${curr_season.name}</i> and <i>${next_season.name}</i> cannot be on the same month and day.`);
+                    errors.push(`Season <i>${sanitizeHtml(curr_season.name)}</i> and <i>${sanitizeHtml(next_season.name)}</i> cannot be on the same month and day.`);
                 }
             }
         }
@@ -4726,7 +4726,7 @@ function populate_first_day_select(val) {
 
     for (var i = 0; i < week.length; i++) {
 
-        let weekday_name = _.escape(week[i]);
+        let weekday_name = sanitizeHtml(week[i]);
         html.push(`<option value='${i + 1}'>${weekday_name}</option>`);
 
     }
@@ -4768,14 +4768,14 @@ function repopulate_weekday_select(elements, value, change) {
         var html = [];
 
         if (inclusive) {
-            let weekday_name = _.escape(week[0]);
+            let weekday_name = sanitizeHtml(week[0]);
             html.push(`<option value='0'>Before ${weekday_name}</option>`);
         } else {
             selected = selected == 0 ? 1 : selected;
         }
 
         for (var i = 0; i < week.length; i++) {
-            let weekday_name = _.escape(week[i]);
+            let weekday_name = sanitizeHtml(week[i]);
 
             html.push(`<option value='${i + 1}'>${weekday_name}</option>`);
 
@@ -5040,7 +5040,7 @@ function populate_preset_season_list() {
             for (let j in preset_seasons) {
                 let name = preset_seasons[j];
                 let o = new Option(name, j);
-                $(o).html(_.escape(name));
+                $(o).html(sanitizeHtml(name));
                 $(this).append(o);
             }
 
@@ -5259,7 +5259,7 @@ function reindex_cycle_sortable() {
         };
 
         $(this).find('.cycle_list').children().each(function(j) {
-            static_data.cycles.data[i].names[j] = $(this).val();
+            static_data.cycles.data[i].names[j] = sanitizeHtml($(this).val());
         });
 
     });
@@ -6339,7 +6339,7 @@ function get_interval_text(timespan, data) {
                 if (static_data.year_data.timespans[data.timespan].interval == 1) {
                     text += ` ${ordinal_suffix_of(sorted[i])} year`;
                 } else {
-                    text += ` ${ordinal_suffix_of(timespan_interval * sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
+                    text += ` ${ordinal_suffix_of(timespan_interval * sorted[i])} ${sanitizeHtml(static_data.year_data.timespans[data.timespan].name)}`;
                 }
 
                 if (values[i].indexOf('+') == -1 || year_offset != 0) {
@@ -6354,7 +6354,7 @@ function get_interval_text(timespan, data) {
                     if (timespan_interval == 1) {
                         text += `<br>• but not every ${ordinal_suffix_of(sorted[i])} year`;
                     } else {
-                        text += `<br>• but not every ${ordinal_suffix_of(timespan_interval * sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
+                        text += `<br>• but not every ${ordinal_suffix_of(timespan_interval * sorted[i])} ${sanitizeHtml(static_data.year_data.timespans[data.timespan].name)}`;
                     }
 
                     if (values[i].indexOf('+') == -1 || year_offset != 0) {
@@ -6366,7 +6366,7 @@ function get_interval_text(timespan, data) {
                     if (timespan_interval == 1) {
                         text += `<br>• but also every ${ordinal_suffix_of(sorted[i])} year`;
                     } else {
-                        text += `<br>• but also every ${ordinal_suffix_of(timespan_interval * sorted[i])} ${static_data.year_data.timespans[data.timespan].name}`;
+                        text += `<br>• but also every ${ordinal_suffix_of(timespan_interval * sorted[i])} ${sanitizeHtml(static_data.year_data.timespans[data.timespan].name)}`;
                     }
 
                     if (values[i].indexOf('+') == -1 || year_offset != 0) {
@@ -6424,7 +6424,7 @@ function user_permissions_select(select) {
 
     var button = $(select).closest('.sortable-container').find('.update_user_permissions');
 
-    var new_value = _.escape($(select).val());
+    var new_value = sanitizeHtml($(select).val());
     var curr_value = button.attr('permissions_val');
 
     button.prop('disabled', new_value === curr_value);

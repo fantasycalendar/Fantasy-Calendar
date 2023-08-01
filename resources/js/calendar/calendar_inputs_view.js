@@ -479,7 +479,7 @@ function repopulate_location_select_list(){
 
 		html.push('<optgroup label="Custom" value="custom">');
 		for(var i = 0; i < static_data.seasons.locations.length; i++){
-            let name = _.escape(static_data.seasons.locations[i].name);
+            let name = sanitizeHtml(static_data.seasons.locations[i].name);
 			html.push(`<option value='${i}'>${name}</option>`);
 		}
 		html.push('</optgroup>');

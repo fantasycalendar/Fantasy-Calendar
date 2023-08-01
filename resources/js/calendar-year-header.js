@@ -96,7 +96,7 @@ const calendarYearHeader = {
         const cycleText = this.getCycleText();
 
         this.cycle_element
-            .html(cycleText)
+            .html(sanitizeHtml(cycleText))
             .removeClass('hidden')
             .toggleClass('smaller', cycleText.includes("<br>"));
 
