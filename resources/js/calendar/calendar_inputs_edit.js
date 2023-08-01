@@ -266,7 +266,7 @@ function set_up_edit_inputs() {
     /* ------------------- Dynamic and static callbacks ------------------- */
 
     $('#calendar_name').change(function() {
-        calendar_name = $(this).val();
+        calendar_name = _.escape($(this).val());
         do_error_check();
     });
 
@@ -2902,7 +2902,7 @@ function update_data(e) {
                 break;
 
             default:
-                value = escapeHtml(target.val());
+                value = _.escape(target.val());
                 break;
         }
 
@@ -2959,7 +2959,7 @@ function add_weekday_to_sortable(parent, key, name) {
 
     element = $(element.join(""))
 
-    element.find('.name-input').val(name);
+    element.find('.name-input').val(_.escape(name));
 
     parent.append(element);
 
@@ -3080,11 +3080,11 @@ function add_timespan_to_sortable(parent, key, data) {
 
     element = $(element.join(""))
 
-    element.find('.name-input').val(data.name);
+    element.find('.name-input').val(_.escape(data.name));
 
     if (data.week) {
         element.find('.week_list').children().each(function(i) {
-            $(this).val(data.week[i]);
+            $(this).val(_.escape(data.week[i]));
         });
     }
 
@@ -3267,8 +3267,8 @@ function add_leap_day_to_list(parent, key, data) {
 
     element = $(element.join(""))
 
-    element.find('.name-input').val(data.name);
-    element.find('.internal-list-name').val(`${data.week_day && !data.intercalary ? data.week_day : 'Weekday'}`)
+    element.find('.name-input').val(_.escape(data.name));
+    element.find('.internal-list-name').val(_.escape(`${data.week_day && !data.intercalary ? data.week_day : 'Weekday'}`))
     element.find('.leap_day_occurance_input.offset').prop('disabled', data.interval == "1" || data.interval == 1)
 
     parent.append(element);
@@ -3407,7 +3407,7 @@ function add_moon_to_list(parent, key, data) {
 
     element = $(element.join(""))
 
-    element.find('.name-input').val(data.name);
+    element.find('.name-input').val(_.escape(data.name));
 
     parent.append(element);
 }
@@ -3572,7 +3572,7 @@ function add_season_to_sortable(parent, key, data) {
 
     element = $(element.join(""))
 
-    element.find('.name-input').val(data.name);
+    element.find('.name-input').val(_.escape(data.name));
 
     parent.append(element);
 }
@@ -3839,7 +3839,7 @@ function add_location_to_list(parent, key, data) {
 
     element = $(element.join(""))
 
-    element.find('.name-input').val(data.name);
+    element.find('.name-input').val(_.escape(data.name));
 
     parent.append(element);
 }
@@ -3926,7 +3926,7 @@ function add_cycle_to_sortable(parent, key, data) {
     element = $(element.join(""));
 
     element.find('.cycle_list').children().each(function(i) {
-        $(this).val(data.names[i])
+        $(this).val(_.escape(data.names[i]))
     });
 
     parent.append(element);
@@ -4090,10 +4090,10 @@ function add_era_to_list(parent, key, data) {
 
     var element = $(element.join(""));
 
-    element.find('.name-input').val(data.name);
+    element.find('.name-input').val(_.escape(data.name));
 
     var formatting = data.settings.use_custom_format ? data.formatting : 'Year {{year}} - {{era_name}}';
-    element.find('.era_formatting').val(formatting);
+    element.find('.era_formatting').val(_.escape(formatting));
 
     parent.append(element);
 
@@ -4246,7 +4246,7 @@ function add_category_to_list(parent, key, data) {
 
     element = $(element.join(""))
 
-    element.find('.name-input').val(data.name);
+    element.find('.name-input').val(_.escape(data.name));
 
     parent.append(element);
 }
@@ -6417,7 +6417,7 @@ function user_permissions_select(select) {
 
     var button = $(select).closest('.sortable-container').find('.update_user_permissions');
 
-    var new_value = $(select).val();
+    var new_value = _.escape($(select).val());
     var curr_value = button.attr('permissions_val');
 
     button.prop('disabled', new_value === curr_value);
