@@ -1500,15 +1500,18 @@ function set_up_edit_inputs() {
 
                     callback = true;
 
+                    let event_name = _.escape(events[index].name);
+
                     let html = [];
                     html.push(`<div class='text-left'>`)
-                    html.push(`<h5>You are trying to delete "${events[index].name}" which referenced in the following events:</h5>`)
+                    html.push(`<h5>You are trying to delete "${event_name}" which referenced in the following events:</h5>`)
                     html.push(`<ul>`);
                     for (let i = 0; i < warnings.length; i++) {
-                        html.push(`<li>${events[warnings[i]].name}</li>`);
+                        let name = _.escape(events[warnings[i]].name);
+                        html.push(`<li>${name}</li>`);
                     }
                     html.push(`</ul>`);
-                    html.push(`<p>Please remove the conditions referencing "${events[index].name}" in these events before deleting.</p>`)
+                    html.push(`<p>Please remove the conditions referencing "${event_name}" in these events before deleting.</p>`)
                     html.push(`</div>`)
 
                     swal.fire({
@@ -4273,7 +4276,8 @@ function add_event_to_sortable(parent, key, data) {
 
     element = $(element.join(""))
 
-    element.find('.event_name').html(`Edit - ${data.name}`);
+    let name = _.escape(data.name);
+    element.find('.event_name').html(`Edit - ${name}`);
 
     parent.append(element);
 
@@ -4722,7 +4726,8 @@ function populate_first_day_select(val) {
 
     for (var i = 0; i < week.length; i++) {
 
-        html.push(`<option value='${i + 1}'>${week[i]}</option>`);
+        let weekday_name = _.escape(week[i]);
+        html.push(`<option value='${i + 1}'>${weekday_name}</option>`);
 
     }
 
@@ -4763,14 +4768,16 @@ function repopulate_weekday_select(elements, value, change) {
         var html = [];
 
         if (inclusive) {
-            html.push(`<option value='0'>Before ${week[0]}</option>`);
+            let weekday_name = _.escape(week[0]);
+            html.push(`<option value='0'>Before ${weekday_name}</option>`);
         } else {
             selected = selected == 0 ? 1 : selected;
         }
 
         for (var i = 0; i < week.length; i++) {
+            let weekday_name = _.escape(week[i]);
 
-            html.push(`<option value='${i + 1}'>${week[i]}</option>`);
+            html.push(`<option value='${i + 1}'>${weekday_name}</option>`);
 
         }
 
@@ -5033,7 +5040,7 @@ function populate_preset_season_list() {
             for (let j in preset_seasons) {
                 let name = preset_seasons[j];
                 let o = new Option(name, j);
-                $(o).html(name);
+                $(o).html(_.escape(name));
                 $(this).append(o);
             }
 
