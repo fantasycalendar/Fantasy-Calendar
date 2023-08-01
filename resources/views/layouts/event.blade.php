@@ -281,7 +281,7 @@
                                                 <circle cx="16" cy="16" r="10" class="lunar_border"/>
                                             </svg>
                                         </div>
-                                        <div class='col-md-11 pl-0 pr-1 event-moon-text' x-text='moon.name + ", " + (moon.phase_name || (moon.override_phase ? moon.phases[moon.phase] : moon.phases[moon.original_phase]))'>
+                                        <div class='col-md-11 pl-0 pr-1 event-moon-text' x-text='_.escape(moon.name) + ", " + (moon.phase_name || (moon.override_phase ? moon.phases[moon.phase] : moon.phases[moon.original_phase]))'>
                                         </div>
                                     </div>
                                     <div class='row my-1 no-gutters'>
