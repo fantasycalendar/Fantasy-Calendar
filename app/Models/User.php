@@ -19,6 +19,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Cashier\Billable;
 use Carbon\Carbon;
 use Arr;
+use Filament\Panel;
 use Laravel\Sanctum\HasApiTokens;
 use Str;
 use Stripe\StripeClient;
@@ -383,7 +384,12 @@ class User extends Authenticatable implements
         return $query->whereNotNull('email_verified_at');
     }
 
-    public function canAccessFilament(): bool
+    public function canAccessFilament(\Filament\Panel $panel): bool
+    {
+        return $this->isAdmin();
+    }
+
+    public function canAccessPanel(Panel $panel): bool
     {
         return $this->isAdmin();
     }

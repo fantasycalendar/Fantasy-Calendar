@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:regular,600');
 
-@import '../../vendor/filament/forms/dist/module.esm.css';
+/* @import '../../vendor/filament/forms/dist/module.esm.css'; */
 
 @import '~tippy.js/dist/tippy.css';
 @import '~tippy.js/themes/light.css';

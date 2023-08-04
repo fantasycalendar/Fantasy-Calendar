@@ -6,9 +6,9 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -77,12 +77,12 @@ class UserResource extends Resource
             ->filters([
                 Tables\Filters\Filter::make('beta_authorised')
                     ->query(fn(Builder $query): Builder => $query->where('beta_authorised', true))
-            ])->prependActions([
+            ])->actions([
                 Tables\Actions\Action::make('impersonate')
                     ->label('Impersonate')
                     ->icon('heroicon-o-user-circle')
                     ->url(fn($record) => route('admin.impersonate', ['userid' => $record->id, 'returnPath' => request()->url()])),
-            ])->prependBulkActions([
+            ])->bulkActions([
                 Tables\Actions\BulkAction::make('password_reset')
                     ->action(function($records){
                         foreach($records as $record) {
@@ -98,7 +98,7 @@ class UserResource extends Resource
                     ->requiresConfirmation()
                     ->label('Send password reset')
                     ->color('warning')
-                    ->icon('heroicon-o-inbox-in')
+                    ->icon('heroicon-o-inbox-arrow-down')
             ]);
     }
 

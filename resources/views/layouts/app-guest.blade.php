@@ -34,7 +34,7 @@
                     <!-- Mobile menu button -->
                     <button class="inline-flex items-center justify-center p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white" @click="menu = !menu">
                         <span class="sr-only">Open main menu</span>
-                        <x-heroicon-o-menu ::class="{ 'hidden': !menu, 'block': menu }" class="block h-6 w-6"></x-heroicon-o-menu>
+                        <x-heroicon-o-bars-3 ::class="{ 'hidden': !menu, 'block': menu }" class="block h-6 w-6"></x-heroicon-o-bars-3>
                         <x-heroicon-o-x ::class="{ 'hidden': menu, 'block': !menu }" class="hidden h-6 w-6"></x-heroicon-o-x>
                     </button>
                 </div>

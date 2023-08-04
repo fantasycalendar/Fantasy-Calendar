@@ -12,7 +12,7 @@ class EditCalendar extends EditRecord
 {
     protected static string $resource = CalendarResource::class;
 
-    protected function getActions(): array
+    protected function getHeaderActions(): array
     {
         return [
             ButtonAction::make('edit_page')

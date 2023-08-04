@@ -53,7 +53,6 @@ class AppServiceProvider extends ServiceProvider
         $this->setupQueueRateLimiters();
         $this->setupObservers();
         $this->setupCustomBladeDirectives();
-        $this->setupFilament();
         $this->setupPaginationFixes();
         $this->setupMaintenanceMode();
         $this->setupCollectionMacros();
@@ -179,13 +178,6 @@ class AppServiceProvider extends ServiceProvider
          */
         $this->app->extend('command.up', function () {
             return new UpCommand();
-        });
-    }
-
-    private function setupFilament()
-    {
-        Filament::serving(function () {
-            Filament::registerTheme(mix('css/app-tw.css'));
         });
     }
 }

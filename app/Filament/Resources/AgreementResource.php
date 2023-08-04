@@ -6,9 +6,9 @@ use App\Filament\Resources\AgreementResource\Pages;
 use App\Filament\Resources\AgreementResource\RelationManagers;
 use App\Models\Agreement;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 
 class AgreementResource extends Resource

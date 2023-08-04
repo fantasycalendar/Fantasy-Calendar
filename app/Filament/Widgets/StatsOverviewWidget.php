@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Filament\Pages\Statistics\Widgets;
+namespace App\Filament\Widgets;
 
 use App\Models\Calendar;
 use App\Models\CalendarEvent;
 use App\Models\User;
-use Carbon\CarbonPeriod;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
-use Filament\Widgets\Widget;
 use Illuminate\Support\Facades\DB;
 use Laravel\Cashier\Subscription;
 
@@ -16,7 +14,7 @@ class StatsOverviewWidget extends BaseWidget
 {
 //    protected static string $view = 'filament.widgets.stats-overview-widget';
 
-    protected int | string | array $columnSpan = 12;
+    protected int | string | array $columnSpan = 2;
 
     protected function getCards(): array
     {
@@ -29,17 +27,17 @@ class StatsOverviewWidget extends BaseWidget
         return [
             Card::make('Users', User::verified()->count())
                 ->description(User::verified()->where('created_at', '>', now()->subDays(30))->count() . ' - 30-day increase')
-                ->descriptionIcon('heroicon-s-trending-up')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->chart($user_count_over_time)
                 ->color('success'),
             Card::make('Calendars', $calendars_created_total)
                 ->description($calendars_created_in_last_thirty_days . ' - 30-day increase')
-                ->descriptionIcon('heroicon-s-trending-up')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->chart([$calendars_created_total - $calendars_created_in_last_thirty_days, $calendars_created_total])
                 ->color('success'),
             Card::make('Events', $events_created_total)
                 ->description($events_created_in_last_thirty_days . ' - 30-day increase')
-                ->descriptionIcon('heroicon-s-trending-up')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->chart([$events_created_total - $events_created_in_last_thirty_days, $events_created_total])
                 ->color('success'),
             Card::make('Active Users - Last 30 days', $users_active_in_last_thirty_days)

@@ -20,7 +20,7 @@ class Statistics extends Page
 
     protected static ?string $navigationGroup = 'Administrative';
 
-    protected function getHeaderWidgetsColumns(): int|array
+    public function getHeaderWidgetsColumns(): int|array
     {
         return 12;
     }
