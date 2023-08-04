@@ -37,7 +37,7 @@
             @endunless
 
             <div>
-                Fantasy Calendar is a labor of love, and we work on it in our spare time. If even half of our users subscribed for ${{ auth()->user()->isEarlySupporter() ? '1.49' : '2.49' }}/month, we'd be able to focus a lot more time on making it better (and more worth the money).
+                Fantasy Calendar is a labor of love, and we work on it in our spare time. If even half of our users subscribed for ${{ auth()->user()->isEarlySupporter() ? '1.99' : '2.49' }}/month, we'd be able to focus a lot more time on making it better (and more worth the money).
             </div>
         @else
             @unless($subscription->onGracePeriod())
