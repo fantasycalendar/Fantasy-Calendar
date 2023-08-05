@@ -8,7 +8,7 @@ create_npmrc() {
 	if [ -f ~/.npmrc ]; then
 		if grep -q fontawesome ~/.npmrc; then
 			grep fontawesome ~/.npmrc >> .npmrc
-			echo '👌 Fontawesome token found and copied from ~/.npmrc'
+			echo '✔️ Fontawesome token found and copied from ~/.npmrc'
 			return
 		fi
 	fi
@@ -16,7 +16,7 @@ create_npmrc() {
     read -s -p "Fontawesome token (hidden): " FONTAWESOME_TOKEN
 
     if [ -z "$FONTAWESOME_TOKEN" ]; then
-        echo "Fontawesome token is empty, exiting..."
+        echo "❌ Fontawesome token is empty, exiting..."
         exit 1
     fi
 
@@ -25,11 +25,11 @@ create_npmrc() {
 		//npm.fontawesome.com/:_authToken=${FONTAWESOME_TOKEN}
 	EOF
 
-	echo '👍 .npmrc file created!'
+	echo '✔️ .npmrc file created!'
 }
 
 if [ -f .npmrc ]; then
-    echo '👌 .npmrc file already exists'
+    echo '✔️ .npmrc file already exists'
 else
     create_npmrc
 fi
