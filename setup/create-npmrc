@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+create_npmrc() {
+    read -s -p "Fontawesome token (hidden): " FONTAWESOME_TOKEN
+
+    if [ -z "$FONTAWESOME_TOKEN" ]; then
+        echo "Fontawesome token is empty, exiting..."
+        exit 1
+    fi
+
+    cat <<- EOF > .npmrc
+		@fortawesome:registry=https://npm.fontawesome.com/
+		//npm.fontawesome.com/:_authToken=${FONTAWESOME_TOKEN}
+	EOF
+
+	echo '👍 .npmrc file created!'
+}
+
+if [ -f .npmrc ]; then
+    echo '👌 .npmrc file already exists'
+else
+    create_npmrc
+fi

@@ -1,9 +1,12 @@
 .DEFAULT_GOAL := initialize_dev
-.PHONY: deploy_dev deploy_prod confirm_beta super_confirm super_duper_confirm
+.PHONY: initialize_dev create_npmrc deploy_dev deploy_prod confirm_beta super_confirm super_duper_confirm
 
-deploy_dev: confirm_beta real_deploy_dev
+initialize_dev: create_npmrc install_dev
+deploy_dev: create_npmrc confirm_beta real_deploy_dev
+deploy_prod: create_npmrc confirm_prd super_confirm super_duper_confirm real_deploy_prd
 
-deploy_prod: confirm_prd super_confirm super_duper_confirm real_deploy_prd
+create_npmrc:
+	setup/create-npmrc
 
 confirm_beta:
 	@echo -n "Are you sure you want to deploy to beta? [y/N] " && read ans && [ $${ans:-N} = y ]
@@ -76,7 +79,7 @@ quick_deploy_prod:
   		notify-send -t 8000 "Production quick deploy done";\
   	fi;
 
-initialize_dev:
+install_dev:
 	cp ./setup/docker.example.env .env || true                                                     # Copy env file, don't overwrite
 	docker-compose build                                                                           # Gotta build our images before we can use them
 	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app node:20 npm install                # NPM install inside docker container to avoid installing on host
