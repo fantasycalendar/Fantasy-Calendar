@@ -78,7 +78,7 @@ services:
     command: ["composer", "install"]
 
   npm:
-    image: node:14
+    image: node:20
     user: "${FC_USER_ID:-1000}:${FC_GROUP_ID:-1000}"
     mem_limit: 2048m
     ports:

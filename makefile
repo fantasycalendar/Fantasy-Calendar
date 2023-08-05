@@ -77,12 +77,12 @@ quick_deploy_prod:
   	fi;
 
 initialize_dev:
-	yes n | cp ./setup/docker.example.env .env                                                     # Copy env file, don't overwrite
+	cp ./setup/docker.example.env .env || true                                                     # Copy env file, don't overwrite
 	docker-compose build                                                                           # Gotta build our images before we can use them
-	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app node:14 npm install                # NPM install inside docker container to avoid installing on host
-	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app fc-bref-composer composer install  # Composer install inside docker container (it has all our required PHP modules)
+	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app node:20 npm install                # NPM install inside docker container to avoid installing on host
+	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/var/task -v ${COMPOSER_HOME:-$HOME/.composer}:/tmp -e COMPOSER_CACHE_DIR=/tmp/composer-cache -w /var/task fc-bref-composer composer install  # Composer install inside docker container (it has all our required PHP modules)
 	docker-compose up -d																		   # Start up our docker containers
-	docker-compose exec php php artisan migrate													   # Run migrations
+	docker-compose exec php php artisan migrate:fresh --seed									   # Run migrations
 	docker-compose stop 																		   # Stop docker containers after migrate
 	echo "Dev environment is all set! You can run 'make local' when you're ready to start it up."
 
