@@ -85,6 +85,7 @@ install_dev:
 	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app node:20 npm install                # NPM install inside docker container to avoid installing on host
 	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/var/task -v ${COMPOSER_HOME:-$HOME/.composer}:/tmp -e COMPOSER_CACHE_DIR=/tmp/composer-cache -w /var/task fc-bref-composer composer install  # Composer install inside docker container (it has all our required PHP modules)
 	docker-compose up -d																		   # Start up our docker containers
+	until docker-compose exec php php artisan migrate:status; do sleep 1; done					   # Wait for mysql to be ready
 	docker-compose exec php php artisan migrate:fresh --seed									   # Run migrations
 	docker-compose stop 																		   # Stop docker containers after migrate
 	echo "Dev environment is all set! You can run 'make local' when you're ready to start it up."
