@@ -15,6 +15,7 @@
 /Homestead.json
 /Homestead.yaml
 /npm-debug.log
+/.npmrc
 /yarn-error.log
 /.vscode/
 /psysh
