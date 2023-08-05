@@ -22,6 +22,7 @@
         "ext-sodium": "*",
         "aws/aws-sdk-php": "^3.277",
         "barryvdh/laravel-ide-helper": "^2.13",
+        "bref/bref": "^2.1",
         "bref/extra-php-extensions": "^1.2",
         "bref/laravel-bridge": "^2.1",
         "doctrine/dbal": "^3.6",
