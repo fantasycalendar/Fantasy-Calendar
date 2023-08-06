@@ -155,7 +155,8 @@ functions:
       securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
       subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
   worker:
-    handler: worker.php
+    handler: Bref\LaravelBridge\Queue\QueueHandler
+    timeout: 59 # seconds
     layers:
       - ${bref:layer.php-81} # PHP
       - ${bref-extra:gmp-php-81}
