@@ -13,13 +13,13 @@ class Alert extends Component
         'warning' => [
             'outerClasses' => 'bg-yellow-100 border-l-4 border-yellow-400 dark:border-yellow-600 dark:bg-yellow-900 p-4',
             'innerClasses' => 'text-sm text-yellow-700 dark:text-yellow-300',
-            'iconClasses' => 'fa fa-exclamation-triangle text-yellow-400 dark:text-yellow-300',
+            'iconClasses' => 'text-yellow-400 dark:text-yellow-300',
             'icon' => 'fa exclamation-triangle'
         ],
         'notice' => [
             'outerClasses' => 'bg-blue-100 border-l-4 border-blue-400 dark:border-blue-600 dark:bg-blue-900 p-4',
             'innerClasses' => 'text-sm text-blue-700 dark:text-blue-300',
-            'iconClasses' => 'fa fa-info-circle text-blue-400 dark:text-blue-300',
+            'iconClasses' => 'text-blue-400 dark:text-blue-300',
             'icon' => 'fa info-circle'
         ],
         'danger' => [
@@ -49,7 +49,17 @@ class Alert extends Component
     public function render(): View|Closure|string
     {
         return view('components.alert', [
-            ...Arr::get($this->styles, $this->type, $this->styles['notice']),
+            'outerClasses' => Arr::get($this->styles, "{$this->type}.outerClasses"),
+            'innerClasses' => Arr::get($this->styles, "{$this->type}.innerClasses"),
+            'iconClasses' => $this->buildIconClasses(),
         ]);
+    }
+
+    private function buildIconClasses(): string
+    {
+        $icon = $this->icon ?? Arr::get($this->styles, "{$this->type}.icon");
+        $iconClasses = Arr::get($this->styles, "{$this->type}.iconClasses");
+
+        return "$icon $iconClasses";
     }
 }
