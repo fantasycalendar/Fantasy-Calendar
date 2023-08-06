@@ -9,6 +9,10 @@ use Illuminate\Console\Command;
 use GuzzleHttp\Client;
 use Illuminate\Support\Str;
 
+use function Laravel\Prompts\confirm;
+use function Laravel\Prompts\select;
+use function Laravel\Prompts\text;
+
 class CalendarImport extends Command
 {
     /**
@@ -53,7 +57,7 @@ class CalendarImport extends Command
         $beta_hash = $this->argument('hash');
         while (!$beta_hash) {
             $this->info('No valid hash specified.');
-            $beta_hash = $this->ask("What's the hash of the calendar you want to import?");
+            $beta_hash = text("What's the hash of the calendar you want to import?");
         }
 
         $this->info('Attempting import of calendar with hash ' . $beta_hash);
@@ -98,12 +102,18 @@ class CalendarImport extends Command
         ];
 
         // Now that we've done the above, we can create the calendar
-        $overwrite = false;
         if ($calendarFound->count()) {
-            while (!($overwrite == "y" || $overwrite == "n")) {
-                $overwrite = strtolower($this->ask("Calendar already exists locally. Do you want to overwrite the existing calendar (Y) or create a new hash for the incoming calendar (N)?\nY/N"));
-            }
-            if ($overwrite === "n") {
+            $action = select(
+                label: "Calendar already exists locally. How do you want to proceed?",
+                options: [
+                    "overwrite" => "Overwrite",
+                    "new_hash" => "Create new calendar with new hash",
+                    "cancel" => "Cancel"
+                ],
+                default: "overwrite"
+            );
+
+            if ($action === "new_hash") {
                 $calendar_data['hash'] = md5($calendar_data['name'] . json_encode($calendar_data['dynamic_data']) . json_encode($calendar_data['static_data']) . (1) . date("D M d, Y G:i") . Str::random(10));
             }
         }
