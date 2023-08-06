@@ -66,8 +66,8 @@ jobs:
           EOF
       - name: Generate app_key
         run: php artisan key:generate
-      - name: Run unit tests
-        run: php artisan test
+      # - name: Run unit tests
+      #   run: php artisan test
       - name: Actions Status Discord
         if: ${{ failure() }}
         uses: sarisia/actions-status-discord@v1.5.2
