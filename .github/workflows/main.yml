@@ -25,6 +25,30 @@ jobs:
         with:
           token: ${{ secrets.GH_CHECKOUT_TOKEN }}
           submodules: 'recursive'
+      - uses: actions/cache@v3
+        id: cache-npm
+        with:
+          path: |
+            ./node_modules/
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+      - uses: actions/cache@v3
+        id: cache-assets
+        with:
+          path: |
+            ./public
+          key: ${{ runner.os }}-${{ hashFiles('**/resources') }}
+      - uses: actions/cache@v3
+        id: cache-composer
+        with:
+          path: |
+            ./vendor/
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+      - uses: actions/cache@v3
+        id: cache-env
+        with:
+          path: |
+            ./.env
+          key: ${{ runner.os }}-${{ hashFiles('**/.env.github') }}
       - uses: actions/setup-node@v2
         with:
           node-version: '20'
@@ -32,8 +56,6 @@ jobs:
         with:
           php-version: "8.1"
       - uses: "ramsey/composer-install@v2"
-        with:
-          ignore-cache: "yes"
       - name: Create env file
         run: |
           php -r "file_exists('.env') || copy('.env.github', '.env');"
@@ -59,7 +81,6 @@ jobs:
           nodetail: true
       - uses: "ramsey/composer-install@v2"
         with:
-          ignore-cache: "yes"
           composer-options: "--prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs"
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
