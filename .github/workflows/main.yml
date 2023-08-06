@@ -1,6 +1,8 @@
 on:
   release:
     types: [released]
+  workflow_dispatch:
+
 name: Deploy master branch
 jobs:
   deploy_master:
