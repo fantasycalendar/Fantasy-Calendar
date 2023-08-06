@@ -1,16 +1,17 @@
 ### 2.3.6 - Mischievous Marid
 #### August 6, 2023
+- Updated: Set calendar advancement period upon saving
 - Updated: Heavily optimized site styling and images by a factor of 40 for faster loading times
 - Updated: Set dark theme as the default for guest viewers on calendar pages
 - Updated: Move the event category selector out of the "Settings" section of the event edit interface
 - Updated: Updated backend packages, removed some unnecessary dependencies
+- Fixed: Attempt to avoid advancement drift by double-checking that a calendar should advance in the queued job
 - Fixed: Position of sidebar toggle button on some display sizes
 - Fixed: Cross-Site XSS injection points
 
-### 2.3.5 - Micromanaging Marid
+### 2.3.5 - Miffed Marid
 #### February 25, 2023
-- Updated: Set calendar advancement period upon saving
-- Fixed: Attempt to avoid advancement drift by double-checking that a calendar should advance in the queued job
+- Fixed: Remove all reliance on unpkg.com CDN for core parts of the app
 
 ### 2.3.4 - Melodramatic Marid
 #### January 28, 2023
