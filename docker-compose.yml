@@ -93,11 +93,11 @@ services:
       - "MIXVERSION=true"
       - "NODE_OPTIONS=--max-old-space-size=4096"
 
-  mailhog:
-    image: mailhog/mailhog
+  mailpit:
+    image: 'axllent/mailpit:latest'
     ports:
-      - "${MAILHOG_WEBUI_FORWARD_PORT:-8025}:8025"
-      - "${MAILHOG_SMTP_FORWARD_PORT:-1025}:1025"
+      - '${FORWARD_MAILPIT_PORT:-1025}:1025'
+      - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
 
 volumes:
   fantasy-calendar-db:
