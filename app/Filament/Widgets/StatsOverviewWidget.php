@@ -7,6 +7,7 @@ use App\Models\CalendarEvent;
 use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
 use Laravel\Cashier\Subscription;
 
@@ -25,29 +26,29 @@ class StatsOverviewWidget extends BaseWidget
         extract($values);
 
         return [
-            Card::make('Users', User::verified()->count())
+            Stat::make('Users', User::verified()->count())
                 ->description(User::verified()->where('created_at', '>', now()->subDays(30))->count() . ' - 30-day increase')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->chart($user_count_over_time)
                 ->color('success'),
-            Card::make('Calendars', $calendars_created_total)
+            Stat::make('Calendars', $calendars_created_total)
                 ->description($calendars_created_in_last_thirty_days . ' - 30-day increase')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->chart([$calendars_created_total - $calendars_created_in_last_thirty_days, $calendars_created_total])
                 ->color('success'),
-            Card::make('Events', $events_created_total)
+            Stat::make('Events', $events_created_total)
                 ->description($events_created_in_last_thirty_days . ' - 30-day increase')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->chart([$events_created_total - $events_created_in_last_thirty_days, $events_created_total])
                 ->color('success'),
-            Card::make('Active Users - Last 30 days', $users_active_in_last_thirty_days)
+            Stat::make('Active Users - Last 30 days', $users_active_in_last_thirty_days)
                 ->description($users_active_in_year_to_date . " active year to date")
                 ->color('success'),
-            Card::make('Subscriptions', $total_subscriptions)
+            Stat::make('Subscriptions', $total_subscriptions)
                 ->description($user_percentage_subscribers . "% of all users")
                 ->color('success'),
-            Card::make('Projected Yearly Income', "$" . round($monthly_income_projection)*12)
-                ->description("$${monthly_income_projection} monthly projected x12")
+            Stat::make('Projected Yearly Income', "$" . round($monthly_income_projection)*12)
+                ->description("\${$monthly_income_projection} monthly projected x12")
                 ->color('success'),
         ];
     }
@@ -174,7 +175,7 @@ class StatsOverviewWidget extends BaseWidget
             ? 'success'
             : 'warning';
 
-        return Card::make('Active Subscriptions', $subscriptions->count())
+        return Stat::make('Active Subscriptions', $subscriptions->count())
             ->description($newSubscriptions . " - 30 day $changeDirection")
             ->descriptionIcon("heroicon-s-trending-$iconDirection")
             ->color($iconColor);
