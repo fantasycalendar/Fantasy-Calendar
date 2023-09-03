@@ -370,9 +370,12 @@
         color: #ffffff;
     }
 
-    @container (min-width: 5rem) {
-        overflow: auto;
+    @container (min-width: 9rem) {
         font-size: 12px;
+    }
+
+    @container (min-width: 7rem) {
+        overflow: auto;
         word-break: break-word;
         white-space: normal;
     }

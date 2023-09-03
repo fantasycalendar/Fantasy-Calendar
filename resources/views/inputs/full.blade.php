@@ -113,12 +113,12 @@
                         <div class='input-group protip' value='current' data-pt-position='right'
                              data-pt-title="The current year">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_year' id='sub_current_year'><i
+                                <button type='button' class='btn btn-outline-danger sub_year' id='sub_current_year'><i
                                             class="icon-minus"></i></button>
                             </div>
                             <input class='form-control year-input' id='current_year' type='number'>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_year' id='add_current_year'><i
+                                <button type='button' class='btn btn-outline-success add_year' id='add_current_year'><i
                                             class="icon-plus"></i></button>
                             </div>
                         </div>
@@ -129,12 +129,12 @@
                         <div class='input-group protip' value='current' data-pt-position='right'
                              data-pt-title="The current month in the year">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_timespan' id='sub_current_timespan'><i
+                                <button type='button' class='btn btn-outline-danger sub_timespan' id='sub_current_timespan'><i
                                             class="icon-minus"></i></button>
                             </div>
                             <select class='form-control timespan-list inclusive date' id='current_timespan'></select>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_timespan' id='add_current_timespan'><i
+                                <button type='button' class='btn btn-outline-success add_timespan' id='add_current_timespan'><i
                                             class="icon-plus"></i></button>
                             </div>
                         </div>
@@ -146,12 +146,12 @@
                         <div class='input-group protip' value='current' data-pt-position='right'
                              data-pt-title="The current day in the month">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_day' id='sub_current_day'><i
+                                <button type='button' class='btn btn-outline-danger sub_day' id='sub_current_day'><i
                                             class="icon-minus"></i></button>
                             </div>
                             <select class='form-control timespan-day-list inclusive date' id='current_day'></select>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_day' id='add_current_day'><i
+                                <button type='button' class='btn btn-outline-success add_day' id='add_current_day'><i
                                             class="icon-plus"></i></button>
                             </div>
                         </div>
@@ -162,9 +162,9 @@
 
                         <div class='input-group protip'>
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn small-text btn-danger adjust_hour' val='-1'>1hr
+                                <button type='button' class='btn small-text btn-outline-danger adjust_hour' val='-1'>1hr
                                 </button>
-                                <button type='button' class='btn small-text border-left btn-danger adjust_minute'
+                                <button type='button' class='btn small-text border-left btn-outline-danger adjust_minute'
                                         val='-30'>30m
                                 </button>
                             </div>
@@ -176,9 +176,9 @@
                                    data-pt-position='top' data-pt-title="The current minute of the hour">
 
                             <div class='input-group-append'>
-                                <button type='button' class='btn small-text btn-success adjust_minute' val='30'>30m
+                                <button type='button' class='btn small-text btn-outline-success adjust_minute' val='30'>30m
                                 </button>
-                                <button type='button' class='btn small-text border-left btn-success adjust_hour'
+                                <button type='button' class='btn small-text border-left btn-outline-success adjust_hour'
                                         val='1'>1h
                                 </button>
                             </div>
@@ -198,12 +198,12 @@
                         <div class='input-group protip' value='target' data-pt-position='right'
                              data-pt-title="The preview year">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_year' id='sub_target_year'><i
+                                <button type='button' class='btn btn-outline-danger sub_year' id='sub_target_year'><i
                                             class="icon-minus"></i></button>
                             </div>
                             <input class='form-control year-input' id='target_year' type='number'>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_year' id='add_target_year'><i
+                                <button type='button' class='btn btn-outline-success add_year' id='add_target_year'><i
                                             class="icon-plus"></i></button>
                             </div>
                         </div>
@@ -214,12 +214,12 @@
                         <div class='input-group protip' value='target' data-pt-position='right'
                              data-pt-title="The preview month of the preview year">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_timespan' id='sub_target_timespan'><i
+                                <button type='button' class='btn btn-outline-danger sub_timespan' id='sub_target_timespan'><i
                                             class="icon-minus"></i></button>
                             </div>
                             <select class='form-control timespan-list inclusive date' id='target_timespan'></select>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_timespan' id='add_target_timespan'><i
+                                <button type='button' class='btn btn-outline-success add_timespan' id='add_target_timespan'><i
                                             class="icon-plus"></i></button>
                             </div>
                         </div>
@@ -231,12 +231,12 @@
                         <div class='input-group protip' value='target' data-pt-position='right'
                              data-pt-title="The current day of the preview month">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_day' id='sub_target_day'><i
+                                <button type='button' class='btn btn-outline-danger sub_day' id='sub_target_day'><i
                                             class="icon-minus"></i></button>
                             </div>
                             <select class='form-control timespan-day-list inclusive date' id='target_day'></select>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_day' id='add_target_day'><i
+                                <button type='button' class='btn btn-outline-success add_day' id='add_target_day'><i
                                             class="icon-plus"></i></button>
                             </div>
                         </div>
@@ -1826,14 +1826,10 @@
          @layout-change.window="apply = $event.detail.apply">
 
 
-        <div class='btn_container hidden d-print-none'>
-            <div class='container d-flex h-100 p-0'>
-                <div class='col justify-content-center align-self-center full'>
-                    <button class="nav-link btn py-0 mr-2" @click.prevent="toggle">
-                        <i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i>
-                    </button>
-                </div>
-            </div>
+        <div class='btn_container flex-shrink-1 is-active' id='input_collapse_btn'>
+            <button class="btn btn-secondary px-3">
+                <i class="fa fa-bars"></i>
+            </button>
         </div>
 
         <div class='parent_button_container hidden d-print-none'>
@@ -1847,42 +1843,42 @@
         </div>
 
         <div class='btn_container hidden'>
-            <button class='btn btn-danger btn_preview_date hidden d-print-none sub_year' disabled fc-index='year'
-                    value='-1'>< Year
+            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none sub_year' disabled fc-index='year'
+                    value='-1'>&lt; Year
             </button>
-            <button class='btn btn-danger btn_preview_date hidden d-print-none sub_month' disabled fc-index='timespan'
+            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none sub_month' disabled fc-index='timespan'
                     value='-1'>
-                <span x-cloak x-show="apply != 'single_month'">< Month</span>
+                <span x-cloak x-show="apply != 'single_month'">&gt; Month</span>
                 <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-left"></i></span>
             </button>
         </div>
 
-        <div class='reset_preview_date_container m-1 left'>
-            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip d-print-none'
+        <div class='reset_preview_date_container m-1 left hidden'>
+            <button type='button' class='btn m-0 btn-info reset_preview_date protip d-print-none'
                     data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'><
                 Current
             </button>
         </div>
 
-        <div class="follower_center">
+        <div class="follower_center flex-grow-1">
             <div id='top_follower_content'>
                 <div class='year'></div>
                 <div class='cycle'></div>
             </div>
         </div>
 
-        <div class='reset_preview_date_container m-1 right'>
-            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip d-print-none'
+        <div class='reset_preview_date_container m-1 right hidden'>
+            <button type='button' class='btn m-0 btn-info reset_preview_date protip d-print-none'
                     data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'>
                 Current >
             </button>
         </div>
 
         <div class='btn_container hidden'>
-            <button class='btn btn-success btn_preview_date hidden d-print-none add_year' disabled fc-index='year'
+            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none add_year' disabled fc-index='year'
                     value='1'>Year >
             </button>
-            <button class='btn btn-success btn_preview_date hidden d-print-none add_month' disabled fc-index='timespan'
+            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none add_month' disabled fc-index='timespan'
                     value='1'>
                 <span x-cloak x-show="apply != 'single_month'">Month ></span>
                 <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-right"></i></span>

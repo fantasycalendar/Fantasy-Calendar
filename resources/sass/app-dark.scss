@@ -5,6 +5,7 @@ html { font-family: 'Inter', sans-serif; }
     html { font-family: 'Inter var', sans-serif; }
 }
 
+@import 'calendar/colors';
 @import 'darkly-twishvars';
 @import '~bootstrap/scss/bootstrap';
 @import '~bootswatch/dist/darkly/bootswatch';
@@ -68,7 +69,7 @@ $hamburger-padding-x        :1.2rem;
 @import '~protip/css/protip';
 
 // Variables
-@import 'calendar/colors';
+// @import 'calendar/colors';
 @import 'calendar/variables-dark';
 
 // Legacy calendar parts
@@ -212,19 +213,19 @@ body {
     border-color: $gray-600;
 }
 
-body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):not(#btn_delete):not(.btn-stock):not(#go_to_preview_date):not(#preview_date_btn) {
-    background-color: $btn-color;
-    border-color: $btn-border;
+// body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):not(#btn_delete):not(.btn-stock):not(#go_to_preview_date):not(#preview_date_btn) {
+//     background-color: $btn-color;
+//     border-color: $btn-border;
 
-    &:not(:disabled):hover {
-        background-color: $btn-color-hover;
-        border-color: $btn-border-hover;
-    }
+//     &:not(:disabled):hover {
+//         background-color: $btn-color-hover;
+//         border-color: $btn-border-hover;
+//     }
 
-    &:disabled {
-        opacity: 0.4;
-    }
-}
+//     &:disabled {
+//         opacity: 0.4;
+//     }
+// }
 
 #go_to_preview_date, #preview_date_btn {
     background-color: $bg-amber-800;
