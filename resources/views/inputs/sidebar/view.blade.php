@@ -287,16 +287,17 @@
 </form>
 
 
-<button id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active d-print-none" type="button">
-    <span class="hamburger-box">
-        <span class="hamburger-inner"></span>
-    </span>
-</button>
 
 
 <div id="calendar_container">
 
-	<div id="top_follower" :class="{ 'single_month': apply == 'single_month' }" x-data="{ apply: '' }" @layout-change.window="apply = $event.detail.apply">
+	<div id="top_follower" :class="{ 'single_month': apply == 'single_month' }" x-data="{ apply: '', toggle() { window.toggle_sidebar(); } }" @layout-change.window="apply = $event.detail.apply">
+
+        <div class='btn_container flex-shrink-1 is-active' id='input_collapse_btn'>
+            <button class="btn px-3">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
 
 		<div class='btn_container hidden'>
 			<button class='btn btn-danger btn_preview_date hidden d-print-none sub_year' disabled fc-index='year' value='-1'>< Year</button>
@@ -310,7 +311,7 @@
             <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
         </div>
 
-        <div class="follower_center">
+        <div class="follower_center flex-grow-1">
             <div id='top_follower_content'><div class='year'></div><div class='cycle'></div></div>
         </div>
 

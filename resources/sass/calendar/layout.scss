@@ -35,9 +35,9 @@
 html {
     overflow-x: hidden;
 
-    @media screen and (max-width: 768px) {
-        font-size: 18px;
-    }
+    // @media screen and (max-width: 768px) {
+    //     font-size: 18px;
+    // }
 }
 
 body {
@@ -202,30 +202,18 @@ body.page-calendars-index {
 }
 
 #input_collapse_btn {
-    background-color: $accent-color;
-    position: fixed;
-    width: 4rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    // background-color: $accent-color;
+    display: grid;
+    place-items: center;
     text-align: center;
-    font-size: 2rem;
-    bottom: 3rem;
-    left: 0;
-    z-index: 12;
-    border-radius: 0 1rem 1rem 0;
-    box-shadow: 0 5px 6px rgba(0, 0, 0, 0.3);
+    font-size: 1.5rem;
+    border-radius: 0 0 4px 4px;
     cursor: pointer;
     transition: 0.5s all ease;
+    width: auto !important;
 
     &.is-active {
-        left: auto;
-        right: 0;
-        border-radius: 1rem 0 0 1rem;
-
-        @media screen and (min-width: 992px) {
-            left: calc($sidebar-width - 4rem);
-        }
+        display: none !important;
     }
 }
 

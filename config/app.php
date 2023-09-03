@@ -43,6 +43,7 @@ return [
     */
 
     'debug' => env('APP_DEBUG', false),
+    'local_dev_login' => env('APP_LOCAL_DEV_LOGIN', false),
 
     /*
     |--------------------------------------------------------------------------

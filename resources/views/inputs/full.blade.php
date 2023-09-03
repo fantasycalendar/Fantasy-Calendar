@@ -1804,12 +1804,6 @@
 </form>
 </div>
 
-<button id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active d-print-none" type="button">
-	<span class="hamburger-box">
-		<span class="hamburger-inner"></span>
-	</span>
-</button>
-
 <div id="calendar_container">
 
     <div id="modal_background" class='flexible_background blurred_background'>
@@ -1828,8 +1822,19 @@
         </div>
     </div>
 
-    <div id="top_follower" :class="{ 'single_month': apply == 'single_month' }" x-data="{ apply: '' }"
+    <div id="top_follower" :class="{ 'single_month': apply == 'single_month' }" x-data="{ apply: '', toggle() { window.toggle_sidebar(); } }"
          @layout-change.window="apply = $event.detail.apply">
+
+
+        <div class='btn_container hidden d-print-none'>
+            <div class='container d-flex h-100 p-0'>
+                <div class='col justify-content-center align-self-center full'>
+                    <button class="nav-link btn py-0 mr-2" @click.prevent="toggle">
+                        <i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <div class='parent_button_container hidden d-print-none'>
             <div class='container d-flex h-100 p-0'>

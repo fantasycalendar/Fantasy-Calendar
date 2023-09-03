@@ -178,9 +178,9 @@ function set_up_edit_inputs() {
 
         }
 
-        if (isMobile() && deviceType() == "Mobile Phone") {
-            toggle_sidebar();
-        }
+        // if (isMobile() && deviceType() == "Mobile Phone") {
+        //     toggle_sidebar();
+        // }
 
     });
 
