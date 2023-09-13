@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
 class Authenticate extends Middleware
@@ -14,7 +15,15 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-        if (! $request->expectsJson()) {
+        if (
+            app()->environment(['local', 'development'])
+            && config('app.dev_auth')
+            && !auth()->check()
+        ) {
+            auth()->login(User::createDevUser());
+        }
+
+        if (!$request->expectsJson()) {
             return route('login');
         }
     }
