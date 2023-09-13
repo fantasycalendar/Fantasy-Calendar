@@ -299,7 +299,7 @@ const renderable_data = computed(() => {
 })
 const calendar = new Calendar(props.calendar_attributes);
 const showSidebar = ref(false);
-const layout = ref('year');
+const layout = ref('month');
 const visibleTimespan = ref(8);
 const visibleWeek = ref(1);
 
