@@ -11,7 +11,7 @@ const showingNavigationDropdown = ref(false);
 </script>
 
 <template>
-    <div class="dark:text-gray-400" :class="JSON.parse($page.props.auth.user.settings).dark_theme ? 'dark' : ''">
+    <div class="dark:text-gray-400 dark">
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             <nav class="bg-primary-700 dark:bg-primary-800 border-b border-gray-100 dark:border-primary-800">
                 <!-- Primary Navigation Menu -->
