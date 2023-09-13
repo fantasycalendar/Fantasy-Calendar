@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -63,5 +64,21 @@ class User extends Authenticatable
     public function related_calendars(): BelongsToMany
     {
         return $this->belongsToMany(\App\Models\Calendar::class, 'calendar_user_role')->withPivot('user_role');
+    }
+
+    public static function createDevUser(): self
+    {
+        if (!app()->environment(['local', 'development'])) {
+            throw new \Exception('User::createDevUser() should only be used in local development.');
+        }
+
+        $user = static::firstOrCreate([
+            'email' => 'test@example.com',
+        ], [
+            'name' => 'Dev Stech Admin',
+            'password' => Hash::make('password'),
+        ]);
+
+        return $user;
     }
 }
