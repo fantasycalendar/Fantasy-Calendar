@@ -2,19 +2,22 @@ export default class Timespan {
     constructor(attributes, calendar) {
         this.attributes = attributes;
 
-        this.name = attributes['name'] ?? '';
+        this.name = attributes["name"] ?? "";
         // Best guess at all the attributes we'll need:
-        this.interval = attributes['interval'] ?? 1;
-        this.offset = attributes['offset'] ?? 0;
-        this.length = attributes['length'] ?? 1;
+        this.interval = attributes["interval"] ?? 1;
+        this.offset = attributes["offset"] ?? 0;
+        this.length = attributes["length"] ?? 1;
 
-        this.weekdays = attributes['weekdays'] ?? calendar.year_structure.global_week;
+        this.weekdays =
+            attributes["weekdays"] ?? calendar.year_structure.global_week;
         // There are ostensibly better ways to do this. For now, we'll just truncate.
-        this.short_weekdays = this.weekdays.map((weekday) => weekday.substring(0, 3));
+        this.short_weekdays = this.weekdays.map((weekday) =>
+            weekday.substring(0, 3)
+        );
 
-        this.intercalary = (attributes['type'] === 'intercalary');
+        this.intercalary = attributes["type"] === "intercalary";
         this.calendar = calendar;
-        this.year_zero_exists = (calendar.setting('year_zero_exists') ?? false);
+        this.year_zero_exists = calendar.setting("year_zero_exists") ?? false;
         this.leap_days = calendar.leapDaysFor(this.attributes.id);
 
         this.average_length = this.calculateAverageLength();
@@ -26,25 +29,30 @@ export default class Timespan {
      * @returns {boolean}
      */
     intersectsYear(year) {
-        if(this.interval === 1) return true;
+        if (this.interval === 1) return true;
 
         let mod = year - (this.offset % this.interval);
 
-        if(year < 0 && !this.year_zero_exists) {
+        if (year < 0 && !this.year_zero_exists) {
             mod++;
         }
 
-        return (mod % this.interval) === 0;
+        return mod % this.interval === 0;
     }
 
     structureForYear(year) {
         console.log(this);
 
         let rowCount = Math.ceil(this.length / this.weekdays.length);
-        let days = Array(this.length)
-            .fill(null)
+        let days = Array(rowCount * this.weekdays.length)
+            .fill({
+                number: null,
+                name: null,
+                type: "overflow",
+                events: [],
+            })
             .map((day, index) => {
-                let intercalaryDay = ((index + 1) > this.length);
+                let intercalaryDay = index + 1 > this.length;
 
                 return {
                     number: intercalaryDay ? null : index + 1,
@@ -76,24 +84,26 @@ export default class Timespan {
      * @returns {*|number|number}
      */
     occurrences(year) {
-        year = (this.year_zero_exists || year < 0)
-            ? year
-            : year - 1;
+        year = this.year_zero_exists || year < 0 ? year : year - 1;
 
-        if(this.interval <= 1) return year;
+        if (this.interval <= 1) return year;
 
         let boundOffset = this.offset % this.interval;
 
-        if(this.year_zero_exists) {
+        if (this.year_zero_exists) {
             return Math.ceil((year - boundOffset) / this.interval);
-        } else if(year < 0) {
-            let occurrences = Math.ceil((year - (boundOffset - 1)) / this.interval);
+        } else if (year < 0) {
+            let occurrences = Math.ceil(
+                (year - (boundOffset - 1)) / this.interval
+            );
 
-            if(boundOffset === 0) occurrences--;
+            if (boundOffset === 0) occurrences--;
 
             return occurrences;
         } else if (boundOffset > 0) {
-            return Math.floor((year + this.interval - boundOffset) / this.interval);
+            return Math.floor(
+                (year + this.interval - boundOffset) / this.interval
+            );
         }
 
         return Math.floor(year / this.interval);
@@ -110,6 +120,6 @@ export default class Timespan {
             leapDaysContributionSum += leap_day.average_year_contribution;
         });
 
-        return (this.length / this.interval) + leapDaysContributionSum;
+        return this.length / this.interval + leapDaysContributionSum;
     }
 }
