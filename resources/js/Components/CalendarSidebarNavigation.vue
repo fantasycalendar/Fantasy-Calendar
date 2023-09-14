@@ -1,22 +1,19 @@
 <template>
     <nav class="flex-1 space-y-1 px-2 py-4">
         <CalendarSidebarNavigationItem
-            label="Calendar"
-            icon="fa fa-calendar"
-            href="#"
-            :active="true"
-        ></CalendarSidebarNavigationItem>
+            label="Return to Calendars"
+            icon="fa fa-arrow-left"
+            href="/calendars"
+            class="mb-6"
+        >
+        </CalendarSidebarNavigationItem>
+
         <CalendarSidebarNavigationItem
-            label="Events"
-            icon="fa fa-calendar-check"
-            href="#"
-            :active="false"
-        ></CalendarSidebarNavigationItem>
-        <CalendarSidebarNavigationItem
-            label="Settings"
-            icon="fa fa-cog"
-            href="#"
-            :active="false"
+            v-for="item in calendarStore.sidebarItems"
+            :label="item.label"
+            :icon="item.icon"
+            :href="item.href"
+            :active="item.active ?? false"
         ></CalendarSidebarNavigationItem>
     </nav>
 </template>
