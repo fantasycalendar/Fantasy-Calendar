@@ -2,7 +2,7 @@
 name: Production issue
 about: This ticket type is for the team to track production
 title: TITLE
-labels: ''
+labels: '3.0'
 assignees: ''
 
 ---
