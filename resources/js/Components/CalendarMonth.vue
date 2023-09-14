@@ -42,7 +42,7 @@ const props = defineProps({
     previewEpoch: Number,
 });
 
-console.log(props.timespans);
+// console.log(props.timespans);
 </script>
 
 <style scoped>

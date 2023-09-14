@@ -45,7 +45,6 @@ export const useCalendarStore = defineStore("calendar", {
             }
 
             if(this.layout === 'week') {
-                console.log('forward week');
                 if(visibleWeek === props.renderdata.timespans[visibleTimespan].days.length - 1) {
                     visibleTimespan++;
 

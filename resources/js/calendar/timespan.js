@@ -41,7 +41,7 @@ export default class Timespan {
     }
 
     structureForYear(year) {
-        console.log(this);
+        // console.log(this);
 
         let rowCount = Math.ceil(this.length / this.weekdays.length);
         let days = Array(rowCount * this.weekdays.length)
