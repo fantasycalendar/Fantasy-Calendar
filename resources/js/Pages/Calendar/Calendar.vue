@@ -21,12 +21,8 @@
                     </button>
                     <div class="flex flex-1 justify-between items-center px-4">
                         <div class="flex-1">
-                            <button @click="calendarStore.backward">
-                                <FontAwesomeIcon class="text-sm pr-4" icon="fa fa-chevron-left"></FontAwesomeIcon>
-                            </button>
-                            <button @click="calendarStore.forward">
-                                <FontAwesomeIcon class="text-sm pr-4" icon="fa fa-chevron-right"></FontAwesomeIcon>
-                            </button>
+                            <button @click="backward" class="hover:bg-gray-700 rounded-full w-8 h-8 mr-1"><FontAwesomeIcon class="text-sm px-1.5" icon="fa fa-chevron-left"></FontAwesomeIcon></button>
+                            <button @click="forward" class="hover:bg-gray-700 rounded-full w-8 h-8 mr-1"><FontAwesomeIcon class="text-sm px-1.5" icon="fa fa-chevron-right"></FontAwesomeIcon></button>
                             <span>
                                 <span v-show="!calendarStore.sidebarVisible">{{ calendar.name }} -</span> <span v-show="calendarStore.layout !== 'year'">{{ renderdata.timespans[visibleTimespan].title }}</span> {{ renderdata.year }}
                             </span>
@@ -135,6 +131,39 @@ calendarStore.setCalendar(calendar);
 const visibleTimespan = ref(8);
 const visibleWeek = ref(1);
 
+const backward = () => {
+    console.log(calendarStore.layout);
+    if (calendarStore.layout === 'month' && visibleTimespan > 0) {
+        visibleTimespan--;
+    }
+
+    if (calendarStore.layout === 'week') {
+        if(visibleWeek === 0 && visibleTimespan > 0) {
+            visibleTimespan--;
+
+            visibleWeek = props.renderdata.timespans[visibleTimespan].days.length - 1;
+        } else {
+            visibleWeek--;
+        }
+    }
+};
+
+const forward = () => {
+    console.log(calendarStore.layout);
+    if(calendarStore.layout === 'month' && visibleTimespan < props.renderdata.timespans.length - 1) {
+         visibleTimespan++;
+    }
+
+    if(calendarStore.layout === 'week') {
+        if(visibleWeek === props.renderdata.timespans[visibleTimespan].days.length - 1) {
+            visibleTimespan++;
+
+            visibleWeek = 0;
+        } else {
+            visibleWeek++;
+        }
+    }
+}
 </script>
 
 <style scoped>
