@@ -5,7 +5,7 @@
             <MobileCalendarSidebar></MobileCalendarSidebar>
 
             <!-- Static sidebar for desktop -->
-            <div class="hidden" :class="{ 'md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col': calendarStore.sidebarVisible }" v-show="calendarStore.sidebarVisible">
+            <div class="hidden" :class="{ 'md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col border-r border-gray-700': calendarStore.sidebarVisible }" v-show="calendarStore.sidebarVisible">
                 <!-- Sidebar component, swap this element with another sidebar if you like -->
                 <CalendarSidebar></CalendarSidebar>
             </div>
