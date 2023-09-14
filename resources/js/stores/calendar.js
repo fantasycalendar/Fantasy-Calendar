@@ -6,6 +6,23 @@ export const useCalendarStore = defineStore("calendar", {
         calendar: null,
         layout: useLocalStorage('calendarLayout', 'year'),
         sidebarVisible: useLocalStorage('showSidebar', false),
+        sidebarItems: [
+            {
+                name: "Calendar",
+                icon: "fa-calendar",
+                route: "calendar.year",
+            },
+            {
+                name: "Month",
+                icon: "calendar",
+                route: "calendar.month",
+            },
+            {
+                name: "Week",
+                icon: "calendar",
+                route: "calendar.week",
+            }
+        ]
     }),
 
     actions: {

@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="flex-1 w-full p-1" v-show="day.type != 'overflow'">
-                    <button class="flex-1 h-full w-full border-2 border-dotted rounded dark:border-gray-700 hover:border-gray-300 dark:text-gray-500 dark:hover:border-gray-600 opacity-0 hover:opacity-100">
+                    <button class="flex-1 h-full w-full border-2 border-dotted rounded dark:border-gray-500 hover:border-gray-300 dark:text-gray-500 dark:hover:border-gray-500 opacity-0 hover:opacity-100">
                         <FontAwesomeIcon icon="fa fa-plus"></FontAwesomeIcon>
                     </button>
                 </div>
