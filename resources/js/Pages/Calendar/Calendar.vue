@@ -2,7 +2,7 @@
     <CalendarLayout>
         <div class="min-h-screen">
             <!-- Off-canvas menu for mobile, show/hide based on off-canvas menu state. -->
-            <div class="relative z-40 md:hidden" role="dialog" aria-modal="true" v-show="showSidebar">
+            <div class="relative z-40 md:hidden" role="dialog" aria-modal="true" v-show="calendarStore.showSidebar">
                 <transition
                     enter-active-class="ease-out duration-300"
                     enter-from-class="opacity-0"
@@ -10,7 +10,7 @@
                     leave-active-class="ease-in duration-200"
                     leave-from-class="opacity-100"
                     leave-to-class="opacity-0"
-                    v-show="showSidebar"
+                    v-show="calendarStore.sidebarVisible"
                 >
                     <div class="fixed inset-0 bg-gray-600 bg-opacity-75"></div>
                 </transition>
@@ -23,7 +23,7 @@
                         leave-active-class="transition ease-in-out duration-300 transform"
                         leave-from-class="translate-x-0"
                         leave-to-class="-translate-x-full"
-                        v-show="showSidebar"
+                        v-show="calendarStore.sidebarVisible"
                     >
                         <div class="relative flex w-full max-w-xs flex-1 flex-col bg-gray-800 pt-5 pb-4">
                             <transition
@@ -33,10 +33,10 @@
                                 leave-active-class="ease-in-out duration-300"
                                 leave-from-class="opacity-100"
                                 leave-to-class="opacity-0"
-                                v-show="showSidebar"
+                                v-show="calendarStore.sidebarVisible"
                             >
                                 <div class="absolute top-0 right-0 -mr-12 pt-2">
-                                    <button @click="showSidebar = false" type="button" class="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                                    <button @click="calendarStore.toggleSidebar()" type="button" class="ml-1 flex h-10 w-10 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                                         <span class="sr-only">Close sidebar</span>
                                         <!-- Heroicon name: outline/x-mark -->
                                         <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -109,16 +109,16 @@
                         </div>
                     </transition>
 
-                    <div class="w-14 flex-shrink-0" aria-hidden="true" @click="showSidebar = false">
+                    <div class="w-14 flex-shrink-0" aria-hidden="true" @click="calendarStore.toggleSidebar()">
                         <!-- Dummy element to force sidebar to shrink to fit close icon -->
                     </div>
                 </div>
             </div>
 
             <!-- Static sidebar for desktop -->
-            <div class="hidden" :class="{ 'md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col': showSidebar }" v-show="showSidebar">
+            <div class="hidden" :class="{ 'md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col': calendarStore.sidebarVisible }" v-show="calendarStore.sidebarVisible">
                 <!-- Sidebar component, swap this element with another sidebar if you like -->
-                <div class="flex min-h-0 flex-1 flex-col bg-gray-800" v-show="showSidebar">
+                <div class="flex min-h-0 flex-1 flex-col bg-gray-800" v-show="calendarStore.sidebarVisible">
                     <div class="flex h-16 flex-shrink-0 items-center bg-gray-800 px-4">
                         <ApplicationLogo class="h-8 mr-2"></ApplicationLogo>
 
@@ -184,9 +184,9 @@
                     </div>
                 </div>
             </div>
-            <div class="flex flex-col min-h-screen" :class="{ 'md:pl-64': showSidebar }">
+            <div class="flex flex-col min-h-screen" :class="{ 'md:pl-64': calendarStore.sidebarVisible }">
                 <div class="sticky top-0 z-10 flex h-16 flex-shrink-0 bg-white dark:bg-gray-800 shadow">
-                    <button @click="showSidebar = !showSidebar" type="button" class="border-r border-gray-200 dark:border-gray-700 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500">
+                    <button @click="calendarStore.toggleSidebar" type="button" class="border-r border-gray-200 dark:border-gray-700 px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500">
                         <span class="sr-only">Open sidebar</span>
                         <!-- Heroicon name: outline/bars-3-bottom-left -->
                         <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -202,7 +202,7 @@
                                 <FontAwesomeIcon class="text-sm pr-4" icon="fa fa-chevron-right"></FontAwesomeIcon>
                             </button>
                             <span>
-                                <span v-show="!showSidebar">{{ calendar.name }} -</span> <span v-show="layout !== 'year'">{{ renderdata.timespans[visibleTimespan].title }}</span> {{ renderdata.year }}
+                                <span v-show="!calendarStore.sidebarVisible">{{ calendar.name }} -</span> <span v-show="calendarStore.layout !== 'year'">{{ renderdata.timespans[visibleTimespan].title }}</span> {{ renderdata.year }}
                             </span>
                         </div>
 
@@ -224,7 +224,7 @@
                         <Dropdown>
                             <template #trigger>
                                 <button class="inline-flex items-center sm:text-sm rounded-md border border-transparent bg-gray-700 px-3 h-9 text-sm font-medium leading-4 text-white shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500">
-                                    <span v-text="layout.substring(0,1).toUpperCase() + layout.substring(1)"></span>
+                                    <span v-text="calendarStore.layout.substring(0,1).toUpperCase() + calendarStore.layout.substring(1)"></span>
 
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 ml-1">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -233,10 +233,10 @@
                             </template>
 
                             <template #content>
-                                <DropdownLink class="pointer-events-none bg-gray-800 dark:text-gray-800 opacity-70" as="button" @click="layout = 'day'" preserve-state>Day (not impl.)</DropdownLink>
-                                <DropdownLink as="button" @click="layout = 'week'" preserve-state>Week</DropdownLink>
-                                <DropdownLink as="button" @click="layout = 'month'" preserve-state>Month</DropdownLink>
-                                <DropdownLink as="button" @click="layout = 'year'" preserve-state>Year</DropdownLink>
+                                <DropdownLink class="pointer-events-none bg-gray-800 dark:text-gray-800 opacity-70" as="button" @click="calendarStore.layout = 'day'" preserve-state>Day (not impl.)</DropdownLink>
+                                <DropdownLink as="button" @click="calendarStore.layout = 'week'" preserve-state>Week</DropdownLink>
+                                <DropdownLink as="button" @click="calendarStore.layout = 'month'" preserve-state>Month</DropdownLink>
+                                <DropdownLink as="button" @click="calendarStore.layout = 'year'" preserve-state>Year</DropdownLink>
                             </template>
                         </Dropdown>
 
@@ -266,7 +266,7 @@
 <!--</code>-->
 <!--                    </pre>-->
                     <CalendarViewport
-                        :layout="layout"
+                        :layout="calendarStore.layout"
                         :timespans="renderable_data"
                         :visible-timespan="visibleTimespan"
                         :visible-week="visibleWeek"
@@ -288,6 +288,7 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import CalendarViewport from '@/Components/CalendarViewport.vue'
+import { useCalendarStore } from '@/stores/calendar.js';
 
 const props = defineProps({
     calendar_attributes: Object,
@@ -298,43 +299,10 @@ const renderable_data = computed(() => {
     return calendar.renderStructure();
 })
 const calendar = new Calendar(props.calendar_attributes);
-const showSidebar = ref(false);
-const layout = ref('month');
+const calendarStore = useCalendarStore();
 const visibleTimespan = ref(8);
 const visibleWeek = ref(1);
 
-const backward = () => {
-    if (layout.value === 'month' && visibleTimespan.value > 0) {
-        visibleTimespan.value--;
-    }
-
-    if (layout.value === 'week') {
-        if(visibleWeek.value === 0 && visibleTimespan.value > 0) {
-            visibleTimespan.value--;
-
-            visibleWeek.value = props.renderdata.timespans[visibleTimespan.value].days.length - 1;
-        } else {
-            visibleWeek.value--;
-        }
-    }
-}
-
-const forward = () => {
-    if(layout.value === 'month' && visibleTimespan.value < props.renderdata.timespans.length - 1) {
-         visibleTimespan.value++;
-    }
-
-    if(layout.value === 'week') {
-        console.log('forward week');
-        if(visibleWeek.value === props.renderdata.timespans[visibleTimespan.value].days.length - 1) {
-            visibleTimespan.value++;
-
-            visibleWeek.value = 0;
-        } else {
-            visibleWeek.value++;
-        }
-    }
-}
 </script>
 
 <style scoped>
