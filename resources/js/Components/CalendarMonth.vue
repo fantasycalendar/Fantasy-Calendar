@@ -21,7 +21,7 @@
                     </div>
                 </div>
 
-                <div class="flex-1 w-full p-1">
+                <div class="flex-1 w-full p-1" v-show="day.type != 'overflow'">
                     <button class="flex-1 h-full w-full border-2 border-dotted rounded dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-400 opacity-0 hover:opacity-100">
                         <FontAwesomeIcon icon="fa fa-plus"></FontAwesomeIcon>
                     </button>
