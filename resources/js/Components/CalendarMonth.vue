@@ -6,7 +6,7 @@
             </div>
         </div>
         <div v-for="week in timespans.rows" class="w-full grid divide-x divide-gray-700" :style="'grid-template-columns: repeat(' + week.length + ', 1fr);'">
-            <div v-for="day in week" class="relative flex flex-col pb-1" :class="{ 'bg-gray-900': day.type === 'overflow', 'bg-orange-400 bg-opacity-[13%]' : day.epoch == currentEpoch }">
+            <div v-for="day in week" class="relative flex flex-col pb-1" :class="{ 'bg-gray-900 bg-opacity-40 cursor-no-drop': day.type === 'overflow', 'bg-orange-400 bg-opacity-[13%]' : day.epoch == currentEpoch }">
                 <div class="absolute top-1 right-2 h-6 grid place-items-center text-xs xl:text-base">
                     {{ day.number }}
                 </div>
@@ -22,7 +22,7 @@
                 </div>
 
                 <div class="flex-1 w-full p-1" v-show="day.type != 'overflow'">
-                    <button class="flex-1 h-full w-full border-2 border-dotted rounded dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-400 opacity-0 hover:opacity-100">
+                    <button class="flex-1 h-full w-full border-2 border-dotted rounded dark:border-gray-700 hover:border-gray-300 dark:text-gray-500 dark:hover:border-gray-600 opacity-0 hover:opacity-100">
                         <FontAwesomeIcon icon="fa fa-plus"></FontAwesomeIcon>
                     </button>
                 </div>
@@ -41,8 +41,6 @@ const props = defineProps({
     currentEpoch: Number,
     previewEpoch: Number,
 });
-
-// console.log(props.timespans);
 </script>
 
 <style scoped>

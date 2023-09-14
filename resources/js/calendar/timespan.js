@@ -43,9 +43,11 @@ export default class Timespan {
     structureForYear(year) {
         // console.log(this);
 
+        let epoch = 738396;
         let rowCount = Math.ceil(this.length / this.weekdays.length);
         let days = Array(rowCount * this.weekdays.length)
             .fill({
+                epoch: null,
                 number: null,
                 name: null,
                 type: "overflow",
@@ -55,6 +57,7 @@ export default class Timespan {
                 let intercalaryDay = index + 1 > this.length;
 
                 return {
+                    epoch: intercalaryDay ? null : epoch++,
                     number: intercalaryDay ? null : index + 1,
                     name: this.weekdays[index % this.weekdays.length],
                     type: intercalaryDay ? "overflow" : "day",

@@ -32,6 +32,8 @@ const viewportLayouts = {
     'month': CalendarMonth,
     'week': CalendarWeek,
 }
+
+console.log(props);
 </script>
 
 <template>
