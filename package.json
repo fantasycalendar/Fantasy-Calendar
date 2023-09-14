@@ -25,6 +25,6 @@
         "@fortawesome/free-regular-svg-icons": "^6.2.0",
         "@fortawesome/free-solid-svg-icons": "^6.2.0",
         "@fortawesome/vue-fontawesome": "^3.0.1",
-        "pinia": "^2.0.22"
+        "pinia": "^2.1.6"
     }
 }
