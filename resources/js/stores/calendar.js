@@ -13,7 +13,6 @@ export const useCalendarStore = defineStore("calendar", {
             this.calendar = calendar;
         },
         toggleSidebar() {
-            console.log('toggle');
             this.sidebarVisible = !this.sidebarVisible;
         },
         showSidebar() {
