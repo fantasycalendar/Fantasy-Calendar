@@ -1,132 +1,152 @@
+import { collect } from "collect.js"
 import IntervalsCollection from "@/calendar/collections/IntervalsCollection";
-import {lcm, lcmo, lcmo_bool} from "@/helpers";
-import _, {isString} from "lodash";
+import {lcmo_bool} from "@/helpers";
 
 export default class Interval {
+
     constructor(interval, offset) {
-        this.interval_string = interval;
-        this.interval = parseInt(interval.replace('!', ''));
-        this.offset = offset;
-        this.subtracts = interval.includes('!');
+        if(typeof interval === "number") interval = interval.toString();
+        if(interval < 1){
+            interval = 1;
+        }
+        this.intervalString = interval;
+        this.interval = Number(interval.replace("!", "").replace("+", ""));
+        this.subtracts = interval.includes("!");
+        this.internalIntervals = new IntervalsCollection();
 
-        let ignores_offset = interval.includes('+');
-        this.offset = (this.interval === 1 || ignores_offset)
-            ? 0
-            : ((this.interval + offset) % this.interval);
-
-        this.bumps_year_zero = (this.offset === 0 && !this.subtracts);
-
-        this.internal_intervals = new IntervalsCollection();
+        // If this interval is not 1 and does not ignore offset, normalize offset to the interval
+        const ignoresOffset = interval.includes('+');
+        this.offset = this.interval === 1 || ignoresOffset ? 0 : (this.interval + offset) % this.interval;
     }
 
-    voteOnYear(year) {
+    static make(data){
+        const newInterval = new Interval(data.interval.toString(), data.offset);
+        newInterval.subtracts = data.subtracts;
+        newInterval.internalIntervals = new IntervalsCollection(data.internalIntervals.map(i => Interval.make(i)))
+        return newInterval;
+    }
+
+    clone(){
+        return Interval.make(this.getData())
+    }
+
+    getData(){
+        return {
+            interval: this.interval,
+            subtracts: this.subtracts,
+            offset: this.offset,
+            internalIntervals: this.internalIntervals.map(i => i.getData())
+        }
+    }
+
+    voteOnYear(year, yearZeroExist){
+
         let mod = year - this.offset;
 
-        if(year < 0) {
+        if(!yearZeroExist && year < 0){
             mod++;
         }
 
-        if(mod % this.interval === 0) {
+        if(mod % this.interval === 0){
             return this.subtracts ? 'deny' : 'allow';
         }
 
         return 'abstain';
+
     }
 
-    isEqual(interval) {
-        return this.interval === interval;
-    }
-
-    occurrences(year, year_zero_exists) {
-        if(year === 0) {
-            return 0;
-        }
-
-        if(year > 0) {
-            year = this.offset > 0 ? year - this.offset + this.interval : year;
-
-            year = year_zero_exists ? year - 1 : year;
-
-            let result = year / this.interval;
-
-            return this.subtracts ? Math.floor(result) * -1 : Math.floor(result);
-        }
-
-        let outer_offset = this.offset % this.interval;
-
-        let result = (year - (outer_offset-1)) / this.interval;
-
-        if(outer_offset === 0){
-            result--;
-        }
-
-        return this.subtracts ? Math.ceil(result) * -1 : Math.ceil(result);
-    }
-
-    clearInternalIntervals() {
-        this.internal_intervals = new IntervalsCollection(this.interval_string, this.offset);
+    clearInternalIntervals(){
+        this.internalIntervals = new IntervalsCollection();
         return this;
     }
 
-    mergeInternalIntervals(intervals) {
-        this.internal_intervals.merge(intervals);
+    isEqual(interval){
+        return this.interval === interval.interval
+            && this.offset ===  interval.offset
+            && this.subtracts === interval.subtracts;
+    }
 
+    mergeInternalIntervals(intervals){
+        this.internalIntervals = this.internalIntervals.concat(collect([...intervals]));
         return this;
     }
 
-    isRedundant() {
-        return this.internal_intervals
-            .filter((interval) => !interval.willCollideWith(this))
-            .length
-        && !this.internal_intervals.length;
+    isRedundant(){
+        return this.internalIntervals
+                .reject(interval => interval.willCollideWith(this))
+                .length
+            && !this.internalIntervals.length;
     }
 
-    willCollideWith(interval) {
+    avoidDuplicates(toCheck){
+        if(toCheck instanceof Interval){
+            return this.avoidDuplicateCollisionsOnInternal(toCheck);
+        }
+
+        return toCheck.map(interval => this.avoidDuplicateCollisionsOnInternal(interval));
+    }
+
+    avoidDuplicateCollisionsOnInternal(suspectedCollision){
+
+        if(!lcmo_bool(this, suspectedCollision)){
+            return suspectedCollision;
+        }
+
+        this.internalIntervals.cancelOutCollision(this, suspectedCollision);
+
+        return suspectedCollision;
+
+    }
+
+    attributesAre(interval, offset, subtracts = false){
+        return this.isEqual({ interval, offset, subtracts });
+    }
+
+    willCollideWith(interval){
         return lcmo_bool(this, interval) || this.subtracts === interval.subtracts;
     }
 
-    avoidDuplicates(to_check) {
-        if(to_check instanceof Interval) {
-            return this.avoidDuplicateCollisionsOnInternal(to_check);
+    occurrences(year, yearZeroExists){
+
+        if(year === 0) return 0;
+
+        const isPositiveYear = year >= 0;
+
+        const roundingMethod = isPositiveYear ? Math.floor : Math.ceil;
+
+        const outerOffset = this.offset % this.interval;
+
+        year -= outerOffset;
+        if(!yearZeroExists && !isPositiveYear){
+            year++;
+            if (outerOffset === 0) {
+                year -= this.interval;
+            }
+        }else if(isPositiveYear){
+            if(yearZeroExists){
+                year--;
+            }
+            if(outerOffset > 0) {
+                year += this.interval;
+            }
         }
 
-        return to_check.map((interval) => {
-            return this.avoidDuplicateCollisionsOnInternal(interval);
+        const result = roundingMethod(year / this.interval);
+
+        return this.subtracts ? result * -1 : result;
+
+    }
+
+    get fraction(){
+        return (this.subtracts ? -1 : 1) / this.interval;
+    }
+
+    toJson() {
+        return JSON.stringify({
+            interval: this.interval,
+            subtracts: this.subtracts,
+            offset: this.offset
         });
     }
 
-    fraction() {
-        return ((this.subtracts) ? -1 : 1) / this.interval;
-    }
-
-    avoidDuplicateCollisionsOnInternal(suspected_collision) {
-        if(!lcmo_bool(this, suspected_collision)) {
-            return suspected_collision;
-        }
-
-        this.internal_intervals.cancelOutCollision(this, suspected_collision);
-
-        return suspected_collision;
-    }
-
-    attributesAre(interval, offset, subtracts) {
-        return (this.interval === interval
-            && this.offset === offset
-            && this.subtracts === subtracts
-        )
-    }
-
-    clone() {
-        return _.clone(this);
-    }
-
-    matchesCollisionWith(internalInterval) {
-        let colliding_interval = lcmo(this, internalInterval);
-
-        return this.attributesAre(
-            colliding_interval.interval,
-            colliding_interval.offset,
-            internalInterval.subtracts
-        )
-    }
 }

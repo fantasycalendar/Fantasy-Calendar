@@ -1,165 +1,193 @@
 import Interval from "@/calendar/interval";
-import _ from "lodash";
 import {lcmo} from "@/helpers";
+import { Collection } from 'collect.js'
 
-export default class IntervalsCollection {
-    constructor(intervalString = null, offset = null) {
-        if(!intervalString || !offset) {
-            this.items = [];
-            return this;
+const intervalCache = {
+
+    _cache: {},
+
+    get(intervals, offset){
+        return this._cache[`${intervals}-${offset}`];
+    },
+
+    set(intervalsCollection, intervals, offset, cyclic){
+        this._cache[`${intervals}-${offset}-${cyclic ? "yes" : "no"}`] = intervalsCollection;
+        return intervalsCollection;
+    }
+
+}
+
+export default class IntervalsCollection extends Collection{
+
+    static fromIntervalString(intervalString, offset) {
+
+        const cachedIntervalsCollection = intervalCache.get(intervalString, offset);
+        if (cachedIntervalsCollection) return cachedIntervalsCollection;
+
+        const intervals = intervalString.toString()
+            .split(',')
+            .map(interval => new Interval(interval, offset));
+
+        if (intervals.length === 0) {
+            throw new Error("An invalid value was provided for the interval of a leap day.")
         }
 
-        this.items = this.splitFromString(intervalString, offset);
-        this.items = this.removeUselessSubtracts();
+        const intervalsCollection = new IntervalsCollection(intervals)
+            .reverse()
+            .skipWhile(interval => interval.subtracts)
+            .reverse()
+            .normalize();
+
+        return intervalCache.set(intervalsCollection, intervalString, offset, false);
     }
 
-    splitFromString(intervalString, offset) {
-        return intervalString
+    static fromCycleString(cycleString, length) {
+
+        length = Math.max(length, Math.min(...cycleString.split(",").map(n => Number(n))));
+
+        const cachedIntervalsCollection = intervalCache.get(cycleString, length);
+        if (cachedIntervalsCollection) return cachedIntervalsCollection;
+
+        const intervals = cycleString.toString()
             .split(',')
-            .map((item) => new Interval(item, offset));
+            .map(offset => new Interval(length, offset));
+
+        const intervalsCollection = new IntervalsCollection(intervals).normalize();
+
+        return intervalCache.set(intervalsCollection, cycleString, length, true);
+
     }
 
-    bumpsYearZero() {
-        let first_valid_interval = [...this.items]
-            .filter((interval) => !interval.offset)
-            .sort((interval) => interval.interval)[0] ?? null;
+    static make(object) {
 
-        return (first_valid_interval)
-            ? !first_valid_interval.subtracts
-            : false;
+        if (object.cyclic_interval) {
+            return this.fromCycleString(object.interval, object.offset);
+        }
+
+        return this.fromIntervalString(object.interval, object.offset);
+
     }
 
-    normalize() {
-        return (this.items.length === 1)
-            ? this
-            : this.cleanUp()
-                  .avoidDuplicateCollisions(this.items)
-                  .flattenIntervals()
+    toJson() {
+        return JSON.stringify(this.map(interval => interval.toJson()));
     }
 
-    avoidDuplicateCollisions(intervals, topLevel = false) {
-        intervals = [...intervals.items];
+    clone() {
+        return new IntervalsCollection(this.map(interval => interval.clone()));
+    }
 
-        if(intervals.length === 1) {
+    avoidDuplicateCollisions(intervals) {
+
+        intervals = intervals.clone();
+
+        if (intervals.count() === 1) {
             return intervals;
         }
 
-        let first = intervals.shift();
+        const first = intervals.shift();
 
-        let suspected_collisions = this.avoidDuplicateCollisions(intervals);
+        let suspectedCollisions = intervals.avoidDuplicateCollisions(intervals);
 
-        let items = suspected_collisions.map((interval) => {
-            if(interval.subtracts) {
+        return suspectedCollisions.map(interval => {
+
+            if (!interval.subtracts) {
                 first.avoidDuplicates(interval);
             }
 
             interval.internalIntervals = first.avoidDuplicates(interval.internalIntervals);
 
             return interval;
-        }).unshift(first);
 
-        if(!topLevel) {
-            return items;
-        }
+        }).prepend(first);
 
-        this.items = items;
-
-        return this;
     }
 
-    unshift(item) {
-        this.items.unshift(item);
-
-        return this;
-    }
-
-    shift() {
-        return this.items.shift();
-    }
-
-    cleanUp() {
-        return _.clone(this)
-            .fillDescendants()
-            .filter((interval) => !interval.isRedundant())
-            .map((interval) => interval.clearInternalIntervals())
-    }
-
-    filter(closure) {
-        let copy =  _.clone(this);
-
-        copy.items = copy.items.filter(closure);
-
-        return copy;
-    }
-
-    map(closure) {
-        let copy = _.clone(this);
-
-        copy.items = copy.items.map(closure);
-
-        return copy;
-    }
-
-    sum(closure) {
-        return this.items.reduce((a, b) => {
-            return a + closure(b);
-        }, 0);
-    }
-
-    merge(intervals) {
-        this.items = [
-            ...this.items,
-            ...intervals
-        ];
-
-        return this;
+    normalize() {
+        return (this.count() === 1)
+            ? this
+            : this.cleanUp()
+                .avoidDuplicateCollisions(this)
+                .flattenIntervals();
     }
 
     fillDescendants() {
-        this.items = this.items.map((interval, index) => interval.mergeInternalIntervals(
-            this.items.slice(index + 1)
-        ));
+        return this.map((interval, index) => {
+            return interval.mergeInternalIntervals(this.slice(index + 1));
+        })
+    }
 
-        return this;
+    cleanUp() {
+        return this.clone()
+            .fillDescendants()
+            .reject(interval => interval.isRedundant())
+            .map(interval => interval.clearInternalIntervals())
     }
 
     flattenIntervals() {
-        return [...this.items.map((interval) => interval.internalIntervals), ...this.items.filter((interval) => !interval.subtracts)]
-            .flat()
-            .map((interval) => interval.clearInternalIntervals())
-            .sort((a, b) => (a.interval > b.interval) ? 1 : -1);
+        return this.map(interval => interval.internalIntervals)
+            .push(this.reject(interval => interval.subtracts))
+            .flatten(1)
+            .map(interval => interval.clearInternalIntervals())
+            .sortByDesc("interval");
     }
 
-    cancelOutCollision(examined_interval, known_collision) {
-        let colliding_interval = lcmo(examined_interval, known_collision);
-        let found_interval = this.items.find(
-            (interval) => interval.attributesAre(colliding_interval.interval, colliding_interval.offset, known_collision.subtracts)
-        ) ?? false;
+    cancelOutCollision(examinedInterval, knownCollision) {
+        const collidingInterval = lcmo(examinedInterval, knownCollision);
+        const foundInterval = this.first((interval) => {
+            return interval.attributesAre(collidingInterval.interval, collidingInterval.offset, knownCollision.subtracts)
+        });
 
-        if(found_interval) {
-            this.items.splice(found_interval, 1);
+        if (foundInterval) {
+            const foundKey = Array.from(this).indexOf(foundInterval);
+            this.splice(foundKey, 1);
         } else {
-            colliding_interval.subtractes = !known_collision.subtracts;
-
-            this.items.push(colliding_interval);
+            collidingInterval.subtracts = !knownCollision.subtracts;
+            this.push(collidingInterval)
         }
     }
 
-    occurrences(year, year_zero_exists) {
-        return this.addOneForYearZero(year, year_zero_exists)
-            + this.items.reduce((sum, interval) => {
-                return sum + interval.occurrences(year, year_zero_exists);
-            }, 0);
+    get totalFraction() {
+        return this.sum('fraction');
     }
 
-    addOneForYearZero(year, year_zero_exists) {
-        return (year > 0 && year_zero_exists && this.bumpsYearZero())
-            ? 1
-            : 0;
+    intersectsYear(year, yearZeroExists) {
+        // We need to un-normalize the year as otherwise 0 month occurrences results in leap day appearing
+        year = year >= 0 && !yearZeroExists
+            ? year + 1
+            : year;
+
+        const votes = this.map(interval => interval.voteOnYear(year, yearZeroExists));
+
+        return !!votes.reduce((acc, item) => {
+            switch (item) {
+                case "abstain":
+                    return acc;
+                case "allow":
+                    return acc + 1;
+                case "deny":
+                    return acc - 1;
+                default:
+                    console.log("BRUH WHAT");
+                    return acc;
+            }
+        }, 0);
     }
 
-    // TODO: Make this do something.
-    removeUselessSubtracts() {
-        return this.items;
+    occurrences(year, yearZeroExists) {
+        return this.sum((interval) => interval.occurrences(year, yearZeroExists))
+            + this.addOneForYearZero(year, yearZeroExists);
     }
+
+    addOneForYearZero(year, yearZeroExists) {
+        return year > 0 && yearZeroExists && this.bumpsYearZero() ? 1 : 0;
+    }
+
+    bumpsYearZero() {
+        let foundInterval = this.reject(interval => interval.offset).sortByDesc('interval').shift();
+
+        if(foundInterval) return !foundInterval.subtracts;
+
+        return false;
+    }
+
 }
