@@ -1,4 +1,3 @@
-import {getProperty} from "@/helpers";
 import * as helpers from "@/helpers";
 
 export default class CalendarEvent {
@@ -170,7 +169,7 @@ class EventCondition {
         "<": (a, b) => a < b,
         ">=": (a, b) => a >= b,
         "<=": (a, b) => a <= b,
-        "%": (a, b, c) => (a % b) === c,
+        "%": (a, b, attr) => ((a + (attr.offset % b)) % b) === 0,
     }
 
     constructor(attributes, event, depth) {
@@ -180,8 +179,8 @@ class EventCondition {
     }
 
     evaluate(dateData){
-        const targetValue = helpers.getProperty(dateData, this.attributes.target)
-        return EventCondition.operands[this.attributes.operand](targetValue, this.attributes.value);
+        const targetValue = helpers.getProperty(dateData, this.attributes.target);
+        return EventCondition.operands[this.attributes.operand](targetValue, this.attributes.value, this.attributes);
     }
 
 }

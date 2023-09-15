@@ -118,3 +118,58 @@ test("complex event: count group", () => {
     ]})).toBe(true);
 
 });
+
+
+test("complex events: every even day", () => {
+
+    const event = CalendarEvent.make({
+        name: "Test Event",
+        type: "complex",
+        conditions: [
+            {
+                type: "condition",
+                target: "dateId",
+                operand: "%",
+                value: 2,
+                offset: 0
+            }
+        ]
+    });
+
+    expect(event.evaluate({ dateId: 0 })).toBe(true);
+    expect(event.evaluate({ dateId: 1 })).toBe(false);
+    expect(event.evaluate({ dateId: 2 })).toBe(true);
+    expect(event.evaluate({ dateId: 3 })).toBe(false);
+    expect(event.evaluate({ dateId: 4 })).toBe(true);
+    expect(event.evaluate({ dateId: 5 })).toBe(false);
+    expect(event.evaluate({ dateId: 6 })).toBe(true);
+
+});
+
+
+
+test("complex events: every odd  day", () => {
+
+    const event = CalendarEvent.make({
+        name: "Test Event",
+        type: "complex",
+        conditions: [
+            {
+                type: "condition",
+                target: "dateId",
+                operand: "%",
+                value: 2,
+                offset: 1
+            }
+        ]
+    });
+
+    expect(event.evaluate({ dateId: 0 })).toBe(false);
+    expect(event.evaluate({ dateId: 1 })).toBe(true);
+    expect(event.evaluate({ dateId: 2 })).toBe(false);
+    expect(event.evaluate({ dateId: 3 })).toBe(true);
+    expect(event.evaluate({ dateId: 4 })).toBe(false);
+    expect(event.evaluate({ dateId: 5 })).toBe(true);
+    expect(event.evaluate({ dateId: 6 })).toBe(false);
+
+});
