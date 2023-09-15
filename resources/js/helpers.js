@@ -38,3 +38,12 @@ export function gcd(...arr) {
 export function lcm (n1, n2) {
     return (n1 * n2) / gcd(n1, n2);
 }
+
+export function getProperty(target, key){
+    let currentTarget = target;
+    for(const currentKey of key.split(".")){
+        if(currentTarget[currentKey] === undefined) return undefined;
+        currentTarget = currentTarget[currentKey]
+    }
+    return currentTarget;
+}
