@@ -172,6 +172,12 @@ class EventCondition {
         "%": (a, b, attr) => ((a + (attr.offset % b)) % b) === 0,
     }
 
+    static edgeCases = {
+        "dateId": {
+            "%": (a, b, attr) => ((a + ((a >= 0 ? attr.offset+1 : attr.offset) % b)) % b) === 0,
+        }
+    }
+
     constructor(attributes, event, depth) {
         this.attributes = attributes;
         this.event = event;
@@ -179,8 +185,12 @@ class EventCondition {
     }
 
     evaluate(dateData){
-        const targetValue = helpers.getProperty(dateData, this.attributes.target);
-        return EventCondition.operands[this.attributes.operand](targetValue, this.attributes.value, this.attributes);
+        const target = this.attributes.target;
+        const dateValue = helpers.getProperty(dateData, target);
+        const targetValue = this.attributes.value;
+        return EventCondition.edgeCases?.[target]?.[this.attributes.operand]
+            ? EventCondition.edgeCases[target][this.attributes.operand](dateValue, targetValue, this.attributes)
+            : EventCondition.operands[this.attributes.operand](dateValue, targetValue, this.attributes);
     }
 
 }

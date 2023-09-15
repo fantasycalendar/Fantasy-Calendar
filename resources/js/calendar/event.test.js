@@ -136,13 +136,16 @@ test("complex events: every even day", () => {
         ]
     });
 
-    expect(event.evaluate({ dateId: 0 })).toBe(true);
-    expect(event.evaluate({ dateId: 1 })).toBe(false);
-    expect(event.evaluate({ dateId: 2 })).toBe(true);
-    expect(event.evaluate({ dateId: 3 })).toBe(false);
-    expect(event.evaluate({ dateId: 4 })).toBe(true);
-    expect(event.evaluate({ dateId: 5 })).toBe(false);
-    expect(event.evaluate({ dateId: 6 })).toBe(true);
+    expect(event.evaluate({ dateId: -3, day: -3 })).toBe(false);
+    expect(event.evaluate({ dateId: -2, day: -2 })).toBe(true);
+    expect(event.evaluate({ dateId: -1, day: -1 })).toBe(false);
+    expect(event.evaluate({ dateId:  0, day:  1 })).toBe(false);
+    expect(event.evaluate({ dateId:  1, day:  2 })).toBe(true);
+    expect(event.evaluate({ dateId:  2, day:  3 })).toBe(false);
+    expect(event.evaluate({ dateId:  3, day:  4 })).toBe(true);
+    expect(event.evaluate({ dateId:  4, day:  5 })).toBe(false);
+    expect(event.evaluate({ dateId:  5, day:  6 })).toBe(true);
+    expect(event.evaluate({ dateId:  6, day:  7 })).toBe(false);
 
 });
 
@@ -164,12 +167,15 @@ test("complex events: every odd  day", () => {
         ]
     });
 
-    expect(event.evaluate({ dateId: 0 })).toBe(false);
-    expect(event.evaluate({ dateId: 1 })).toBe(true);
-    expect(event.evaluate({ dateId: 2 })).toBe(false);
-    expect(event.evaluate({ dateId: 3 })).toBe(true);
-    expect(event.evaluate({ dateId: 4 })).toBe(false);
-    expect(event.evaluate({ dateId: 5 })).toBe(true);
-    expect(event.evaluate({ dateId: 6 })).toBe(false);
+    expect(event.evaluate({ dateId: -3, day: -3 })).toBe(true);
+    expect(event.evaluate({ dateId: -2, day: -2 })).toBe(false);
+    expect(event.evaluate({ dateId: -1, day: -1 })).toBe(true);
+    expect(event.evaluate({ dateId: 0, day: 1 })).toBe(true);
+    expect(event.evaluate({ dateId: 1, day: 2 })).toBe(false);
+    expect(event.evaluate({ dateId: 2, day: 3 })).toBe(true);
+    expect(event.evaluate({ dateId: 3, day: 4 })).toBe(false);
+    expect(event.evaluate({ dateId: 4, day: 5 })).toBe(true);
+    expect(event.evaluate({ dateId: 5, day: 6 })).toBe(false);
+    expect(event.evaluate({ dateId: 6, day: 7})).toBe(true);
 
 });
