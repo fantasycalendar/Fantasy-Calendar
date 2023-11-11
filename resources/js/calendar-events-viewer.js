@@ -23,8 +23,13 @@ const calendar_events_viewer = {
 	},
 
 	view_event($event){
+        let event_index = $event.detail.event_id;
 
-		this.id = $event.detail.event_id;
+        if ($event.detail.event_db_id !== undefined) {
+            event_index = events.findIndex((item) => item.id === $event.detail.event_db_id);
+        }
+
+		this.id = event_index;
 		this.era = $event.detail.era ?? false;
 		this.epoch = $event.detail.epoch;
 

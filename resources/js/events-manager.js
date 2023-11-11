@@ -199,7 +199,7 @@ const events_manager = {
             return;
         }
         $dispatch("event-viewer-modal-view-event", {
-            event_id: event_data.sort_by,
+            event_db_id: event_data.id,
             epoch: window.dynamic_data.epoch,
         });
     },
