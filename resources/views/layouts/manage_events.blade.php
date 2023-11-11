@@ -28,7 +28,7 @@
                         <div class="col-12 col-sm-6 mb-1 mb-sm-0 pr-1" style="display: grid; place-items: end;">
                             <div class="w-100">
                                 <span style="position: absolute; right: 0px; cursor: pointer; height: 50px; width: 50px; opacity: 0.8; line-height: 50px; text-align: center;" @click="search = ''" x-show="search.length"><i class="fa fa-times"></i></span>
-                                <input type="text" name="search" x-model="search" class="form-control" placeholder="Search...">
+                                <input id="eventManagerSearch" type="text" name="search" x-model="search" class="form-control" placeholder="Search...">
                             </div>
                         </div>
 
@@ -50,7 +50,7 @@
                         <div class="d-flex align-items-center flex-grow-1">
                             <div class="px-2 w-100" style="max-width: 300px;">
                                 <select name="" class="form-control w-100 w-sm-auto" x-model="updateCategoryTo" id="" :disabled="!canUpdateCategory">
-                                    <option value="" x-text="Object.keys(selected).length ? `Add ${Object.keys(selected).length} to category...` : 'Add to category...'"></option>
+                                    <option value="" x-text="numberSelected ? `Add ${numberSelected} to category...` : 'Add to category...'"></option>
                                     <option value="-1">Remove from category</option>
                                     <template x-for="category in categories">
                                         <option :value="category.id" x-text="category.name"></option>
@@ -155,6 +155,9 @@
                                                     <span class="px-2 d-none d-sm-inline" style="opacity: 0.4;">&bull;</span>
                                                 </div>
                                                 <div class="managed_event_description d-none d-sm-block" :class="{'opacity-70': event_data.description, 'opacity-30': !event_data.description }" style="font-size: 90%;" x-html="event_data.description ? highlight_match(event_data.description) : 'Event has no description'"></div>
+                                                <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="toggleEventHidden(event_data, $dispatch)">
+                                                    <i class="fa" :title="eventVisibilityTooltip(event_data)" :class="{  'fa-eye-slash': event_data.settings.hide || event_data.settings.hide_full, 'fa-eye': !event_data.settings.hide, 'opacity-50' : event_data.settings.hide_full }"></i>
+                                                </button>
                                                 <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-edit-event', { event_id: event_data.sort_by, epoch: window.dynamic_data.epoch })">
                                                     <i class="fa fa-edit"></i>
                                                 </button>

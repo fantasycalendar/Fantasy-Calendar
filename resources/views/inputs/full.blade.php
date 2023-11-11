@@ -1395,15 +1395,15 @@
                             class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
 
-                <div class='row no-gutters bold-text'>
-                    <div class='col'>
-                        New event:
-                    </div>
+                <button type="button" class="btn btn-secondary col-12 mb-2" x-data @click="$dispatch('open-events-manager')">Manage Events</button>
+
+                <div class="row no-gutters">
+                    <div class="separator mt-2"></div>
                 </div>
 
-                <div class='add_inputs events row no-gutters input-group'>
+                <div class='add_inputs events row no-gutters input-group mt-2'>
                     <div class="col input-group-prepend">
-                        <input type='text' class='form-control name' id='event_name_input' placeholder='Event name'>
+                        <input type='text' class='form-control name' id='event_name_input' placeholder='New event name'>
                     </div>
                     <div class="col-auto input-group-append">
                         <button type='button' class='btn btn-primary add' x-data
@@ -1411,13 +1411,6 @@
                                     class="fa fa-plus"></i></button>
                     </div>
                 </div>
-
-                <button type="button" class="btn btn-secondary col-12 mb-2" x-data @click="$dispatch('open-events-manager'); $nextTick(() => {
-                        setTimeout(() => {
-                            document.querySelector('.event_manager_search').focus();
-                        }); // has a default time value of 0
-                    });
-                ">Search</button>
 
                 <div x-data='{
 

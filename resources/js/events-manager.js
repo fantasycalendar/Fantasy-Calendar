@@ -6,7 +6,7 @@
  */
 
 const events_manager = {
-    open: true,
+    open: false,
 
     calendar_events: [],
     event_categories: [],
@@ -34,6 +34,28 @@ const events_manager = {
         });
     },
 
+    eventVisibilityTooltip(event) {
+        if (event.settings.hide_full) {
+            return "This event is entirely hidden from the calendar.";
+        }
+
+        if (event.settings.hide) {
+            return "This event is hidden from anyone besides the calendar owner/co-owner.";
+        }
+
+        return "This event is visible to anyone who can see the calendar.";
+    },
+
+    toggleEventHidden(event, $dispatch) {
+        let canonicalEvent = window.events.find(
+            (canonicalEvent) => canonicalEvent.id === event.id,
+        );
+
+        canonicalEvent.settings.hide = !canonicalEvent.settings.hide;
+
+        $dispatch("events-changed");
+    },
+
     // Cycle through visibility options:
     // any -> visible -> hidden -> any
     cycleVisibility() {
@@ -48,6 +70,10 @@ const events_manager = {
                 this.visibility = "any";
                 break;
         }
+    },
+
+    get numberSelected() {
+        return Object.values(this.selected).filter(Boolean).length;
     },
 
     get visibilityLabel() {
@@ -73,86 +99,6 @@ const events_manager = {
             );
 
         return selectedEvents.length > 0;
-    },
-
-    delete_events() {
-        console.log("Would have deleted", this.selected);
-        // for (let event_id in this.selected) {
-        //     let delete_event_id = $event.detail.event_id;
-
-        //     let warnings = [];
-
-        //     for (let eventId = 0; eventId < events.length; eventId++) {
-        //         if (eventId === delete_event_id) continue;
-        //         if (events[eventId].data.connected_events !== undefined) {
-        //             let connected_events =
-        //                 events[eventId].data.connected_events;
-        //             if (
-        //                 connected_events.includes(String(delete_event_id)) ||
-        //                 connected_events.includes(Number(delete_event_id))
-        //             ) {
-        //                 warnings.push(eventId);
-        //             }
-        //         }
-        //     }
-
-        //     if (warnings.length > 0) {
-        //         let html = [];
-        //         html.push(`<div class='text-left'>`);
-        //         html.push(
-        //             `<h5>You trying to delete "${events[delete_event_id].name}" which is used in the conditions of the following events:</h5>`,
-        //         );
-        //         html.push(`<ul>`);
-        //         for (let i = 0; i < warnings.length; i++) {
-        //             let warning_event_id = warnings[i];
-        //             html.push(`<li>${events[warning_event_id].name}</li>`);
-        //         }
-        //         html.push(`</ul>`);
-        //         html.push(
-        //             `<p>Please remove the conditions using "${events[delete_event_id].name}" in these events before trying to delete it.</p>`,
-        //         );
-        //         html.push(`</div>`);
-
-        //         swal.fire({
-        //             title: "Warning!",
-        //             html: html.join(""),
-        //             showCancelButton: false,
-        //             confirmButtonColor: "#3085d6",
-        //             confirmButtonText: "OK",
-        //             icon: "warning",
-        //         });
-        //     } else {
-        //         swal.fire({
-        //             title: "Warning!",
-        //             html: `Are you sure you want to delete the event<br>"${events[delete_event_id].name}"?`,
-        //             showCancelButton: true,
-        //             confirmButtonColor: "#d33",
-        //             cancelButtonColor: "#3085d6",
-        //             confirmButtonText: "OK",
-        //             icon: "warning",
-        //         }).then((result) => {
-        //             if (!result.dismiss) {
-        //                 let not_view_page =
-        //                     window.location.pathname.indexOf("/edit") > -1 ||
-        //                     window.location.pathname.indexOf(
-        //                         "/calendars/create",
-        //                     ) > -1;
-
-        //                 if (not_view_page) {
-        //                     this.delete_event(delete_event_id);
-
-        //                     evaluate_save_button();
-        //                 } else {
-        //                     let event_id = events[delete_event_id].id;
-
-        //                     submit_delete_event(event_id, () => {
-        //                         this.delete_event(delete_event_id);
-        //                     });
-        //                 }
-        //             }
-        //         });
-        //     }
-        // }
     },
 
     updateCategory($event, $dispatch) {
@@ -204,6 +150,22 @@ const events_manager = {
             },
             {},
         );
+
+        let unsorted = Object.entries(this.categorizedEvents);
+        this.categorizedEvents = unsorted
+            .sort((a, b) => {
+                if (a[0] === "No category") {
+                    return -1;
+                }
+                if (b[0] === "No category") {
+                    return 1;
+                }
+                return a[0] > b[0] ? 1 : -1;
+            })
+            .reduce((sorted, category) => {
+                sorted[category[0]] = category[1];
+                return sorted;
+            }, {});
     },
 
     matchesVisibility(event) {
@@ -289,8 +251,8 @@ const events_manager = {
     open_modal: function($event) {
         this.open = true;
         setTimeout(() => {
-            document.querySelector("input").focus();
-        }); // has a default time value of 0
+            document.getElementById("eventManagerSearch")?.focus();
+        }, 100); // has a default time value of 0
     },
 
     close_modal: function($event) {
