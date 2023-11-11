@@ -351,7 +351,13 @@ const calendar_events_editor = {
 
 		this.creation_type = "Editing Event"
 
-		this.event_id = $event.detail.event_id;
+        let event_index = $event.detail.event_id;
+
+        if ($event.detail.event_db_id !== undefined) {
+            event_index = events.findIndex((item) => item.id === $event.detail.event_db_id);
+        }
+
+		this.event_id = event_index;
 
 		this.working_event = clone(events[this.event_id]);
 

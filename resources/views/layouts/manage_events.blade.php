@@ -158,7 +158,7 @@
                                                 <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="toggleEventHidden(event_data, $dispatch)">
                                                     <i class="fa" :title="eventVisibilityTooltip(event_data)" :class="{  'fa-eye-slash': event_data.settings.hide || event_data.settings.hide_full, 'fa-eye': !event_data.settings.hide, 'opacity-50' : event_data.settings.hide_full }"></i>
                                                 </button>
-                                                <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-edit-event', { event_id: event_data.sort_by, epoch: window.dynamic_data.epoch })">
+                                                <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-edit-event', { event_db_id: event_data.id, epoch: window.dynamic_data.epoch })">
                                                     <i class="fa fa-edit"></i>
                                                 </button>
                                                 <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-delete-event', { event_id: event_data.sort_by })">
