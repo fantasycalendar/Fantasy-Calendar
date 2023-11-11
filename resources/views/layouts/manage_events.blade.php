@@ -42,38 +42,48 @@
                        </div>
                     </div>
 
-                    <div class="row" x-show="!Object.keys(categorizedEvents).length && !search.length">
-                        <div class="col-12 text-center py-5 py-2 search-empty">
+                    <div class="d-flex justify-content-between border rounded-sm align-items-center py-2 px-2">
+                        <div>
+                            <input type="checkbox" class="form-check mx-1" style="width: 20px; height: 20px;" x-model="multiselect"></input>
+                        </div>
+
+                        <div class="d-flex align-items-center flex-grow-1">
+                            <div class="px-2 w-100" style="max-width: 300px;">
+                                <select name="" class="form-control w-100 w-sm-auto" x-model="updateCategoryTo" id="" :disabled="!canUpdateCategory">
+                                    <option value="" x-text="Object.keys(selected).length ? `Add ${Object.keys(selected).length} to category...` : 'Add to category...'"></option>
+                                    <option value="-1">Remove from category</option>
+                                    <template x-for="category in categories">
+                                        <option :value="category.id" x-text="category.name"></option>
+                                    </template>
+                                </select>
+                            </div>
+
+                            <button class="btn btn-primary" @click="updateCategory($event, $dispatch)" :disabled="!updateCategoryTo">
+                                <i class="fa fa-check"></i>
+                            </button>
+                        </div>
+
+                        <div>
+                            <button class="btn" :class="{ 'btn-primary': visibility == 'hidden', 'btn-secondary': visibility == 'visible'}" @click="cycleVisibility">
+                                <i class="fa" :class="{ 'fa-eye-slash': visibility == 'hidden', 'fa-eye': visibility != 'hidden' }" title="Toggle visibility"></i>
+                                <span x-text="visibilityLabel"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row" x-show="!Object.keys(categorizedEvents).length && (!search.length && visibility === 'any')">
+                        <div class="col-12 text-center py-5 search-empty">
                             <h2>You have no events!</h2>
                         </div>
                     </div>
 
-                    <div class="row" x-show="search.length && !Object.keys(categorizedEvents).length">
-                        <div class="col-12 text-center py-5 py-2 search-empty">
-                            <h2>No events match search '<span x-text="search" class="event_manager_search"></span>'</h2>
+                    <div class="row" x-show="(search.length || visibility !== 'any') && !Object.keys(categorizedEvents).length">
+                        <div class="col-12 text-center py-5 search-empty">
+                            <h2>No events match filters</h2>
                         </div>
                     </div>
 
-                    <div class="d-flex border rounded-sm align-items-center py-2">
-                        <div class="px-2 border-right">
-                            <input type="checkbox" x-model="multiselect">
-                        </div>
-                        <div class="px-2 border-right">
-                            <select name="" id="" @change="updateCategory($event, $dispatch)">
-                                <option value="">Add selected to category...</option>
-                                <option value="-1">Remove from category</option>
-                                <template x-for="category in categories">
-                                    <option :value="category.id" x-text="category.name"></option>
-                                </template>
-                            </select>
-                        </div>
-                        <div class="px-2 border-right">
-                            <i class="fa fa-eye-slash" title="Toggle visibility"></i>
-                        </div>
-                        <div class="px-2">
-                            <i class="fa fa-trash" title="Delete"></i>
-                        </div>
-                    </div>
+
                     <div class="row">
                         <div class="col-12 modal-inlay px-md-3 py-md-2" style="max-height: 70vh; overflow-y: auto;">
                             <template x-for="([category_name, category_events]) in Object.entries(categorizedEvents)" :key="category_name">
@@ -145,12 +155,12 @@
                                                     <span class="px-2 d-none d-sm-inline" style="opacity: 0.4;">&bull;</span>
                                                 </div>
                                                 <div class="managed_event_description d-none d-sm-block" :class="{'opacity-70': event_data.description, 'opacity-30': !event_data.description }" style="font-size: 90%;" x-html="event_data.description ? highlight_match(event_data.description) : 'Event has no description'"></div>
-                                                <div class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-edit-event', { event_id: event_data.sort_by, epoch: window.dynamic_data.epoch })">
-                                                    <i class="fa fa-edit px-2"></i>
-                                                </div>
-                                                <div class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-delete-event', { event_id: event_data.sort_by })">
-                                                    <i class="fa fa-trash px-2"></i>
-                                                </div>
+                                                <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-edit-event', { event_id: event_data.sort_by, epoch: window.dynamic_data.epoch })">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                                <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-delete-event', { event_id: event_data.sort_by })">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
                                             </div>
                                         </template>
                                     </div>
