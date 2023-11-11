@@ -383,7 +383,7 @@ function set_up_visitor_inputs(){
 					let sub_items = {};
 					for(var i = 0; i < found_events.length; i++){
 						let event_id = found_events[i].index;
-						let event_name = found_events[i].name;
+						let event_name = sanitizeHtml(found_events[i].name);
 						let era_event = found_events[i].era;
 						sub_items[event_id] = {
 							name: event_name,
@@ -397,7 +397,7 @@ function set_up_visitor_inputs(){
 
 				}else if(found_events.length == 1){
 
-					items.view_events.name = `View event "${events[found_events[0].index].name}"`
+					items.view_events.name = sanitizeHtml(`View event "${events[found_events[0].index].name}"`)
 
 				}
 
@@ -893,7 +893,7 @@ function repopulate_event_category_lists(){
 			slug = slugify(category.name);
 		}
 		html.push(`<option value='${slug}'>`)
-		html.push(category.name)
+		html.push(sanitizeHtml(category.name))
 		html.push("</option>")
 	}
 
@@ -929,7 +929,7 @@ function repopulate_timespan_select(select, val, change, max){
 
 			if(special){
 
-				html.push(`<option value='${i}'>${static_data.year_data.timespans[i].name}</option>`);
+				html.push(`<option value='${i}'>${sanitizeHtml(static_data.year_data.timespans[i].name)}</option>`);
 
 			}else{
 
@@ -943,7 +943,7 @@ function repopulate_timespan_select(select, val, change, max){
 				if(max && i > max) break;
 
 				html.push(`<option ${!is_there.result ? 'disabled' : ''} value='${i}'>`);
-				html.push(static_data.year_data.timespans[i].name + (!is_there.result ? ` (${is_there.reason})` : ''));
+				html.push(sanitizeHtml(static_data.year_data.timespans[i].name + (!is_there.result ? ` (${is_there.reason})` : '')));
 				html.push('</option>');
 
 			}

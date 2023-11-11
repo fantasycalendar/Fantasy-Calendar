@@ -113,6 +113,19 @@ class CalendarPolicy
         //
     }
 
+    public function enableLinking(User $user, Calendar $calendar)
+    {
+        return $user->can('update', $calendar)
+            && $calendar->isLinkable();
+    }
+
+
+    public function enableAdvancement(User $user, Calendar $calendar)
+    {
+        return $user->can('update', $calendar)
+            && !$calendar->isChild();
+    }
+
     /**
      * Determine whether the user can permanently delete the calendar.
      *

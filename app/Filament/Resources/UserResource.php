@@ -6,9 +6,9 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -48,7 +48,7 @@ class UserResource extends Resource
                     Forms\Components\TextInput::make('email'),
                     Forms\Components\DateTimePicker::make('email_verified_at')->label('Verified At'),
                     Forms\Components\DateTimePicker::make('date_register')->label('Created at')->disabled(),
-                    Forms\Components\DateTimePicker::make('last_visited')->disabled(),
+                    Forms\Components\DateTimePicker::make('last_visit')->disabled(),
                 ])->columns(),
                 Forms\Components\Section::make('Access Info')->schema([
                     Forms\Components\Select::make('permissions')
@@ -67,36 +67,22 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('username'),
-                Tables\Columns\TextColumn::make('email'),
+                Tables\Columns\TextColumn::make('username')->searchable(),
+                Tables\Columns\TextColumn::make('email')->searchable(),
                 Tables\Columns\TextColumn::make('permissions'),
                 Tables\Columns\BooleanColumn::make('beta_authorised')->label('Beta Access'),
                 Tables\Columns\TextColumn::make('created_at'),
                 Tables\Columns\TextColumn::make('email_verified_at')
             ])
             ->filters([
-                Tables\Filters\Filter::make('identity')
-                    ->form([
-                        Forms\Components\TextInput::make('identity')
-                            ->default('')
-                    ])
-                    ->query(function(Builder $query, $data): Builder {
-                        return $query
-                            ->when(
-                                $data['identity'],
-                                fn(Builder $query, $identity) => $query
-                                    ->where('username', 'like', "%$identity%")
-                                    ->orWhere('email', 'like', "%$identity%")
-                            );
-                    }),
                 Tables\Filters\Filter::make('beta_authorised')
                     ->query(fn(Builder $query): Builder => $query->where('beta_authorised', true))
-            ])->prependActions([
-                Tables\Actions\LinkAction::make('impersonate')
+            ])->actions([
+                Tables\Actions\Action::make('impersonate')
                     ->label('Impersonate')
                     ->icon('heroicon-o-user-circle')
                     ->url(fn($record) => route('admin.impersonate', ['userid' => $record->id, 'returnPath' => request()->url()])),
-            ])->prependBulkActions([
+            ])->bulkActions([
                 Tables\Actions\BulkAction::make('password_reset')
                     ->action(function($records){
                         foreach($records as $record) {
@@ -112,7 +98,7 @@ class UserResource extends Resource
                     ->requiresConfirmation()
                     ->label('Send password reset')
                     ->color('warning')
-                    ->icon('heroicon-o-inbox-in')
+                    ->icon('heroicon-o-inbox-arrow-down')
             ]);
     }
 

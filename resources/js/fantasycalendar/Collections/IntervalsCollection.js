@@ -10,8 +10,8 @@ const intervalCache = {
         return this._cache[`${intervals}-${offset}`];
     },
 
-    set(intervalsCollection, intervals, offset){
-        this._cache[`${intervals}-${offset}`] = intervalsCollection;
+    set(intervalsCollection, intervals, offset, cyclic){
+        this._cache[`${intervals}-${offset}-${cyclic ? "yes" : "no"}`] = intervalsCollection;
         return intervalsCollection;
     }
 
@@ -38,10 +38,12 @@ export default class IntervalsCollection extends Collection{
             .reverse()
             .normalize();
 
-        return intervalCache.set(intervalsCollection, intervalString, offset);
+        return intervalCache.set(intervalsCollection, intervalString, offset, false);
     }
 
     static fromCycleString(cycleString, length) {
+
+        length = Math.max(length, Math.min(...cycleString.split(",").map(n => Number(n))));
 
         const cachedIntervalsCollection = intervalCache.get(cycleString, length);
         if (cachedIntervalsCollection) return cachedIntervalsCollection;
@@ -52,14 +54,14 @@ export default class IntervalsCollection extends Collection{
 
         const intervalsCollection = new IntervalsCollection(intervals).normalize();
 
-        return intervalCache.set(intervalsCollection, cycleString, length);
+        return intervalCache.set(intervalsCollection, cycleString, length, true);
 
     }
 
     static make(object) {
 
-        if (object.cycleLength) {
-            return this.fromCycleString(object.cycleIntervals, object.cycleLength);
+        if (object.cyclic_interval) {
+            return this.fromCycleString(object.interval, object.offset);
         }
 
         return this.fromIntervalString(object.interval, object.offset);
@@ -154,14 +156,21 @@ export default class IntervalsCollection extends Collection{
             ? year + 1
             : year;
 
-        const votes = this.map(interval => interval.voteOnYear(year));
+        const votes = this.map(interval => interval.voteOnYear(year, yearZeroExists));
 
-        for (let vote of votes) {
-            if (vote === 'allow') return true;
-            if (vote === 'deny') return false;
-        }
-
-        return false;
+        return !!votes.reduce((acc, item) => {
+            switch (item) {
+                case "abstain":
+                    return acc;
+                case "allow":
+                    return acc + 1;
+                case "deny":
+                    return acc - 1;
+                default:
+                    console.log("BRUH WHAT");
+                    return acc;
+            }
+        }, 0);
     }
 
     occurrences(year, yearZeroExists) {

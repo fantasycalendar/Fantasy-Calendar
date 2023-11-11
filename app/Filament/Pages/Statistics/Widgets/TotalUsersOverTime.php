@@ -17,7 +17,25 @@ class TotalUsersOverTime extends LineChartWidget
 
     protected function getData(): array
     {
-        $usersOverTime = Trend::model(User::class)
+        $usersOverTime = cache()->remember('total_users_over_time', 300, function() {
+            return self::queryData();
+        });
+        return [
+            'datasets' => [
+                [
+                    'label' => 'User count',
+                    'data' => $usersOverTime,
+                    'fill' => true,
+                    'backgroundColor' => 'rgb(22 78 99)',
+                    'borderColor' => 'rgb(8 145 178)',
+                ]
+            ]
+        ];
+    }
+
+    private function queryData()
+    {
+        return Trend::model(User::class)
             ->between(
                 start: Carbon::parse('2017-12-01'),
                 end: now()->startOfMonth()->subDay()
@@ -26,16 +44,5 @@ class TotalUsersOverTime extends LineChartWidget
             ->count()
             ->withRunningTotal('aggregate')
             ->mapWithKeys(fn($trendValue) => [$trendValue->date => $trendValue->aggregate_running_total]);
-
-        return [
-            'datasets' => [
-                [
-                    'data' => $usersOverTime,
-                    'fill' => true,
-                    'backgroundColor' => 'rgb(22 78 99)',
-                    'borderColor' => 'rgb(8 145 178)',
-                ]
-            ]
-        ];
     }
 }

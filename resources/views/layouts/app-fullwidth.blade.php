@@ -4,7 +4,7 @@
 
 @include('templates._head_content_tw')
 
-<body class="scrollbar page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class') @setting('dark_theme') dark @endsetting">
+<body class="scrollbar page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class') @guest dark @else @setting('dark_theme') dark @endsetting @endguest">
 
 @if(auth()->check() && request()->session()->has('admin.id'))
     <div class="w-full py-1 bg-red-200 dark:bg-red-900 text-red-800 dark:text-red-200 text-center flex justify-center items-center">
@@ -39,7 +39,7 @@
                 </div>
                 <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
                     @can('administer-app', auth()->user())
-                        <x-nav-link href="{{ route('filament.pages.dashboard') }}">Admin Panel</x-nav-link>
+                        <x-nav-link href="{{ route('filament.admin.pages.dashboard') }}">Admin Panel</x-nav-link>
                     @endcan
                     @auth
                         <x-nav-link href="{{ route('profile') }}">Profile</x-nav-link>
@@ -54,8 +54,8 @@
                     <!-- Mobile menu button -->
                     <button class="inline-flex items-center justify-center p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white" @click="menu = !menu">
                         <span class="sr-only">Open main menu</span>
-                        <x-heroicon-o-menu ::class="{ 'hidden': !menu, 'block': menu }" class="block h-6 w-6"></x-heroicon-o-menu>
-                        <x-heroicon-o-x ::class="{ 'hidden': menu, 'block': !menu }" class="hidden h-6 w-6"></x-heroicon-o-x>
+                        <x-heroicon-o-bars-3 ::class="{ 'hidden': !menu, 'block': menu }" class="block h-6 w-6"></x-heroicon-o-bars-3>
+                        <x-heroicon-o-x-mark ::class="{ 'hidden': menu, 'block': !menu }" class="hidden h-6 w-6"></x-heroicon-o-x-mark>
                     </button>
                 </div>
             </div>
@@ -74,7 +74,7 @@
                 <x-mobile-nav-link href="{{ route('discord') }}">Discord Integration</x-mobile-nav-link>
 
                 @can('administer-app', auth()->user())
-                    <x-mobile-nav-link href="{{ route('filament.pages.dashboard') }}">Admin Panel</x-mobile-nav-link>
+                    <x-mobile-nav-link href="{{ route('filament.admin.pages.dashboard') }}">Admin Panel</x-mobile-nav-link>
                 @endcan
 
                 @auth

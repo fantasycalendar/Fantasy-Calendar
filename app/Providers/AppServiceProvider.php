@@ -8,14 +8,17 @@ use App\Console\Commands\UpCommand;
 use App\Observers\CalendarEventObserver;
 use App\Services\EpochService\EpochFactory;
 use Filament\Facades\Filament;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 use App\Observers\CalendarObserver;
 use App\Models\Calendar;
+use Spatie\LaravelIgnition\Facades\Flare;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -42,47 +45,35 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Filament::serving(function () {
-            Filament::registerTheme(mix('css/app-tw.css'));
-        });
-
-        /**
-         * Override Laravel's "php artisan down" command to put the application in maintenance mode
-         * using our custom Redis based lock.
-         */
-        $this->app->extend('command.down', function () {
-            return new DownCommand();
-        });
-
-        /**
-         * Override Laravel's "php artisan up" command to bring the application out of maintenance mode
-         * using our custom Redis based lock.
-         */
-        $this->app->extend('command.up', function () {
-            return new UpCommand();
-        });
-
-        Blade::if('setting', function($value) {
-            return auth()->check() && auth()->user()->setting($value);
-        });
-
-        Blade::if('feature', function($value) {
-            return feature($value);
-        });
-
         if(app()->environment(['local'])) {
             URL::forceRootUrl(config('app.url'));
         }
 
-        \Illuminate\Pagination\AbstractPaginator::currentPathResolver(function () {
-            /** @var \Illuminate\Routing\UrlGenerator $url */
-            $url = app('url');
-            return $url->current();
+        $this->setupFlare();
+        $this->setupQueueRateLimiters();
+        $this->setupObservers();
+        $this->setupCustomBladeDirectives();
+        $this->setupPaginationFixes();
+        $this->setupMaintenanceMode();
+        $this->setupCollectionMacros();
+    }
+
+    private function setupFlare()
+    {
+        Flare::determineVersionUsing(function() {
+            return '2.3.4';
         });
+    }
 
-        Calendar::observe(CalendarObserver::class);
-        CalendarEvent::observe(CalendarEventObserver::class);
+    private function setupQueueRateLimiters()
+    {
+        RateLimiter::for('advancement', function($job){
+            Limit::perMinute(1);
+        });
+    }
 
+    private function setupCollectionMacros()
+    {
         Collection::macro('whereAttributes', function($attributes) {
             return $this->filter(function($item) use ($attributes){
                 foreach($attributes as $name => $value) {
@@ -142,6 +133,51 @@ class AppServiceProvider extends ServiceProvider
 
         Collection::macro('firstKey', function() {
             return $this->keys()->first();
+        });
+    }
+
+    private function setupObservers()
+    {
+        Calendar::observe(CalendarObserver::class);
+        CalendarEvent::observe(CalendarEventObserver::class);
+    }
+
+    private function setupPaginationFixes()
+    {
+        \Illuminate\Pagination\AbstractPaginator::currentPathResolver(function () {
+            /** @var \Illuminate\Routing\UrlGenerator $url */
+            $url = app('url');
+            return $url->current();
+        });
+    }
+
+    private function setupCustomBladeDirectives()
+    {
+        Blade::if('setting', function($value) {
+            return auth()->check() && auth()->user()->setting($value);
+        });
+
+        Blade::if('feature', function($value) {
+            return feature($value);
+        });
+    }
+
+    private function setupMaintenanceMode()
+    {
+        /**
+         * Override Laravel's "php artisan down" command to put the application in maintenance mode
+         * using our custom Redis based lock.
+         */
+        $this->app->extend('command.down', function () {
+            return new DownCommand();
+        });
+
+        /**
+         * Override Laravel's "php artisan up" command to bring the application out of maintenance mode
+         * using our custom Redis based lock.
+         */
+        $this->app->extend('command.up', function () {
+            return new UpCommand();
         });
     }
 }

@@ -17,16 +17,38 @@ class SubsOverTimeWidget extends LineChartWidget
 
     protected function getData(): array
     {
-        if(app()->environment(['local', 'development'])){
-            return [];
-        }
+        [$monthly_subscriptions_over_time, $yearly_subscriptions_over_time] = cache()->remember('subs_over_time', 300, function(){
+            return self::queryData();
+        });
 
+        return [
+            'datasets' => [
+                [
+                    'label' => 'Monthly',
+                    'data' => $monthly_subscriptions_over_time,
+                    'fill' => true,
+                    'backgroundColor' => 'rgb(22 78 99)',
+                    'borderColor' => 'rgb(8 145 178)',
+                ],
+                [
+                    'label' => 'Yearly',
+                    'data' => $yearly_subscriptions_over_time,
+                    'fill' => true,
+                    'backgroundColor' => 'rgb(127 29 29)',
+                    'borderColor' => 'rgb(185 28 28)'
+                ],
+            ]
+        ];
+    }
+
+    private static function queryData()
+    {
         /* Total subscriptions per day */
-        $monthly_subscriptions = Subscription::where('stripe_plan', '=', 'timekeeper_monthly')
+        $monthly_subscriptions = Subscription::where('stripe_price', '=', 'timekeeper_monthly')
             ->where('created_at', '<', now()->subMonth()->lastOfMonth())
             ->where("stripe_status", "=", "active");
 
-        $yearly_subscriptions = Subscription::where('stripe_plan', '=', 'timekeeper_yearly')
+        $yearly_subscriptions = Subscription::where('stripe_price', '=', 'timekeeper_yearly')
             ->where('created_at', '<', now()->subMonth()->lastOfMonth())
             ->where("stripe_status", "=", "active");
 
@@ -46,11 +68,19 @@ class SubsOverTimeWidget extends LineChartWidget
                 return [$result->date => $result->count];
             });
 
-        $period = CarbonPeriod::create(
-            min($monthly->keys()->first(), $yearly->keys()->first()),
-            '1 month',
-            max($monthly->keys()->last(), $yearly->keys()->last())
-        );
+        if($monthly->count() > 0) {
+            $period = CarbonPeriod::create(
+                min($monthly->keys()->first(), $yearly->keys()->first()),
+                '1 month',
+                max($monthly->keys()->last(), $yearly->keys()->last())
+            );
+        } else {
+            $period = CarbonPeriod::create(
+                now()->subMonths(12),
+                '1 month',
+                now()
+            );
+        }
 
         $monthly_subscriptions_over_time = [];
         $monthly_subscriptions_per_month = [];
@@ -72,23 +102,6 @@ class SubsOverTimeWidget extends LineChartWidget
             $totalYearlyCount += $yearly[$dateString] ?? 0;
         }
 
-        return [
-            'datasets' => [
-                [
-                    'label' => 'Monthly',
-                    'data' => $monthly_subscriptions_over_time,
-                    'fill' => true,
-                    'backgroundColor' => 'rgb(22 78 99)',
-                    'borderColor' => 'rgb(8 145 178)',
-                ],
-                [
-                    'label' => 'Yearly',
-                    'data' => $yearly_subscriptions_over_time,
-                    'fill' => true,
-                    'backgroundColor' => 'rgb(127 29 29)',
-                    'borderColor' => 'rgb(185 28 28)'
-                ],
-            ]
-        ];
+        return [$monthly_subscriptions_over_time, $yearly_subscriptions_over_time];
     }
 }

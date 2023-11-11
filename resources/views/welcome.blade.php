@@ -15,14 +15,14 @@
             <div class="flex-1 w-full bg-gray-900"></div>
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
-            <img class="relative rounded-lg shadow-lg shadow-slate-800" src="{{ asset('/resources/screenshots/taldorei-never-lose-track.png') }}" alt="App screenshot">
+            <img class="relative rounded-lg shadow-lg shadow-slate-800" src="{{ asset('/resources/screenshots/taldorei-never-lose-track.webp') }}" alt="App screenshot">
         </div>
     </div>
 
     <div class="bg-gray-900">
         <div class="relative pb-32 bg-gray-800">
             <div class="absolute inset-0">
-                <img class="w-full h-full object-cover" src="{{ asset('/resources/homepage/castle.jpg') }}" alt="">
+                <img class="w-full h-full object-cover" src="{{ asset('/resources/homepage/castle.webp') }}" alt="">
                 <div class="absolute inset-0 bg-gray-700 mix-blend-multiply" aria-hidden="true"></div>
             </div>
             <div class="relative max-w-7xl mx-auto py-24 px-4 sm:py-32 sm:px-6 lg:px-8">
@@ -194,7 +194,7 @@
                             <footer class="mt-3">
                                 <div class="flex items-center space-x-3">
                                     <div class="flex-shrink-0">
-                                        <img class="h-6 w-6 rounded-full" src="{{ asset('/resources/homepage/dwarf-profile-photo.jpg') }}" alt="">
+                                        <img class="h-6 w-6 rounded-full" src="{{ asset('/resources/homepage/dwarf-profile-photo.webp') }}" alt="">
                                     </div>
                                     <div class="text-base font-medium text-gray-500">Nimoor Mithtel, leader of the Greycross Dwarves</div>
                                 </div>

@@ -29,29 +29,37 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('queue:prune-batches')->daily();
 
-        $schedule->command('calendar:advance')->everyMinute();
-
-        if(app()->environment('development')) {
+        if (app()->environment('development')) {
             return;
         }
 
+        $schedule->command('calendar:advance')->everyMinute();
+
         $schedule->command('clean:authtokens')
-                 ->daily()->onOneServer();
+            ->daily()
+            ->onOneServer();
 
         $schedule->command('clean:invites')
-                 ->daily()->onOneServer();
+            ->daily()
+            ->onOneServer();
 
         $schedule->command('discord:daily-stats')
-                 ->daily()->onOneServer();
+            ->daily()
+            ->onOneServer();
 
         $schedule->command('accounts:yeet-warning')
-                ->daily()->onOneServer();
+            ->daily()
+            ->onOneServer();
 
         $schedule->command('accounts:yeet')
-                 ->daily()->onOneServer();
+            ->daily()
+            ->onOneServer();
 
         $schedule->command('calendar:demand-payment')
-                 ->everyFifteenMinutes()->onOneServer();
+            ->everyFifteenMinutes()
+            ->onOneServer();
+
+        $schedule->command('cache:prune-stale-tags')->hourly();
     }
 
     /**
@@ -61,7 +69,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

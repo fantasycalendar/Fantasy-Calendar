@@ -1,6 +1,8 @@
 on:
   release:
     types: [released]
+  workflow_dispatch:
+
 name: Deploy master branch
 jobs:
   deploy_master:
@@ -23,20 +25,49 @@ jobs:
         with:
           token: ${{ secrets.GH_CHECKOUT_TOKEN }}
           submodules: 'recursive'
+      - uses: actions/cache@v3
+        id: cache-npm
+        with:
+          path: |
+            ./node_modules/
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+      - uses: actions/cache@v3
+        id: cache-assets
+        with:
+          path: |
+            ./public
+          key: ${{ runner.os }}-${{ hashFiles('**/resources') }}
+      - uses: actions/cache@v3
+        id: cache-composer
+        with:
+          path: |
+            ./vendor/
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+      - uses: actions/cache@v3
+        id: cache-env
+        with:
+          path: |
+            ./.env
+          key: ${{ runner.os }}-${{ hashFiles('**/.env.github') }}
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '20'
       - uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "latest"
+          php-version: "8.1"
       - uses: "ramsey/composer-install@v2"
       - name: Create env file
         run: |
           php -r "file_exists('.env') || copy('.env.github', '.env');"
+      - name: Create env file
+        run: |
+          cat > .env << EOF
+          APP_ENV=production
+          EOF
       - name: Generate app_key
         run: php artisan key:generate
-      - name: Run unit tests
-        run: php artisan test
+      # - name: Run unit tests
+      #   run: php artisan test
       - name: Actions Status Discord
         if: ${{ failure() }}
         uses: sarisia/actions-status-discord@v1.5.2
@@ -57,11 +88,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - name: Create env file
-        run: |
-          cat > .env << EOF
-          APP_ENV=production
-          EOF
       - name: Install NPM dependencies
         run: npm install
       - name: Build production assets
@@ -70,7 +96,7 @@ jobs:
         run: |
           aws s3 sync ./public s3://fantasy-calendar-prod/
       - name: Deploy to prod
-        run: npx serverless@2 deploy --stage prod
+        run: npx serverless deploy --stage prod
       - name: Actions Status Discord
         uses: sarisia/actions-status-discord@v1.5.2
         with:

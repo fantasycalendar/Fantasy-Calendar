@@ -20,10 +20,14 @@ class Statistics extends Page
 
     protected static ?string $navigationGroup = 'Administrative';
 
+    public function getHeaderWidgetsColumns(): int|array
+    {
+        return 12;
+    }
+
     protected function getHeaderWidgets(): array
     {
         return [
-            StatsOverviewWidget::class,
             SubRatio::class,
             SubsByTypeEachMonth::class,
             SubsOverTimeWidget::class,

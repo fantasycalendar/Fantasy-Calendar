@@ -7,24 +7,29 @@ use App\Notifications\RequestEmailUpdate;
 use App\Http\Requests\StoreUserSettings;
 use App\Http\Requests\UpdateEmailRequest;
 use Laravel\Sanctum\PersonalAccessToken;
-use Stripe\BillingPortal\Session as StripeBillingPortalSession;
 use Illuminate\Http\Request;
 use Hash;
+use Stripe\StripeClient;
 
 class SettingsController extends Controller
 {
-    public function billing(Request $request) {
+    public function billing() {
+        $incompleteSubscriptions = (new StripeClient(config('cashier.secret')))
+            ->subscriptions
+            ->all([
+                'customer' => auth()->user()->createOrGetStripeCustomer()->id,
+                'status' => 'incomplete'
+            ]);
+
         return view('profile.billing', [
             'subscription' => auth()->user()->subscriptions()->active()->first(),
-            'subscription_renews_at' => format_timestamp(auth()->user()->subscription_end)
+            'subscription_renews_at' => format_timestamp(auth()->user()->subscription_end),
+            'incompleteSubscriptions' => $incompleteSubscriptions->count() > 0
         ]);
     }
 
     public function billingPortal(Request $request) {
-        return redirect(StripeBillingPortalSession::create([
-            'customer' => $request->user()->createOrGetStripeCustomer()->id,
-            'return_url' => route('profile.billing'),
-        ], $request->user()->stripeOptions())['url']);
+        return $request->user()->redirectToBillingPortal(route('profile.billing'));
     }
 
     public function updateEmail(UpdateEmailRequest $request) {

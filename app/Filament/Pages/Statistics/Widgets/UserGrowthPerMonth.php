@@ -18,17 +18,14 @@ class UserGrowthPerMonth extends LineChartWidget
 
     protected function getData(): array
     {
-        $userGrowthPerMonth = Trend::model(User::class)
-            ->between(
-                start: Carbon::parse('2017-12-01'),
-                end: now()->startOfMonth()->subday()
-            )->perMonth()
-            ->count()
-            ->mapWithKeys(fn($trendValue) => [$trendValue->date => $trendValue->aggregate]);
+        $userGrowthPerMonth = cache()->remember('user_growth_per_month', 300, function(){
+            return self::queryData();
+        });
 
         return [
             'datasets' => [
                 [
+                    'label' => 'User count',
                     'data' => $userGrowthPerMonth,
                     'fill' => true,
                     'backgroundColor' => 'rgb(22 78 99)',
@@ -36,5 +33,16 @@ class UserGrowthPerMonth extends LineChartWidget
                 ]
             ]
         ];
+    }
+
+    private function queryData()
+    {
+        return Trend::model(User::class)
+            ->between(
+                start: Carbon::parse('2017-12-01'),
+                end: now()->startOfMonth()->subday()
+            )->perMonth()
+            ->count()
+            ->mapWithKeys(fn($trendValue) => [$trendValue->date => $trendValue->aggregate]);
     }
 }

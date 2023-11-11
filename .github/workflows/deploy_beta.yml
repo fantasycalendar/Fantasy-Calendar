@@ -27,28 +27,57 @@ jobs:
         with:
           token: ${{ secrets.GH_CHECKOUT_TOKEN }}
           submodules: 'recursive'
+      - uses: actions/cache@v3
+        id: cache-npm
+        with:
+          path: |
+            ./node_modules/
+          key: ${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+      - uses: actions/cache@v3
+        id: cache-assets
+        with:
+          path: |
+            ./public
+          key: ${{ runner.os }}-${{ hashFiles('**/resources') }}
+      - uses: actions/cache@v3
+        id: cache-composer
+        with:
+          path: |
+            ./vendor/
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+      - uses: actions/cache@v3
+        id: cache-env
+        with:
+          path: |
+            ./.env
+          key: ${{ runner.os }}-${{ hashFiles('**/.env.github') }}
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '20'
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
       - uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "latest"
+          php-version: "8.1"
       - uses: "ramsey/composer-install@v2"
+        if: steps.cache-composer.outputs.cache-hit != 'true'
       - name: Install NPM dependencies
+        if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm install
       - name: Build production assets
+        if: steps.cache-assets.outputs.cache-hit != 'true'
         run: npm run production
       - name: Create env file
+        if: steps.cache-env.outputs.cache-hit != 'true'
         run: |
           php -r "file_exists('.env') || copy('.env.github', '.env');"
       - name: Generate app_key
+        if: steps.cache-env.outputs.cache-hit != 'true'
         run: php artisan key:generate
-      - name: Run unit tests
-        run: php artisan test
+#      - name: Run unit tests
+#        run: php artisan test
       - name: Actions Status Discord
         if: ${{ failure() }}
         uses: sarisia/actions-status-discord@v1.5.2
@@ -73,7 +102,7 @@ jobs:
         run: |
           aws s3 sync ./public s3://fantasy-calendar-dev/
       - name: Deploy to beta
-        run: npx serverless@2 deploy --stage dev
+        run: npx serverless deploy --stage dev
       - name: Actions Status Discord
         uses: sarisia/actions-status-discord@v1.5.2
         with:

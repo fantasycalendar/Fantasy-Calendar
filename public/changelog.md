@@ -1,8 +1,48 @@
+### 2.3.6 - Mischievous Marid
+#### August 6, 2023
+- Updated: Set calendar advancement period upon saving
+- Updated: Heavily optimized site styling and images by a factor of 40 for faster loading times
+- Updated: Set dark theme as the default for guest viewers on calendar pages
+- Updated: Move the event category selector out of the "Settings" section of the event edit interface
+- Updated: Updated backend packages, removed some unnecessary dependencies
+- Fixed: Attempt to avoid advancement drift by double-checking that a calendar should advance in the queued job
+- Fixed: Position of sidebar toggle button on some display sizes
+- Fixed: Cross-Site XSS injection points
+
+### 2.3.5 - Miffed Marid
+#### February 25, 2023
+- Fixed: Remove all reliance on unpkg.com CDN for core parts of the app
+
+### 2.3.4 - Melodramatic Marid
+#### January 28, 2023
+- Added: Support for the [Flare](https://flareapp.io/) error reporting service
+
+### 2.3.3 - Mellow Marid
+#### January 28, 2023
+- Fixed: Image rendering error
+
+### 2.3.2 - Mindful Marid
+#### January 24, 2023
+- Fixed: Bug causing the "close" button on events to not function correctly in some cases
+- Updated: Guest pages are now dark theme by default
+- Updated: Laravel Cashier from v12.7 -> v14
+- Updated: Various other dependencies
+
+### 2.3.1 - Meaningful Marid
+#### January 23, 2023
+- Fixed: Real-time helpdocs link
+- Updated: A few dependencies
+
 ### 2.3.0 - Momentary Marid
-#### October 8th, 2022
+#### January 15th, 2023
 - Added: Real-time calendar advancement
+- Added: The ability for leap day intervals to operate within a limited cycle
+- Fixed: Rare bugs with complex leap day interval calculations
 - Fixed: Modulo by 0 when an interval is somehow set to 0
 - Fixed: Invalid category IDs upon Calendar import/export
+- Fixed: Cases where calendar co-owners couldn't create events
+- Fixed: Previewing a date would prevent you from clicking on events on that day
+- Fixed: Trying to insert a link or image into event's description would result in being prompted to close the event
 
 ### 2.2.17 - Careful Couatl
 #### September 29th, 2022

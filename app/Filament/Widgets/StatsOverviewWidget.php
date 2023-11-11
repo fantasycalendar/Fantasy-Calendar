@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Filament\Pages\Statistics\Widgets;
+namespace App\Filament\Widgets;
 
 use App\Models\Calendar;
 use App\Models\CalendarEvent;
 use App\Models\User;
-use Carbon\CarbonPeriod;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
-use Filament\Widgets\Widget;
+use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
 use Laravel\Cashier\Subscription;
 
@@ -16,9 +15,45 @@ class StatsOverviewWidget extends BaseWidget
 {
 //    protected static string $view = 'filament.widgets.stats-overview-widget';
 
-    protected int | string | array $columnSpan = 12;
+    protected int | string | array $columnSpan = 2;
 
     protected function getCards(): array
+    {
+        $values = cache()->remember('stats_overview_widget_data', 300, function() {
+            return self::generateStats();
+        });
+
+        extract($values);
+
+        return [
+            Stat::make('Users', User::verified()->count())
+                ->description(User::verified()->where('created_at', '>', now()->subDays(30))->count() . ' - 30-day increase')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->chart($user_count_over_time)
+                ->color('success'),
+            Stat::make('Calendars', $calendars_created_total)
+                ->description($calendars_created_in_last_thirty_days . ' - 30-day increase')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->chart([$calendars_created_total - $calendars_created_in_last_thirty_days, $calendars_created_total])
+                ->color('success'),
+            Stat::make('Events', $events_created_total)
+                ->description($events_created_in_last_thirty_days . ' - 30-day increase')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->chart([$events_created_total - $events_created_in_last_thirty_days, $events_created_total])
+                ->color('success'),
+            Stat::make('Active Users - Last 30 days', $users_active_in_last_thirty_days)
+                ->description($users_active_in_year_to_date . " active year to date")
+                ->color('success'),
+            Stat::make('Subscriptions', $total_subscriptions)
+                ->description($user_percentage_subscribers . "% of all users")
+                ->color('success'),
+            Stat::make('Projected Yearly Income', "$" . round($monthly_income_projection)*12)
+                ->description("\${$monthly_income_projection} monthly projected x12")
+                ->color('success'),
+        ];
+    }
+
+    private static function generateStats()
     {
         $last30Days = now()->subDays(30);
 
@@ -46,10 +81,10 @@ class StatsOverviewWidget extends BaseWidget
             ->where("subscriptions.stripe_status", "=", "active")
             ->selectRaw(
                 'CASE
-                    WHEN (subscriptions.stripe_plan = "timekeeper_yearly" and users.created_at < "2020-11-08") THEN 1.66
-                    WHEN (subscriptions.stripe_plan = "timekeeper_yearly" and users.created_at >= "2020-11-08") THEN 2.04
-                    WHEN (subscriptions.stripe_plan = "timekeeper_monthly" and users.created_at < "2020-11-08") THEN 1.99
-                    WHEN (subscriptions.stripe_plan = "timekeeper_monthly" and users.created_at >= "2020-11-08") THEN 2.49
+                    WHEN (subscriptions.stripe_price = "timekeeper_yearly" and users.created_at < "2020-11-08") THEN 1.66
+                    WHEN (subscriptions.stripe_price = "timekeeper_yearly" and users.created_at >= "2020-11-08") THEN 2.04
+                    WHEN (subscriptions.stripe_price = "timekeeper_monthly" and users.created_at < "2020-11-08") THEN 1.99
+                    WHEN (subscriptions.stripe_price = "timekeeper_monthly" and users.created_at >= "2020-11-08") THEN 2.49
                 END as value
             ')->get()->sum('value');
 
@@ -109,31 +144,17 @@ class StatsOverviewWidget extends BaseWidget
         }
 
         return [
-            Card::make('Users', User::verified()->count())
-                ->description(User::verified()->where('created_at', '>', now()->subDays(30))->count() . ' - 30-day increase')
-                ->descriptionIcon('heroicon-s-trending-up')
-                ->chart($user_count_over_time)
-                ->color('success'),
-            Card::make('Calendars', $calendars_created_total)
-                ->description($calendars_created_in_last_thirty_days . ' - 30-day increase')
-                ->descriptionIcon('heroicon-s-trending-up')
-                ->chart([$calendars_created_total - $calendars_created_in_last_thirty_days, $calendars_created_total])
-                ->color('success'),
-            Card::make('Events', $events_created_total)
-                ->description($events_created_in_last_thirty_days . ' - 30-day increase')
-                ->descriptionIcon('heroicon-s-trending-up')
-                ->chart([$events_created_total - $events_created_in_last_thirty_days, $events_created_total])
-                ->color('success'),
-            Card::make('Active Users - Last 30 days', $users_active_in_last_thirty_days)
-                ->description($users_active_in_year_to_date . " active year to date")
-                ->color('success'),
-            Card::make('Subscriptions', $total_subscriptions)
-                ->description($user_percentage_subscribers . "% of all users")
-                ->color('success'),
-            Card::make('Projected Yearly Income', "$" . round($monthly_income_projection)*12)
-                ->description("$${monthly_income_projection} monthly projected x12")
-                ->color('success'),
-        ];
+            'user_count_over_time' => $user_count_over_time,
+            'calendars_created_total' => $calendars_created_total,
+            'calendars_created_in_last_thirty_days' => $calendars_created_in_last_thirty_days,
+            'events_created_in_last_thirty_days' => $events_created_in_last_thirty_days,
+            'events_created_total' => $events_created_total,
+            'users_active_in_last_thirty_days' => $users_active_in_last_thirty_days,
+            'users_active_in_year_to_date' => $users_active_in_year_to_date,
+            'total_subscriptions' => $total_subscriptions,
+            'user_percentage_subscribers' => $user_percentage_subscribers,
+            'monthly_income_projection' => $monthly_income_projection,
+       ];
     }
 
     private function subscriptionsCard()
@@ -154,7 +175,7 @@ class StatsOverviewWidget extends BaseWidget
             ? 'success'
             : 'warning';
 
-        return Card::make('Active Subscriptions', $subscriptions->count())
+        return Stat::make('Active Subscriptions', $subscriptions->count())
             ->description($newSubscriptions . " - 30 day $changeDirection")
             ->descriptionIcon("heroicon-s-trending-$iconDirection")
             ->color($iconColor);

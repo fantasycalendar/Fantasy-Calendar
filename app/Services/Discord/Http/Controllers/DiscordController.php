@@ -104,7 +104,7 @@ class DiscordController extends Controller
 
         $body = $apiClient->webhookAuthTokenExchange(request()->get('code'));
 
-        logger()->info(json_encode($body));
+        logger()->debug(json_encode($body));
 
         try {
             if(!session()->has('webhook_calendar')) {
@@ -122,7 +122,7 @@ class DiscordController extends Controller
                 ],
                 DiscordWebhook::fromPayload($body)
             );
-            logger()->info($payload);
+            logger()->debug($payload);
 
             $calendar->discord_webhooks()->create(
                 $payload
@@ -174,8 +174,6 @@ class DiscordController extends Controller
             'discord_username' => $user->getNickname(),
             'expires_at' => now()->addSeconds($user->expiresIn)
         ]);
-
-        logger()->channel('discord')->info("'".Auth::user()->username."' has connected their Discord account to us!");
 
         return redirect(route('profile.integrations'))->with('message', 'Your Fantasy Calendar account was successfully connected to Discord!');
     }

@@ -92,19 +92,19 @@ function set_up_edit_inputs(){
 	calendar_container = $('#calendar');
 	weather_contrainer = $('#weather_container');
 
-	removing = null;
-	input_container = $('#input_container');
-	timespan_sortable = $('#timespan_sortable');
-	first_day = $('#first_day');
-	global_week_sortable = $('#global_week_sortable');
-	leap_day_list = $('#leap_day_list');
-	moon_list = $('#moon_list');
-	periodic_seasons_checkbox = $('#periodic_seasons_checkbox');
-	season_sortable = $('#season_sortable');
-	cycle_sortable = $('#cycle_sortable');
-	era_list = $('#era_list');
-	event_category_list = $('#event_category_list');
-	location_list = $('#location_list');
+    removing = null;
+    input_container = $('#input_container');
+    timespan_sortable = $('#timespan_sortable');
+    first_day = $('#first_day');
+    global_week_sortable = $('#global_week_sortable');
+    leap_day_list = $('#leap_day_list');
+    moon_list = $('#moon_list');
+    periodic_seasons_checkbox = $('#periodic_seasons_checkbox');
+    season_sortable = $('#season_sortable');
+    cycle_sortable = $('#cycle_sortable');
+    era_list = $('#era_list');
+    event_category_list = $('#event_category_list');
+    location_list = $('#location_list');
 	calendar_link_select = $('#calendar_link_select');
 	calendar_link_list = $('#calendar_link_list');
 	calendar_new_link_list = $('#calendar_new_link_list');
@@ -293,7 +293,7 @@ function set_up_edit_inputs(){
 		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 		eval_clock();
-        
+
         window.dispatchEvent(new CustomEvent("clock-changed", { detail: { enabled: static_data.clock.enabled } }));
 
 	});
@@ -619,14 +619,14 @@ function set_up_edit_inputs(){
 
 		}
 
-		season_sortable.sortable('refresh');
-		reindex_season_sortable();
-		populate_preset_season_list();
-		evaluate_season_lengths();
+        season_sortable.sortable('refresh');
+        reindex_season_sortable();
+        populate_preset_season_list();
+        evaluate_season_lengths();
       evaluate_season_daylength_warning();
-		reindex_location_list();
-		name.val("");
-		do_error_check();
+        reindex_location_list();
+        name.val("");
+        do_error_check();
 
 		var no_seasons = static_data.seasons.data.length == 0;
 		$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
@@ -2171,7 +2171,7 @@ function set_up_edit_inputs(){
 		$('.timespan-day-list').each(function(){
 			repopulate_day_select($(this), $(this).val(), changed_days == $(this));
 		});
-        
+
         dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
         preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
 
@@ -2573,8 +2573,8 @@ function set_up_edit_inputs(){
 		update_data(e);
 
 	});
-    
-    
+
+
     document.addEventListener("advancement-changed", function(event){
         advancement = event.detail.data;
         evaluate_save_button();

@@ -1,9 +1,12 @@
 .DEFAULT_GOAL := initialize_dev
-.PHONY: deploy_dev deploy_prod confirm_beta super_confirm super_duper_confirm
+.PHONY: initialize_dev create_npmrc deploy_dev deploy_prod confirm_beta super_confirm super_duper_confirm
 
-deploy_dev: confirm_beta real_deploy_dev
+initialize_dev: create_npmrc install_dev
+deploy_dev: create_npmrc confirm_beta real_deploy_dev
+deploy_prod: create_npmrc confirm_prd super_confirm super_duper_confirm real_deploy_prd
 
-deploy_prod: confirm_prd super_confirm super_duper_confirm real_deploy_prd
+create_npmrc:
+	setup/create-npmrc
 
 confirm_beta:
 	@echo -n "Are you sure you want to deploy to beta? [y/N] " && read ans && [ $${ans:-N} = y ]
@@ -76,13 +79,14 @@ quick_deploy_prod:
   		notify-send -t 8000 "Production quick deploy done";\
   	fi;
 
-initialize_dev:
-	yes n | cp ./setup/docker.example.env .env                                                     # Copy env file, don't overwrite
+install_dev:
+	cp ./setup/docker.example.env .env || true                                                     # Copy env file, don't overwrite
 	docker-compose build                                                                           # Gotta build our images before we can use them
-	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app node:14 npm install                # NPM install inside docker container to avoid installing on host
-	docker run -it -u $(id -u):$(id -g) -v ${PWD}/:/app -w /app fc-bref-composer composer install  # Composer install inside docker container (it has all our required PHP modules)
+	docker run -it -u $(id -u):$(id -g) -v "${PWD}/:/app" -w /app node:20 npm install                # NPM install inside docker container to avoid installing on host
+	docker run -it -u $(id -u):$(id -g) -v "${PWD}/:/var/task" -v ${COMPOSER_HOME:-$HOME/.composer}:/tmp -e COMPOSER_CACHE_DIR=/tmp/composer-cache -w /var/task fc-bref-composer composer install  # Composer install inside docker container (it has all our required PHP modules)
 	docker-compose up -d																		   # Start up our docker containers
-	docker-compose exec php php artisan migrate													   # Run migrations
+	until docker-compose exec php php artisan migrate:status; do sleep 1; done					   # Wait for mysql to be ready
+	docker-compose exec php php artisan migrate:fresh --seed									   # Run migrations
 	docker-compose stop 																		   # Stop docker containers after migrate
 	echo "Dev environment is all set! You can run 'make local' when you're ready to start it up."
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\SyncsSubscriptions;
 use App\Services\Discord\Models\DiscordAuthToken;
 use App\Services\Discord\Models\DiscordGuild;
 use App\Services\Discord\Models\DiscordInteraction;
@@ -15,10 +16,10 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Redis;
 use Laravel\Cashier\Billable;
 use Carbon\Carbon;
 use Arr;
+use Filament\Panel;
 use Laravel\Sanctum\HasApiTokens;
 use Str;
 use Stripe\StripeClient;
@@ -31,6 +32,7 @@ class User extends Authenticatable implements
 {
     use Notifiable,
         Billable,
+        SyncsSubscriptions,
         SoftDeletes,
         HasFactory,
         HasApiTokens;
@@ -75,7 +77,6 @@ class User extends Authenticatable implements
         'card_last_four',
         'trial_ends_at',
         'date_update_pass',
-        'date_register',
         'reg_ip',
         'api_token'
     ];
@@ -268,7 +269,7 @@ class User extends Authenticatable implements
      */
     public function paymentLevel() {
 
-        if ($this->subscribedToPlan(['timekeeper_monthly', 'timekeeper_yearly'], 'Timekeeper') || $this->betaAccess()) {
+        if ($this->subscribedToPrice(['timekeeper_monthly', 'timekeeper_yearly'], 'Timekeeper') || $this->betaAccess()) {
             return 'Timekeeper';
         }
 
@@ -361,19 +362,34 @@ class User extends Authenticatable implements
         ]);
     }
 
-    public function scopePremium(Builder $query)
+    public function scopeMarketingEnabled(Builder $query): Builder
+    {
+        return $query->where(function($query){
+            $query->whereNotNull('marketing_opt_in_at')
+                ->whereNull('marketing_opt_out_at');
+        })->orWhere(function($query){
+            $query->where("marketing_opt_in_at", ">", "marketing_opt_out_at");
+        });
+    }
+
+    public function scopePremium(Builder $query): Builder
     {
         return $query->whereHas('subscriptions', function(Builder $query){
             return $query->whereStripeStatus('active');
         })->orWhere('beta_authorised', '=', true);
     }
 
-    public function scopeVerified($query)
+    public function scopeVerified($query): Builder
     {
-        $query->whereNotNull('email_verified_at');
+        return $query->whereNotNull('email_verified_at');
     }
 
-    public function canAccessFilament(): bool
+    public function canAccessFilament(\Filament\Panel $panel): bool
+    {
+        return $this->isAdmin();
+    }
+
+    public function canAccessPanel(Panel $panel): bool
     {
         return $this->isAdmin();
     }

@@ -102,7 +102,7 @@
                                 <button class="hidden" @click="ok($dispatch)"></button>
                             </form>
 
-                            <x-alert class="mt-2" type="danger" x-show="validation_errors.length">
+                            <x-alert class="mt-2" type="danger" icon="test" x-show="validation_errors.length">
                                 <template x-for="error in validation_errors">
                                     <div x-html="error" class="text-left"></div>
                                 </template>

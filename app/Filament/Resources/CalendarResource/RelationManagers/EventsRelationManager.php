@@ -3,18 +3,18 @@
 namespace App\Filament\Resources\CalendarResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Resources\Form;
+use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\HasManyRelationManager;
-use Filament\Resources\Table;
+use Filament\Tables\Table;
 use Filament\Tables;
 
-class EventsRelationManager extends HasManyRelationManager
+class EventsRelationManager extends \Filament\Resources\RelationManagers\RelationManager
 {
     protected static string $relationship = 'events';
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    public static function form(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -22,7 +22,7 @@ class EventsRelationManager extends HasManyRelationManager
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
             ->columns([

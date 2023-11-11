@@ -69,13 +69,14 @@ class Interval
      * Provides a vote on whether or not the interval would fall on a certain year
      *
      * @param $year
+     * @param $yearZeroExists
      * @return string
      */
-    public function voteOnYear($year): string
+    public function voteOnYear($year, $yearZeroExists): string
     {
         $mod = $year - $this->offset;
 
-        if($year < 0) {
+        if(!$yearZeroExists && $year < 0) {
             $mod++;
         }
 
@@ -239,27 +240,30 @@ class Interval
             return 0;
         }
 
-        if($year > 0) {
+        $isPositiveYear = $year >= 0;
 
-            $year = $this->offset > 0 ? $year - $this->offset + $this->interval : $year;
-
-            $year = $yearZeroExists ? $year - 1 : $year;
-
-            $result = $year / $this->interval;
-
-            return $this->subtracts ? floor($result) * -1 : floor($result);
-
-        }
+        $roundingMethod = $isPositiveYear ? 'floor' : 'ceil';
 
         $outerOffset = $this->offset % $this->interval;
 
-        $result = ($year - ($outerOffset-1)) / $this->interval;
-
-        if($outerOffset === 0){
-            $result--;
+        $year -= $outerOffset;
+        if(!$yearZeroExists && !$isPositiveYear){
+            $year++;
+            if ($outerOffset === 0) {
+                $year -= $this->interval;
+            }
+        }else if($isPositiveYear){
+            if($yearZeroExists){
+                $year--;
+            }
+            if($outerOffset > 0) {
+                $year += $this->interval;
+            }
         }
 
-        return $this->subtracts ? ceil($result) * -1 : ceil($result);
+        $result = $roundingMethod($year / $this->interval);
+
+        return $this->subtracts ? $result * -1 : $result;
     }
 
     public function fraction()

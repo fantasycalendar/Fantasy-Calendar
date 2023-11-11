@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\AdvanceCalendarWithRealTime;
+use App\Jobs\AdvanceRealTimeCalendars as AdvanceRealTimeCalendarsJob;
 use App\Models\Calendar;
 use Illuminate\Console\Command;
 
@@ -29,10 +30,7 @@ class AdvanceRealTimeCalendars extends Command
      */
     public function handle()
     {
-        Calendar::dueForAdvancement()->each(function(Calendar $calendar){
-            logger()->info("Advancing {$calendar->name}");
-            AdvanceCalendarWithRealTime::dispatch($calendar);
-        });
+        AdvanceRealTimeCalendarsJob::dispatch();
 
         return 0;
     }

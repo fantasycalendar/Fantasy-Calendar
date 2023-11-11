@@ -57,16 +57,16 @@ day_data_tooltip = {
 
                 if(key == "era"){
                     if(data > -1){
-                        html.push(static_data.eras[data].name);
+                        html.push(sanitizeHtml(static_data.eras[data].name));
                     }
                 }else if(key.indexOf('moon') > -1){
                     for(var moon_index in data){
                         var moon = static_data.moons[moon_index];
                         if(key == "moon_phase"){
                             var name_array = Object.keys(moon_phases[moon.granularity]);
-                            var moon_data = `${moon.name}: ${name_array[data[moon_index]]}<br>`;
+                            var moon_data = `${sanitizeHtml(moon.name)}: ${name_array[data[moon_index]]}<br>`;
                         }else{
-                            var moon_data = `${moon.name}: ${data[moon_index]}<br>`;
+                            var moon_data = `${sanitizeHtml(moon.name)}: ${data[moon_index]}<br>`;
                         }
                         html.push(moon_data)
                     }
@@ -98,7 +98,7 @@ day_data_tooltip = {
 
                         var cycle_key = data[cycle_index]
 
-                        html.push(`${static_data.cycles.data[cycle_index].names[cycle_key]}<br>`);
+                        html.push(`${sanitizeHtml(static_data.cycles.data[cycle_index].names[cycle_key])}<br>`);
 
                     }
 
