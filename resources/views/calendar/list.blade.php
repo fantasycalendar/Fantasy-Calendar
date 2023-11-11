@@ -256,7 +256,7 @@
                                         @unless($calendar->disabled)
                                             <div class="flex-grow">
                                                 <div class="flex text-md text-gray-600 dark:text-gray-400 mb-1 md:pt-0">
-                                                    <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-calendar"></i> <div>{{ $calendar->current_date }}</div>
+                                                    {{-- <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-calendar"></i> <div>{{ $calendar->current_date }}</div> --}}
                                                 </div>
                                                 @if($calendar->current_era_valid)
                                                     <div class="flex text-md text-gray-600 dark:text-gray-400 mb-1 md:pt-0">
