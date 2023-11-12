@@ -26,10 +26,12 @@
                         </div>
                     </div>
                     <div class="row no-gutters mt-3">
-                        <div class="col-11 col-sm-4 mb-1 mb-md-0 mt-2 mt-lg-0 d-flex">
+                        <div class="col-11 mb-1 mb-md-0 mt-2 mt-lg-0 d-flex align-items-center" :class="categories.length > 0 ? 'col-sm-5' : 'col-sm-9'">
+                            <input type="checkbox" class="form-check mx-2" x-show="categories.length > 0" style="width: 20px; height: 20px;" x-model="multiselect"></input>
+
                             <div style="position: absolute; right: 0px; top: 0px; bottom: 0px; place-items: center; cursor: pointer; width: 50px; opacity: 0.8;"
-                                  @click="search = ''"
-                                  :class="search.length ? 'grid' : 'hidden'">
+                                 @click="search = ''"
+                                 :class="search.length ? 'grid' : 'hidden'">
                                 <i class="fa fa-times"></i>
                             </div>
 
@@ -40,7 +42,7 @@
                             <i class="fa fa-filter" x-bind:style="showFilters ? 'color: rgb(5 150 105);' : ''"></i>
                         </div>
 
-                        <div class="col-12 col-sm-4 pl-sm-1 mb-1 mb-md-0 mt-2 mt-lg-0 d-none d-sm-flex" :class="{ 'd-none': !showFilters }">
+                        <div class="pl-sm-1 mb-1 mb-md-0 mt-2 mt-lg-0 d-none " :class="{ 'd-none': !showFilters || categories.length < 2, 'col-12 col-sm-4 d-sm-flex': categories.length > 1 }">
                             <select x-model="groupFilter" class="form-control">
                                 <option value="-1">All categories</option>
                                 <template x-for="([category_name, category_events]) in Object.entries(categorizedEvents)">
@@ -49,7 +51,7 @@
                             </select>
                         </div>
 
-                        <div class="col-12 col-sm-4 pl-sm-1 mb-1 mb-md-0 mt-sm-2 mt-lg-0 d-none d-sm-flex" :class="{ 'd-none': !showFilters }">
+                        <div class="col-12 col-sm-3 pl-sm-1 mb-1 mb-md-0 mt-sm-2 mt-lg-0 d-none d-sm-flex" :class="{ 'd-none': !showFilters }">
                             <select x-model="visibility" class="form-control">
                                 <option value="any">Any visibility</option>
                                 <option value="visible">Visible only</option>
@@ -58,33 +60,28 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-between border rounded-sm align-items-center py-2 px-2 mt-2">
-                        <div>
-                            <input type="checkbox" class="form-check mx-1" style="width: 20px; height: 20px;" x-model="multiselect"></input>
-                        </div>
+                    <div class="col-12 d-flex align-items-stretch mt-3 p-2 rounded border" :class="(multiselect && categories.length > 0) ? 'd-flex' : 'hidden'">
+                        <select name="" class="form-control w-100 w-sm-auto" x-model="updateCategoryTo" id="" :disabled="!canUpdateCategory">
+                            <option value="" x-text="numberSelected ? `Move ${numberSelected} to category...` : 'Move selected to category...'"></option>
+                            <option value="-1">Remove from category</option>
+                            <template x-for="category in categories">
+                                <option :value="category.id" x-text="category.name"></option>
+                            </template>
+                        </select>
 
-                        <div class="d-flex align-items-center flex-grow-1">
-                            <div class="px-2 w-100" style="max-width: 300px;">
-                                <select name="" class="form-control w-100 w-sm-auto" x-model="updateCategoryTo" id="" :disabled="!canUpdateCategory">
-                                    <option value="" x-text="numberSelected ? `Add ${numberSelected} to category...` : 'Add to category...'"></option>
-                                    <option value="-1">Remove from category</option>
-                                    <template x-for="category in categories">
-                                        <option :value="category.id" x-text="category.name"></option>
-                                    </template>
-                                </select>
-                            </div>
+                        <button class="btn btn-primary flex-shrink-0 ml-1" @click="updateCategory($event, $dispatch)" :disabled="!updateCategoryTo">
+                            <i class="fa fa-check"></i> <span class="d-none d-md-inline">Move</span>
+                        </button>
 
-                            <button class="btn btn-primary" @click="updateCategory($event, $dispatch)" :disabled="!updateCategoryTo">
-                                <i class="fa fa-check"></i>
-                            </button>
-                        </div>
+                        <div class="border-right ml-2 mr-1"></div>
 
-                        {{-- <div> --}}
-                        {{--     <button class="btn" :class="{ 'btn-primary': visibility == 'hidden', 'btn-secondary': visibility == 'visible'}" @click="cycleVisibility"> --}}
-                        {{--         <i class="fa" :class="{ 'fa-eye-slash': visibility == 'hidden', 'fa-eye': visibility != 'hidden' }" title="Toggle visibility"></i> --}}
-                        {{--         <span x-text="visibilityLabel"></span> --}}
-                        {{--     </button> --}}
-                        {{-- </div> --}}
+                        <button class="btn btn-primary flex-shrink-0 ml-1" @click="unhideSelected($dispatch)" :disabled="!Object.keys(selected).length">
+                            <i class="fa fa-eye"></i> <span class="d-none d-md-inline">Unhide</span>
+                        </button>
+
+                        <button class="btn btn-primary flex-shrink-0 ml-1" @click="hideSelected($dispatch)" :disabled="!Object.keys(selected).length">
+                            <i class="fa fa-eye-slash"></i> <span class="d-none d-md-inline">Hide</span>
+                        </button>
                     </div>
 
                     <div class="row" x-show="!Object.keys(categorizedEvents).length && (!search.length && visibility === 'any')">
@@ -201,9 +198,9 @@
                                                 <div class="managed_event_description text-left flex-grow-1">
                                                     <span class="pl-2 pl-md-3" x-html="highlight_match(event_data.name)"></span>
                                                     <span class="px-2 d-none d-sm-inline" style="opacity: 0.4;">&bull;</span>
-                                                    <span class="d-none d-sm-inline" :class="{'opacity-70': event_data.description, 'opacity-30': !event_data.description }" style="font-size: 90%;" x-html="event_data.description ? highlight_match(event_data.description) : 'Event has no description'"></span>
+                                                    <span class="d-none d-sm-inline" :class="{'opacity-70': event_data.description, 'opacity-30': !event_data.description }" x-html="event_data.description ? highlight_match(event_data.description) : 'Event has no description'"></span>
                                                 </div>
-                                                <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="toggleEventHidden(event_data, $dispatch)">
+                                                <button class="managed_event_action_icon" :style="multiselect ? 'pointer-events: none;' : ''" @click.stop="toggleEventHidden(event_data, $dispatch)">
                                                     <i class="fa" :title="eventVisibilityTooltip(event_data)" :class="{  'fa-eye-slash': event_data.settings.hide || event_data.settings.hide_full, 'fa-eye': !event_data.settings.hide, 'opacity-50' : event_data.settings.hide_full }"></i>
                                                 </button>
                                                 <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-edit-event', { event_db_id: event_data.id, epoch: window.dynamic_data.epoch })">

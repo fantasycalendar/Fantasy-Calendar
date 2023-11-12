@@ -18,7 +18,7 @@ const events_manager = {
     selected: {},
     visibility: "any",
     updateCategoryTo: null,
-    showFilters: true,
+    showFilters: false,
 
     init() {
         this.$watch("window.events", () => {
@@ -33,6 +33,40 @@ const events_manager = {
         this.$watch("multiselect", () => {
             this.selected = {};
         });
+    },
+
+    hideSelected($dispatch) {
+        Object.entries(this.selected)
+            .filter((entry) => entry[1])
+            .forEach((event) => {
+                let canonicalEvent = window.events.find(
+                    (canonicalEvent) =>
+                        canonicalEvent.id.toString() === event[0],
+                );
+
+                canonicalEvent.settings.hide = true;
+            });
+
+        this.selected = {};
+
+        $dispatch("events-changed");
+    },
+
+    unhideSelected($dispatch) {
+        Object.entries(this.selected)
+            .filter((entry) => entry[1])
+            .forEach((event) => {
+                let canonicalEvent = window.events.find(
+                    (canonicalEvent) =>
+                        canonicalEvent.id.toString() === event[0],
+                );
+
+                canonicalEvent.settings.hide = false;
+            });
+
+        this.selected = {};
+
+        $dispatch("events-changed");
     },
 
     eventVisibilityTooltip(event) {
