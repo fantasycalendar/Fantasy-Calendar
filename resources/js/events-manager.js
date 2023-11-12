@@ -1,12 +1,5 @@
-/**
- * TODO: Pagination?
- * TODO: Fix call to edit in main blade template
- * TODO: Limit height of result boxes
- * TODO:
- */
-
 const events_manager = {
-    open: true,
+    open: false,
 
     calendar_events: [],
     event_categories: [],
