@@ -1386,13 +1386,15 @@
         <!---------------------------------------------->
 
         <div class='wrap-collapsible card settings-events'>
-            <input id="collapsible_events" class="toggle" type="checkbox" checked>
-            <label for="collapsible_events" class="lbl-toggle py-2 px-3 card-header"><i
-                        class="mr-2 fas fa-calendar-check"></i> Events <a target="_blank" data-pt-position="right"
-                                                                          data-pt-title='More Info: Events'
-                                                                          href='{{ helplink('events') }}'
-                                                                          class="wiki protip"><i
-                            class="icon-question-sign"></i></a></label>
+            <input id="collapsible_events" class="toggle" type="checkbox">
+            <label for="collapsible_events" class="lbl-toggle py-2 px-3 card-header">
+                <i class="mr-2 fas fa-calendar-check"></i> Events
+                <a target="_blank" data-pt-position="right"
+                                   data-pt-title='More Info: Events'
+                                   href='{{ helplink('events') }}'
+                                   class="wiki protip">
+                    <i class="icon-question-sign"></i></a>
+            </label>
             <div class="collapsible-content card-body">
 
                 <button type="button" class="btn btn-secondary col-12 mb-2" x-data @click="$dispatch('open-events-manager')">Manage Events</button>
