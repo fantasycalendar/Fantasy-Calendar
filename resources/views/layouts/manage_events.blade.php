@@ -20,29 +20,41 @@
                     <div class="close-ui-btn-bg"></div>
                     <i class="close_ui_btn fas fa-times-circle" @click="open = false; search = ''"></i>
 
-                    <div class="row no-gutters my-3 modal-form-heading">
-                         <div class="col-12 mb-2">
+                    <div class="row no-gutters mb-3 modal-form-heading">
+                        <div class="col-12 mb-2">
                             <h4 style="opacity: 0.8; line-height: 0.8;">Events</h4>
                         </div>
-
-                        <div class="col-12 col-sm-6 mb-1 mb-sm-0 pr-1" style="display: grid; place-items: end;">
-                            <div class="w-100">
-                                <span style="position: absolute; right: 0px; cursor: pointer; height: 50px; width: 50px; opacity: 0.8; line-height: 50px; text-align: center;" @click="search = ''" x-show="search.length"><i class="fa fa-times"></i></span>
-                                <input id="eventManagerSearch" type="text" name="search" x-model="search" class="form-control" placeholder="Search...">
+                    </div>
+                    <div class="row no-gutters mt-3">
+                        <div class="col-12 col-sm-4 mb-1 mb-md-0 mt-2 mt-lg-0" style="display: grid; place-items: end;">
+                            <div style="position: absolute; right: 0px; top: 0px; bottom: 0px; place-items: center; cursor: pointer; width: 50px; opacity: 0.8;"
+                                  @click="search = ''"
+                                  :class="search.length ? 'grid' : 'hidden'">
+                                <i class="fa fa-times"></i>
                             </div>
+
+                            <input id="eventManagerSearch" type="text" name="search" x-model="search" class="form-control pr-2" placeholder="Search...">
                         </div>
 
-                         <div class="col-12 col-sm-6 d-flex place-items-start align-items-stretch pl-1">
-                             <select x-model="groupFilter" class="form-control w-100 w-sm-auto">
-                                    <option value="-1">All Categories</option>
-                                    <template x-for="([category_name, category_events]) in Object.entries(categorizedEvents)">
-                                        <option :value="category_name" x-text="category_name"></option>
-                                    </template>
+                        <div class="col-12 col-sm-4 pl-sm-1 mb-1 mb-md-0 mt-sm-2 mt-lg-0">
+                            <select x-model="groupFilter" class="form-control pr-2">
+                                <option value="-1">All Categories</option>
+                                <template x-for="([category_name, category_events]) in Object.entries(categorizedEvents)">
+                                    <option :value="category_name" x-text="category_name"></option>
+                                </template>
                             </select>
-                       </div>
+                        </div>
+
+                        <div class="col-12 col-sm-4 pl-sm-1 mb-1 mb-md-0 mt-sm-2 mt-lg-0">
+                            <select x-model="visibility" class="form-control pr-2">
+                                <option value="any">Any visibility</option>
+                                <option value="visible">Visible only</option>
+                                <option value="hidden">Hidden only</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="d-flex justify-content-between border rounded-sm align-items-center py-2 px-2">
+                    <div class="d-flex justify-content-between border rounded-sm align-items-center py-2 px-2 mt-2">
                         <div>
                             <input type="checkbox" class="form-check mx-1" style="width: 20px; height: 20px;" x-model="multiselect"></input>
                         </div>
@@ -63,12 +75,12 @@
                             </button>
                         </div>
 
-                        <div>
-                            <button class="btn" :class="{ 'btn-primary': visibility == 'hidden', 'btn-secondary': visibility == 'visible'}" @click="cycleVisibility">
-                                <i class="fa" :class="{ 'fa-eye-slash': visibility == 'hidden', 'fa-eye': visibility != 'hidden' }" title="Toggle visibility"></i>
-                                <span x-text="visibilityLabel"></span>
-                            </button>
-                        </div>
+                        {{-- <div> --}}
+                        {{--     <button class="btn" :class="{ 'btn-primary': visibility == 'hidden', 'btn-secondary': visibility == 'visible'}" @click="cycleVisibility"> --}}
+                        {{--         <i class="fa" :class="{ 'fa-eye-slash': visibility == 'hidden', 'fa-eye': visibility != 'hidden' }" title="Toggle visibility"></i> --}}
+                        {{--         <span x-text="visibilityLabel"></span> --}}
+                        {{--     </button> --}}
+                        {{-- </div> --}}
                     </div>
 
                     <div class="row" x-show="!Object.keys(categorizedEvents).length && (!search.length && visibility === 'any')">
@@ -142,8 +154,8 @@
                                             <span class="small" x-text="(groupFilter === '-1') ? `(${matchedEvents.length} events)` : `(${matchedEvents.length}/${category_events.length} events)`"></span>
                                         </h5>
 
-                                        <div class="col-12 col-md-6 d-flex justify-content-end">
-                                            <div class="pr-3 d-flex align-items-center">
+                                        <div class="col-12 col-md-6 d-flex justify-content-md-end justify-content-between mt-2 mt-md-0 flex-row-reverse flex-md-row">
+                                            <div class="pr-md-3 d-flex align-items-center">
                                                 <a href="javascript:;" @click="toggleSelectAll" x-text="allSelected ? 'Unselect all' : 'Select all'" x-show="multiselect"></a>
                                             </div>
 
@@ -175,16 +187,18 @@
                                     <div class="col-12 rounded overflow-hidden d-flex flex-column drop-shadow">
                                         <template x-for="event_data in shownEvents" :key="event_data.id">
                                             <div class="managed_event" @click="selectEvent(event_data, $dispatch)">
-                                                <div class="d-flex align-items-center justify-self-start text-left" style="white-space: nowrap;" >
-                                                    <div class="icon d-none d-md-block"><i :class="{
+                                                <div class="d-flex align-items-center justify-content-start justify-self-start text-left" style="white-space: nowrap;" >
+                                                    <div class="icon"><i :class="{
                                                         'fas fa-calendar': !multiselect,
                                                         'far fa-calendar': multiselect && !isSelected(event_data.id),
                                                         'far fa-calendar-check valid': multiselect && isSelected(event_data.id)
                                                     }"></i></div>
-                                                    <span class="py-1" style="padding-left: 0.8rem;" x-html="highlight_match(event_data.name)"></span>
-                                                    <span class="px-2 d-none d-sm-inline" style="opacity: 0.4;">&bull;</span>
                                                 </div>
-                                                <div class="managed_event_description d-none d-sm-block" :class="{'opacity-70': event_data.description, 'opacity-30': !event_data.description }" style="font-size: 90%;" x-html="event_data.description ? highlight_match(event_data.description) : 'Event has no description'"></div>
+                                                <div class="managed_event_description text-left flex-grow-1">
+                                                    <span class="pl-2 pl-md-3" x-html="highlight_match(event_data.name)"></span>
+                                                    <span class="px-2 d-none d-sm-inline" style="opacity: 0.4;">&bull;</span>
+                                                    <span class="d-none d-sm-inline" :class="{'opacity-70': event_data.description, 'opacity-30': !event_data.description }" style="font-size: 90%;" x-html="event_data.description ? highlight_match(event_data.description) : 'Event has no description'"></span>
+                                                </div>
                                                 <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="toggleEventHidden(event_data, $dispatch)">
                                                     <i class="fa" :title="eventVisibilityTooltip(event_data)" :class="{  'fa-eye-slash': event_data.settings.hide || event_data.settings.hide_full, 'fa-eye': !event_data.settings.hide, 'opacity-50' : event_data.settings.hide_full }"></i>
                                                 </button>

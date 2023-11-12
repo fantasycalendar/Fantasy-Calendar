@@ -676,6 +676,10 @@ input[type="number"]:not(.spinner)::-webkit-outer-spin-button {
     width: 100%;
     padding-right: 4px;
 
+    @media screen and (max-width: 768px) {
+        font-size: 0.8rem;
+    }
+
     &:hover {
         background-color: $modal-content-hover-bg-color;
 
@@ -689,7 +693,7 @@ input[type="number"]:not(.spinner)::-webkit-outer-spin-button {
         overflow-x: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        flex-grow: 1;
+        // flex-grow: 1;
     }
 
     &:first-of-type {
@@ -739,6 +743,10 @@ input[type="number"]:not(.spinner)::-webkit-outer-spin-button {
 
         i:not(.valid) {
             color: $modal-accent-foreground;
+        }
+
+        @media screen and (max-width: 768px) {
+            padding: 0.5rem 0.3rem;
         }
     }
 }
