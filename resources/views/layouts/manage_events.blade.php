@@ -88,8 +88,34 @@
                         <div class="col-12 modal-inlay px-md-3 py-md-2" style="max-height: 70vh; overflow-y: auto;">
                             <template x-for="([category_name, category_events]) in Object.entries(categorizedEvents)" :key="category_name">
                                 <div class="row mb-2" x-data="{
+                                    init: function() {
+                                        this.pageIndex = 1;
+
+                                        this.$watch('search', () => {
+                                            this.pageIndex = 1;
+                                        });
+
+                                        this.$watch('groupFilter', () => {
+                                            this.pageIndex = 1;
+                                        });
+
+                                        this.$watch('visibility', () => {
+                                            this.pageIndex = 1;
+                                        });
+                                    },
                                     pageIndex: 1,
                                     perpage: 7,
+                                    allSelected: false,
+                                    toggleSelectAll() {
+                                        let isSelected = this.allSelected;
+
+                                        this.matchedEvents.forEach(event => {
+                                            selected[event.id] = !isSelected;
+                                        });
+                                    },
+                                    get allSelected() {
+                                        return this.matchedEvents.every(event => selected[event.id]);
+                                    },
                                     get matchedEvents() {
                                         return category_events.filter(event => !search || inSearch(event));
                                     },
@@ -117,6 +143,10 @@
                                         </h5>
 
                                         <div class="col-12 col-md-6 d-flex justify-content-end">
+                                            <div class="pr-3 d-flex align-items-center">
+                                                <a href="javascript:;" @click="toggleSelectAll" x-text="allSelected ? 'Unselect all' : 'Select all'" x-show="multiselect"></a>
+                                            </div>
+
                                             <div x-show="matchedEvents.length > perpage && groupFilter === '-1'">
                                                 <div class="input-group">
                                                     <div class="input-group-prepend">
