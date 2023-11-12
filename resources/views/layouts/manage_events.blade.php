@@ -26,27 +26,31 @@
                         </div>
                     </div>
                     <div class="row no-gutters mt-3">
-                        <div class="col-12 col-sm-4 mb-1 mb-md-0 mt-2 mt-lg-0" style="display: grid; place-items: end;">
+                        <div class="col-11 col-sm-4 mb-1 mb-md-0 mt-2 mt-lg-0 d-flex">
                             <div style="position: absolute; right: 0px; top: 0px; bottom: 0px; place-items: center; cursor: pointer; width: 50px; opacity: 0.8;"
                                   @click="search = ''"
                                   :class="search.length ? 'grid' : 'hidden'">
                                 <i class="fa fa-times"></i>
                             </div>
 
-                            <input id="eventManagerSearch" type="text" name="search" x-model="search" class="form-control pr-2" placeholder="Search...">
+                            <input id="eventManagerSearch" type="text" name="search" x-model="search" class="form-control" placeholder="Search...">
                         </div>
 
-                        <div class="col-12 col-sm-4 pl-sm-1 mb-1 mb-md-0 mt-sm-2 mt-lg-0">
-                            <select x-model="groupFilter" class="form-control pr-2">
-                                <option value="-1">All Categories</option>
+                        <div class="col-1 d-sm-none mb-1 mt-2 grid" style="place-items: center; cursor: pointer;" @click="showFilters = !showFilters">
+                            <i class="fa fa-filter" x-bind:style="showFilters ? 'color: rgb(5 150 105);' : ''"></i>
+                        </div>
+
+                        <div class="col-12 col-sm-4 pl-sm-1 mb-1 mb-md-0 mt-2 mt-lg-0 d-none d-sm-flex" :class="{ 'd-none': !showFilters }">
+                            <select x-model="groupFilter" class="form-control">
+                                <option value="-1">All categories</option>
                                 <template x-for="([category_name, category_events]) in Object.entries(categorizedEvents)">
                                     <option :value="category_name" x-text="category_name"></option>
                                 </template>
                             </select>
                         </div>
 
-                        <div class="col-12 col-sm-4 pl-sm-1 mb-1 mb-md-0 mt-sm-2 mt-lg-0">
-                            <select x-model="visibility" class="form-control pr-2">
+                        <div class="col-12 col-sm-4 pl-sm-1 mb-1 mb-md-0 mt-sm-2 mt-lg-0 d-none d-sm-flex" :class="{ 'd-none': !showFilters }">
+                            <select x-model="visibility" class="form-control">
                                 <option value="any">Any visibility</option>
                                 <option value="visible">Visible only</option>
                                 <option value="hidden">Hidden only</option>

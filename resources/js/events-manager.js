@@ -6,7 +6,7 @@
  */
 
 const events_manager = {
-    open: false,
+    open: true,
 
     calendar_events: [],
     event_categories: [],
@@ -18,6 +18,7 @@ const events_manager = {
     selected: {},
     visibility: "any",
     updateCategoryTo: null,
+    showFilters: true,
 
     init() {
         this.$watch("window.events", () => {
