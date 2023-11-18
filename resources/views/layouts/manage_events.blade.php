@@ -54,8 +54,9 @@
                         <div class="col-12 col-sm-3 pl-sm-1 mb-1 mb-md-0 mt-sm-2 mt-lg-0 d-none d-sm-flex" :class="{ 'd-none': !showFilters }">
                             <select x-model="visibility" class="form-control">
                                 <option value="any">Any visibility</option>
-                                <option value="visible">Visible only</option>
-                                <option value="hidden">Hidden only</option>
+                                <option value="visible">Visible</option>
+                                <option value="hidden">Hidden</option>
+                                <option value="entirely_hidden">Entirely Hidden</option>
                             </select>
                         </div>
                     </div>
@@ -75,12 +76,22 @@
 
                         <div class="border-right ml-2 mr-1"></div>
 
+                        <button class="btn btn-primary flex-shrink-0 ml-1" @click="printSelected($dispatch)" :disabled="!Object.keys(selected).length">
+                            <i class="fa fa-print"></i> <span class="d-none d-lg-inline">Print</span>
+                        </button>
+
+                        <button class="btn btn-primary flex-shrink-0 ml-1" @click="dontPrintSelected($dispatch)" :disabled="!Object.keys(selected).length">
+                            <span class="position-relative"><i class="fa fa-print slashed"></i></span> <span class="d-none d-lg-inline">Don't Print</span>
+                        </button>
+
+                        <div class="border-right ml-2 mr-1"></div>
+
                         <button class="btn btn-primary flex-shrink-0 ml-1" @click="unhideSelected($dispatch)" :disabled="!Object.keys(selected).length">
-                            <i class="fa fa-eye"></i> <span class="d-none d-md-inline">Unhide</span>
+                            <i class="fa fa-eye"></i> <span class="d-none d-lg-inline">Unhide</span>
                         </button>
 
                         <button class="btn btn-primary flex-shrink-0 ml-1" @click="hideSelected($dispatch)" :disabled="!Object.keys(selected).length">
-                            <i class="fa fa-eye-slash"></i> <span class="d-none d-md-inline">Hide</span>
+                            <i class="fa fa-eye-slash"></i> <span class="d-none d-lg-inline">Hide</span>
                         </button>
                     </div>
 
@@ -200,8 +211,11 @@
                                                     <span class="px-2 d-none d-sm-inline" style="opacity: 0.4;">&bull;</span>
                                                     <span class="d-none d-sm-inline" :class="{'opacity-70': event_data.description, 'opacity-30': !event_data.description }" x-html="event_data.description ? highlight_match(event_data.description) : 'Event has no description'"></span>
                                                 </div>
-                                                <button class="managed_event_action_icon" :style="multiselect ? 'pointer-events: none;' : ''" @click.stop="toggleEventHidden(event_data, $dispatch)">
-                                                    <i class="fa" :title="eventVisibilityTooltip(event_data)" :class="{  'fa-eye-slash': event_data.settings.hide || event_data.settings.hide_full, 'fa-eye': !event_data.settings.hide, 'opacity-50' : event_data.settings.hide_full }"></i>
+                                                <button class="managed_event_action_icon" :style="multiselect ? 'pointer-events: none;' : ''" @click.stop="toggleEventPrint(event_data, $dispatch)">
+                                                    <i class="fa fa-print" :class="{ 'slashed': !event_data.settings.print }"></i>
+                                                </button>
+                                                <button class="managed_event_action_icon" :style="(multiselect || event_data.settings.hide_full) ? 'pointer-events: none;' : ''" @click.stop="toggleEventHidden(event_data, $dispatch)">
+                                                    <i class="fa" :title="eventVisibilityTooltip(event_data)" :class="{  'fa-eye-slash': event_data.settings.hide || event_data.settings.hide_full, 'fa-eye': !event_data.settings.hide, 'opacity-50 pointer-events-none' : event_data.settings.hide_full }"></i>
                                                 </button>
                                                 <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-edit-event', { event_db_id: event_data.id, epoch: window.dynamic_data.epoch })">
                                                     <i class="fa fa-edit"></i>

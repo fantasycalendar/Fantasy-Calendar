@@ -140,3 +140,20 @@ mark {
 .grid {
     display: grid;
 }
+
+i.fa.slashed {
+    position: relative;
+    display: inline-block;
+    margin-right: 0.2em;
+}
+
+i.fa.slashed:after {
+    content: "";
+    position: absolute;
+    width: 160%;
+    height: 0;
+    border-top: 2px solid color-mix(in srgb, currentcolor 80%, transparent);
+    top: 50%;
+    left: -30%;
+    transform: rotate(35deg);
+}

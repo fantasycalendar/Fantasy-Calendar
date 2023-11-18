@@ -28,7 +28,7 @@ const events_manager = {
         });
     },
 
-    hideSelected($dispatch) {
+    affectSelected($dispatch, callback) {
         Object.entries(this.selected)
             .filter((entry) => entry[1])
             .forEach((event) => {
@@ -37,7 +37,7 @@ const events_manager = {
                         canonicalEvent.id.toString() === event[0],
                 );
 
-                canonicalEvent.settings.hide = true;
+                callback(canonicalEvent);
             });
 
         this.selected = {};
@@ -45,21 +45,28 @@ const events_manager = {
         $dispatch("events-changed");
     },
 
+    hideSelected($dispatch) {
+        this.affectSelected($dispatch, (canonicalEvent) => {
+            canonicalEvent.settings.hide = true;
+        });
+    },
+
     unhideSelected($dispatch) {
-        Object.entries(this.selected)
-            .filter((entry) => entry[1])
-            .forEach((event) => {
-                let canonicalEvent = window.events.find(
-                    (canonicalEvent) =>
-                        canonicalEvent.id.toString() === event[0],
-                );
+        this.affectSelected($dispatch, (canonicalEvent) => {
+            canonicalEvent.settings.hide = false;
+        });
+    },
 
-                canonicalEvent.settings.hide = false;
-            });
+    printSelected($dispatch) {
+        this.affectSelected($dispatch, (canonicalEvent) => {
+            canonicalEvent.settings.print = true;
+        });
+    },
 
-        this.selected = {};
-
-        $dispatch("events-changed");
+    dontPrintSelected($dispatch) {
+        this.affectSelected($dispatch, (canonicalEvent) => {
+            canonicalEvent.settings.print = false;
+        });
     },
 
     eventVisibilityTooltip(event) {
@@ -74,6 +81,16 @@ const events_manager = {
         return "This event is visible to anyone who can see the calendar.";
     },
 
+    toggleEventPrint(event, $dispatch) {
+        let canonicalEvent = window.events.find(
+            (canonicalEvent) => canonicalEvent.id === event.id,
+        );
+
+        canonicalEvent.settings.print = !canonicalEvent.settings.print;
+
+        $dispatch("events-changed");
+    },
+
     toggleEventHidden(event, $dispatch) {
         let canonicalEvent = window.events.find(
             (canonicalEvent) => canonicalEvent.id === event.id,
@@ -82,22 +99,6 @@ const events_manager = {
         canonicalEvent.settings.hide = !canonicalEvent.settings.hide;
 
         $dispatch("events-changed");
-    },
-
-    // Cycle through visibility options:
-    // any -> visible -> hidden -> any
-    cycleVisibility() {
-        switch (this.visibility) {
-            case "any":
-                this.visibility = "visible";
-                break;
-            case "visible":
-                this.visibility = "hidden";
-                break;
-            case "hidden":
-                this.visibility = "any";
-                break;
-        }
     },
 
     get numberSelected() {
@@ -204,6 +205,8 @@ const events_manager = {
                 return !(event.settings.hide || event.settings.hide_full);
             case "hidden":
                 return event.settings.hide || event.settings.hide_full;
+            case "entirely_hidden":
+                return event.settings.hide_full;
         }
     },
 

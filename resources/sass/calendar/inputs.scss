@@ -721,6 +721,7 @@ input[type="number"]:not(.spinner)::-webkit-outer-spin-button {
         text-align: center;
         display: grid;
         align-items: center;
+        position: relative;
 
         &:hover {
             background-color: rgba($modal-accent-background, 0.7);
