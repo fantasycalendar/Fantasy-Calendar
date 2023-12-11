@@ -390,9 +390,7 @@ const calendar_events_editor = {
 		let not_view_page = window.location.pathname.indexOf('/edit') > -1 || window.location.pathname.indexOf('/calendars/create') > -1;
 
 		if (not_view_page) {
-			if (this.new_event) {
-				add_event_to_sortable(events_sortable, this.event_id, events[this.event_id]);
-			} else {
+			if (!this.new_event) {
 				$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${sanitizeHtml(events[this.event_id].name)}`);
 			}
 
@@ -406,7 +404,7 @@ const calendar_events_editor = {
 			}
 		}
 
-        window.dispatchEvent(new CustomEvent("events-changed"));
+    window.dispatchEvent(new CustomEvent("events-changed"));
 
 		this.close();
 

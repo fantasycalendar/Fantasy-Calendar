@@ -4085,34 +4085,6 @@ function add_category_to_list(parent, key, data){
 }
 
 
-function add_event_to_sortable(parent, key, data){
-
-	var element = [];
-
-	element.push(`<div class='sortable-container events_input list-group-item' index='${key}'>`);
-		element.push("<div class='main-container'>");
-			element.push("<div class='handle icon-reorder'></div>");
-			element.push(`<div class='btn btn-outline-primary open-edit-event-ui event_name'></div>`);
-			element.push('<div class="remove-spacer"></div>');
-		element.push("</div>");
-		element.push("<div class='remove-container'>");
-			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-			element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
-		element.push("</div>");
-
-	element.push("</div>");
-
-	element = $(element.join(""))
-
-	element.find('.event_name').html(`Edit - ${data.name}`);
-
-	parent.append(element);
-
-}
-
-
 function add_link_to_list(parent, key, locked, calendar){
 
 	var element = [];
