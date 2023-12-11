@@ -43,6 +43,7 @@ const events_manager = {
         this.selected = {};
 
         $dispatch("events-changed");
+        evaluate_save_button();
     },
 
     hideSelected($dispatch) {
@@ -89,6 +90,7 @@ const events_manager = {
         canonicalEvent.settings.print = !canonicalEvent.settings.print;
 
         $dispatch("events-changed");
+        evaluate_save_button();
     },
 
     toggleEventHidden(event, $dispatch) {
@@ -99,6 +101,7 @@ const events_manager = {
         canonicalEvent.settings.hide = !canonicalEvent.settings.hide;
 
         $dispatch("events-changed");
+        evaluate_save_button();
     },
 
     get numberSelected() {
@@ -155,6 +158,7 @@ const events_manager = {
         this.updateCategoryTo = null;
 
         $dispatch("events-changed");
+        evaluate_save_button();
     },
     refreshCategories() {
         this.categories = clone(window.event_categories) ?? [];
