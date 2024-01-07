@@ -1,7 +1,6 @@
 const events_manager = {
     open: false,
 
-    calendar_events: [],
     event_categories: [],
     groupFilter: "-1",
     categorizedEvents: [],
