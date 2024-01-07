@@ -1,12 +1,12 @@
 const events_manager = {
-    open: true,
+    open: false,
 
     event_categories: [],
     groupFilter: "-1",
     categorizedEvents: [],
     categories: [],
     search: "",
-    multiselect: true,
+    multiselect: false,
     selected: {},
     visibility: "any",
     updateCategoryTo: null,
