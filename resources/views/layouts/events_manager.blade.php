@@ -224,7 +224,7 @@
                                                 <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-edit-event', { event_db_id: event_data.id, epoch: window.dynamic_data.epoch })">
                                                     <i class="fa fa-edit"></i>
                                                 </button>
-                                                <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-delete-event', { event_id: event_data.sort_by })">
+                                                <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-delete-event', { event_db_id: event_data.id })">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             </div>

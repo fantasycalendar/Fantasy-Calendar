@@ -2221,6 +2221,10 @@ const calendar_events_editor = {
 
 		let delete_event_id = $event.detail.event_id;
 
+        if ($event.detail.event_db_id !== undefined) {
+            delete_event_id = events.findIndex((item) => item.id === $event.detail.event_db_id);
+        }
+
 		let warnings = [];
 
 		for (let eventId = 0; eventId < events.length; eventId++) {
