@@ -61,57 +61,61 @@
                         </div>
                     </div>
 
-                    <div class="col-12 d-flex align-items-stretch mt-3 p-2 rounded border" :class="(multiselect && categories.length > 0) ? 'd-flex' : 'hidden'">
-                        <select name="" class="form-control w-100 w-sm-auto" x-model="updateCategoryTo" id="" :disabled="!canUpdateCategory">
-                            <option value="" x-text="numberSelected ? `Move ${numberSelected} to category...` : 'Move selected to category...'"></option>
-                            <option value="-1">Remove from category</option>
-                            <template x-for="category in categories">
-                                <option :value="category.id" x-text="category.name"></option>
-                            </template>
-                        </select>
+                    <div class="d-flex flex-column flex-sm-row align-items-stretch mt-3 p-2 rounded border" :class="(multiselect && categories.length > 0) ? 'd-flex' : 'hidden'">
+                        <div class="d-flex flex-grow-1 mb-1 mb-sm-0">
+                            <select name="" class="form-control w-sm-auto" x-model="updateCategoryTo" id="" :disabled="!canUpdateCategory">
+                                <option value="" x-text="numberSelected ? `Move ${numberSelected} to category...` : 'Move selected to category...'"></option>
+                                <option value="-1">Remove from category</option>
+                                <template x-for="category in categories">
+                                    <option :value="category.id" x-text="category.name"></option>
+                                </template>
+                            </select>
 
-                        <button class="btn btn-primary flex-shrink-0 ml-1" @click="updateCategory($event, $dispatch)" :disabled="!updateCategoryTo">
-                            <i class="fa fa-check"></i> <span class="d-none d-md-inline">Move</span>
-                        </button>
+                            <button class="btn btn-primary flex-shrink-0 ml-1" @click="updateCategory($event, $dispatch)" :disabled="!updateCategoryTo">
+                                <i class="fa fa-check"></i> <span class="d-none d-md-inline">Move</span>
+                            </button>
+                        </div>
 
-                        <div class="border-right ml-2 mr-1"></div>
+                        <div class="d-flex">
+                            <div class="border-right ml-2 mr-1 hidden md-block"></div>
 
-                        <button class="btn btn-primary flex-shrink-0 ml-1" @click="printSelected($dispatch)" :disabled="!Object.keys(selected).length">
-                            <i class="fa fa-print"></i> <span class="d-none d-lg-inline">Print</span>
-                        </button>
+                            <button class="btn btn-primary flex-shrink-0 ml-2 ml-md-1 px-1 px-sm-2" @click="printSelected($dispatch)" :disabled="!Object.keys(selected).length">
+                                <i class="fa fa-print d-none d-sm-inline"></i> <span class="d-inline d-sm-none d-lg-inline">Print</span>
+                            </button>
 
-                        <button class="btn btn-primary flex-shrink-0 ml-1" @click="dontPrintSelected($dispatch)" :disabled="!Object.keys(selected).length">
-                            <span class="position-relative"><i class="fa fa-print slashed"></i></span> <span class="d-none d-lg-inline">Don't Print</span>
-                        </button>
+                            <button class="btn btn-primary flex-shrink-0 ml-1 px-1 px-sm-2" @click="dontPrintSelected($dispatch)" :disabled="!Object.keys(selected).length">
+                                <span class="position-relative"><i class="fa fa-print slashed d-none d-sm-inline"></i></span> <span class="d-inline d-sm-none d-lg-inline">Don't Print</span>
+                            </button>
 
-                        <div class="border-right ml-2 mr-1"></div>
+                            <div class="border-right ml-2 mr-1 hidden md-block"></div>
 
-                        <button class="btn btn-primary flex-shrink-0 ml-1" @click="unhideSelected($dispatch)" :disabled="!Object.keys(selected).length">
-                            <i class="fa fa-eye"></i> <span class="d-none d-lg-inline">Unhide</span>
-                        </button>
+                            <button class="btn btn-primary flex-shrink-0 ml-2 ml-md-1 px-1 px-sm-2" @click="unhideSelected($dispatch)" :disabled="!Object.keys(selected).length">
+                                <i class="fa fa-eye d-none d-sm-inline"></i> <span class="d-inline d-sm-none d-lg-inline">Unhide</span>
+                            </button>
 
-                        <button class="btn btn-primary flex-shrink-0 ml-1" @click="hideSelected($dispatch)" :disabled="!Object.keys(selected).length">
-                            <i class="fa fa-eye-slash"></i> <span class="d-none d-lg-inline">Hide</span>
-                        </button>
+                            <button class="btn btn-primary flex-shrink-0 ml-1 px-1 px-sm-2" @click="hideSelected($dispatch)" :disabled="!Object.keys(selected).length">
+                                <i class="fa fa-eye-slash d-none d-sm-inline"></i> <span class="d-inline d-sm-none d-lg-inline">Hide</span>
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="row" x-show="!Object.keys(categorizedEvents).length && (!search.length && visibility === 'any')">
+                    <div class="row no-gutters" x-show="!Object.keys(categorizedEvents).length && (!search.length && visibility === 'any')">
                         <div class="col-12 text-center py-5 search-empty">
                             <h2>You have no events!</h2>
                         </div>
                     </div>
 
-                    <div class="row" x-show="(search.length || visibility !== 'any') && !Object.keys(categorizedEvents).length">
+                    <div class="row no-gutters" x-show="(search.length || visibility !== 'any') && !Object.keys(categorizedEvents).length">
                         <div class="col-12 text-center py-5 search-empty">
                             <h2>No events match filters</h2>
                         </div>
                     </div>
 
 
-                    <div class="row">
+                    <div class="row no-gutters">
                         <div class="col-12 modal-inlay px-md-3 py-md-2" style="max-height: 70vh; overflow-y: auto;">
                             <template x-for="([category_name, category_events]) in Object.entries(categorizedEvents)" :key="category_name">
-                                <div class="row mb-2" x-data="{
+                                <div class="row no-gutters mb-2" x-data="{
                                     init: function() {
                                         this.pageIndex = 1;
 
@@ -231,7 +235,7 @@
                         </div>
                     </div>
 
-                    <div class="row mt-4">
+                    <div class="row no-gutters mt-4">
                         <div class="col-12 px-md-3 d-flex justify-content-end">
                             <button class="btn btn-outline-secondary mr-2" @click="open = false; search = ''">Cancel</button>
                             <button class="btn btn-primary" @click="$dispatch('event-editor-modal-new-event', { epoch: dynamic_data.epoch })">Create new</button>

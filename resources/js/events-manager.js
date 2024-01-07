@@ -1,12 +1,12 @@
 const events_manager = {
-    open: false,
+    open: true,
 
     event_categories: [],
     groupFilter: "-1",
     categorizedEvents: [],
     categories: [],
     search: "",
-    multiselect: false,
+    multiselect: true,
     selected: {},
     visibility: "any",
     updateCategoryTo: null,
@@ -175,7 +175,7 @@ const events_manager = {
 
                 const categoryName =
                     get_category(event.event_category_id)?.name ??
-                    "No category";
+                    "Uncategorized";
                 categorized[categoryName] = categorized[categoryName] ?? [];
                 categorized[categoryName].push(event);
                 return categorized;
@@ -186,10 +186,10 @@ const events_manager = {
         let unsorted = Object.entries(this.categorizedEvents);
         this.categorizedEvents = unsorted
             .sort((a, b) => {
-                if (a[0] === "No category") {
+                if (a[0] === "Uncategorized") {
                     return -1;
                 }
-                if (b[0] === "No category") {
+                if (b[0] === "Uncategorized") {
                     return 1;
                 }
                 return a[0] > b[0] ? 1 : -1;
