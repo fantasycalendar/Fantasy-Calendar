@@ -230,6 +230,13 @@
                             </template>
                         </div>
                     </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12 px-md-3 d-flex justify-content-end">
+                            <button class="btn btn-outline-secondary mr-2" @click="open = false; search = ''">Cancel</button>
+                            <button class="btn btn-primary" @click="$dispatch('event-editor-modal-new-event', { epoch: dynamic_data.epoch })">Create new</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
