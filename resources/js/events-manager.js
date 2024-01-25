@@ -1,5 +1,5 @@
 const events_manager = {
-    open: true,
+    open: false,
 
     event_categories: [],
     groupFilter: "-1",
@@ -256,28 +256,32 @@ const events_manager = {
         this.selected[id] = !this.isSelected(id);
     },
 
-    highlight_match: function(string) {
+    highlight_match: function(string, offset = 0) {
         let output = sanitizeHtml(string, { allowedTags: [] });
         let index = 0;
         if (output.length < 1) return;
+        let lengthLimit = 110 - offset;
+        console.log(lengthLimit, offset);
 
         // Using a dedicated variable for this because adding the "<mark>" to the HTML
         // makes the final output have a higher length. We want to check length on the **unaltered** results,
         // in case the original is, say, 99 characters, and the <mark> tag would result in
         // unnecessary ellipsis.
-        let ellipses = output.length > 85;
+        let ellipses = output.length > lengthLimit;
 
         if (
             this.search.length &&
             output.toLowerCase().includes(this.search.toLowerCase())
         ) {
-            let found = output.toLowerCase().indexOf(this.search);
+            let found = output.toLowerCase().indexOf(this.search.toLowerCase());
 
-            if (found > 85 - this.search.length) {
-                index = found - 10;
+            if (found + this.search.length + 1 > lengthLimit - this.search.length - 2) {
+                index = Math.max(0, Math.floor(found - lengthLimit / 2));
             }
 
-            output = output.replace(
+            output = output
+                .substring(index, index + lengthLimit)
+                .replace(
                 new RegExp(this.search, "gi"),
                 function(str) {
                     return `<mark>${str}</mark>`;
@@ -286,7 +290,7 @@ const events_manager = {
         }
 
         if (ellipses) {
-            output = output.substring(index, index + 85) + "...";
+            output = output + "...";
         }
 
         if (index) {
