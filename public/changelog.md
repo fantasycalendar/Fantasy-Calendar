@@ -262,11 +262,12 @@
 * Fixed - Calendar export being broken on some calendars
 
 ### 2.0.14 - Time-traveling Efreet
-#### January 23, 2021
+#### January 28, 2021
 * Tweaked - Cycle condition dropdown now includes which cycle family the condition is point to
 * Tweaked - Enable season day color will now generate a new set of colors and sequence them properly
 * Fixed - Events landing on intercalary leap days that happen at the end of a month not appearing
 * Fixed - Nesting normal event groups inside of number event groups caused events to appear when they shouldn't
+* Updated - Dependency updates for security
 
 ### 2.0.13 - Squashing Efreet
 #### January 18, 2021

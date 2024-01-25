@@ -1704,3 +1704,4 @@ function has_year_ending_era(static_data, year){
 }
 
 
+

@@ -131,8 +131,8 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-eye",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
-					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: element.hasClass('era_event'), epoch: element.parent().parent().attr('epoch') } }));
+					let event_id = element.attr('event_id');
+					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: event_id, era: element.hasClass('era_event'), epoch: element.parent().parent().attr('epoch') } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
@@ -148,17 +148,17 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-edit",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id, epoch: element.parent().parent().attr('epoch') } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					return !Perms.can_modify_event(event_id) || element.hasClass('era_event');
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					return Perms.can_modify_event(event_id) && !element.hasClass('era_event');
 				}
 			},
@@ -167,17 +167,17 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-clone",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
                     window.dispatchEvent(new CustomEvent('event-editor-modal-clone-event', { detail: { event_id: event_id, epoch: element.parent().parent().attr('epoch') } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					return !Perms.can_modify_event(event_id) || element.hasClass('era_event');
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					return Perms.can_modify_event(event_id) && !element.hasClass('era_event');
 				}
 			},
@@ -186,8 +186,8 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-eye",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
-					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: element.hasClass('era_event'), epoch: element.parent().parent().attr('epoch') } }));
+					let event_id = element.attr('event_id');
+					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: event_id, era: element.hasClass('era_event'), epoch: element.parent().parent().attr('epoch') } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
@@ -203,7 +203,7 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-edit",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let era_id = element.attr('event')|0;
+					let era_id = element.attr('event_id')|0;
 					window.dispatchEvent(new CustomEvent('html-editor-modal-edit-html', { detail: { era_id: era_id } }));
 				},
 				disabled: function(key, opt){
@@ -220,17 +220,17 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-eye-slash",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event'));
+					let event_id = Number(element.attr('event_id'));
 					submit_hide_show_event(event_id);
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event'));
+					let event_id = Number(element.attr('event_id'));
 					return element.hasClass('era_event') || events[event_id].settings.hide || !Perms.can_modify_event(event_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event'));
+					let event_id = Number(element.attr('event_id'));
 					return !element.hasClass('era_event') && !events[event_id].settings.hide && Perms.can_modify_event(event_id);
 				}
 			},
@@ -239,17 +239,17 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-eye-slash",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event'));
+					let event_id = Number(element.attr('event_id'));
 					submit_hide_show_event(event_id);
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event'));
+					let event_id = Number(element.attr('event_id'));
 					return element.hasClass('era_event') || !events[event_id].settings.hide || !Perms.can_modify_event(event_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event'));
+					let event_id = Number(element.attr('event_id'));
 					return !element.hasClass('era_event') && events[event_id].settings.hide && Perms.can_modify_event(event_id);
 				}
 			},
@@ -258,17 +258,17 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-trash-alt",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					window.dispatchEvent(new CustomEvent('event-editor-modal-delete-event', { detail: { event_id: event_id } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					return element.hasClass('era_event') || !Perms.can_modify_event(event_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					return !element.hasClass('era_event') && Perms.can_modify_event(event_id);
 				}
 			}
@@ -352,7 +352,7 @@ function set_up_visitor_inputs(){
 			let found_events = CalendarRenderer.render_data.event_epochs[epoch].events;
 			let event_id = found_events[0].index;
 			let era_event = found_events[0].era;
-			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: era_event, epoch: epoch } }));
+			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: event_id, era: era_event, epoch: epoch } }));
 		}
 	}
 
@@ -389,7 +389,7 @@ function set_up_visitor_inputs(){
 							name: event_name,
 							id: event_id,
 							callback: function(key, opt) {
-								window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: era_event, epoch: epoch } }));
+								window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: event_id, era: era_event, epoch: epoch } }));
 							}
 						}
 					}
