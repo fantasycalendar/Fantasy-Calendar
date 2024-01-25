@@ -27,7 +27,7 @@
                     </div>
                     <div class="row no-gutters mt-3">
                         <div class="col-11 mb-1 mb-md-0 mt-2 mt-lg-0 d-flex align-items-center" :class="categories.length > 0 ? 'col-sm-5' : 'col-sm-9'">
-                            <input type="checkbox" class="form-check mx-2" x-show="categories.length > 0" style="width: 20px; height: 20px;" x-model="multiselect"></input>
+                            <input type="checkbox" class="form-check mx-2" style="width: 20px; height: 20px;" x-model="multiselect"></input>
 
                             <div style="position: absolute; right: 0px; top: 0px; bottom: 0px; place-items: center; cursor: pointer; width: 50px; opacity: 0.8;"
                                  @click="search = ''"
@@ -61,10 +61,10 @@
                         </div>
                     </div>
 
-                    <div class="d-flex flex-column flex-sm-row align-items-stretch mt-3 p-2 rounded border" :class="(multiselect && categories.length > 0) ? 'd-flex' : 'hidden'">
+                    <div class="d-flex flex-column flex-sm-row align-items-stretch mt-3 p-2 rounded border" :class="multiselect ? 'd-flex' : 'hidden'">
                         <div class="d-flex flex-grow-1 mb-1 mb-sm-0">
                             <select name="" class="form-control w-sm-auto" x-model="updateCategoryTo" id="" :disabled="!canUpdateCategory">
-                                <option value="" x-text="numberSelected ? `Move ${numberSelected} to category...` : 'Move selected to category...'"></option>
+                                <option value="" x-text="updateCategoryText"></option>
                                 <option value="-1">Remove from category</option>
                                 <template x-for="category in categories">
                                     <option :value="category.id" x-text="category.name"></option>
@@ -216,10 +216,10 @@
                                                     <span class="d-none d-sm-inline" :class="{'opacity-70': event_data.description, 'opacity-30': !event_data.description }" x-html="event_data.description ? highlight_match(event_data.description) : 'Event has no description'"></span>
                                                 </div>
                                                 <button class="managed_event_action_icon" :style="multiselect ? 'pointer-events: none;' : ''" @click.stop="toggleEventPrint(event_data, $dispatch)">
-                                                    <i class="fa fa-print" :class="{ 'slashed': !event_data.settings.print }"></i>
+                                                    <i class="fa fa-print" :class="{ 'slashed opacity-60': !event_data.settings.print }"></i>
                                                 </button>
                                                 <button class="managed_event_action_icon" :style="(multiselect || event_data.settings.hide_full) ? 'pointer-events: none;' : ''" @click.stop="toggleEventHidden(event_data, $dispatch)">
-                                                    <i class="fa" :title="eventVisibilityTooltip(event_data)" :class="{  'fa-eye-slash': event_data.settings.hide || event_data.settings.hide_full, 'fa-eye': !event_data.settings.hide, 'opacity-50 pointer-events-none' : event_data.settings.hide_full }"></i>
+                                                    <i class="fa" :title="eventVisibilityTooltip(event_data)" :class="{  'fa-eye-slash opacity-60': event_data.settings.hide || event_data.settings.hide_full, 'fa-eye': !event_data.settings.hide, 'opacity-50 pointer-events-none' : event_data.settings.hide_full }"></i>
                                                 </button>
                                                 <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-edit-event', { event_db_id: event_data.id, epoch: window.dynamic_data.epoch })">
                                                     <i class="fa fa-edit"></i>

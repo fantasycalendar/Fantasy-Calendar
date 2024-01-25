@@ -1,5 +1,5 @@
 const events_manager = {
-    open: false,
+    open: true,
 
     event_categories: [],
     groupFilter: "-1",
@@ -118,8 +118,22 @@ const events_manager = {
         }
     },
 
+    get updateCategoryText() {
+        if (!this.categories.length) {
+            return "No event categories";
+        }
+
+        return this.numberSelected
+            ? `Move ${this.numberSelected} to category...`
+            : 'Move selected to category...'
+    },
+
     // Only if all selected events are in the same category
     get canUpdateCategory() {
+        if (!this.categories.length) {
+            return false;
+        }
+
         const selectedEvents = Object.entries(this.selected)
             .filter((entry) => {
                 console.log(entry[1]);
