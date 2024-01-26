@@ -6,12 +6,6 @@
 
 <body class="scrollbar page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class') @guest dark @else @setting('dark_theme') dark @endsetting @endguest">
 
-@if(auth()->check() && request()->session()->has('admin.id'))
-    <div class="w-full py-1 bg-red-200 dark:bg-red-900 text-red-800 dark:text-red-200 text-center flex justify-center items-center">
-        You are impersonating the user <strong class="ml-1">{{ Auth::user()->username }}</strong>. <a class="rounded-full ml-1 px-1.5 py-0.5 bg-red-600 text-red-200 dark:bg-red-200 dark:text-red-900 text-xs" href="{{ route('admin.reverse_impersonate') }}">Reverse Impersonate</a>
-    </div>
-@endif
-
 @env('development')
     <div class="w-full py-1 bg-red-200 dark:bg-red-900 text-red-800 dark:text-red-200 text-center">
         This is the beta deployment of Fantasy Calendar. Use with caution.
@@ -202,5 +196,6 @@
     </div>
 </div>
 
+<x-impersonate::banner />
 </body>
 </html>

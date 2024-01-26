@@ -38,6 +38,8 @@
 
         }
 
+        window.dispatchEvent(new CustomEvent("events-changed"));
+
     });
 
     function check_dates(){
@@ -122,6 +124,7 @@
 @section('content')
     <div id="generator_container">
         @include('layouts.layouts')
+        @include('layouts.events_manager')
         @include('layouts.weather_tooltip')
         @include('layouts.day_data_tooltip')
         @include('layouts.moon_tooltip')

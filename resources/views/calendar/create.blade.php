@@ -131,6 +131,8 @@
             return urlParams.has("save");
         }
 
+        window.dispatchEvent(new CustomEvent("events-changed"));
+
     </script>
 
 @endpush

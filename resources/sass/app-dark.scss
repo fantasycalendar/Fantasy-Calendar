@@ -53,6 +53,7 @@ $swal2-toast-button-focus-box-shadow: 0 0 0 1px $swal2-background, 0 0 0 3px $sw
 
 @import '~@fortawesome/fontawesome-free/scss/fontawesome';
 @import '~@fortawesome/fontawesome-free/scss/solid';
+@import '~@fortawesome/fontawesome-free/scss/regular';
 @import '~@fortawesome/fontawesome-free/scss/brands';
 
 $hamburger-layer-color      :#FFF;
@@ -205,12 +206,21 @@ body {
 }
 
 .border{
-    border: 1px solid rgba(166, 168, 179, 0.32) !important;
+    border: 1px solid rgb(51, 65, 85) !important;
+}
+
+.border-right {
+    border-right: 1px solid rgb(51, 65, 85) !important;
 }
 
 .btn-outline-secondary {
-    color: $gray-500;
-    border-color: $gray-600;
+    color: $gray-400;
+    border-color: $gray-500 !important;
+    background-color: transparent !important;
+
+    &:hover {
+        background-color: $gray-800 !important;
+    }
 }
 
 // body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):not(#btn_delete):not(.btn-stock):not(#go_to_preview_date):not(#preview_date_btn) {
@@ -323,4 +333,9 @@ body {
 
 .form-check-input[disabled] ~ .form-check-label, .form-check-input:disabled ~ .form-check-label {
     color: inherit;
+}
+
+mark {
+    background-color: $bg-emerald-800;
+    color: white;
 }

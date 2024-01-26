@@ -88,11 +88,6 @@ Route::middleware(['account.deletion', 'agreement'])->group(function(){
 Auth::routes(['verify' => true]);
 Route::get('/logout', [LoginController::class, 'logout']);
 
-Route::middleware('admin')->as('admin.')->prefix('admin')->group(function() {
-    Route::get('/impersonate/{userid}', [AdminController::class, 'impersonate'])->name('impersonate');
-    Route::get('/reverse_impersonate/', [AdminController::class, 'reverseImpersonate'])->name('reverse_impersonate');
-});
-
 // Pricing page
 Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('subscription.pricing');
 

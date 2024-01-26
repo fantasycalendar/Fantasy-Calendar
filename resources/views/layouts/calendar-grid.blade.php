@@ -82,7 +82,7 @@
                                             x-text="calendar_event.name"
                                             :title="calendar_event.name"
                                             :event_id="calendar_event.index"
-                                            @click="$dispatch('event-viewer-modal-view-event', { id: calendar_event.index, era: calendar_event.era, epoch: day.epoch })"
+                                            @click="$dispatch('event-viewer-modal-view-event', { event_id: calendar_event.index, era: calendar_event.era, epoch: day.epoch })"
                                         ></div>
                                     </template>
                                 </div>

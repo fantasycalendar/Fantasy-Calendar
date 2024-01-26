@@ -375,15 +375,19 @@ class Calendar extends Model
      */
     public function getCurrentDateAttribute(): string
     {
-        if (!$this->current_date_valid) {
-            return "N/A";
+        try {
+            if (!$this->current_date_valid) {
+                return "N/A";
+            }
+
+            $year = $this->year;
+            $month = $this->month_name;
+            $day = $this->day;
+
+            return sprintf("%s %s, %s", $day, $month, $year);
+        } catch (\Throwable $e) {
+            return "[Error]";
         }
-
-        $year = $this->year;
-        $month = $this->month_name;
-        $day = $this->day;
-
-        return sprintf("%s %s, %s", $day, $month, $year);
     }
 
     /**

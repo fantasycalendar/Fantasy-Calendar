@@ -351,7 +351,13 @@ const calendar_events_editor = {
 
 		this.creation_type = "Editing Event"
 
-		this.event_id = $event.detail.event_id;
+        let event_index = $event.detail.event_id;
+
+        if ($event.detail.event_db_id !== undefined) {
+            event_index = events.findIndex((item) => item.id === $event.detail.event_db_id);
+        }
+
+		this.event_id = event_index;
 
 		this.working_event = clone(events[this.event_id]);
 
@@ -384,9 +390,7 @@ const calendar_events_editor = {
 		let not_view_page = window.location.pathname.indexOf('/edit') > -1 || window.location.pathname.indexOf('/calendars/create') > -1;
 
 		if (not_view_page) {
-			if (this.new_event) {
-				add_event_to_sortable(events_sortable, this.event_id, events[this.event_id]);
-			} else {
+			if (!this.new_event) {
 				$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${sanitizeHtml(events[this.event_id].name)}`);
 			}
 
@@ -399,6 +403,8 @@ const calendar_events_editor = {
 				submit_edit_event(this.event_id, this.submit_event_callback);
 			}
 		}
+
+    window.dispatchEvent(new CustomEvent("events-changed"));
 
 		this.close();
 
@@ -556,12 +562,12 @@ const calendar_events_editor = {
 				icon: "warning",
 			}).then((result) => {
 				if (!result.dismiss) {
-					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.event_id, era: false, epoch: this.epoch } }));
+					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.event_id, era: false, epoch: this.epoch } }));
 					this.close();
 				}
 			});
 		} else {
-			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.event_id, era: false, epoch: this.epoch } }));
+			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.event_id, era: false, epoch: this.epoch } }));
 			this.close();
 		}
 
@@ -2213,9 +2219,11 @@ const calendar_events_editor = {
 
 	confirm_delete_event($event) {
 
-		let event_editor_ui = this;
-
 		let delete_event_id = $event.detail.event_id;
+
+        if ($event.detail.event_db_id !== undefined) {
+            delete_event_id = events.findIndex((item) => item.id === $event.detail.event_db_id);
+        }
 
 		let warnings = [];
 
@@ -2268,16 +2276,11 @@ const calendar_events_editor = {
 
 				if (!result.dismiss) {
 
-					if ($('#events_sortable').length) {
+                    let not_view_page = window.location.pathname.indexOf('/edit') > -1 || window.location.pathname.indexOf('/calendars/create') > -1;
+
+					if (not_view_page) {
 
 						this.delete_event(delete_event_id);
-
-						events_sortable.children(`[index='${delete_event_id}']`).remove();
-
-						events_sortable.children().each(function(i) {
-							events[i].sort_by = i;
-							$(this).attr('index', i);
-						});
 
 						evaluate_save_button();
 
@@ -2285,9 +2288,9 @@ const calendar_events_editor = {
 
 						let event_id = events[delete_event_id].id;
 
-						submit_delete_event(event_id, function() {
-							event_editor_ui.delete_event(delete_event_id);
-						});
+						submit_delete_event(event_id, () => {
+							this.delete_event(delete_event_id);
+						})
 
 					}
 
@@ -2303,10 +2306,11 @@ const calendar_events_editor = {
 
         for (let eventId = 0; eventId < events.length; eventId++) {
 			if (events[eventId].data.connected_events !== undefined) {
-				for (let connectedId of events[eventId].data.connected_events) {
-					let number = Number(connectedId)
-					if (number > delete_event_id) {
-						events[eventId].data.connected_events[connectedId] = String(number - 1)
+                const connectedEvents = events[eventId].data.connected_events;
+				for (let connectedIndex = 0; connectedIndex < connectedEvents.length; connectedIndex++) {
+                    let connectedIdNumber = Number(connectedEvents[connectedIndex])
+					if (connectedIdNumber > delete_event_id) {
+						events[eventId].data.connected_events[connectedIndex] = connectedIdNumber - 1;
 					}
 				}
 			}
@@ -2317,6 +2321,8 @@ const calendar_events_editor = {
         this.close();
 
 		rerender_calendar();
+
+        window.dispatchEvent(new CustomEvent("events-changed"));
 
 	},
 

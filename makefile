@@ -1,12 +1,9 @@
 .DEFAULT_GOAL := initialize_dev
-.PHONY: initialize_dev create_npmrc deploy_dev deploy_prod confirm_beta super_confirm super_duper_confirm
+.PHONY: initialize_dev deploy_dev deploy_prod confirm_beta super_confirm super_duper_confirm
 
-initialize_dev: create_npmrc install_dev
-deploy_dev: create_npmrc confirm_beta real_deploy_dev
-deploy_prod: create_npmrc confirm_prd super_confirm super_duper_confirm real_deploy_prd
-
-create_npmrc:
-	setup/create-npmrc
+initialize_dev: install_dev
+deploy_dev: confirm_beta real_deploy_dev
+deploy_prod: confirm_prd super_confirm super_duper_confirm real_deploy_prd
 
 confirm_beta:
 	@echo -n "Are you sure you want to deploy to beta? [y/N] " && read ans && [ $${ans:-N} = y ]

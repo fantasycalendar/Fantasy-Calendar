@@ -9,7 +9,7 @@
         "dev-install-watch": "npm install && npm run watch"
     },
     "devDependencies": {
-        "axios": "^0.21.2",
+        "axios": "^1.6.0",
         "bootstrap": "^4.6.2",
         "browser-sync": "^2.28.3",
         "browser-sync-webpack-plugin": "2.3.0",
@@ -48,7 +48,7 @@
         "mustache": "^3.2.1",
         "notifyjs": "^3.0.0",
         "postcss": "^8.4.21",
-        "progressbar.js": "^1.1.0",
+        "progressbar.js": "^1.1.1",
         "protip": "^1.4.21",
         "sanitize-html": "^2.8.1",
         "select2": "^4.0.13",
@@ -56,6 +56,7 @@
         "serverless-s3-sync": "^1.14.4",
         "simplebar": "^6.2.4",
         "sortable": "^2.0.0",
+        "sortablejs": "^1.15.0",
         "sweetalert": "^2.1.2",
         "sweetalert2": "^9.17.4",
         "tailwindcss": "^3.2.4",
