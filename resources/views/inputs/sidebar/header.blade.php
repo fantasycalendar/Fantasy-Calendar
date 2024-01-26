@@ -1,5 +1,5 @@
 
-<nav class="navbar-expand navbar-dark bg-accent">
+<nav class="navbar-expand navbar-dark bg-accent sticky-top">
     <div class="collapse navbar-collapse" id="collapsemenu">
         <ul class="navbar-nav d-flex justify-content-between align-items-center w-100">
             <li class="nav-item active">
