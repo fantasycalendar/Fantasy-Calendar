@@ -50,7 +50,8 @@
         margin: 12px 8px;
         min-width: calc(100% - 40px);
         overflow: hidden;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        box-shadow:
+            0 10px 15px -3px rgba(0, 0, 0, 0.1),
             0 4px 6px -2px rgba(0, 0, 0, 0.05);
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         container-type: inline-size;
@@ -91,7 +92,6 @@
         grid-auto-columns: 1fr;
         grid-auto-flow: column;
         flex: 1;
-        background-image: $disabled-crosshatch;
         z-index: 8;
 
         &.intercalary {
@@ -104,6 +104,7 @@
             display: grid;
             grid-auto-columns: 1fr;
             grid-auto-flow: column;
+            background-color: $card-bg-color;
         }
 
         &_container {
@@ -111,6 +112,7 @@
             flex-direction: column;
             overflow-x: auto;
             flex: 1;
+            background-image: $disabled-crosshatch;
 
             &:not(.intercalary) {
                 border-top: 1px solid $calendar-border-color;

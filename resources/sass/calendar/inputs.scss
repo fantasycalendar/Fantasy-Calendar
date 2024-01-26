@@ -937,7 +937,7 @@ body .event_comment .comment_context_btn:not(:hover) {
     position: absolute;
     right: 35px;
     top: 15px;
-    font-size: 42px;
+    font-size: 26px;
     color: $text-red-500;
     cursor: pointer;
     z-index: 1001;
@@ -950,7 +950,8 @@ body .event_comment .comment_context_btn:not(:hover) {
 .event_header_action {
     font-size: 1.5rem;
     opacity: 0.35;
-    margin-left: 0.5rem;
+    margin-left: 0.9rem;
+
     &:hover {
         opacity: 1;
         cursor: pointer;
@@ -987,7 +988,7 @@ body .event_comment .comment_context_btn:not(:hover) {
 
     .close_ui_btn {
         top: 17px;
-        right: 6px;
+        right: 15px;
         z-index: 100;
     }
 
@@ -1008,7 +1009,7 @@ body .event_comment .comment_context_btn:not(:hover) {
 }
 
 .modal-form-heading {
-    margin-top: 10px;
+    // margin-top: 10px;
 }
 
 .event_desc.editable {

@@ -1,6 +1,6 @@
 /* Top-follower */
 
-#top_follower{
+#top_follower {
     display: inline-flex;
     flex-direction: row;
     background-color: $card-bg-color;
@@ -16,13 +16,16 @@
     left: 1%;
     justify-content: space-between;
     transition: box-shadow 0.3s ease;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-shadow:
+        0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
     &.single_month {
         align-self: stretch;
         margin: 0;
         width: auto;
         box-shadow: none;
+        left: 0;
         border-bottom: 1px solid $calendar-border-color;
         // border-radius: 0;
 
@@ -38,13 +41,16 @@
             border-radius: 0 !important;
         }
 
-        .btn.sub_year, .btn.add_year {
+        .btn.sub_year,
+        .btn.add_year {
             display: none;
         }
     }
 
     &.follower_shadow {
-        box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        box-shadow:
+            0 3px 6px rgba(0, 0, 0, 0.16),
+            0 3px 6px rgba(0, 0, 0, 0.23);
     }
 
     .follower_center {
@@ -53,7 +59,7 @@
         align-items: center;
     }
 
-    .btn_container{
+    .btn_container {
         display: inline-flex;
         flex-direction: column;
         width: 5em;
@@ -66,65 +72,70 @@
             padding-left: 0;
         }
 
-        &:last-child{
+        &:last-child {
             padding-right: 0;
             // border-bottom-left-radius: 0;
             // border-bottom-right-radius: 4px;
         }
 
-        .btn{
+        .btn {
             margin: 0.3rem;
             // border-radius: 0;
             text-align: center;
-            -webkit-box-flex: 1;      /* OLD - iOS 6-, Safari 3.1-6 */
-            -moz-box-flex: 1;         /* OLD - Firefox 19- */
-            -webkit-flex: 1;          /* Chrome */
-            -ms-flex: 1;              /* IE 10 */
-            flex: 1;                  /* NEW, Spec - Opera 12.1, Firefox 20+ */
-            padding:0;
-            position:relative;
+            -webkit-box-flex: 1; /* OLD - iOS 6-, Safari 3.1-6 */
+            -moz-box-flex: 1; /* OLD - Firefox 19- */
+            -webkit-flex: 1; /* Chrome */
+            -ms-flex: 1; /* IE 10 */
+            flex: 1; /* NEW, Spec - Opera 12.1, Firefox 20+ */
+            padding: 0;
+            position: relative;
 
-            &:last-child{
+            &:last-child {
                 // border-top:1px solid $calendar-border-color;
             }
         }
     }
+
+    @media screen and (max-width: 768px) {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
 }
 
-.reset_preview_date_container{
-    flex:0 1 auto;
-    width:5.5rem;
+.reset_preview_date_container {
+    flex: 0 1 auto;
+    width: 5.5rem;
 }
 
 .reset_preview_date {
-    font-size:0.9rem;
-    width:100%;
-    height:100%;
-    padding:0.2rem;
+    font-size: 0.9rem;
+    width: 100%;
+    height: 100%;
+    padding: 0.2rem;
     text-align: center;
     margin: 0.3rem;
 }
 
-#top_follower_content{
+#top_follower_content {
     text-align: center;
-    padding:5px 0;
+    padding: 5px 0;
     display: inline-flex;
     flex-direction: column;
     justify-content: center;
 }
 
-#top_follower_content .year{
-    width:100%;
-    font-size:1.25rem;
+#top_follower_content .year {
+    width: 100%;
+    font-size: 1.25rem;
 }
 
-#top_follower_content .cycle{
-    order:2;
-    width:100%;
-    font-size:1rem;
+#top_follower_content .cycle {
+    order: 2;
+    width: 100%;
+    font-size: 1rem;
     font-style: italic;
 }
 
-#top_follower_content .cycle.smaller{
-    font-size:0.8rem;
+#top_follower_content .cycle.smaller {
+    font-size: 0.8rem;
 }
