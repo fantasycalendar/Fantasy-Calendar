@@ -933,27 +933,18 @@ body .event_comment .comment_context_btn:not(:hover) {
     max-width: 100%;
 }
 
-.close-ui-btn-bg {
-    position: absolute;
-    right: -20px;
-    top: -16.5px;
-    width: 60px;
-    height: 60px;
-    border-radius: 30px;
-    background-color: $modal-bg-color;
-}
-
 .close_ui_btn {
     position: absolute;
-    right: -15px;
-    top: -11px;
-    font-size: 50px;
-    color: #e53935;
+    right: 35px;
+    top: 15px;
+    font-size: 42px;
+    color: $text-red-500;
     cursor: pointer;
+    z-index: 1001;
 }
 
 .close_ui_btn:hover {
-    color: #b71c1c;
+    color: $text-red-400;
 }
 
 .event_header_action {

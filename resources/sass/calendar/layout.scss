@@ -128,6 +128,10 @@ body {
     display: flex;
 
     .navbar {
+        &-expand.sticky-top {
+            z-index: 10;
+        }
+
         &-brand {
             padding: 0 0.5rem;
             margin-right: 0.75rem;
