@@ -45,7 +45,8 @@
         "spatie/laravel-export": "^0.3.11",
         "spatie/laravel-honeypot": "^4.3",
         "spatie/laravel-ignition": "^2.2",
-        "spatie/laravel-log-dumper": "^1.4"
+        "spatie/laravel-log-dumper": "^1.4",
+        "stechstudio/filament-impersonate": "^3.5"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",

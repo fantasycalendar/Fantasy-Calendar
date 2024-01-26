@@ -13,6 +13,7 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Password;
+use STS\FilamentImpersonate\Tables\Actions\Impersonate;
 
 class UserResource extends Resource
 {
@@ -78,10 +79,7 @@ class UserResource extends Resource
                 Tables\Filters\Filter::make('beta_authorised')
                     ->query(fn(Builder $query): Builder => $query->where('beta_authorised', true))
             ])->actions([
-                Tables\Actions\Action::make('impersonate')
-                    ->label('Impersonate')
-                    ->icon('heroicon-o-user-circle')
-                    ->url(fn($record) => route('admin.impersonate', ['userid' => $record->id, 'returnPath' => request()->url()])),
+                Impersonate::make(),
             ])->bulkActions([
                 Tables\Actions\BulkAction::make('password_reset')
                     ->action(function($records){
