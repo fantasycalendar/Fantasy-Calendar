@@ -3,6 +3,7 @@
      @open-events-manager.window="open_modal"
      @events-changed.window="refreshEvents"
      @events-changed.window="refreshCategories"
+     @keydown.escape.window="open = false;"
 >
     <div
         class="layout_background clickable_background hidden"
@@ -18,7 +19,7 @@
                      x-transition>
 
                     <div class="close-ui-btn-bg"></div>
-                    <i class="close_ui_btn fas fa-times-circle" @click="open = false; search = ''"></i>
+                    <i class="close_ui_btn fas fa-times" @click="open = false; search = ''"></i>
 
                     <div class="row no-gutters mb-3 modal-form-heading">
                         <div class="col-12 mb-2">

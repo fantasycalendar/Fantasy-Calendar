@@ -124,6 +124,12 @@ body {
     }
 }
 
+.page-calendars-create {
+    .navbar-expand.sticky-top {
+        z-index: 10;
+    }
+}
+
 .page-calendars-edit {
     display: flex;
 

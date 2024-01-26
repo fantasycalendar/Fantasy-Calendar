@@ -607,6 +607,7 @@ input[type="number"]:not(.spinner)::-webkit-outer-spin-button {
     background-color: $card-bg-color;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 7px;
+    z-index: 1000;
 }
 
 .modal-inlay {
@@ -1009,7 +1010,7 @@ body .event_comment .comment_context_btn:not(:hover) {
 }
 
 .modal-form-heading {
-    // margin-top: 10px;
+    margin-top: 10px;
 }
 
 .event_desc.editable {

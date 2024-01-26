@@ -3,17 +3,12 @@
         <div class='modal-basic-wrapper'>
             <form id="preset-form" class="modal-wrapper preset-wrapper container" action="post">
 
-                <div class='close-ui-btn-bg'></div>
-                <i class="close_ui_btn fas fa-times-circle" @click="open = false"></i>
+                <i class="close_ui_btn fas fa-times" @click="open = false"></i>
 
                 <div class='row no-gutters mb-1 modal-form-heading'>
                     <div class="col-12 col-md-3 mb-3 mb-md-0" style="display: grid; place-items: center start;">
                         <span style="position: absolute; right: 0px; cursor: pointer; height: 50px; width: 50px; opacity: 0.8; line-height: 50px; text-align: center;" @click="search = ''" x-show="search.length"><i class="fa fa-times"></i></span>
                         <input type="text" name="search" x-model="search" class="form-control" placeholder="Search...">
-                    </div>
-                    <div class="text-center text-md-right col-12 col-md-9">
-                        <h2 style="opacity: 0.5; line-height: 0.8;">Calendar Presets</h2>
-                        <h3 style="font-size: 1.3rem; font-weight: 400; opacity: 0.6;">Pre-made and ready&nbsp;to&nbsp;go!</h3>
                     </div>
                 </div>
 
