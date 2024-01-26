@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Calendar;
 use App\Models\User;
+use DB;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -42,38 +43,62 @@ class DisableUnpaidCalendars extends Command
     {
         $updated = Calendar::with(['user', 'user.subscriptions'])
             ->where('disabled', '=', true)
-            ->whereHas('user.subscriptions', function(Builder $query) {
+            ->whereHas('user.subscriptions', function (Builder $query) {
                 $query->where('stripe_status', '=', 'active');
             })
             ->update([
                 'disabled' => false
             ]);
 
-        if($updated > 0) {
+        if ($updated > 0) {
             $this->info("Re-enabled " . $updated . " calendars.");
         }
 
-        User::with('subscriptions')
-            ->whereHas('subscriptions', function(Builder $query) {
-                $query->where('stripe_status', '!=', 'active');
+        $this->disableCalendarsWhen('<', '2020-11-08', 15);
+        $this->disableCalendarsWhen('>=', '2020-11-08', 2);
+    }
+
+    private function disableCalendarsWhen(string $operator, string $date, int $max_calendars)
+    {
+        $query = User::with('subscriptions', 'calendars')
+            ->where('beta_authorised', '=', false)
+            ->where('created_at', $operator, $date)
+            ->whereHas('subscriptions')
+            ->whereDoesntHave('subscriptions', function (Builder $query) {
+                $query->active();
             })
-            ->whereHas('calendars', function(Builder $query){
-                $query->where('disabled', '=', true);
-            }, '>', '2')
-            ->chunk(100, function($users){
-                foreach ($users as $user) {
-                    $this->debug('Processing ' . $user->username);
+            ->whereHas('calendars', function (Builder $query) {
+                $query->where('disabled', '!=', true);
+            }, '>', $max_calendars);
 
-                    $max_calendars = $user->isEarlySupporter() ? 15 : 2;
+        $count = $query->count();
 
-                    $user->calendars()->orderBy('date_created', 'ASC')->each(function($calendar, $index) use ($max_calendars){
-                        $calendar->disabled = ($index < $max_calendars) ? 0 : 1;
-                        $calendar->parent_id = Null;
-                        $calendar->parent_offset = Null;
-                        $calendar->parent_link_date = Null;
-                        $calendar->save();
-                    });
-                }
-            });
+        if ($count === 0) {
+            logger()->info("No users found exceeding maximum of " . $max_calendars . " calendars.");
+
+            return;
+        }
+
+        logger()->info("Disabling calendars for $count users who have more than " . $max_calendars . " calendars.");
+
+        $query->chunk(100, function ($users) use ($max_calendars) {
+            foreach ($users as $user) {
+                $this->info('Processing ' . $user->username);
+
+                $disableIds = $user->calendars
+                    ->sortBy('created_at')
+                    ->take($user->calendars->count() - $max_calendars)
+                    ->pluck('id');
+
+                $user->calendars()
+                    ->whereIn('id', $disableIds)
+                    ->update([
+                        'disabled' => true,
+                        'parent_id' => null,
+                        'parent_offset' => null,
+                        'parent_link_date' => null,
+                    ]);
+            }
+        });
     }
 }
