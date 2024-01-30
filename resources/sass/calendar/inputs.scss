@@ -16,6 +16,7 @@ button:focus,
 .input-group-text {
     background-color: $input-group-text-bg !important;
     color: $input-group-text-color !important;
+    border-color: $input-border-color !important;
 }
 
 #protip_container {

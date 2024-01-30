@@ -58,7 +58,7 @@
         <canvas style="z-index: 0;" id="clock_background"></canvas>
     </div>
 
-    <div x-data="{ activeDateAdjustment: 'current' }">
+    <div x-data="{ activeDateAdjustment: 'relative' }">
         <ul class="nav justify-content-center nav-tabs px-3">
             @can('advance-date', $calendar)
             <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'current' }" @click="activeDateAdjustment = 'current'">Current date</a></li>
@@ -107,13 +107,13 @@
 
                 <div class='input-group protip mt-2'>
                     <div class='input-group-prepend'>
-                        <button type='button' class='btn small-text btn-outline-danger adjust_hour' val='-1'>1hr</button>
-                        <button type='button' class='btn small-text border-left btn-outline-danger adjust_minute' val='-30'>30m</button>
+                        <button type='button' class='btn btn-outline-danger adjust_hour' val='-1'>1hr</button>
+                        <button type='button' class='btn border-left btn-outline-danger adjust_minute' val='-30'>30m</button>
                     </div>
 
-                    <input class='form-control form-control-sm text-right protip' type='number' id='current_hour' data-pt-position='top' data-pt-title="The current hour of day">
-                    <span class="px-1">:</span>
-                    <input class='form-control form-control-sm protip' type='number' id='current_minute' data-pt-position='top' data-pt-title="The current minute of the hour">
+                    <input class='form-control text-right protip' type='number' id='current_hour' data-pt-position='top' data-pt-title="The current hour of day">
+                    <div class="input-group-prepend input-group-append"><span class="input-group-text">:</span></div>
+                    <input class='form-control protip' type='number' id='current_minute' data-pt-position='top' data-pt-title="The current minute of the hour">
 
                     <div class='input-group-append'>
                         <button type='button' class='btn small-text btn-outline-success adjust_minute' val='30'>30m</button>
@@ -160,27 +160,35 @@
         </div>
 
         <div :class="{ 'd-flex flex-column': activeDateAdjustment === 'relative', 'd-none': activeDateAdjustment !== 'relative' }">
-            <div class='mx-0'>
-                <input type='number' class="form-control form-control-sm full" id='unit_years' placeholder="Years">
-                <input type='number' class="form-control form-control-sm full" id='unit_months' placeholder="Months">
-                <input type='number' class="form-control form-control-sm full" id='unit_days' placeholder="Days">
+            <div class='px-3 mt-3'>
+                <input type='number' class="form-control full mt-1" id='unit_years' placeholder="Years">
+                <input type='number' class="form-control full mt-1" id='unit_months' placeholder="Months">
+                <input type='number' class="form-control full mt-1" id='unit_days' placeholder="Days">
             </div>
-            <div class='mx-0 my-2'>
-                <div class='col-md-6 col-sm-12'>
-                    <input type='number' class="form-control form-control-sm full" id='unit_hours' placeholder="Hours">
-                </div>
-                <div class='col-md-6 col-sm-12'>
-                    <input type='number' class="form-control form-control-sm full" id='unit_minutes' placeholder="Minutes">
+            <div class='px-3 my-2 row no-gutters'>
+                <div class="input-group">
+                    <input type='number' class="form-control" id='unit_hours' placeholder="Hours">
+                    <div class="input-group-prepend input-group-append"><span class="input-group-text">:</span></div>
+                    <input type='number' class="form-control" id='unit_minutes' placeholder="Minutes">
                 </div>
             </div>
 
-            @if($calendar->parent == null)
-                <button type="button" step="1.0" class="btn btn-primary btn-block my-2" id='current_date_btn'>To current date</button>
+            <div class="row mt-2">
+                <span class="full text-center">Apply to</span>
+            </div>
+
+            @if($calendar->parent == null && auth()->user()->can('advance-date', $calendar))
+                <div class="d-flex px-3">
+                    <button type="button" step="1.0" class="btn btn-primary btn-block my-2 mr-1" id='current_date_btn'>Current date</button>
+                    <button type="button" step="1.0" class="btn btn-secondary btn-block my-2 ml-1" id='preview_date_btn'>Preview date</button>
+                </div>
+            @else
+                <div class="col">
+                    <button type="button" step="1.0" class="btn btn-secondary btn-block my-2" id='preview_date_btn'>Preview date</button>
+                </div>
             @endif
-            <button type="button" step="1.0" class="btn btn-secondary btn-block my-2" id='preview_date_btn'>To preview date</button>
 
         </div>
-
     </div>
 
 
