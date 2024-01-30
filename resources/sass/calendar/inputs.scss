@@ -216,7 +216,11 @@ select.invalid {
 input[type="number"]:not(.spinner)::-webkit-inner-spin-button,
 input[type="number"]:not(.spinner)::-webkit-outer-spin-button {
     -webkit-appearance: none;
+    appearance: none;
     margin: 0;
+}
+input[type="number"]:not(.spinner) {
+  appearance: textfield;
 }
 
 .name-container {
