@@ -1,5 +1,7 @@
 /* ------------------ Sortable styles ----------------- */
 
+$btn-border-radius: 0.25rem;
+
 div:focus,
 button:focus,
 * button.btn.btn-stock:focus {
@@ -933,6 +935,7 @@ body .event_comment .comment_context_btn:not(:hover) {
 .event_desc * {
     max-width: 100%;
 }
+
 
 .close_ui_btn {
     position: absolute;

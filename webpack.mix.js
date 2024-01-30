@@ -17,12 +17,9 @@ if(process.env.BROWSERSYNC === 'true') {
         proxy: 'php:8000',
         port: 9980,
         open: false,
+        reloadDebounce: 200,
         files: [
-            "**/*.css",
-            "**/*.php",
-            "**/*.md",
-            "**/*.js",
-            "**/*.vue",
+            "public/mix-manifest.json"
         ],
         snippetOptions: {
             rule: {
