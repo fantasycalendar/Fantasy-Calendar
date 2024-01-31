@@ -1874,7 +1874,6 @@
             </button>
             <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none sub_month' disabled fc-index='timespan'
                     value='-1'>
-                <span x-cloak x-show="apply != 'single_month'">&gt; Month</span>
                 <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-left"></i></span>
             </button>
         </div>
@@ -1906,7 +1905,6 @@
             </button>
             <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none add_month' disabled fc-index='timespan'
                     value='1'>
-                <span x-cloak x-show="apply != 'single_month'">Month ></span>
                 <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-right"></i></span>
             </button>
         </div>

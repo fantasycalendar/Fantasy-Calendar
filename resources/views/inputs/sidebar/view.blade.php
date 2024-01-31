@@ -56,7 +56,7 @@
         <canvas style="z-index: 0;" id="clock_background"></canvas>
     </div>
 
-    <div x-data="{ activeDateAdjustment: 'relative' }">
+    <div x-data="{ activeDateAdjustment: 'current' }">
         <ul class="nav justify-content-center nav-tabs mx-3 mt-3">
             @can('advance-date', $calendar)
             <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'current' }" @click="activeDateAdjustment = 'current'">Current date</a></li>
@@ -264,7 +264,6 @@
 		<div class='btn_container hidden'>
 			<button class='btn btn-secondary btn_preview_date hidden d-print-none sub_year' disabled fc-index='year' value='-1'>< Year</button>
 			<button class='btn btn-secondary btn_preview_date hidden d-print-none sub_month' disabled fc-index='timespan' value='-1'>
-                <span x-cloak x-show="apply != 'single_month'">< Month</span>
                 <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-left"></i></span>
             </button>
 		</div>
@@ -284,7 +283,6 @@
 		<div class='btn_container hidden'>
 			<button class='btn btn-secondary btn_preview_date hidden d-print-none add_year' disabled fc-index='year' value='1'>Year ></button>
 			<button class='btn btn-secondary btn_preview_date hidden d-print-none add_month' disabled fc-index='timespan' value='1'>
-                <span x-cloak x-show="apply != 'single_month'">Month ></span>
                 <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-right"></i></span>
             </button>
 		</div>
