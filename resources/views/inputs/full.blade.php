@@ -83,216 +83,152 @@
                                                                                 class="wiki protip"><i
                             class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
-
-                <div id='clock' class='mb-2'>
+                <div id='clock'>
                     <canvas style="z-index: 2;" id="clock_face"></canvas>
                     <canvas style="z-index: 1;" id="clock_sun"></canvas>
                     <canvas style="z-index: 0;" id="clock_background"></canvas>
                 </div>
 
-                <div class='center-text hidden' id='empty_calendar_explaination'>
-                    This calendar doesn't have any weekdays or months yet, so you can't change the date.
-                </div>
+                <div x-data="{ activeDateAdjustment: 'current' }">
+                    <ul class="nav justify-content-center nav-tabs mt-3">
+                        <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'current' }" @click="activeDateAdjustment = 'current'">Current date</a></li>
+                        <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'preview' }" @click="activeDateAdjustment = 'preview'">Preview date</a></li>
+                        <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'relative' }" @click="activeDateAdjustment = 'relative'">Relative math</a></li>
+                    </ul>
 
-                <div class='date_inputs date_control container' id='date_inputs'>
+                    <div class='date_control mt-3' id='date_inputs' :class="{ 'd-flex flex-column': activeDateAdjustment === 'current', 'd-none': activeDateAdjustment !== 'current' }">
+                        @if(isset($calendar) && $calendar?->isChild())
+                            <div class='mb-3 center-text hidden calendar_link_explanation'>
+                                <p class='m-0'>This calendar follows the date of a <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">parent calendar</a>.</p>
+                            </div>
 
-                    <div class='row'>
-                        <h5>Current date:</h5>
-                    </div>
+                            <div class="input-group">
+                                <select class='form-control timespan-list inclusive date' id='current_timespan'></select>
+                                <select class='form-control timespan-day-list inclusive date' id='current_day'></select>
+                                <input class='form-control year-input' id='current_year' type='number'>
+                            </div>
 
-                    <div class='row my-2 center-text hidden calendar_link_explanation'>
-                        @if(request()->is('calendars/*/edit') && $calendar->parent != null)
-                            <p class='m-0'>This calendar is using a different calendar's date to calculate the current
-                                date. Only the <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent
-                                    calendar</a> can set the date for this calendar.</p>
+                            <div class="input-group mt-2">
+                                <input class='form-control text-right protip' type='number' id='current_hour' data-pt-position='top' data-pt-title="The current hour of day">
+                                <div class="input-group-prepend input-group-append"><span class="input-group-text">:</span></div>
+                                <input class='form-control protip' type='number' id='current_minute' data-pt-position='top' data-pt-title="The current minute of the hour">
+                            </div>
+                        @else
+                            <div class='input-group protip mt-2' value='current' data-pt-position='right' data-pt-title="The current year">
+                                <div class='input-group-prepend'>
+                                    <button type='button' class='btn btn-danger sub_year' id='sub_current_year'><i class="icon-minus"></i></button>
+                                </div>
+                                <input class='form-control year-input' id='current_year' type='number'>
+                                <div class='input-group-append'>
+                                    <button type='button' class='btn btn-success add_year' id='add_current_year'><i class="icon-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class='input-group protip mt-2' value='current' data-pt-position='right' data-pt-title="The current month in the year">
+                                <div class='input-group-prepend'>
+                                    <button type='button' class='btn btn-danger sub_timespan' id='sub_current_timespan'><i class="icon-minus"></i></button>
+                                </div>
+                                <select class='form-control timespan-list inclusive date' id='current_timespan'></select>
+                                <div class='input-group-append'>
+                                    <button type='button' class='btn btn-success add_timespan' id='add_current_timespan'><i class="icon-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class='input-group protip mt-2' value='current' data-pt-position='right' data-pt-title="The current day in the month">
+                                <div class='input-group-prepend'>
+                                    <button type='button' class='btn btn-danger sub_day' id='sub_current_day'><i class="icon-minus"></i></button>
+                                </div>
+                                <select class='form-control timespan-day-list inclusive date' id='current_day'></select>
+                                <div class='input-group-append'>
+                                    <button type='button' class='btn btn-success add_day' id='add_current_day'><i class="icon-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class='input-group protip mt-2'>
+                                <div class='input-group-prepend'>
+                                    <button type='button' class='btn btn-danger adjust_hour' val='-1'>1hr</button>
+                                    <button type='button' class='btn border-left btn-danger adjust_minute' val='-30'>30m</button>
+                                </div>
+
+                                <input class='form-control text-right protip' type='number' id='current_hour' data-pt-position='top' data-pt-title="The current hour of day">
+                                <div class="input-group-prepend input-group-append"><span class="input-group-text">:</span></div>
+                                <input class='form-control protip' type='number' id='current_minute' data-pt-position='top' data-pt-title="The current minute of the hour">
+
+                                <div class='input-group-append'>
+                                    <button type='button' class='btn small-text btn-success adjust_minute' val='30'>30m</button>
+                                    <button type='button' class='btn small-text border-left btn-success adjust_hour' val='1'>1h</button>
+                                </div>
+                            </div>
                         @endif
                     </div>
 
-                    <div class='row'>
 
-                        <div class='input-group protip' value='current' data-pt-position='right'
-                             data-pt-title="The current year">
+                    <div class='date_control preview_date_controls mt-3' :class="{ 'd-flex flex-column': activeDateAdjustment === 'preview', 'd-none': activeDateAdjustment !== 'preview' }">
+                        <div class='input-group protip mt-2' value='target' data-pt-position='right' data-pt-title="The preview year">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-outline-danger sub_year' id='sub_current_year'><i
-                                            class="icon-minus"></i></button>
-                            </div>
-                            <input class='form-control year-input' id='current_year' type='number'>
-                            <div class='input-group-append'>
-                                <button type='button' class='btn btn-outline-success add_year' id='add_current_year'><i
-                                            class="icon-plus"></i></button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class='row mt-2'>
-
-                        <div class='input-group protip' value='current' data-pt-position='right'
-                             data-pt-title="The current month in the year">
-                            <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-outline-danger sub_timespan' id='sub_current_timespan'><i
-                                            class="icon-minus"></i></button>
-                            </div>
-                            <select class='form-control timespan-list inclusive date' id='current_timespan'></select>
-                            <div class='input-group-append'>
-                                <button type='button' class='btn btn-outline-success add_timespan' id='add_current_timespan'><i
-                                            class="icon-plus"></i></button>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class='row mt-2'>
-
-                        <div class='input-group protip' value='current' data-pt-position='right'
-                             data-pt-title="The current day in the month">
-                            <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-outline-danger sub_day' id='sub_current_day'><i
-                                            class="icon-minus"></i></button>
-                            </div>
-                            <select class='form-control timespan-day-list inclusive date' id='current_day'></select>
-                            <div class='input-group-append'>
-                                <button type='button' class='btn btn-outline-success add_day' id='add_current_day'><i
-                                            class="icon-plus"></i></button>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class='row mt-2 clock_inputs'>
-
-                        <div class='input-group protip'>
-                            <div class='input-group-prepend'>
-                                <button type='button' class='btn small-text btn-outline-danger adjust_hour' val='-1'>1hr
-                                </button>
-                                <button type='button' class='btn small-text border-left btn-outline-danger adjust_minute'
-                                        val='-30'>30m
-                                </button>
-                            </div>
-
-                            <input class='form-control form-control-sm text-right protip' type='number'
-                                   id='current_hour' data-pt-position='top' data-pt-title="The current hour of day">
-                            <span class="px-1">:</span>
-                            <input class='form-control form-control-sm protip' type='number' id='current_minute'
-                                   data-pt-position='top' data-pt-title="The current minute of the hour">
-
-                            <div class='input-group-append'>
-                                <button type='button' class='btn small-text btn-outline-success adjust_minute' val='30'>30m
-                                </button>
-                                <button type='button' class='btn small-text border-left btn-outline-success adjust_hour'
-                                        val='1'>1h
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class='date_inputs date_control preview_date_controls container mt-3'>
-
-                    <div class='row'>
-                        <h5 class="my-0 py-0">Preview date:</h5>
-                    </div>
-
-                    <div class='row mt-2'>
-
-                        <div class='input-group protip' value='target' data-pt-position='right'
-                             data-pt-title="The preview year">
-                            <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-outline-danger sub_year' id='sub_target_year'><i
-                                            class="icon-minus"></i></button>
+                                <button type='button' class='btn btn-danger sub_year' id='sub_target_year'><i class="icon-minus"></i></button>
                             </div>
                             <input class='form-control year-input' id='target_year' type='number'>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-outline-success add_year' id='add_target_year'><i
-                                            class="icon-plus"></i></button>
+                                <button type='button' class='btn btn-success add_year' id='add_target_year'><i class="icon-plus"></i></button>
                             </div>
                         </div>
-                    </div>
 
-                    <div class='row mt-2'>
-
-                        <div class='input-group protip' value='target' data-pt-position='right'
-                             data-pt-title="The preview month of the preview year">
+                        <div class='input-group protip mt-2' value='target' data-pt-position='right' data-pt-title="The preview month of the preview year">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-outline-danger sub_timespan' id='sub_target_timespan'><i
-                                            class="icon-minus"></i></button>
+                                <button type='button' class='btn btn-danger sub_timespan' id='sub_target_timespan'><i class="icon-minus"></i></button>
                             </div>
                             <select class='form-control timespan-list inclusive date' id='target_timespan'></select>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-outline-success add_timespan' id='add_target_timespan'><i
-                                            class="icon-plus"></i></button>
+                                <button type='button' class='btn btn-success add_timespan' id='add_target_timespan'><i class="icon-plus"></i></button>
                             </div>
                         </div>
 
-                    </div>
-
-                    <div class='row mt-2'>
-
-                        <div class='input-group protip' value='target' data-pt-position='right'
-                             data-pt-title="The current day of the preview month">
+                        <div class='input-group protip mt-2' value='target' data-pt-position='right' data-pt-title="The current day of the preview month">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-outline-danger sub_day' id='sub_target_day'><i
-                                            class="icon-minus"></i></button>
+                                <button type='button' class='btn btn-danger sub_day' id='sub_target_day'><i class="icon-minus"></i></button>
                             </div>
                             <select class='form-control timespan-day-list inclusive date' id='target_day'></select>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-outline-success add_day' id='add_target_day'><i
-                                            class="icon-plus"></i></button>
+                                <button type='button' class='btn btn-success add_day' id='add_target_day'><i class="icon-plus"></i></button>
                             </div>
                         </div>
 
+                        <div class='btn btn-success full mt-2' id='go_to_preview_date'>Jump to preview date</div>
                     </div>
 
-                    <div class='row my-2'>
-                        <div class='btn btn-success full' id='go_to_preview_date'>Go To Preview date</div>
-                    </div>
+                    <div class="mt-3" :class="{ 'd-flex flex-column': activeDateAdjustment === 'relative', 'd-none': activeDateAdjustment !== 'relative' }">
+                        <div class="input-group">
+                            <input type='number' class="form-control mt-2" id='unit_years' placeholder="Years">
+                            <input type='number' class="form-control mt-2" id='unit_months' placeholder="Months">
+                            <input type='number' class="form-control mt-2" id='unit_days' placeholder="Days">
+                        </div>
+                        <div class='my-2 row no-gutters'>
+                            <div class="input-group">
+                                <input type='number' class="form-control" id='unit_hours' placeholder="Hours">
+                                <div class="input-group-prepend input-group-append"><span class="input-group-text">:</span></div>
+                                <input type='number' class="form-control" id='unit_minutes' placeholder="Minutes">
+                            </div>
+                        </div>
 
-                    <div class='row my-2'>
-                        <div class='btn btn-info full hidden' disabled id='reset_preview_date_button'>Go To Current
-                            Date
+                        <div class="d-flex mt-3">
+                            <span class="full text-center">Apply to</span>
+                        </div>
+
+                        <div class="d-flex">
+                            @if(request()->is('calendars/*/edit') && $calendar?->parent == null)
+                                <button type="button" step="1.0" class="btn btn-primary btn-block mt-2 mr-1" id='current_date_btn'>Current date</button>
+                                <button type="button" step="1.0" class="btn btn-secondary btn-block mt-2 ml-1" id='preview_date_btn'>Preview date</button>
+                            @else
+                                <button type="button" step="1.0" class="btn btn-secondary btn-block mt-2" id='preview_date_btn'>Preview date</button>
+                            @endif
                         </div>
                     </div>
 
+                    <div class="d-flex flex-column">
+                        <div class='btn btn-info hidden mt-2' disabled id='reset_preview_date_button'>Jump to current date</div>
+                    </div>
                 </div>
-
-                <div class='wrap-collapsible card full date_inputs'>
-                    <input id="collapsible_add_units" class="toggle" type="checkbox">
-                    <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or
-                        subtract fixed units to calendar dates</label>
-                    <div class="collapsible-content container card-body">
-
-                        <div class='row no-gutters mx-0'>
-                            <input type='number' class="form-control form-control-sm full" id='unit_years'
-                                   placeholder="Years">
-                            <input type='number' class="form-control form-control-sm full" id='unit_months'
-                                   placeholder="Months">
-                            <input type='number' class="form-control form-control-sm full" id='unit_days'
-                                   placeholder="Days">
-                        </div>
-                        <div class='row no-gutters mx-0 my-2'>
-                            <div class='col-md-6 col-sm-12'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_hours'
-                                       placeholder="Hours">
-                            </div>
-                            <div class='col-md-6 col-sm-12'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_minutes'
-                                       placeholder="Minutes">
-                            </div>
-                        </div>
-
-                        @if(request()->is('calendars/*/edit') && $calendar->parent == null)
-                            <button type="button" step="1.0" class="btn btn-primary btn-block my-2"
-                                    id='current_date_btn'>To current date
-                            </button>
-                        @endif
-                        <button type="button" step="1.0" class="btn btn-secondary btn-block my-2" id='preview_date_btn'>
-                            To preview date
-                        </button>
-
-                    </div>
-
-                </div>
-
             </div>
 
         </div>
