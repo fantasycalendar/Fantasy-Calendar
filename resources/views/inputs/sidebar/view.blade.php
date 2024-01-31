@@ -56,7 +56,7 @@
         <canvas style="z-index: 0;" id="clock_background"></canvas>
     </div>
 
-    <div x-data="{ activeDateAdjustment: 'current' }">
+    <div x-data="{ activeDateAdjustment: 'relative' }">
         <ul class="nav justify-content-center nav-tabs mx-3 mt-3">
             @can('advance-date', $calendar)
             <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'current' }" @click="activeDateAdjustment = 'current'">Current date</a></li>
@@ -165,14 +165,14 @@
                 </div>
             </div>
 
-            <div class='btn btn-success full mt-3' id='go_to_preview_date'>Jump to preview date</div>
+            <div class='btn btn-success full mt-2' id='go_to_preview_date'>Jump to preview date</div>
         </div>
 
-        <div class="mx-3" :class="{ 'd-flex flex-column': activeDateAdjustment === 'relative', 'd-none': activeDateAdjustment !== 'relative' }">
-            <div class='mt-3'>
-                <input type='number' class="form-control full mt-1" id='unit_years' placeholder="Years">
-                <input type='number' class="form-control full mt-1" id='unit_months' placeholder="Months">
-                <input type='number' class="form-control full mt-1" id='unit_days' placeholder="Days">
+        <div class="mx-3 mt-3" :class="{ 'd-flex flex-column': activeDateAdjustment === 'relative', 'd-none': activeDateAdjustment !== 'relative' }">
+            <div class="input-group">
+                <input type='number' class="form-control mt-2" id='unit_years' placeholder="Years">
+                <input type='number' class="form-control mt-2" id='unit_months' placeholder="Months">
+                <input type='number' class="form-control mt-2" id='unit_days' placeholder="Days">
             </div>
             <div class='my-2 row no-gutters'>
                 <div class="input-group">
@@ -182,7 +182,7 @@
                 </div>
             </div>
 
-            <div class="d-flex mt-2">
+            <div class="d-flex mt-3">
                 <span class="full text-center">Apply to</span>
             </div>
 
