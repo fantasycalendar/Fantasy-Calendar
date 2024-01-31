@@ -32,20 +32,8 @@
     }
 }
 
-html {
-    overflow-x: hidden;
-
-    // @media screen and (max-width: 768px) {
-    //     font-size: 18px;
-    // }
-}
-
 body {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    min-height: 100vh;
-    max-height: 100vh;
+    min-height: 100%;
     font-family: "Inter", sans-serif;
 
     a {

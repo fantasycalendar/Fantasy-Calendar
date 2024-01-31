@@ -56,7 +56,7 @@
         <canvas style="z-index: 0;" id="clock_background"></canvas>
     </div>
 
-    <div x-data="{ activeDateAdjustment: 'current' }">
+    <div x-data="{ activeDateAdjustment: @can('advance-date', $calendar) 'current' @else 'preview' @endcan }">
         <ul class="nav justify-content-center nav-tabs mx-3 mt-3">
             @can('advance-date', $calendar)
             <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'current' }" @click="activeDateAdjustment = 'current'">Current date</a></li>
@@ -134,7 +134,7 @@
         @endcan
 
 
-        <div class='date_control preview_date_controls mx-3 mt-3' :class="{ 'd-flex flex-column': activeDateAdjustment === 'preview', 'd-none': activeDateAdjustment !== 'preview' }">
+        <div class='date_control preview_date_controls mx-3 mt-3' :class="{ 'd-flex flex-column': activeDateAdjustment === 'preview', 'd-none': activeDateAdjustment !== 'preview' || (!Perms.player_at_least('co-owner') && !static_data.settings.allow_view) }">
             <div class='input-group protip mt-2' value='target' data-pt-position='right' data-pt-title="The preview year">
                 <div class='input-group-prepend'>
                     <button type='button' class='btn btn-danger sub_year' id='sub_target_year'><i class="icon-minus"></i></button>
@@ -255,7 +255,7 @@
 <div id="calendar_container">
 	<div id="top_follower" :class="{ 'single_month': apply == 'single_month' }" x-data="{ apply: '', toggle() { window.toggle_sidebar(); } }" @layout-change.window="apply = $event.detail.apply">
 
-        <div class='btn_container flex-shrink-1 is-active' id='input_collapse_btn'>
+        <div class='flex-shrink-1 is-active' id='input_collapse_btn'>
             <button class="btn btn-secondary">
                 <i class="fa fa-bars"></i>
             </button>

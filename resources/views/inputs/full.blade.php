@@ -1852,7 +1852,7 @@
          @layout-change.window="apply = $event.detail.apply">
 
 
-        <div class='btn_container flex-shrink-1 is-active' id='input_collapse_btn'>
+        <div class='flex-shrink-1 is-active' id='input_collapse_btn'>
             <button class="btn btn-secondary px-3">
                 <i class="fa fa-bars"></i>
             </button>
