@@ -17,6 +17,7 @@
     );
 @endif
 
+
 hash = `{{ $calendar->hash }}`;
 
 calendar_name = unescapeHtml("{{ $calendar->name }}");
@@ -44,3 +45,24 @@ advancement = {
     advancement_webhook_url: '{{ $calendar->advancement_webhook_url }}',
     advancement_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 }
+
+window.dispatchEvent(
+    new CustomEvent('calendar-loaded', {
+        detail: {
+            hash,
+            calendar_name,
+            calendar_id,
+            static_data,
+            dynamic_data,
+            is_linked,
+            has_parent,
+            parent_hash,
+            parent_offset,
+            events,
+            event_categories,
+            last_static_change,
+            last_dynamic_change,
+            advancement
+        }
+    })
+)

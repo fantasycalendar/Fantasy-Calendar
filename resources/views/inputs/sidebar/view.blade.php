@@ -56,7 +56,13 @@
         <canvas style="z-index: 0;" id="clock_background"></canvas>
     </div>
 
-    <div x-data="{ activeDateAdjustment: @can('advance-date', $calendar) 'current' @else 'preview' @endcan }">
+    <div x-show="shouldShow" x-data="{
+            activeDateAdjustment: @can('advance-date', $calendar) 'current' @else 'preview' @endcan,
+            shouldShow: false,
+            calculateShouldShow: function () {
+                this.shouldShow = window.Perms.player_at_least('co-owner') || static_data.settings.allow_view;
+            },
+        }" @calendar-loaded.window="calculateShouldShow">
         <ul class="nav justify-content-center nav-tabs mx-3 mt-3">
             @can('advance-date', $calendar)
             <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'current' }" @click="activeDateAdjustment = 'current'">Current date</a></li>
@@ -183,7 +189,7 @@
             </div>
 
             <div class="d-flex mt-3">
-                <span class="full text-center">Apply to</span>
+                <span class="full text-center">Apply the above to</span>
             </div>
 
             <div class="d-flex">
@@ -195,16 +201,17 @@
                 @endif
             </div>
         </div>
+
+        <div class="d-flex flex-column mx-3">
+            <div class='btn btn-info hidden mt-2' disabled id='reset_preview_date_button'>Jump to current date</div>
+        </div>
+
+        <div class="full px-3 mt-3">
+            <div class="separator full"></div>
+        </div>
+
     </div>
 
-
-    <div class="d-flex flex-column mx-3">
-        <div class='btn btn-info hidden mt-2' disabled id='reset_preview_date_button'>Jump to current date</div>
-    </div>
-
-    <div class="full px-3 mt-3">
-        <div class="separator full"></div>
-    </div>
 
 	@can('update', $calendar)
 	<!---------------------------------------------->
