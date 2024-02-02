@@ -540,7 +540,7 @@ class Clock {
         let darkColors = {
             dark: tailwindColors.slate[900],
             mid: tailwindColors.violet[600],
-            mid_secondary: tailwindColors.red[600],
+            mid_secondary: tailwindColors.fuchsia[600],
             light: tailwindColors.yellow[200],
             text: tailwindColors.gray[900],
             text_light: tailwindColors.violet[100],
