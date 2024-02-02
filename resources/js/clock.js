@@ -62,9 +62,9 @@ class Clock {
         var time = this.hour + this.minute / this.minutes;
         this._current_time_degrees = this.degrees_from_time(time);
 
-        this.pointer_thickness_tip = 0.75;
+        this.pointer_thickness_tip = 0.72;
         this.pointer_thickness_base = 2.5;
-        this.pointer_length = 7.7;
+        this.pointer_length = 7.8;
 
         this.face_font_size = 7;
         this.face_font_stroke = false;
@@ -266,7 +266,10 @@ class Clock {
         this.face_ctx.beginPath();
         this.face_ctx.arc(0, 0, this.radius * 0.05, 0, 2 * Math.PI);
         this.face_ctx.globalCompositeOperation = "source-over";
-        this.face_ctx.fillStyle = this.color("pointer");
+        this.face_ctx.fillStyle =
+            this.hour > this.sunrise && this.hour + 1 <= this.sunset
+                ? this.color("pointer")
+                : this.color("pointer_light");
         this.face_ctx.fill();
         this.face_ctx.closePath();
 
@@ -290,7 +293,10 @@ class Clock {
             this.radius * (this.pointer_thickness_base * 0.01),
         );
         this.face_ctx.lineTo(0, 0);
-        this.face_ctx.fillStyle = this.color("pointer");
+        this.face_ctx.fillStyle =
+            this.hour > this.sunrise && this.hour + 1 <= this.sunset
+                ? this.color("pointer")
+                : this.color("pointer_light");
         this.face_ctx.fill();
         this.face_ctx.closePath();
 
@@ -319,6 +325,8 @@ class Clock {
         this.face_ctx.textBaseline = "middle";
         this.face_ctx.textAlign = "center";
 
+        let face_distance_percent = 0.86;
+
         for (var num = 0; num < this.hours; num++) {
             var ang =
                 (((num + this.hours / 2 + this.offset) * Math.PI) /
@@ -326,13 +334,13 @@ class Clock {
                 2;
 
             this.face_ctx.rotate(ang);
-            this.face_ctx.translate(0, -this.radius * 0.85);
+            this.face_ctx.translate(0, -this.radius * face_distance_percent);
             this.face_ctx.rotate(-ang);
 
             if (num % this._crowding == 0) {
                 if (this.face_font_stroke) {
                     this.face_ctx.strokeStyle =
-                        ang > sunset_degree
+                        num > this.sunrise && num + 1 <= this.sunset
                             ? this.color("text")
                             : this.color("text_light");
                     this.face_ctx.lineWidth = this.face_font_stroke_size;
@@ -351,16 +359,16 @@ class Clock {
             }
 
             this.face_ctx.rotate(ang);
-            this.face_ctx.translate(0, this.radius * 0.85);
+            this.face_ctx.translate(0, this.radius * face_distance_percent);
             this.face_ctx.translate(0, -this.radius * 0.88);
 
             // Assuming we're drawing at the bottom of the clock, the pips are drawn:
             this.face_ctx.beginPath();
 
-            let topWidth = 10;
-            let bottomWidth = 70;
-            let topDistanceFromLetter = 27; // 0 -> Touching letter
-            let bottomDistanceFromLetter = 48;
+            let topWidth = 6;
+            let bottomWidth = 10;
+            let topDistanceFromLetter = 28;
+            let bottomDistanceFromLetter = 50;
 
             let points = [
                 [-(topWidth / 2), -topDistanceFromLetter], // Top-right
@@ -524,18 +532,20 @@ class Clock {
             text: tailwindColors.gray[900],
             text_light: tailwindColors.violet[100],
             pointer: tailwindColors.gray[800],
+            pointer_light: tailwindColors.gray[600],
             center: "white",
             bezel: tailwindColors.slate[600],
         };
 
         let darkColors = {
             dark: tailwindColors.slate[900],
-            mid: tailwindColors.purple[800],
-            mid_secondary: tailwindColors.purple[800],
+            mid: tailwindColors.violet[600],
+            mid_secondary: tailwindColors.red[600],
             light: tailwindColors.yellow[200],
             text: tailwindColors.gray[900],
             text_light: tailwindColors.violet[100],
             pointer: tailwindColors.gray[800],
+            pointer_light: tailwindColors.gray[600],
             center: "white",
             bezel: tailwindColors.slate[700],
         };
