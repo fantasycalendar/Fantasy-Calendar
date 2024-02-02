@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 
-<html lang="en" style="overflow-y: hidden;">
+<html lang="en">
 
 @include('templates._head_content')
 
