@@ -342,7 +342,7 @@ class Clock {
                     this.face_ctx.strokeText(num.toString(), 0, 0);
                 }
 
-                console.log(ang,sunset_degree,sunrise_degree);
+                console.log(ang, sunset_degree, sunrise_degree);
                 this.face_ctx.fillStyle =
                     num > this.sunrise && num + 1 <= this.sunset
                         ? this.color("text")
@@ -516,18 +516,32 @@ class Clock {
     }
 
     color(colorName) {
+        let lightColors = {
+            dark: tailwindColors.slate[700],
+            mid: tailwindColors.purple[500],
+            mid_secondary: tailwindColors.purple[400],
+            light: tailwindColors.yellow[200],
+            text: tailwindColors.gray[900],
+            text_light: tailwindColors.violet[100],
+            pointer: tailwindColors.gray[800],
+            center: "white",
+            bezel: tailwindColors.slate[600],
+        };
+
+        let darkColors = {
+            dark: tailwindColors.slate[900],
+            mid: tailwindColors.purple[800],
+            mid_secondary: tailwindColors.purple[800],
+            light: tailwindColors.yellow[200],
+            text: tailwindColors.gray[900],
+            text_light: tailwindColors.violet[100],
+            pointer: tailwindColors.gray[800],
+            center: "white",
+            bezel: tailwindColors.slate[700],
+        };
+
         return (
-            {
-                dark: tailwindColors.slate[900],
-                mid: tailwindColors.purple[800],
-                mid_secondary: tailwindColors.purple[800],
-                light: tailwindColors.yellow[200],
-                text: tailwindColors.gray[900],
-                text_light: tailwindColors.violet[100],
-                pointer: tailwindColors.gray[800],
-                center: "white",
-                bezel: tailwindColors.slate[700],
-            }[colorName] ?? "white"
+            (window.dark_theme ? darkColors : lightColors)[colorName] ?? "white"
         );
     }
 }

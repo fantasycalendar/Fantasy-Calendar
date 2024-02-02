@@ -17,6 +17,7 @@
     );
 @endif
 
+dark_theme = @json(auth()->user()?->setting('dark_theme') ?? true);
 
 hash = `{{ $calendar->hash }}`;
 
