@@ -3935,153 +3935,120 @@ function add_era_to_list(parent, key, data){
 }
 
 function add_category_to_list(parent, key, data){
+    parent.append(`<div class='sortable-container list-group-item category_inputs collapsed collapsible' index='${key}' x-data='{ color: "${data.event_settings.color}", text_style: "${data.event_settings.text}" }'>
 
-	var element = [];
+		<div class='main-container'>
+			<div class='expand icon-expand'></div>
+			<div class='name-container'>
+				<input value='${data.name}' type='text' name='name_input' fc-index='name' class='form-control name-input small-input category_name_input' data='${key}' tabindex='${(700+key)}'/>
+			</div>
+			<div class="remove-spacer"></div>
+		</div>
+		<div class='remove-container'>
+			<div class='remove-container-text'>Are you sure you want to remove this?</div>
+			<div class='btn_remove btn btn-danger icon-trash'></div>
+			<div class='btn_cancel btn btn-danger icon-remove'></div>
+			<div class='btn_accept btn btn-success icon-ok'></div>
+		</div>
+		<div class='collapse-container container mb-2'>
 
-	element.push(`<div class='sortable-container list-group-item category_inputs collapsed collapsible' index='${key}'>`);
+			<div class='row no-gutters my-1 bold-text'>
+				<div class='col'>
+					Settings:
+				</div>
+			</div>
 
-		element.push("<div class='main-container'>");
-			element.push("<div class='expand icon-expand'></div>");
-			element.push("<div class='name-container'>");
-				element.push(`<input type='text' name='name_input' fc-index='name' class='form-control name-input small-input category_name_input' data='${key}' tabindex='${(700+key)}'/>`);
-			element.push("</div>");
-			element.push('<div class="remove-spacer"></div>');
-		element.push("</div>");
-		element.push("<div class='remove-container'>");
-			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-			element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
-		element.push("</div>");
-		element.push("<div class='collapse-container container mb-2'>");
+			<input type='hidden' class='category_id' value='${key}'>
 
-			element.push("<div class='row no-gutters my-1 bold-text'>");
-				element.push("<div class='col'>");
-					element.push("Category settings (global):");
-				element.push("</div>");
-			element.push("</div>");
+			<div class='row no-gutters mt-1 mb-2'>
+                <div class="list-group col-12">
+                    <div class='form-check list-group-item py-2'>
+                        <input type='checkbox' id='${key}_cat_global_hide' class='form-check-input category_dynamic_input dynamic_input global_hide' data='${key}.category_settings' fc-index='hide' ${(data.category_settings.hide ? "checked" : "")} />
+                        <label for='${key}_cat_global_hide' class='form-check-label ml-1'>
+                            Hide category from viewers
+                        </label>
+                    </div>
 
-			element.push(`<input type='hidden' class='category_id' value='${key}'>`);
+                    <div class='form-check list-group-item py-2'>
+                        <input type='checkbox' id='${key}_cat_player_usable' class='form-check-input category_dynamic_input dynamic_input player_usable' data='${key}.category_settings' fc-index='player_usable' ${(data.category_settings.player_usable ? "checked" : "")} />
+                        <label for='${key}_cat_player_usable' class='form-check-label ml-1'>
+                            Category usable by players
+                        </label>
+                    </div>
+                </div>
+			</div>
 
-			element.push(`<div class='row no-gutters my-1'>`);
-				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_global_hide' class='form-check-input category_dynamic_input dynamic_input global_hide' data='${key}.category_settings' fc-index='hide' ${(data.category_settings.hide ? "checked" : "")} />`);
-					element.push(`<label for='${key}_cat_global_hide' class='form-check-label ml-1'>`);
-						element.push("Hide from viewers");
-					element.push("</label>");
-				element.push("</div>");
-			element.push("</div>");
+			<div class='row no-gutters bold-text'>
+				<div class='col'>
+					Event overrides:
+				</div>
+			</div>
 
-			element.push(`<div class='row no-gutters my-1'>`);
-				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_player_usable' class='form-check-input category_dynamic_input dynamic_input player_usable' data='${key}.category_settings' fc-index='player_usable' ${(data.category_settings.player_usable ? "checked" : "")} />`);
-					element.push(`<label for='${key}_cat_player_usable' class='form-check-label ml-1'>`);
-						element.push("Usable by players");
-					element.push("</label>");
-				element.push("</div>");
-			element.push("</div>");
+			<div class='row no-gutters mt-1 mb-2'>
+                <div class="list-group col-12">
+                    <div class='form-check list-group-item py-2'>
+                        <input type='checkbox' id='${key}_cat_hide_full' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='hide_full' ${(data.event_settings.hide_full ? "checked" : "")} />
+                        <label for='${key}_cat_hide_full' class='form-check-label ml-1'>
+                            Fully hide event
+                        </label>
+                    </div>
 
-			element.push("<div class='row no-gutters my-2'>");
-				element.push("<div class='col'>");
-					element.push("<div class='separator'></div>");
-				element.push("</div>");
-			element.push("</div>");
+                    <div class='form-check list-group-item py-2'>
+                        <input type='checkbox' id='${key}_cat_hide' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='hide' ${(data.event_settings.hide ? "checked" : "")} />
+                        <label for='${key}_cat_hide' class='form-check-label ml-1'>
+                            Hide event
+                        </label>
+                    </div>
 
-			element.push("<div class='row no-gutters mb-2 bold-text'>");
-				element.push("<div class='col'>");
-					element.push("Event settings (local):");
-				element.push("</div>");
-			element.push("</div>");
+                    <div class='form-check list-group-item py-2'>
+                        <input type='checkbox' id='${key}_cat_print' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='print' ${(data.event_settings.noprint ? "checked" : "")} />
+                        <label for='${key}_cat_print' class='form-check-label ml-1'>
+                            Show event when printing
+                        </label>
+                    </div>
+                </div>
+			</div>
 
-			element.push("<div class='row no-gutters mb-2 small-text bold-text warning'>");
-				element.push("<div class='col'>");
-					element.push("This will override the settings on any events using this category!");
-				element.push("</div>");
-			element.push("</div>");
+			<div class='row no-gutters my-2'>
+				<div class='col-md-6 col-sm-12'>
+					Color:
+				</div>
 
-			element.push(`<div class='row no-gutters my-1'>`);
-				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_hide_full' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='hide_full' ${(data.event_settings.hide_full ? "checked" : "")} />`);
-					element.push(`<label for='${key}_cat_hide_full' class='form-check-label ml-1'>`);
-						element.push("Fully hide event");
-					element.push("</label>");
-				element.push("</div>");
-			element.push("</div>");
+				<div class='col-md-6 col-sm-12'>
+                    Display:
+				</div>
 
-			element.push(`<div class='row no-gutters my-1'>`);
-				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_hide' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='hide' ${(data.event_settings.hide ? "checked" : "")} />`);
-					element.push(`<label for='${key}_cat_hide' class='form-check-label ml-1'>`);
-						element.push("Hide event");
-					element.push("</label>");
-				element.push("</div>");
-			element.push("</div>");
+                <div class='input-group col-12 mt-1 mb-2' x-data="{ colorOptions: ['Dark-Solid', 'Red', 'Pink', 'Purple', 'Deep-Purple', 'Blue', 'Light-Blue', 'Cyan', 'Teal', 'Green', 'Light-Green', 'Lime', 'Yellow', 'Orange', 'Blue-Grey'] }">
+                    <select x-model='color' class='custom-select form-control category_dynamic_input dynamic_input event-text-input color_display' data='${key}.event_settings' fc-index='color'>
+                        <template x-for="colorOption in colorOptions">
+                            <option x-text="colorOption" :value="colorOption" :selected="colorOption == color"></option>
+                        </template>
+                    </select>
+                    <select x-model='text_style' class='custom-select form-control category_dynamic_input dynamic_input event-text-input text_display' data='${key}.event_settings' fc-index='text'>
+                        <option value="text"${(data.event_settings.text == 'text' ? ' selected' : '')}>Just text</option>
+                        <option value="dot"${(data.event_settings.text == 'dot' ? ' selected' : '')}>• Dot with text</option>
+                        <option value="background"${(data.event_settings.text == 'background' ? ' selected' : '')}>Background</option>
+                    </select>
+                </div>
+			</div>
 
-			element.push(`<div class='row no-gutters my-1'>`);
-				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_print' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='print' ${(data.event_settings.noprint ? "checked" : "")} />`);
-					element.push(`<label for='${key}_cat_print' class='form-check-label ml-1'>`);
-						element.push("Show event when printing");
-					element.push("</label>");
-				element.push("</div>");
-			element.push("</div>");
+			<div class='row no-gutters mt-1'>
+				<div class='col'>
+					Event appearance:
+				</div>
+			</div>
 
-			element.push("<div class='row no-gutters my-2'>");
-				element.push("<div class='col-md-6 col-sm-12'>");
-					element.push("<div>Color:</div>");
-					element.push(`<select class='custom-select form-control category_dynamic_input dynamic_input event-text-input color_display' data='${key}.event_settings' fc-index='color'>`);
-						element.push(`<option ${(data.event_settings.color == 'Dark-Solid' ? ' selected' : '')}>Dark-Solid</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Red' ? ' selected' : '')}>Red</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Pink' ? ' selected' : '')}>Pink</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Purple' ? ' selected' : '')}>Purple</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Deep-Purple' ? ' selected' : '')}>Deep-Purple</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Blue' ? ' selected' : '')}>Blue</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Light-Blue' ? ' selected' : '')}>Light-Blue</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Cyan' ? ' selected' : '')}>Cyan</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Teal' ? ' selected' : '')}>Teal</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Green' ? ' selected' : '')}>Green</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Light-Green' ? ' selected' : '')}>Light-Green</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Lime' ? ' selected' : '')}>Lime</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Yellow' ? ' selected' : '')}>Yellow</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Orange' ? ' selected' : '')}>Orange</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Blue-Grey' ? ' selected' : '')}>Blue-Grey</option>`);
-					element.push("</select>");
-				element.push("</div>");
+			<div class='row no-gutters'>
+				<div class='col-6'>
+                    <div class='event-text-output event' :class='color + " " + text_style'>Event (visible)</div>
+				</div>
+				<div class='col-6 px-1'>
+					<div class='event-text-output hidden_event event' :class='color + " " + text_style'>Event (hidden)</div>
+				</div>
+			</div>
+		</div>
 
-				element.push("<div class='col-md-6 col-sm-12'>");
-					element.push("<div>Display:</div>");
-					element.push(`<select class='custom-select form-control category_dynamic_input dynamic_input event-text-input text_display' data='${key}.event_settings' fc-index='text'>`);
-						element.push(`<option value="text"${(data.event_settings.text == 'text' ? ' selected' : '')}>Just text</option>`);
-						element.push(`<option value="dot"${(data.event_settings.text == 'dot' ? ' selected' : '')}>• Dot with text</option>`);
-						element.push(`<option value="background"${(data.event_settings.text == 'background' ? ' selected' : '')}>Background</option>`);
-					element.push("</select>");
-				element.push("</div>");
-			element.push("</div>");
-
-			element.push("<div class='row no-gutters mt-1'>");
-				element.push("<div class='col'>");
-					element.push(`What the events will look like:`);
-				element.push("</div>");
-			element.push("</div>");
-
-			element.push("<div class='row no-gutters'>");
-				element.push("<div class='col-6'>");
-					element.push(`<div class='event-text-output event ${data.event_settings.color} ${data.event_settings.text}'>Event (visible)</div>`);
-				element.push("</div>");
-				element.push("<div class='col-6 px-1'>");
-					element.push(`<div class='event-text-output hidden_event event ${data.event_settings.color} ${data.event_settings.text}'>Event (hidden)</div>`);
-				element.push("</div>");
-			element.push("</div>");
-
-		element.push("</div>");
-
-	element.push("</div>");
-
-	element = $(element.join(""))
-
-	element.find('.name-input').val(data.name);
-
-	parent.append(element);
+	</div>`);
 }
 
 
