@@ -176,15 +176,15 @@
 
             <div class="mx-3 mt-3" :class="{ 'd-flex flex-column': activeDateAdjustment === 'relative', 'd-none': activeDateAdjustment !== 'relative' }">
                 <div class="input-group">
-                    <input type='number' class="form-control mt-2 px-2" id='unit_years' placeholder="(+/-) Years">
-                    <input type='number' class="form-control mt-2 px-2" id='unit_months' placeholder="(+/-) Months">
-                    <input type='number' class="form-control mt-2 px-2" id='unit_days' placeholder="(+/-) Days">
+                    <input type='number' class="form-control mt-2 px-2" id='unit_years' placeholder="Years (+/-)">
+                    <input type='number' class="form-control mt-2 px-2" id='unit_months' placeholder="Months (+/-)">
+                    <input type='number' class="form-control mt-2 px-2" id='unit_days' placeholder="Days (+/-)">
                 </div>
                 <div class='my-2 row no-gutters'>
                     <div class="input-group">
-                        <input type='number' class="form-control px-2" id='unit_hours' placeholder="(+/-) Hours">
+                        <input type='number' class="form-control px-2" id='unit_hours' placeholder="Hours (+/-)">
                         <div class="input-group-prepend input-group-append"><span class="input-group-text">:</span></div>
-                        <input type='number' class="form-control px-2" id='unit_minutes' placeholder="(+/-) Minutes">
+                        <input type='number' class="form-control px-2" id='unit_minutes' placeholder="Minutes (+/-)">
                     </div>
                 </div>
 
