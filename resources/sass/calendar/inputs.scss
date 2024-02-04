@@ -420,7 +420,7 @@ input[type="number"]:not(.spinner) {
 
     & > label {
         position: relative;
-        padding-left: 32px;
+        padding-left: 42px;
 
         & > *:first-child {
             position: absolute;
@@ -429,7 +429,7 @@ input[type="number"]:not(.spinner) {
             bottom: 0;
             display: grid;
             place-items: center;
-            width:32px
+            width:42px
         }
     }
 }
