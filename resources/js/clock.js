@@ -350,7 +350,6 @@ class Clock {
                     this.face_ctx.strokeText(num.toString(), 0, 0);
                 }
 
-                console.log(ang, sunset_degree, sunrise_degree);
                 this.face_ctx.fillStyle =
                     num > this.sunrise && num + 1 <= this.sunset
                         ? this.color("text")

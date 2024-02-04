@@ -261,7 +261,6 @@ const events_manager = {
         let index = 0;
         if (output.length < 1) return;
         let lengthLimit = 110 - offset;
-        console.log(lengthLimit, offset);
 
         // Using a dedicated variable for this because adding the "<mark>" to the HTML
         // makes the final output have a higher length. We want to check length on the **unaltered** results,
