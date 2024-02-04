@@ -1,14 +1,28 @@
 @extends('inputs.full')
 
 @section('label')
-    <div class='wrap-collapsible'>
-        <div class='title-text center-text'>Edit Calendar</div>
-    </div>
-
-    <div class='wrap-collapsible content'>
-        <div class='col-12 mb-2'>
-            <div class='row'>
-                <input type='text' class='form-control form-control-lg full' id='calendar_name' placeholder='Calendar name' />
+    <div class='wrap-collapsible content mt-3'>
+        <div class='row'>
+            <div class='col-12 mb-2'>
+                <div class="input-group">
+                    <input type='text' class='form-control form-control-lg' id='calendar_name' placeholder='Calendar name' />
+                    <div class="dropdown input-group-append">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" id="calendarMenuToggle" data-toggle="dropdown">
+                            <i class="fa fa-cog"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelleddby="calendarMenuToggle">
+                            <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}" class="dropdown-item">
+                                View
+                            </a>
+                            <a href="#" onclick="print()" class="dropdown-item">
+                                Print
+                            </a>
+                            <a href="#" id='btn_delete' class="dropdown-item">
+                                Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -20,19 +34,4 @@
             </div>
         </div>
     </div>
-
-
-    <div class='wrap-collapsible'>
-        <div class='d-flex my-2 w-100'>
-            <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}" class="btn w-100 btn-sm btn-outline-secondary">
-                View
-            </a>
-            <button type='button' onclick="print()" class="btn w-100 btn-sm btn-outline-secondary mx-2">
-                Print
-            </a>
-            <button type="button" id='btn_delete' class='btn w-100 btn-sm btn-outline-danger btn-block'>Delete</button>
-        </div>
-    </div>
-
-
 @endsection

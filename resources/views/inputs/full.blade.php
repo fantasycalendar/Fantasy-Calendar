@@ -5,20 +5,6 @@
     @yield('label')
 
     <div class='wrap-collapsible step-hide'>
-        <div class="d-flex mb-2 w-100">
-            <label class="row no-gutters setting border rounded py-2 px-3 protip w-100" data-pt-position="right"
-                   data-pt-title="If unchecked, you will be prompted to apply changes after making them, instead of loading the calendar every time.">
-                <div class='col'>
-                    <input type='checkbox' class='margin-right' data='settings' id='apply_changes_immediately' checked>
-                    <span>
-                        Apply changes immediately
-                    </span>
-                </div>
-            </label>
-        </div>
-    </div>
-
-    <div class='wrap-collapsible step-hide'>
         <div class="view-tabs btn-group d-flex mb-2 w-100">
             <button type="button" data-pt-position='top' data-pt-title='What you, the owner, will always see'
                     data-view-type='owner' class="protip owner w-100 btn btn-sm btn-primary">Owner View
@@ -30,6 +16,20 @@
             <button type="button" data-pt-position='top' data-pt-title='Graphs showing the weather curves'
                     data-view-type='weather' class="protip weather w-100 btn btn-sm btn-secondary">Climate view
             </button>
+        </div>
+    </div>
+
+    <div class='wrap-collapsible step-hide'>
+        <div class="d-flex mb-2 w-100">
+            <label class="row no-gutters setting border rounded py-2 px-3 protip w-100" data-pt-position="right"
+                   data-pt-title="If unchecked, you will be prompted to apply changes after making them, instead of loading the calendar every time.">
+                <div class='col'>
+                    <input type='checkbox' class='margin-right' data='settings' id='apply_changes_immediately' checked>
+                    <span>
+                        Apply changes immediately
+                    </span>
+                </div>
+            </label>
         </div>
     </div>
 
