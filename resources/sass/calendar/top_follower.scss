@@ -62,7 +62,7 @@
     .btn_container {
         display: inline-flex;
         flex-direction: column;
-        width: 5em;
+        min-width: 5em;
         flex: 0 1 auto;
         overflow: hidden;
         margin: 0;

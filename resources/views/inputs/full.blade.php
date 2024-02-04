@@ -1878,8 +1878,8 @@
             </button>
         </div>
 
-        <div class='reset_preview_date_container m-1 left hidden'>
-            <button type='button' class='btn m-0 btn-info reset_preview_date protip d-print-none'
+        <div class='reset_preview_date_container left hidden'>
+            <button type='button' class='btn btn-info reset_preview_date protip d-print-none'
                     data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'><
                 Current
             </button>
@@ -1892,8 +1892,8 @@
             </div>
         </div>
 
-        <div class='reset_preview_date_container m-1 right hidden'>
-            <button type='button' class='btn m-0 btn-info reset_preview_date protip d-print-none'
+        <div class='reset_preview_date_container right hidden'>
+            <button type='button' class='btn btn-info reset_preview_date protip d-print-none'
                     data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'>
                 Current >
             </button>

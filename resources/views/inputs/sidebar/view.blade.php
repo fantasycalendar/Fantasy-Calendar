@@ -276,16 +276,16 @@
             </button>
 		</div>
 
-        <div class='reset_preview_date_container m-1 left hidden'>
-            <button type='button' class='btn m-0 btn-success reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
+        <div class='reset_preview_date_container btn_container left hidden'>
+            <button type='button' class='btn btn-success reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
         </div>
 
         <div class="follower_center flex-grow-1">
             <div id='top_follower_content'><div class='year'></div><div class='cycle'></div></div>
         </div>
 
-        <div class='reset_preview_date_container m-1 right hidden'>
-            <button type='button' class='btn m-0 btn-success reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
+        <div class='reset_preview_date_container btn_container right hidden'>
+            <button type='button' class='btn btn-success reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
         </div>
 
 		<div class='btn_container hidden'>

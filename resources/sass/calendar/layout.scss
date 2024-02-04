@@ -203,13 +203,17 @@ body.page-calendars-index {
     place-items: center;
     text-align: center;
     font-size: 1.5rem;
-    border-radius: 0 0 4px 4px;
     cursor: pointer;
     transition: 0.5s all ease;
     width: auto !important;
+    padding: 0.3rem;
 
     &.is-active {
         display: none !important;
+    }
+
+    .btn {
+        border-radius: 0;
     }
 }
 
