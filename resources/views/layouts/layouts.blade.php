@@ -10,7 +10,7 @@
             <div class="modal-basic-wrapper">
                 <form id="layout-form" class="modal-wrapper layout-wrapper container" action="post" @click.away="open = false;">
 
-                    <i class="close_ui_btn fas fa-times-circle" @click="open = false"></i>
+                    <i class="close_ui_btn fas fa-times" @click="open = false"></i>
 
                     <div class="row no-gutters mb-1 modal-form-heading">
                         <div class="text-left col-12 col-md-12">

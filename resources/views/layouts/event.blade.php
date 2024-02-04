@@ -124,7 +124,7 @@
 			<form id="event-form" class="modal-wrapper container" action="post" @mousedown.outside="confirm_close" x-transition x-show="open">
 
 				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>
+				<i class="close_ui_btn fas fa-times" @click='confirm_close'></i>
 
 				<div class='row no-gutters mb-1 modal-form-heading'>
 					<h3 class='event_action_type d-flex align-items-center'>

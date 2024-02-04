@@ -1835,7 +1835,7 @@
 
 <div id="calendar_container">
 
-    <div id="modal_background" class='flexible_background blurred_background'>
+    <div id="modal_background" class='flexible_background blurred_background' style="pointer-events: none">
         <div id="modal">
 			<span id="modal_text">
 				This is an alert box.
