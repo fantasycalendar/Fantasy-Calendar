@@ -83,16 +83,17 @@ select.invalid {
 }
 
 .season_combo_icon .fa-sun {
+    font-size: 15px;
     overflow: hidden;
-    width: 0.58rem;
+    width: 7px;
 }
 
 .season_combo_icon .fa-snowflake {
+    font-size: 15px;
     overflow: hidden;
-    width: 0.54rem;
+    width: 7px;
+    margin-left: 2px;
     transform: scale(-1);
-    position: relative;
-    left: 0.1rem;
 }
 
 .view_type {
@@ -416,6 +417,21 @@ input[type="number"]:not(.spinner) {
 .wrap-collapsible {
     width: 94%;
     margin: auto;
+
+    & > label {
+        position: relative;
+        padding-left: 32px;
+
+        & > *:first-child {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            display: grid;
+            place-items: center;
+            width:32px
+        }
+    }
 }
 
 .location_season {

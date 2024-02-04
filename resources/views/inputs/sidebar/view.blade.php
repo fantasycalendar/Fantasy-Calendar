@@ -277,7 +277,7 @@
 		</div>
 
         <div class='reset_preview_date_container btn_container left hidden'>
-            <button type='button' class='btn btn-success reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
+            <button type='button' class='btn btn-info reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
         </div>
 
         <div class="follower_center flex-grow-1">
@@ -285,7 +285,7 @@
         </div>
 
         <div class='reset_preview_date_container btn_container right hidden'>
-            <button type='button' class='btn btn-success reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
+            <button type='button' class='btn btn-info reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
         </div>
 
 		<div class='btn_container hidden'>

@@ -39,12 +39,13 @@
     <div class="accordion">
         <div class='wrap-collapsible card settings-statistics'>
             <input id="collapsible_statistics" class="toggle" type="checkbox">
-            <label for="collapsible_statistics" class="lbl-toggle py-2 px-3 card-header"><i
-                        class="mr-2 fas fa-chart-pie"></i> Statistics <a target="_blank" data-pt-position="right"
-                                                                         data-pt-title='More Info: Statistics'
-                                                                         href='{{ helplink('statistics') }}'
-                                                                         class="wiki protip"><i
-                            class="icon-question-sign"></i></a></label>
+            <label for="collapsible_statistics" class="lbl-toggle py-2 pr-3 card-header">
+                <i class="mr-2 fas fa-chart-pie"></i> Statistics <a target="_blank" data-pt-position="right"
+                                                                                    data-pt-title='More Info: Statistics'
+                                                                                    href='{{ helplink('statistics') }}'
+                                                                                    class="wiki protip">
+                    <i class="icon-question-sign"></i></a>
+            </label>
             <div class="collapsible-content card-body">
                 <div class='row no-gutters'>
                     <div class='col-7 bold-text'>
@@ -76,7 +77,7 @@
 
         <div class='wrap-collapsible card settings-current_date'>
             <input id="collapsible_date" class="toggle" type="checkbox">
-            <label for="collapsible_date" class="lbl-toggle py-2 px-3 card-header"><i
+            <label for="collapsible_date" class="lbl-toggle py-2 pr-3 card-header"><i
                         class="mr-2 fas fa-hourglass-half"></i> Current Date <a target="_blank" data-pt-position="right"
                                                                                 data-pt-title='More Info: Date'
                                                                                 href='{{ helplink('current_date_and_time') }}'
@@ -240,7 +241,7 @@
 
         <div class='wrap-collapsible card settings-clock'>
             <input id="collapsible_clock" class="toggle" type="checkbox">
-            <label for="collapsible_clock" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fa fa-clock"></i>
+            <label for="collapsible_clock" class="lbl-toggle py-2 pr-3 card-header"><i class="mr-2 fa fa-clock"></i>
                 Clock <a target="_blank" data-pt-position="right" data-pt-title='More Info: Clock'
                          href='{{ helplink('clock') }}' class="wiki protip"><i
                             class="icon-question-sign"></i></a></label>
@@ -387,7 +388,7 @@
             <!---------------------------------------------->
             <div class='wrap-collapsible card settings-real-time-advancement'>
                 <input id="collapsible_real-time-advancement" class="toggle" type="checkbox">
-                <label for="collapsible_real-time-advancement" class="lbl-toggle py-2 px-3 card-header">
+                <label for="collapsible_real-time-advancement" class="lbl-toggle py-2 pr-3 card-header">
                     <i class="fas fa-history mr-2" style="transform: scaleX(-1);"></i>
                     Real-Time Advancement
                     @if(isset($calendar) && !$calendar->isPremium())
@@ -574,7 +575,7 @@
 
         <div class='wrap-collapsible card settings-weekdays step-2-step'>
             <input id="collapsible_globalweek" class="toggle" type="checkbox">
-            <label for="collapsible_globalweek" class="lbl-toggle py-2 px-3 card-header"><i
+            <label for="collapsible_globalweek" class="lbl-toggle py-2 pr-3 card-header"><i
                         class="mr-2 fas fa-calendar-week"></i> Weekdays <a target="_blank" data-pt-position="right"
                                                                            data-pt-title='More Info: Weekdays'
                                                                            href='{{ helplink('weekdays') }}'
@@ -682,7 +683,7 @@
         <div class='wrap-collapsible card settings-timespans step-3-step'>
 
             <input id="collapsible_timespans" class="toggle" type="checkbox">
-            <label for="collapsible_timespans" class="lbl-toggle py-2 px-3 card-header"><i
+            <label for="collapsible_timespans" class="lbl-toggle py-2 pr-3 card-header"><i
                         class="mr-2 fas fa-calendar-alt"></i> Months <a target="_blank" data-pt-position="right"
                                                                         data-pt-title='More Info: Months & Intercalaries'
                                                                         href='{{ helplink('months') }}'
@@ -777,7 +778,7 @@
 
         <div class='wrap-collapsible card settings-leapdays'>
             <input id="collapsible_leapdays" class="toggle" type="checkbox">
-            <label for="collapsible_leapdays" class="lbl-toggle py-2 px-3 card-header"><i
+            <label for="collapsible_leapdays" class="lbl-toggle py-2 pr-3 card-header"><i
                         class="mr-2 fas fa-calendar-day"></i> Leap days <a target="_blank" data-pt-position="right"
                                                                            data-pt-title='More Info: Leap Days'
                                                                            href='{{ helplink('leap_days') }}'
@@ -870,7 +871,7 @@
 
         <div class='wrap-collapsible card settings-eras'>
             <input id="collapsible_eras" class="toggle" type="checkbox">
-            <label for="collapsible_eras" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-infinity"></i>
+            <label for="collapsible_eras" class="lbl-toggle py-2 pr-3 card-header"><i class="mr-2 fas fa-infinity"></i>
                 Eras <a target="_blank" data-pt-position="right" data-pt-title='More Info: Eras'
                         href='{{ helplink('eras') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
@@ -936,7 +937,7 @@
 
         <div class='wrap-collapsible card settings-moons'>
             <input id="collapsible_moon" class="toggle" type="checkbox">
-            <label for="collapsible_moon" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-moon"></i>
+            <label for="collapsible_moon" class="lbl-toggle py-2 pr-3 card-header"><i class="mr-2 fas fa-moon"></i>
                 Moons <a target="_blank" data-pt-position="right" data-pt-title='More Info: Moons'
                          href='{{ helplink('moons') }}' class="wiki protip"><i
                             class="icon-question-sign"></i></a></label>
@@ -982,10 +983,12 @@
 
         <div class='wrap-collapsible card settings-seasons'>
             <input id="collapsible_seasons" class="toggle" type="checkbox">
-            <label for="collapsible_seasons" class="lbl-toggle py-2 px-3 card-header">
-                <i class='season_combo_icon fas mr-2'>
-                    <i class="fas fa-sun"></i><i class="fas fa-snowflake"></i>
-                </i>
+            <label for="collapsible_seasons" class="lbl-toggle py-2 pr-3 card-header">
+                <div>
+                    <div class='season_combo_icon full d-flex justify-content-center'>
+                        <i class="fas fa-sun"></i><i class="fas fa-snowflake"></i>
+                    </div>
+                </div>
                 Seasons<a target="_blank" data-pt-position="right" data-pt-title='More Info: Seasons'
                           href='{{ helplink('seasons') }}' class="wiki protip"><i class="icon-question-sign"></i></a>
             </label>
@@ -1074,7 +1077,7 @@
 
         <div class='wrap-collapsible card settings-weather'>
             <input id="collapsible_weather" class="toggle" type="checkbox">
-            <label for="collapsible_weather" class="lbl-toggle py-2 px-3 card-header"><i
+            <label for="collapsible_weather" class="lbl-toggle py-2 pr-3 card-header"><i
                         class="mr-2 fas fa-cloud-sun-rain"></i> Weather<a target="_blank" data-pt-position="right"
                                                                           data-pt-title='More Info: Weather'
                                                                           href='{{ helplink('weather') }}'
@@ -1174,7 +1177,7 @@
 
         <div class='wrap-collapsible card settings-locations'>
             <input id="collapsible_locations" class="toggle" type="checkbox">
-            <label for="collapsible_locations" class="lbl-toggle py-2 px-3 card-header"><i
+            <label for="collapsible_locations" class="lbl-toggle py-2 pr-3 card-header"><i
                         class="mr-2 fas fa-compass"></i> Locations <a target="_blank" data-pt-position="right"
                                                                       data-pt-title='More Info: Locations'
                                                                       href='{{ helplink('locations') }}'
@@ -1242,7 +1245,7 @@
 
         <div class='wrap-collapsible card settings-cycles'>
             <input id="collapsible_cycles" class="toggle" type="checkbox">
-            <label for="collapsible_cycles" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-redo"></i>
+            <label for="collapsible_cycles" class="lbl-toggle py-2 pr-3 card-header"><i class="mr-2 fas fa-redo"></i>
                 Cycles <a target="_blank" data-pt-position="right" data-pt-title='More Info: Cycles'
                           href='{{ helplink('cycles') }}' class="wiki protip"><i
                             class="icon-question-sign"></i></a></label>
@@ -1277,7 +1280,7 @@
 
         <div class='wrap-collapsible card settings-categories'>
             <input id="collapsible_categories" class="toggle" type="checkbox">
-            <label for="collapsible_categories" class="lbl-toggle py-2 px-3 card-header"><i
+            <label for="collapsible_categories" class="lbl-toggle py-2 pr-3 card-header"><i
                         class="mr-2 fas fa-th-list"></i> Event Categories <a target="_blank" data-pt-position="right"
                                                                              data-pt-title='More Info: Event Categories'
                                                                              href='{{ helplink('event_categories') }}'
@@ -1323,7 +1326,7 @@
 
         <div class='wrap-collapsible card settings-events'>
             <input id="collapsible_events" class="toggle" type="checkbox">
-            <label for="collapsible_events" class="lbl-toggle py-2 px-3 card-header">
+            <label for="collapsible_events" class="lbl-toggle py-2 pr-3 card-header">
                 <i class="mr-2 fas fa-calendar-check"></i> Events
                 <a target="_blank" data-pt-position="right"
                                    data-pt-title='More Info: Events'
@@ -1449,7 +1452,7 @@
 
         <div class='wrap-collapsible card settings-settings'>
             <input id="collapsible_settings" class="toggle" type="checkbox">
-            <label for="collapsible_settings" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-cog"></i>
+            <label for="collapsible_settings" class="lbl-toggle py-2 pr-3 card-header"><i class="mr-2 fas fa-cog"></i>
                 Settings <a target="_blank" data-pt-position="right" data-pt-title='More Info: Settings'
                             href='{{ helplink('settings') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
@@ -1700,7 +1703,7 @@
             <!---------------------------------------------->
             <div class='wrap-collapsible card settings-users'>
                 <input id="collapsible_users" class="toggle" type="checkbox">
-                <label for="collapsible_users" class="lbl-toggle py-2 px-3 card-header">
+                <label for="collapsible_users" class="lbl-toggle py-2 pr-3 card-header">
                     <i class="mr-2 fas fa-user"></i>
                     User Management
                     @if(isset($calendar) && !$calendar->isPremium())
@@ -1764,7 +1767,7 @@
             <div class='wrap-collapsible card settings-linking'>
                 <input id="collapsible_linking" class="toggle" type="checkbox">
 
-                <label for="collapsible_linking" class="lbl-toggle py-2 px-3 card-header">
+                <label for="collapsible_linking" class="lbl-toggle py-2 pr-3 card-header">
                     <i class="mr-2 fas fa-link"></i>
                     Calendar Linking
                     @if(isset($calendar) && !$calendar->isPremium())
@@ -1879,7 +1882,7 @@
         </div>
 
         <div class='reset_preview_date_container left hidden'>
-            <button type='button' class='btn btn-info reset_preview_date protip d-print-none'
+            <button type='button' class='btn btn-success reset_preview_date protip d-print-none'
                     data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'><
                 Current
             </button>
@@ -1893,7 +1896,7 @@
         </div>
 
         <div class='reset_preview_date_container right hidden'>
-            <button type='button' class='btn btn-info reset_preview_date protip d-print-none'
+            <button type='button' class='btn btn-success reset_preview_date protip d-print-none'
                     data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'>
                 Current >
             </button>
