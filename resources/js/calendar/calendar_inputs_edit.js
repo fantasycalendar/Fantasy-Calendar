@@ -2833,19 +2833,17 @@ function add_timespan_to_sortable(parent, key, data){
 
 		<div class='collapse-container container pb-2'>
 
-			<div class='row no-gutters bold-text big-text italics-text'>
-				<div class='col-12'>${(data.type == "month" ? "Month" : "Intercalary month")}</div>
+			<div class='row no-gutters'>
+                <div class='col'>Type: ${(data.type == "month" ? "Month" : "Intercalary month")}</div>
 			</div>
-
-				<div class='row no-gutters my-1 bold-text'><div class='col-12'>Leaping settings</div></div>
 
 			<div class='row no-gutters mt-1'>
 				<div class='col-6 pr-1'>
-					<div>Interval:</div>
+					<div>Leap interval:</div>
 				</div>
 
 				<div class='col-6 pl-1'>
-					<div>Offset:</div>
+					<div>Leap offset:</div>
 				</div>
 			</div>
 
@@ -2873,10 +2871,6 @@ function add_timespan_to_sortable(parent, key, data){
                 </div>
 
                 <div class='row no-gutters my-1'>
-                    <div class='col-12 bold-text'>Week settings</div>
-                </div>
-
-                <div class='row no-gutters my-1'>
                     <div class='form-check col-12 py-2 border rounded'>
                         <input type='checkbox' id='${key}_custom_week' class='form-check-input unique-week-input'
                         ${data.week ? "checked" : ""}
@@ -2891,16 +2885,16 @@ function add_timespan_to_sortable(parent, key, data){
 
                     <div class='row no-gutters my-1'>
                         <div class='col-12'>
-                            Length:
+                            Custom week length:
                         </div>
                     </div>
 
                     <div class='row no-gutters mb-1'>
-                        <div class='col-6 pr-1'>
+                        <div class='input-group'>
                             <input @blur="do_error_check('calendar')" type='number' min='1' step="1" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>
-                        </div>
-                        <div class='col-6 pl-1'>
-                            <button type='button' class='full btn btn-primary weekday_quick_add' ${(!data.week ? "disabled" : "")}>Quick add</button>
+                            <div class="input-group-append">
+                                <button type='button' class='full btn btn-primary weekday_quick_add' ${(!data.week ? "disabled" : "")}>Quick add</button>
+                            </div>
                         </div>
                     </div>
 
