@@ -633,12 +633,12 @@
                     </div>
 
                     <div class='row no-gutters add_inputs global_week'>
-                        <div class='col'>
+                        <div class='col input-group'>
                             <input type='text' class='form-control name' id='weekday_name_input'
                                    placeholder='Weekday name'>
-                        </div>
-                        <div class='col-auto'>
-                            <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                            <div class="input-group-append">
+                                <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                            </div>
                         </div>
                     </div>
 
@@ -906,11 +906,11 @@
                     </div>
 
                     <div class='add_inputs eras row no-gutters'>
-                        <div class="col">
+                        <div class="input-group">
                             <input type='text' class='form-control name' id='era_name_input' placeholder='Era name'>
-                        </div>
-                        <div class="col-auto">
-                            <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                            <div class="input-group-append">
+                                <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                            </div>
                         </div>
                     </div>
 
@@ -942,24 +942,32 @@
 
                 <div class='add_inputs moon'>
                     <div class='row no-gutters'>
-                        <div class='col'>
-                            <input type='text' class='form-control name protip' data-pt-position="top"
-                                   data-pt-title="The moon's name." id='moon_name_input' placeholder='Moon name'>
-                        </div>
-                        <div class='col-auto'>
-                            <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
-                        </div>
-                    </div>
-                    <div class='row no-gutters'>
-                        <div class='col-6'>
-                            <input type='number' class='form-control cycle protip' data-pt-position="top"
+                        <input type='text'
+                               class='form-control name protip mb-1'
+                               data-pt-position="top"
+                               data-pt-title="The moon's name."
+                               id='moon_name_input'
+                               placeholder='Moon name'>
+                        <div class='input-group'>
+
+                            <input type='number'
+                                   class='form-control cycle protip'
+                                   data-pt-position="top"
                                    data-pt-title='How many days it takes for this moon go from Full Moon to the next Full Moon.'
-                                   min='1' id='moon_cycle_input' placeholder='Cycle'>
-                        </div>
-                        <div class='col-6'>
-                            <input type='number' class='form-control shift protip' data-pt-position="top"
-                                   data-pt-title='This is how many days the cycle is offset by.' id='moon_shift_input'
+                                   min='1'
+                                   id='moon_cycle_input'
+                                   placeholder='Cycle'>
+
+                            <input type='number'
+                                   class='form-control shift protip'
+                                   data-pt-position="top"
+                                   data-pt-title='This is how many days the cycle is offset by.'
+                                   id='moon_shift_input'
                                    placeholder='Shift'>
+
+                            <div class='input-group-append'>
+                                <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                            </div>
                         </div>
                     </div>
                 </div>
