@@ -1,5 +1,4 @@
-<form id="input_container" class='d-print-none'>
-
+<div id="input_container" class='d-print-none'>
     @include('inputs.sidebar.header')
 
     @yield('label')
@@ -1825,8 +1824,8 @@
                     @endif
                 </div>
             </div>
-    @endif
-</form>
+        @endif
+    </div>
 </div>
 
 <div id="calendar_container">
