@@ -2813,118 +2813,108 @@ function add_timespan_to_sortable(parent, key, data){
 
 	if(key == 0) $('.timespan_sortable_header').removeClass('hidden');
 
-	var element = [];
-	element.push(`<div class='sortable-container list-group-item ${data.type} collapsed collapsible' type='${data.type}' index='${key}'>`);
-		element.push("<div class='main-container'>");
-			element.push("<div class='handle icon-reorder'></div>");
-			element.push("<div class='expand icon-expand'></div>");
-			element.push("<div class='name-container'>");
-				element.push(`<input type='text' step='1.0' tabindex='${(100+key)}'class='name-input small-input form-control dynamic_input' data='year_data.timespans.${key}' fc-index='name'/>`);
-			element.push("</div>");
-			element.push(`<div class='length_input'><input type='number' min='1' class='length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100+key)}' value='${data.length}'/></div>`);
-			element.push('<div class="remove-spacer"></div>');
-		element.push("</div>");
-		element.push("<div class='remove-container'>");
-			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-			element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
-		element.push("</div>");
+	var element = $(
+        `<div class='sortable-container list-group-item ${data.type} collapsed collapsible' type='${data.type}' index='${key}' x-data="{ type: '${data.type}', week: ${JSON.stringify(data.week ?? [])} }">
+		<div class='main-container'>
+			<div class='handle icon-reorder'></div>
+			<div class='expand icon-expand'></div>
+			<div class='name-container'>
+				<input value="${data.name}" type='text' step='1.0' tabindex='${(100+key)}'class='name-input small-input form-control dynamic_input' data='year_data.timespans.${key}' fc-index='name'/>
+			</div>
+			<div class='length_input'><input type='number' min='1' class='length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100+key)}' value='${data.length}'/></div>
+			<div class="remove-spacer"></div>
+		</div>
+		<div class='remove-container'>
+			<div class='remove-container-text'>Are you sure you want to remove this?</div>
+			<div class='btn_remove btn btn-danger icon-trash'></div>
+			<div class='btn_cancel btn btn-danger icon-remove'></div>
+			<div class='btn_accept btn btn-success icon-ok'></div>
+		</div>
 
-		element.push("<div class='collapse-container container pb-2'>");
+		<div class='collapse-container container pb-2'>
 
-			element.push("<div class='row no-gutters bold-text big-text italics-text'>");
-				element.push("<div class='col-12'>" + (data.type == "month" ? "Month" : "Intercalary month") + "</div>");
-			element.push("</div>");
+			<div class='row no-gutters bold-text big-text italics-text'>
+				<div class='col-12'>${(data.type == "month" ? "Month" : "Intercalary month")}</div>
+			</div>
 
-				element.push("<div class='row no-gutters my-1 bold-text'><div class='col-12'>Leaping settings</div></div>");
+				<div class='row no-gutters my-1 bold-text'><div class='col-12'>Leaping settings</div></div>
 
-			element.push("<div class='row no-gutters mt-1'>");
-				element.push("<div class='col-6 pr-1'>");
-					element.push("<div>Interval:</div>");
-				element.push("</div>");
+			<div class='row no-gutters mt-1'>
+				<div class='col-6 pr-1'>
+					<div>Interval:</div>
+				</div>
 
-				element.push("<div class='col-6 pl-1'>");
-					element.push("<div>Offset:</div>");
-				element.push("</div>");
-			element.push("</div>");
+				<div class='col-6 pl-1'>
+					<div>Offset:</div>
+				</div>
+			</div>
 
-			element.push("<div class='row no-gutters mb-1'>");
-				element.push("<div class='col-6 pr-1'>");
-					element.push(`<input type='number' step="1" min='1' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' fc-index='interval' value='${data.interval}' />`);
-				element.push("</div>");
+			<div class='row no-gutters mb-1'>
+				<div class='col-6 pr-1'>
+					<input type='number' step="1" min='1' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' fc-index='interval' value='${data.interval}' />
+				</div>
 
-				element.push("<div class='col-6 pl-1'>");
-					element.push(`<input type='number' step="1" min='0' class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.interval === 1 ? 0 : data.offset}'`);
-					element.push(data.interval === 1 ? " disabled" : "");
-					element.push("/>");
-				element.push("</div>");
-			element.push("</div>");
+				<div class='col-6 pl-1'>
+					<input type='number' step="1" min='0' class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.interval === 1 ? 0 : data.offset}'
+					${data.interval === 1 ? " disabled" : ""}
+					/>
+				</div>
+			</div>
 
-			element.push("<div class='row no-gutters my-1'>");
-				element.push("<div class='col-12 italics-text timespan_variance_output'>");
-					element.push(get_interval_text(true, data));
-				element.push("</div>");
-			element.push("</div>");
+			<div class='row no-gutters my-1'>
+				<div class='col-12 italics-text timespan_variance_output'>
+					${get_interval_text(true, data)}
+				</div>
+			</div>
 
-			if(data.type == 'month'){
+            <div x-show="type === 'month'">
+                <div class='row no-gutters my-1'>
+                    <div class='col-12'><div class='separator'></div></div>
+                </div>
 
-				element.push("<div class='row no-gutters my-1'>");
-					element.push("<div class='col-12'><div class='separator'></div></div>");
-				element.push("</div>");
+                <div class='row no-gutters my-1'>
+                    <div class='col-12 bold-text'>Week settings</div>
+                </div>
 
-				element.push("<div class='row no-gutters my-1'>");
-					element.push("<div class='col-12 bold-text'>Week settings</div>");
-				element.push("</div>");
+                <div class='row no-gutters my-1'>
+                    <div class='form-check col-12 py-2 border rounded'>
+                        <input type='checkbox' id='${key}_custom_week' class='form-check-input unique-week-input'
+                        ${data.week ? "checked" : ""}
+                        />
+                        <label for='${key}_custom_week' class='form-check-label ml-1'>
+                            Use custom week
+                        </label>
+                    </div>
+                </div>
 
-				element.push(`<div class='row no-gutters my-1'>`);
-					element.push("<div class='form-check col-12 py-2 border rounded'>");
-						element.push(`<input type='checkbox' id='${key}_custom_week' class='form-check-input unique-week-input'`);
-						element.push(data.week ? "checked" : "");
-						element.push("/>");
-						element.push(`<label for='${key}_custom_week' class='form-check-label ml-1'>`);
-							element.push("Use custom week");
-						element.push("</label>");
-					element.push("</div>");
-				element.push("</div>");
+                <div class='custom-week-container ${(!data.week ? "hidden" : "")}'>
 
-				element.push(`<div class='custom-week-container ${(!data.week ? "hidden" : "")}'>`);
+                    <div class='row no-gutters my-1'>
+                        <div class='col-12'>
+                            Length:
+                        </div>
+                    </div>
 
-					element.push("<div class='row no-gutters my-1'>");
-						element.push("<div class='col-12'>");
-							element.push("Length:");
-						element.push("</div>");
-					element.push("</div>");
+                    <div class='row no-gutters mb-1'>
+                        <div class='col-6 pr-1'>
+                            <input @blur="do_error_check('calendar')" type='number' min='1' step="1" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>
+                        </div>
+                        <div class='col-6 pl-1'>
+                            <button type='button' class='full btn btn-primary weekday_quick_add' ${(!data.week ? "disabled" : "")}>Quick add</button>
+                        </div>
+                    </div>
 
-					element.push("<div class='row no-gutters mb-1'>");
-						element.push("<div class='col-6 pr-1'>");
-							element.push(`<input type='number' min='1' step="1" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>`);
-						element.push("</div>");
-						element.push("<div class='col-6 pl-1'>");
-							element.push(`<button type='button' class='full btn btn-primary weekday_quick_add' ${(!data.week ? "disabled" : "")}>Quick add</button>`);
-						element.push("</div>");
-					element.push("</div>");
-
-					element.push("<div class='row no-gutters border'>");
-						element.push("<div class='week_list col-12 p-1'>");
-						if(data.week){
-							for(index = 0; index < data.week.length; index++){
-								element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}'/>`);
-							}
-						}
-						element.push("</div>");
-					element.push("</div>");
-				element.push("</div>");
-
-			}
-
-		element.push("</div>");
-
-	element.push("</div>");
-
-	element = $(element.join(""))
-
-	element.find('.name-input').val(data.name);
+                    <div class='row no-gutters border'>
+                        <div class='week_list col-12 p-1'>
+                            <template x-for='(day, index) in week' :key='index'>
+                                <input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' :fc-index='index'/>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>`);
 
 	if(data.week){
 		element.find('.week_list').children().each(function(i){
