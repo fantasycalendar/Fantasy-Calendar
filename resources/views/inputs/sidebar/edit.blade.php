@@ -2,7 +2,7 @@
 
 @section('label')
     <div class='wrap-collapsible content mt-3'>
-        <div class='row'>
+        <div class='row no-gutters'>
             <div class='col-12 mb-2'>
                 <div class="input-group">
                     <input type='text' class='form-control form-control-lg' id='calendar_name' placeholder='Calendar name' />

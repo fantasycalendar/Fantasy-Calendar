@@ -1036,11 +1036,11 @@
                 </div>
 
                 <div class='add_inputs seasons row no-gutters'>
-                    <div class='col'>
+                    <div class='input-group'>
                         <input type='text' class='form-control name' id='season_name_input' placeholder='Season name'>
-                    </div>
-                    <div class='col-auto'>
-                        <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                        <div class="input-group-append">
+                            <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                        </div>
                     </div>
                 </div>
 
@@ -1116,27 +1116,25 @@
                             </div>
                         </div>
 
-                        <div class='row no-gutters'>
-                            <div class='col-md-6 my-1'>
-                                Temperature system:
-                                <select class='custom-select form-control type static_input' id='temp_sys'
-                                        refresh='false' data='seasons.global_settings' fc-index='temp_sys'>
-                                    <option selected value='metric'>Metric</option>
-                                    <option value='imperial'>Imperial</option>
-                                    <option value='both_m'>Both (inputs metric)</option>
-                                    <option value='both_i'>Both (inputs imperial)</option>
-                                </select>
-                            </div>
+                        <div class="row no-gutters mt-2">
+                            <div class="col-6">Temperature system:</div>
+                            <div class="col-6">Wind system:</div>
+                        </div>
 
-                            <div class='col-md-6 my-1'>
-                                Wind system:
-                                <select class='custom-select form-control type static_input' refresh='false'
-                                        data='seasons.global_settings' fc-index='wind_sys'>
-                                    <option selected value='metric'>Metric</option>
-                                    <option value='imperial'>Imperial</option>
-                                    <option value='both'>Both</option>
-                                </select>
-                            </div>
+                        <div class='row no-gutters my-1 input-group'>
+                            <select class='custom-select form-control type static_input' id='temp_sys'
+                                refresh='false' data='seasons.global_settings' fc-index='temp_sys'>
+                                <option selected value='metric'>Metric</option>
+                                <option value='imperial'>Imperial</option>
+                                <option value='both_m'>Both (inputs metric)</option>
+                                <option value='both_i'>Both (inputs imperial)</option>
+                            </select>
+                            <select class='custom-select form-control type static_input' refresh='false'
+                                data='seasons.global_settings' fc-index='wind_sys'>
+                                <option selected value='metric'>Metric</option>
+                                <option value='imperial'>Imperial</option>
+                                <option value='both'>Both</option>
+                            </select>
                         </div>
 
                         <div class='row no-gutters my-2 protip align-items-center' data-pt-position="right"
@@ -1155,12 +1153,10 @@
                         <div class='row no-gutters'>
                             <div class='col-auto'>Weather generation seed:</div>
                         </div>
-                        <div class='row no-gutters'>
-                            <div class='col'>
-                                <input type='number' id='seasons_seed' class='form-control static_input full'
-                                       refresh='false' data='seasons.global_settings' fc-index='seed'/>
-                            </div>
-                            <div class='col-auto'>
+                        <div class='row no-gutters input-group'>
+                            <input type='number' id='seasons_seed' class='form-control static_input'
+                            refresh='false' data='seasons.global_settings' fc-index='seed'/>
+                            <div class="input-group-append">
                                 <div class='btn btn-primary' id='reseed_seasons'><i class="fa fa-redo"></i></div>
                             </div>
                         </div>
@@ -1219,12 +1215,10 @@
                         </div>
                     </div>
 
-                    <div class='row no-gutters add_inputs locations'>
-                        <div class="col">
-                            <input type='text' class='form-control name' id='location_name_input'
-                                   placeholder='Location name'>
-                        </div>
-                        <div class="col-auto">
+                    <div class='row no-gutters add_inputs locations input-group'>
+                        <input type='text' class='form-control name' id='location_name_input'
+                        placeholder='Location name'>
+                        <div class="input-group-append">
                             <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
                         </div>
                     </div>
@@ -1292,12 +1286,10 @@
                         New event category:
                     </div>
                 </div>
-                <div class='add_inputs event_categories row no-gutters'>
-                    <div class="col">
-                        <input type='text' class='form-control name' id='event_category_name_input'
-                               placeholder='Event category name'>
-                    </div>
-                    <div class="col-auto">
+                <div class='add_inputs event_categories row no-gutters input-group'>
+                    <input type='text' class='form-control name' id='event_category_name_input'
+                    placeholder='Event category name'>
+                    <div class="input-group-append">
                         <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
                     </div>
                 </div>
@@ -1468,189 +1460,195 @@
                         </label>
                     @endif
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Makes the calendar only show the current month. Enhances calendar loading performance, especially with many moons.">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='show_current_month'>
-                            <span>
-								Show only current month
-							</span>
-                        </div>
-                    </label>
+                    <div class="list-group mb-3">
+                        <label class="row no-gutters setting my-0 list-group-item py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Makes the calendar only show the current month. Enhances calendar loading performance, especially with many moons.">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='show_current_month'>
+                                <span>
+                                    Show only current month
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='add_month_number' refresh='false'>
-                            <span>
-								Add month number to months
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting my-0 list-group-item py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='add_month_number' refresh='false'>
+                                <span>
+                                    Add month number to months
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='add_year_day_number' refresh='false'>
-                            <span>
-								Add year day to each day
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting my-0 list-group-item py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='add_year_day_number' refresh='false'>
+                                <span>
+                                    Add year day to each day
+                                </span>
+                            </div>
+                        </label>
+                    </div>
 
                     <!------------------------------------------------------->
 
                     <div class='bold-text'>Guest View Settings:</div>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="This makes it so that no one can view your calendar, unless you have added them as a user to the calendar">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='private'
-                                   refresh='false'>
-                            <span>
-								Make calendar private
-							</span>
-                        </div>
-                    </label>
+                    <div class="list-group mb-3">
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="This makes it so that no one can view your calendar, unless you have added them as a user to the calendar">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings' fc-index='private'
+                                refresh='false'>
+                                <span>
+                                    Make calendar private
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Allows guests viewing your calendar to check past and future dates with the preview date">
-                        <div class='col'>
-                            <input type='checkbox' checked class='margin-right static_input' data='settings'
-                                   fc-index='allow_view' refresh='false'>
-                            <span>
-								Enable previewing dates in calendar
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Allows guests viewing your calendar to check past and future dates with the preview date">
+                            <div class='col'>
+                                <input type='checkbox' checked class='margin-right static_input' data='settings'
+                                fc-index='allow_view' refresh='false'>
+                                <span>
+                                    Enable previewing dates in calendar
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Similar to the previous setting, but this limits the viewer to only preview backwards, not forwards. This setting needs Allowing advancing view in calendar to be enabled.">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='only_backwards' refresh='false'>
-                            <span>
-								Limit previewing to only past dates
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Similar to the previous setting, but this limits the viewer to only preview backwards, not forwards. This setting needs Allowing advancing view in calendar to be enabled.">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='only_backwards' refresh='false'>
+                                <span>
+                                    Limit previewing to only past dates
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Guest viewers will not be able to see past the current date. Any future days will be grayed out.">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='only_reveal_today' refresh='false'>
-                            <span>
-								Show only up to current day
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Guest viewers will not be able to see past the current date. Any future days will be grayed out.">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='only_reveal_today' refresh='false'>
+                                <span>
+                                    Show only up to current day
+                                </span>
+                            </div>
+                        </label>
+                    </div>
 
                     <!------------------------------------------------------->
 
                     <div class='bold-text'>Hiding Settings:</div>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Hides all of the moons from guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_moons' refresh='false'>
-                            <span>
-								Hide all moons from guest viewers
-							</span>
-                        </div>
-                    </label>
+                    <div class="list-group mb-3">
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Hides all of the moons from guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                       fc-index='hide_moons' refresh='false'>
+                                <span>
+                                    Hide all moons from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Hides the clock from guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_clock' refresh='false'>
-                            <span>
-								Hide time from guest viewers
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Hides the clock from guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_clock' refresh='false'>
+                                <span>
+                                    Hide time from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Hides all events from guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_events' refresh='false'>
-                            <span>
-								Hide all events from guest viewers
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Hides all events from guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_events' refresh='false'>
+                                <span>
+                                    Hide all events from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Hides the era text at the top of the calendar and only shows the year instead to guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_eras' refresh='false'>
-                            <span>
-								Hide era from guest viewers
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Hides the era text at the top of the calendar and only shows the year instead to guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_eras' refresh='false'>
+                                <span>
+                                    Hide era from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Prevents all weather from appearing on the calendar for guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_all_weather' refresh='false'>
-                            <span>
-								Hide all weather from guest viewers
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Prevents all weather from appearing on the calendar for guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_all_weather' refresh='false'>
+                                <span>
+                                    Hide all weather from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Prevents any future weather from appearing on the calendar for guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_future_weather' refresh='false'>
-                            <span>
-								Hide future weather from guest viewers
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Prevents any future weather from appearing on the calendar for guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_future_weather' refresh='false'>
+                                <span>
+                                    Hide future weather from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title='This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting as guests will only see "cold", "sweltering" and the like'>
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_weather_temp' refresh='false'>
-                            <span>
-								Hide temperature from guest viewers
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title='This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting as guests will only see "cold", "sweltering" and the like'>
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_weather_temp' refresh='false'>
+                                <span>
+                                    Hide temperature from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="This hides the exact wind velocity from guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_wind_velocity' refresh='false'>
-                            <span>
-								Hide wind velocity from guest viewers
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="This hides the exact wind velocity from guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_wind_velocity' refresh='false'>
+                                <span>
+                                    Hide wind velocity from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="This will hide the weekday bar at the top of each month">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_weekdays' refresh='false'>
-                            <span>
-								Hide weekdays in calendar
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="This will hide the weekday bar at the top of each month">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_weekdays' refresh='false'>
+                                <span>
+                                    Hide weekdays in calendar
+                                </span>
+                            </div>
+                        </label>
+                    </div>
 
                     @if(isset($calendar) && Auth::user()->can('add-users', $calendar))
 
