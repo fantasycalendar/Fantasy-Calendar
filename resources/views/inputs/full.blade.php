@@ -739,20 +739,16 @@
                         </div>
                     </div>
 
-                    <div class='add_inputs timespan row no-gutters mb-2'>
+                    <div class='add_inputs timespan row no-gutters mb-2 input-group'>
 
-                        <div class='col-md-6'>
-                            <input type='text' id='timespan_name_input' class='form-control name' placeholder='Name'>
-                        </div>
+                        <input type='text' id='timespan_name_input' class='form-control name' placeholder='Name'>
 
-                        <div class='col'>
-                            <select id='timespan_type_input' class='custom-select form-control type'>
-                                <option selected value='month'>Month</option>
-                                <option value='intercalary'>Intercalary</option>
-                            </select>
-                        </div>
+                        <select id='timespan_type_input' class='custom-select form-control type'>
+                            <option selected value='month'>Month</option>
+                            <option value='intercalary'>Intercalary</option>
+                        </select>
 
-                        <div class='col-auto'>
+                        <div class="input-group-append">
                             <button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
                         </div>
                     </div>
