@@ -38,6 +38,7 @@ services:
     volumes:
       - ./:/var/task
       - ./cache:/var/task/cache
+      - ./storage:/tmp/storage
     user: "${FC_USER_ID:-1000}:${FC_GROUP_ID:-1000}"
 
   queue-worker:

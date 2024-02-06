@@ -72,6 +72,10 @@ class ImageRenderer
     private int $day_number_size;
     private int $day_number_padding;
 
+    private int $moon_columns;
+    private int $moon_size;
+    private string $moon_image;
+
     private int $calendarNameTextSize;
 
     private $weekdays;
@@ -125,7 +129,7 @@ class ImageRenderer
             'shadow_size_difference' => 0,
             'shadow_strength' => 5,
             'grid_line_width' => 1,
-            'debug' => 0,
+            'debugimage' => 0,
             'snapshot' => 0,
             'theme' => 'discord',
             'quality' => 95,
@@ -216,7 +220,10 @@ class ImageRenderer
         $this->moon_columns = min($this->calendar->moons->count(), 4);
         $this->moon_size = $this->determineMoonSize();
         if($this->moon_size) {
-            $this->moon_image = sprintf('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" width="%s" height="%s">', $this->x, $this->y);
+            $this->moon_image = sprintf('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" width="%s" height="%s">', $this->calendar_bounding_x2 - $this->calendar_bounding_x1, $this->calendar_bounding_y2 - $this->calendar_bounding_y1);
+            logger()->info($this->moon_image);
+        } else {
+            logger()->info('No moon size');
         }
 
         $calendarMaxNameTextSize = $this->header_height / 3.5;
@@ -617,7 +624,7 @@ class ImageRenderer
      */
     private function colorize($type = null)
     {
-        if(request()->get('debug')) {
+        if(request()->get('debugimage')) {
             $hash = md5('color' . rand(1, 500)); // modify 'color' to get a different palettes
 
             return "#" . substr($hash, 0, 2) . substr($hash, 2, 2) . substr($hash, 4, 2);
@@ -993,6 +1000,8 @@ class ImageRenderer
 
         $im = new Imagick();
         $svg = $this->moon_image . "</svg>";
+
+        Storage::put('moon.svg', $svg);
 
         $im->setBackgroundColor(new ImagickPixel('transparent'));
         $im->readImageBlob($svg);
