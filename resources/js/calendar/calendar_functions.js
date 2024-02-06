@@ -1664,10 +1664,22 @@ function evaluate_calendar_start(static_data, _year, _timespan, _day, debug){
 
 }
 
-function toggle_sidebar() {
-    $("#input_container").toggleClass('inputs_collapsed');
-    $("#calendar_container").toggleClass('inputs_collapsed');
-    $('#input_collapse_btn').toggleClass('is-active');
+function toggle_sidebar(force = null) {
+    if (force === true) {
+        $("#input_container").addClass('inputs_collapsed');
+        $("#calendar_container").addClass('inputs_collapsed');
+        $('#input_collapse_btn').removeClass('is-active');
+    } else if (force === false) {
+        $("#input_container").removeClass('inputs_collapsed');
+        $("#calendar_container").removeClass('inputs_collapsed');
+        $('#input_collapse_btn').addClass('is-active');
+    } else {
+        $("#input_container").toggleClass('inputs_collapsed');
+        $("#calendar_container").toggleClass('inputs_collapsed');
+        $('#input_collapse_btn').toggleClass('is-active');
+    }
+
+    window.localStorage.setItem('inputs_collapsed', $("#input_container").hasClass('inputs_collapsed'));
 
     if(typeof static_data !== 'undefined' && static_data.clock.enabled && static_data.clock.render && !isNaN(static_data.clock.hours) && !isNaN(static_data.clock.minutes) && !isNaN(static_data.clock.offset)){
         window.Clock.size = $('#clock').width();
