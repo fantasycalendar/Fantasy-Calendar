@@ -41,21 +41,51 @@ class DisableUnpaidCalendars extends Command
      */
     public function handle()
     {
-        $updated = Calendar::with(['user', 'user.subscriptions'])
-            ->where('disabled', '=', true)
-            ->whereHas('user.subscriptions', function (Builder $query) {
-                $query->where('stripe_status', '=', 'active');
-            })
-            ->update([
-                'disabled' => false
-            ]);
+        $this->reenablePaidCalendars();
 
-        if ($updated > 0) {
-            $this->info("Re-enabled " . $updated . " calendars.");
-        }
+        // Re-enable calendars for users who have less than max calendars
+        $this->enableCalendarsWhen('>=', '2020-11-08', 2);
+        $this->enableCalendarsWhen('<', '2020-11-08', 15);
 
+        // Disable calendars for users who have more than max calendars
         $this->disableCalendarsWhen('<', '2020-11-08', 15);
         $this->disableCalendarsWhen('>=', '2020-11-08', 2);
+    }
+
+    private function enableCalendarsWhen(string $operator, string $date, int $max_calendars)
+    {
+        $query = User::with('subscriptions', 'calendars')
+            ->where('beta_authorised', '=', false)
+            ->where('created_at', $operator, $date)
+            ->whereHas('subscriptions')
+            ->whereDoesntHave('subscriptions', function (Builder $query) {
+                $query->active();
+            })
+            ->has('calendars', '<=', $max_calendars)
+            ->whereHas('calendars', function (Builder $query) {
+                $query->where('disabled', '=', true);
+            });
+
+        $count = $query->count();
+
+        if ($count === 0) {
+            logger()->info("No users found with less than " . $max_calendars . " calendars.");
+
+            return;
+        }
+
+        logger()->info("Enabling calendars for $count users who have less than " . $max_calendars . " calendars.");
+
+        $query->chunk(100, function ($users) use ($max_calendars) {
+            foreach ($users as $user) {
+                $this->info('Processing ' . $user->username);
+
+                $user->calendars()
+                    ->update([
+                        'disabled' => false,
+                    ]);
+            }
+        });
     }
 
     private function disableCalendarsWhen(string $operator, string $date, int $max_calendars)
@@ -100,5 +130,21 @@ class DisableUnpaidCalendars extends Command
                     ]);
             }
         });
+    }
+
+    private function reenablePaidCalendars()
+    {
+        $updated = Calendar::with(['user', 'user.subscriptions'])
+            ->where('disabled', '=', true)
+            ->whereHas('user.subscriptions', function (Builder $query) {
+                $query->where('stripe_status', '=', 'active');
+            })
+            ->update([
+                'disabled' => false
+            ]);
+
+        if ($updated > 0) {
+            $this->info("Re-enabled " . $updated . " calendars.");
+        }
     }
 }
