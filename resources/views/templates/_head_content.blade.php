@@ -136,12 +136,12 @@
 
         $.trumbowyg.svgPath = '/images/icons.svg';
 
-        if( deviceType() == "Mobile Phone" ) {
-            $("#input_container").toggleClass('inputs_collapsed');
-            $("#calendar_container").toggleClass('inputs_collapsed');
-
-            $("#input_collapse_btn").toggleClass('is-active');
-            evaluate_background_size();
+        if (window.localStorage.getItem('inputs_collapsed') != null) {
+            toggle_sidebar(window.localStorage.getItem('inputs_collapsed') == 'true');
+        } else {
+            if (deviceType() == "Mobile Phone") {
+                toggle_sidebar(false);
+            }
         }
 
         if(window.navigator.userAgent.includes("LM-G850")) {

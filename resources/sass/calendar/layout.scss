@@ -32,20 +32,8 @@
     }
 }
 
-html {
-    overflow-x: hidden;
-
-    @media screen and (max-width: 768px) {
-        font-size: 18px;
-    }
-}
-
 body {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    min-height: 100vh;
-    max-height: 100vh;
+    min-height: 100%;
     font-family: "Inter", sans-serif;
 
     a {
@@ -124,10 +112,18 @@ body {
     }
 }
 
-.page-calendars-edit {
-    display: flex;
+.page-calendars-create {
+    .navbar-expand.sticky-top {
+        z-index: 10;
+    }
+}
 
+.page-calendars-edit {
     .navbar {
+        &-expand.sticky-top {
+            z-index: 10;
+        }
+
         &-brand {
             padding: 0 0.5rem;
             margin-right: 0.75rem;
@@ -139,7 +135,7 @@ body {
     }
 
     #content {
-        height: 100vh;
+        max-height: 100vh;
     }
 }
 
@@ -202,30 +198,21 @@ body.page-calendars-index {
 }
 
 #input_collapse_btn {
-    background-color: $accent-color;
-    position: fixed;
-    width: 4rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: grid;
+    place-items: center;
     text-align: center;
-    font-size: 2rem;
-    bottom: 3rem;
-    left: 0;
-    z-index: 12;
-    border-radius: 0 1rem 1rem 0;
-    box-shadow: 0 5px 6px rgba(0, 0, 0, 0.3);
+    font-size: 1.5rem;
     cursor: pointer;
     transition: 0.5s all ease;
+    width: auto !important;
+    padding: 0.3rem;
 
     &.is-active {
-        left: auto;
-        right: 0;
-        border-radius: 1rem 0 0 1rem;
+        display: none !important;
+    }
 
-        @media screen and (min-width: 992px) {
-            left: calc($sidebar-width - 4rem);
-        }
+    .btn {
+        border-radius: 0;
     }
 }
 

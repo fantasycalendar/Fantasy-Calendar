@@ -254,16 +254,13 @@
                                             </p>
                                         </div>
                                         @unless($calendar->disabled)
-                                            <div class="flex-grow">
-                                                <div class="flex text-md text-gray-600 dark:text-gray-400 mb-1 md:pt-0">
-                                                    <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-calendar"></i> <div>{{ $calendar->current_date }}</div>
-                                                </div>
-                                                @if($calendar->current_era_valid)
+                                            @if($calendar->current_era_valid)
+                                                <div class="flex-grow">
                                                     <div class="flex text-md text-gray-600 dark:text-gray-400 mb-1 md:pt-0">
                                                         <i class="flex-shrink-0 pt-1 text-gray-400 w-8 text-center fa fa-infinity"></i> <div>{{ $calendar->current_era }}</div>
                                                     </div>
-                                                @endif
-                                            </div>
+                                                </div>
+                                            @endif
                                             <div class="text-gray-900 dark:text-gray-400 text-md">
                                                 @if($calendar->clock_enabled)
                                                     <div class="flex text-md text-gray-600 dark:text-gray-400 mb-1 md:pt-0">

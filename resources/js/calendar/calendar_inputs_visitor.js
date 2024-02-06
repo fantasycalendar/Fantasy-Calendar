@@ -697,13 +697,28 @@ function go_to_preview_date(rebuild){
 function display_preview_back_button(){
 
 	if(preview_date.epoch != dynamic_data.epoch){
-		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.epoch > dynamic_data.epoch).toggleClass('hidden', preview_date.epoch > dynamic_data.epoch);
-		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.epoch < dynamic_data.epoch).toggleClass('hidden', preview_date.epoch < dynamic_data.epoch);
-		$('#reset_preview_date_button').prop("disabled", false).toggleClass('hidden', false);
+		$('.reset_preview_date_container.right .reset_preview_date')
+            .prop("disabled", preview_date.epoch > dynamic_data.epoch)
+            .toggleClass('hidden', preview_date.epoch > dynamic_data.epoch)
+            .parent().toggleClass('hidden', preview_date.epoch > dynamic_data.epoch);
+		$('.reset_preview_date_container.left .reset_preview_date')
+            .prop("disabled", preview_date.epoch < dynamic_data.epoch)
+            .toggleClass('hidden', preview_date.epoch < dynamic_data.epoch)
+            .parent().toggleClass('hidden', preview_date.epoch < dynamic_data.epoch);
+		$('#reset_preview_date_button')
+            .prop("disabled", false)
+            .toggleClass('hidden', false);
 	}else{
-		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", true).toggleClass('hidden', true);
-		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", true).toggleClass('hidden', true);
-		$('#reset_preview_date_button').prop("disabled", true).toggleClass('hidden', true);
+		$('.reset_preview_date_container.right .reset_preview_date')
+            .prop("disabled", true)
+            .parent().toggleClass('hidden', true);
+		$('.reset_preview_date_container.left .reset_preview_date')
+            .prop("disabled", true)
+            .parent().toggleClass('hidden', true);
+		$('#reset_preview_date_button')
+            .prop("disabled", true)
+            .toggleClass('hidden', true);
+
 		preview_date.follow = true;
 	}
 

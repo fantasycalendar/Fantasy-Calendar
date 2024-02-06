@@ -1,5 +1,7 @@
 /* ------------------ Sortable styles ----------------- */
 
+$btn-border-radius: 0.25rem;
+
 div:focus,
 button:focus,
 * button.btn.btn-stock:focus {
@@ -14,6 +16,7 @@ button:focus,
 .input-group-text {
     background-color: $input-group-text-bg !important;
     color: $input-group-text-color !important;
+    border-color: $input-border-color !important;
 }
 
 #protip_container {
@@ -73,23 +76,18 @@ select.invalid {
     font-weight: bold !important;
 }
 
-#seasons_seed {
-    flex-grow: 1;
-    width: auto;
-    margin-right: 0.25rem;
-}
-
 .season_combo_icon .fa-sun {
+    font-size: 15px;
     overflow: hidden;
-    width: 0.58rem;
+    width: 7px;
 }
 
 .season_combo_icon .fa-snowflake {
+    font-size: 15px;
     overflow: hidden;
-    width: 0.54rem;
+    width: 7px;
+    margin-left: 2px;
     transform: scale(-1);
-    position: relative;
-    left: 0.1rem;
 }
 
 .view_type {
@@ -213,7 +211,11 @@ select.invalid {
 input[type="number"]:not(.spinner)::-webkit-inner-spin-button,
 input[type="number"]:not(.spinner)::-webkit-outer-spin-button {
     -webkit-appearance: none;
+    appearance: none;
     margin: 0;
+}
+input[type="number"]:not(.spinner) {
+  appearance: textfield;
 }
 
 .name-container {
@@ -409,6 +411,21 @@ input[type="number"]:not(.spinner)::-webkit-outer-spin-button {
 .wrap-collapsible {
     width: 94%;
     margin: auto;
+
+    & > label {
+        position: relative;
+        padding-left: 42px;
+
+        & > *:first-child {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            display: grid;
+            place-items: center;
+            width:42px
+        }
+    }
 }
 
 .location_season {
@@ -607,6 +624,7 @@ input[type="number"]:not(.spinner)::-webkit-outer-spin-button {
     background-color: $card-bg-color;
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 7px;
+    z-index: 1000;
 }
 
 .modal-inlay {
@@ -933,33 +951,26 @@ body .event_comment .comment_context_btn:not(:hover) {
     max-width: 100%;
 }
 
-.close-ui-btn-bg {
-    position: absolute;
-    right: -20px;
-    top: -16.5px;
-    width: 60px;
-    height: 60px;
-    border-radius: 30px;
-    background-color: $modal-bg-color;
-}
 
 .close_ui_btn {
     position: absolute;
-    right: -15px;
-    top: -11px;
-    font-size: 50px;
-    color: #e53935;
+    right: 35px;
+    top: 15px;
+    font-size: 26px;
+    color: $text-red-500;
     cursor: pointer;
+    z-index: 1001;
 }
 
 .close_ui_btn:hover {
-    color: #b71c1c;
+    color: $text-red-400;
 }
 
 .event_header_action {
     font-size: 1.5rem;
     opacity: 0.35;
-    margin-left: 0.5rem;
+    margin-left: 0.9rem;
+
     &:hover {
         opacity: 1;
         cursor: pointer;
@@ -996,7 +1007,7 @@ body .event_comment .comment_context_btn:not(:hover) {
 
     .close_ui_btn {
         top: 17px;
-        right: 6px;
+        right: 15px;
         z-index: 100;
     }
 

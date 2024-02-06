@@ -1,5 +1,4 @@
-<form id="input_container" class='d-print-none'>
-
+<div id="input_container" class='d-print-none'>
     @include('inputs.sidebar.header')
 
     @yield('label')
@@ -39,12 +38,13 @@
     <div class="accordion">
         <div class='wrap-collapsible card settings-statistics'>
             <input id="collapsible_statistics" class="toggle" type="checkbox">
-            <label for="collapsible_statistics" class="lbl-toggle py-2 px-3 card-header"><i
-                        class="mr-2 fas fa-chart-pie"></i> Statistics <a target="_blank" data-pt-position="right"
-                                                                         data-pt-title='More Info: Statistics'
-                                                                         href='{{ helplink('statistics') }}'
-                                                                         class="wiki protip"><i
-                            class="icon-question-sign"></i></a></label>
+            <label for="collapsible_statistics" class="lbl-toggle py-2 pr-3 card-header">
+                <i class="mr-2 fas fa-chart-pie"></i> Statistics <a target="_blank" data-pt-position="right"
+                                                                                    data-pt-title='More Info: Statistics'
+                                                                                    href='{{ helplink('statistics') }}'
+                                                                                    class="wiki protip">
+                    <i class="icon-question-sign"></i></a>
+            </label>
             <div class="collapsible-content card-body">
                 <div class='row no-gutters'>
                     <div class='col-7 bold-text'>
@@ -76,223 +76,159 @@
 
         <div class='wrap-collapsible card settings-current_date'>
             <input id="collapsible_date" class="toggle" type="checkbox">
-            <label for="collapsible_date" class="lbl-toggle py-2 px-3 card-header"><i
+            <label for="collapsible_date" class="lbl-toggle py-2 pr-3 card-header"><i
                         class="mr-2 fas fa-hourglass-half"></i> Current Date <a target="_blank" data-pt-position="right"
                                                                                 data-pt-title='More Info: Date'
                                                                                 href='{{ helplink('current_date_and_time') }}'
                                                                                 class="wiki protip"><i
                             class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
-
-                <div id='clock' class='mb-2'>
+                <div id='clock'>
                     <canvas style="z-index: 2;" id="clock_face"></canvas>
                     <canvas style="z-index: 1;" id="clock_sun"></canvas>
                     <canvas style="z-index: 0;" id="clock_background"></canvas>
                 </div>
 
-                <div class='center-text hidden' id='empty_calendar_explaination'>
-                    This calendar doesn't have any weekdays or months yet, so you can't change the date.
-                </div>
+                <div x-data="{ activeDateAdjustment: 'current' }">
+                    <ul class="nav justify-content-center nav-tabs mt-3">
+                        <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'current' }" @click="activeDateAdjustment = 'current'">Current date</a></li>
+                        <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'preview' }" @click="activeDateAdjustment = 'preview'">Preview date</a></li>
+                        <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'relative' }" @click="activeDateAdjustment = 'relative'">Relative math</a></li>
+                    </ul>
 
-                <div class='date_inputs date_control container' id='date_inputs'>
+                    <div class='date_control mt-3' id='date_inputs' :class="{ 'd-flex flex-column': activeDateAdjustment === 'current', 'd-none': activeDateAdjustment !== 'current' }">
+                        @if(isset($calendar) && $calendar?->isChild())
+                            <div class='mb-3 center-text hidden calendar_link_explanation'>
+                                <p class='m-0'>This calendar follows the date of a <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">parent calendar</a>.</p>
+                            </div>
 
-                    <div class='row'>
-                        <h5>Current date:</h5>
-                    </div>
+                            <div class="input-group">
+                                <select class='form-control timespan-list inclusive date' id='current_timespan'></select>
+                                <select class='form-control timespan-day-list inclusive date' id='current_day'></select>
+                                <input class='form-control year-input' id='current_year' type='number'>
+                            </div>
 
-                    <div class='row my-2 center-text hidden calendar_link_explanation'>
-                        @if(request()->is('calendars/*/edit') && $calendar->parent != null)
-                            <p class='m-0'>This calendar is using a different calendar's date to calculate the current
-                                date. Only the <a href='/calendars/{{ $calendar->parent->hash }}/edit' target="_blank">parent
-                                    calendar</a> can set the date for this calendar.</p>
+                            <div class="input-group mt-2">
+                                <input class='form-control text-right protip' type='number' id='current_hour' data-pt-position='top' data-pt-title="The current hour of day">
+                                <div class="input-group-prepend input-group-append"><span class="input-group-text">:</span></div>
+                                <input class='form-control protip' type='number' id='current_minute' data-pt-position='top' data-pt-title="The current minute of the hour">
+                            </div>
+                        @else
+                            <div class='input-group protip mt-2' value='current' data-pt-position='right' data-pt-title="The current year">
+                                <div class='input-group-prepend'>
+                                    <button type='button' class='btn btn-danger sub_year' id='sub_current_year'><i class="icon-minus"></i></button>
+                                </div>
+                                <input class='form-control year-input' id='current_year' type='number'>
+                                <div class='input-group-append'>
+                                    <button type='button' class='btn btn-success add_year' id='add_current_year'><i class="icon-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class='input-group protip mt-2' value='current' data-pt-position='right' data-pt-title="The current month in the year">
+                                <div class='input-group-prepend'>
+                                    <button type='button' class='btn btn-danger sub_timespan' id='sub_current_timespan'><i class="icon-minus"></i></button>
+                                </div>
+                                <select class='form-control timespan-list inclusive date' id='current_timespan'></select>
+                                <div class='input-group-append'>
+                                    <button type='button' class='btn btn-success add_timespan' id='add_current_timespan'><i class="icon-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class='input-group protip mt-2' value='current' data-pt-position='right' data-pt-title="The current day in the month">
+                                <div class='input-group-prepend'>
+                                    <button type='button' class='btn btn-danger sub_day' id='sub_current_day'><i class="icon-minus"></i></button>
+                                </div>
+                                <select class='form-control timespan-day-list inclusive date' id='current_day'></select>
+                                <div class='input-group-append'>
+                                    <button type='button' class='btn btn-success add_day' id='add_current_day'><i class="icon-plus"></i></button>
+                                </div>
+                            </div>
+
+                            <div class='input-group protip mt-2'>
+                                <div class='input-group-prepend'>
+                                    <button type='button' class='btn btn-danger adjust_hour' val='-1'>1hr</button>
+                                    <button type='button' class='btn border-left btn-danger adjust_minute' val='-30'>30m</button>
+                                </div>
+
+                                <input class='form-control text-right protip' type='number' id='current_hour' data-pt-position='top' data-pt-title="The current hour of day">
+                                <div class="input-group-prepend input-group-append"><span class="input-group-text">:</span></div>
+                                <input class='form-control protip' type='number' id='current_minute' data-pt-position='top' data-pt-title="The current minute of the hour">
+
+                                <div class='input-group-append'>
+                                    <button type='button' class='btn small-text btn-success adjust_minute' val='30'>30m</button>
+                                    <button type='button' class='btn small-text border-left btn-success adjust_hour' val='1'>1h</button>
+                                </div>
+                            </div>
                         @endif
                     </div>
 
-                    <div class='row'>
 
-                        <div class='input-group protip' value='current' data-pt-position='right'
-                             data-pt-title="The current year">
+                    <div class='date_control preview_date_controls mt-3' :class="{ 'd-flex flex-column': activeDateAdjustment === 'preview', 'd-none': activeDateAdjustment !== 'preview' }">
+                        <div class='input-group protip mt-2' value='target' data-pt-position='right' data-pt-title="The preview year">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_year' id='sub_current_year'><i
-                                            class="icon-minus"></i></button>
-                            </div>
-                            <input class='form-control year-input' id='current_year' type='number'>
-                            <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_year' id='add_current_year'><i
-                                            class="icon-plus"></i></button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class='row mt-2'>
-
-                        <div class='input-group protip' value='current' data-pt-position='right'
-                             data-pt-title="The current month in the year">
-                            <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_timespan' id='sub_current_timespan'><i
-                                            class="icon-minus"></i></button>
-                            </div>
-                            <select class='form-control timespan-list inclusive date' id='current_timespan'></select>
-                            <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_timespan' id='add_current_timespan'><i
-                                            class="icon-plus"></i></button>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class='row mt-2'>
-
-                        <div class='input-group protip' value='current' data-pt-position='right'
-                             data-pt-title="The current day in the month">
-                            <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_day' id='sub_current_day'><i
-                                            class="icon-minus"></i></button>
-                            </div>
-                            <select class='form-control timespan-day-list inclusive date' id='current_day'></select>
-                            <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_day' id='add_current_day'><i
-                                            class="icon-plus"></i></button>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class='row mt-2 clock_inputs'>
-
-                        <div class='input-group protip'>
-                            <div class='input-group-prepend'>
-                                <button type='button' class='btn small-text btn-danger adjust_hour' val='-1'>1hr
-                                </button>
-                                <button type='button' class='btn small-text border-left btn-danger adjust_minute'
-                                        val='-30'>30m
-                                </button>
-                            </div>
-
-                            <input class='form-control form-control-sm text-right protip' type='number'
-                                   id='current_hour' data-pt-position='top' data-pt-title="The current hour of day">
-                            <span class="px-1">:</span>
-                            <input class='form-control form-control-sm protip' type='number' id='current_minute'
-                                   data-pt-position='top' data-pt-title="The current minute of the hour">
-
-                            <div class='input-group-append'>
-                                <button type='button' class='btn small-text btn-success adjust_minute' val='30'>30m
-                                </button>
-                                <button type='button' class='btn small-text border-left btn-success adjust_hour'
-                                        val='1'>1h
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class='date_inputs date_control preview_date_controls container mt-3'>
-
-                    <div class='row'>
-                        <h5 class="my-0 py-0">Preview date:</h5>
-                    </div>
-
-                    <div class='row mt-2'>
-
-                        <div class='input-group protip' value='target' data-pt-position='right'
-                             data-pt-title="The preview year">
-                            <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_year' id='sub_target_year'><i
-                                            class="icon-minus"></i></button>
+                                <button type='button' class='btn btn-danger sub_year' id='sub_target_year'><i class="icon-minus"></i></button>
                             </div>
                             <input class='form-control year-input' id='target_year' type='number'>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_year' id='add_target_year'><i
-                                            class="icon-plus"></i></button>
+                                <button type='button' class='btn btn-success add_year' id='add_target_year'><i class="icon-plus"></i></button>
                             </div>
                         </div>
-                    </div>
 
-                    <div class='row mt-2'>
-
-                        <div class='input-group protip' value='target' data-pt-position='right'
-                             data-pt-title="The preview month of the preview year">
+                        <div class='input-group protip mt-2' value='target' data-pt-position='right' data-pt-title="The preview month of the preview year">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_timespan' id='sub_target_timespan'><i
-                                            class="icon-minus"></i></button>
+                                <button type='button' class='btn btn-danger sub_timespan' id='sub_target_timespan'><i class="icon-minus"></i></button>
                             </div>
                             <select class='form-control timespan-list inclusive date' id='target_timespan'></select>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_timespan' id='add_target_timespan'><i
-                                            class="icon-plus"></i></button>
+                                <button type='button' class='btn btn-success add_timespan' id='add_target_timespan'><i class="icon-plus"></i></button>
                             </div>
                         </div>
 
-                    </div>
-
-                    <div class='row mt-2'>
-
-                        <div class='input-group protip' value='target' data-pt-position='right'
-                             data-pt-title="The current day of the preview month">
+                        <div class='input-group protip mt-2' value='target' data-pt-position='right' data-pt-title="The current day of the preview month">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_day' id='sub_target_day'><i
-                                            class="icon-minus"></i></button>
+                                <button type='button' class='btn btn-danger sub_day' id='sub_target_day'><i class="icon-minus"></i></button>
                             </div>
                             <select class='form-control timespan-day-list inclusive date' id='target_day'></select>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_day' id='add_target_day'><i
-                                            class="icon-plus"></i></button>
+                                <button type='button' class='btn btn-success add_day' id='add_target_day'><i class="icon-plus"></i></button>
                             </div>
                         </div>
 
+                        <div class='btn btn-success full mt-2' id='go_to_preview_date'>Jump to preview date</div>
                     </div>
 
-                    <div class='row my-2'>
-                        <div class='btn btn-success full' id='go_to_preview_date'>Go To Preview date</div>
-                    </div>
+                    <div class="mt-3" :class="{ 'd-flex flex-column': activeDateAdjustment === 'relative', 'd-none': activeDateAdjustment !== 'relative' }">
+                        <div class="input-group">
+                            <input type='number' class="form-control mt-2 px-2" id='unit_years' placeholder="Years (+/-)">
+                            <input type='number' class="form-control mt-2 px-2" id='unit_months' placeholder="Months (+/-)">
+                            <input type='number' class="form-control mt-2 px-2" id='unit_days' placeholder="Days (+/-)">
+                        </div>
+                        <div class='my-2 row no-gutters'>
+                            <div class="input-group">
+                                <input type='number' class="form-control px-2" id='unit_hours' placeholder="Hours (+/-)">
+                                <div class="input-group-prepend input-group-append"><span class="input-group-text">:</span></div>
+                                <input type='number' class="form-control px-2" id='unit_minutes' placeholder="Minutes (+/-)">
+                            </div>
+                        </div>
 
-                    <div class='row my-2'>
-                        <div class='btn btn-info full hidden' disabled id='reset_preview_date_button'>Go To Current
-                            Date
+                        <div class="d-flex mt-3">
+                            <span class="full text-center">Apply to</span>
+                        </div>
+
+                        <div class="d-flex">
+                            @if(request()->is('calendars/*/edit') && $calendar?->parent == null)
+                                <button type="button" step="1.0" class="btn btn-primary btn-block mt-2 mr-1" id='current_date_btn'>Current date</button>
+                                <button type="button" step="1.0" class="btn btn-secondary btn-block mt-2 ml-1" id='preview_date_btn'>Preview date</button>
+                            @else
+                                <button type="button" step="1.0" class="btn btn-secondary btn-block mt-2" id='preview_date_btn'>Preview date</button>
+                            @endif
                         </div>
                     </div>
 
+                    <div class="d-flex flex-column">
+                        <div class='btn btn-info hidden mt-2' disabled id='reset_preview_date_button'>Jump to current date</div>
+                    </div>
                 </div>
-
-                <div class='wrap-collapsible card full date_inputs'>
-                    <input id="collapsible_add_units" class="toggle" type="checkbox">
-                    <label for="collapsible_add_units" class="lbl-toggle card-header small-lbl-text center-text">Add or
-                        subtract fixed units to calendar dates</label>
-                    <div class="collapsible-content container card-body">
-
-                        <div class='row no-gutters mx-0'>
-                            <input type='number' class="form-control form-control-sm full" id='unit_years'
-                                   placeholder="Years">
-                            <input type='number' class="form-control form-control-sm full" id='unit_months'
-                                   placeholder="Months">
-                            <input type='number' class="form-control form-control-sm full" id='unit_days'
-                                   placeholder="Days">
-                        </div>
-                        <div class='row no-gutters mx-0 my-2'>
-                            <div class='col-md-6 col-sm-12'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_hours'
-                                       placeholder="Hours">
-                            </div>
-                            <div class='col-md-6 col-sm-12'>
-                                <input type='number' class="form-control form-control-sm full" id='unit_minutes'
-                                       placeholder="Minutes">
-                            </div>
-                        </div>
-
-                        @if(request()->is('calendars/*/edit') && $calendar->parent == null)
-                            <button type="button" step="1.0" class="btn btn-primary btn-block my-2"
-                                    id='current_date_btn'>To current date
-                            </button>
-                        @endif
-                        <button type="button" step="1.0" class="btn btn-secondary btn-block my-2" id='preview_date_btn'>
-                            To preview date
-                        </button>
-
-                    </div>
-
-                </div>
-
             </div>
 
         </div>
@@ -304,7 +240,7 @@
 
         <div class='wrap-collapsible card settings-clock'>
             <input id="collapsible_clock" class="toggle" type="checkbox">
-            <label for="collapsible_clock" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fa fa-clock"></i>
+            <label for="collapsible_clock" class="lbl-toggle py-2 pr-3 card-header"><i class="mr-2 fa fa-clock"></i>
                 Clock <a target="_blank" data-pt-position="right" data-pt-title='More Info: Clock'
                          href='{{ helplink('clock') }}' class="wiki protip"><i
                             class="icon-question-sign"></i></a></label>
@@ -451,7 +387,7 @@
             <!---------------------------------------------->
             <div class='wrap-collapsible card settings-real-time-advancement'>
                 <input id="collapsible_real-time-advancement" class="toggle" type="checkbox">
-                <label for="collapsible_real-time-advancement" class="lbl-toggle py-2 px-3 card-header">
+                <label for="collapsible_real-time-advancement" class="lbl-toggle py-2 pr-3 card-header">
                     <i class="fas fa-history mr-2" style="transform: scaleX(-1);"></i>
                     Real-Time Advancement
                     @if(isset($calendar) && !$calendar->isPremium())
@@ -638,7 +574,7 @@
 
         <div class='wrap-collapsible card settings-weekdays step-2-step'>
             <input id="collapsible_globalweek" class="toggle" type="checkbox">
-            <label for="collapsible_globalweek" class="lbl-toggle py-2 px-3 card-header"><i
+            <label for="collapsible_globalweek" class="lbl-toggle py-2 pr-3 card-header"><i
                         class="mr-2 fas fa-calendar-week"></i> Weekdays <a target="_blank" data-pt-position="right"
                                                                            data-pt-title='More Info: Weekdays'
                                                                            href='{{ helplink('weekdays') }}'
@@ -697,12 +633,12 @@
                     </div>
 
                     <div class='row no-gutters add_inputs global_week'>
-                        <div class='col'>
+                        <div class='col input-group'>
                             <input type='text' class='form-control name' id='weekday_name_input'
                                    placeholder='Weekday name'>
-                        </div>
-                        <div class='col-auto'>
-                            <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                            <div class="input-group-append">
+                                <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                            </div>
                         </div>
                     </div>
 
@@ -746,7 +682,7 @@
         <div class='wrap-collapsible card settings-timespans step-3-step'>
 
             <input id="collapsible_timespans" class="toggle" type="checkbox">
-            <label for="collapsible_timespans" class="lbl-toggle py-2 px-3 card-header"><i
+            <label for="collapsible_timespans" class="lbl-toggle py-2 pr-3 card-header"><i
                         class="mr-2 fas fa-calendar-alt"></i> Months <a target="_blank" data-pt-position="right"
                                                                         data-pt-title='More Info: Months & Intercalaries'
                                                                         href='{{ helplink('months') }}'
@@ -802,20 +738,16 @@
                         </div>
                     </div>
 
-                    <div class='add_inputs timespan row no-gutters mb-2'>
+                    <div class='add_inputs timespan row no-gutters mb-2 input-group'>
 
-                        <div class='col-md-6'>
-                            <input type='text' id='timespan_name_input' class='form-control name' placeholder='Name'>
-                        </div>
+                        <input type='text' id='timespan_name_input' class='form-control name' placeholder='Name'>
 
-                        <div class='col'>
-                            <select id='timespan_type_input' class='custom-select form-control type'>
-                                <option selected value='month'>Month</option>
-                                <option value='intercalary'>Intercalary</option>
-                            </select>
-                        </div>
+                        <select id='timespan_type_input' class='custom-select form-control type'>
+                            <option selected value='month'>Month</option>
+                            <option value='intercalary'>Intercalary</option>
+                        </select>
 
-                        <div class='col-auto'>
+                        <div class="input-group-append">
                             <button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
                         </div>
                     </div>
@@ -841,7 +773,7 @@
 
         <div class='wrap-collapsible card settings-leapdays'>
             <input id="collapsible_leapdays" class="toggle" type="checkbox">
-            <label for="collapsible_leapdays" class="lbl-toggle py-2 px-3 card-header"><i
+            <label for="collapsible_leapdays" class="lbl-toggle py-2 pr-3 card-header"><i
                         class="mr-2 fas fa-calendar-day"></i> Leap days <a target="_blank" data-pt-position="right"
                                                                            data-pt-title='More Info: Leap Days'
                                                                            href='{{ helplink('leap_days') }}'
@@ -899,19 +831,15 @@
                         </div>
                     </div>
 
-                    <div class='add_inputs leap row no-gutters'>
-                        <div class='col-md-6'>
-                            <input type='text' id='leap_day_name_input' class='form-control name' placeholder='Name'>
-                        </div>
+                    <div class='add_inputs leap input-group'>
+                        <input type='text' id='leap_day_name_input' class='form-control name' placeholder='Name'>
 
-                        <div class='col'>
-                            <select id='leap_day_type_input' class='custom-select form-control type'>
-                                <option selected value='leap-day'>Normal day</option>
-                                <option value='intercalary'>Intercalary</option>
-                            </select>
-                        </div>
+                        <select id='leap_day_type_input' class='custom-select form-control type'>
+                            <option selected value='leap-day'>Normal day</option>
+                            <option value='intercalary'>Intercalary</option>
+                        </select>
 
-                        <div class='col-auto'>
+                        <div class='input-group-append'>
                             <button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
                         </div>
                     </div>
@@ -934,7 +862,7 @@
 
         <div class='wrap-collapsible card settings-eras'>
             <input id="collapsible_eras" class="toggle" type="checkbox">
-            <label for="collapsible_eras" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-infinity"></i>
+            <label for="collapsible_eras" class="lbl-toggle py-2 pr-3 card-header"><i class="mr-2 fas fa-infinity"></i>
                 Eras <a target="_blank" data-pt-position="right" data-pt-title='More Info: Eras'
                         href='{{ helplink('eras') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
@@ -978,11 +906,11 @@
                     </div>
 
                     <div class='add_inputs eras row no-gutters'>
-                        <div class="col">
+                        <div class="input-group">
                             <input type='text' class='form-control name' id='era_name_input' placeholder='Era name'>
-                        </div>
-                        <div class="col-auto">
-                            <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                            <div class="input-group-append">
+                                <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                            </div>
                         </div>
                     </div>
 
@@ -1000,7 +928,7 @@
 
         <div class='wrap-collapsible card settings-moons'>
             <input id="collapsible_moon" class="toggle" type="checkbox">
-            <label for="collapsible_moon" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-moon"></i>
+            <label for="collapsible_moon" class="lbl-toggle py-2 pr-3 card-header"><i class="mr-2 fas fa-moon"></i>
                 Moons <a target="_blank" data-pt-position="right" data-pt-title='More Info: Moons'
                          href='{{ helplink('moons') }}' class="wiki protip"><i
                             class="icon-question-sign"></i></a></label>
@@ -1014,24 +942,32 @@
 
                 <div class='add_inputs moon'>
                     <div class='row no-gutters'>
-                        <div class='col'>
-                            <input type='text' class='form-control name protip' data-pt-position="top"
-                                   data-pt-title="The moon's name." id='moon_name_input' placeholder='Moon name'>
-                        </div>
-                        <div class='col-auto'>
-                            <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
-                        </div>
-                    </div>
-                    <div class='row no-gutters'>
-                        <div class='col-6'>
-                            <input type='number' class='form-control cycle protip' data-pt-position="top"
+                        <input type='text'
+                               class='form-control name protip mb-1'
+                               data-pt-position="top"
+                               data-pt-title="The moon's name."
+                               id='moon_name_input'
+                               placeholder='Moon name'>
+                        <div class='input-group'>
+
+                            <input type='number'
+                                   class='form-control cycle protip'
+                                   data-pt-position="top"
                                    data-pt-title='How many days it takes for this moon go from Full Moon to the next Full Moon.'
-                                   min='1' id='moon_cycle_input' placeholder='Cycle'>
-                        </div>
-                        <div class='col-6'>
-                            <input type='number' class='form-control shift protip' data-pt-position="top"
-                                   data-pt-title='This is how many days the cycle is offset by.' id='moon_shift_input'
+                                   min='1'
+                                   id='moon_cycle_input'
+                                   placeholder='Cycle'>
+
+                            <input type='number'
+                                   class='form-control shift protip'
+                                   data-pt-position="top"
+                                   data-pt-title='This is how many days the cycle is offset by.'
+                                   id='moon_shift_input'
                                    placeholder='Shift'>
+
+                            <div class='input-group-append'>
+                                <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1046,10 +982,12 @@
 
         <div class='wrap-collapsible card settings-seasons'>
             <input id="collapsible_seasons" class="toggle" type="checkbox">
-            <label for="collapsible_seasons" class="lbl-toggle py-2 px-3 card-header">
-                <i class='season_combo_icon fas mr-2'>
-                    <i class="fas fa-sun"></i><i class="fas fa-snowflake"></i>
-                </i>
+            <label for="collapsible_seasons" class="lbl-toggle py-2 pr-3 card-header">
+                <div>
+                    <div class='season_combo_icon full d-flex justify-content-center'>
+                        <i class="fas fa-sun"></i><i class="fas fa-snowflake"></i>
+                    </div>
+                </div>
                 Seasons<a target="_blank" data-pt-position="right" data-pt-title='More Info: Seasons'
                           href='{{ helplink('seasons') }}' class="wiki protip"><i class="icon-question-sign"></i></a>
             </label>
@@ -1098,11 +1036,11 @@
                 </div>
 
                 <div class='add_inputs seasons row no-gutters'>
-                    <div class='col'>
+                    <div class='input-group'>
                         <input type='text' class='form-control name' id='season_name_input' placeholder='Season name'>
-                    </div>
-                    <div class='col-auto'>
-                        <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                        <div class="input-group-append">
+                            <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                        </div>
                     </div>
                 </div>
 
@@ -1138,7 +1076,7 @@
 
         <div class='wrap-collapsible card settings-weather'>
             <input id="collapsible_weather" class="toggle" type="checkbox">
-            <label for="collapsible_weather" class="lbl-toggle py-2 px-3 card-header"><i
+            <label for="collapsible_weather" class="lbl-toggle py-2 pr-3 card-header"><i
                         class="mr-2 fas fa-cloud-sun-rain"></i> Weather<a target="_blank" data-pt-position="right"
                                                                           data-pt-title='More Info: Weather'
                                                                           href='{{ helplink('weather') }}'
@@ -1178,27 +1116,25 @@
                             </div>
                         </div>
 
-                        <div class='row no-gutters'>
-                            <div class='col-md-6 my-1'>
-                                Temperature system:
-                                <select class='custom-select form-control type static_input' id='temp_sys'
-                                        refresh='false' data='seasons.global_settings' fc-index='temp_sys'>
-                                    <option selected value='metric'>Metric</option>
-                                    <option value='imperial'>Imperial</option>
-                                    <option value='both_m'>Both (inputs metric)</option>
-                                    <option value='both_i'>Both (inputs imperial)</option>
-                                </select>
-                            </div>
+                        <div class="row no-gutters mt-2">
+                            <div class="col-6">Temperature system:</div>
+                            <div class="col-6">Wind system:</div>
+                        </div>
 
-                            <div class='col-md-6 my-1'>
-                                Wind system:
-                                <select class='custom-select form-control type static_input' refresh='false'
-                                        data='seasons.global_settings' fc-index='wind_sys'>
-                                    <option selected value='metric'>Metric</option>
-                                    <option value='imperial'>Imperial</option>
-                                    <option value='both'>Both</option>
-                                </select>
-                            </div>
+                        <div class='row no-gutters my-1 input-group'>
+                            <select class='custom-select form-control type static_input' id='temp_sys'
+                                refresh='false' data='seasons.global_settings' fc-index='temp_sys'>
+                                <option selected value='metric'>Metric</option>
+                                <option value='imperial'>Imperial</option>
+                                <option value='both_m'>Both (inputs metric)</option>
+                                <option value='both_i'>Both (inputs imperial)</option>
+                            </select>
+                            <select class='custom-select form-control type static_input' refresh='false'
+                                data='seasons.global_settings' fc-index='wind_sys'>
+                                <option selected value='metric'>Metric</option>
+                                <option value='imperial'>Imperial</option>
+                                <option value='both'>Both</option>
+                            </select>
                         </div>
 
                         <div class='row no-gutters my-2 protip align-items-center' data-pt-position="right"
@@ -1217,12 +1153,10 @@
                         <div class='row no-gutters'>
                             <div class='col-auto'>Weather generation seed:</div>
                         </div>
-                        <div class='row no-gutters'>
-                            <div class='col'>
-                                <input type='number' id='seasons_seed' class='form-control static_input full'
-                                       refresh='false' data='seasons.global_settings' fc-index='seed'/>
-                            </div>
-                            <div class='col-auto'>
+                        <div class='row no-gutters input-group'>
+                            <input type='number' id='seasons_seed' class='form-control static_input'
+                            refresh='false' data='seasons.global_settings' fc-index='seed'/>
+                            <div class="input-group-append">
                                 <div class='btn btn-primary' id='reseed_seasons'><i class="fa fa-redo"></i></div>
                             </div>
                         </div>
@@ -1238,7 +1172,7 @@
 
         <div class='wrap-collapsible card settings-locations'>
             <input id="collapsible_locations" class="toggle" type="checkbox">
-            <label for="collapsible_locations" class="lbl-toggle py-2 px-3 card-header"><i
+            <label for="collapsible_locations" class="lbl-toggle py-2 pr-3 card-header"><i
                         class="mr-2 fas fa-compass"></i> Locations <a target="_blank" data-pt-position="right"
                                                                       data-pt-title='More Info: Locations'
                                                                       href='{{ helplink('locations') }}'
@@ -1281,12 +1215,10 @@
                         </div>
                     </div>
 
-                    <div class='row no-gutters add_inputs locations'>
-                        <div class="col">
-                            <input type='text' class='form-control name' id='location_name_input'
-                                   placeholder='Location name'>
-                        </div>
-                        <div class="col-auto">
+                    <div class='row no-gutters add_inputs locations input-group'>
+                        <input type='text' class='form-control name' id='location_name_input'
+                        placeholder='Location name'>
+                        <div class="input-group-append">
                             <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
                         </div>
                     </div>
@@ -1306,7 +1238,7 @@
 
         <div class='wrap-collapsible card settings-cycles'>
             <input id="collapsible_cycles" class="toggle" type="checkbox">
-            <label for="collapsible_cycles" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-redo"></i>
+            <label for="collapsible_cycles" class="lbl-toggle py-2 pr-3 card-header"><i class="mr-2 fas fa-redo"></i>
                 Cycles <a target="_blank" data-pt-position="right" data-pt-title='More Info: Cycles'
                           href='{{ helplink('cycles') }}' class="wiki protip"><i
                             class="icon-question-sign"></i></a></label>
@@ -1341,7 +1273,7 @@
 
         <div class='wrap-collapsible card settings-categories'>
             <input id="collapsible_categories" class="toggle" type="checkbox">
-            <label for="collapsible_categories" class="lbl-toggle py-2 px-3 card-header"><i
+            <label for="collapsible_categories" class="lbl-toggle py-2 pr-3 card-header"><i
                         class="mr-2 fas fa-th-list"></i> Event Categories <a target="_blank" data-pt-position="right"
                                                                              data-pt-title='More Info: Event Categories'
                                                                              href='{{ helplink('event_categories') }}'
@@ -1354,12 +1286,10 @@
                         New event category:
                     </div>
                 </div>
-                <div class='add_inputs event_categories row no-gutters'>
-                    <div class="col">
-                        <input type='text' class='form-control name' id='event_category_name_input'
-                               placeholder='Event category name'>
-                    </div>
-                    <div class="col-auto">
+                <div class='add_inputs event_categories row no-gutters input-group'>
+                    <input type='text' class='form-control name' id='event_category_name_input'
+                    placeholder='Event category name'>
+                    <div class="input-group-append">
                         <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
                     </div>
                 </div>
@@ -1387,7 +1317,7 @@
 
         <div class='wrap-collapsible card settings-events'>
             <input id="collapsible_events" class="toggle" type="checkbox">
-            <label for="collapsible_events" class="lbl-toggle py-2 px-3 card-header">
+            <label for="collapsible_events" class="lbl-toggle py-2 pr-3 card-header">
                 <i class="mr-2 fas fa-calendar-check"></i> Events
                 <a target="_blank" data-pt-position="right"
                                    data-pt-title='More Info: Events'
@@ -1513,7 +1443,7 @@
 
         <div class='wrap-collapsible card settings-settings'>
             <input id="collapsible_settings" class="toggle" type="checkbox">
-            <label for="collapsible_settings" class="lbl-toggle py-2 px-3 card-header"><i class="mr-2 fas fa-cog"></i>
+            <label for="collapsible_settings" class="lbl-toggle py-2 pr-3 card-header"><i class="mr-2 fas fa-cog"></i>
                 Settings <a target="_blank" data-pt-position="right" data-pt-title='More Info: Settings'
                             href='{{ helplink('settings') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
             <div class="collapsible-content card-body">
@@ -1530,189 +1460,195 @@
                         </label>
                     @endif
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Makes the calendar only show the current month. Enhances calendar loading performance, especially with many moons.">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='show_current_month'>
-                            <span>
-								Show only current month
-							</span>
-                        </div>
-                    </label>
+                    <div class="list-group mb-3">
+                        <label class="row no-gutters setting my-0 list-group-item py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Makes the calendar only show the current month. Enhances calendar loading performance, especially with many moons.">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='show_current_month'>
+                                <span>
+                                    Show only current month
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='add_month_number' refresh='false'>
-                            <span>
-								Add month number to months
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting my-0 list-group-item py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='add_month_number' refresh='false'>
+                                <span>
+                                    Add month number to months
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='add_year_day_number' refresh='false'>
-                            <span>
-								Add year day to each day
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting my-0 list-group-item py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='add_year_day_number' refresh='false'>
+                                <span>
+                                    Add year day to each day
+                                </span>
+                            </div>
+                        </label>
+                    </div>
 
                     <!------------------------------------------------------->
 
                     <div class='bold-text'>Guest View Settings:</div>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="This makes it so that no one can view your calendar, unless you have added them as a user to the calendar">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings' fc-index='private'
-                                   refresh='false'>
-                            <span>
-								Make calendar private
-							</span>
-                        </div>
-                    </label>
+                    <div class="list-group mb-3">
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="This makes it so that no one can view your calendar, unless you have added them as a user to the calendar">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings' fc-index='private'
+                                refresh='false'>
+                                <span>
+                                    Make calendar private
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Allows guests viewing your calendar to check past and future dates with the preview date">
-                        <div class='col'>
-                            <input type='checkbox' checked class='margin-right static_input' data='settings'
-                                   fc-index='allow_view' refresh='false'>
-                            <span>
-								Enable previewing dates in calendar
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Allows guests viewing your calendar to check past and future dates with the preview date">
+                            <div class='col'>
+                                <input type='checkbox' checked class='margin-right static_input' data='settings'
+                                fc-index='allow_view' refresh='false'>
+                                <span>
+                                    Enable previewing dates in calendar
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Similar to the previous setting, but this limits the viewer to only preview backwards, not forwards. This setting needs Allowing advancing view in calendar to be enabled.">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='only_backwards' refresh='false'>
-                            <span>
-								Limit previewing to only past dates
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Similar to the previous setting, but this limits the viewer to only preview backwards, not forwards. This setting needs Allowing advancing view in calendar to be enabled.">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='only_backwards' refresh='false'>
+                                <span>
+                                    Limit previewing to only past dates
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Guest viewers will not be able to see past the current date. Any future days will be grayed out.">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='only_reveal_today' refresh='false'>
-                            <span>
-								Show only up to current day
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Guest viewers will not be able to see past the current date. Any future days will be grayed out.">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='only_reveal_today' refresh='false'>
+                                <span>
+                                    Show only up to current day
+                                </span>
+                            </div>
+                        </label>
+                    </div>
 
                     <!------------------------------------------------------->
 
                     <div class='bold-text'>Hiding Settings:</div>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Hides all of the moons from guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_moons' refresh='false'>
-                            <span>
-								Hide all moons from guest viewers
-							</span>
-                        </div>
-                    </label>
+                    <div class="list-group mb-3">
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Hides all of the moons from guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                       fc-index='hide_moons' refresh='false'>
+                                <span>
+                                    Hide all moons from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Hides the clock from guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_clock' refresh='false'>
-                            <span>
-								Hide time from guest viewers
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Hides the clock from guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_clock' refresh='false'>
+                                <span>
+                                    Hide time from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Hides all events from guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_events' refresh='false'>
-                            <span>
-								Hide all events from guest viewers
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Hides all events from guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_events' refresh='false'>
+                                <span>
+                                    Hide all events from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Hides the era text at the top of the calendar and only shows the year instead to guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_eras' refresh='false'>
-                            <span>
-								Hide era from guest viewers
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Hides the era text at the top of the calendar and only shows the year instead to guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_eras' refresh='false'>
+                                <span>
+                                    Hide era from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Prevents all weather from appearing on the calendar for guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_all_weather' refresh='false'>
-                            <span>
-								Hide all weather from guest viewers
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Prevents all weather from appearing on the calendar for guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_all_weather' refresh='false'>
+                                <span>
+                                    Hide all weather from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="Prevents any future weather from appearing on the calendar for guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_future_weather' refresh='false'>
-                            <span>
-								Hide future weather from guest viewers
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="Prevents any future weather from appearing on the calendar for guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_future_weather' refresh='false'>
+                                <span>
+                                    Hide future weather from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title='This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting as guests will only see "cold", "sweltering" and the like'>
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_weather_temp' refresh='false'>
-                            <span>
-								Hide temperature from guest viewers
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title='This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting as guests will only see "cold", "sweltering" and the like'>
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_weather_temp' refresh='false'>
+                                <span>
+                                    Hide temperature from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="This hides the exact wind velocity from guest viewers">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_wind_velocity' refresh='false'>
-                            <span>
-								Hide wind velocity from guest viewers
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="This hides the exact wind velocity from guest viewers">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_wind_velocity' refresh='false'>
+                                <span>
+                                    Hide wind velocity from guest viewers
+                                </span>
+                            </div>
+                        </label>
 
-                    <label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-                           data-pt-title="This will hide the weekday bar at the top of each month">
-                        <div class='col'>
-                            <input type='checkbox' class='margin-right static_input' data='settings'
-                                   fc-index='hide_weekdays' refresh='false'>
-                            <span>
-								Hide weekdays in calendar
-							</span>
-                        </div>
-                    </label>
+                        <label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
+                            data-pt-title="This will hide the weekday bar at the top of each month">
+                            <div class='col'>
+                                <input type='checkbox' class='margin-right static_input' data='settings'
+                                fc-index='hide_weekdays' refresh='false'>
+                                <span>
+                                    Hide weekdays in calendar
+                                </span>
+                            </div>
+                        </label>
+                    </div>
 
                     @if(isset($calendar) && Auth::user()->can('add-users', $calendar))
 
@@ -1764,7 +1700,7 @@
             <!---------------------------------------------->
             <div class='wrap-collapsible card settings-users'>
                 <input id="collapsible_users" class="toggle" type="checkbox">
-                <label for="collapsible_users" class="lbl-toggle py-2 px-3 card-header">
+                <label for="collapsible_users" class="lbl-toggle py-2 pr-3 card-header">
                     <i class="mr-2 fas fa-user"></i>
                     User Management
                     @if(isset($calendar) && !$calendar->isPremium())
@@ -1785,13 +1721,10 @@
                             <p><small>Once they accept your invite, you'll be able to assign them a role.</small></p>
                         </div>
 
-                        <div class='row no-gutters my-1'>
-                            <div class="col-md">
-                                <input type='text' class='form-control' id='email_input' placeholder='Email'>
-                            </div>
-                            <div class="col-md-auto">
-                                <button type='button' class='btn full btn-primary' id='btn_send_invite'>Send Invite
-                                </button>
+                        <div class='row no-gutters my-1 input-group'>
+                            <input type='text' class='form-control' id='email_input' placeholder='Email'>
+                            <div class="input-group-append">
+                                <button type='button' class='btn full btn-primary' id='btn_send_invite'>Send Invite </button>
                             </div>
                         </div>
                         <div class='row no-gutters mb-2 hidden'>
@@ -1828,7 +1761,7 @@
             <div class='wrap-collapsible card settings-linking'>
                 <input id="collapsible_linking" class="toggle" type="checkbox">
 
-                <label for="collapsible_linking" class="lbl-toggle py-2 px-3 card-header">
+                <label for="collapsible_linking" class="lbl-toggle py-2 pr-3 card-header">
                     <i class="mr-2 fas fa-link"></i>
                     Calendar Linking
                     @if(isset($calendar) && !$calendar->isPremium())
@@ -1890,19 +1823,13 @@
                     @endif
                 </div>
             </div>
-    @endif
-</form>
+        @endif
+    </div>
 </div>
-
-<button id='input_collapse_btn' class="hamburger hamburger--arrowturn is-active d-print-none" type="button">
-	<span class="hamburger-box">
-		<span class="hamburger-inner"></span>
-	</span>
-</button>
 
 <div id="calendar_container">
 
-    <div id="modal_background" class='flexible_background blurred_background'>
+    <div id="modal_background" class='flexible_background blurred_background' style="pointer-events: none">
         <div id="modal">
 			<span id="modal_text">
 				This is an alert box.
@@ -1918,8 +1845,15 @@
         </div>
     </div>
 
-    <div id="top_follower" :class="{ 'single_month': apply == 'single_month' }" x-data="{ apply: '' }"
+    <div id="top_follower" :class="{ 'single_month': apply == 'single_month' }" x-data="{ apply: '', toggle() { window.toggle_sidebar(); } }"
          @layout-change.window="apply = $event.detail.apply">
+
+
+        <div class='flex-shrink-1 is-active' id='input_collapse_btn'>
+            <button class="btn btn-secondary px-3">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
 
         <div class='parent_button_container hidden d-print-none'>
             <div class='container d-flex h-100 p-0'>
@@ -1932,44 +1866,42 @@
         </div>
 
         <div class='btn_container hidden'>
-            <button class='btn btn-danger btn_preview_date hidden d-print-none sub_year' disabled fc-index='year'
-                    value='-1'>< Year
+            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none sub_year' disabled fc-index='year'
+                    value='-1'>&lt; Year
             </button>
-            <button class='btn btn-danger btn_preview_date hidden d-print-none sub_month' disabled fc-index='timespan'
+            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none sub_month' disabled fc-index='timespan'
                     value='-1'>
-                <span x-cloak x-show="apply != 'single_month'">< Month</span>
                 <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-left"></i></span>
             </button>
         </div>
 
-        <div class='reset_preview_date_container m-1 left'>
-            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip d-print-none'
+        <div class='reset_preview_date_container left hidden'>
+            <button type='button' class='btn btn-success reset_preview_date protip d-print-none'
                     data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'><
                 Current
             </button>
         </div>
 
-        <div class="follower_center">
+        <div class="follower_center flex-grow-1">
             <div id='top_follower_content'>
                 <div class='year'></div>
                 <div class='cycle'></div>
             </div>
         </div>
 
-        <div class='reset_preview_date_container m-1 right'>
-            <button type='button' class='btn m-0 btn-info hidden reset_preview_date protip d-print-none'
+        <div class='reset_preview_date_container right hidden'>
+            <button type='button' class='btn btn-success reset_preview_date protip d-print-none'
                     data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'>
                 Current >
             </button>
         </div>
 
         <div class='btn_container hidden'>
-            <button class='btn btn-success btn_preview_date hidden d-print-none add_year' disabled fc-index='year'
+            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none add_year' disabled fc-index='year'
                     value='1'>Year >
             </button>
-            <button class='btn btn-success btn_preview_date hidden d-print-none add_month' disabled fc-index='timespan'
+            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none add_month' disabled fc-index='timespan'
                     value='1'>
-                <span x-cloak x-show="apply != 'single_month'">Month ></span>
                 <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-right"></i></span>
             </button>
         </div>

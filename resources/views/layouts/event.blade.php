@@ -18,13 +18,13 @@
 			<div class='modal-wrapper' @mousedown.outside="confirm_close($event)" x-transition x-show="open">
 
 				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close($event)'></i>
+				<i class="close_ui_btn fa fa-times" @click='confirm_close($event)'></i>
 
 				<div class='row no-gutters modal-form-heading'>
-					<h2>
+					<h3 class="d-flex align-items-center">
                         <span class='event_name' x-text='data.name'>Editing Event</span>
                         <i class="fas fa-pencil-alt event_header_action protip" data-pt-position='bottom' data-pt-title="Edit event" @click='confirm_edit' x-show='can_edit'></i>
-                        <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone' x-show='can_edit && !era'></i></h2>
+                        <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone' x-show='can_edit && !era'></i></h3>
 				</div>
 
 				<div class='row'>
@@ -124,14 +124,14 @@
 			<form id="event-form" class="modal-wrapper container" action="post" @mousedown.outside="confirm_close" x-transition x-show="open">
 
 				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>
+				<i class="close_ui_btn fas fa-times" @click='confirm_close'></i>
 
 				<div class='row no-gutters mb-1 modal-form-heading'>
-					<h2 class='event_action_type'>
+					<h3 class='event_action_type d-flex align-items-center'>
                         <span x-text="creation_type"></span>
                         <i class="fas fa-eye event_header_action protip" data-pt-position='bottom' data-pt-title="Preview event" @click='confirm_view' x-show="!new_event"></i>
                         <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone' x-show="!new_event"></i>
-                    </h2>
+                    </h3>
 				</div>
 
 				<div class='row no-gutters my-1'>
