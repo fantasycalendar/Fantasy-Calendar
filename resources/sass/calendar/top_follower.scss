@@ -1,5 +1,3 @@
-/* Top-follower */
-
 #top_follower {
     display: inline-flex;
     flex-direction: row;
@@ -27,7 +25,6 @@
         box-shadow: none;
         left: 0;
         border-bottom: 1px solid $calendar-border-color;
-        // border-radius: 0;
 
         .btn_container {
             border-radius: 0;
@@ -66,7 +63,6 @@
         flex: 0 1 auto;
         overflow: hidden;
         margin: 0;
-        // border-bottom-left-radius: 4px;
 
         &:first-child {
             padding-left: 0;
@@ -74,8 +70,6 @@
 
         &:last-child {
             padding-right: 0;
-            // border-bottom-left-radius: 0;
-            // border-bottom-right-radius: 4px;
         }
 
         .btn {
@@ -89,10 +83,6 @@
             flex: 1; /* NEW, Spec - Opera 12.1, Firefox 20+ */
             padding: 0;
             position: relative;
-
-            &:last-child {
-                // border-top:1px solid $calendar-border-color;
-            }
         }
     }
 
