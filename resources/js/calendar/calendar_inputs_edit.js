@@ -143,6 +143,7 @@ function set_up_edit_inputs(){
 				climate_charts.active_view = false;
 				calendar_container.removeClass('hidden');
 				weather_contrainer.addClass('hidden');
+				CalendarRenderer.scroll_to_last();
 				previous_view_type = view_type;
 				break;
 
@@ -163,10 +164,12 @@ function set_up_edit_inputs(){
 				climate_charts.active_view = false;
 				calendar_container.removeClass('hidden');
 				weather_contrainer.addClass('hidden');
+				CalendarRenderer.scroll_to_last();
 				previous_view_type = view_type;
 				break;
 
 			case "weather":
+				CalendarRenderer.last_scroll_height = $("#calendar_container").scrollTop();
 				if(creation.is_done() && errors.length == 0){
 					evaluate_settings();
 					climate_charts.active_view = true;
