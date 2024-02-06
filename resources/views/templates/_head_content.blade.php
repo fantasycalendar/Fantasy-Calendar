@@ -137,16 +137,8 @@
         $.trumbowyg.svgPath = '/images/icons.svg';
 
         if (window.localStorage.getItem('inputs_collapsed') != null) {
-            console.log('Input remembered');
-
-            if (window.localStorage.getItem('inputs_collapsed') == 'true') {
-                toggle_sidebar(true);
-            } else {
-                toggle_sidebar(false);
-            }
+            toggle_sidebar(window.localStorage.getItem('inputs_collapsed') == 'true');
         } else {
-            console.log('Input not remembered');
-
             if (deviceType() == "Mobile Phone") {
                 toggle_sidebar(false);
             }
