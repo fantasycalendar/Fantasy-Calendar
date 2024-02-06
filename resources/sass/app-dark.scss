@@ -233,20 +233,6 @@ input.form-control, textarea.form-control {
     }
 }
 
-// body #content #generator_container .btn:not(.event_name):not(#btn_event_delete):not(#btn_delete):not(.btn-stock):not(#go_to_preview_date):not(#preview_date_btn) {
-//     background-color: $btn-color;
-//     border-color: $btn-border;
-
-//     &:not(:disabled):hover {
-//         background-color: $btn-color-hover;
-//         border-color: $btn-border-hover;
-//     }
-
-//     &:disabled {
-//         opacity: 0.4;
-//     }
-// }
-
 #go_to_preview_date, #preview_date_btn {
     background-color: $bg-amber-800;
     border-color: $bg-amber-800;
