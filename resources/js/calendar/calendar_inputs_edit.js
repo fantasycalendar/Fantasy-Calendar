@@ -7,6 +7,7 @@ function set_up_edit_inputs(){
 	prev_static_data = clone(static_data);
 	prev_events = clone(events);
 	prev_event_categories = clone(event_categories);
+    prev_advancement = clone(advancement);
 
 	owned_calendars = {};
 
@@ -15,6 +16,7 @@ function set_up_edit_inputs(){
 	dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
 	events_same = JSON.stringify(events) === JSON.stringify(prev_events);
 	event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
+	advancement_same = JSON.stringify(advancement) === JSON.stringify(advancement);
 
 	window.onbeforeunload = function(e){
 
@@ -23,8 +25,9 @@ function set_up_edit_inputs(){
 		dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
 		events_same = JSON.stringify(events) === JSON.stringify(prev_events);
 		event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
+		advancement_same = JSON.stringify(advancement) === JSON.stringify(prev_advancement);
 
-		var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same;
+		var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same && advancement_same;
 
 		if(!not_changed){
 
@@ -45,7 +48,7 @@ function set_up_edit_inputs(){
 
 		calendar_saving();
 
-		if(!events_same || !event_categories_same || !static_same){
+		if(!events_same || !event_categories_same || !static_same || !advancement_same){
 			update_all();
 		}else if(!dynamic_same){
 			update_dynamic(hash);
@@ -89,20 +92,19 @@ function set_up_edit_inputs(){
 	calendar_container = $('#calendar');
 	weather_contrainer = $('#weather_container');
 
-	removing = null;
-	input_container = $('#input_container');
-	timespan_sortable = $('#timespan_sortable');
-	first_day = $('#first_day');
-	global_week_sortable = $('#global_week_sortable');
-	leap_day_list = $('#leap_day_list');
-	moon_list = $('#moon_list');
-	periodic_seasons_checkbox = $('#periodic_seasons_checkbox');
-	season_sortable = $('#season_sortable');
-	cycle_sortable = $('#cycle_sortable');
-	era_list = $('#era_list');
-	event_category_list = $('#event_category_list');
-	events_sortable = $('#events_sortable');
-	location_list = $('#location_list');
+    removing = null;
+    input_container = $('#input_container');
+    timespan_sortable = $('#timespan_sortable');
+    first_day = $('#first_day');
+    global_week_sortable = $('#global_week_sortable');
+    leap_day_list = $('#leap_day_list');
+    moon_list = $('#moon_list');
+    periodic_seasons_checkbox = $('#periodic_seasons_checkbox');
+    season_sortable = $('#season_sortable');
+    cycle_sortable = $('#cycle_sortable');
+    era_list = $('#era_list');
+    event_category_list = $('#event_category_list');
+    location_list = $('#location_list');
 	calendar_link_select = $('#calendar_link_select');
 	calendar_link_list = $('#calendar_link_list');
 	calendar_new_link_list = $('#calendar_new_link_list');
@@ -141,6 +143,7 @@ function set_up_edit_inputs(){
 				climate_charts.active_view = false;
 				calendar_container.removeClass('hidden');
 				weather_contrainer.addClass('hidden');
+				CalendarRenderer.scroll_to_last();
 				previous_view_type = view_type;
 				break;
 
@@ -161,10 +164,12 @@ function set_up_edit_inputs(){
 				climate_charts.active_view = false;
 				calendar_container.removeClass('hidden');
 				weather_contrainer.addClass('hidden');
+				CalendarRenderer.scroll_to_last();
 				previous_view_type = view_type;
 				break;
 
 			case "weather":
+				CalendarRenderer.last_scroll_height = $("#calendar_container").scrollTop();
 				if(creation.is_done() && errors.length == 0){
 					evaluate_settings();
 					climate_charts.active_view = true;
@@ -175,9 +180,9 @@ function set_up_edit_inputs(){
 
 		}
 
-        if(isMobile() && deviceType() == "Mobile Phone") {
-            toggle_sidebar();
-        }
+        // if(isMobile() && deviceType() == "Mobile Phone") {
+        //     toggle_sidebar();
+        // }
 
 	});
 
@@ -228,19 +233,6 @@ function set_up_edit_inputs(){
 		update: function(){
 			input_container.change();
 			reindex_cycle_sortable();
-		},
-		start: function(e, ui){
-			ui.placeholder.height(ui.item.height());
-		}
-	});
-
-	events_sortable.sortable({
-		placeholder: "highlight",
-		handle: '.handle',
-		opacity: 0.5,
-		update: function(){
-			reindex_events_sortable();
-			do_error_check();
 		},
 		start: function(e, ui){
 			ui.placeholder.height(ui.item.height());
@@ -304,6 +296,8 @@ function set_up_edit_inputs(){
 		$('.location_middle_btn').toggleClass('hidden', (!static_data.seasons.global_settings.enable_weather && !static_data.clock.enabled) || static_data.seasons.data.length < 3);
 
 		eval_clock();
+
+        window.dispatchEvent(new CustomEvent("clock-changed", { detail: { enabled: static_data.clock.enabled } }));
 
 	});
 
@@ -628,14 +622,14 @@ function set_up_edit_inputs(){
 
 		}
 
-		season_sortable.sortable('refresh');
-		reindex_season_sortable();
-		populate_preset_season_list();
-		evaluate_season_lengths();
-        evaluate_season_daylength_warning();
-		reindex_location_list();
-		name.val("");
-		do_error_check();
+        season_sortable.sortable('refresh');
+        reindex_season_sortable();
+        populate_preset_season_list();
+        evaluate_season_lengths();
+      evaluate_season_daylength_warning();
+        reindex_location_list();
+        name.val("");
+        do_error_check();
 
 		var no_seasons = static_data.seasons.data.length == 0;
 		$('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
@@ -721,8 +715,9 @@ function set_up_edit_inputs(){
 
 					for(index in season_events) {
 						events.push(season_events[index])
-						add_event_to_sortable(events_sortable, events.length - 1, events[events.length - 1]);
 					}
+
+          window.dispatchEvent(new CustomEvent("events-changed"));
 
 					do_error_check();
 
@@ -1317,44 +1312,6 @@ function set_up_edit_inputs(){
 		evaluate_save_button();
 	});
 
-
-	$('.add_inputs.events .add').click(function(){
-
-		var name = $('#event_name_input');
-
-		var name_val = name.val();
-
-		var epoch = undefined;
-
-		if(typeof preview_date !== "undefined" && preview_date.follow){
-			var epoch = dynamic_date_manager.epoch;
-		}else{
-			if(typeof preview_date_manager !== "undefined"){
-				var epoch = preview_date_manager.epoch;
-			}
-		}
-
-		window.dispatchEvent(new CustomEvent('event-editor-modal-new-event', { detail: { name: name_val, epoch: epoch } }));
-
-		name.val('');
-
-	});
-
-	$(document).on('click', '.open-edit-event-ui', function() {
-		let event_id = $(this).closest('.sortable-container').attr('index') | 0;
-
-		let epoch = dynamic_data.epoch;
-		if (typeof preview_date !== "undefined" && preview_date.follow) {
-			epoch = dynamic_date_manager.epoch;
-		} else {
-			if (typeof preview_date_manager !== "undefined") {
-				epoch = preview_date_manager.epoch;
-			}
-		}
-
-		window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id, epoch: epoch } }));
-	});
-
 	$(document).on('click', '.btn_remove', function(){
 
 		if(!$(this).hasClass('disabled')){
@@ -1475,71 +1432,7 @@ function set_up_edit_inputs(){
 				event_categories = event_categories.filter(function(category) { return category; });
 				repopulate_event_category_lists();
 
-				break;
-
-			case "events_sortable":
-
-				var warnings = [];
-
-				for(var eventId in events){
-					if(events[eventId].data.connected_events !== undefined){
-						var connected_events = events[eventId].data.connected_events;
-						if(connected_events.includes(String(index)) || connected_events.includes(index)){
-							warnings.push(eventId);
-						}
-					}
-				}
-
-				if(warnings.length > 0){
-
-					callback = true;
-
-					var html = [];
-					html.push(`<div class='text-left'>`)
-					html.push(`<h5>You are trying to delete "${events[index].name}" which referenced in the following events:</h5>`)
-					html.push(`<ul>`);
-					for(var i = 0; i < warnings.length; i++){
-						var event_id = warnings[i];
-						html.push(`<li>• ${events[event_id].name}</li>`);
-					}
-					html.push(`</ul>`);
-					html.push(`<p>Please remove the conditions referencing "${events[index].name}" in these events before deleting.</p>`)
-					html.push(`</div>`)
-
-					swal.fire({
-						title: "Warning!",
-						html: html.join(''),
-						showCancelButton: false,
-						confirmButtonColor: '#3085d6',
-						confirmButtonText: 'OK',
-						icon: "warning",
-					})
-
-					$(this).closest('.sortable-container').find('.btn_cancel').click();
-
-				}else{
-
-					events_sortable.children("[index='"+index+"']").remove();
-
-					for(var eventId in events){
-						if(events[eventId].data.connected_events !== undefined){
-							for(connectedId in events[eventId].data.connected_events){
-								var number = Number(events[eventId].data.connected_events[connectedId])
-								if(Number(events[eventId].data.connected_events[connectedId]) > index){
-									events[eventId].data.connected_events[connectedId] = String(number-1)
-								}
-							}
-						}
-					}
-
-					events.splice(index, 1);
-
-					events_sortable.children().each(function(i){
-						events[i].sort_by = i;
-						$(this).attr('index', i);
-					});
-
-				}
+        window.dispatchEvent(new CustomEvent("events-changed"));
 
 				break;
 
@@ -2237,6 +2130,8 @@ function set_up_edit_inputs(){
 	$(document).on('change', '.timespan_length', function(){
 		var index = $(this).closest('.sortable-container').attr('index')|0;
 		repopulate_day_select($(`.timespan-day-list`), undefined, undefined, undefined, undefined, index);
+        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+        preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
 	});
 
 	$('#enable_weather').change(function(){
@@ -2279,6 +2174,9 @@ function set_up_edit_inputs(){
 		$('.timespan-day-list').each(function(){
 			repopulate_day_select($(this), $(this).val(), changed_days == $(this));
 		});
+
+        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+        preview_date.epoch = evaluate_calendar_start(static_data, convert_year(static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
 
 	});
 
@@ -2678,6 +2576,12 @@ function set_up_edit_inputs(){
 		update_data(e);
 
 	});
+
+
+    document.addEventListener("advancement-changed", function(event){
+        advancement = event.detail.data;
+        evaluate_save_button();
+    });
 }
 
 function update_data(e){
@@ -2796,6 +2700,9 @@ function update_data(e){
 					events[eventkey].settings.text = event_categories[key].event_settings.text;
 				}
 			}
+
+      window.dispatchEvent(new CustomEvent("events-changed"));
+
 			repopulate_event_category_lists();
 		}
 
@@ -2909,118 +2816,102 @@ function add_timespan_to_sortable(parent, key, data){
 
 	if(key == 0) $('.timespan_sortable_header').removeClass('hidden');
 
-	var element = [];
-	element.push(`<div class='sortable-container list-group-item ${data.type} collapsed collapsible' type='${data.type}' index='${key}'>`);
-		element.push("<div class='main-container'>");
-			element.push("<div class='handle icon-reorder'></div>");
-			element.push("<div class='expand icon-expand'></div>");
-			element.push("<div class='name-container'>");
-				element.push(`<input type='text' step='1.0' tabindex='${(100+key)}'class='name-input small-input form-control dynamic_input' data='year_data.timespans.${key}' fc-index='name'/>`);
-			element.push("</div>");
-			element.push(`<div class='length_input'><input type='number' min='1' class='length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100+key)}' value='${data.length}'/></div>`);
-			element.push('<div class="remove-spacer"></div>');
-		element.push("</div>");
-		element.push("<div class='remove-container'>");
-			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-			element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
-		element.push("</div>");
+	var element = $(
+        `<div class='sortable-container list-group-item ${data.type} collapsed collapsible' type='${data.type}' index='${key}' x-data="{ type: '${data.type}', week: ${JSON.stringify(data.week ?? [])} }">
+		<div class='main-container'>
+			<div class='handle icon-reorder'></div>
+			<div class='expand icon-expand'></div>
+			<div class='name-container'>
+				<input value="${data.name}" type='text' step='1.0' tabindex='${(100+key)}'class='name-input small-input form-control dynamic_input' data='year_data.timespans.${key}' fc-index='name'/>
+			</div>
+			<div class='length_input'><input type='number' min='1' class='length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100+key)}' value='${data.length}'/></div>
+			<div class="remove-spacer"></div>
+		</div>
+		<div class='remove-container'>
+			<div class='remove-container-text'>Are you sure you want to remove this?</div>
+			<div class='btn_remove btn btn-danger icon-trash'></div>
+			<div class='btn_cancel btn btn-danger icon-remove'></div>
+			<div class='btn_accept btn btn-success icon-ok'></div>
+		</div>
 
-		element.push("<div class='collapse-container container pb-2'>");
+		<div class='collapse-container container pb-2'>
 
-			element.push("<div class='row no-gutters bold-text big-text italics-text'>");
-				element.push("<div class='col-12'>" + (data.type == "month" ? "Month" : "Intercalary month") + "</div>");
-			element.push("</div>");
+			<div class='row no-gutters'>
+                <div class='col'>Type: ${(data.type == "month" ? "Month" : "Intercalary month")}</div>
+			</div>
 
-				element.push("<div class='row no-gutters my-1 bold-text'><div class='col-12'>Leaping settings</div></div>");
+			<div class='row no-gutters mt-1'>
+				<div class='col-6 pr-1'>
+					<div>Leap interval:</div>
+				</div>
 
-			element.push("<div class='row no-gutters mt-1'>");
-				element.push("<div class='col-6 pr-1'>");
-					element.push("<div>Interval:</div>");
-				element.push("</div>");
+				<div class='col-6 pl-1'>
+					<div>Leap offset:</div>
+				</div>
+			</div>
 
-				element.push("<div class='col-6 pl-1'>");
-					element.push("<div>Offset:</div>");
-				element.push("</div>");
-			element.push("</div>");
+			<div class='row no-gutters mb-1'>
+				<div class='col-6 pr-1'>
+					<input type='number' step="1" min='1' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' fc-index='interval' value='${data.interval}' />
+				</div>
 
-			element.push("<div class='row no-gutters mb-1'>");
-				element.push("<div class='col-6 pr-1'>");
-					element.push(`<input type='number' step="1" min='1' class='form-control timespan_occurance_input interval dynamic_input small-input' data='year_data.timespans.${key}' fc-index='interval' value='${data.interval}' />`);
-				element.push("</div>");
+				<div class='col-6 pl-1'>
+					<input type='number' step="1" min='0' class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.interval === 1 ? 0 : data.offset}'
+					${data.interval === 1 ? " disabled" : ""}
+					/>
+				</div>
+			</div>
 
-				element.push("<div class='col-6 pl-1'>");
-					element.push(`<input type='number' step="1" min='0' class='form-control timespan_occurance_input offset dynamic_input small-input' min='0' data='year_data.timespans.${key}' fc-index='offset' value='${data.interval === 1 ? 0 : data.offset}'`);
-					element.push(data.interval === 1 ? " disabled" : "");
-					element.push("/>");
-				element.push("</div>");
-			element.push("</div>");
+			<div class='row no-gutters my-1'>
+				<div class='col-12 italics-text timespan_variance_output'>
+					${get_interval_text(true, data)}
+				</div>
+			</div>
 
-			element.push("<div class='row no-gutters my-1'>");
-				element.push("<div class='col-12 italics-text timespan_variance_output'>");
-					element.push(get_interval_text(true, data));
-				element.push("</div>");
-			element.push("</div>");
+            <div x-show="type === 'month'">
+                <div class='row no-gutters my-1'>
+                    <div class='col-12'><div class='separator'></div></div>
+                </div>
 
-			if(data.type == 'month'){
+                <div class='row no-gutters my-1'>
+                    <div class='form-check col-12 py-2 border rounded'>
+                        <input type='checkbox' id='${key}_custom_week' class='form-check-input unique-week-input'
+                        ${data.week ? "checked" : ""}
+                        />
+                        <label for='${key}_custom_week' class='form-check-label ml-1'>
+                            Use custom week
+                        </label>
+                    </div>
+                </div>
 
-				element.push("<div class='row no-gutters my-1'>");
-					element.push("<div class='col-12'><div class='separator'></div></div>");
-				element.push("</div>");
+                <div class='custom-week-container ${(!data.week ? "hidden" : "")}'>
 
-				element.push("<div class='row no-gutters my-1'>");
-					element.push("<div class='col-12 bold-text'>Week settings</div>");
-				element.push("</div>");
+                    <div class='row no-gutters my-1'>
+                        <div class='col-12'>
+                            Custom week length:
+                        </div>
+                    </div>
 
-				element.push(`<div class='row no-gutters my-1'>`);
-					element.push("<div class='form-check col-12 py-2 border rounded'>");
-						element.push(`<input type='checkbox' id='${key}_custom_week' class='form-check-input unique-week-input'`);
-						element.push(data.week ? "checked" : "");
-						element.push("/>");
-						element.push(`<label for='${key}_custom_week' class='form-check-label ml-1'>`);
-							element.push("Use custom week");
-						element.push("</label>");
-					element.push("</div>");
-				element.push("</div>");
+                    <div class='row no-gutters mb-1'>
+                        <div class='input-group'>
+                            <input @blur="do_error_check('calendar')" type='number' min='1' step="1" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>
+                            <div class="input-group-append">
+                                <button type='button' class='full btn btn-primary weekday_quick_add' ${(!data.week ? "disabled" : "")}>Quick add</button>
+                            </div>
+                        </div>
+                    </div>
 
-				element.push(`<div class='custom-week-container ${(!data.week ? "hidden" : "")}'>`);
-
-					element.push("<div class='row no-gutters my-1'>");
-						element.push("<div class='col-12'>");
-							element.push("Length:");
-						element.push("</div>");
-					element.push("</div>");
-
-					element.push("<div class='row no-gutters mb-1'>");
-						element.push("<div class='col-6 pr-1'>");
-							element.push(`<input type='number' min='1' step="1" class='form-control week-length small-input' ${(!data.week ? "disabled" : "")} value='${(data.week ? data.week.length : 0)}'/>`);
-						element.push("</div>");
-						element.push("<div class='col-6 pl-1'>");
-							element.push(`<button type='button' class='full btn btn-primary weekday_quick_add' ${(!data.week ? "disabled" : "")}>Quick add</button>`);
-						element.push("</div>");
-					element.push("</div>");
-
-					element.push("<div class='row no-gutters border'>");
-						element.push("<div class='week_list col-12 p-1'>");
-						if(data.week){
-							for(index = 0; index < data.week.length; index++){
-								element.push(`<input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' fc-index='${index}'/>`);
-							}
-						}
-						element.push("</div>");
-					element.push("</div>");
-				element.push("</div>");
-
-			}
-
-		element.push("</div>");
-
-	element.push("</div>");
-
-	element = $(element.join(""))
-
-	element.find('.name-input').val(data.name);
+                    <div class='row no-gutters border'>
+                        <div class='week_list col-12 p-1'>
+                            <template x-for='(day, index) in week' :key='index'>
+                                <input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' :fc-index='index'/>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</div>`);
 
 	if(data.week){
 		element.find('.week_list').children().each(function(i){
@@ -4031,181 +3922,120 @@ function add_era_to_list(parent, key, data){
 }
 
 function add_category_to_list(parent, key, data){
+    parent.append(`<div class='sortable-container list-group-item category_inputs collapsed collapsible' index='${key}' x-data='{ color: "${data.event_settings.color}", text_style: "${data.event_settings.text}" }'>
 
-	var element = [];
+		<div class='main-container'>
+			<div class='expand icon-expand'></div>
+			<div class='name-container'>
+				<input value='${data.name}' type='text' name='name_input' fc-index='name' class='form-control name-input small-input category_name_input' data='${key}' tabindex='${(700+key)}'/>
+			</div>
+			<div class="remove-spacer"></div>
+		</div>
+		<div class='remove-container'>
+			<div class='remove-container-text'>Are you sure you want to remove this?</div>
+			<div class='btn_remove btn btn-danger icon-trash'></div>
+			<div class='btn_cancel btn btn-danger icon-remove'></div>
+			<div class='btn_accept btn btn-success icon-ok'></div>
+		</div>
+		<div class='collapse-container container mb-2'>
 
-	element.push(`<div class='sortable-container list-group-item category_inputs collapsed collapsible' index='${key}'>`);
+			<div class='row no-gutters my-1 bold-text'>
+				<div class='col'>
+					Settings:
+				</div>
+			</div>
 
-		element.push("<div class='main-container'>");
-			element.push("<div class='expand icon-expand'></div>");
-			element.push("<div class='name-container'>");
-				element.push(`<input type='text' name='name_input' fc-index='name' class='form-control name-input small-input category_name_input' data='${key}' tabindex='${(700+key)}'/>`);
-			element.push("</div>");
-			element.push('<div class="remove-spacer"></div>');
-		element.push("</div>");
-		element.push("<div class='remove-container'>");
-			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-			element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
-		element.push("</div>");
-		element.push("<div class='collapse-container container mb-2'>");
+			<input type='hidden' class='category_id' value='${key}'>
 
-			element.push("<div class='row no-gutters my-1 bold-text'>");
-				element.push("<div class='col'>");
-					element.push("Category settings (global):");
-				element.push("</div>");
-			element.push("</div>");
+			<div class='row no-gutters mt-1 mb-2'>
+                <div class="list-group col-12">
+                    <div class='form-check list-group-item py-2'>
+                        <input type='checkbox' id='${key}_cat_global_hide' class='form-check-input category_dynamic_input dynamic_input global_hide' data='${key}.category_settings' fc-index='hide' ${(data.category_settings.hide ? "checked" : "")} />
+                        <label for='${key}_cat_global_hide' class='form-check-label ml-1'>
+                            Hide category from viewers
+                        </label>
+                    </div>
 
-			element.push(`<input type='hidden' class='category_id' value='${key}'>`);
+                    <div class='form-check list-group-item py-2'>
+                        <input type='checkbox' id='${key}_cat_player_usable' class='form-check-input category_dynamic_input dynamic_input player_usable' data='${key}.category_settings' fc-index='player_usable' ${(data.category_settings.player_usable ? "checked" : "")} />
+                        <label for='${key}_cat_player_usable' class='form-check-label ml-1'>
+                            Category usable by players
+                        </label>
+                    </div>
+                </div>
+			</div>
 
-			element.push(`<div class='row no-gutters my-1'>`);
-				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_global_hide' class='form-check-input category_dynamic_input dynamic_input global_hide' data='${key}.category_settings' fc-index='hide' ${(data.category_settings.hide ? "checked" : "")} />`);
-					element.push(`<label for='${key}_cat_global_hide' class='form-check-label ml-1'>`);
-						element.push("Hide from viewers");
-					element.push("</label>");
-				element.push("</div>");
-			element.push("</div>");
+			<div class='row no-gutters bold-text'>
+				<div class='col'>
+					Event overrides:
+				</div>
+			</div>
 
-			element.push(`<div class='row no-gutters my-1'>`);
-				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_player_usable' class='form-check-input category_dynamic_input dynamic_input player_usable' data='${key}.category_settings' fc-index='player_usable' ${(data.category_settings.player_usable ? "checked" : "")} />`);
-					element.push(`<label for='${key}_cat_player_usable' class='form-check-label ml-1'>`);
-						element.push("Usable by players");
-					element.push("</label>");
-				element.push("</div>");
-			element.push("</div>");
+			<div class='row no-gutters mt-1 mb-2'>
+                <div class="list-group col-12">
+                    <div class='form-check list-group-item py-2'>
+                        <input type='checkbox' id='${key}_cat_hide_full' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='hide_full' ${(data.event_settings.hide_full ? "checked" : "")} />
+                        <label for='${key}_cat_hide_full' class='form-check-label ml-1'>
+                            Fully hide event
+                        </label>
+                    </div>
 
-			element.push("<div class='row no-gutters my-2'>");
-				element.push("<div class='col'>");
-					element.push("<div class='separator'></div>");
-				element.push("</div>");
-			element.push("</div>");
+                    <div class='form-check list-group-item py-2'>
+                        <input type='checkbox' id='${key}_cat_hide' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='hide' ${(data.event_settings.hide ? "checked" : "")} />
+                        <label for='${key}_cat_hide' class='form-check-label ml-1'>
+                            Hide event
+                        </label>
+                    </div>
 
-			element.push("<div class='row no-gutters mb-2 bold-text'>");
-				element.push("<div class='col'>");
-					element.push("Event settings (local):");
-				element.push("</div>");
-			element.push("</div>");
+                    <div class='form-check list-group-item py-2'>
+                        <input type='checkbox' id='${key}_cat_print' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='print' ${(data.event_settings.noprint ? "checked" : "")} />
+                        <label for='${key}_cat_print' class='form-check-label ml-1'>
+                            Show event when printing
+                        </label>
+                    </div>
+                </div>
+			</div>
 
-			element.push("<div class='row no-gutters mb-2 small-text bold-text warning'>");
-				element.push("<div class='col'>");
-					element.push("This will override the settings on any events using this category!");
-				element.push("</div>");
-			element.push("</div>");
+			<div class='row no-gutters my-2'>
+				<div class='col-md-6 col-sm-12'>
+					Color:
+				</div>
 
-			element.push(`<div class='row no-gutters my-1'>`);
-				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_hide_full' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='hide_full' ${(data.event_settings.hide_full ? "checked" : "")} />`);
-					element.push(`<label for='${key}_cat_hide_full' class='form-check-label ml-1'>`);
-						element.push("Fully hide event");
-					element.push("</label>");
-				element.push("</div>");
-			element.push("</div>");
+				<div class='col-md-6 col-sm-12'>
+                    Display:
+				</div>
 
-			element.push(`<div class='row no-gutters my-1'>`);
-				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_hide' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='hide' ${(data.event_settings.hide ? "checked" : "")} />`);
-					element.push(`<label for='${key}_cat_hide' class='form-check-label ml-1'>`);
-						element.push("Hide event");
-					element.push("</label>");
-				element.push("</div>");
-			element.push("</div>");
+                <div class='input-group col-12 mt-1 mb-2' x-data="{ colorOptions: ['Dark-Solid', 'Red', 'Pink', 'Purple', 'Deep-Purple', 'Blue', 'Light-Blue', 'Cyan', 'Teal', 'Green', 'Light-Green', 'Lime', 'Yellow', 'Orange', 'Blue-Grey'] }">
+                    <select x-model='color' class='custom-select form-control category_dynamic_input dynamic_input event-text-input color_display' data='${key}.event_settings' fc-index='color'>
+                        <template x-for="colorOption in colorOptions">
+                            <option x-text="colorOption" :value="colorOption" :selected="colorOption == color"></option>
+                        </template>
+                    </select>
+                    <select x-model='text_style' class='custom-select form-control category_dynamic_input dynamic_input event-text-input text_display' data='${key}.event_settings' fc-index='text'>
+                        <option value="text"${(data.event_settings.text == 'text' ? ' selected' : '')}>Just text</option>
+                        <option value="dot"${(data.event_settings.text == 'dot' ? ' selected' : '')}>• Dot with text</option>
+                        <option value="background"${(data.event_settings.text == 'background' ? ' selected' : '')}>Background</option>
+                    </select>
+                </div>
+			</div>
 
-			element.push(`<div class='row no-gutters my-1'>`);
-				element.push("<div class='form-check col-12 py-2 border rounded'>");
-					element.push(`<input type='checkbox' id='${key}_cat_print' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='print' ${(data.event_settings.noprint ? "checked" : "")} />`);
-					element.push(`<label for='${key}_cat_print' class='form-check-label ml-1'>`);
-						element.push("Show event when printing");
-					element.push("</label>");
-				element.push("</div>");
-			element.push("</div>");
+			<div class='row no-gutters mt-1'>
+				<div class='col'>
+					Event appearance:
+				</div>
+			</div>
 
-			element.push("<div class='row no-gutters my-2'>");
-				element.push("<div class='col-md-6 col-sm-12'>");
-					element.push("<div>Color:</div>");
-					element.push(`<select class='custom-select form-control category_dynamic_input dynamic_input event-text-input color_display' data='${key}.event_settings' fc-index='color'>`);
-						element.push(`<option ${(data.event_settings.color == 'Dark-Solid' ? ' selected' : '')}>Dark-Solid</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Red' ? ' selected' : '')}>Red</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Pink' ? ' selected' : '')}>Pink</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Purple' ? ' selected' : '')}>Purple</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Deep-Purple' ? ' selected' : '')}>Deep-Purple</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Blue' ? ' selected' : '')}>Blue</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Light-Blue' ? ' selected' : '')}>Light-Blue</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Cyan' ? ' selected' : '')}>Cyan</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Teal' ? ' selected' : '')}>Teal</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Green' ? ' selected' : '')}>Green</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Light-Green' ? ' selected' : '')}>Light-Green</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Lime' ? ' selected' : '')}>Lime</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Yellow' ? ' selected' : '')}>Yellow</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Orange' ? ' selected' : '')}>Orange</option>`);
-						element.push(`<option ${(data.event_settings.color == 'Blue-Grey' ? ' selected' : '')}>Blue-Grey</option>`);
-					element.push("</select>");
-				element.push("</div>");
+			<div class='row no-gutters'>
+				<div class='col-6'>
+                    <div class='event-text-output event' :class='color + " " + text_style'>Event (visible)</div>
+				</div>
+				<div class='col-6 px-1'>
+					<div class='event-text-output hidden_event event' :class='color + " " + text_style'>Event (hidden)</div>
+				</div>
+			</div>
+		</div>
 
-				element.push("<div class='col-md-6 col-sm-12'>");
-					element.push("<div>Display:</div>");
-					element.push(`<select class='custom-select form-control category_dynamic_input dynamic_input event-text-input text_display' data='${key}.event_settings' fc-index='text'>`);
-						element.push(`<option value="text"${(data.event_settings.text == 'text' ? ' selected' : '')}>Just text</option>`);
-						element.push(`<option value="dot"${(data.event_settings.text == 'dot' ? ' selected' : '')}>• Dot with text</option>`);
-						element.push(`<option value="background"${(data.event_settings.text == 'background' ? ' selected' : '')}>Background</option>`);
-					element.push("</select>");
-				element.push("</div>");
-			element.push("</div>");
-
-			element.push("<div class='row no-gutters mt-1'>");
-				element.push("<div class='col'>");
-					element.push(`What the events will look like:`);
-				element.push("</div>");
-			element.push("</div>");
-
-			element.push("<div class='row no-gutters'>");
-				element.push("<div class='col-6'>");
-					element.push(`<div class='event-text-output event ${data.event_settings.color} ${data.event_settings.text}'>Event (visible)</div>`);
-				element.push("</div>");
-				element.push("<div class='col-6 px-1'>");
-					element.push(`<div class='event-text-output hidden_event event ${data.event_settings.color} ${data.event_settings.text}'>Event (hidden)</div>`);
-				element.push("</div>");
-			element.push("</div>");
-
-		element.push("</div>");
-
-	element.push("</div>");
-
-	element = $(element.join(""))
-
-	element.find('.name-input').val(data.name);
-
-	parent.append(element);
-}
-
-
-function add_event_to_sortable(parent, key, data){
-
-	var element = [];
-
-	element.push(`<div class='sortable-container events_input list-group-item' index='${key}'>`);
-		element.push("<div class='main-container'>");
-			element.push("<div class='handle icon-reorder'></div>");
-			element.push(`<div class='btn btn-outline-primary open-edit-event-ui event_name'></div>`);
-			element.push('<div class="remove-spacer"></div>');
-		element.push("</div>");
-		element.push("<div class='remove-container'>");
-			element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-			element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-			element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-			element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
-		element.push("</div>");
-
-	element.push("</div>");
-
-	element = $(element.join(""))
-
-	element.find('.event_name').html(`Edit - ${data.name}`);
-
-	parent.append(element);
-
+	</div>`);
 }
 
 
@@ -5408,43 +5238,6 @@ function reindex_event_category_list(){
 	return;
 }
 
-function reindex_events_sortable(){
-
-	var new_order = []
-	var new_events = []
-
-	events_sortable.children().each(function(i){
-
-		var id = Number($(this).attr('index'));
-
-		new_order[id] = i;
-		new_events[i] = events[id];
-		new_events[i].sort_by = i;
-
-		$(this).attr('index', i);
-
-	});
-
-	for(var event_id in events){
-
-		var event = events[event_id];
-
-		if(event.data.connected_events.length > 0){
-
-			for(var connected_id in event.data.connected_events){
-
-				event.data.connected_events[connected_id] = new_order[event.data.connected_events[connected_id]];
-
-			}
-
-		}
-
-	}
-
-	events = clone(new_events);
-
-}
-
 function recreate_moon_colors(){
 
 	$('.moon_inputs .color').spectrum({
@@ -5599,8 +5392,9 @@ function evaluate_save_button(override){
 			dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
 			events_same = JSON.stringify(events) === JSON.stringify(prev_events);
 			event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
+			advancement_same = JSON.stringify(advancement) === JSON.stringify(prev_advancement);
 
-			var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same;
+			var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same && advancement_same;
 
 			var text = not_changed ? "No changes to save" : "Save calendar";
 
@@ -5981,12 +5775,6 @@ function set_up_edit_values(){
 		}
 	}
 
-	if(events){
-		for(var eventId in events){
-			add_event_to_sortable(events_sortable, eventId, events[eventId]);
-		}
-	}
-
 
 	$('.weather_inputs').toggleClass('hidden', !static_data.seasons.global_settings.enable_weather);
 	$('.weather_inputs').find('select, input').prop('disabled', !static_data.seasons.global_settings.enable_weather);
@@ -6048,7 +5836,6 @@ function empty_edit_values(){
 	cycle_sortable.empty()
 	era_list.empty()
 	event_category_list.empty()
-	events_sortable.empty()
 	location_list.empty()
 	calendar_link_select.empty()
 	calendar_link_list.empty()
@@ -6135,6 +5922,8 @@ function autoload(popup){
 				text: "The calendar " + calendar_name + " has been loaded."
 			});
 		}
+
+    window.dispatchEvent(new CustomEvent("events-changed"));
 
 	}
 

@@ -1,3 +1,107 @@
+### 2.3.6 - Mischievous Marid
+#### August 6, 2023
+- Updated: Set calendar advancement period upon saving
+- Updated: Heavily optimized site styling and images by a factor of 40 for faster loading times
+- Updated: Set dark theme as the default for guest viewers on calendar pages
+- Updated: Move the event category selector out of the "Settings" section of the event edit interface
+- Updated: Updated backend packages, removed some unnecessary dependencies
+- Fixed: Attempt to avoid advancement drift by double-checking that a calendar should advance in the queued job
+- Fixed: Position of sidebar toggle button on some display sizes
+- Fixed: Cross-Site XSS injection points
+
+### 2.3.5 - Miffed Marid
+#### February 25, 2023
+- Fixed: Remove all reliance on unpkg.com CDN for core parts of the app
+
+### 2.3.4 - Melodramatic Marid
+#### January 28, 2023
+- Added: Support for the [Flare](https://flareapp.io/) error reporting service
+
+### 2.3.3 - Mellow Marid
+#### January 28, 2023
+- Fixed: Image rendering error
+
+### 2.3.2 - Mindful Marid
+#### January 24, 2023
+- Fixed: Bug causing the "close" button on events to not function correctly in some cases
+- Updated: Guest pages are now dark theme by default
+- Updated: Laravel Cashier from v12.7 -> v14
+- Updated: Various other dependencies
+
+### 2.3.1 - Meaningful Marid
+#### January 23, 2023
+- Fixed: Real-time helpdocs link
+- Updated: A few dependencies
+
+### 2.3.0 - Momentary Marid
+#### January 15th, 2023
+- Added: Real-time calendar advancement
+- Added: The ability for leap day intervals to operate within a limited cycle
+- Fixed: Rare bugs with complex leap day interval calculations
+- Fixed: Modulo by 0 when an interval is somehow set to 0
+- Fixed: Invalid category IDs upon Calendar import/export
+- Fixed: Cases where calendar co-owners couldn't create events
+- Fixed: Previewing a date would prevent you from clicking on events on that day
+- Fixed: Trying to insert a link or image into event's description would result in being prompted to close the event
+
+### 2.2.17 - Careful Couatl
+#### September 29th, 2022
+- Fixed: Error trying to log certain requests
+
+### 2.2.16 - Catchable Couatl
+#### September 28th, 2022
+- Fixed: Active ability to log errors to a Discord channel - Don't try to use the word "Discord" in a webhook name
+
+### 2.2.15 - Certain Couatl
+#### September 24th, 2022
+- Fixed issue with multiple Intercalary Leap days causing calendars to not load properly 
+
+### 2.2.14 - Continual Couatl
+#### September 21st, 2022
+- Fixed: Messaging/placeholder regarding embedding as a premium feature 
+- Updated: Dependencies.
+
+### 2.2.13 - Confused Couatl
+#### July 7th, 2022
+- Fixed: Discord interactions not working due to int -> string cast during response
+- Updated: A few dependencies
+- Updated: Adjustment to some admin tools
+
+### 2.2.12 - Commercial Couatl
+#### July 6th, 2022
+- Fixed rendering issue on calendars when changing certain calendar properties
+- Fixed adjusting month lengths would cause the current date to slide
+- Fixed Discord calendar renderer being off by one when the year started with an intercalary month
+ 
+### 2.2.11 - Confident Couatl
+#### June 1st, 2022
+- Fixed date-based events to not cause calendar to look simulate past years if it has a duration
+- Date-based events now supports insanely long durations (still HEAVILY discouraged)
+- Backend updates to be able to verify people's emails remotely 
+
+### 2.2.10 - Concerned Couatl
+#### May 22nd, 2022
+- Fixed critical issue with event-based-events that could cause them to sometimes contain incorrect event
+- Improved handling of said event-based-events when events get removed
+
+### 2.2.9 - Courteous Couatl
+#### May 18th, 2022
+- Fixed rendering issue which was caused by advancing the current year
+- Fixed issue preventing the calendar from scrolling to the current date when first loaded
+- Fixed issue which could cause event-based-events to cause infinite recursion
+- Removed event-testing feature until we can solve a more deeply rooted issue
+
+### 2.2.8 - Contextual Couatl
+#### April 12th, 2022
+- Replace Sharp library with Filament for rewritten internal admin panel
+- Laid the basis for user API token management
+- App Feature Flags (For disabling things in development)
+- Upgrade some dependencies
+
+### 2.2.7 - Cackling Couatl
+#### April 1st, 2022
+- Enabled enhanced... wait, what?
+
 ### 2.2.6 - Contemporary Couatl
 #### March 23rd, 2022
 * Added: `/fc create event` - Create one-time events from Discord!
@@ -158,11 +262,12 @@
 * Fixed - Calendar export being broken on some calendars
 
 ### 2.0.14 - Time-traveling Efreet
-#### January 23, 2021
+#### January 28, 2021
 * Tweaked - Cycle condition dropdown now includes which cycle family the condition is point to
 * Tweaked - Enable season day color will now generate a new set of colors and sequence them properly
 * Fixed - Events landing on intercalary leap days that happen at the end of a month not appearing
 * Fixed - Nesting normal event groups inside of number event groups caused events to appear when they shouldn't
+* Updated - Dependency updates for security
 
 ### 2.0.13 - Squashing Efreet
 #### January 18, 2021

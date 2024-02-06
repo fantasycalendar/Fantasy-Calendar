@@ -17,6 +17,8 @@ provider:
     APP_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/app_key}
     APP_DEBUG: ${self:custom.environment.${self:custom.stage}.APP_DEBUG}
     APP_ENV: ${self:custom.environment.${self:custom.stage}.APP_ENV}
+    LOG_LEVEL: ${self:custom.environment.${self:custom.stage}.LOG_LEVEL}
+    FLARE_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/flare_key}
     AWS_BUCKET:
       Ref: Assets
     SQS_QUEUE:
@@ -85,10 +87,12 @@ custom:
     prod:
       APP_DEBUG: 'false'
       APP_ENV: 'production'
+      LOG_LEVEL: 'info'
       DISCORD_COMMAND: 'fc'
     dev:
       APP_DEBUG: 'true'
       APP_ENV: 'development'
+      LOG_LEVEL: 'debug'
       DISCORD_COMMAND: 'fc-beta'
   ssm:
     prod: 'fantasy-calendar'
@@ -108,9 +112,14 @@ package:
     - cache/**
     - node_modules/**
     - public/storage/**
+    - public/fonts/**
+    - public/js/**
+    - public/css/**
     - public/resources/**
     - public/vendor/sharp/fonts/*
     - public/vendor/sharp/vendor.js
+    - resources/js/**
+    - resources/sass/**
     - resources/images/**
     - resources/image-sourcefiles/**
     - storage/**
@@ -122,10 +131,10 @@ functions:
     handler: public/index.php
     timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
     layers:
-      - ${bref:layer.php-80-fpm}
-      - ${bref-extra:redis-php-80}
-      - ${bref-extra:gmp-php-80}
-      - ${bref-extra:imagick-php-80}
+      - ${bref:layer.php-81-fpm}
+      - ${bref-extra:redis-php-81}
+      - ${bref-extra:gmp-php-81}
+      - ${bref-extra:imagick-php-81}
     events:
       -   http: 'ANY /'
       -   http: 'ANY /{proxy+}'
@@ -137,21 +146,22 @@ functions:
     handler: artisan
     timeout: 120 # in seconds
     layers:
-      - ${bref:layer.php-80} # PHP
-      - ${bref-extra:gmp-php-80}
-      - ${bref-extra:redis-php-80}
-      - ${bref-extra:imagick-php-80}
+      - ${bref:layer.php-81} # PHP
+      - ${bref-extra:gmp-php-81}
+      - ${bref-extra:redis-php-81}
+      - ${bref-extra:imagick-php-81}
       - ${bref:layer.console} # The "console" layer
     vpc:
       securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
       subnetIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/subnet_ids}"] }
   worker:
-    handler: worker.php
+    handler: Bref\LaravelBridge\Queue\QueueHandler
+    timeout: 59 # seconds
     layers:
-      - ${bref:layer.php-80} # PHP
-      - ${bref-extra:gmp-php-80}
-      - ${bref-extra:redis-php-80}
-      - ${bref-extra:imagick-php-80}
+      - ${bref:layer.php-81} # PHP
+      - ${bref-extra:gmp-php-81}
+      - ${bref-extra:redis-php-81}
+      - ${bref-extra:imagick-php-81}
     events:
       -   sqs:
             arn:
@@ -164,14 +174,14 @@ functions:
     timeout: 6
     handler: artisan
     layers:
-      - ${bref:layer.php-80} # PHP runtime
-      - ${bref-extra:gmp-php-80}
-      - ${bref-extra:redis-php-80}
-      - ${bref-extra:imagick-php-80}
+      - ${bref:layer.php-81} # PHP runtime
+      - ${bref-extra:gmp-php-81}
+      - ${bref-extra:redis-php-81}
+      - ${bref-extra:imagick-php-81}
       - ${bref:layer.console} # Console layer
     events:
       - schedule:
-          rate: rate(1 minute)
+          rate: cron(* * * * ? *)
           input: '"schedule:run"'
     vpc:
       securityGroupIds: { 'Fn::Split': [",", "${ssm:/${self:custom.ssm.${self:custom.stage}}/security_group_ids}"] }
@@ -222,7 +232,7 @@ resources:
       Type: AWS::SQS::Queue
       Properties:
         RedrivePolicy:
-          maxReceiveCount: 3 # jobs will be retried up to 3 times
+          maxReceiveCount: 1 # jobs will be retried up to 3 times
           # Failed jobs (after the retries) will be moved to the other queue for storage
           deadLetterTargetArn:
             Fn::GetAtt: [ DeadLetterQueue, Arn ]

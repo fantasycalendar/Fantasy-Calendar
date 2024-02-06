@@ -2,7 +2,7 @@
 $body-bg: #121212;
 
 // Typography
-$font-family-sans-serif: 'Nunito', sans-serif;
+$font-family-sans-serif: "Nunito", sans-serif;
 $font-size-base: 0.9rem;
 $line-height-base: 1.6;
 
@@ -32,8 +32,8 @@ $current-day-number-color: $accent-color;
 $preview-day-color: $bg-amber-900;
 $preview-day-number-color: $bg-amber-700;
 
-$sidebar-width: 28%;
-$wiki-link-color: rgba(255,255,255,0.2);
+$sidebar-width: 400px;
+$wiki-link-color: rgba(255, 255, 255, 0.2);
 $wiki-link-hover-color: white;
 $main-text-color: rgba(255, 255, 255, 0.8);
 $gray-secondary: $gray-600;
@@ -49,13 +49,20 @@ $btn-create-event-hover-bg-color: $bg-gray-500;
 
 $sortable-header-color: rgb(220, 220, 220, 0.5);
 
+$input-group-text-bg: $gray-600;
+$input-group-text-color: $text-gray-300;
+
 // Modal colors
 $modal-bg-color: $bg-gray-900;
-$modal-content-bg-color: $text-gray-800;
-$modal-content-hover-bg-color: $text-gray-700;
+$modal-overlay-bg-color: $bg-gray-900;
+$modal-inlay-bg-color: $bg-gray-900;
+$modal-content-bg-color: $text-gray-700;
+$modal-content-hover-bg-color: $text-gray-800;
 $modal-action-color: $text-gray-100;
-$modal-accent-background: $bg-gray-800;
+$modal-accent-background: $bg-gray-900;
+$modal-accent-foreground: $bg-gray-600;
 $modal-accent-hover-background: $bg-gray-800;
+$modal-accent-hover-foreground: $bg-gray-400;
 $modal-content-border-color: $text-gray-800;
 
 $btn-color: $accent-color-darker;
@@ -63,7 +70,6 @@ $btn-border: $accent-color-darker;
 
 $btn-color-hover: $accent-color;
 $btn-border-hover: $accent-color;
-
 
 // Minimalist colors
 $m-even-bg: rgba(255, 255, 255, 0.05);

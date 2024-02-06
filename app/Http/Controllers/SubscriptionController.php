@@ -6,7 +6,6 @@ use App\Events\UserSubscribedEvent;
 use Stripe;
 use Illuminate\Http\Request;
 use Laravel\Cashier\Exceptions\IncompletePayment;
-use Stripe\Exceptions\InvalidRequestException;
 
 class SubscriptionController extends Controller
 {
@@ -32,15 +31,20 @@ class SubscriptionController extends Controller
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
     public function subscribe(Request $request, $level, $interval) {
-        return $request->user()->subscribed('Timekeeper')
-            ? redirect()->route('profile.billing') // They're subscribed already, send 'em to the subscriptions list
-            : view('profile.billing-subscribe',[
-                'intent' => $request->user()->createSetupIntent(),
-                'level' => $level,
-                'plan' => strtolower($level . "_" . $interval),
-                'interval' => $interval,
-                'user' => $request->user(),
-                'renew_at' => $interval == "yearly" ? now()->addYear()->toFormattedDateString() : now()->addMonth()->toFormattedDateString()
+        $stripeCustomer = auth()->user()->createOrGetStripeCustomer();
+        $stripe = new Stripe\StripeClient(config('cashier.secret'));
+
+        if ($stripe->subscriptions->all(['customer' => $stripeCustomer->id])->count()) {
+            redirect()->route('profile.billing'); // They're subscribed already, send 'em to the subscriptions list;
+        }
+
+        return $request->user()
+            ->newSubscription(
+                $level,
+                strtolower($level . "_" . $interval)
+            )->checkout([
+                'success_url' => route('profile.billing'),
+                'cancel_url' => route('profile.billing')
             ]);
     }
 
@@ -58,7 +62,7 @@ class SubscriptionController extends Controller
             return redirect()->route(
                 'cashier.payment',
                 [$exception->payment->id, 'redirect' => route('profile.billing')]
-            );
+            )->with('error', 'Error processing payment: ' . $exception->getMessage());
         }
 
         UserSubscribedEvent::dispatch($request->user(), $plan);

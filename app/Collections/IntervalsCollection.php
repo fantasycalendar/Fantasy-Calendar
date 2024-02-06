@@ -10,9 +10,26 @@ use Illuminate\Support\Facades\Log;
 
 class IntervalsCollection extends \Illuminate\Support\Collection
 {
-    public static function fromString($intervalString, $offset)
+
+    /**
+     * @param $intervalString
+     * @param $offset
+     * @param $isCyclic
+     * @return IntervalsCollection|\Illuminate\Support\Collection
+     * @throws InvalidLeapDayIntervalException
+     */
+    public static function fromString($intervalString, $offset, bool $isCyclic = false): IntervalsCollection|\Illuminate\Support\Collection
     {
-        $items = self::splitFromString($intervalString, $offset);
+        if($isCyclic){
+            return self::fromCycleString($intervalString, $offset);
+        }
+
+        return self::fromIntervalString($intervalString, $offset);
+    }
+
+    public static function fromIntervalString($intervalString, $offset)
+    {
+        $items = self::splitFromIntervalString($intervalString, $offset);
 
         if(!count($items) > 0) {
             throw new InvalidLeapDayIntervalException('An invalid value was provided for the interval of a leap day: ' . $intervalString);
@@ -33,11 +50,39 @@ class IntervalsCollection extends \Illuminate\Support\Collection
      * @param $offset
      * @return array
      */
-    public static function splitFromString($intervalString, $offset): array
+    public static function splitFromIntervalString($intervalString, $offset): array
     {
         return array_map(
-            function($item) use ($offset) {
-                return new Interval($item, $offset);
+            function($interval) use ($offset) {
+                return new Interval($interval, $offset);
+            },
+            explode(',', $intervalString)
+        );
+    }
+
+    public static function fromCycleString($intervalString, $length): IntervalsCollection|\Illuminate\Support\Collection
+    {
+        $items = self::splitFromCycleString($intervalString, $length);
+
+        if(!count($items) > 0) {
+            throw new InvalidLeapDayIntervalException('An invalid value was provided for the interval of a leap day: ' . $intervalString);
+        }
+
+        return (new self($items))->values();
+    }
+
+    /**
+     * Turns a cyclic interval string and length into an array of Interval objects
+     *
+     * @param $intervalString
+     * @param $length
+     * @return array
+     */
+    public static function splitFromCycleString($intervalString, $length): array
+    {
+        return array_map(
+            function($offset) use ($length) {
+                return new Interval($length, $offset);
             },
             explode(',', $intervalString)
         );
@@ -184,6 +229,31 @@ class IntervalsCollection extends \Illuminate\Support\Collection
 
             $this->push($collidingInterval);
         }
+    }
+
+    /**
+     * Whether this interval will appear on the given year
+     *
+     * @param int $year
+     * @param bool $yearZeroExists
+     * @return bool
+     */
+    public function intersectsYear(int $year, bool $yearZeroExists): bool
+    {
+        // We need to un-normalize the year as otherwise 0 month occurrences results in leap day appearing
+        $year = $year >= 0 && !$yearZeroExists
+            ? $year + 1
+            : $year;
+
+        return $this->map
+            ->voteOnYear($year, $yearZeroExists)
+            ->reduce(fn($acc, $item) => match($item) {
+               "abstain" => $acc,
+               "allow" => $acc + 1,
+               "deny" => $acc - 1,
+                default => throw new \Exception("BRUH WHAT"),
+            }, 0);
+
     }
 
     /**

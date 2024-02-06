@@ -1,4 +1,6 @@
+@unless($attributes->has('noteleport'))
 <template x-teleport="body">
+@endunless
     <div class="fixed z-50 inset-0 overflow-y-auto"
          aria-labelledby="modal-title"
          role="dialog"
@@ -79,7 +81,7 @@
                  x-transition:leave="ease-in duration-200"
                  x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                  x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                 @click.outside="show = false;"
+                 @mousedown.outside="show = false;"
             >
                 <div>
                     <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-{{ $attributes->get('icon-color') ?? 'primary' }}-100 dark:bg-{{ $attributes->get('icon-color') ?? 'primary' }}-700">
@@ -100,7 +102,7 @@
                                 <button class="hidden" @click="ok($dispatch)"></button>
                             </form>
 
-                            <x-alert class="mt-2" type="danger" x-show="validation_errors.length">
+                            <x-alert class="mt-2" type="danger" icon="test" x-show="validation_errors.length">
                                 <template x-for="error in validation_errors">
                                     <div x-html="error" class="text-left"></div>
                                 </template>
@@ -123,4 +125,6 @@
             </div>
         </div>
     </div>
+@unless($attributes->has('noteleport'))
 </template>
+@endunless

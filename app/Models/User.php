@@ -2,29 +2,37 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\SyncsSubscriptions;
 use App\Services\Discord\Models\DiscordAuthToken;
 use App\Services\Discord\Models\DiscordGuild;
 use App\Services\Discord\Models\DiscordInteraction;
+use App\Services\Discord\Models\DiscordWebhook;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Redis;
 use Laravel\Cashier\Billable;
 use Carbon\Carbon;
 use Arr;
+use Filament\Panel;
 use Laravel\Sanctum\HasApiTokens;
 use Str;
 use Stripe\StripeClient;
 
 class User extends Authenticatable implements
     MustVerifyEmail,
-    CanResetPassword
+    CanResetPassword,
+    FilamentUser,
+    HasName
 {
     use Notifiable,
         Billable,
+        SyncsSubscriptions,
         SoftDeletes,
         HasFactory,
         HasApiTokens;
@@ -46,6 +54,7 @@ class User extends Authenticatable implements
         'agreed_at',
         'marketing_opt_in_at',
         'marketing_opt_out_at',
+        'email_verified_at',
         'has_sent_announcement',
         'last_interaction',
         'last_login',
@@ -68,7 +77,6 @@ class User extends Authenticatable implements
         'card_last_four',
         'trial_ends_at',
         'date_update_pass',
-        'date_register',
         'reg_ip',
         'api_token'
     ];
@@ -88,6 +96,11 @@ class User extends Authenticatable implements
 
     protected $dateFormat = 'Y-m-d H:i:s';
 
+    public function getFilamentName(): string
+    {
+        return $this->username;
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -105,6 +118,10 @@ class User extends Authenticatable implements
 
     public function discord_interactions() {
         return $this->hasMany(DiscordInteraction::class);
+    }
+
+    public function discord_webhooks() {
+        return $this->hasMany(DiscordWebhook::class);
     }
 
     /**
@@ -133,7 +150,7 @@ class User extends Authenticatable implements
 
     public function getAvatarUrlAttribute()
     {
-        return "https://unavatar.now.sh/{$this->email}?fallback=https://beta.fantasy-calendar.com/resources/logo-accent.png";
+        return "https://unavatar.io/{$this->email}?fallback=https://beta.fantasy-calendar.com/resources/logo-accent.png";
     }
 
     /**
@@ -155,6 +172,10 @@ class User extends Authenticatable implements
      */
     public function isEarlySupporter() {
         return $this->created_at <= (new Carbon('2020-11-08'));
+    }
+
+    public function getIsEarlySupporterAttribute() {
+        return $this->isEarlySupporter();
     }
 
     /**
@@ -214,8 +235,17 @@ class User extends Authenticatable implements
         return $this;
     }
 
+    // If Stripe is not enabled as a feature, we just want all the premium things available.
     public function isPremium() {
+        if(!feature('stripe')) {
+            return true;
+        }
+
         return $this->paymentLevel() !== 'Free';
+    }
+
+    public function getIsPremiumAttribute() {
+        return $this->isPremium();
     }
 
     public function subscriptionPrice($interval) {
@@ -239,7 +269,7 @@ class User extends Authenticatable implements
      */
     public function paymentLevel() {
 
-        if ($this->subscribedToPlan(['timekeeper_monthly', 'timekeeper_yearly'], 'Timekeeper') || $this->betaAccess()) {
+        if ($this->subscribedToPrice(['timekeeper_monthly', 'timekeeper_yearly'], 'Timekeeper') || $this->betaAccess()) {
             return 'Timekeeper';
         }
 
@@ -332,8 +362,35 @@ class User extends Authenticatable implements
         ]);
     }
 
-    public function scopeVerified($query)
+    public function scopeMarketingEnabled(Builder $query): Builder
     {
-        $query->whereNotNull('email_verified_at');
+        return $query->where(function($query){
+            $query->whereNotNull('marketing_opt_in_at')
+                ->whereNull('marketing_opt_out_at');
+        })->orWhere(function($query){
+            $query->where("marketing_opt_in_at", ">", "marketing_opt_out_at");
+        });
+    }
+
+    public function scopePremium(Builder $query): Builder
+    {
+        return $query->whereHas('subscriptions', function(Builder $query){
+            return $query->whereStripeStatus('active');
+        })->orWhere('beta_authorised', '=', true);
+    }
+
+    public function scopeVerified($query): Builder
+    {
+        return $query->whereNotNull('email_verified_at');
+    }
+
+    public function canAccessFilament(\Filament\Panel $panel): bool
+    {
+        return $this->isAdmin();
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isAdmin();
     }
 }

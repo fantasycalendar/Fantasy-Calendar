@@ -88,6 +88,8 @@
             "location": "Equatorial"
         };
 
+        advancement = {}
+
         preview_date = clone(dynamic_data);
 
         $(document).ready(function(){
@@ -128,6 +130,8 @@
             const urlParams = new URLSearchParams(queryString);
             return urlParams.has("save");
         }
+
+        window.dispatchEvent(new CustomEvent("events-changed"));
 
     </script>
 

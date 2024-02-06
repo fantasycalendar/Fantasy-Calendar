@@ -18,13 +18,13 @@
 			<div class='modal-wrapper' @mousedown.outside="confirm_close($event)" x-transition x-show="open">
 
 				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close(close)'></i>
+				<i class="close_ui_btn fa fa-times" @click='confirm_close($event)'></i>
 
 				<div class='row no-gutters modal-form-heading'>
-					<h2>
+					<h3 class="d-flex align-items-center">
                         <span class='event_name' x-text='data.name'>Editing Event</span>
                         <i class="fas fa-pencil-alt event_header_action protip" data-pt-position='bottom' data-pt-title="Edit event" @click='confirm_edit' x-show='can_edit'></i>
-                        <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone' x-show='can_edit && !era'></i></h2>
+                        <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone' x-show='can_edit && !era'></i></h3>
 				</div>
 
 				<div class='row'>
@@ -124,14 +124,14 @@
 			<form id="event-form" class="modal-wrapper container" action="post" @mousedown.outside="confirm_close" x-transition x-show="open">
 
 				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>
+				<i class="close_ui_btn fas fa-times" @click='confirm_close'></i>
 
 				<div class='row no-gutters mb-1 modal-form-heading'>
-					<h2 class='event_action_type'>
+					<h3 class='event_action_type d-flex align-items-center'>
                         <span x-text="creation_type"></span>
                         <i class="fas fa-eye event_header_action protip" data-pt-position='bottom' data-pt-title="Preview event" @click='confirm_view' x-show="!new_event"></i>
                         <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone' x-show="!new_event"></i>
-                    </h2>
+                    </h3>
 				</div>
 
 				<div class='row no-gutters my-1'>
@@ -142,9 +142,21 @@
 					<textarea class='form-control event_desc editable' x-ref='description' placeholder='Event description' autofocus=''></textarea>
 				</div>
 
+                @if(!isset($calendar) || count($calendar->event_categories) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
+                    <h5 class='modal-form-heading mt-3 mb-1'>Category</h5>
+
+                    <div class='row mb-3 no-gutters'>
+                        <select class="form-control event-category-list" x-model='working_event.event_category_id' @change="event_category_changed" placeholder='Event Category'> </select>
+                    </div>
+                @endif
+
                 @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('advance-date', $calendar)))
 
-                    <h5 class='row no-gutters mt-2 modal-form-heading' x-show="new_event && !cloning_event">Condition presets:</h5>
+                    <div class='row no-gutters mt-2'>
+                        <div class='separator'></div>
+                    </div>
+
+                    <h5 class='row no-gutters mt-3 mb-1 modal-form-heading' x-show="new_event && !cloning_event">Condition preset</h5>
 
                     <div class='row no-gutters mb-1' x-show="new_event && !cloning_event">
                         <select class="form-control" @change='condition_preset_changed' x-model="preset" x-ref="condition_presets">
@@ -163,9 +175,9 @@
                         <input type='number' class='form-control' @change='nth_input_changed' x-model='nth' min='1' value="1" x-ref="nth_input" placeholder='Every nth' />
                     </div>
 
-                    <h5 class='row no-gutters my-2 modal-form-heading'>Conditions:</h5>
+                    <h5 class='row no-gutters mt-3 mb-1 modal-form-heading'>Conditions</h5>
 
-                    <div class='row no-gutters my-2' id='non_preset_buttons'>
+                    <div class='row no-gutters mb-2' id='non_preset_buttons'>
                         <div class='col-11 pr-1'>
                             <div class='row p-0'>
                                 <div class='col-6 pr-1'>
@@ -180,14 +192,14 @@
                             <button type='button' @click='remove_clicked' @mouseenter='remove_mouseover' @mouseleave='remove_mouseout' id='condition_remove_button' class='btn btn-danger full'><i class="icon fas fa-trash-alt"></i></button>
                         </div>
                     </div>
-                    <div class='row no-gutters my-2'>
-                        <ol class='form-control group_list_root' id='event_conditions_container' x-ref='event_conditions_container'>
-                        </ol>
+
+                    <div class='row no-gutters mt-2'>
+                        <ol class='form-control group_list_root mb-0' id='event_conditions_container' x-ref='event_conditions_container'></ol>
                     </div>
 
                     <span class='hidden'></span>
 
-                    <div class='event_occurrences' x-show='working_event.data.conditions != []'>
+                    {{--<div class='event_occurrences' x-show='working_event.data.conditions != []'>
 
                         <div class='row no-gutters'>
                             <h5>Test event occurrences for the next:</h5>
@@ -229,9 +241,9 @@
                                     <button type='button' class='btn btn-info full' @click='next_page()' :disabled="event_testing.page == event_testing.max_page">Next</button>
                                 </div>
                             </div>
-                        </div>
+                        </div>--}}{{--
 
-                    </div>
+                    </div>--}}
 
                     <div x-show="moons.length > 0">
 
@@ -269,7 +281,7 @@
                                                 <circle cx="16" cy="16" r="10" class="lunar_border"/>
                                             </svg>
                                         </div>
-                                        <div class='col-md-11 pl-0 pr-1 event-moon-text' x-text='moon.name + ", " + (moon.phase_name || (moon.override_phase ? moon.phases[moon.phase] : moon.phases[moon.original_phase]))'>
+                                        <div class='col-md-11 pl-0 pr-1 event-moon-text' x-text='sanitizeHtml(moon.name) + ", " + (moon.phase_name || (moon.override_phase ? moon.phases[moon.phase] : moon.phases[moon.original_phase]))'>
                                         </div>
                                     </div>
                                     <div class='row my-1 no-gutters'>
@@ -376,8 +388,8 @@
                             </div>
                         </div>
 
-                        <div class='limit_for_warning hidden row no-gutters p-2 mb-2 border rounded'>
-                            <p class='m-0'><strong>Use with caution.</strong> This setting will simulate to check dates backward to ensure consistency across the beginning of years. That process can take a while if this number is particularly high, like 50 or more.</p>
+                        <div x-show="working_event.data.limited_repeat" class='row no-gutters p-2 mb-2 border rounded'>
+                            <p class='m-0'><strong>Use with caution.</strong> This setting will simulate to check dates backward to ensure consistency across the beginning of years. That process can take a while if this number is particularly high, like 50 or more. Extremely high numbers <strong>could make your calendar unusable</strong>.</p>
                         </div>
 
                         <div class='row no-gutters'>
@@ -398,8 +410,8 @@
                             </div>
                         </div>
 
-                        <div class='duration_warning hidden row no-gutters p-2 mb-2 border rounded'>
-                            <p class='m-0'><strong>Use with caution.</strong> This setting will simulate to check dates backward/forward to ensure consistency across the beginning/end of years. That process can take a while if this number is particularly high, like 50 or more.</p>
+                        <div x-show="working_event.data.has_duration" class='row no-gutters p-2 mb-2 border rounded'>
+                            <p class='m-0'><strong>Use with caution.</strong> This setting will simulate to check dates backward/forward to ensure consistency across the beginning/end of years. That process can take a while if this number is particularly high, like 50 or more. Extremely high numbers <strong>could make your calendar unusable</strong>.</p>
                         </div>
 
                         <div class='row no-gutters mb-2'>
@@ -415,18 +427,6 @@
                         <div class='separator'></div>
                     </div>
 
-                    @if(!isset($calendar) || count($calendar->event_categories) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
-                        <div class='row mb-2 no-gutters'>
-                            <div class='col-auto pl-0 pr-1'>
-                                <h5 class='modal-form-heading'>Event Category:</h5>
-                            </div>
-                            <div class='col pl-0 pl-1'>
-                                <select class="form-control event-category-list" x-model='working_event.event_category_id' @change="event_category_changed" placeholder='Event Category'>
-
-                                </select>
-                            </div>
-                        </div>
-                    @endif
 
                     @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
                         <div class='row no-gutters'>

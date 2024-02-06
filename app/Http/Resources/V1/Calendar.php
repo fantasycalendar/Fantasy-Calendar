@@ -12,7 +12,7 @@ class Calendar extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    public function toArray($request)
+    public function toArray($request = null)
     {
         $parent_hash = false;
         $children = false;
@@ -33,7 +33,8 @@ class Calendar extends JsonResource
             'hash' => $this->hash,
             'parent_hash' => $parent_hash,
             'parent_link_date' => $this->parent_link_date,
-            'children' => $children
+            'children' => $children,
+            'advancement_enabled' => (bool)$this->advancement_enabled
         ];
     }
 }

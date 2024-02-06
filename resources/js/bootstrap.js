@@ -124,6 +124,8 @@ window.AlpineEditor = require('alpine-editor')
 //     encrypted: true
 // });
 
+window.tailwindColors = require('tailwindcss/colors')
+
 /**
  * Convenient and dependency free wrapper for working with arrays and objects.
  */

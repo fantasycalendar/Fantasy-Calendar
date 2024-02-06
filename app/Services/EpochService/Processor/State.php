@@ -160,7 +160,6 @@ class State
                 $this->visualWeekdayIndex = 0;
                 $this->visualWeekIndex++;
             }
-
             return;
         }
 
@@ -168,7 +167,9 @@ class State
             $this->visualWeekIndex++;
         }
 
-        $this->weekdayIndex++;
+        if(!($this->previousState->get('isIntercalary') && $this->monthIndexOfYear === 1)) {
+            $this->weekdayIndex++;
+        }
         $this->incrementWeek();
         $this->visualWeekdayIndex = $this->weekdayIndex;
     }

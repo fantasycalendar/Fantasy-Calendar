@@ -2,11 +2,6 @@
 
 namespace App\Jobs;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Str;
 
 use App\Models\Calendar;
@@ -14,26 +9,21 @@ use App\Models\Preset;
 use App\Models\PresetEvent;
 use App\Models\PresetEventCategory;
 
-class ConvertCalendarToPreset implements ShouldQueue
+class ConvertCalendarToPreset
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    public $calendar;
-    /**
-     * @var string
-     */
-    private $description;
-
     /**
      * Create a new job instance.
      *
      * @param Calendar $calendar
      * @param string $description
      */
-    public function __construct(Calendar $calendar, $description = "")
+    public function __construct(public Calendar $calendar, public $description = "")
     {
-        $this->calendar = $calendar;
-        $this->description = $description;
+    }
+
+    public static function dispatchSync(Calendar $calendar, $description = "")
+    {
+        return (new static($calendar, $description))->handle();
     }
 
     /**
@@ -44,9 +34,9 @@ class ConvertCalendarToPreset implements ShouldQueue
      * @param PresetEventCategory $preset_event_category
      * @return void
      */
-    public function handle(Preset $preset, PresetEvent $preset_event, PresetEventCategory $preset_event_category)
+    public function handle()
     {
-        $new_preset = $preset->create([
+        $new_preset = Preset::create([
             'name' => $this->calendar->name,
             'static_data' => $this->calendar->static_data,
             'dynamic_data' => $this->calendar->dynamic_data,
@@ -56,7 +46,7 @@ class ConvertCalendarToPreset implements ShouldQueue
         ]);
 
         foreach ($this->calendar->event_categories as $category) {
-            $preset_event_category->create([
+            PresetEventCategory::create([
                 'name' => $category->name,
                 'event_settings' => $category->event_settings,
                 'category_settings' => $category->category_settings,
@@ -66,7 +56,7 @@ class ConvertCalendarToPreset implements ShouldQueue
         }
 
         foreach ($this->calendar->events as $event) {
-            $preset_event->create([
+            PresetEvent::create([
                 'name' => $event->name,
                 'data' => $event->data,
                 'description' => $event->description,

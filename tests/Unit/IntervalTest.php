@@ -103,5 +103,25 @@ class IntervalTest extends TestCase
 
         #--------------------------------------------------#
 
+        $intervals = IntervalsCollection::fromString("2,5", 10, true)
+            ->cleanUp()
+            ->normalize()
+            ->toJsons();
+
+        $truth = '["{\"interval\":10,\"subtracts\":false,\"offset\":2}","{\"interval\":10,\"subtracts\":false,\"offset\":5}"]';
+
+        $this->assertEquals($truth, $intervals);
+
+        #--------------------------------------------------#
+
+        $intervals = IntervalsCollection::fromString("10,25,49", 50, true)
+            ->cleanUp()
+            ->normalize()
+            ->toJsons();
+
+        $truth = '["{\"interval\":50,\"subtracts\":false,\"offset\":10}","{\"interval\":50,\"subtracts\":false,\"offset\":25}","{\"interval\":50,\"subtracts\":false,\"offset\":49}"]';
+
+        $this->assertEquals($truth, $intervals);
+
     }
 }

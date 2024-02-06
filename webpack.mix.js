@@ -14,15 +14,12 @@ const mix = require('laravel-mix');
 if(process.env.BROWSERSYNC === 'true') {
     mix.browserSync({
         injectChanges: true,
-        proxy: 'fc-bref-web:80',
+        proxy: 'php:8000',
         port: 9980,
         open: false,
+        reloadDebounce: 200,
         files: [
-            "**/*.css",
-            "**/*.php",
-            "**/*.md",
-            "**/*.js",
-            "**/*.vue",
+            "public/mix-manifest.json"
         ],
         snippetOptions: {
             rule: {
@@ -66,6 +63,9 @@ mix.copy('resources/js/embed.js', 'public/js');
 
 // Vendor
 mix.copy('node_modules/trumbowyg/dist/ui/icons.svg', 'public/images');
+mix.copy('node_modules/alpinejs/dist/cdn.js', 'public/js/vendor/alpine');
+mix.copy('node_modules/simplebar/dist/simplebar.min.js', 'public/js/vendor/simplebar');
+mix.copy('node_modules/simplebar/dist/simplebar.css', 'public/js/vendor/simplebar');
 
 // Compiled assets
 mix.js('resources/js/app.js', 'public/js')

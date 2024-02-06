@@ -43,6 +43,7 @@ return [
     */
 
     'debug' => env('APP_DEBUG', false),
+    'local_dev_login' => env('APP_LOCAL_DEV_LOGIN', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -66,6 +67,8 @@ return [
     'asset_url' => env('ASSET_URL', null),
 
     'mix_url' => env('MIX_ASSET_URL', null),
+
+    'features_enabled' => env('APP_FEATURES_ENABLED', null) ? explode(',', env('APP_FEATURES_ENABLED')) : '',
 
     /*
     |--------------------------------------------------------------------------
@@ -186,6 +189,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\Filament\AdminPanelProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Services\Discord\Providers\DiscordServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class

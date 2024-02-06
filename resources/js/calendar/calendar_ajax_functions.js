@@ -154,6 +154,7 @@ function do_update_all(calendar_hash, success_callback, failure_callback){
             static_data: JSON.stringify(static_data),
             events: JSON.stringify(events),
             event_categories: JSON.stringify(event_categories),
+            advancement: JSON.stringify(advancement)
         },
 		success: function(result){
 
@@ -178,6 +179,10 @@ function do_update_all(calendar_hash, success_callback, failure_callback){
 				prev_event_categories = clone(event_categories);
 			}
 
+			if(!advancement_same){
+				prev_advancement = clone(advancement);
+			}
+
 			last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
 			last_static_change = new Date(result.last_changed.last_static_change)
 
@@ -192,9 +197,6 @@ function do_update_all(calendar_hash, success_callback, failure_callback){
 				failure_callback();
 			}else{
 				calendar_save_failed();
-				if(error.responseJSON.error){
-					$.notify(error.responseJSON.error);
-				}
 			}
 		}
 	});
@@ -208,9 +210,7 @@ function get_all_data(calendar_hash, output){
 		dataType: 'json',
 		data: {},
 		success: function(result){
-
 			output(result);
-
 		},
 		error: function ( error )
 		{
@@ -264,9 +264,7 @@ $.ajax({
     },
     error: function ( error )
     {
-        $.notify(
-            error
-        );
+        hide_loading_screen();
     }
 });
 }

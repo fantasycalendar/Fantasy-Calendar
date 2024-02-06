@@ -2,7 +2,7 @@
 $body-bg: #f8fafc;
 
 // Typography
-$font-family-sans-serif: 'Nunito', sans-serif;
+$font-family-sans-serif: "Nunito", sans-serif;
 $font-size-base: 0.9rem;
 $line-height-base: 1.6;
 
@@ -21,15 +21,15 @@ $cyan: #6cb2eb;
 $calendar-border-color: rgba(166, 168, 179, 0.32);
 $calendar-bg-color: hsla(150, 5%, 95%, 1);
 $card-bg-color: white;
-$preview-day-color: rgba(191.0, 99.0, 71.0, 0.5);
+$preview-day-color: rgba(191, 99, 71, 0.5);
 $accent-color-lighter: #379e6b;
 $accent-color: #2f855a;
 $accent-color-darker: #246645;
 $accent-color-light: $accent-color;
 $current-day-color: $bg-gray-300;
 $current-day-number-color: $accent-color;
-$sidebar-width: 28%;
-$wiki-link-color: rgba(0,0,0,0.2);
+$sidebar-width: 400px;
+$wiki-link-color: rgba(0, 0, 0, 0.2);
 $wiki-link-hover-color: black;
 $main-text-color: #444;
 $gray-secondary: #e4e4e4;
@@ -40,6 +40,9 @@ $input-disabled-color: #e9ecef;
 $input-border-color: #e9ecef;
 $handle-color: $gray-800;
 
+$input-group-text-bg: $gray-secondary;
+$input-group-text-color: white;
+
 $btn-create-event-bg-color: $bg-gray-300;
 $btn-create-event-hover-bg-color: $bg-gray-400;
 $preview-day-color: $bg-amber-300;
@@ -48,18 +51,22 @@ $preview-day-number-color: $bg-amber-600;
 $sortable-header-color: rgba(166, 168, 179, 0.5);
 
 // Modal colors
-$modal-bg-color: #e2e8f0;
-$modal-content-bg-color: #f7fafc;
-$modal-content-hover-bg-color: white;
+$modal-bg-color: $bg-gray-100;
+$modal-overlay-bg-color: $bg-gray-600;
+$modal-inlay-bg-color: $bg-gray-100;
+$modal-content-bg-color: white;
+$modal-content-hover-bg-color: $bg-gray-50;
 $modal-action-color: $text-gray-900;
-$modal-accent-background: $accent-color-light;
-$modal-accent-hover-background: $accent-color-lighter;
+$modal-accent-foreground: $accent-color-lighter;
+$modal-accent-background: white;
+$modal-accent-hover-foreground: $accent-color-light;
+$modal-accent-hover-background: $bg-gray-100;
 $modal-content-border-color: 1px solid rgba(0, 0, 0, 0.1);
 
 // Minimalist colors
-$m-even-bg: #F1FFE1;
-$m-odd-bg: #E8E7C1;
-$m-day-hover: #D4FFE9;
+$m-even-bg: #f1ffe1;
+$m-odd-bg: #e8e7c1;
+$m-day-hover: #d4ffe9;
 $m-current-day: #fdb44d;
 
 // SVG image data

@@ -64,6 +64,11 @@ class CalendarPolicy
         return true;
     }
 
+    public function embedAny(?User $user)
+    {
+        return feature('embed');
+    }
+
     /**
      * Determine whether the user can update the calendar.
      *
@@ -93,7 +98,7 @@ class CalendarPolicy
             return true;
         }
 
-        return !$calendar->disabled && $user->id === $calendar->user_id;
+        return $user->id === $calendar->user_id;
     }
 
     /**
@@ -106,6 +111,19 @@ class CalendarPolicy
     public function restore(User $user, Calendar $calendar)
     {
         //
+    }
+
+    public function enableLinking(User $user, Calendar $calendar)
+    {
+        return $user->can('update', $calendar)
+            && $calendar->isLinkable();
+    }
+
+
+    public function enableAdvancement(User $user, Calendar $calendar)
+    {
+        return $user->can('update', $calendar)
+            && !$calendar->isChild();
     }
 
     /**

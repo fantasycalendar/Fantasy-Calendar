@@ -23,9 +23,14 @@ const calendar_events_viewer = {
 	},
 
 	view_event($event){
+        let event_index = $event.detail.event_id;
 
-		this.id = $event.detail.id;
-		this.era = $event.detail.era;
+        if ($event.detail.event_db_id !== undefined) {
+            event_index = events.findIndex((item) => item.id === $event.detail.event_db_id);
+        }
+
+		this.id = event_index;
+		this.era = $event.detail.era ?? false;
 		this.epoch = $event.detail.epoch;
 
 		if(this.era){
@@ -267,7 +272,15 @@ const calendar_events_viewer = {
 		this.close();
 	},
 
-	confirm_close: function() {
+	confirm_close: function($event) {
+        const possibleTrumbowyg = [$event.target.id, $event.target.parentElement?.id].concat(
+            Array.from($event.target?.classList),
+            Array.from($event.target?.parentElement?.classList ?? []),
+            Array.from($event.target?.parentElement?.parentElement?.classList ?? []),
+        );
+
+        if(possibleTrumbowyg.some(entry => entry.startsWith('trumbowyg-'))) return false;
+
         // Don't do anything if a swal is open.
         if(swal.isVisible()) {
             return false;

@@ -17,6 +17,8 @@
     );
 @endif
 
+dark_theme = @json(auth()->user()?->setting('dark_theme') ?? true);
+
 hash = `{{ $calendar->hash }}`;
 
 calendar_name = unescapeHtml("{{ $calendar->name }}");
@@ -34,3 +36,34 @@ event_categories = {!! json_encode($calendar->event_categories); !!}
 
 last_static_change = new Date("{{ $calendar->last_static_change }}")
 last_dynamic_change = new Date("{{ $calendar->last_dynamic_change }}")
+
+advancement = {
+    advancement_enabled: {{ $calendar->advancement_enabled ? "true" : "false" }},
+    advancement_real_rate: {{ $calendar->advancement_real_rate ?? 1 }},
+    advancement_real_rate_unit: '{{ $calendar->advancement_real_rate_unit ?? "minutes" }}',
+    advancement_rate: {{ $calendar->advancement_rate ?? 1 }},
+    advancement_rate_unit: '{{ $calendar->advancement_rate_unit ?? "minutes" }}',
+    advancement_webhook_url: '{{ $calendar->advancement_webhook_url }}',
+    advancement_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+}
+
+window.dispatchEvent(
+    new CustomEvent('calendar-loaded', {
+        detail: {
+            hash,
+            calendar_name,
+            calendar_id,
+            static_data,
+            dynamic_data,
+            is_linked,
+            has_parent,
+            parent_hash,
+            parent_offset,
+            events,
+            event_categories,
+            last_static_change,
+            last_dynamic_change,
+            advancement
+        }
+    })
+)

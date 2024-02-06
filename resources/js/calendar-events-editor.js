@@ -268,7 +268,7 @@ const calendar_events_editor = {
 		this.initialize($event);
 
 		this.new_event = true;
-		let name = $event.detail.name ?? "";
+		let name = sanitizeHtml($event.detail.name ?? "");
 		this.creation_type = "Creating Event"
 
 		this.working_event = {
@@ -351,7 +351,13 @@ const calendar_events_editor = {
 
 		this.creation_type = "Editing Event"
 
-		this.event_id = $event.detail.event_id;
+        let event_index = $event.detail.event_id;
+
+        if ($event.detail.event_db_id !== undefined) {
+            event_index = events.findIndex((item) => item.id === $event.detail.event_db_id);
+        }
+
+		this.event_id = event_index;
 
 		this.working_event = clone(events[this.event_id]);
 
@@ -375,7 +381,7 @@ const calendar_events_editor = {
 
 		this.working_event.data = this.create_event_data();
 
-		this.working_event.name = (this.working_event.name === "") ? "New Event" : this.working_event.name;
+		this.working_event.name = sanitizeHtml((this.working_event.name === "") ? "New Event" : this.working_event.name);
 
 		this.working_event.description = this.description_input.trumbowyg('html');
 
@@ -384,10 +390,8 @@ const calendar_events_editor = {
 		let not_view_page = window.location.pathname.indexOf('/edit') > -1 || window.location.pathname.indexOf('/calendars/create') > -1;
 
 		if (not_view_page) {
-			if (this.new_event) {
-				add_event_to_sortable(events_sortable, this.event_id, events[this.event_id]);
-			} else {
-				$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${events[this.event_id].name}`);
+			if (!this.new_event) {
+				$(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${sanitizeHtml(events[this.event_id].name)}`);
 			}
 
 			this.submit_event_callback(true);
@@ -399,6 +403,8 @@ const calendar_events_editor = {
 				submit_edit_event(this.event_id, this.submit_event_callback);
 			}
 		}
+
+    window.dispatchEvent(new CustomEvent("events-changed"));
 
 		this.close();
 
@@ -502,7 +508,7 @@ const calendar_events_editor = {
             if (!result.dismiss) {
                 let new_event = clone(this.working_event);
                 new_event.data = this.create_event_data();
-                new_event.name = ((new_event.name === "") ? "New Event" : new_event.name) + " (clone)";
+                new_event.name = sanitizeHtml(((new_event.name === "") ? "New Event" : new_event.name) + " (clone)");
                 new_event.description = this.description_input.trumbowyg('html');
                 this.close();
                 window.dispatchEvent(new CustomEvent('event-editor-modal-clone-event', { detail: { event_data: new_event, epoch: this.epoch } }));
@@ -511,7 +517,15 @@ const calendar_events_editor = {
 
     },
 
-	confirm_close() {
+	confirm_close($event) {
+        const possibleTrumbowyg = [$event.target.id, $event.target.parentElement?.id].concat(
+            Array.from($event.target?.classList),
+            Array.from($event.target?.parentElement?.classList ?? []),
+            Array.from($event.target?.parentElement?.parentElement?.classList ?? []),
+        );
+
+        if(possibleTrumbowyg.some(entry => entry.startsWith('trumbowyg-'))) return false;
+
 	    // Don't do anything if a swal is open or the user is deleting conditions
 	    if(swal.isVisible() || this.isDeletingConditions){
 	        return false;
@@ -548,12 +562,12 @@ const calendar_events_editor = {
 				icon: "warning",
 			}).then((result) => {
 				if (!result.dismiss) {
-					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.event_id, era: false, epoch: this.epoch } }));
+					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.event_id, era: false, epoch: this.epoch } }));
 					this.close();
 				}
 			});
 		} else {
-			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.event_id, era: false, epoch: this.epoch } }));
+			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.event_id, era: false, epoch: this.epoch } }));
 			this.close();
 		}
 
@@ -561,13 +575,14 @@ const calendar_events_editor = {
 
 	create_event_data(){
 
+        this.working_event.data.connected_events = [];
         let conditions = Perms.player_at_least("co-owner")
             ? this.create_condition_array(this.event_conditions_container)
             : [['Date', '0', [this.epoch_data.year, this.epoch_data.timespan_index, this.epoch_data.day]]];
 
 		let search_distance = this.get_search_distance(conditions);
 
-		let date = []
+		let date = [];
 
 		if (conditions.length === 1 || conditions.length === 5) {
 
@@ -934,14 +949,14 @@ const calendar_events_editor = {
 			enabled: !this.epoch_data.intercalary
 		}
 
-		this.presets.annually_date.text = `Annually on the ${ordinal_suffix_of(this.epoch_data.day)} of ${this.epoch_data.timespan_name}`;
+		this.presets.annually_date.text = `Annually on the ${ordinal_suffix_of(this.epoch_data.day)} of ${sanitizeHtml(this.epoch_data.timespan_name)}`;
 
 		this.presets.annually_month_weekday = {
-			text: `Annually on the ${ordinal_suffix_of(this.epoch_data.week_day_num)} ${this.epoch_data.week_day_name} in ${this.epoch_data.timespan_name}`,
+			text: `Annually on the ${ordinal_suffix_of(this.epoch_data.week_day_num)} ${this.epoch_data.week_day_name} in ${sanitizeHtml(this.epoch_data.timespan_name)}`,
 			enabled: !this.epoch_data.intercalary
 		}
 		this.presets.annually_inverse_month_weekday = {
-			text: `Annually on the ${inverse_week_day_num} ${this.epoch_data.week_day_name} in ${this.epoch_data.timespan_name}`,
+			text: `Annually on the ${inverse_week_day_num} ${this.epoch_data.week_day_name} in ${sanitizeHtml(this.epoch_data.timespan_name)}`,
 			enabled: !this.epoch_data.intercalary
 		}
 
@@ -955,40 +970,42 @@ const calendar_events_editor = {
 
 			let moon = static_data.moons[moon_index];
 
+      const moonName = sanitizeHtml(moon.name);
+
 			let moon_phase_name = Object.keys(moon_phases[moon.granularity])[this.epoch_data.moon_phase[moon_index]];
 
-			moon_phase_collection += `${moon.name} is ${moon_phase_name}, `
+			moon_phase_collection += `${moonName} is ${moon_phase_name}, `
 
 			this.moon_presets.push({
-				text: `${moon.name} - Every ${moon_phase_name}`,
+				text: `${moonName} - Every ${moon_phase_name}`,
 				value: `moon_every.${moon_index}`,
 				moon_index: moon_index,
 				nth: false
 			})
 
 			this.moon_presets.push({
-				text: `${moon.name} - Every ${ordinal_suffix_of(this.epoch_data.moon_phase_num_month[moon_index])} ${moon_phase_name}`,
+				text: `${moonName} - Every ${ordinal_suffix_of(this.epoch_data.moon_phase_num_month[moon_index])} ${moon_phase_name}`,
 				value: `moon_x_every.${moon_index}`,
 				moon_index: moon_index,
 				nth: true
 			})
 
 			this.moon_presets.push({
-				text: `${moon.name} - Annually every ${moon_phase_name} in ${this.epoch_data.timespan_name}`,
+				text: `${moonName} - Annually every ${moon_phase_name} in ${sanitizeHtml(this.epoch_data.timespan_name)}`,
 				value: `moon_annually.${moon_index}`,
 				moon_index: moon_index,
 				nth: false
 			})
 
 			this.moon_presets.push({
-				text: `${moon.name} - Annually every ${ordinal_suffix_of(this.epoch_data.moon_phase_num_month[moon_index])} ${moon_phase_name} in ${this.epoch_data.timespan_name}`,
+				text: `${moonName} - Annually every ${ordinal_suffix_of(this.epoch_data.moon_phase_num_month[moon_index])} ${moon_phase_name} in ${sanitizeHtml(this.epoch_data.timespan_name)}`,
 				value: `moon_x_annually.${moon_index}`,
 				moon_index: moon_index,
 				nth: true
 			})
 
 			this.moon_presets.push({
-				text: `${moon.name} - Every ${ordinal_suffix_of(this.epoch_data.moon_phase_num_year[moon_index])} ${moon_phase_name} in the year`,
+				text: `${moonName} - Every ${ordinal_suffix_of(this.epoch_data.moon_phase_num_year[moon_index])} ${moon_phase_name} in the year`,
 				value: `moon_yearly.${moon_index}`,
 				moon_index: moon_index,
 				nth: false
@@ -1036,16 +1053,16 @@ const calendar_events_editor = {
 			nth: true
 		}
 
-		this.presets.every_x_annually_date.text = `${repeat_string} year on the ${ordinal_suffix_of(this.epoch_data.day)} of ${this.epoch_data.timespan_name}`;
+		this.presets.every_x_annually_date.text = `${repeat_string} year on the ${ordinal_suffix_of(this.epoch_data.day)} of ${sanitizeHtml(this.epoch_data.timespan_name)}`;
 
 		this.presets.every_x_annually_weekday = {
-			text: `${repeat_string} year on the ${ordinal_suffix_of(this.epoch_data.week_day_num)} ${this.epoch_data.week_day_name} in ${this.epoch_data.timespan_name}`,
+			text: `${repeat_string} year on the ${ordinal_suffix_of(this.epoch_data.week_day_num)} ${this.epoch_data.week_day_name} in ${sanitizeHtml(this.epoch_data.timespan_name)}`,
 			enabled: !this.epoch_data.intercalary,
 			nth: true
 		}
 
 		this.presets.every_x_inverse_annually_weekday = {
-			text: `${repeat_string} year on the ${inverse_week_day_num} ${this.epoch_data.week_day_name} in ${this.epoch_data.timespan_name}`,
+			text: `${repeat_string} year on the ${inverse_week_day_num} ${this.epoch_data.week_day_name} in ${sanitizeHtml(this.epoch_data.timespan_name)}`,
 			enabled: !this.epoch_data.intercalary,
 			nth: true
 		}
@@ -1318,10 +1335,9 @@ const calendar_events_editor = {
 
 				} else if (type === "Events") {
 
-					let event_id = $(this).find('.input_container').find("option:selected").val() | 0;
-
-					if (event_editor_ui.working_event.data.connected_events.indexOf(event_id) === -1) {
-						event_editor_ui.working_event.data.connected_events.push(event_id)
+					let event_id = Number($(this).find('.input_container').find("option:selected").val());
+					if (event_id !== null && !isNaN(event_id) && event_editor_ui.working_event.data.connected_events.indexOf(event_id) === -1 && typeof event_id === "number") {
+						event_editor_ui.working_event.data.connected_events.push(event_id);
 					}
 
 					values.push(event_editor_ui.working_event.data.connected_events.indexOf(event_id));
@@ -1600,7 +1616,7 @@ const calendar_events_editor = {
 
                     for (let i = 0; i < static_data.year_data.timespans.length; i++) {
                         html.push(`<option value='${i}'>`);
-                        html.push(static_data.year_data.timespans[i].name);
+                        html.push(sanitizeHtml(static_data.year_data.timespans[i].name));
                         html.push("</option>");
                     }
 
@@ -1743,7 +1759,7 @@ const calendar_events_editor = {
 				html.push(`<optgroup label='${ordinal_suffix_of(i + 1)} cycle group' value='${i}'>`);
 				for (let j = 0; j < static_data.cycles.data[i].names.length; j++) {
 					html.push(`<option value='${j}'>`);
-					html.push(`Cycle ${i + 1}: ${static_data.cycles.data[i].names[j]}`);
+					html.push(`Cycle ${i + 1}: ${sanitizeHtml(static_data.cycles.data[i].names[j])}`);
 					html.push("</option>");
 				}
 				html.push("</optgroup>");
@@ -1759,7 +1775,7 @@ const calendar_events_editor = {
 
 			for (let i = 0; i < static_data.eras.length; i++) {
 				html.push(`<option value='${i}'>`);
-				html.push(static_data.eras[i].name);
+				html.push(sanitizeHtml(static_data.eras[i].name));
 				html.push("</option>");
 			}
 
@@ -1782,7 +1798,7 @@ const calendar_events_editor = {
                     html.push("<select class='form-control order-1'>")
                     for (let i = 0; i < static_data.seasons.data.length; i++) {
                         html.push(`<option value='${i}'>`);
-                        html.push(static_data.seasons.data[i].name);
+                        html.push(sanitizeHtml(static_data.seasons.data[i].name));
                         html.push("</option>");
                     }
 
@@ -1904,7 +1920,7 @@ const calendar_events_editor = {
 				let location = static_data.seasons.locations[locationId]
 
 				html.push(`<option value="${locationId}">`);
-				html.push(location.name);
+				html.push(sanitizeHtml(location.name));
 				html.push("</option>");
 
 			}
@@ -1915,22 +1931,23 @@ const calendar_events_editor = {
 
 			html.push("<select class='event_select form-control'>")
 
-			for (let eventId in events) {
+			for (let eventId = 0; eventId < events.length; eventId++) {
 
 				let event = events[eventId];
 
 				if (eventId === this.event_id) {
 					html.push(`<option disabled>`);
-					html.push(`${event.name} (this event)`);
+					html.push(`${sanitizeHtml(event.name)} (this event)`);
 					html.push("</option>");
 				} else {
+				    this.event_chain_looked_at = [];
 					if (this.look_through_event_chain(this.event_id | 0, eventId)) {
 						html.push(`<option value="${eventId}">`);
-						html.push(event.name);
+						html.push(sanitizeHtml(event.name));
 						html.push("</option>");
 					} else {
 						html.push(`<option disabled>`);
-						html.push(`${event.name} (chains to this event)`);
+						html.push(`${sanitizeHtml(event.name)} (chains to this event)`);
 						html.push("</option>");
 					}
 				}
@@ -2076,7 +2093,7 @@ const calendar_events_editor = {
 		html.push("<select class='form-control moon_select'>");
 		for (let i = 0; i < static_data.moons.length; i++) {
 			html.push(`<option value='${i}'>`);
-			html.push(static_data.moons[i].name);
+			html.push(sanitizeHtml(static_data.moons[i].name));
 			html.push("</option>");
 		}
 		html.push("</select>");
@@ -2202,13 +2219,16 @@ const calendar_events_editor = {
 
 	confirm_delete_event($event) {
 
-		let event_editor_ui = this;
-
 		let delete_event_id = $event.detail.event_id;
+
+        if ($event.detail.event_db_id !== undefined) {
+            delete_event_id = events.findIndex((item) => item.id === $event.detail.event_db_id);
+        }
 
 		let warnings = [];
 
-		for (let eventId in events) {
+		for (let eventId = 0; eventId < events.length; eventId++) {
+		    if(eventId === delete_event_id) continue;
 			if (events[eventId].data.connected_events !== undefined) {
 				let connected_events = events[eventId].data.connected_events;
 				if (connected_events.includes(String(delete_event_id)) || connected_events.includes(Number(delete_event_id))) {
@@ -2256,16 +2276,11 @@ const calendar_events_editor = {
 
 				if (!result.dismiss) {
 
-					if ($('#events_sortable').length) {
+                    let not_view_page = window.location.pathname.indexOf('/edit') > -1 || window.location.pathname.indexOf('/calendars/create') > -1;
+
+					if (not_view_page) {
 
 						this.delete_event(delete_event_id);
-
-						events_sortable.children(`[index='${delete_event_id}']`).remove();
-
-						events_sortable.children().each(function(i) {
-							events[i].sort_by = i;
-							$(this).attr('index', i);
-						});
 
 						evaluate_save_button();
 
@@ -2273,9 +2288,9 @@ const calendar_events_editor = {
 
 						let event_id = events[delete_event_id].id;
 
-						submit_delete_event(event_id, function() {
-							event_editor_ui.delete_event(delete_event_id);
-						});
+						submit_delete_event(event_id, () => {
+							this.delete_event(delete_event_id);
+						})
 
 					}
 
@@ -2289,12 +2304,13 @@ const calendar_events_editor = {
 
 	delete_event(delete_event_id) {
 
-		for (let eventId in events) {
+        for (let eventId = 0; eventId < events.length; eventId++) {
 			if (events[eventId].data.connected_events !== undefined) {
-				for (let connectedId in events[eventId].data.connected_events) {
-					let number = Number(events[eventId].data.connected_events[connectedId])
-					if (number > delete_event_id) {
-						events[eventId].data.connected_events[connectedId] = String(number - 1)
+                const connectedEvents = events[eventId].data.connected_events;
+				for (let connectedIndex = 0; connectedIndex < connectedEvents.length; connectedIndex++) {
+                    let connectedIdNumber = Number(connectedEvents[connectedIndex])
+					if (connectedIdNumber > delete_event_id) {
+						events[eventId].data.connected_events[connectedIndex] = connectedIdNumber - 1;
 					}
 				}
 			}
@@ -2305,6 +2321,8 @@ const calendar_events_editor = {
         this.close();
 
 		rerender_calendar();
+
+        window.dispatchEvent(new CustomEvent("events-changed"));
 
 	},
 
@@ -2456,7 +2474,7 @@ const calendar_events_editor = {
 
 			let year = occurrence.year;
 			let timespan = occurrence.timespan;
-			let timespan_name = static_data.year_data.timespans[occurrence.timespan].name;
+			let timespan_name = sanitizeHtml(static_data.year_data.timespans[occurrence.timespan].name);
 			let day = occurrence.day;
 			let intercalary = occurrence.intercalary;
 
@@ -2537,19 +2555,25 @@ const calendar_events_editor = {
 
 		if (current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false") {
 
-			for (let connectedId in current_event.data.connected_events) {
-
-				let parent_id = current_event.data.connected_events[connectedId];
-
-				this.check_event_chain(parent_id, false);
-
+			for (let parent_id of current_event.data.connected_events) {
+			    if(parent_id !== null && parent_id === event_id) {
+			        this.check_event_chain(parent_id, false);
+                }
 			}
 
 		}
 
 	},
 
+
+
 	look_through_event_chain(child, parent_id) {
+
+	    if(this.event_chain_looked_at.indexOf(parent_id) === -1){
+	        return true;
+        }
+
+        this.event_chain_looked_at.push(parent_id);
 
 		if (events[parent_id].data.connected_events !== undefined && events[parent_id].data.connected_events.length > 0) {
 
@@ -2559,13 +2583,9 @@ const calendar_events_editor = {
 
 			} else {
 
-				for (let i = 0; i < events[parent_id].data.connected_events.length; i++) {
-
-					let id = events[parent_id].data.connected_events[i];
-
-					let result = this.look_through_event_chain(child, id);
-
-					if (!result) {
+				for (let id of events[parent_id].data.connected_events) {
+				    if(id === null || !isNaN(id) || child === parent_id || !events[id]) continue;
+					if (!this.look_through_event_chain(child, id)) {
 						return false;
 					}
 				}

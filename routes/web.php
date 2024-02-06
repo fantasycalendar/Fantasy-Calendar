@@ -27,7 +27,7 @@ use Intervention\Image\Facades\Image;
 |
 */
 
-Route::get('/embed/{calendar}', [EmbedController::class, 'embedCalendar']);
+Route::get('/embed/{calendar}', [EmbedController::class, 'embedCalendar'])->middleware('can:embedAny,App\Models\Calendar');
 
 Route::get('/', [WelcomeController::class, 'welcome'])->name('home');
 Route::view('/welcome', 'welcome')->name('welcome');
@@ -75,9 +75,9 @@ Route::prefix('invite')->group(function(){
 // Calendar management
 Route::middleware(['account.deletion', 'agreement'])->group(function(){
     Route::group(['as' => 'calendars.', 'prefix' => 'calendars'], function(){
-        Route::get('/{calendar}/guided_embed', [CalendarController::class, 'guidedEmbed'])->name('guided_embed');
+        Route::get('/{calendar}/guided_embed', [CalendarController::class, 'guidedEmbed'])->name('guided_embed')->middleware('can:embedAny,App\Models\Calendar');
         Route::get('/{calendar}/export', [CalendarController::class, 'export'])->name('export');
-        Route::get('/{calendar}.{ext}', [CalendarController::class, 'renderImage'])->name('image');
+        Route::get('/{calendar}.{ext}', [CalendarController::class, 'renderImage'])->name('image')->middleware('feature:imagerenderer');
     });
 
     Route::resource('calendars', CalendarController::class);
@@ -88,16 +88,11 @@ Route::middleware(['account.deletion', 'agreement'])->group(function(){
 Auth::routes(['verify' => true]);
 Route::get('/logout', [LoginController::class, 'logout']);
 
-Route::middleware('admin')->as('admin.')->prefix('admin')->group(function() {
-    Route::get('/impersonate/{userid}', [AdminController::class, 'impersonate'])->name('impersonate');
-    Route::get('/reverse_impersonate/', [AdminController::class, 'reverseImpersonate'])->name('reverse_impersonate');
-});
-
 // Pricing page
 Route::get('/pricing', [SubscriptionController::class, 'pricing'])->name('subscription.pricing');
 
 // Subscription management
-Route::prefix('subscription')->as('subscription.')->middleware(['account.deletion', 'agreement'])->group(function(){
+Route::prefix('subscription')->as('subscription.')->middleware(['account.deletion', 'agreement', 'feature:stripe'])->group(function(){
     Route::get('/subscribe/{level}/{interval}', [SubscriptionController::class, 'subscribe'])->name('subscribe');
     Route::post('/subscribe', [SubscriptionController::class, 'createsubscription'])->name('create');
     Route::post('/cancel', [SubscriptionController::class, 'cancel'])->name('cancel');
@@ -107,12 +102,6 @@ Route::prefix('subscription')->as('subscription.')->middleware(['account.deletio
 
 Route::post('pricing/coupon', [SubscriptionController::class, 'coupon']);
 
-// Extended Stripe Webhook
-Route::post(
-    'stripe/webhook',
-    [StripeController::class, 'handleWebhook']
-);
-
 // User profile
 Route::prefix('profile')->middleware(['auth', 'account.deletion', 'agreement'])->group(function(){
     Route::view('/', 'profile.account')->name('profile');
@@ -120,6 +109,10 @@ Route::prefix('profile')->middleware(['auth', 'account.deletion', 'agreement'])-
     Route::get('/billing-portal', [SettingsController::class, 'billingPortal'])->name('profile.billing-portal');
     Route::view('/integrations','profile.integrations')->name('profile.integrations');
     Route::get('/update-email/{user}', [SettingsController::class, 'updateEmail'])->name('update.email')->middleware('signed');
+
+    Route::get('/api-tokens', [SettingsController::class, 'apiTokens'])->name('profile.api-tokens')->middleware(['premium', 'can:interact,Laravel\Sanctum\PersonalAccessToken']);
+    Route::post('/api-tokens/create', [SettingsController::class, 'createApiToken'])->name('profile.api-tokens.create')->middleware(['premium', 'can:interact,Laravel\Sanctum\PersonalAccessToken']);
+    Route::delete('/api-tokens/delete/{personalAccessToken}', [SettingsController::class, 'deleteApiToken'])->name('profile.api-tokens.delete')->middleware(['premium', 'can:interact,Laravel\Sanctum\PersonalAccessToken']);
 
     Route::post('/settings', [SettingsController::class, 'updateSettings'])->name('profile.updateSettings');
     Route::post('/account', [SettingsController::class, 'updateAccount'])->name('profile.updateAccount');

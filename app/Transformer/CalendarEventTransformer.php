@@ -15,6 +15,7 @@ class CalendarEventTransformer extends Fractal\TransformerAbstract {
             'show_first_last' => (bool) $event->data['show_first_last'] ?? false,
             'limited_repeat' => (bool) $event->data['limited_repeat'] ?? false,
             'limited_repeat_num' => (int) $event->data['limited_repeat_num'] ?? 0,
+            'connected_events' => $event->data['connected_events'] ?? [],
             'conditions' => $event->data['conditions'] ?? [],
             'date' => $event->data['date'] ?? [],
             'overrides' => $event->data['overrides'] ?? [],

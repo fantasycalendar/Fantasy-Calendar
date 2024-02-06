@@ -38,11 +38,13 @@
 
         }
 
+        window.dispatchEvent(new CustomEvent("events-changed"));
+
     });
 
     function check_dates(){
 
-        if(document.hasFocus() && (Date.now() - last_mouse_move) < 10000){
+        if((document.hasFocus() && (Date.now() - last_mouse_move) < 10000) || advancement.advancement_enabled){
 
             instapoll = false;
 
@@ -122,6 +124,7 @@
 @section('content')
     <div id="generator_container">
         @include('layouts.layouts')
+        @include('layouts.events_manager')
         @include('layouts.weather_tooltip')
         @include('layouts.day_data_tooltip')
         @include('layouts.moon_tooltip')

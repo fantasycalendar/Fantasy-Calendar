@@ -36,7 +36,7 @@ return [
     ],
 
     'discord' => [
-        'enabled' => (!empty(env('DISCORD_CLIENT_ID')) && !empty(env('DISCORD_CLIENT_SECRET')) && !empty(env('DISCORD_REDIRECT_URI'))),
+        'enabled' => feature('discord'),
         'client_id' => env('DISCORD_CLIENT_ID'),
         'client_secret' => env('DISCORD_CLIENT_SECRET'),
         'redirect' => env('DISCORD_REDIRECT_URI'),
@@ -84,6 +84,23 @@ return [
                                     ]
                                 ]
                             ]
+                        ]
+                    ],
+                    [
+                        'name' => 'auto',
+                        'description' => 'Enable or disable automatic time advancement',
+                        'type' => 2,
+                        'options' => [
+                            [
+                                'name' => 'enable',
+                                'description' => 'Enables automatic time advancement',
+                                'type' => 1
+                            ],
+                            [
+                                'name' => 'disable',
+                                'description' => 'Disables automatic time advancement',
+                                'type' => 1
+                            ],
                         ]
                     ],
                     [
@@ -464,6 +481,7 @@ return [
                 'create' => [
                     'event' => \App\Services\Discord\Commands\Command\Create\EventHandler::class,
                 ],
+                'auto' => \App\Services\Discord\Commands\Command\Create\AutoHandler::class,
                 'show' => [
                     'date' => \App\Services\Discord\Commands\Command\Show\DateHandler::class,
                     'month' => \App\Services\Discord\Commands\Command\Show\MonthHandler::class,

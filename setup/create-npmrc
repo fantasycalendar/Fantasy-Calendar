@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+create_npmrc() {
+	# If ~/.npmrc exists, check if it contains a fontawesome token
+	# If it does, copy only the fontawesome token to the local .npmrc file
+	# If it doesn't, ask for the token and create the file locally
+
+	if [ -f ~/.npmrc ]; then
+		if grep -q fontawesome ~/.npmrc; then
+			grep fontawesome ~/.npmrc >> .npmrc
+			echo '✔️ Fontawesome token found and copied from ~/.npmrc'
+			return
+		fi
+	fi
+
+    read -s -p "Fontawesome token (hidden): " FONTAWESOME_TOKEN
+
+    if [ -z "$FONTAWESOME_TOKEN" ]; then
+        echo "❌ Fontawesome token is empty, exiting..."
+        exit 1
+    fi
+
+    cat <<- EOF > .npmrc
+		@fortawesome:registry=https://npm.fontawesome.com/
+		//npm.fontawesome.com/:_authToken=${FONTAWESOME_TOKEN}
+	EOF
+
+	echo '✔️ .npmrc file created!'
+}
+
+if [ -f .npmrc ]; then
+    echo '✔️ .npmrc file already exists'
+else
+    create_npmrc
+fi

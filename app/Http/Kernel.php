@@ -3,6 +3,8 @@
 namespace App\Http;
 
 use App\Http\Middleware\CheckAccountDeletionRequested;
+use App\Http\Middleware\EnsureFeatureIsEnabled;
+use App\Http\Middleware\RequirePremium;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -35,7 +37,6 @@ class Kernel extends HttpKernel
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\Session\Middleware\AuthenticateSession::class,
-            \App\Http\Middleware\FantasyCalendarRememberLogin::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -56,7 +57,7 @@ class Kernel extends HttpKernel
      *
      * @var array
      */
-    protected $routeMiddleware = [
+    protected $middlewareAliases = [
         'agreement' => \App\Http\Middleware\AgreementCheck::class,
         'api_version' => \App\Http\Middleware\APIVersion::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
@@ -72,6 +73,8 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateRelativeSignedUrl::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'premium' => RequirePremium::class,
+        'feature' => EnsureFeatureIsEnabled::class,
     ];
 
     /**

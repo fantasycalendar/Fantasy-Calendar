@@ -38,6 +38,6 @@ class UpdateCalendarPreset implements ShouldQueue
         $description = $this->preset->description;
         $this->preset->delete();
 
-        return ConvertCalendarToPreset::dispatchNow($this->calendar, $description);
+        return ConvertCalendarToPreset::dispatchSync($this->calendar, $description);
     }
 }

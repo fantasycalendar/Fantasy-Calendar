@@ -31,7 +31,7 @@ class Statistics
     }
 
     public function getMonthlySubscribersToday() {
-        $monthly_subscriptions = $this->subscription->query()->where('stripe_plan', '=', 'timekeeper_monthly')->active();
+        $monthly_subscriptions = $this->subscription->query()->where('stripe_price', '=', 'timekeeper_monthly')->active();
         $total_monthly_subscriptions = $monthly_subscriptions->count();
         $monthly_subscriptions_today = $monthly_subscriptions->where('updated_at', '>', now()->subHours(24))->count();
 
@@ -39,7 +39,7 @@ class Statistics
     }
 
     public function getYearlySubscribersToday() {
-        $yearly_subscriptions = $this->subscription->query()->where('stripe_plan', '=', 'timekeeper_yearly')->active();
+        $yearly_subscriptions = $this->subscription->query()->where('stripe_price', '=', 'timekeeper_yearly')->active();
         $total_yearly_subscriptions = $yearly_subscriptions->count();
         $yearly_subscriptions_today = $yearly_subscriptions->where('updated_at', '>', now()->subHours(24))->count();
 

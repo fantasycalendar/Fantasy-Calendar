@@ -100,6 +100,7 @@ class EpochFactory
     {
         if($this->needsDate($year, $month, $day)) {
             $epochs = $this->generateForDate($year, $month, $day);
+
             $this->rememberEpochs($epochs);
         }
 
@@ -175,6 +176,11 @@ class EpochFactory
     public function dateList(): EpochsCollection
     {
         return $this->epochs->keys();
+    }
+
+    public function flush(): void
+    {
+        $this->epochs = new EpochsCollection();
     }
 
     /**

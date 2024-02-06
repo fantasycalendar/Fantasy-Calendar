@@ -41,7 +41,15 @@ const calendar_html_editor = {
 
 	},
 
-	confirm_close() {
+	confirm_close($event) {
+
+        const possibleTrumbowyg = [$event.target.id, $event.target.parentElement.id].concat(
+            Array.from($event.target.classList),
+            Array.from($event.target.parentElement.classList),
+            Array.from($event.target.parentElement.parentElement.classList),
+        );
+        if(possibleTrumbowyg.some(entry => entry.startsWith('trumbowyg-'))) return false;
+
         // Don't do anything if a swal is open.
         if(swal.isVisible()) {
             return false;
@@ -86,12 +94,12 @@ const calendar_html_editor = {
 				icon: "warning",
 			}).then((result) => {
 				if (!result.dismiss) {
-					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.era_id, era: true } }));
+					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.era_id, era: true } }));
 					this.close();
 				}
 			});
 		} else {
-			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: this.era_id, era: true } }));
+			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.era_id, era: true } }));
 			this.close();
 		}
 

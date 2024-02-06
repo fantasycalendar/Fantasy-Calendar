@@ -3,16 +3,9 @@
 namespace App\Jobs;
 
 use App\Models\Calendar;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 
-class CloneCalendar implements ShouldQueue
+class CloneCalendar
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     public $sourceCalendar;
 
     public $newName;
@@ -26,6 +19,11 @@ class CloneCalendar implements ShouldQueue
     {
         $this->newName = $newName;
         $this->sourceCalendar = $calendar;
+    }
+
+    public static function dispatchSync(Calendar $calendar, $newName)
+    {
+        return (new static($calendar, $newName))->handle();
     }
 
     /**
@@ -42,7 +40,7 @@ class CloneCalendar implements ShouldQueue
         $newCalendar->event_categories = [];
         $categoryIds = [];
 
-        foreach($this->sourceCalendar->event_categories as $event_category) {
+        foreach ($this->sourceCalendar->event_categories as $event_category) {
             $newCategory = $event_category->replicate();
             $newCategory->calendar_id = $newCalendar->id;
             $newCategory->push();
@@ -50,11 +48,11 @@ class CloneCalendar implements ShouldQueue
             $categoryIds[$event_category->id] = $newCategory;
         }
 
-        foreach($this->sourceCalendar->events as $event) {
+        foreach ($this->sourceCalendar->events as $event) {
             $newEvent = $event->replicate();
             $newEvent->calendar_id = $newCalendar->id;
 
-            if($event->event_category_id > 0 && array_key_exists($event->event_category_id, $categoryIds)) {
+            if ($event->event_category_id > 0 && array_key_exists($event->event_category_id, $categoryIds)) {
                 $newEvent->event_category_id = $categoryIds[$event->event_category_id]->id;
             }
 

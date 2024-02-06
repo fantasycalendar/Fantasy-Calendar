@@ -131,8 +131,8 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-eye",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
-					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: element.hasClass('era_event'), epoch: element.parent().parent().attr('epoch') } }));
+					let event_id = element.attr('event_id');
+					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: event_id, era: element.hasClass('era_event'), epoch: element.parent().parent().attr('epoch') } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
@@ -148,17 +148,17 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-edit",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: event_id, epoch: element.parent().parent().attr('epoch') } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					return !Perms.can_modify_event(event_id) || element.hasClass('era_event');
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					return Perms.can_modify_event(event_id) && !element.hasClass('era_event');
 				}
 			},
@@ -167,17 +167,17 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-clone",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
                     window.dispatchEvent(new CustomEvent('event-editor-modal-clone-event', { detail: { event_id: event_id, epoch: element.parent().parent().attr('epoch') } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					return !Perms.can_modify_event(event_id) || element.hasClass('era_event');
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					return Perms.can_modify_event(event_id) && !element.hasClass('era_event');
 				}
 			},
@@ -186,8 +186,8 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-eye",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
-					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: element.hasClass('era_event'), epoch: element.parent().parent().attr('epoch') } }));
+					let event_id = element.attr('event_id');
+					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: event_id, era: element.hasClass('era_event'), epoch: element.parent().parent().attr('epoch') } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
@@ -203,7 +203,7 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-edit",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let era_id = element.attr('event')|0;
+					let era_id = element.attr('event_id')|0;
 					window.dispatchEvent(new CustomEvent('html-editor-modal-edit-html', { detail: { era_id: era_id } }));
 				},
 				disabled: function(key, opt){
@@ -220,17 +220,17 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-eye-slash",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event'));
+					let event_id = Number(element.attr('event_id'));
 					submit_hide_show_event(event_id);
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event'));
+					let event_id = Number(element.attr('event_id'));
 					return element.hasClass('era_event') || events[event_id].settings.hide || !Perms.can_modify_event(event_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event'));
+					let event_id = Number(element.attr('event_id'));
 					return !element.hasClass('era_event') && !events[event_id].settings.hide && Perms.can_modify_event(event_id);
 				}
 			},
@@ -239,17 +239,17 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-eye-slash",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event'));
+					let event_id = Number(element.attr('event_id'));
 					submit_hide_show_event(event_id);
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event'));
+					let event_id = Number(element.attr('event_id'));
 					return element.hasClass('era_event') || !events[event_id].settings.hide || !Perms.can_modify_event(event_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = Number(element.attr('event'));
+					let event_id = Number(element.attr('event_id'));
 					return !element.hasClass('era_event') && events[event_id].settings.hide && Perms.can_modify_event(event_id);
 				}
 			},
@@ -258,17 +258,17 @@ function set_up_visitor_inputs(){
 				icon: "fas fa-trash-alt",
 				callback: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					window.dispatchEvent(new CustomEvent('event-editor-modal-delete-event', { detail: { event_id: event_id } }));
 				},
 				disabled: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					return element.hasClass('era_event') || !Perms.can_modify_event(event_id);
 				},
 				visible: function(key, opt){
 					let element = $(opt.$trigger[0]);
-					let event_id = element.attr('event');
+					let event_id = element.attr('event_id');
 					return !element.hasClass('era_event') && Perms.can_modify_event(event_id);
 				}
 			}
@@ -352,7 +352,7 @@ function set_up_visitor_inputs(){
 			let found_events = CalendarRenderer.render_data.event_epochs[epoch].events;
 			let event_id = found_events[0].index;
 			let era_event = found_events[0].era;
-			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: era_event, epoch: epoch } }));
+			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: event_id, era: era_event, epoch: epoch } }));
 		}
 	}
 
@@ -383,13 +383,13 @@ function set_up_visitor_inputs(){
 					let sub_items = {};
 					for(var i = 0; i < found_events.length; i++){
 						let event_id = found_events[i].index;
-						let event_name = found_events[i].name;
+						let event_name = sanitizeHtml(found_events[i].name);
 						let era_event = found_events[i].era;
 						sub_items[event_id] = {
 							name: event_name,
 							id: event_id,
 							callback: function(key, opt) {
-								window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { id: event_id, era: era_event, epoch: epoch } }));
+								window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: event_id, era: era_event, epoch: epoch } }));
 							}
 						}
 					}
@@ -397,7 +397,7 @@ function set_up_visitor_inputs(){
 
 				}else if(found_events.length == 1){
 
-					items.view_events.name = `View event "${events[found_events[0].index].name}"`
+					items.view_events.name = sanitizeHtml(`View event "${events[found_events[0].index].name}"`)
 
 				}
 
@@ -697,13 +697,28 @@ function go_to_preview_date(rebuild){
 function display_preview_back_button(){
 
 	if(preview_date.epoch != dynamic_data.epoch){
-		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.epoch > dynamic_data.epoch).toggleClass('hidden', preview_date.epoch > dynamic_data.epoch);
-		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.epoch < dynamic_data.epoch).toggleClass('hidden', preview_date.epoch < dynamic_data.epoch);
-		$('#reset_preview_date_button').prop("disabled", false).toggleClass('hidden', false);
+		$('.reset_preview_date_container.right .reset_preview_date')
+            .prop("disabled", preview_date.epoch > dynamic_data.epoch)
+            .toggleClass('hidden', preview_date.epoch > dynamic_data.epoch)
+            .parent().toggleClass('hidden', preview_date.epoch > dynamic_data.epoch);
+		$('.reset_preview_date_container.left .reset_preview_date')
+            .prop("disabled", preview_date.epoch < dynamic_data.epoch)
+            .toggleClass('hidden', preview_date.epoch < dynamic_data.epoch)
+            .parent().toggleClass('hidden', preview_date.epoch < dynamic_data.epoch);
+		$('#reset_preview_date_button')
+            .prop("disabled", false)
+            .toggleClass('hidden', false);
 	}else{
-		$('.reset_preview_date_container.right .reset_preview_date').prop("disabled", true).toggleClass('hidden', true);
-		$('.reset_preview_date_container.left .reset_preview_date').prop("disabled", true).toggleClass('hidden', true);
-		$('#reset_preview_date_button').prop("disabled", true).toggleClass('hidden', true);
+		$('.reset_preview_date_container.right .reset_preview_date')
+            .prop("disabled", true)
+            .parent().toggleClass('hidden', true);
+		$('.reset_preview_date_container.left .reset_preview_date')
+            .prop("disabled", true)
+            .parent().toggleClass('hidden', true);
+		$('#reset_preview_date_button')
+            .prop("disabled", true)
+            .toggleClass('hidden', true);
+
 		preview_date.follow = true;
 	}
 
@@ -893,7 +908,7 @@ function repopulate_event_category_lists(){
 			slug = slugify(category.name);
 		}
 		html.push(`<option value='${slug}'>`)
-		html.push(category.name)
+		html.push(sanitizeHtml(category.name))
 		html.push("</option>")
 	}
 
@@ -929,7 +944,7 @@ function repopulate_timespan_select(select, val, change, max){
 
 			if(special){
 
-				html.push(`<option value='${i}'>${static_data.year_data.timespans[i].name}</option>`);
+				html.push(`<option value='${i}'>${sanitizeHtml(static_data.year_data.timespans[i].name)}</option>`);
 
 			}else{
 
@@ -943,7 +958,7 @@ function repopulate_timespan_select(select, val, change, max){
 				if(max && i > max) break;
 
 				html.push(`<option ${!is_there.result ? 'disabled' : ''} value='${i}'>`);
-				html.push(static_data.year_data.timespans[i].name + (!is_there.result ? ` (${is_there.reason})` : ''));
+				html.push(sanitizeHtml(static_data.year_data.timespans[i].name + (!is_there.result ? ` (${is_there.reason})` : '')));
 				html.push('</option>');
 
 			}

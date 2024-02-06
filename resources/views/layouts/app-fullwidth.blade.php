@@ -4,13 +4,7 @@
 
 @include('templates._head_content_tw')
 
-<body class="scrollbar page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class') @setting('dark_theme') dark @endsetting">
-
-@if(auth()->check() && request()->session()->has('admin.id'))
-    <div class="w-full py-1 bg-red-200 dark:bg-red-900 text-red-800 dark:text-red-200 text-center flex justify-center items-center">
-        You are impersonating the user <strong class="ml-1">{{ Auth::user()->username }}</strong>. <a class="rounded-full ml-1 px-1.5 py-0.5 bg-red-600 text-red-200 dark:bg-red-200 dark:text-red-900 text-xs" href="{{ route('admin.reverse_impersonate') }}">Reverse Impersonate</a>
-    </div>
-@endif
+<body class="scrollbar page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class') @guest dark @else @setting('dark_theme') dark @endsetting @endguest">
 
 @env('development')
     <div class="w-full py-1 bg-red-200 dark:bg-red-900 text-red-800 dark:text-red-200 text-center">
@@ -32,12 +26,14 @@
                         <x-nav-link href="{{ route('calendars.index') }}">My Calendars</x-nav-link>
                         <x-nav-link href="{{ route('calendars.create') }}">New Calendar</x-nav-link>
                         <x-nav-link href="{{ route('faq') }}">FAQs</x-nav-link>
-                        <x-nav-link href="{{ route('discord') }}">Discord Integration</x-nav-link>
+                        @feature('discord')
+                            <x-nav-link href="{{ route('discord') }}">Discord Integration</x-nav-link>
+                        @endfeature
                     </div>
                 </div>
                 <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
                     @can('administer-app', auth()->user())
-                        <x-nav-link href="{{ route('code16.sharp.home') }}">Admin Panel</x-nav-link>
+                        <x-nav-link href="{{ route('filament.admin.pages.dashboard') }}">Admin Panel</x-nav-link>
                     @endcan
                     @auth
                         <x-nav-link href="{{ route('profile') }}">Profile</x-nav-link>
@@ -52,22 +48,8 @@
                     <!-- Mobile menu button -->
                     <button class="inline-flex items-center justify-center p-2 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white" @click="menu = !menu">
                         <span class="sr-only">Open main menu</span>
-                        <!--
-                          Heroicon name: menu
-
-                          Menu open: "hidden", Menu closed: "block"
-                        -->
-                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                        <!--
-                          Heroicon name: x
-
-                          Menu open: "block", Menu closed: "hidden"
-                        -->
-                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <x-heroicon-o-bars-3 ::class="{ 'hidden': !menu, 'block': menu }" class="block h-6 w-6"></x-heroicon-o-bars-3>
+                        <x-heroicon-o-x-mark ::class="{ 'hidden': menu, 'block': !menu }" class="hidden h-6 w-6"></x-heroicon-o-x-mark>
                     </button>
                 </div>
             </div>
@@ -86,7 +68,7 @@
                 <x-mobile-nav-link href="{{ route('discord') }}">Discord Integration</x-mobile-nav-link>
 
                 @can('administer-app', auth()->user())
-                    <x-mobile-nav-link href="{{ route('code16.sharp.home') }}">Admin Panel</x-mobile-nav-link>
+                    <x-mobile-nav-link href="{{ route('filament.admin.pages.dashboard') }}">Admin Panel</x-mobile-nav-link>
                 @endcan
 
                 @auth
@@ -146,7 +128,7 @@
     @endunless
 </div>
 
-<div aria-live="assertive" class="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:p-6 sm:items-end" x-data="{ notifications: [], notification: function($event){ this.notifications.push($event.detail) } }" @notification.window="notification">
+<div aria-live="assertive" class="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:p-6 sm:items-end z-50" x-data="{ notifications: [], notification: function($event){ this.notifications.push($event.detail) } }" @notification.window="notification">
     <div class="w-full flex flex-col items-center space-y-4 sm:items-end">
         <template x-for="(notification, index) in notifications">
             <div class="max-w-sm w-full relative bg-white dark:bg-gray-700 dark:shadow-xl shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden"
@@ -174,10 +156,12 @@
                 <div class="p-4" :class="{ 'mb-2' : !info.sticky }">
                     <div class="flex items-start">
                         <div class="flex-shrink-0">
-                            <!-- Heroicon name: outline/check-circle -->
-                            <svg class="h-6 w-6 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <i class="fa" :class="{
+                                'fa-check-circle': !info.icon,
+                                'text-green-400': !info.icon_color,
+                                [info.icon]: info.icon,
+                                [info.icon_color]: info.icon_color,
+                            }"></i>
                         </div>
                         <div class="ml-3 w-0 flex-1 pt-0.5">
                             <p class="text-sm font-medium text-gray-900 dark:text-gray-300" x-text="info.title"></p>
@@ -196,7 +180,11 @@
                 </div>
 
                 <div class="absolute inset-x-0 bottom-0 bg-gray-700 h-2" x-show="!info.sticky">
-                    <div class="absolute inset-x-0 left-0 h-full bg-primary-500"
+                    <div class="absolute inset-x-0 left-0 h-full"
+                         :class="{
+                            'bg-primary-500': !info.icon_color,
+                            [info.icon_color?.replace('text-', 'bg-')]: info.icon_color
+                         }"
                         x-show="!show"
                         x-transition:leave="transition-all ease-linear duration-[2900ms]"
                         x-transition:leave-start="w-full"
@@ -208,5 +196,6 @@
     </div>
 </div>
 
+<x-impersonate::banner />
 </body>
 </html>

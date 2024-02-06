@@ -15,6 +15,7 @@
         "
         @update-epochs.window="update_epochs"
         x-for="timespan in render_data.timespans"
+        :key="timespan.id"
     >
 
         <div class="timespan_container" :class='render_data.render_style' x-show="loaded && render_data.timespans.length">
@@ -73,7 +74,7 @@
                                 :class="calendar_event.class"
                                 x-text="calendar_event.name"
                                 :event_id="calendar_event.index"
-                                @click="$dispatch('event-viewer-modal-view-event', { id: calendar_event.index, era: calendar_event.era, epoch: day.epoch })"
+                                @click="$dispatch('event-viewer-modal-view-event', { event_id: calendar_event.index, era: calendar_event.era, epoch: day.epoch })"
                             ></div>
                         </template>
                     </div>

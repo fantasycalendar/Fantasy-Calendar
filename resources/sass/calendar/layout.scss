@@ -32,76 +32,56 @@
     }
 }
 
-html {
-    overflow-x: hidden;
-
-    @media screen and (max-width: 768px) {
-        font-size: 18px;
-    }
-}
-
-body{
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    min-height: 100vh;
-    max-height: 100vh;
-    font-family:'Inter', sans-serif;
+body {
+    min-height: 100%;
+    font-family: "Inter", sans-serif;
 
     a {
         color: $accent-color-light;
     }
 }
 
-::-webkit-scrollbar
-{
-    width: 8px;  /* for vertical scrollbars */
+::-webkit-scrollbar {
+    width: 8px; /* for vertical scrollbars */
     height: 12px; /* for horizontal scrollbars */
     border-radius: 4px;
 }
 
-::-webkit-scrollbar-track
-{
+::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.1);
 }
 
-::-webkit-scrollbar-thumb
-{
+::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, 0.3);
 }
 
-
-#loading_background{
+#loading_background {
     display: flex;
     flex-direction: column;
-    z-index:2000;
+    z-index: 2000;
 
-    img, div{
+    img,
+    div {
         display: inline-flex;
         align-self: center;
-        position:relative;
-        top:45vh;
-        padding-top:10px;
-        color:white;
+        position: relative;
+        top: 45vh;
+        padding-top: 10px;
+        color: white;
     }
 
     .loading_bar {
-
         width: 30vw;
-
     }
 
     .loading_cancel_button_container {
-
         display: inline-flex;
         align-self: center;
-        position:relative;
-        padding-top:10px;
-        width:20vw;
-
+        position: relative;
+        padding-top: 10px;
+        width: 20vw;
     }
 }
-
 
 /************/
 /** Header **/
@@ -124,18 +104,26 @@ body{
             display: inline;
             color: $text-green-400;
             background-color: $bg-green-800;
-            font-size: .8rem;
-            padding: .2rem .6rem;
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
             border-radius: 999px;
-            margin-left: .4rem;
+            margin-left: 0.4rem;
         }
     }
 }
 
-.page-calendars-edit {
-    display: flex;
+.page-calendars-create {
+    .navbar-expand.sticky-top {
+        z-index: 10;
+    }
+}
 
+.page-calendars-edit {
     .navbar {
+        &-expand.sticky-top {
+            z-index: 10;
+        }
+
         &-brand {
             padding: 0 0.5rem;
             margin-right: 0.75rem;
@@ -147,7 +135,7 @@ body{
     }
 
     #content {
-        height: 100vh;
+        max-height: 100vh;
     }
 }
 
@@ -156,45 +144,43 @@ body.page-calendars-index {
         font-weight: bold;
         color: white;
 
-         a {
-             color: white;
-         }
+        a {
+            color: white;
+        }
     }
 }
-
 
 /*************/
 /** General **/
 /*************/
 
-#generator_container{
+#generator_container {
     display: flex;
     width: 100%;
-    margin:0;
+    margin: 0;
     height: 100vh;
 }
 
-#input_container{
+#input_container {
     position: relative;
     overflow-y: auto;
-    order:1;
+    order: 1;
     max-height: 100%;
-    flex-basis: $sidebar-width;
-    max-width: 25rem;
+    max-width: $sidebar-width;
     flex-grow: 1;
 
     @media (screen and min-width: 768px) {
-        min-width: 320px;
+        min-width: $sidebar-width;
     }
 }
 
-#input_container.sidebar-mobile-half:not(.inputs_collapsed){
+#input_container.sidebar-mobile-half:not(.inputs_collapsed) {
     width: 50vw;
     max-width: 50vw;
     min-width: 50vw;
 }
 
-#input_container.inputs_collapsed{
+#input_container.inputs_collapsed {
     width: 0;
     overflow: hidden;
     padding: 0;
@@ -212,52 +198,44 @@ body.page-calendars-index {
 }
 
 #input_collapse_btn {
-    background-color: $accent-color;
-    position: fixed;
-    width: 4rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: grid;
+    place-items: center;
     text-align: center;
-    font-size: 2rem;
-    bottom: 3rem;
-    left: 0;
-    z-index: 12;
-    border-radius: 0 1rem 1rem 0;
-    box-shadow: 0 5px 6px rgba(0, 0, 0, 0.3);
+    font-size: 1.5rem;
     cursor: pointer;
     transition: 0.5s all ease;
-}
+    width: auto !important;
+    padding: 0.3rem;
 
-#input_collapse_btn.is-active {
-    left: auto;
-    right: 0;
-    border-radius: 1rem 0 0 1rem;
+    &.is-active {
+        display: none !important;
+    }
 
-    @media screen and (min-width: 992px) {
-        left: calc(min(#{$sidebar-width}, 25rem) - 4rem);
+    .btn {
+        border-radius: 0;
     }
 }
 
-
-#calendar_container{
+#calendar_container {
     display: flex;
     flex-direction: column;
-    order:3;
-    padding:0;
+    order: 3;
+    padding: 0;
     flex-grow: 1;
     flex-basis: 0;
     transition: width 0.5s ease;
     overflow-y: auto;
     max-height: 100%;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     background-color: $calendar-bg-color;
 }
 
 @media (horizontal-viewport-segments: 2) {
     #input_container:not(.inputs_collapsed) {
         min-width: env(viewport-segment-right 0 0);
-        margin-right: calc(env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0));
+        margin-right: calc(
+            env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0)
+        );
     }
 
     #input_collapse_btn.is-active {
@@ -265,8 +243,7 @@ body.page-calendars-index {
         left: auto;
     }
 
-
-    #calendar_container{
+    #calendar_container {
         flex-basis: env(viewport-segment-right 0 0);
     }
 }
@@ -301,13 +278,13 @@ body.page-calendars-index {
 /** Footer **/
 /************/
 
-#footer{
-    position:relative;
+#footer {
+    position: relative;
     left: 0;
     bottom: 0;
     width: 100%;
     text-align: center;
-    order:10000;
+    order: 10000;
 
     a {
         color: $blue;
@@ -319,23 +296,23 @@ body.page-calendars-index {
 /** Alert boxes **/
 /*****************/
 
-#alert_background{
-    width:100%;
-    height:100%;
+#alert_background {
+    width: 100%;
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 10000;
-    position:fixed;
+    position: fixed;
     align-items: center;
-    display:none;
+    display: none;
 }
 
 #alert {
     padding: 20px;
     background-color: #f44336; /* Red */
     color: white;
-    width:50%;
-    position:relative;
-    margin:auto;
+    width: 50%;
+    position: relative;
+    margin: auto;
     z-index: 10000;
 }
 
