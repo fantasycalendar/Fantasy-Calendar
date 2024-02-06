@@ -34,6 +34,7 @@ services:
     environment:
       HANDLER: public/index.php
       DOCUMENT_ROOT: public
+      BREF_BINARY_RESPONSES: 1
     volumes:
       - ./:/var/task
       - ./cache:/var/task/cache
