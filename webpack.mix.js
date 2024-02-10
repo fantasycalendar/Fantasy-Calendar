@@ -11,27 +11,6 @@ const mix = require('laravel-mix');
  |
  */
 
-if(process.env.BROWSERSYNC === 'true') {
-    mix.browserSync({
-        injectChanges: true,
-        proxy: 'php:8000',
-        port: 9980,
-        open: false,
-        reloadDebounce: 200,
-        files: [
-            "public/mix-manifest.json"
-        ],
-        snippetOptions: {
-            rule: {
-                match: /<\/body>/i,
-                fn: function(snippet, match) {
-                    return snippet + match;
-                }
-            }
-        }
-    });
-}
-
 // Copy components and vendor scripts
 mix.copyDirectory('resources/js/components', 'public/js/components');
 mix.copyDirectory('resources/js/vendor', 'public/js/vendor');

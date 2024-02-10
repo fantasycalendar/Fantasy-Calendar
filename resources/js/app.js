@@ -4,20 +4,48 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+import './bootstrap';
 
-window.CalendarClock = require('./clock')
-window.RandomCalendar = require('./random-calendar')
-window.CalendarPresets = require('./calendar-presets')
-window.Perms = require('./perms');
-window.RenderDataGenerator = require('./render-data-generator')
-window.CalendarRenderer = require('./calendar-renderer')
-window.CalendarLayouts = require('./calendar-layouts')
-window.EventsManager = require('./events-manager')
-window.CalendarEventEditor = require('./calendar-events-editor')
-window.CalendarEventViewer = require('./calendar-events-viewer')
-window.CalendarHTMLEditor = require('./calendar-html-editor')
-window.CalendarYearHeader = require('./calendar-year-header')
+import CalendarClock from './clock';
+window.CalendarClock = CalendarClock;
+
+import RandomCalendar from './random-calendar';
+window.RandomCalendar = RandomCalendar;
+
+import CalendarPresets from './calendar-presets';
+window.CalendarPresets = CalendarPresets;
+
+import Perms from './perms';
+window.Perms = Perms;
+
+import RenderDataGenerator from './render-data-generator';
+window.RenderDataGenerator = RenderDataGenerator;
+
+import CalendarRenderer from './calendar-renderer';
+window.CalendarRenderer = CalendarRenderer;
+
+import CalendarLayouts from './calendar-layouts';
+window.CalendarLayouts = CalendarLayouts;
+
+import EventsManager from './events-manager';
+window.EventsManager = EventsManager;
+
+import CalendarEventEditor from './calendar-events-editor';
+window.CalendarEventEditor = CalendarEventEditor;
+
+import CalendarEventViewer from './calendar-events-viewer';
+window.CalendarEventViewer = CalendarEventViewer;
+
+import CalendarHTMLEditor from './calendar-html-editor';
+window.CalendarHTMLEditor = CalendarHTMLEditor;
+
+import CalendarYearHeader from './calendar-year-header';
+window.CalendarYearHeader = CalendarYearHeader;
+
+import './calendar/calendar_functions.js';
+import './calendar/calendar_inputs_view.js';
+import './calendar/calendar_inputs_visitor.js';
+
 
 // Calendar specific modules
 import IntervalsCollection from "./fantasycalendar/Collections/IntervalsCollection.js";

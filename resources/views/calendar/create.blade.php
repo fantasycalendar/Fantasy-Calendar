@@ -3,7 +3,7 @@
 @push('head')
     <script>
 
-        hash = getUrlParameter('id');
+        window.hash = getUrlParameter('id');
 
         window.Perms = new Perms(
             {{ Auth::check() ? Auth::user()->id : "null" }},
@@ -12,11 +12,11 @@
             'guest'
         );
 
-        preset_applied = false;
-        calendar_name = '';
-        has_parent = false;
-        is_linked = false;
-        static_data = {
+        window.preset_applied = false;
+        window.calendar_name = '';
+        window.has_parent = false;
+        window.is_linked = false;
+        window.static_data = {
             "year_data":{
                 "first_day":1,
                 "overflow":true,
@@ -73,13 +73,13 @@
             }
         };
 
-        events = [];
+        window.events = [];
 
-        event_categories = [];
+        window.event_categories = [];
 
-        randomizer = new RandomCalendar();
+        window.randomizer = new RandomCalendar();
 
-        dynamic_data = {
+        window.dynamic_data = {
             "year": 1,
             "timespan": 0,
             "day": 1,
@@ -88,9 +88,9 @@
             "location": "Equatorial"
         };
 
-        advancement = {}
+        window.advancement = {}
 
-        preview_date = clone(dynamic_data);
+        window.preview_date = clone(window.dynamic_data);
 
         $(document).ready(function(){
 

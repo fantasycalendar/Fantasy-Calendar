@@ -1,4 +1,4 @@
-function context_set_current_date(key, opt){
+window.context_set_current_date = function(key, opt){
 
 	var epoch = $(opt.$trigger[0]).attr('epoch');
 
@@ -13,7 +13,7 @@ function context_set_current_date(key, opt){
 
 }
 
-function context_set_preview_date(key, opt){
+window.context_set_preview_date = function(key, opt){
 
 	var epoch = $(opt.$trigger[0]).attr('epoch');
 
@@ -22,7 +22,7 @@ function context_set_preview_date(key, opt){
 	set_preview_date(epoch_data.year, epoch_data.timespan_number, epoch_data.day, epoch_data.epoch);
 }
 
-function context_copy_link_date(element){
+window.context_copy_link_date = function(element){
 
 	var epoch = element.attr('epoch')|0;
 
@@ -58,7 +58,7 @@ function context_copy_link_date(element){
 	}
 }
 
-function copy_link(epoch_data){
+window.copy_link = function(epoch_data){
 
 	var year = epoch_data.year;
 	var timespan = epoch_data.timespan_number;
@@ -87,12 +87,12 @@ function copy_link(epoch_data){
 
 }
 
-function context_add_event(key, opt){
+window.context_add_event = function(key, opt){
 	var epoch = $(opt.$trigger[0]).attr('epoch')|0;
 	window.dispatchEvent(new CustomEvent('event-editor-modal-new-event', { detail: { name: "", epoch: epoch } }));
 }
 
-function context_open_day_data(key, opt){
+window.context_open_day_data = function(key, opt){
 
 	var day_element = $(opt.$trigger[0]);
 	var epoch = day_element.attr('epoch')|0;
@@ -101,7 +101,7 @@ function context_open_day_data(key, opt){
 
 }
 
-function set_up_visitor_inputs(){
+window.set_up_visitor_inputs = function(){
 
     document.addEventListener('keydown', function(event) {
         if(event.code === 'AltLeft') {
@@ -423,28 +423,28 @@ function set_up_visitor_inputs(){
 		}
 	});
 
-	target_year = $('#target_year');
-	target_timespan = $('#target_timespan');
-	target_day = $('#target_day');
+	let target_year = $('#target_year');
+	let target_timespan = $('#target_timespan');
+	let target_day = $('#target_day');
 
-	follower_buttons = $('.btn_container');
+	let follower_buttons = $('.btn_container');
 
-	follower_year_buttons = $('.btn_preview_date[fc-index="year"]');
-	follower_year_buttons_sub = $('.btn_preview_date[fc-index="year"][value="-1"]');
-	follower_year_buttons_add = $('.btn_preview_date[fc-index="year"][value="1"]');
+	let follower_year_buttons = $('.btn_preview_date[fc-index="year"]');
+	let follower_year_buttons_sub = $('.btn_preview_date[fc-index="year"][value="-1"]');
+	let follower_year_buttons_add = $('.btn_preview_date[fc-index="year"][value="1"]');
 
-	follower_timespan_buttons = $('.btn_preview_date[fc-index="timespan"]');
-	follower_timespan_buttons_sub = $('.btn_preview_date[fc-index="timespan"][value="-1"]');
-	follower_timespan_buttons_add = $('.btn_preview_date[fc-index="timespan"][value="1"]');
+	let follower_timespan_buttons = $('.btn_preview_date[fc-index="timespan"]');
+	let follower_timespan_buttons_sub = $('.btn_preview_date[fc-index="timespan"][value="-1"]');
+	let follower_timespan_buttons_add = $('.btn_preview_date[fc-index="timespan"][value="1"]');
 
-	sub_target_year = $('#sub_target_year');
-	add_target_year = $('#add_target_year');
+	let sub_target_year = $('#sub_target_year');
+	let add_target_year = $('#add_target_year');
 
-	sub_target_timespan = $('#sub_target_timespan');
-	add_target_timespan = $('#add_target_timespan');
+	let sub_target_timespan = $('#sub_target_timespan');
+	let add_target_timespan = $('#add_target_timespan');
 
-	sub_target_day = $('#sub_target_day');
-	add_target_day = $('#add_target_day');
+	let sub_target_day = $('#sub_target_day');
+	let add_target_day = $('#add_target_day');
 
 
 	$('.btn_preview_date').click(function(){
@@ -598,7 +598,7 @@ function set_up_visitor_inputs(){
 }
 
 
-function preview_date_follow(){
+window.preview_date_follow = function(){
 
 	if(preview_date.follow){
 
@@ -615,7 +615,7 @@ function preview_date_follow(){
 
 }
 
-function evaluate_preview_change(){
+window.evaluate_preview_change = function(){
 
 	if(preview_date_manager.adjusted_year != target_year.val()|0){
 		target_year.change()
@@ -627,14 +627,14 @@ function evaluate_preview_change(){
 
 }
 
-function refresh_preview_inputs(){
+window.refresh_preview_inputs = function(){
 	target_year.val(preview_date_manager.adjusted_year);
 	repopulate_timespan_select(target_timespan, preview_date_manager.timespan, false, preview_date_manager.last_valid_timespan);
 	repopulate_day_select(target_day, preview_date_manager.day, false, false, preview_date_manager.last_valid_day);
 }
 
 
-function update_preview_calendar(){
+window.update_preview_calendar = function(){
 
 	preview_date_manager = new date_manager(target_year.val()|0, target_timespan.val()|0, target_day.val()|0);
 
@@ -645,7 +645,7 @@ function update_preview_calendar(){
 
 }
 
-function set_preview_date(year, timespan, day, epoch){
+window.set_preview_date = function(year, timespan, day, epoch){
 
 	preview_date_manager.year = convert_year(static_data, year);
 	preview_date_manager.timespan = timespan;
@@ -661,7 +661,7 @@ function set_preview_date(year, timespan, day, epoch){
 }
 
 
-function go_to_preview_date(rebuild){
+window.go_to_preview_date = function(rebuild){
 
 	preview_date.follow = false;
 
@@ -694,7 +694,7 @@ function go_to_preview_date(rebuild){
 
 }
 
-function display_preview_back_button(){
+window.display_preview_back_button = function(){
 
 	if(preview_date.epoch != dynamic_data.epoch){
 		$('.reset_preview_date_container.right .reset_preview_date')
@@ -724,7 +724,7 @@ function display_preview_back_button(){
 
 }
 
-function update_current_day(recalculate){
+window.update_current_day = function(recalculate){
 
     if(recalculate){
         dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
@@ -739,7 +739,7 @@ function update_current_day(recalculate){
 
 }
 
-function go_to_dynamic_date(rebuild){
+window.go_to_dynamic_date = function(rebuild){
 
 	preview_date.follow = true
 
@@ -768,7 +768,7 @@ function go_to_dynamic_date(rebuild){
 
 }
 
-function evaluate_settings(){
+window.evaluate_settings = function(){
 
 	if(static_data){
 		if(static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0){
@@ -826,7 +826,7 @@ function evaluate_settings(){
 }
 
 
-function eval_clock(){
+window.eval_clock = function(){
 
 	if(!Perms.user_can_see_clock()){
 		$('#clock').css('display', 'none');
@@ -859,7 +859,7 @@ function eval_clock(){
 
 }
 
-function eval_current_time(){
+window.eval_current_time = function(){
 
 	if(!Perms.user_can_see_clock()){
 		$('#clock').css('display', 'none');
@@ -872,7 +872,7 @@ function eval_current_time(){
 
 }
 
-function evaluate_sun(){
+window.evaluate_sun = function(){
 
 	if(!Perms.user_can_see_clock()){
 		$('#clock').css('display', 'none');
@@ -891,7 +891,7 @@ function evaluate_sun(){
 
 }
 
-function repopulate_event_category_lists(){
+window.repopulate_event_category_lists = function(){
 
 	var html = [];
 	html.push("<option selected value='-1'>None</option>")
@@ -922,7 +922,7 @@ function repopulate_event_category_lists(){
     $('#default_event_category').val(default_event_category.id);
 }
 
-function repopulate_timespan_select(select, val, change, max){
+window.repopulate_timespan_select = function(select, val, change, max){
 
 	if(static_data.year_data.timespans.length == 0 || static_data.year_data.global_week.length == 0) return;
 
@@ -997,7 +997,7 @@ function repopulate_timespan_select(select, val, change, max){
 
 }
 
-function repopulate_day_select(select, val, change, no_leaps, max, filter_timespan){
+window.repopulate_day_select = function(select, val, change, no_leaps, max, filter_timespan){
 
 	if(static_data.year_data.timespans.length == 0 || static_data.year_data.global_week.length == 0) return;
 
@@ -1081,7 +1081,7 @@ function repopulate_day_select(select, val, change, no_leaps, max, filter_timesp
 
 }
 
-function set_up_visitor_values(){
+window.set_up_visitor_values = function(){
 
 	preview_date.follow = true;
 

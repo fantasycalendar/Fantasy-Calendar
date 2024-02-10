@@ -311,4 +311,4 @@ const events_manager = {
     },
 };
 
-module.exports = events_manager;
+export default events_manager;

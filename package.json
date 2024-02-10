@@ -1,21 +1,20 @@
 {
     "private": true,
+    "type": "module",
     "scripts": {
-        "development": "mix",
-        "watch": "mix watch",
-        "watch-poll": "mix watch -- --watch-options-poll=1000",
-        "hot": "mix watch --hot",
-        "production": "mix --production",
-        "dev-install-watch": "npm install && npm run watch"
+        "dev": "vite",
+        "build": "vite build"
     },
     "devDependencies": {
+        "@rollup/plugin-inject": "^5.0.5",
+        "@vitejs/plugin-vue": "^5.0.3",
         "axios": "^1.6.0",
         "bootstrap": "^4.6.2",
         "browser-sync": "^2.28.3",
         "browser-sync-webpack-plugin": "2.3.0",
         "cross-env": "^7.0.3",
         "jquery": "^3.6.3",
-        "laravel-mix": "^6.0.49",
+        "laravel-vite-plugin": "^1.0.1",
         "lodash": "^4.17.21",
         "mix-tailwindcss": "^1.3.0",
         "popper.js": "^1.16.1",
@@ -23,6 +22,9 @@
         "sass": "^1.57.1",
         "sass-loader": "^12.4.0",
         "tippy.js": "^6.3.7",
+        "vite": "^5.1.0",
+        "vite-plugin-node-polyfills": "^0.19.0",
+        "vite-plugin-static-copy": "^1.0.1",
         "webpack": "^5.76.0"
     },
     "optionalDependencies": {
@@ -50,7 +52,7 @@
         "postcss": "^8.4.21",
         "progressbar.js": "^1.1.1",
         "protip": "^1.4.21",
-        "sanitize-html": "^2.8.1",
+        "sanitize-html": "^2.11.0",
         "select2": "^4.0.13",
         "select2-bootstrap-theme": "0.1.0-beta.10",
         "serverless-s3-sync": "^1.14.4",

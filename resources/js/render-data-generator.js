@@ -668,4 +668,4 @@ const render_data_generator = {
     }
 }
 
-module.exports = render_data_generator;
+export default render_data_generator;

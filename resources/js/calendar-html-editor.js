@@ -118,4 +118,4 @@ const calendar_html_editor = {
 }
 
 
-module.exports = calendar_html_editor;
+export default calendar_html_editor;

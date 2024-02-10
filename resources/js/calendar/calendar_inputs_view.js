@@ -1,6 +1,6 @@
-rebuild_type = 'calendar';
+window.rebuild_type = 'calendar';
 
-function set_up_view_inputs(){
+window.set_up_view_inputs = function(){
 
 	/* if(just_converted && !JSON.parse(localStorage.getItem('hide_welcome_back'))){
 
@@ -335,7 +335,7 @@ function set_up_view_inputs(){
 }
 
 
-function increment_date_units(current){
+window.increment_date_units = function(current){
 
 	var unit_years = $('#unit_years').val()|0;
 	var unit_months = $('#unit_months').val()|0;
@@ -410,7 +410,7 @@ function increment_date_units(current){
 
 }
 
-function evaluate_dynamic_change(){
+window.evaluate_dynamic_change = function(){
 
 	if(dynamic_date_manager.adjusted_year != current_year.val()|0){
 		current_year.change()
@@ -467,7 +467,7 @@ function evaluate_dynamic_change(){
 
 }
 
-function repopulate_location_select_list(){
+window.repopulate_location_select_list = function(){
 
 	if(!creation.is_done()){
 		return;
@@ -515,7 +515,7 @@ function repopulate_location_select_list(){
 
 }
 
-function set_up_view_values(){
+window.set_up_view_values = function(){
 
 	dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 

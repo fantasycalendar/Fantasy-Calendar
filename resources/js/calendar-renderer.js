@@ -158,4 +158,4 @@ const calendar_renderer = {
 
 }
 
-module.exports = calendar_renderer;
+export default calendar_renderer;

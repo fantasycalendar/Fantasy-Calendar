@@ -53,4 +53,4 @@ class Perms {
     }
 }
 
-module.exports = Perms;
+export default Perms;

@@ -1,6 +1,6 @@
-const colors = require('tailwindcss/colors')
+import colors from 'tailwindcss/colors';
 
-module.exports = {
+export default {
     darkMode: 'class',
     content: [
         "./resources/**/*.blade.php",
@@ -9,20 +9,6 @@ module.exports = {
         "./resources/**/*.vue",
         "./app/View/Components/**/*.php",
         './vendor/filament/**/*.blade.php',
-    ],
-    safelist: [
-        // {
-        //     pattern: /bg-(.*)-(50|100|200|300|400|500|600|700|800|900)/,
-        //     variants: ['hover', 'dark', 'dark:hover'],
-        // },
-        // {
-        //     pattern: /text-(.*)-(50|100|200|300|400|500|600|700|800|900)/,
-        //     variants: ['hover', 'dark', 'dark:hover'],
-        // },
-        // {
-        //     pattern: /border-(.*)-(50|100|200|300|400|500|600|700|800|900)/,
-        //     variants: ['hover', 'dark', 'dark:hover'],
-        // },
     ],
     theme: {
         extend: {
@@ -49,8 +35,8 @@ module.exports = {
         }
     },
     plugins: [
-        require('@tailwindcss/forms'),
-        require('@tailwindcss/typography'),
-        require('@tailwindcss/aspect-ratio'),
+        '@tailwindcss/forms',
+        '@tailwindcss/typography',
+        '@tailwindcss/aspect-ratio',
     ],
 }

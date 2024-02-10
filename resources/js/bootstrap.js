@@ -1,4 +1,5 @@
-window._ = require('lodash');
+import lodash from 'lodash';
+window._ = lodash;
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -6,24 +7,33 @@ window._ = require('lodash');
  * code may be modified to fit the specific needs of your application.
  */
 
-try {
-    window.Popper = require('popper.js').default;
-    window.$ = window.jQuery = require('jquery');
+import $ from 'jquery';
+window.jQuery = window.$ = $;
 
-    require('chart.js');
-    require('trumbowyg');
-    require('notifyjs');
+import popper from 'popper.js';
+window.Popper = popper;
 
-    /**
-     * Protip is a tooltip solution that works well with jQuery, but takes a modern
-     * approach to the way you actually create tooltips. In this case that means
-     * using attributes on elements in HTML, not direct javascript controls.
-     */
-    require('protip');
+import Chart from 'chart.js';
+window.Chart = Chart;
+
+// import 'trumbowyg';
+// window.trumbowyg = trumbowyg;
+
+import notifyjs from 'notifyjs';
+window.notify = $.notify = notifyjs;
+
+/**
+ * Protip is a tooltip solution that works well with jQuery, but takes a modern
+ * approach to the way you actually create tooltips. In this case that means
+ * using attributes on elements in HTML, not direct javascript controls.
+ */
+
+import 'protip';
+// window.protip = $.protip = protip;
 
 
-    require('bootstrap');
-} catch (e) {}
+import bootstrap from 'bootstrap';
+window.bootstrap = bootstrap;
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -31,7 +41,8 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = require('axios');
+import axios from 'axios';
+window.axios = axios;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.withCredentials = true;
@@ -63,14 +74,16 @@ if (token) {
  * API, allowing confirmations and very much more. (sweetalert.js.org)
  */
 
-window.swal = require('sweetalert2')
+import sweetalert from 'sweetalert2';
+window.swal = sweetalert;
 
 /**
  * Select2 is a jQuery-based replacement for select boxes. It supports searching,
  * remote data sets, and pagination of results.
  */
 
-require('select2');
+import Select2 from 'select2';
+window.Select2 = Select2;
 
 /**
  * With ProgressBar.js, it's easy to create responsive and stylish progress
@@ -79,7 +92,8 @@ require('select2');
  * custom shaped progress bars with any vector graphic editor.
  */
 
-window.ProgressBar = require('progressbar.js');
+import ProgressBar from 'progressbar.js';
+window.ProgressBar = ProgressBar;
 
 /**
  * mustache.js is an implementation of the mustache template system in JavaScript.
@@ -88,13 +102,15 @@ window.ProgressBar = require('progressbar.js');
  * provided in a hash or object.
  */
 
-window.Mustache = require('mustache');
+import Mustache from 'mustache';
+window.Mustache = Mustache;
 
 /**
  * Sanitize HTML inputs browser-side using sanitize-html!
  */
 
-window.sanitizeHtml = require('sanitize-html');
+import * as sanitizeHtml from 'sanitize-html';
+window.sanitizeHtml = sanitizeHtml;
 
 /**
  * $.contextMenu is a management facility for - you guessed it - context menus.
@@ -103,7 +119,8 @@ window.sanitizeHtml = require('sanitize-html');
  * menus without providing actual markup, as $.contextMenu generates DOMElements as needed.
  */
 
-window.contextMenu = require('jquery-contextmenu')
+import contextMenu from 'jquery-contextmenu';
+window.contextMenu = contextMenu;
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
@@ -111,11 +128,13 @@ window.contextMenu = require('jquery-contextmenu')
  * allows your team to easily build robust real-time web applications.
  */
 
-window.AlpineEditor = require('alpine-editor')
+// import { AlpineEditor as AlpineEditor } from 'alpine-editor';
+// window.AlpineEditor = AlpineEditor;
 
 // import Echo from 'laravel-echo'
 
-// window.Pusher = require('pusher-js');
+// import Pusher from 'pusher-js';
+// window.Pusher = Pusher;
 
 // window.Echo = new Echo({
 //     broadcaster: 'pusher',
@@ -124,11 +143,14 @@ window.AlpineEditor = require('alpine-editor')
 //     encrypted: true
 // });
 
-window.tailwindColors = require('tailwindcss/colors')
+import tailwindColors from 'tailwindcss/colors';
+window.tailwindColors = tailwindColors;
 
 /**
  * Convenient and dependency free wrapper for working with arrays and objects.
  */
-let collectJS = require('collect.js');
+import collectJS from 'collect.js';
+window.collectJS = collectJS;
+
 window.Collection = collectJS.Collection;
 window.collect = collectJS.collect;

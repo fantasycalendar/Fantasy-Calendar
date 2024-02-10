@@ -1,13 +1,13 @@
 @extends('templates._calendar')
 
 @push('head')
-    <script>
-    $(document).ready(function(){
+    <script type="module">
+    window.addEventListener("load", function(){
 
         @include('calendar._loadcalendar')
 
-        preview_date = clone(dynamic_data);
-        preview_date.follow = true;
+        window.preview_date = clone(dynamic_data);
+        window.preview_date.follow = true;
 
         rebuild_calendar('calendar', dynamic_data);
 

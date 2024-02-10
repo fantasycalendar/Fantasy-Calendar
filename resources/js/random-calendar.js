@@ -181,4 +181,4 @@ class RandomCalendar{
 
 }
 
-module.exports = RandomCalendar;
+export default RandomCalendar;
