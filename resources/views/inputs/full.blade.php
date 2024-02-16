@@ -1721,10 +1721,10 @@
                             <p><small>Once they accept your invite, you'll be able to assign them a role.</small></p>
                         </div>
 
-                        <div class='row no-gutters my-1 input-group'>
-                            <input type='text' class='form-control' id='email_input' placeholder='Email'>
+                        <div class='row no-gutters my-1 input-group' x-data="{ email: '' }">
+                            <input type='text' class='form-control' id='email_input' x-model='email' placeholder='Email'>
                             <div class="input-group-append">
-                                <button type='button' class='btn full btn-primary' id='btn_send_invite'>Send Invite </button>
+                                <button type='button' class='btn full btn-primary' id='btn_send_invite' :disabled="!email">Send Invite </button>
                             </div>
                         </div>
                         <div class='row no-gutters mb-2 hidden'>
