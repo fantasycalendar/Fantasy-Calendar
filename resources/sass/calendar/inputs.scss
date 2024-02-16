@@ -241,16 +241,9 @@ input[type="number"]:not(.spinner) {
     width: 70%;
 }
 
-.length_input {
-    display: inline-flex;
-    justify-content: flex-end;
-    margin-left: auto;
-    text-align: left;
-    width: 30%;
-}
-
-.length_input input {
-    margin-left: 5px;
+.timespan_length {
+    width: 46px !important;
+    flex: revert !important;
 }
 
 .collapsed > .collapse-container {

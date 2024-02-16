@@ -2819,12 +2819,12 @@ function add_timespan_to_sortable(parent, key, data){
 	var element = $(
         `<div class='sortable-container list-group-item ${data.type} collapsed collapsible' type='${data.type}' index='${key}' x-data="{ type: '${data.type}', week: ${JSON.stringify(data.week ?? [])} }">
 		<div class='main-container'>
-			<div class='handle icon-reorder'></div>
-			<div class='expand icon-expand'></div>
-			<div class='name-container'>
-				<input value="${data.name}" type='text' step='1.0' tabindex='${(100+key)}'class='name-input small-input form-control dynamic_input' data='year_data.timespans.${key}' fc-index='name'/>
+			<div class='handle icon-reorder' x-show="reordering"></div>
+			<div class='expand icon-expand' x-show="!reordering"></div>
+			<div class='name-container input-group'>
+				<input value="${data.name}" type='text' step='1.0' tabindex='${(100+key)}' class='flex-grow-1 name-input small-input form-control dynamic_input pr-0' data='year_data.timespans.${key}' fc-index='name'/>
+                <input type='number' min='1' class='flex-shrink-1 length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100+key)}' value='${data.length}'/>
 			</div>
-			<div class='length_input'><input type='number' min='1' class='length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100+key)}' value='${data.length}'/></div>
 			<div class="remove-spacer"></div>
 		</div>
 		<div class='remove-container'>
@@ -3421,7 +3421,7 @@ function add_location_to_list(parent, key, data){
 
 			element.push(`<div class='m-0 my-2 cycle-container wrap-collapsible location_season' fc-index='${i}'>`);
 				element.push(`<input id='collapsible_seasons_${key}_${i}' class='toggle location_toggle' type='checkbox'>`);
-				element.push(`<label for='collapsible_seasons_${key}_${i}' class='lbl-toggle location_name'><div class='icon icon-expand'></div> Weather settings: ${static_data.seasons.data[i].name}</label>`);
+				element.push(`<label for='collapsible_seasons_${key}_${i}' class='lbl-toggle location_name'><div class='icon icon-expand'></div>${static_data.seasons.data[i].name} weather</label>`);
 
 				element.push("<div class='collapsible-content container p-0'>");
 

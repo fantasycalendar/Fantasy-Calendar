@@ -688,7 +688,7 @@
                                                                         href='{{ helplink('months') }}'
                                                                         class="wiki protip"><i
                             class="icon-question-sign"></i></a></label>
-            <div class="collapsible-content card-body">
+            <div class="collapsible-content card-body" x-data="{ reordering: false }">
 
                 @if(request()->is('calendars/*/edit') && $calendar->isLinked())
 
@@ -732,13 +732,13 @@
 
                 @else
 
-                    <div class='row bold-text'>
+                    <div class='row bold-text mb-3'>
                         <div class="col">
                             New month:
                         </div>
                     </div>
 
-                    <div class='add_inputs timespan row no-gutters mb-2 input-group'>
+                    <div class='add_inputs timespan row no-gutters input-group'>
 
                         <input type='text' id='timespan_name_input' class='form-control name' placeholder='Name'>
 
@@ -752,12 +752,21 @@
                         </div>
                     </div>
 
+                    <div class="row no-gutters mb-2">
+                        <button class="full btn btn-secondary" @click="reordering = true" x-show="!reordering">
+                            <i class="fa fa-arrows-alt-v"></i> Change order
+                        </button>
+                        <button class="full btn btn-secondary" @click="reordering = false" x-show="reordering">
+                            <i class="fa fa-check"></i> Done
+                        </button>
+                    </div>
                     <div class="row sortable-header timespan_sortable_header hidden">
-                        <div class='col-6' style="padding-left:25%;">Name</div>
+                        <div class='col-6' style="padding-left:55px">Name</div>
                         <div class='col-6' style="padding-left:20%;">Length</div>
                     </div>
 
                     <div class='sortable list-group' id='timespan_sortable'></div>
+
 
                 @endif
 
@@ -1724,7 +1733,7 @@
                         <div class='row no-gutters my-1 input-group' x-data="{ email: '' }">
                             <input type='text' class='form-control' id='email_input' x-model='email' placeholder='Email'>
                             <div class="input-group-append">
-                                <button type='button' class='btn full btn-primary' id='btn_send_invite' :disabled="!email">Send Invite </button>
+                                <button type='button' class='btn full btn-primary' id='btn_send_invite' :disabled="!email">Invite </button>
                             </div>
                         </div>
                         <div class='row no-gutters mb-2 hidden'>
