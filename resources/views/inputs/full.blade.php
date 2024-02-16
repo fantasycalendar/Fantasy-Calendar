@@ -1834,6 +1834,12 @@
             </div>
         @endif
     </div>
+
+    <div class="copyright text-center">
+        <small class="copyright d-inline-block mb-2">Copyright © {{ date('Y') }} Fantasy Computerworks Ltd <br>
+                <a href="{{ route('terms-and-conditions') }}">Terms and Conditions</a> - <a
+                    href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</a></small>
+    </div>
 </div>
 
 <div id="calendar_container">
@@ -1936,11 +1942,6 @@
             <canvas class='chart'></canvas>
         </div>
 
-    </div>
-    <div class="copyright text-center">
-        <small class="copyright d-inline-block mb-2">Copyright © {{ date('Y') }} Fantasy Computerworks Ltd - <a
-                    href="{{ route('terms-and-conditions') }}">Terms and Conditions</a> - <a
-                    href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</a></small>
     </div>
 
 </div>
