@@ -166,7 +166,7 @@ select.invalid {
 
 .sortable-container.intercalary,
 .sortable-container.intercalary .visible {
-    background-color: $gray-secondary;
+    background-color: rgba($gray-secondary, 0.55);
 }
 
 .sortable-container.intercalary .border {
