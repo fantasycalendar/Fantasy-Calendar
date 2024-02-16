@@ -1797,13 +1797,13 @@
                                 </div>
                             @else
 
-                                <div class='row no-gutters my-1'>
+                                <div class='input-group my-1'>
                                     <select class='form-control' id='calendar_link_select'></select>
-                                </div>
-                                <div class='row no-gutters my-1'>
-                                    <button type='button' class='btn btn-sm btn-secondary full'
+                                    <div class="input-group-append">
+                                        <button type='button' class='btn btn-sm btn-secondary full'
                                             id='refresh_calendar_list_select'>Refresh
-                                    </button>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div class='sortable' id='calendar_link_list'></div>
