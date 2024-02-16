@@ -6,7 +6,9 @@ use App\Models\CalendarEvent;
 use App\Console\Commands\DownCommand;
 use App\Console\Commands\UpCommand;
 use App\Observers\CalendarEventObserver;
+use App\Services\CalendarService\CalendarManager;
 use App\Services\EpochService\EpochFactory;
+use App\Services\MoonService\Moon;
 use Filament\Facades\Filament;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Pagination\Paginator;
@@ -29,8 +31,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton('calendar', function($app){
+            return new CalendarManager();
+        });
+
         $this->app->singleton('epoch', function($app){
             return new EpochFactory();
+        });
+
+        $this->app->singleton('moons', function($app){
+            return new Moon();
         });
 
         $this->app->bind('mustache', function($app){

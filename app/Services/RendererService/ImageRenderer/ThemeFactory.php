@@ -12,13 +12,13 @@ class ThemeFactory
     private $name;
     public static $themes = [
         'fantasy_calendar' => [
-            'background_color' => '#303030',
-            'shadow_color' => '#222222',
-            'border_color' => "#222222",
-            'current_date_color' => "#9e6116",
-            'placeholder_background_color' => '#343434',
-            'heading_text_color' => '#ffffff',
-            'text_color' => '#ffffff',
+            'background_color' => '#1f2937',
+            'shadow_color' => '#111827',
+            'border_color' => "#111827",
+            'current_date_color' => "#2e3846",
+            'placeholder_background_color' => '#111827',
+            'heading_text_color' => '#e5e7eb',
+            'text_color' => '#e5e7eb',
             'inactive_text_color' => '#717171',
             'font_name' => 'Noah',
             'shadow_strength' => '30',

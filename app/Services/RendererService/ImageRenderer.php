@@ -5,11 +5,9 @@ namespace App\Services\RendererService;
 use App\Models\Calendar;
 use App\Collections\EpochsCollection;
 use App\Services\RendererService\ImageRenderer\ThemeFactory;
-use ArrayAccess;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Imagick;
@@ -74,6 +72,10 @@ class ImageRenderer
     private int $day_number_size;
     private int $day_number_padding;
 
+    private int $moon_columns;
+    private int $moon_size;
+    private string $moon_image;
+
     private int $calendarNameTextSize;
 
     private $weekdays;
@@ -108,7 +110,6 @@ class ImageRenderer
         $this->intercalary_month = $monthRenderData->get('intercalary_month');
         $this->min_day_text_length = $monthRenderData->get('min_day_text_length');
 
-
         $this->setupTheme();
         $this->determineCanvasDimensions();
         $this->initializeParametricProperties();
@@ -128,7 +129,7 @@ class ImageRenderer
             'shadow_size_difference' => 0,
             'shadow_strength' => 5,
             'grid_line_width' => 1,
-            'debug' => 0,
+            'debugimage' => 0,
             'snapshot' => 0,
             'theme' => 'discord',
             'quality' => 95,
@@ -213,13 +214,39 @@ class ImageRenderer
         $totalIntercalarySpacing = !$this->intercalary_month ? $this->intercalary_spacing * $this->intercalary_weeks_count * 2 : 0;
         $this->grid_row_height = ($boundingBoxHeight - $totalIntercalarySpacing) / $this->weeks_count;
 
-        $this->day_number_size = clamp($this->parameter('day_number_size', $this->grid_row_height / 4), 12, 38);
+        $this->day_number_size = clamp($this->parameter('day_number_size', ($this->grid_row_height / 4) * 0.75), 12, 38);
         $this->day_number_padding = clamp($this->day_number_size / 4, 1, 12);
+
+        $this->moon_columns = min($this->calendar->moons->count(), 4);
+        $this->moon_size = $this->determineMoonSize();
+        if($this->moon_size) {
+            $this->moon_image = sprintf('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" width="%s" height="%s">', $this->calendar_bounding_x2 - $this->calendar_bounding_x1, $this->calendar_bounding_y2 - $this->calendar_bounding_y1);
+            logger()->info($this->moon_image);
+        } else {
+            logger()->info('No moon size');
+        }
 
         $calendarMaxNameTextSize = $this->header_height / 3.5;
         $determinedCalendarNameWidth = $this->determineTextSize($this->calendar->name, $calendarMaxNameTextSize)['width'];
         $calendarNameRatio = ($boundingBoxWidth * 0.95) / $determinedCalendarNameWidth;
         $this->calendarNameTextSize = clamp($calendarMaxNameTextSize * $calendarNameRatio, 9, $calendarMaxNameTextSize);
+    }
+
+    private function determineMoonSize()
+    {
+        if(!$this->moon_columns) {
+            return 0;
+        }
+
+        if(($desiredSize = ($this->grid_column_width / ($this->moon_columns + 1.5))) < 12) {
+            return 0;
+        }
+
+        if((floor($this->calendar->moons->count() / $this->moon_columns) * $desiredSize) + $this->day_number_size + 4 > $this->grid_row_height) {
+            return 0;
+        }
+
+        return clamp($this->parameter('moon_size', $desiredSize), 12, 32);
     }
 
     /**
@@ -236,6 +263,7 @@ class ImageRenderer
         $this->drawWeekdayNames();
         $this->drawColumns();
         $this->drawIntercalaryDividers();
+        $this->mergeMoonImage();
 
         return $this->image->encode($this->ext, $this->quality);
     }
@@ -524,11 +552,48 @@ class ImageRenderer
                 $this->colorize($color),
                 'left'
             );
+
+            // If the calendar has moons ... Let's try to draw them.
+            if(($moonCount = $this->calendar->moons->count()) && $this->moon_size) {
+                $moonBoxWidth = (($this->moon_columns * $this->moon_size) / 2);
+
+                $dayCenter = $dayX + ($this->grid_column_width / 2);
+                $moonsLeft = ($dayCenter - $moonBoxWidth);
+                $moonsTop = $current_row_top_y + $this->day_number_size + 4;
+
+                foreach($day->moons as $index => $moon) {
+                    $left = round($moonsLeft + ($this->moon_size * ($index % $this->moon_columns)));
+                    $top = round($moonsTop + ($this->moon_size * floor($index / $this->moon_columns)));
+
+                    $this->moon_image .= $this->moonImageForPhase(
+                        $moon['phase'],
+                        $this->calendar->moons->get($index),
+                        $left,
+                        $top
+                    );
+                }
+            }
         });
 
         if($isIntercalary && ($visualWeeks->count() == 1 || ($internal_week_number > 0 && $internal_week_number < $visualWeeks->count()))) {
             $current_row_top_y += $this->intercalary_spacing;
         }
+    }
+
+    private function moonImageForPhase($phase, $moon, $x, $y)
+    {
+        return $moon->svgForPhase($phase, $this->moon_size, $x, $y);
+        $im = new Imagick();
+        $png = '';
+
+        $im->setBackgroundColor(new ImagickPixel('transparent'));
+        $im->readImageBlob($svg);
+        $im->setImageFormat('png32');
+        $png = $im->getImageBlob();
+        $im->clear();
+        $im->destroy();
+
+        return $png;
     }
 
     /**
@@ -559,7 +624,7 @@ class ImageRenderer
      */
     private function colorize($type = null)
     {
-        if(request()->get('debug')) {
+        if(request()->get('debugimage')) {
             $hash = md5('color' . rand(1, 500)); // modify 'color' to get a different palettes
 
             return "#" . substr($hash, 0, 2) . substr($hash, 2, 2) . substr($hash, 4, 2);
@@ -594,6 +659,17 @@ class ImageRenderer
                 }
             }
         );
+
+        $this->snapshot();
+    }
+
+    private function circle($diameter, $center_x, $center_y, $color = null)
+    {
+        $this->image->circle($diameter, $center_x, $center_y, function($draw) use ($color) {
+            if($color) {
+                $draw->background($color);
+            }
+        });
 
         $this->snapshot();
     }
@@ -732,32 +808,43 @@ class ImageRenderer
             'sm' => [
                 'divide' => 3,
                 'multiply' => 4,
+                'day_number_size' => 10
             ],
             'md' => [
                 'divide' => 18,
-                'multiply' => 31
+                'multiply' => 31,
+                'day_number_size' => 13
             ],
             'lg' => [
                 'divide' => 12,
-                'multiply' => 25
+                'multiply' => 25,
+                'day_number_size' => 14
             ],
             'xl' => [
                 'divide' => 72,
                 'multiply' => 175,
+                'day_number_size' => 15
             ],
             '2xl' => [
                 'divide' => 144,
                 'multiply' => 425,
+                'day_number_size' => 18
             ],
             '3xl' => [
                 'divide' => 48,
                 'multiply' => 175,
+                'day_number_size' => 19
             ]
         ];
 
         $size = $this->size;
         if($size && Arr::has($size_presets, $size)) {
             foreach(['intercalary_spacing', 'day_width','day_height','header_height', 'day_number_size'] as $property) {
+                if($size_presets[$size][$property] ?? false) {
+                    $$property = $size_presets[$size][$property];
+                    continue;
+                }
+
                 $$property /= $size_presets[$size]['divide'];
                 $$property *= $size_presets[$size]['multiply'];
             }
@@ -769,7 +856,7 @@ class ImageRenderer
         $this->parameters->put('grid_row_height', $day_height);
         $this->parameters->put('header_height', clamp($header_height, $this->minimum_header_height, $this->maximum_header_height));
         $this->parameters->put('weekday_header_height', clamp($day_height / 2.5, $this->minimum_weekday_header_height, $this->parameters->get('header_height') / 2));
-        $this->parameters->put('day_number_size', clamp($day_number_size, 10, 50));
+        $this->parameters->put('day_number_size', clamp((int) round($day_number_size), 10, 50));
 
         $this->x = clamp($this->week_length * $day_width, $this->min_x, $this->max_x);
         $this->y = $this->weekday_header_height
@@ -903,6 +990,31 @@ class ImageRenderer
     public function __get($name)
     {
         return $this->parameter($name);
+    }
+
+    private function mergeMoonImage()
+    {
+        if(!$this->moon_size) {
+            return false;
+        }
+
+        $im = new Imagick();
+        $svg = $this->moon_image . "</svg>";
+
+        Storage::put('moon.svg', $svg);
+
+        $im->setBackgroundColor(new ImagickPixel('transparent'));
+        $im->readImageBlob($svg);
+        $im->setImageFormat('png32');
+        $png = $im->getImageBlob();
+        $im->clear();
+        $im->destroy();
+
+        $this->image->insert($png);
+
+        $this->snapshot();
+
+        return $this;
     }
 }
 

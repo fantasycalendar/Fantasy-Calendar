@@ -4,6 +4,7 @@
 namespace App\Services\EpochService;
 
 
+use App\Facades\Moons;
 use App\Services\CalendarService\Month;
 use Illuminate\Support\Collection;
 
@@ -34,6 +35,7 @@ class Epoch
     public bool $isCurrentDate;
     public array $attachedAttributes = [];
     private array $attributes;
+    public array $moons;
 
     public function __construct($attributes)
     {
@@ -61,6 +63,11 @@ class Epoch
 
         $this->slug = $this->slugify();
         $this->attributes = $attributes;
+    }
+
+    public function addMoons()
+    {
+        $this->moons = Moons::forEpoch($this)->toArray();
     }
 
     /**

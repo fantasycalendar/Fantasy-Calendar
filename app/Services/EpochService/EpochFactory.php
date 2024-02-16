@@ -4,6 +4,7 @@
 namespace App\Services\EpochService;
 
 
+use App\Facades\Moons;
 use App\Models\Calendar;
 use App\Collections\EpochsCollection;
 use App\Services\CalendarService\Era;
@@ -16,10 +17,30 @@ class EpochFactory
      * @var Calendar
      */
     private Calendar $calendar;
+
     /**
      * @var EpochsCollection
      */
     private EpochsCollection $epochs;
+
+    /**
+     * @var bool $moonsEnabled Determines whether to query the moon service during construction
+     */
+    private bool $moonsEnabled = false;
+
+    /**
+     * We only want to enable moons if there are actually moons
+     */
+    public function enableMoons()
+    {
+        $this->moonsEnabled = $this->calendar->moons->count() > 0;
+
+        if($this->moonsEnabled && $this->epochs->count()) {
+            Moons::forCalendar($this->calendar);
+
+            $this->epochs->each->addMoons();
+        }
+    }
 
     /**
      * Create an EpochFactory for a specific calendar
