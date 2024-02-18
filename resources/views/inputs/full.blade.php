@@ -686,7 +686,7 @@
                                                                         href='{{ helplink('months') }}'
                                                                         class="wiki protip"><i
                             class="icon-question-sign"></i></a></label>
-            <div class="collapsible-content card-body">
+            <div class="collapsible-content card-body" x-data="{ reordering: false }">
 
                 @if(request()->is('calendars/*/edit') && $calendar->isLinked())
 
@@ -730,13 +730,13 @@
 
                 @else
 
-                    <div class='row bold-text'>
+                    <div class='row bold-text mb-3'>
                         <div class="col">
                             New month:
                         </div>
                     </div>
 
-                    <div class='add_inputs timespan row no-gutters mb-2 input-group'>
+                    <div class='add_inputs timespan row no-gutters input-group'>
 
                         <input type='text' id='timespan_name_input' class='form-control name' placeholder='Name'>
 
@@ -750,12 +750,21 @@
                         </div>
                     </div>
 
+                    <div class="row no-gutters mb-2">
+                        <button class="full btn btn-secondary" @click="reordering = true" x-show="!reordering">
+                            <i class="fa fa-arrows-alt-v"></i> Change order
+                        </button>
+                        <button class="full btn btn-secondary" @click="reordering = false" x-show="reordering">
+                            <i class="fa fa-check"></i> Done
+                        </button>
+                    </div>
                     <div class="row sortable-header timespan_sortable_header hidden">
-                        <div class='col-6' style="padding-left:25%;">Name</div>
+                        <div class='col-6' style="padding-left:55px">Name</div>
                         <div class='col-6' style="padding-left:20%;">Length</div>
                     </div>
 
                     <div class='sortable list-group' id='timespan_sortable'></div>
+
 
                 @endif
 
@@ -1719,10 +1728,10 @@
                             <p><small>Once they accept your invite, you'll be able to assign them a role.</small></p>
                         </div>
 
-                        <div class='row no-gutters my-1 input-group'>
-                            <input type='text' class='form-control' id='email_input' placeholder='Email'>
+                        <div class='row no-gutters my-1 input-group' x-data="{ email: '' }">
+                            <input type='text' class='form-control' id='email_input' x-model='email' placeholder='Email'>
                             <div class="input-group-append">
-                                <button type='button' class='btn full btn-primary' id='btn_send_invite'>Send Invite </button>
+                                <button type='button' class='btn full btn-primary' id='btn_send_invite' :disabled="!email">Invite </button>
                             </div>
                         </div>
                         <div class='row no-gutters mb-2 hidden'>
@@ -1795,13 +1804,13 @@
                                 </div>
                             @else
 
-                                <div class='row no-gutters my-1'>
+                                <div class='input-group my-1'>
                                     <select class='form-control' id='calendar_link_select'></select>
-                                </div>
-                                <div class='row no-gutters my-1'>
-                                    <button type='button' class='btn btn-sm btn-secondary full'
+                                    <div class="input-group-append">
+                                        <button type='button' class='btn btn-sm btn-secondary full'
                                             id='refresh_calendar_list_select'>Refresh
-                                    </button>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div class='sortable' id='calendar_link_list'></div>
@@ -1822,6 +1831,12 @@
                 </div>
             </div>
         @endif
+    </div>
+
+    <div class="copyright text-center">
+        <small class="copyright d-inline-block mb-2">Copyright © {{ date('Y') }} Fantasy Computerworks Ltd <br>
+                <a href="{{ route('terms-and-conditions') }}">Terms and Conditions</a> - <a
+                    href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</a></small>
     </div>
 </div>
 
@@ -1925,11 +1940,6 @@
             <canvas class='chart'></canvas>
         </div>
 
-    </div>
-    <div class="copyright text-center">
-        <small class="copyright d-inline-block mb-2">Copyright © {{ date('Y') }} Fantasy Computerworks Ltd - <a
-                    href="{{ route('terms-and-conditions') }}">Terms and Conditions</a> - <a
-                    href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</a></small>
     </div>
 
 </div>
