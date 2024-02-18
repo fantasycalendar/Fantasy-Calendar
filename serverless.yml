@@ -59,6 +59,7 @@ provider:
     DISCORD_REDIRECT_URI: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_redirect_uri}
     DISCORD_PUBLIC_KEY: ${ssm:/${self:custom.ssm.${self:custom.stage}}/discord_public_key}
     DISCORD_COMMAND: ${self:custom.environment.${self:custom.stage}.DISCORD_COMMAND}
+    SENTRY_LARAVEL_DSN: ${ssm:/${self:custom.ssm.${self:custom.stage}}/sentry-dsn}
     BREF_BINARY_RESPONSES: '1'
   iamRoleStatements:
     # Allow Lambda to read and write files in the S3 buckets

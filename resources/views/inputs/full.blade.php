@@ -406,31 +406,29 @@
                             <p class="mb-0 mt-3"><a onclick="linked_popup();" href='#'>Why can't I edit the real time
                                     advancement?</a></p>
                         @else
-                            <div @change="$dispatch('advancement-changed', { data: toJSON() })"
+                            <div @change="$dispatch('advancement-changed', toJSON())"
                                  @clock-changed.window="toggle_clock"
-                                 x-data="function(){
-                                    return {
-                                        discord_webhooks: {{ $calendar->discord_webhooks()->count() }},
-                                        data: {
-                                            advancement_enabled: {{ $calendar->advancement_enabled ? "true" : "false" }},
-                                            advancement_real_rate: {{ $calendar->advancement_real_rate ?? 1 }},
-                                            advancement_real_rate_unit: '{{ $calendar->advancement_real_rate_unit ?? "hours" }}',
-                                            advancement_rate: {{ $calendar->advancement_rate ?? 1 }},
-                                            advancement_rate_unit: '{{ $calendar->advancement_rate_unit ?? ($calendar->clock_enabled ? "hours" : "days") }}',
-                                            advancement_webhook_url: '{{ $calendar->advancement_webhook_url }}',
-                                            advancement_webhook_format: '{{ $calendar->advancement_webhook_format }}',
-                                            advancement_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                                        },
-                                        toggle_clock($event){
-                                            this.clock_enabled = $event.detail.enabled;
-                                            if(this.data.advancement_rate_unit !== 'days'){
-                                                this.data.advancement_rate_unit = 'days';
-                                            }
-                                        },
-                                        clock_enabled: {{ $calendar->clock_enabled ? "true" : "false" }},
-                                        toJSON(){
-                                            return JSON.parse(JSON.stringify(this.data));
+                                 x-data="{
+                                    discord_webhooks: {{ $calendar->discord_webhooks()->count() }},
+                                    data: {
+                                        advancement_enabled: {{ $calendar->advancement_enabled ? "true" : "false" }},
+                                        advancement_real_rate: {{ $calendar->advancement_real_rate ?? 1 }},
+                                        advancement_real_rate_unit: '{{ $calendar->advancement_real_rate_unit ?? "hours" }}',
+                                        advancement_rate: {{ $calendar->advancement_rate ?? 1 }},
+                                        advancement_rate_unit: '{{ $calendar->advancement_rate_unit ?? ($calendar->clock_enabled ? "hours" : "days") }}',
+                                        advancement_webhook_url: '{{ $calendar->advancement_webhook_url }}',
+                                        advancement_webhook_format: '{{ $calendar->advancement_webhook_format }}',
+                                        advancement_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                                    },
+                                    toggle_clock($event){
+                                        this.clock_enabled = $event.detail.enabled;
+                                        if(this.data.advancement_rate_unit !== 'days'){
+                                            this.data.advancement_rate_unit = 'days';
                                         }
+                                    },
+                                    clock_enabled: {{ $calendar->clock_enabled ? "true" : "false" }},
+                                    toJSON(){
+                                        return JSON.parse(JSON.stringify(this.data));
                                     }
                                 }"
                             >

@@ -54,11 +54,17 @@ class Handler extends ExceptionHandler
 
     public function register()
     {
-        if(config('logging.discord.url')) {
-            $this->reportable(function(Throwable $e){
-                logger()->channel('discord')->error($e->getMessage()."\n".$e->getTraceAsString());
+        if (config('logging.discord.url')) {
+            $this->reportable(function (Throwable $e) {
+                logger()->channel('discord')->error($e->getMessage() . "\n" . $e->getTraceAsString());
             });
         }
+
+        $this->reportable(function (Throwable $e) {
+            if (app()->bound('sentry')) {
+                app('sentry')->captureException($e);
+            }
+        });
     }
 
     /**
@@ -71,8 +77,8 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        if($this->isApiCall($request)) {
-            if(property_exists($exception, 'validator')) {
+        if ($this->isApiCall($request)) {
+            if (property_exists($exception, 'validator')) {
                 return response()->json([
                     'message' => 'The given data was invalid.',
                     'errors' => $exception->validator->getMessageBag()
@@ -88,12 +94,12 @@ class Handler extends ExceptionHandler
             ], $status);
         }
 
-        if($exception instanceof AuthorizationException || $exception instanceof AuthenticationException) {
-            if($request->is('calendars/*/edit')) {
-                return redirect(str_replace('/edit','', $request->path()));
+        if ($exception instanceof AuthorizationException || $exception instanceof AuthenticationException) {
+            if ($request->is('calendars/*/edit')) {
+                return redirect(str_replace('/edit', '', $request->path()));
             }
 
-            if($request->is('calendars/create')) {
+            if ($request->is('calendars/create')) {
                 $message = (Auth::user()->isEarlySupporter())
                     ? "Thanks for using Fantasy Calendar! Free accounts created before Nov 1st, 2020 are limited to fifteen calendars. <br> Please subscribe if you need more than that. As an early supporter, you even get a lifetime 20% discount!"
                     : "Thanks for using Fantasy Calendar! Please subscribe to have more than two calendars active at a time.";
@@ -101,7 +107,7 @@ class Handler extends ExceptionHandler
                 return redirect(route('subscription.pricing'))->with('alert', $message);
             }
 
-            if($request->is('calendars/*')) {
+            if ($request->is('calendars/*')) {
                 return redirect(route('errors.calendar_unavailable'));
             }
         }
@@ -111,8 +117,8 @@ class Handler extends ExceptionHandler
         }
 
         if ($this->isHttpException($exception)) {
-            if($exception->getStatusCode() == 404) {
-                if($exception instanceof ModelNotFoundException) {
+            if ($exception->getStatusCode() == 404) {
+                if ($exception instanceof ModelNotFoundException) {
                     return response()->view('errors.404', [
                         'title' => 'Calendar not found'
                     ]);
@@ -122,7 +128,7 @@ class Handler extends ExceptionHandler
             }
 
             if ($exception->getStatusCode() == 403) {
-                if(Auth::check() && Auth::user()->betaAccess()) {
+                if (Auth::check() && Auth::user()->betaAccess()) {
                     return redirect('/');
                 }
 
