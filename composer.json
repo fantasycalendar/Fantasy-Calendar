@@ -41,6 +41,7 @@
         "mews/purifier": "^3.4",
         "mustache/mustache": "^2.14",
         "nesbot/carbon": "^2.68",
+        "sentry/sentry-laravel": "^4.2",
         "socialiteproviders/discord": "^4.2",
         "spatie/laravel-export": "^0.3.11",
         "spatie/laravel-honeypot": "^4.3",
