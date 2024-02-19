@@ -2579,7 +2579,7 @@ function set_up_edit_inputs(){
 
 
     document.addEventListener("advancement-changed", function(event){
-        advancement = event.detail.data;
+        advancement = clone(event.detail.data);
         evaluate_save_button();
     });
 }
