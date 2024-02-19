@@ -1,3 +1,29 @@
+### 2.3.8 - Majestic Marid
+#### Feb 18, 2024?
+- Various adjustments to UI:
+    - Moved the "toggle sidebar" button to the top left of the page (and into the sidebar when it's open)
+    - Fixed some weird viewport issues on some mobile devices and browsers
+    - Improved consistency of layout between various inputs on the edit page
+    - Simplified modal window headings a bit
+    - Updated the colors of the clock widget to be nicer to look at
+    - Reworked the current date/time section of both the edit and view pages
+    - Moved the view/print/delete buttons into a menu at the top of the sidebar
+    - Moved the copyright footer to the sidebar
+    - Improved button colors on dark theme
+    - Probably a bunch of other little things we forgot to mention
+- Backend efficiency improvements
+- Installation of Sentry agent for better error logging and tracking
+- Various dependency updates
+
+### 2.3.7a - Managerial Marid
+#### Jan 25, 2024
+- Drastically improve performance of several database queries, which should lead to overall increased responsiveness
+
+### 2.3.7 - Managerial Marid
+#### Jan 25, 2024
+- Events manager
+- Fix Calendars breaking entire app when date cant be resolved
+
 ### 2.3.6 - Mischievous Marid
 #### August 6, 2023
 - Updated: Set calendar advancement period upon saving
