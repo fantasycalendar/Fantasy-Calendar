@@ -2816,8 +2816,10 @@ function add_timespan_to_sortable(parent, key, data){
 
 	if(key == 0) $('.timespan_sortable_header').removeClass('hidden');
 
+    const weekBase64 = btoa(encodeURIComponent(JSON.stringify(data.week ?? [])));
+
 	var element = $(
-        `<div class='sortable-container list-group-item ${data.type} collapsed collapsible' type='${data.type}' index='${key}' x-data="{ type: '${data.type}', week: ${JSON.stringify(data.week ?? [])} }">
+        `<div class='sortable-container list-group-item ${data.type} collapsed collapsible' type='${data.type}' index='${key}' x-data="{ type: '${data.type}', week: JSON.parse(decodeURIComponent(atob('${weekBase64}'))) }">
             <div class='main-container' x-data="{ deleting: false }">
 			<div class='handle icon-reorder' x-show="reordering && !deleting"></div>
 			<div class='expand icon-expand' x-show="!reordering && !deleting"></div>
@@ -2905,7 +2907,7 @@ function add_timespan_to_sortable(parent, key, data){
                     <div class='row no-gutters border'>
                         <div class='week_list col-12 p-1'>
                             <template x-for='(day, index) in week' :key='index'>
-                                <input type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' :fc-index='index'/>
+                                <input :value='day' type='text' class='form-control internal-list-name dynamic_input custom_week_day' data='year_data.timespans.${key}.week' :fc-index='index'/>
                             </template>
                         </div>
                     </div>
