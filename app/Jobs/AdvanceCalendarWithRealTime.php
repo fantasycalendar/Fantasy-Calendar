@@ -30,7 +30,8 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
     public function __construct(
         public int $calendarId,
         public Carbon $now
-    ){}
+    ) {
+    }
 
     /**
      * Execute the job.
@@ -44,7 +45,9 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
     {
         $this->calendar = Calendar::find($this->calendarId);
 
-        $this->ensureCalendarShouldAdvance();
+        if (!$this->calendarShouldAdvance()) {
+            return;
+        }
 
         logger()->debug("{$this->calendar->name} should advance.");
 
@@ -54,17 +57,17 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
         $realWorldDiffMethod = "diffIn{$real_unit}";
         $realWorldSubMethod = "sub{$real_unit}";
 
-        if(!$this->calendar->advancement_next_due) {
+        if (!$this->calendar->advancement_next_due) {
             $this->calendar->advancement_next_due = $this->now->startOfMinute();
         }
 
         $unitsSinceLastUpdate = 1 + $this->calendar
-                ->advancement_next_due
-                ->$realWorldDiffMethod(
-                    $this->now->$realWorldSubMethod(
-                        $this->calendar->advancement_real_rate ?? 1
-                    )
-                ) / $this->calendar->advancement_real_rate ?? 1;
+            ->advancement_next_due
+            ->$realWorldDiffMethod(
+                $this->now->$realWorldSubMethod(
+                    $this->calendar->advancement_real_rate ?? 1
+                )
+            ) / $this->calendar->advancement_real_rate ?? 1;
 
         $calendar_unit = ucfirst($this->calendar->advancement_rate_unit);
         $calendarMethod = "add{$calendar_unit}";
@@ -82,21 +85,23 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
 
         logger()->debug("HasWebhook? " . $hasWebhook ? "yes" : "no");
 
-        if(app()->environment('production') && $hasWebhook) {
+        if (app()->environment('production') && $hasWebhook) {
             HitCalendarUpdateWebhook::dispatch($this->calendar);
         }
     }
 
-    private function ensureCalendarShouldAdvance()
+    private function calendarShouldAdvance()
     {
         // Make sure advancement is enabled
-        if(!$this->calendar->advancement_enabled) {
+        if (!$this->calendar->advancement_enabled) {
             throw new AdvancementNotEnabledException($this->calendar);
         }
 
         // Make sure we haven't accidentally doubled up on running the job
-        if($this->calendar->advancement_next_due >= $this->now->startOfMinute()) {
-            throw new AdvancementTooEarlyException($this->calendar);
+        if ($this->calendar->advancement_next_due >= $this->now->startOfMinute()) {
+            logger()->error("Tried to advance {$this->calendar->name} ({$this->calendar->hash}), but it's too early: " . now() . " - " . $this->calendar->advancement_next_due);
+
+            return false;
         }
 
         // Make sure all of the advancement settings are set
@@ -106,14 +111,16 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
             'advancement_real_rate',
             'advancement_real_rate_unit',
         ])->each(function ($field) {
-            if(empty($this->calendar->$field)) {
+            if (empty($this->calendar->$field)) {
                 throw new AdvancementNotReadyException($this->calendar);
             }
         });
 
         // Make sure the calendar doesn't expect to advance in units of hours or minutes without the clock enabled
-        if(!$this->calendar->clock_enabled && in_array($this->calendar->advancement_rate_unit, ['minutes', 'hours'])) {
+        if (!$this->calendar->clock_enabled && in_array($this->calendar->advancement_rate_unit, ['minutes', 'hours'])) {
             throw new ClockNotEnabledException($this->calendar);
         }
+
+        return true;
     }
 }
