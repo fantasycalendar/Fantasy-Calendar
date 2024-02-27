@@ -26,6 +26,7 @@ class Timespan implements Arrayable
     {
         $this->attributes = $attributes;
         $this->attributes['intercalary'] = ($attributes['type'] == 'intercalary');
+        $this->attributes['length'] = $attributes['length'] ?? 0;
         $this->leapDays = collect([]);
     }
 

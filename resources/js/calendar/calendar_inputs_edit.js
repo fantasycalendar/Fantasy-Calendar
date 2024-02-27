@@ -2824,8 +2824,8 @@ function add_timespan_to_sortable(parent, key, data){
 			<div class='handle icon-reorder' x-show="reordering && !deleting"></div>
 			<div class='expand icon-expand' x-show="!reordering && !deleting"></div>
 			<div class='name-container input-group' x-show="!deleting">
-				<input value="${data.name}" type='text' step='1.0' tabindex='${(100+key)}' class='flex-grow-1 name-input small-input form-control dynamic_input pr-0' data='year_data.timespans.${key}' fc-index='name'/>
-                <input type='number' min='1' class='flex-shrink-1 length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100+key)}' value='${data.length}'/>
+                <input value="${data.name}" type='text' step='1.0' tabindex='${(100+key)}' class='flex-grow-1 name-input small-input form-control dynamic_input pr-0' data='year_data.timespans.${key}' fc-index='name'/>
+                <input @blur="if ((!$event.target.value) || $event.target.value < 1) { $event.target.value = 1; } else { console.log($event.target.value) }" type='number' min='1' class='flex-shrink-1 length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100+key)}' value='${data.length}'/>
 			</div>
             <div class='d-flex align-items-center justify-content-between full' :class="{ 'hidden': !deleting }">
                 <div class='pl-1'>Are you sure?</div>

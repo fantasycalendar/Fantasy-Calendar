@@ -139,7 +139,7 @@ class State
      */
     private function incrementDay(): void
     {
-        if($this->isNumbered()) {
+        if ($this->isNumbered()) {
             $this->visualDay++;
         }
 
@@ -154,20 +154,20 @@ class State
      */
     private function incrementWeekday(): void
     {
-        if($this->isIntercalary()){
+        if ($this->isIntercalary()) {
             $this->visualWeekdayIndex++;
-            if(($this->day >= 1 && !$this->previousState->get('isIntercalary')) || $this->visualWeekdayIndex > $this->weekdayCount()-1 || $this->day === 1) {
+            if (($this->day >= 1 && !$this->previousState->get('isIntercalary')) || $this->visualWeekdayIndex > $this->weekdayCount() - 1 || $this->day === 1) {
                 $this->visualWeekdayIndex = 0;
                 $this->visualWeekIndex++;
             }
             return;
         }
 
-        if($this->previousState->get('isIntercalary') && !$this->isIntercalary()){
+        if ($this->previousState->get('isIntercalary') && !$this->isIntercalary()) {
             $this->visualWeekIndex++;
         }
 
-        if(!($this->previousState->get('isIntercalary') && $this->monthIndexOfYear === 1)) {
+        if (!($this->previousState->get('isIntercalary') && $this->monthIndexOfYear === 1)) {
             $this->weekdayIndex++;
         }
         $this->incrementWeek();
@@ -179,7 +179,7 @@ class State
      */
     private function incrementWeek($force = false): void
     {
-        if($this->weekdayIndex >= $this->weekDayCount() || $force){
+        if ($this->weekdayIndex >= $this->weekDayCount() || $force) {
             $this->weekdayIndex = 0;
             $this->visualWeekIndex++;
             $this->weeksSinceMonthStart++;
@@ -193,7 +193,7 @@ class State
      */
     private function incrementMonth(): void
     {
-        if($this->day <= $this->currentMonth()->daysInYear->count()){
+        if ($this->day <= $this->currentMonth()->daysInYear->count()) {
             $this->incrementWeekday();
             return;
         }
@@ -206,7 +206,7 @@ class State
         $this->monthIndexOfYear++;
 
 
-        if($this->monthIndexOfYear == $this->months->count()){
+        if ($this->monthIndexOfYear == $this->months->count()) {
             $this->incrementYear();
         }
 
@@ -214,13 +214,13 @@ class State
         $this->weeksSinceMonthStart = 0;
         $this->previousState->forget('totalWeeksInMonth');
 
-        if($this->calendar->overflows_week){
+        if ($this->calendar->overflows_week) {
             $this->incrementWeekday();
-        }else{
+        } else {
             $this->incrementWeek(!$this->isIntercalary());
         }
 
-        if(!$this->previousState->get('isIntercalary') && $this->isIntercalary()){
+        if (!$this->previousState->get('isIntercalary') && $this->isIntercalary()) {
             $this->visualWeekdayIndex = 0;
         }
 
@@ -232,7 +232,7 @@ class State
      */
     private function incrementHistoricalIntercalaryCount(): void
     {
-        if($this->isIntercalary()){
+        if ($this->isIntercalary()) {
             $this->historicalIntercalaryCount++;
         }
     }
@@ -295,8 +295,13 @@ class State
      */
     private function isIntercalary(): bool
     {
-        if(!$this->statecache->has('isIntercalary')) {
-            $this->statecache->put('isIntercalary', $this->currentMonth()->daysInYear[$this->day-1]->intercalary);
+        if (!$this->statecache->has('isIntercalary')) {
+            $daysInYear = $this->currentMonth()->daysInYear;
+            if (!$daysInYear->has($this->day - 1)) {
+                return false;
+            }
+
+            $this->statecache->put('isIntercalary', $daysInYear->get($this->day - 1)->intercalary);
         }
 
         return $this->statecache->get('isIntercalary');
@@ -310,7 +315,7 @@ class State
      */
     private function isNumbered(): bool
     {
-        return $this->currentMonth()->daysInYear[$this->day-1]->isNumbered;
+        return $this->currentMonth()->daysInYear->get($this->day - 1)?->isNumbered ?? false;
     }
 
     /*
@@ -375,11 +380,11 @@ class State
      */
     private function calculateTotalWeeksInYear(): int
     {
-        if($this->previousState->has('totalWeeksInYear')){
+        if ($this->previousState->has('totalWeeksInYear')) {
             return $this->previousState->get('totalWeeksInYear');
         }
 
-        if($this->calendar->overflows_week){
+        if ($this->calendar->overflows_week) {
             $totalDaysInYear = $this->months->sum->countNormalDays();
 
             return (int) abs(ceil(($totalDaysInYear + $this->weekdayIndex) / $this->calendar->global_week->count()));
@@ -407,7 +412,7 @@ class State
      */
     private function calculateTotalWeeksInMonth(): int
     {
-        if($this->previousState->has('totalWeeksInMonth')){
+        if ($this->previousState->has('totalWeeksInMonth')) {
             return $this->previousState->get('totalWeeksInMonth');
         }
 
@@ -425,7 +430,7 @@ class State
     private function calculateMoonPhases()
     {
         return $this->calendar->moons
-            ->map(function($moon) {
+            ->map(function ($moon) {
                 return $moon->setEpoch($this->epoch)->getPhases();
             });
     }
@@ -517,5 +522,4 @@ class State
     {
         return $this->previousState->get('visualWeekdayIndex');
     }
-
 }
