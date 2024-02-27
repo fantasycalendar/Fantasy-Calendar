@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\Middleware\RateLimitedWithRedis;
+use Illuminate\Support\Facades\Bus;
 
 class AdvanceRealTimeCalendars implements ShouldQueue
 {
@@ -37,9 +38,13 @@ class AdvanceRealTimeCalendars implements ShouldQueue
      */
     public function handle()
     {
-        Calendar::dueForAdvancement()->each(function(Calendar $calendar){
-            logger()->debug("Advancing {$calendar->name}");
-            AdvanceCalendarWithRealTime::dispatch($calendar);
-        });
+        $now = now();
+        $calendarIds = Calendar::dueForAdvancement()->pluck('id');
+
+        Bus::batch(
+            $calendarIds->map(
+                fn ($id) => new AdvanceCalendarWithRealTime($id, $now),
+            )->toArray()
+        )->dispatch();
     }
 }

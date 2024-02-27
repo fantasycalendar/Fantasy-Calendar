@@ -801,7 +801,7 @@ class Calendar extends Model
             ->whereHas('user', function (Builder $query) {
                 return $query->premium();
             })->where(function (Builder $query) {
-                $query->where('advancement_next_due', '<=', now())
+                $query->where('advancement_next_due', '<', now()->startOfMinute())
                     ->orWhereNull('advancement_next_due');
             });
     }

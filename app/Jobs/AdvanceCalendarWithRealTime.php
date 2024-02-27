@@ -8,15 +8,19 @@ use App\Exceptions\AdvancementTooEarlyException;
 use App\Exceptions\ClockNotEnabledException;
 use App\Models\Calendar;
 use App\Services\Discord\API\Client;
+use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
 
 class AdvanceCalendarWithRealTime implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public Calendar $calendar;
 
     /**
      * Create a new job instance.
@@ -24,7 +28,8 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
      * @return void
      */
     public function __construct(
-        public Calendar $calendar
+        public int $calendarId,
+        public Carbon $now
     ){}
 
     /**
@@ -37,6 +42,8 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
      */
     public function handle()
     {
+        $this->calendar = Calendar::find($this->calendarId);
+
         $this->ensureCalendarShouldAdvance();
 
         logger()->debug("{$this->calendar->name} should advance.");
@@ -48,13 +55,13 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
         $realWorldSubMethod = "sub{$real_unit}";
 
         if(!$this->calendar->advancement_next_due) {
-            $this->calendar->advancement_next_due = now()->startOfMinute();
+            $this->calendar->advancement_next_due = $this->now->startOfMinute();
         }
 
         $unitsSinceLastUpdate = 1 + $this->calendar
                 ->advancement_next_due
                 ->$realWorldDiffMethod(
-                    now()->$realWorldSubMethod(
+                    $this->now->$realWorldSubMethod(
                         $this->calendar->advancement_real_rate ?? 1
                     )
                 ) / $this->calendar->advancement_real_rate ?? 1;
@@ -67,15 +74,15 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
                 $unitsSinceLastUpdate * $this->calendar->advancement_rate
             );
 
-        $this->calendar->advancement_next_due = now()->$realWorldMethod($this->calendar->advancement_real_rate ?? 1)->startOfMinute();
-        $this->calendar->save();
+        $this->calendar->advancement_next_due = $this->now->$realWorldMethod($this->calendar->advancement_real_rate ?? 1)->startOfMinute();
+        // $this->calendar->save();
 
 
         $hasWebhook = $this->calendar->advancement_webhook_url || $this->calendar->discord_webhooks()->exists();
 
         logger()->debug("HasWebhook? " . $hasWebhook ? "yes" : "no");
 
-        if($hasWebhook) {
+        if(app()->environment('production') && $hasWebhook) {
             HitCalendarUpdateWebhook::dispatch($this->calendar);
         }
     }
@@ -88,7 +95,7 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
         }
 
         // Make sure we haven't accidentally doubled up on running the job
-        if($this->calendar->advancement_next_due >= now()->startOfMinute()) {
+        if($this->calendar->advancement_next_due >= $this->now->startOfMinute()) {
             throw new AdvancementTooEarlyException($this->calendar);
         }
 

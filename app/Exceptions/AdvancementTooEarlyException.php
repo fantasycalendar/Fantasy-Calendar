@@ -9,6 +9,6 @@ class AdvancementTooEarlyException extends Exception
 {
     public function __construct(Calendar $calendar)
     {
-        parent::__construct("Tried to advance {$calendar->name} ({$calendar->hash}), but it's too early.");
+        parent::__construct("Tried to advance {$calendar->name} ({$calendar->hash}), but it's too early: " . now() . " - " . $calendar->advancement_next_due);
     }
 }
