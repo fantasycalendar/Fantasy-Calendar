@@ -50,7 +50,7 @@
         "postcss": "^8.4.21",
         "progressbar.js": "^1.1.1",
         "protip": "^1.4.21",
-        "sanitize-html": "^2.8.1",
+        "sanitize-html": "^2.12.1",
         "select2": "^4.0.13",
         "select2-bootstrap-theme": "0.1.0-beta.10",
         "serverless-s3-sync": "^1.14.4",
