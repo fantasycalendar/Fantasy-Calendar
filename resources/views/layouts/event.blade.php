@@ -135,7 +135,7 @@
 				</div>
 
 				<div class='row no-gutters my-1'>
-					<input type='text' class='form-control event_editor_name' x-model='working_event.name' placeholder='Event name' autofocus='' @keydown.enter="save_event" @keydown.esc.stop />
+					<input maxlength="100" type='text' class='form-control event_editor_name' x-model='working_event.name' placeholder='Event name' autofocus='' @keydown.enter="save_event" @keydown.esc.stop />
 				</div>
 
 				<div class='row no-gutters my-1'>
