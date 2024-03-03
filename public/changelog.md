@@ -1,5 +1,19 @@
+### 2.3.10 - Methodical Marid
+#### March 3, 2024
+- Fixed: Issues preventing advancement entirely in most cases
+- Fixed: Months with a single weekday breaking image renderer
+- Fixed: Situations where event names could be too long
+- Updated: Respond to Discord's webhook checks without logging noise
+
+### 2.3.9 - Minimalistic Marid
+#### Feb 26, 2024
+- Fixed: minimalistic calendar layout
+- Updated: Tighten up some potential sources of auto-advancement drift
+- Updated: Reduce logging noise caused by overzealous auto-advancement checking
+
+
 ### 2.3.8 - Majestic Marid
-#### Feb 18, 2024?
+#### Feb 21, 2024
 - Various adjustments to UI:
     - Moved the "toggle sidebar" button to the top left of the page (and into the sidebar when it's open)
     - Fixed some weird viewport issues on some mobile devices and browsers
