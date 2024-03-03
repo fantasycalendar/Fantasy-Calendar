@@ -20,15 +20,13 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public Calendar $calendar;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
     public function __construct(
-        public int $calendarId,
+        public Calendar|int $calendar,
         public Carbon $now
     ) {
     }
@@ -43,7 +41,9 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
      */
     public function handle()
     {
-        $this->calendar = Calendar::find($this->calendarId);
+        if (is_int($this->calendar)) {
+            $this->calendar = Calendar::find($this->calendar);
+        }
 
         if (!$this->calendarShouldAdvance()) {
             return;
