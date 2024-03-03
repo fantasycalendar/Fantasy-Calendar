@@ -58,13 +58,13 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
         $realWorldSubMethod = "sub{$real_unit}";
 
         if (!$this->calendar->advancement_next_due) {
-            $this->calendar->advancement_next_due = $this->now->startOfMinute();
+            $this->calendar->advancement_next_due = $this->now()->startOfMinute();
         }
 
         $unitsSinceLastUpdate = 1 + $this->calendar
             ->advancement_next_due
             ->$realWorldDiffMethod(
-                $this->now->$realWorldSubMethod(
+                $this->now()->$realWorldSubMethod(
                     $this->calendar->advancement_real_rate ?? 1
                 )
             ) / $this->calendar->advancement_real_rate ?? 1;
@@ -77,9 +77,8 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
                 $unitsSinceLastUpdate * $this->calendar->advancement_rate
             );
 
-        $this->calendar->advancement_next_due = $this->now->$realWorldMethod($this->calendar->advancement_real_rate ?? 1)->startOfMinute();
-        // $this->calendar->save();
-
+        $this->calendar->advancement_next_due = $this->now()->$realWorldMethod($this->calendar->advancement_real_rate ?? 1)->startOfMinute();
+        $this->calendar->save();
 
         $hasWebhook = $this->calendar->advancement_webhook_url || $this->calendar->discord_webhooks()->exists();
 
@@ -98,8 +97,8 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
         }
 
         // Make sure we haven't accidentally doubled up on running the job
-        if ($this->calendar->advancement_next_due >= $this->now->startOfMinute()) {
-            logger()->error("Tried to advance {$this->calendar->name} ({$this->calendar->hash}), but it's too early: " . now() . " - " . $this->calendar->advancement_next_due);
+        if ($this->calendar->advancement_next_due >= $this->now()->startOfMinute()) {
+            logger()->error("Tried to advance {$this->calendar->name} ({$this->calendar->hash}), but it's too early: " . $this->now() . " - " . $this->calendar->advancement_next_due);
 
             return false;
         }
@@ -122,5 +121,10 @@ class AdvanceCalendarWithRealTime implements ShouldQueue
         }
 
         return true;
+    }
+
+    private function now()
+    {
+        return $this->now->clone();
     }
 }
