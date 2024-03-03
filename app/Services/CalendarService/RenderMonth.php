@@ -75,7 +75,6 @@ class RenderMonth
      */
     private function findShortestUniquePrefixLength($weekdays, $length = null): int
     {
-        //        log_json($weekdays);
         $length = $length ?? $weekdays->map(function ($weekday) {
             return strlen($weekday);
         })->max();
@@ -84,7 +83,7 @@ class RenderMonth
             return Str::limit($dayName, $length, '');
         })->max();
 
-        return ($matchedShortNames === 1)
+        return ($matchedShortNames === 1 && $length > 2)
             ? $this->findShortestUniquePrefixLength($weekdays, $length - 1) // All unique, check one more level
             : max($length + 1, 3); // Found duplicates! That means our length is truncating too far.
     }
