@@ -114,7 +114,7 @@ class AdvancementTest extends TestCase
                  * class of the exception is what we would expect.
                  */
                 try {
-                    (new AdvanceCalendarWithRealTime($testCalendar))->handle();
+                    (new AdvanceCalendarWithRealTime($testCalendar, now()))->handle();
                 } catch (\Throwable $thrown) {
                     if ($testCase['advancement_settings']['advancement_next_due_delta'] ?? false) {
                         $this->assertTrue($thrown instanceof AdvancementTooEarlyException);
