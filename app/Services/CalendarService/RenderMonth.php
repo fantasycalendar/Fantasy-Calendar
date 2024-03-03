@@ -26,15 +26,15 @@ class RenderMonth
     {
         $epochs = Epoch::forCalendarMonth($this->calendar);
 
-        $weeks = $epochs->chunkByWeeks()->map(function($week){
-            return $week->map(function($week){
+        $weeks = $epochs->chunkByWeeks()->map(function ($week) {
+            return $week->map(function ($week) {
                 $weekdays = collect(range(0, $this->weekdays->count() - 1));
 
-                if($week->filter->isIntercalary->count() > 0) {
+                if ($week->filter->isIntercalary->count() > 0) {
                     return $weekdays->slice($week->count())->prepend($week->sortBy('day'))->flatten();
                 }
 
-                return $weekdays->mapWithKeys(function($index) use ($week) {
+                return $weekdays->mapWithKeys(function ($index) use ($week) {
                     return [$index => $week->where('weekdayIndex', $index)->first()];
                 });
             });
@@ -75,12 +75,12 @@ class RenderMonth
      */
     private function findShortestUniquePrefixLength($weekdays, $length = null): int
     {
-//        log_json($weekdays);
-        $length = $length ?? $weekdays->map(function($weekday) {
-                return strlen($weekday);
-            })->max();
+        //        log_json($weekdays);
+        $length = $length ?? $weekdays->map(function ($weekday) {
+            return strlen($weekday);
+        })->max();
 
-        $matchedShortNames = $weekdays->countBy(function($dayName) use ($length) {
+        $matchedShortNames = $weekdays->countBy(function ($dayName) use ($length) {
             return Str::limit($dayName, $length, '');
         })->max();
 
@@ -91,19 +91,19 @@ class RenderMonth
 
     private function cleanWeekdays($weekdays)
     {
-        if($weekdays->count() === $weekdays->filter(fn($day) => is_numeric(str_replace('Weekday ', '', $day)))->count()) {
-            return $weekdays->map(fn($day) => str_replace('Weekday ', '', $day));
+        if ($weekdays->count() === $weekdays->filter(fn ($day) => is_numeric(str_replace('Weekday ', '', $day)))->count()) {
+            return $weekdays->map(fn ($day) => str_replace('Weekday ', '', $day));
         }
 
         return $weekdays
-            ->map(fn($day) => words_to_number($day));
+            ->map(fn ($day) => words_to_number($day));
     }
 
     private function calculateWeeksCount($weeks)
     {
-        return $weeks->map(function($week){
-            return $week->map(function($visualWeek){
-                if($visualWeek->filter(fn($day) => optional($day)->isIntercalary)->count()){
+        return $weeks->map(function ($week) {
+            return $week->map(function ($visualWeek) {
+                if ($visualWeek->filter(fn ($day) => optional($day)->isIntercalary)->count()) {
                     $this->intercalary_weeks_count++;
                 }
 
@@ -111,5 +111,4 @@ class RenderMonth
             })->sum();
         })->sum();
     }
-
 }
