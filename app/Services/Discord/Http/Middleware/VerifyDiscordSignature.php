@@ -25,7 +25,10 @@ class VerifyDiscordSignature
         $verified = sodium_crypto_sign_verify_detached(hex2bin($signature), $timestamp . $request->getContent(), hex2bin(env('DISCORD_PUBLIC_KEY')));
 
         if(!$verified) {
-            throw new \Exception('Invalid signature.');
+            return response(
+                'Invalid signature.',
+                401,
+            );
         }
 
         if(app()->isDownForMaintenance()) {
