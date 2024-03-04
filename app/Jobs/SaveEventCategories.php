@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Calendar;
 use App\Models\EventCategory;
 
 class SaveEventCategories
@@ -11,11 +12,13 @@ class SaveEventCategories
      *
      * @return void
      */
-    public function __construct(public $categories, public $calendarId)
-    {
+    public function __construct(
+        public array $categories,
+        public int $calendarId,
+    ) {
     }
 
-    public static function dispatchSync($categories, $calendarId)
+    public static function dispatchSync(array $categories = [], int $calendarId)
     {
         return (new static($categories, $calendarId))->handle();
     }
@@ -27,28 +30,43 @@ class SaveEventCategories
      */
     public function handle()
     {
-        $categoryids = [];
+        $calendar = Calendar::find($this->calendarId);
+        $existingCategories = $calendar->event_categories()
+            ->pluck('id', 'id');
 
-        foreach ($this->categories as $sort_by => $category) {
-            $category['sort_by'] = $sort_by;
+        // The end result of this is an array of category IDs
+        // - The key is the category ID from the request, which can either be:
+        //     - A string, which means it's a new category
+        //     - A number, which means it's an existing category
+        //
+        //  The value is the category ID in the database, whether we created or updated
+        $categoryIds = collect($this->categories)
+            ->sortBy('sort_by')
+            ->mapWithKeys(function ($event, $sortBy) use ($calendar, $existingCategories) {
+                $event['sort_by'] = $sortBy;
 
-            if (array_key_exists('id', $category) && is_numeric($category['id'])) {
-                $categoryids[] = $category['id'];
-                $category['category_settings'] = json_encode($category['category_settings']);
-                $category['event_settings'] = json_encode($category['event_settings']);
-                EventCategory::where('id', $category['id'])->update($category);
-            } else {
-                $category['calendar_id'] = $this->calendarId;
-                $stringid = $category['id'];
-                unset($category['id']);
+                // This category has an ID, so we just need to update it
+                if (array_key_exists('id', $event) && $existingCategories->has($event['id'])) {
+                    $calendar->event_categories()
+                        ->where('id', $event['id'])
+                        ->update($event);
 
-                $category = EventCategory::Create($category);
+                    return [$event['id'] => $event['id']];
+                }
 
-                $categoryids[$stringid] = $category->id;
-            }
-        }
-        EventCategory::where('calendar_id', $this->calendarId)->whereNotIn('id', $categoryids)->delete();
+                // Otherwise, we need to create a new category
+                $stringid = $event['id'];
 
-        return $categoryids;
+                $event = $calendar->event_categories()
+                    ->create($event);
+
+                return [$stringid => $event->id];
+            });
+
+        $calendar->event_categories()
+            ->whereNotIn('id', $categoryIds)
+            ->delete();
+
+        return $categoryIds;
     }
 }

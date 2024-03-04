@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Mews\Purifier\Facades\Purifier;
 
 use App\Models\CalendarEvent;
+use Illuminate\Support\Collection;
 
 class SaveCalendarEvents
 {
@@ -18,13 +19,13 @@ class SaveCalendarEvents
      * @return void
      */
     public function __construct(
-        public $events = [],
-        public $categoryIds = [],
-        public $calendarId = null,
+        public array $events,
+        public Collection $categoryIds,
+        public int $calendarId,
     ) {
     }
 
-    public static function dispatchSync($events, $categoryIds, $calendarId)
+    public static function dispatchSync(array $events, Collection $categoryIds, int $calendarId)
     {
         return (new static($events, $categoryIds, $calendarId))->handle();
     }
@@ -73,10 +74,10 @@ class SaveCalendarEvents
         }
 
         if (!is_numeric($value)) {
-            return Arr::get($this->categoryIds, $value, null);
+            return $this->categoryIds->get($value);
         }
 
-        if (in_array($value, $this->categoryIds)) {
+        if ($this->categoryIds->contains($value)) {
             return $value;
         }
 
