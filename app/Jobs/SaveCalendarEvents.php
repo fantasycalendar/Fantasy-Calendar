@@ -17,13 +17,16 @@ class SaveCalendarEvents
      *
      * @return void
      */
-    public function __construct(public $events = [], public $categoryids = [], public $calendarId = null)
-    {
+    public function __construct(
+        public $events = [],
+        public $categoryIds = [],
+        public $calendarId = null,
+    ) {
     }
 
-    public static function dispatchSync($events, $categoryids, $calendarId)
+    public static function dispatchSync($events, $categoryIds, $calendarId)
     {
-        return (new static($events, $categoryids, $calendarId))->handle();
+        return (new static($events, $categoryIds, $calendarId))->handle();
     }
 
     /**
@@ -33,33 +36,34 @@ class SaveCalendarEvents
      */
     public function handle()
     {
-        $eventids = [];
-        foreach ($this->events as $sort_by => $event) {
-            $event['sort_by'] = $sort_by;
+        $calendar = Calendar::find($this->calendarId);
 
-            $event['event_category_id'] = $this->resolveCategoryId(Arr::get($event, 'event_category_id'));
+        $eventIds = collect($this->events)
+            ->sortBy('sort_by')
+            ->map(function (array $event, $sortBy) use ($calendar) {
+                $event['event_category_id'] = $this->resolveCategoryId(Arr::get($event, 'event_category_id'));
+                $event['sort_by'] = $sortBy;
 
-            if (array_key_exists('id', $event)) {
-                $eventids[] = $event['id'];
+                if (array_key_exists('id', $event)) {
+                    $calendar->events()
+                        ->where('id', $event['id'])
+                        ->update($event);
 
-                $event['data'] = json_encode(Arr::get($event, 'data'));
-                $event['settings'] = json_encode(Arr::get($event, 'settings'));
+                    return $event['id'];
+                }
 
-                CalendarEvent::where('id', $event['id'])->update($event);
-            } else {
-                $event['creator_id'] = Auth::user()->id ?? auth()->user()->id ?? Calendar::find($this->calendarId)->user->id;
+                $event['creator_id'] = Auth::user()->id ?? auth()->user()->id ?? $calendar->user->id;
                 $event['calendar_id'] = $this->calendarId;
 
-                $event = CalendarEvent::create($event);
-                $eventids[] = $event->id;
-            }
-        }
+                $event = $calendar->events()->create($event);
+                return $event->id;
+            });
 
         CalendarEvent::where('calendar_id', $this->calendarId)
-            ->whereNotIn('id', $eventids)
+            ->whereNotIn('id', $eventIds)
             ->delete();
 
-        return $eventids;
+        return $eventIds;
     }
 
     private function resolveCategoryId($value)
@@ -69,10 +73,10 @@ class SaveCalendarEvents
         }
 
         if (!is_numeric($value)) {
-            return Arr::get($this->categoryids, $value, null);
+            return Arr::get($this->categoryIds, $value, null);
         }
 
-        if (in_array($value, $this->categoryids)) {
+        if (in_array($value, $this->categoryIds)) {
             return $value;
         }
 
