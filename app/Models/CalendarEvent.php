@@ -6,6 +6,7 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
+use Mews\Purifier\Casts\CleanHtml;
 
 class CalendarEvent extends Model
 {
@@ -27,6 +28,7 @@ class CalendarEvent extends Model
     protected $casts = [
         'data' => 'array',
         'settings' => 'array',
+        'description' => CleanHtml::class,
     ];
 
     public function category() {

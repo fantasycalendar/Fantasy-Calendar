@@ -37,23 +37,27 @@ class SaveCalendarEvents
         foreach ($this->events as $sort_by => $event) {
             $event['sort_by'] = $sort_by;
 
-            $event['event_category_id'] = $this->resolveCategoryId($event['event_category_id']);
-
-            $event['description'] = Purifier::clean($event['description']);
+            $event['event_category_id'] = $this->resolveCategoryId(Arr::get($event, 'event_category_id'));
 
             if (array_key_exists('id', $event)) {
                 $eventids[] = $event['id'];
-                $event['data'] = json_encode($event['data']);
-                $event['settings'] = json_encode($event['settings']);
+
+                $event['data'] = json_encode(Arr::get($event, 'data'));
+                $event['settings'] = json_encode(Arr::get($event, 'settings'));
+
                 CalendarEvent::where('id', $event['id'])->update($event);
             } else {
                 $event['creator_id'] = Auth::user()->id ?? auth()->user()->id ?? Calendar::find($this->calendarId)->user->id;
                 $event['calendar_id'] = $this->calendarId;
-                $event = CalendarEvent::Create($event);
+
+                $event = CalendarEvent::create($event);
                 $eventids[] = $event->id;
             }
         }
-        CalendarEvent::where('calendar_id', $this->calendarId)->whereNotIn('id', $eventids)->delete();
+
+        CalendarEvent::where('calendar_id', $this->calendarId)
+            ->whereNotIn('id', $eventids)
+            ->delete();
 
         return $eventids;
     }
