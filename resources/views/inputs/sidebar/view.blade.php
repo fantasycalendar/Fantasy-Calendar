@@ -140,7 +140,10 @@
             @endcan
 
 
-            <div class='date_control preview_date_controls mx-3 mt-3' :class="{ 'd-flex flex-column': activeDateAdjustment === 'preview', 'd-none': activeDateAdjustment !== 'preview' || (!Perms.player_at_least('co-owner') && !static_data.settings.allow_view) }">
+            <div class='date_control preview_date_controls mx-3 mt-3' :class="{
+                    'd-flex flex-column': activeDateAdjustment === 'preview',
+                    'd-none': activeDateAdjustment !== 'preview' || !shouldShow
+                }">
                 <div class='input-group protip mt-2' value='target' data-pt-position='right' data-pt-title="The preview year">
                     <div class='input-group-prepend'>
                         <button type='button' class='btn btn-danger sub_year' id='sub_target_year'><i class="icon-minus"></i></button>
