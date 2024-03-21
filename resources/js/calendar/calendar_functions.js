@@ -1,6 +1,6 @@
-(function(b,c){var $=b.jQuery||b.Cowboy||(b.Cowboy={}),a;$.throttle=a=function(e,f,j,i){var h,d=0;if(typeof f!=="boolean"){i=j;j=f;f=c}function g(){var o=this,m=+new Date()-d,n=arguments;function l(){d=+new Date();j.apply(o,n)}function k(){h=c}if(i&&!h){l()}h&&clearTimeout(h);if(i===c&&m>e){l()}else{if(f!==true){h=setTimeout(i?k:l,i===c?e-m:e)}}}if($.guid){g.guid=j.guid=j.guid||$.guid++}return g};$.debounce=function(d,e,f){return f===c?a(d,e,false):a(d,f,e!==false)}})(this);
+// (function(b,c){var $=b.jQuery||b.Cowboy||(b.Cowboy={}),a;$.throttle=a=function(e,f,j,i){var h,d=0;if(typeof f!=="boolean"){i=j;j=f;f=c}function g(){var o=this,m=+new Date()-d,n=arguments;function l(){d=+new Date();j.apply(o,n)}function k(){h=c}if(i&&!h){l()}h&&clearTimeout(h);if(i===c&&m>e){l()}else{if(f!==true){h=setTimeout(i?k:l,i===c?e-m:e)}}}if($.guid){g.guid=j.guid=j.guid||$.guid++}return g};$.debounce=function(d,e,f){return f===c?a(d,e,false):a(d,f,e!==false)}})(this);
 
-function escapeHtml(unsafe) {
+window.escapeHtml = function(unsafe) {
     return unsafe
          .replace(/&/g, "&amp;")
          .replace(/</g, "&lt;")
@@ -9,7 +9,7 @@ function escapeHtml(unsafe) {
          .replace(/'/g, "&#039;");
  }
 
-function unescapeHtml(safe) {
+window.unescapeHtml = function(safe) {
 	if(!isNaN(safe)) return safe;
 	return safe
 			.replace(/&amp;/g, '&')
@@ -40,7 +40,7 @@ var execution_time = {
 	}
 }
 
-function is_past_current_date(dynamic_data, year, timespan, day){
+window.is_past_current_date = function(dynamic_data, year, timespan, day){
 
 	if(year !== undefined && timespan !== undefined && day !== undefined){
 		return (
@@ -61,7 +61,7 @@ function is_past_current_date(dynamic_data, year, timespan, day){
 
 }
 
-function get_colors_for_season(season_name) {
+window.get_colors_for_season = function(season_name) {
 	let index = ['spring', 'summer', 'autumn', 'winter', 'fall'].indexOf(season_name.toLowerCase());
 	if(index != -1) {
 		if(index == 0) return "#1ee313";
@@ -73,19 +73,19 @@ function get_colors_for_season(season_name) {
 	}
 }
 
-function fahrenheit_to_celcius(temp){
+window.fahrenheit_to_celcius = function(temp){
 
 	return precisionRound((temp-32)*(5/9), 4);
 
 }
 
-function celcius_to_fahrenheit(temp){
+window.celcius_to_fahrenheit = function(temp){
 
 	return precisionRound((temp*9/5)+32, 4);
 
 }
 
-function pick_from_table(chance, array, grow){
+window.pick_from_table = function(chance, array, grow){
 
 	var grow = grow !== undefined ? grow : false;
 	var keys = Object.keys(array);
@@ -111,7 +111,7 @@ function pick_from_table(chance, array, grow){
 
 }
 
-function matcher(params, data){
+window.matcher = function(params, data){
 
     // If there are no search terms, return all of the data
     if ($.trim(params.term) === '') {
@@ -165,7 +165,7 @@ function matcher(params, data){
     return null;
 }
 
-function truncate_weekdays(weekday_array){
+window.truncate_weekdays = function(weekday_array){
 
 	var new_array = [];
 
@@ -200,7 +200,7 @@ function truncate_weekdays(weekday_array){
 }
 
 
-function is_roman_numeral(string){
+window.is_roman_numeral = function(string){
 	var regex = /^(?=[MDCLXVI])M*(C[MD]|D?C*)(X[CL]|L?X*)(I[XV]|V?I*)$/i;
 
 	return regex.test(string.toUpperCase());
@@ -213,7 +213,7 @@ function is_roman_numeral(string){
  *                                  Formatted like: "static_data.year_data.timespans.1.interval"
  * @return {object}                 Returns a reference to the object found
  */
-function get_calendar_data(data){
+window.get_calendar_data = function(data){
 	data = data.split('.')
 	if(data[0] !== ""){
 		var current_calendar_data = static_data[data[0]];
@@ -233,7 +233,7 @@ function get_calendar_data(data){
  * @param  {int}        wait        The amount of time to wait in seconds
  * @param  {bool}       immediate   Whether the function should be called immediately (right now)
  */
-function debounce(func, wait, immediate) {
+window.debounce = function(func, wait, immediate) {
 	var timeout;
 	return function() {
 		var context = this, args = arguments;
@@ -283,7 +283,7 @@ Object.compare = function (obj1, obj2) {
 	return true;
 };
 
-function capitalizeFirstLetter(string) {
+window.capitalizeFirstLetter = function(string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
@@ -293,7 +293,7 @@ function capitalizeFirstLetter(string) {
  * @param  {int}     i      An integer to turn into a string
  * @return {string}         A string of the number and "st", "nd", "rd", or "th"
  */
-function ordinal_suffix_of(i){
+window.ordinal_suffix_of = function(i){
 	var j = i % 10,
 	k = i % 100;
 	if (j == 1 && k != 11){
@@ -308,11 +308,11 @@ function ordinal_suffix_of(i){
 	return i + "th";
 }
 
-function replaceAt(string, index, replacement) {
+window.replaceAt = function(string, index, replacement) {
 	return string.substr(0, index) + replacement+ string.substr(index + replacement.length);
 }
 
-function mod(n, m) {
+window.mod = function(n, m) {
     return ((n % m) + m) % m;
 }
 
@@ -431,7 +431,7 @@ class random {
 	}
 }
 
-function bezierQuadratic(p0, p1, p2, t)
+window.bezierQuadratic = function(p0, p1, p2, t)
 {
 	// mix is linear interpolation, aka. linear bezier
 	return lerp(
@@ -440,7 +440,7 @@ function bezierQuadratic(p0, p1, p2, t)
 		t
 	);
 }
-function  bezierCubic(p0, p1, p2, p3, t)
+window. bezierCubic = function(p0, p1, p2, p3, t)
 {
 	return lerp(
 		bezierQuadratic(p0, p1, p2, t),
@@ -457,7 +457,7 @@ function  bezierCubic(p0, p1, p2, p3, t)
  * @param  {number}  precision   An int to determine how many digits to keep in the fraction of the number
  * @return {number}              The precision-rounded value
  */
-function precisionRound(number, precision) {
+window.precisionRound = function(number, precision) {
 	var factor = Math.pow(10, precision);
 	return Math.round(number * factor) / factor;
 }
@@ -471,7 +471,7 @@ function precisionRound(number, precision) {
  * @param  {float}  max     Maximum value
  * @return {float}          The clamped value
  */
-function clamp(t, min, max){
+window.clamp = function(t, min, max){
 	return Math.min(Math.max(t, min), max);
 }
 
@@ -484,7 +484,7 @@ function clamp(t, min, max){
  * @param  {float}  t       A normalized value between 0.0 and 1.0, 0.0 returning p0 and 1.0 returning p1
  * @return {float}          The interpolated value
  */
-function lerp(p0, p1, t){
+window.lerp = function(p0, p1, t){
 	return p0 + t*(p1 - p0);
 }
 
@@ -495,7 +495,7 @@ function lerp(p0, p1, t){
  * @param  {float}    float     The float
  * @return {float}              The fraction of that value
  */
-function fract(float){
+window.fract = function(float){
 	return float - Math.floor(float);
 }
 
@@ -507,7 +507,7 @@ function fract(float){
  * @param  {float}    p1    The second value
  * @return {float}          The middle value
  */
-function mid(p0, p1){
+window.mid = function(p0, p1){
 	return (p0+p1)/2;
 }
 
@@ -520,7 +520,7 @@ function mid(p0, p1){
  * @param  {float}  max     The maximum value
  * @return {float}          The normalized value
  */
-function norm(v, min, max)
+window.norm = function(v, min, max)
 {
 	return (v - min) / (max - min);
 }
@@ -533,7 +533,7 @@ function norm(v, min, max)
  * @param  {float}  max     The maximum value
  * @return {float}          The normalized value
  */
-function inv_norm(v, min, max)
+window.inv_norm = function(v, min, max)
 {
 	return (max - v) / (max - min);
 }
@@ -546,7 +546,7 @@ function inv_norm(v, min, max)
  * @param  {float}  cycle   The cycle of a moon
  * @return {int}            The given level of granularity suggested for that cycle
  */
-function get_moon_granularity(cycle){
+window.get_moon_granularity = function(cycle){
 	if(cycle >= 40){
 		return 40;
 	}else if(cycle >= 24){
@@ -560,7 +560,7 @@ function get_moon_granularity(cycle){
 	}
 }
 
-function get_current_era(static_data, epoch){
+window.get_current_era = function(static_data, epoch){
 
 	if(static_data.eras === undefined || static_data.eras.length == 0){
 		return -1;
@@ -591,7 +591,7 @@ function get_current_era(static_data, epoch){
 }
 
 
-class date_manager {
+export class date_manager {
 
 	constructor(year, timespan, day){
 
@@ -879,7 +879,7 @@ class date_manager {
 
 }
 
-function valid_preview_date(year, timespan, day){
+window.valid_preview_date = function(year, timespan, day){
 
     if(!static_data.settings.allow_view){
         return false;
@@ -930,7 +930,7 @@ function valid_preview_date(year, timespan, day){
  *                              "text" - The text to be displayed at the top of the calendar
  *                              "array" - An array containing each index (ints) that indicates which part of the cycle each of them is in
  */
-function get_cycle(static_data, epoch_data){
+window.get_cycle = function(static_data, epoch_data){
 
 	var text = {
 		"n": "<br>"
@@ -993,7 +993,7 @@ function get_cycle(static_data, epoch_data){
  * @param  {int}        leap_day_index  The index of the leap day
  * @return {bool}                       A boolean, indicating if the leap day appears on that month
  */
-function does_leap_day_appear(static_data, year, timespan_index, leap_day_index){
+window.does_leap_day_appear = function(static_data, year, timespan_index, leap_day_index){
 
 	let timespan_appears = does_timespan_appear(static_data, year, timespan_index).result;
 
@@ -1016,7 +1016,7 @@ function does_leap_day_appear(static_data, year, timespan_index, leap_day_index)
  * @param  {int}        year            The a number of a year
  * @return {int}                        The absolute year
  */
-function convert_year(static_data, year){
+window.convert_year = function(static_data, year){
 	if(static_data.settings.year_zero_exists){
 		return year;
 	}else{
@@ -1033,7 +1033,7 @@ function convert_year(static_data, year){
  * @param  {int}        year            The a number of a year
  * @return {int}                        The absolute year
  */
-function unconvert_year(static_data, year){
+window.unconvert_year = function(static_data, year){
 	if(static_data.settings.year_zero_exists){
 		return year;
 	}else{
@@ -1052,7 +1052,7 @@ function unconvert_year(static_data, year){
  * @param  {obj}        self_object     Not sure what this is for anymore, but I believe this was to be able to target specific leap days.
  * @return {array}                      An array containing strings for each day
  */
-function get_days_in_timespan(static_data, year, timespan_index, self_object, no_leaps, special){
+window.get_days_in_timespan = function(static_data, year, timespan_index, self_object, no_leaps, special){
 
 	self_object = self_object !== undefined ? self_object : false;
 	no_leaps = no_leaps !== undefined ? no_leaps : false;
@@ -1149,7 +1149,7 @@ function get_days_in_timespan(static_data, year, timespan_index, self_object, no
  *                                          result - boolean, true if the timespan appears on the given date
  *                                          reason - reason for the timespan to gone, only present if result is false
  */
-function get_timespans_in_year(static_data, year, inclusive){
+window.get_timespans_in_year = function(static_data, year, inclusive){
 
 	var results = [];
 
@@ -1182,7 +1182,7 @@ function get_timespans_in_year(static_data, year, inclusive){
  *                                          result - boolean, true if the timespan appears on the given date
  *                                          reason - reason for the timespan to gone, only present if result is false
  */
-function does_timespan_appear(static_data, year, timespan){
+window.does_timespan_appear = function(static_data, year, timespan){
 
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
@@ -1237,7 +1237,7 @@ function does_timespan_appear(static_data, year, timespan){
  *                                          result - boolean, true if the day appears on the given date
  *                                          reason - reason for the day to gone, only present if result is false
  */
-function does_day_appear(static_data, year, timespan, day){
+window.does_day_appear = function(static_data, year, timespan, day){
 
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 
@@ -1268,7 +1268,7 @@ function does_day_appear(static_data, year, timespan, day){
  * @param  {object}    static_data     A calendar static data object
  * @return {float}                     The current calendar's average year length
  */
-function avg_year_length(static_data){
+window.avg_year_length = function(static_data){
 
 	let avg_length = 0;
 
@@ -1301,7 +1301,7 @@ function avg_year_length(static_data){
  * @param  {object}     static_data     A calendar static data object
  * @return {number}                     The current calendar's average month length
  */
-function avg_month_length(static_data){
+window.avg_month_length = function(static_data){
 
 	let length = 0;
 	let num_months = 0;
@@ -1339,7 +1339,7 @@ function avg_month_length(static_data){
  * @param  {object}     obj     A javascript object
  * @return {object}             An identical javascript object with no references tied to the incoming object
  */
-function clone(obj) {
+window.clone = function(obj) {
 	var copy;
 
 	// Handle the 3 simple types, and null or undefined
@@ -1373,7 +1373,7 @@ function clone(obj) {
 	throw new Error("Unable to copy obj! Its type isn't supported.");
 }
 
-function time_data_to_string(static_data, time){
+window.time_data_to_string = function(static_data, time){
 
 	var minutes = (Math.round(fract(time)*this.static_data.clock.minutes)).toString().length < 2 ? "0"+(Math.round(fract(time)*this.static_data.clock.minutes)).toString() : (Math.round(fract(time)*this.static_data.clock.minutes));
 
@@ -1381,7 +1381,7 @@ function time_data_to_string(static_data, time){
 
 }
 
-function is_leap_simple(static_data, year, interval, offset, debug) {
+window.is_leap_simple = function(static_data, year, interval, offset, debug) {
 
     if(interval === 1) return true;
 
@@ -1395,7 +1395,7 @@ function is_leap_simple(static_data, year, interval, offset, debug) {
 
 }
 
-function get_timespan_occurrences(static_data, year, interval, offset){
+window.get_timespan_occurrences = function(static_data, year, interval, offset){
 
     if(interval === 1) return year;
 
@@ -1440,7 +1440,7 @@ function get_timespan_occurrences(static_data, year, interval, offset){
  *                                          3: num_timespans - The total number of timespans since year 1
  *                                          4: total_week_num - The number of weeks since year 1
  */
-function get_epoch(static_data, year, _timespan, _day, debug){
+window.get_epoch = function(static_data, year, _timespan, _day, debug){
 
 	// Set up variables
 	let epoch = 0;
@@ -1541,7 +1541,7 @@ function get_epoch(static_data, year, _timespan, _day, debug){
  *                                          "num_timespans" - The total number of timespans since year 1
  *                                          "total_week_num" - The number of weeks since year 1
  */
-function evaluate_calendar_start(static_data, _year, _timespan, _day, debug){
+window.evaluate_calendar_start = function(static_data, _year, _timespan, _day, debug){
 
 	//Initiatlize variables
 	let year = (_year|0);
@@ -1664,7 +1664,7 @@ function evaluate_calendar_start(static_data, _year, _timespan, _day, debug){
 
 }
 
-function toggle_sidebar(force = null) {
+window.toggle_sidebar = function(force = null) {
     if (force === true) {
         $("#input_container").addClass('inputs_collapsed');
         $("#calendar_container").addClass('inputs_collapsed');
@@ -1695,7 +1695,7 @@ function toggle_sidebar(force = null) {
  * @param  {int}        year            The number of a year passed through the convert_year function.
  * @return {bool}                       A boolean to indicate whether that year has been terminated by an era or not
  */
-function has_year_ending_era(static_data, year){
+window.has_year_ending_era = function(static_data, year){
 
 	for(var era_index = 0; era_index < static_data.eras.length; era_index++){
 

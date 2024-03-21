@@ -4,7 +4,7 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap-tw');
+import './bootstrap-tw';
 
 // window.CalendarClock = require('./clock')
 // window.RandomCalendar = require('./random-calendar')

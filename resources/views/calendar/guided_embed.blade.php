@@ -1,5 +1,5 @@
 @push('head')
-    <script src="{{ mix('js/embed.js') }}"></script>
+    @vite('resources/js/embed.js')
     <script>
         function manageEmbed() {
             return {

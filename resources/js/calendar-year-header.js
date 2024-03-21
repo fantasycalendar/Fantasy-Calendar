@@ -130,4 +130,4 @@ const calendarYearHeader = {
 }
 
 
-module.exports = calendarYearHeader;
+export default calendarYearHeader;

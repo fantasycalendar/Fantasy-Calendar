@@ -1,7 +1,7 @@
 @push('head')
-    <script>
+    <script type="module">
 
-    $(document).ready(function(){
+    window.addEventListener("load", function(){
 
         $('#btn_share, .share-body').click(function(){
             var copyText = document.querySelector(".share-body");

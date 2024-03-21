@@ -2,9 +2,9 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{{ mix('css/app-tw.css') }}">
+        @vite('resources/css/app-tw.css')
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <script src="{{ mix('/js/app-tw.js') }}" defer></script>
+        @vite('resources/js/app-tw.js')
 
         <style>
             * {

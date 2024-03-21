@@ -1,14 +1,14 @@
 @extends('templates._calendar')
 
 @push('head')
-    <script>
+    <script type="module">
 
-    $(document).ready(function(){
+    window.addEventListener("load", function(){
 
         @include('calendar._loadcalendar')
 
-        preview_date = clone(dynamic_data);
-        preview_date.follow = true;
+        window.preview_date = clone(dynamic_data);
+        window.preview_date.follow = true;
 
 
         set_up_view_inputs();
@@ -27,15 +27,15 @@
             do_update_dynamic(hash);
         });
 
-        last_mouse_move = Date.now();
-        poll_timer = setTimeout(check_dates, 5000);
-        instapoll = false;
+        window.last_mouse_move = Date.now();
+        window.poll_timer = setTimeout(check_dates, 5000);
+        window.instapoll = false;
 
         $(window).focus(function(){
             check_dates();
         })
 
-        registered_mousemove_callbacks['view_update'] = function () {
+        window.registered_mousemove_callbacks['view_update'] = function () {
             last_mouse_move = Date.now();
             if (instapoll) {
                 instapoll = false;
@@ -189,7 +189,7 @@
         set_up_view_values();
 
     }
-    if(debounce !== undefined){
+    if(typeof debounce !== 'undefined'){
         var do_update_dynamic = debounce(function(type){
             update_view_dynamic(hash);
         }, 500);

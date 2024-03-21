@@ -2598,4 +2598,4 @@ const calendar_events_editor = {
 }
 
 
-module.exports = calendar_events_editor;
+export default calendar_events_editor;

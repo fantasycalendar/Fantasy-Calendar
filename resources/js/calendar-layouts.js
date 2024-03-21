@@ -49,4 +49,4 @@ const calendar_layouts = {
 
 }
 
-module.exports = calendar_layouts;
+export default calendar_layouts;

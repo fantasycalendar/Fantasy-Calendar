@@ -320,4 +320,4 @@ const calendar_events_viewer = {
 
 }
 
-module.exports = calendar_events_viewer;
+export default calendar_events_viewer;

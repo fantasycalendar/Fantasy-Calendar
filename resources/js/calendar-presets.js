@@ -300,4 +300,4 @@ const preset_loader = {
     }
 }
 
-module.exports = preset_loader;
+export default preset_loader;
