@@ -519,16 +519,16 @@
         },
         {
             "name": "bref/bref",
-            "version": "2.1.13",
+            "version": "2.1.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brefphp/bref.git",
-                "reference": "535ad5f035d16892dbccbb785be2333f987a81e3"
+                "reference": "6041ad7d5ca1901dfb91323c9a903ec0d4fc9333"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brefphp/bref/zipball/535ad5f035d16892dbccbb785be2333f987a81e3",
-                "reference": "535ad5f035d16892dbccbb785be2333f987a81e3",
+                "url": "https://api.github.com/repos/brefphp/bref/zipball/6041ad7d5ca1901dfb91323c9a903ec0d4fc9333",
+                "reference": "6041ad7d5ca1901dfb91323c9a903ec0d4fc9333",
                 "shasum": ""
             },
             "require": {
@@ -541,7 +541,7 @@
                 "psr/container": "^1.0|^2.0",
                 "psr/http-message": "^1.0|^2.0",
                 "psr/http-server-handler": "^1.0",
-                "riverline/multipart-parser": "^2.0.6",
+                "riverline/multipart-parser": "^2.1.2",
                 "symfony/process": "^4.4|^5.0|^6.0|^7.0"
             },
             "require-dev": {
@@ -582,7 +582,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brefphp/bref/issues",
-                "source": "https://github.com/brefphp/bref/tree/2.1.13"
+                "source": "https://github.com/brefphp/bref/tree/2.1.17"
             },
             "funding": [
                 {
@@ -594,7 +594,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-02-01T15:29:14+00:00"
+            "time": "2024-03-22T12:39:34+00:00"
         },
         {
             "name": "bref/extra-php-extensions",
@@ -7202,16 +7202,16 @@
         },
         {
             "name": "riverline/multipart-parser",
-            "version": "2.1.1",
+            "version": "2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Riverline/multipart-parser.git",
-                "reference": "2418bdfc2eab01e39bcffee808b1a365c166292a"
+                "reference": "7a9f4646db5181516c61b8e0225a343189beedcd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Riverline/multipart-parser/zipball/2418bdfc2eab01e39bcffee808b1a365c166292a",
-                "reference": "2418bdfc2eab01e39bcffee808b1a365c166292a",
+                "url": "https://api.github.com/repos/Riverline/multipart-parser/zipball/7a9f4646db5181516c61b8e0225a343189beedcd",
+                "reference": "7a9f4646db5181516c61b8e0225a343189beedcd",
                 "shasum": ""
             },
             "require": {
@@ -7252,9 +7252,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Riverline/multipart-parser/issues",
-                "source": "https://github.com/Riverline/multipart-parser/tree/2.1.1"
+                "source": "https://github.com/Riverline/multipart-parser/tree/2.1.2"
             },
-            "time": "2023-04-28T18:53:59+00:00"
+            "time": "2024-03-12T16:46:05+00:00"
         },
         {
             "name": "ryangjchandler/blade-capture-directive",
@@ -10710,16 +10710,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v6.4.3",
+            "version": "v6.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "31642b0818bfcff85930344ef93193f8c607e0a3"
+                "reference": "710e27879e9be3395de2b98da3f52a946039f297"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/31642b0818bfcff85930344ef93193f8c607e0a3",
-                "reference": "31642b0818bfcff85930344ef93193f8c607e0a3",
+                "url": "https://api.github.com/repos/symfony/process/zipball/710e27879e9be3395de2b98da3f52a946039f297",
+                "reference": "710e27879e9be3395de2b98da3f52a946039f297",
                 "shasum": ""
             },
             "require": {
@@ -10751,7 +10751,7 @@
             "description": "Executes commands in sub-processes",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/process/tree/v6.4.3"
+                "source": "https://github.com/symfony/process/tree/v6.4.4"
             },
             "funding": [
                 {
@@ -10767,7 +10767,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-01-23T14:51:35+00:00"
+            "time": "2024-02-20T12:31:00+00:00"
         },
         {
             "name": "symfony/psr-http-message-bridge",
