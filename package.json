@@ -30,7 +30,7 @@
     },
     "dependencies": {
         "@alpinejs/intersect": "^3.10.5",
-        "@fortawesome/fontawesome-free": "^5.15.1",
+        "@fortawesome/fontawesome-free": "^5.15.4",
         "@jaames/iro": "^5.5.2",
         "@tailwindcss/aspect-ratio": "^0.4.2",
         "@tailwindcss/forms": "^0.4.0",
