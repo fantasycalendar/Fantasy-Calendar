@@ -849,8 +849,8 @@ function eval_clock(){
 		hour		= dynamic_data.hour,
 		minute		= dynamic_data.minute,
 		has_sun		= evaluated_static_data.processed_seasons,
-		sunrise		= 6,
-		sunset		= 18
+		sunrise		= -1,
+		sunset		= static_data.clock.hours + 1,
 	);
 
 	$('#clock').css('display', 'block');
