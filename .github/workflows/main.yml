@@ -96,7 +96,7 @@ jobs:
         run: |
           aws s3 sync ./public s3://fantasy-calendar-prod/
       - name: Deploy to prod
-        run: npx serverless deploy --stage prod
+        run: npx serverless@3 deploy --stage prod
       - name: Actions Status Discord
         uses: sarisia/actions-status-discord@v1.5.2
         with:
