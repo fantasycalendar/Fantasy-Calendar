@@ -13,7 +13,61 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 /**
+ * 
+ *
  * @method static create(array $array)
+ * @property int $id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string $snowflake
+ * @property string|null $parent_snowflake
+ * @property string|null $discord_id
+ * @property int|null $user_id
+ * @property int|null $calendar_id
+ * @property string $type
+ * @property array $data
+ * @property string|null $guild_id
+ * @property string|null $channel_id
+ * @property array $discord_user
+ * @property array $payload
+ * @property array|null $response
+ * @property string|null $responded_at
+ * @property int $needs_follow_up
+ * @property int $version
+ * @property-read \App\Services\Discord\Models\DiscordAuthToken|null $auth_token
+ * @property-read Calendar|null $calendar
+ * @property-read string $called_command
+ * @property-read mixed $latest_content
+ * @property-read mixed $message_text
+ * @property-read Collection $options
+ * @property-read string $token
+ * @property-read DiscordInteraction|null $parent
+ * @property-read User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction latestFor(\App\Models\Calendar $calendar)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction needsFollowUp()
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction query()
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction type($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereCalendarId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereChannelId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereDiscordId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereDiscordUser($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereGuildId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereNeedsFollowUp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereParentSnowflake($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction wherePayload($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereRespondedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereResponse($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereSnowflake($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DiscordInteraction whereVersion($value)
+ * @mixin \Eloquent
  */
 class DiscordInteraction extends Model
 {

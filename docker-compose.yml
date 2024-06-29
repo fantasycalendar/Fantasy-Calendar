@@ -13,6 +13,9 @@ services:
   php:
     container_name: fantasy_calendar_php
     image: fc-bref-php
+    depends_on:
+      - fantasydb
+      - selenium
     build:
       context: .
       dockerfile: setup/php/php.Dockerfile
