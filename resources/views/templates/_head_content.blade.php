@@ -53,12 +53,6 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css">
 
-    {{-- <link --}}
-    {{--     rel="stylesheet" --}}
-    {{--     href="https://unpkg.com/simplebar@latest/dist/simplebar.css" --}}
-    {{-- /> --}}
-    {{-- <script src="https://unpkg.com/simplebar@latest/dist/simplebar.min.js"></script> --}}
-
     <script>
 
     window.baseurl = '{{ getenv('WEBADDRESS') }}';
@@ -164,7 +158,6 @@
     <script src="{{ asset("/js/vendor/sortable/jquery-sortable-min.js") }}"></script>
     <script src="{{ asset("/js/vendor/spectrum/spectrum.js") }}"></script>
     <script src="{{ asset("/js/vendor/alpine/cdn.js") }}" defer></script>
-    <script src="{{ asset("/js/vendor/simplebar/simplebar.min.js") }}" defer></script>
 
     <script src="{{ mix('js/calendar/header.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>
@@ -186,7 +179,6 @@
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     @endif
     <link rel="stylesheet" href="{{ asset("/js/vendor/spectrum/spectrum.css") }}">
-    <link rel="stylesheet" href="{{ asset("/js/vendor/simplebar/simplebar.css") }}">
 
     @stack('head')
 </head>
