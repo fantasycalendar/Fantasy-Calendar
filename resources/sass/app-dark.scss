@@ -56,15 +56,6 @@ $swal2-toast-button-focus-box-shadow: 0 0 0 1px $swal2-background, 0 0 0 3px $sw
 @import '~@fortawesome/fontawesome-free/scss/regular';
 @import '~@fortawesome/fontawesome-free/scss/brands';
 
-$hamburger-layer-color      :#FFF;
-$hamburger-hover-opacity    :1;
-$hamburger-layer-width      :1.4rem;
-$hamburger-layer-height     :0.15rem;
-$hamburger-layer-spacing    :0.2rem;
-$hamburger-padding-y        :1.2rem;
-$hamburger-padding-x        :1.2rem;
-@import '~hamburgers/_sass/hamburgers/hamburgers';
-
 @import '~trumbowyg/dist/ui/sass/trumbowyg';
 
 @import '~protip/css/protip';

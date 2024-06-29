@@ -9,6 +9,63 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $access_token
+ * @property string $webhook_id
+ * @property string $webhook_token
+ * @property string $refresh_token
+ * @property string $expires_in
+ * @property int $active
+ * @property int $error
+ * @property string|null $error_message
+ * @property int $calendar_id
+ * @property int $user_id
+ * @property int $discord_auth_token_id
+ * @property int $discord_guild_id
+ * @property int $persistent_message
+ * @property string|null $persistent_message_id
+ * @property string $channel_id
+ * @property int $type
+ * @property string|null $avatar
+ * @property string|null $deleted_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read Calendar|null $calendar
+ * @property-read \App\Services\Discord\Models\DiscordAuthToken|null $discord_auth
+ * @property-read \App\Services\Discord\Models\DiscordGuild|null $guild
+ * @property-read User|null $user
+ * @method static Builder|DiscordWebhook active()
+ * @method static Builder|DiscordWebhook newModelQuery()
+ * @method static Builder|DiscordWebhook newQuery()
+ * @method static Builder|DiscordWebhook query()
+ * @method static Builder|DiscordWebhook whereAccessToken($value)
+ * @method static Builder|DiscordWebhook whereActive($value)
+ * @method static Builder|DiscordWebhook whereAvatar($value)
+ * @method static Builder|DiscordWebhook whereCalendarId($value)
+ * @method static Builder|DiscordWebhook whereChannelId($value)
+ * @method static Builder|DiscordWebhook whereCreatedAt($value)
+ * @method static Builder|DiscordWebhook whereDeletedAt($value)
+ * @method static Builder|DiscordWebhook whereDiscordAuthTokenId($value)
+ * @method static Builder|DiscordWebhook whereDiscordGuildId($value)
+ * @method static Builder|DiscordWebhook whereError($value)
+ * @method static Builder|DiscordWebhook whereErrorMessage($value)
+ * @method static Builder|DiscordWebhook whereExpiresIn($value)
+ * @method static Builder|DiscordWebhook whereId($value)
+ * @method static Builder|DiscordWebhook whereName($value)
+ * @method static Builder|DiscordWebhook wherePersistentMessage($value)
+ * @method static Builder|DiscordWebhook wherePersistentMessageId($value)
+ * @method static Builder|DiscordWebhook whereRefreshToken($value)
+ * @method static Builder|DiscordWebhook whereType($value)
+ * @method static Builder|DiscordWebhook whereUpdatedAt($value)
+ * @method static Builder|DiscordWebhook whereUserId($value)
+ * @method static Builder|DiscordWebhook whereWebhookId($value)
+ * @method static Builder|DiscordWebhook whereWebhookToken($value)
+ * @mixin \Eloquent
+ */
 class DiscordWebhook extends Model
 {
     use HasFactory;

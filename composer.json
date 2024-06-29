@@ -21,7 +21,7 @@
         "ext-json": "*",
         "ext-sodium": "*",
         "aws/aws-sdk-php": "^3.277",
-        "barryvdh/laravel-ide-helper": "^2.13",
+        "barryvdh/laravel-ide-helper": "^3.0",
         "bref/bref": "^2.1",
         "bref/extra-php-extensions": "^1.2",
         "bref/laravel-bridge": "^2.1",
@@ -52,9 +52,8 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",
         "fakerphp/faker": "^1.21",
-        "filament/upgrade": "^3.0-stable",
-        "laravel/dusk": "^7.4",
-        "laravel/tinker": "^2.8",
+        "laravel/dusk": "^8.2",
+        "laravel/tinker": "^2.9",
         "mockery/mockery": "^1.5",
         "nunomaduro/collision": "^7.0",
         "phpunit/phpunit": "^10.0"
@@ -93,6 +92,11 @@
             "@php -r \"file_exists('storage/framework/cache') || mkdir('storage/framework/cache');\"",
             "@php -r \"file_exists('storage/framework/sessions') || mkdir('storage/framework/sessions');\"",
             "@php -r \"file_exists('storage/framework/views') || mkdir('storage/framework/views');\""
+        ],
+        "post-update-cmd": [
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:meta"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

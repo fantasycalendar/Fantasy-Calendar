@@ -29,6 +29,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
+ * 
+ *
  * @property mixed static_data Calendar static data
  * @property mixed dynamic_data Calendar dynamic data
  * @property mixed user Calendar user
@@ -62,6 +64,127 @@ use Illuminate\Support\Str;
  * @property string current_date
  * @property string raw_date
  * @method static findOrFail(array|\ArrayAccess|mixed $setting)
+ * @property int $id
+ * @property int $user_id
+ * @property string $name
+ * @property array $dynamic_data
+ * @property array $static_data
+ * @property string|null $hash
+ * @property string $last_dynamic_change
+ * @property string $last_static_change
+ * @property int $disabled
+ * @property string $date_created
+ * @property int $deleted
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property int|null $parent_id
+ * @property int|null $parent_offset
+ * @property string|null $parent_link_date
+ * @property string|null $converted_at
+ * @property int|null $conversion_batch
+ * @property int $advancement_enabled
+ * @property \Illuminate\Support\Carbon|null $advancement_next_due
+ * @property string|null $advancement_time
+ * @property string|null $advancement_timezone
+ * @property int|null $advancement_real_rate
+ * @property string|null $advancement_real_rate_unit
+ * @property int|null $advancement_rate
+ * @property string|null $advancement_rate_unit
+ * @property string|null $advancement_webhook_url
+ * @property string|null $advancement_webhook_format
+ * @property string|null $advancement_discord_message_id
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Calendar> $children
+ * @property-read int|null $children_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, DiscordWebhook> $discord_webhooks
+ * @property-read int|null $discord_webhooks_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\EventCategory> $event_categories
+ * @property-read int|null $event_categories_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CalendarEvent> $events
+ * @property-read int|null $events_count
+ * @property-read float $average_months_count
+ * @property-read int $average_year_length
+ * @property-read Collection $clock
+ * @property-read bool $clock_enabled
+ * @property-read string $current_date
+ * @property-read bool $current_date_valid
+ * @property-read string $current_era
+ * @property-read bool $current_era_valid
+ * @property-read string $current_time
+ * @property-read int $daily_minutes
+ * @property-read int $day
+ * @property-read mixed $default_event_category
+ * @property-read mixed $epoch
+ * @property-read ErasCollection $eras
+ * @property-read array $first_day
+ * @property-read Collection $global_week
+ * @property-read Collection $leap_days
+ * @property-read Month $month
+ * @property-read int $month_id
+ * @property-read int $month_index
+ * @property-read int $month_length
+ * @property-read string $month_name
+ * @property-read int $month_true_length
+ * @property-read MonthsCollection $months
+ * @property-read MonthsCollection $months_without_eras
+ * @property-read Collection $moons
+ * @property-read bool $overflows_week
+ * @property-read bool $owned
+ * @property-read array $raw_date
+ * @property-read RenderMonth $render_month
+ * @property-read Collection $timespans
+ * @property-read mixed $todays_one_time_events
+ * @property-read Collection $weekdays
+ * @property-read int $year
+ * @property-read array $year_data
+ * @property-read int $year_length
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CalendarInvite> $invitations
+ * @property-read int|null $invitations_count
+ * @property-read Calendar|null $parent
+ * @property-read \App\Models\Preset|null $preset
+ * @property-read \App\Models\User|null $user
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
+ * @property-read int|null $users_count
+ * @method static Builder|Calendar active()
+ * @method static Builder|Calendar disabled()
+ * @method static Builder|Calendar dueForAdvancement()
+ * @method static \Database\Factories\CalendarFactory factory($count = null, $state = [])
+ * @method static Builder|Calendar hash($hash)
+ * @method static Builder|Calendar newModelQuery()
+ * @method static Builder|Calendar newQuery()
+ * @method static Builder|Calendar onlyTrashed()
+ * @method static Builder|Calendar query()
+ * @method static Builder|Calendar search($search)
+ * @method static Builder|Calendar user($user_id)
+ * @method static Builder|Calendar whereAdvancementDiscordMessageId($value)
+ * @method static Builder|Calendar whereAdvancementEnabled($value)
+ * @method static Builder|Calendar whereAdvancementNextDue($value)
+ * @method static Builder|Calendar whereAdvancementRate($value)
+ * @method static Builder|Calendar whereAdvancementRateUnit($value)
+ * @method static Builder|Calendar whereAdvancementRealRate($value)
+ * @method static Builder|Calendar whereAdvancementRealRateUnit($value)
+ * @method static Builder|Calendar whereAdvancementTime($value)
+ * @method static Builder|Calendar whereAdvancementTimezone($value)
+ * @method static Builder|Calendar whereAdvancementWebhookFormat($value)
+ * @method static Builder|Calendar whereAdvancementWebhookUrl($value)
+ * @method static Builder|Calendar whereConversionBatch($value)
+ * @method static Builder|Calendar whereConvertedAt($value)
+ * @method static Builder|Calendar whereDateCreated($value)
+ * @method static Builder|Calendar whereDeleted($value)
+ * @method static Builder|Calendar whereDeletedAt($value)
+ * @method static Builder|Calendar whereDisabled($value)
+ * @method static Builder|Calendar whereDynamicData($value)
+ * @method static Builder|Calendar whereHash($value)
+ * @method static Builder|Calendar whereId($value)
+ * @method static Builder|Calendar whereLastDynamicChange($value)
+ * @method static Builder|Calendar whereLastStaticChange($value)
+ * @method static Builder|Calendar whereName($value)
+ * @method static Builder|Calendar whereParentId($value)
+ * @method static Builder|Calendar whereParentLinkDate($value)
+ * @method static Builder|Calendar whereParentOffset($value)
+ * @method static Builder|Calendar whereStaticData($value)
+ * @method static Builder|Calendar whereUserId($value)
+ * @method static Builder|Calendar withTrashed()
+ * @method static Builder|Calendar withoutTrashed()
+ * @mixin \Eloquent
  */
 class Calendar extends Model
 {
