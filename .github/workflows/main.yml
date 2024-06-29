@@ -89,7 +89,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - name: Install NPM dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Build production assets
         run: npm run production
       - name: Copy assets into S3
