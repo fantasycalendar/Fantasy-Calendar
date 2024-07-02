@@ -2,32 +2,6 @@ import _ from 'lodash';
 window._ = _;
 
 /**
- * We'll load jQuery and the Bootstrap jQuery plugin which provides support
- * for JavaScript based Bootstrap features such as modals and tabs. This
- * code may be modified to fit the specific needs of your application.
- */
-
-import $ from 'jquery';
-window.$ = $;
-
-import 'jquery-ui';
-
-import Popper from 'popper.js';
-window.Popper = Popper;
-
-import 'chart.js';
-import 'trumbowyg';
-import 'notifyjs';
-
-/**
- * Protip is a tooltip solution that works well with jQuery, but takes a modern
- * approach to the way you actually create tooltips. In this case that means
- * using attributes on elements in HTML, not direct javascript controls.
- */
-import 'protip';
-import 'bootstrap';
-
-/**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
  * CSRF token as a header based on the value of the "XSRF" token cookie.

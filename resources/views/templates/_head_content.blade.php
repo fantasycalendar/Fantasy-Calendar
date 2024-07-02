@@ -31,8 +31,8 @@
     <meta name="theme-color" content="#2f855a">
 
 
-    <script src="{{ mix('/js/jquery.js') }}"></script>
-    <script src="{{ mix('/js/app.js') }}" defer></script>
+    @vite('resources/js/jquery.js')
+    @vite('resources/js/app.js')
 
     <!-- <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css"> -->
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script> -->
@@ -167,9 +167,9 @@
     <!-- <script src="{{ mix('js/calendar/calendar_workers.js') }}"></script> -->
 
     @if(!Auth::check() || Auth::user()->setting('dark_theme'))
-        <link rel="stylesheet" href="{{ mix('css/app-dark.css') }}">
+        @vite('resources/sass/app-dark.scss')
     @else
-        <link rel="stylesheet" href="{{ mix('css/app.css') }}">
+        @vite('resources/sass/app.scss')
     @endif
     <link rel="stylesheet" href="{{ asset("/js/vendor/spectrum/spectrum.css") }}">
 
