@@ -106,3 +106,11 @@ jobs:
           avatar_url: "https://beta.fantasy-calendar.com//resources/header_logo.png"
           title: "Deploy success"
           nodetail: true
+      - name: Discord release notification
+        if: "!github.event.release.prerelease"
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.RELEASE_WEBHOOK }}
+          DISCORD_USERNAME: ${{github.event.release.name}}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "${{github.event.release.body}}"
