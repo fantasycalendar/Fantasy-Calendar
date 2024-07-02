@@ -65,6 +65,8 @@ mix.copy('resources/js/embed.js', 'public/js');
 mix.copy('node_modules/trumbowyg/dist/ui/icons.svg', 'public/images');
 mix.copy('node_modules/alpinejs/dist/cdn.js', 'public/js/vendor/alpine');
 
+mix.js('resources/js/jquery.js', 'public/js');
+
 // Compiled assets
 mix.js('resources/js/app.js', 'public/js')
 

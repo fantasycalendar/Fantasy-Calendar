@@ -1,4 +1,5 @@
-window._ = require('lodash');
+import _ from 'lodash';
+window._ = _;
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -23,9 +24,7 @@ import 'notifyjs';
  * approach to the way you actually create tooltips. In this case that means
  * using attributes on elements in HTML, not direct javascript controls.
  */
-// require('protip');
-
-
+import 'protip';
 import 'bootstrap';
 
 /**

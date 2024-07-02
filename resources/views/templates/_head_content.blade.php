@@ -31,25 +31,21 @@
     <meta name="theme-color" content="#2f855a">
 
 
-    @if(getenv('APP_ENV') == "production")
-        <script src="//d2wy8f7a9ursnm.cloudfront.net/v6/bugsnag.min.js"></script>
-        <script>window.bugsnagClient = bugsnag('98440cbeef759631f3d987ab45b26a79')</script>
-    @endif
+    <script src="{{ mix('/js/jquery.js') }}"></script>
+    <script src="{{ mix('/js/app.js') }}" defer></script>
 
-    <script src="{{ mix('/js/app.js') }}"></script>
+    <!-- <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css"> -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script> -->
 
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script> -->
+    <!-- <script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script> -->
 
-    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
-    <script src="https://rawgit.com/notifyjs/notifyjs/master/dist/notify.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script> -->
 
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/3.2.1/css/font-awesome.min.css"> -->
 
     <script>
 
@@ -154,21 +150,21 @@
     </script>
 
     <!-- <script src="{{ asset("/js/vendor/sortable/jquery-sortable-min.js") }}"></script> -->
-    <script src="{{ asset("/js/vendor/spectrum/spectrum.js") }}"></script>
+    <!-- <script src="{{ asset("/js/vendor/spectrum/spectrum.js") }}"></script> -->
 
-    <script src="{{ mix('js/calendar/header.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_functions.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_variables.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_weather_layout.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_day_data_layout.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_season_generator.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_inputs_visitor.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_inputs_view.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_inputs_edit.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_manager.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_presets.js') }}"></script>
-    <script src="{{ mix('js/calendar/calendar_workers.js') }}"></script>
+    <!-- <script src="{{ mix('js/calendar/header.js') }}"></script> -->
+    <!-- <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script> -->
+    <!-- <script src="{{ mix('js/calendar/calendar_functions.js') }}"></script> -->
+    <!-- <script src="{{ mix('js/calendar/calendar_variables.js') }}"></script> -->
+    <!-- <script src="{{ mix('js/calendar/calendar_weather_layout.js') }}"></script> -->
+    <!-- <script src="{{ mix('js/calendar/calendar_day_data_layout.js') }}"></script> -->
+    <!-- <script src="{{ mix('js/calendar/calendar_season_generator.js') }}"></script> -->
+    <!-- <script src="{{ mix('js/calendar/calendar_inputs_visitor.js') }}"></script> -->
+    <!-- <script src="{{ mix('js/calendar/calendar_inputs_view.js') }}"></script> -->
+    <!-- <script src="{{ mix('js/calendar/calendar_inputs_edit.js') }}"></script> -->
+    <!-- <script src="{{ mix('js/calendar/calendar_manager.js') }}"></script> -->
+    <!-- <script src="{{ mix('js/calendar/calendar_presets.js') }}"></script> -->
+    <!-- <script src="{{ mix('js/calendar/calendar_workers.js') }}"></script> -->
 
     @if(!Auth::check() || Auth::user()->setting('dark_theme'))
         <link rel="stylesheet" href="{{ mix('css/app-dark.css') }}">
