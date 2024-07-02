@@ -1,4 +1,6 @@
-export default {
+import RandomCalendar from './random-calendar.js';
+
+export default () => ({
 
     open: false,
     loaded: false,
@@ -60,7 +62,7 @@ export default {
 
     //Return the start range of the paginated results
     get start_results(){
-       return this.page_number * this.size + 1;
+        return this.page_number * this.size + 1;
     },
 
     //Return the end range of the paginated results
@@ -149,39 +151,39 @@ export default {
                     confirmButtonText: 'Load',
                     dangerMode: true
                 })
-                .then(result => {
+                    .then(result => {
 
-                    if(result.dismiss || !result.value) return;
+                        if(result.dismiss || !result.value) return;
 
-                    var calendar = parse_json(result.value);
-                    if(calendar.success){
-                        prev_dynamic_data = {}
-                        prev_static_data = {}
-                        calendar_name = clone(calendar.name);
-                        static_data = clone(calendar.static_data);
-                        dynamic_data = clone(calendar.dynamic_data);
-                        event_categories = clone(calendar.event_categories);
-                        events = clone(calendar.events);
-                        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
-                        empty_edit_values();
-                        set_up_edit_values();
-                        set_up_view_values();
-                        set_up_visitor_values();
-                        do_error_check('calendar', true);
-                        this.open = false;
-                        this.preset_applied = true;
-                    }else{
-                        swal.fire({
-                            title: "Error!",
-                            text: calendar.message,
-                            icon: "warning",
-                        })
-                        .then(result => {
-                            this.fetch_preset(id, name);
-                        });
-                    }
+                        var calendar = parse_json(result.value);
+                        if(calendar.success){
+                            prev_dynamic_data = {}
+                            prev_static_data = {}
+                            calendar_name = clone(calendar.name);
+                            static_data = clone(calendar.static_data);
+                            dynamic_data = clone(calendar.dynamic_data);
+                            event_categories = clone(calendar.event_categories);
+                            events = clone(calendar.events);
+                            dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+                            empty_edit_values();
+                            set_up_edit_values();
+                            set_up_view_values();
+                            set_up_visitor_values();
+                            do_error_check('calendar', true);
+                            this.open = false;
+                            this.preset_applied = true;
+                        }else{
+                            swal.fire({
+                                title: "Error!",
+                                text: calendar.message,
+                                icon: "warning",
+                            })
+                                .then(result => {
+                                    this.fetch_preset(id, name);
+                                });
+                        }
 
-                });
+                    });
 
             }else{
 
@@ -194,29 +196,29 @@ export default {
                     confirmButtonText: 'Generate',
                     icon: "warning",
                 })
-                .then((result) => {
-                    if(result.value) {
+                    .then((result) => {
+                        if(result.value) {
 
-                        calendar_name = "Random Calendar";
-                        static_data = randomizer.randomize(static_data);
-                        dynamic_data = {
-                            "year": 1,
-                            "timespan": 0,
-                            "day": 1,
-                            "epoch": 0,
-                            "custom_location": false,
-                            "location": "Equatorial"
-                        };
-                        empty_edit_values();
-                        set_up_edit_values();
-                        set_up_view_values();
-                        set_up_visitor_values();
-                        do_error_check('calendar', true);
-                        this.open = false;
-                        this.preset_applied = true;
+                            calendar_name = "Random Calendar";
+                            static_data = RandomCalendar.randomize(static_data);
+                            dynamic_data = {
+                                "year": 1,
+                                "timespan": 0,
+                                "day": 1,
+                                "epoch": 0,
+                                "custom_location": false,
+                                "location": "Equatorial"
+                            };
+                            empty_edit_values();
+                            set_up_edit_values();
+                            set_up_view_values();
+                            set_up_visitor_values();
+                            do_error_check('calendar', true);
+                            this.open = false;
+                            this.preset_applied = true;
 
-                    }
-                });
+                        }
+                    });
 
             }
 
@@ -232,13 +234,13 @@ export default {
                     confirmButtonText: 'Yes',
                     icon: "warning",
                 })
-                .then((result) => {
-                    if(result.value) {
-                        get_preset_data(id, this.apply_preset);
-                        this.open = false;
-                        this.preset_applied = true;
-                    }
-                });
+                    .then((result) => {
+                        if(result.value) {
+                            get_preset_data(id, this.apply_preset);
+                            this.open = false;
+                            this.preset_applied = true;
+                        }
+                    });
             }else{
                 get_preset_data(id, this.apply_preset);
                 this.open = false;
@@ -298,4 +300,4 @@ export default {
             "success"
         );
     }
-}
+})

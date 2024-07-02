@@ -6,24 +6,27 @@ window._ = require('lodash');
  * code may be modified to fit the specific needs of your application.
  */
 
-try {
-    window.Popper = require('popper.js').default;
-    window.$ = window.jQuery = require('jquery');
+import $ from 'jquery';
+window.$ = $;
 
-    require('chart.js');
-    require('trumbowyg');
-    require('notifyjs');
+import 'jquery-ui';
 
-    /**
-     * Protip is a tooltip solution that works well with jQuery, but takes a modern
-     * approach to the way you actually create tooltips. In this case that means
-     * using attributes on elements in HTML, not direct javascript controls.
-     */
-    require('protip');
+import Popper from 'popper.js';
+window.Popper = Popper;
+
+import 'chart.js';
+import 'trumbowyg';
+import 'notifyjs';
+
+/**
+ * Protip is a tooltip solution that works well with jQuery, but takes a modern
+ * approach to the way you actually create tooltips. In this case that means
+ * using attributes on elements in HTML, not direct javascript controls.
+ */
+// require('protip');
 
 
-    require('bootstrap');
-} catch (e) {}
+import 'bootstrap';
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -31,7 +34,8 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = require('axios');
+import axios from 'axios';
+window.axios = axios;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.withCredentials = true;
@@ -63,14 +67,15 @@ if (token) {
  * API, allowing confirmations and very much more. (sweetalert.js.org)
  */
 
-window.swal = require('sweetalert2')
+import swal from 'sweetalert2';
+window.swal = swal;
 
 /**
  * Select2 is a jQuery-based replacement for select boxes. It supports searching,
  * remote data sets, and pagination of results.
  */
 
-require('select2');
+import 'select2';
 
 /**
  * With ProgressBar.js, it's easy to create responsive and stylish progress
@@ -79,7 +84,8 @@ require('select2');
  * custom shaped progress bars with any vector graphic editor.
  */
 
-window.ProgressBar = require('progressbar.js');
+import ProgressBar from 'progressbar.js';
+window.ProgressBar = ProgressBar;
 
 /**
  * mustache.js is an implementation of the mustache template system in JavaScript.
@@ -88,13 +94,16 @@ window.ProgressBar = require('progressbar.js');
  * provided in a hash or object.
  */
 
-window.Mustache = require('mustache');
+import Mustache from 'mustache';
+window.Mustache = Mustache;
 
 /**
  * Sanitize HTML inputs browser-side using sanitize-html!
  */
 
-window.sanitizeHtml = require('sanitize-html');
+
+import sanitizeHtml from 'sanitize-html';
+window.sanitizeHtml = sanitizeHtml;
 
 /**
  * $.contextMenu is a management facility for - you guessed it - context menus.
@@ -103,7 +112,7 @@ window.sanitizeHtml = require('sanitize-html');
  * menus without providing actual markup, as $.contextMenu generates DOMElements as needed.
  */
 
-window.contextMenu = require('jquery-contextmenu')
+import 'jquery-contextmenu';
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
@@ -122,11 +131,21 @@ window.contextMenu = require('jquery-contextmenu')
 //     encrypted: true
 // });
 
-window.tailwindColors = require('tailwindcss/colors')
+import tailwindColors from 'tailwindcss/colors';
+window.tailwindColors = tailwindColors;
 
 /**
  * Convenient and dependency free wrapper for working with arrays and objects.
  */
-let collectJS = require('collect.js');
+import collectJS from 'collect.js';
+
 window.Collection = collectJS.Collection;
 window.collect = collectJS.collect;
+
+
+import Alpine from 'alpinejs'
+import CalendarPresets from './calendar-presets.js';
+
+Alpine.data('CalendarPresets', CalendarPresets)
+
+Alpine.start()

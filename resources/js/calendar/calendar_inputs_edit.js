@@ -1,3 +1,6 @@
+import $ from 'jquery';
+import 'jquery-ui';
+
 function set_up_edit_inputs(){
 
 	changes_applied = true;

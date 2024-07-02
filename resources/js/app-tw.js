@@ -5,11 +5,3 @@
  */
 
 require('./bootstrap-tw');
-
-// window.CalendarClock = require('./clock')
-// window.RandomCalendar = require('./random-calendar')
-// window.CalendarPresets = require('./calendar-presets')
-// window.Perms = require('./perms');
-// window.RenderDataGenerator = require('./render-data-generator')
-// window.CalendarRenderer = require('./calendar-renderer')
-// window.CalendarLayouts = require('./calendar-layouts')

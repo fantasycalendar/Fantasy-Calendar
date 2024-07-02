@@ -46,8 +46,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 
-    {{-- <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.js"></script> --}}
-
     <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
 
@@ -155,9 +153,8 @@
 
     </script>
 
-    <script src="{{ asset("/js/vendor/sortable/jquery-sortable-min.js") }}"></script>
+    <!-- <script src="{{ asset("/js/vendor/sortable/jquery-sortable-min.js") }}"></script> -->
     <script src="{{ asset("/js/vendor/spectrum/spectrum.js") }}"></script>
-    <script src="{{ asset("/js/vendor/alpine/cdn.js") }}" defer></script>
 
     <script src="{{ mix('js/calendar/header.js') }}"></script>
     <script src="{{ mix('js/calendar/calendar_ajax_functions.js') }}"></script>

@@ -77,8 +77,6 @@
 
         event_categories = [];
 
-        randomizer = new RandomCalendar();
-
         dynamic_data = {
             "year": 1,
             "timespan": 0,

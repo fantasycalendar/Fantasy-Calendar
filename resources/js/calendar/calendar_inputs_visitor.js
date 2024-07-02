@@ -1,3 +1,5 @@
+import CalendarClock from '../clock.js';
+
 function context_set_current_date(key, opt){
 
 	var epoch = $(opt.$trigger[0]).attr('epoch');
