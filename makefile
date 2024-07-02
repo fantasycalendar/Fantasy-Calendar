@@ -22,7 +22,7 @@ real_deploy_dev:
 	rm -rf ./vendor
 	composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
 	rm -rf ./node_modules
-	npm install
+	npm install --legacy-peer-deps
 	npm run production
 	aws s3 sync ./public s3://fantasy-calendar-dev/
 	date | cat > ./setup/lambda/dev/version.txt

@@ -8,6 +8,46 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 use Mews\Purifier\Casts\CleanHtml;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $name
+ * @property array $data
+ * @property array $description
+ * @property int|null $event_category_id
+ * @property int $calendar_id
+ * @property array $settings
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property int|null $sort_by
+ * @property int $creator_id
+ * @property-read \App\Models\Calendar|null $calendar
+ * @property-read \App\Models\EventCategory|null $category
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CalendarEventComment> $comments
+ * @property-read int|null $comments_count
+ * @property-read \App\Models\User|null $creator
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent query()
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent whereCalendarId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent whereCreatorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent whereEventCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent whereSettings($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent whereSortBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarEvent withoutTrashed()
+ * @mixin \Eloquent
+ */
 class CalendarEvent extends Model
 {
     use SoftDeletes;

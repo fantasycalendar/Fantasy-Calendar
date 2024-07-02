@@ -12,6 +12,40 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $invite_token
+ * @property string $email
+ * @property int $calendar_id
+ * @property int $handled
+ * @property string $expires_on
+ * @property string|null $resent_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon|null $deleted_at
+ * @property-read \App\Models\Calendar|null $calendar
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite active()
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite forUser($email)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite query()
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite whereCalendarId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite whereExpiresOn($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite whereHandled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite whereInviteToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite whereResentAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|CalendarInvite withoutTrashed()
+ * @mixin \Eloquent
+ */
 class CalendarInvite extends Model
 {
     use SoftDeletes;

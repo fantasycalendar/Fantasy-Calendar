@@ -24,6 +24,114 @@ use Laravel\Sanctum\HasApiTokens;
 use Str;
 use Stripe\StripeClient;
 
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $username
+ * @property string $password
+ * @property string|null $api_token
+ * @property int $permissions
+ * @property string $email
+ * @property int $active
+ * @property string $date_update_pass
+ * @property \Illuminate\Support\Carbon $date_register
+ * @property string $reg_ip
+ * @property int $beta_authorised
+ * @property string|null $stripe_id
+ * @property string|null $pm_type
+ * @property string|null $pm_last_four
+ * @property string|null $trial_ends_at
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property array|null $settings
+ * @property int $migrated
+ * @property int $acknowledged_migration
+ * @property \Illuminate\Support\Carbon|null $agreed_at
+ * @property int|null $agreement_id
+ * @property string|null $marketing_opt_in_at
+ * @property string|null $marketing_opt_out_at
+ * @property int|null $policy_id
+ * @property \Illuminate\Support\Carbon|null $delete_requested_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property int $has_sent_announcement
+ * @property int $acknowledged_discord_announcement
+ * @property string|null $last_interaction
+ * @property string|null $last_login
+ * @property string|null $last_visit
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Calendar> $calendars
+ * @property-read int|null $calendars_count
+ * @property-read DiscordAuthToken|null $discord_auth
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, DiscordGuild> $discord_guilds
+ * @property-read int|null $discord_guilds_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, DiscordInteraction> $discord_interactions
+ * @property-read int|null $discord_interactions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, DiscordWebhook> $discord_webhooks
+ * @property-read int|null $discord_webhooks_count
+ * @property-read mixed $avatar_url
+ * @property-read mixed $is_early_supporter
+ * @property-read mixed $is_premium
+ * @property-read mixed $marketing
+ * @property-read mixed $subscription_end
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Calendar> $related_calendars
+ * @property-read int|null $related_calendars_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Cashier\Subscription> $subscriptions
+ * @property-read int|null $subscriptions_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
+ * @property-read int|null $tokens_count
+ * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
+ * @method static Builder|User hasExpiredGenericTrial()
+ * @method static Builder|User marketingEnabled()
+ * @method static Builder|User newModelQuery()
+ * @method static Builder|User newQuery()
+ * @method static Builder|User onGenericTrial()
+ * @method static Builder|User onlyTrashed()
+ * @method static Builder|User premium()
+ * @method static Builder|User query()
+ * @method static Builder|User verified()
+ * @method static Builder|User whereAcknowledgedDiscordAnnouncement($value)
+ * @method static Builder|User whereAcknowledgedMigration($value)
+ * @method static Builder|User whereActive($value)
+ * @method static Builder|User whereAgreedAt($value)
+ * @method static Builder|User whereAgreementId($value)
+ * @method static Builder|User whereApiToken($value)
+ * @method static Builder|User whereBetaAuthorised($value)
+ * @method static Builder|User whereCreatedAt($value)
+ * @method static Builder|User whereDateRegister($value)
+ * @method static Builder|User whereDateUpdatePass($value)
+ * @method static Builder|User whereDeleteRequestedAt($value)
+ * @method static Builder|User whereDeletedAt($value)
+ * @method static Builder|User whereEmail($value)
+ * @method static Builder|User whereEmailVerifiedAt($value)
+ * @method static Builder|User whereHasSentAnnouncement($value)
+ * @method static Builder|User whereId($value)
+ * @method static Builder|User whereLastInteraction($value)
+ * @method static Builder|User whereLastLogin($value)
+ * @method static Builder|User whereLastVisit($value)
+ * @method static Builder|User whereMarketingOptInAt($value)
+ * @method static Builder|User whereMarketingOptOutAt($value)
+ * @method static Builder|User whereMigrated($value)
+ * @method static Builder|User wherePassword($value)
+ * @method static Builder|User wherePermissions($value)
+ * @method static Builder|User wherePmLastFour($value)
+ * @method static Builder|User wherePmType($value)
+ * @method static Builder|User wherePolicyId($value)
+ * @method static Builder|User whereRegIp($value)
+ * @method static Builder|User whereRememberToken($value)
+ * @method static Builder|User whereSettings($value)
+ * @method static Builder|User whereStripeId($value)
+ * @method static Builder|User whereTrialEndsAt($value)
+ * @method static Builder|User whereUpdatedAt($value)
+ * @method static Builder|User whereUsername($value)
+ * @method static Builder|User withTrashed()
+ * @method static Builder|User withoutTrashed()
+ * @property-read \App\Models\Agreement|null $agreement
+ * @mixin \Eloquent
+ */
 class User extends Authenticatable implements
     MustVerifyEmail,
     CanResetPassword,
@@ -135,7 +243,7 @@ class User extends Authenticatable implements
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function agreement() {
-        return $this->belongsTo(App\Models\Agreement::class);
+        return $this->belongsTo(Agreement::class);
     }
 
     public function getSubscriptionEndAttribute()

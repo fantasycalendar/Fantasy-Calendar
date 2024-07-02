@@ -1,5 +1,3 @@
-version: '2.1'
-
 services:
   fantasydb:
     image: mariadb:10.6
@@ -10,22 +8,14 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: fantasy-calendar
     ports:
-      - "13306:3306"
-
-#  fc-bref-web:
-#    image: bref/fpm-dev-gateway
-#    volumes:
-#      - .:/var/task
-##      - ./setup/nginx/bref.conf:/etc/nginx/conf.d/default.conf
-#    depends_on:
-#      - php
-#    environment:
-#      HANDLER: public/index.php
-#      DOCUMENT_ROOT: public
+      - "${FORWARD_DB_PORT:-13306}:3306"
 
   php:
     container_name: fantasy_calendar_php
     image: fc-bref-php
+    depends_on:
+      - fantasydb
+      - selenium
     build:
       context: .
       dockerfile: setup/php/php.Dockerfile
@@ -57,7 +47,7 @@ services:
     image: selenium/standalone-chrome
     shm_size: '1gb'
     ports:
-      - "4444:4444"
+      - "${FORWARD_SELENIUM_PORT:-4444}:4444"
 
   fcredis:
     image: redis
@@ -66,16 +56,6 @@ services:
       - "6378:6379"
     depends_on:
       - php
-
-  composer:
-    image: fc-bref-composer
-    build:
-      context: .
-      dockerfile: setup/php/composer.Dockerfile
-    user: "${FC_USER_ID:-1000}:${FC_GROUP_ID:-1000}"
-    volumes:
-      - .:/var/task
-    command: ["composer", "install"]
 
   npm:
     image: node:20
