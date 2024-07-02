@@ -1,4 +1,4 @@
-class Clock {
+export default class Clock {
     constructor(
         clock_face_canvas,
         clock_sun_canvas,
@@ -554,5 +554,3 @@ class Clock {
         );
     }
 }
-
-module.exports = Clock;
