@@ -1,4 +1,4 @@
-const preset_loader = {
+export default {
 
     open: false,
     loaded: false,
@@ -299,5 +299,3 @@ const preset_loader = {
         );
     }
 }
-
-module.exports = preset_loader;

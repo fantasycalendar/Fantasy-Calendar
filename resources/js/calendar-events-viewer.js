@@ -1,4 +1,4 @@
-const calendar_events_viewer = {
+export default {
 
 	open: false,
 	can_edit: false,
@@ -319,5 +319,3 @@ const calendar_events_viewer = {
 	}
 
 }
-
-module.exports = calendar_events_viewer;

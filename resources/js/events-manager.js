@@ -1,4 +1,4 @@
-const events_manager = {
+export default {
     open: false,
 
     event_categories: [],
@@ -310,5 +310,3 @@ const events_manager = {
         this.open = false;
     },
 };
-
-module.exports = events_manager;

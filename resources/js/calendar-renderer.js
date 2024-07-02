@@ -1,4 +1,4 @@
-const calendar_renderer = {
+export default {
 
 	loaded: false,
 	loading_message: "Initializing...",
@@ -157,5 +157,3 @@ const calendar_renderer = {
 	}
 
 }
-
-module.exports = calendar_renderer;

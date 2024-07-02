@@ -1,4 +1,4 @@
-const calendar_layouts = {
+export default {
 
     open: false,
     current_layout: undefined,
@@ -48,5 +48,3 @@ const calendar_layouts = {
     }
 
 }
-
-module.exports = calendar_layouts;

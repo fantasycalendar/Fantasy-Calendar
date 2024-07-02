@@ -3,7 +3,7 @@
  *
  * @param  {int}    seed    An int that initializes the pseudo-random generator
  */
-class random {
+export default class random {
 
 	constructor(seed){
 		this.seed = seed;
@@ -112,5 +112,3 @@ class random {
 
 	}
 }
-
-module.exports = random;

@@ -1,4 +1,4 @@
-const calendarYearHeader = {
+export default {
 
     static_data: undefined,
     eras: undefined,
@@ -128,6 +128,3 @@ const calendarYearHeader = {
     },
 
 }
-
-
-module.exports = calendarYearHeader;

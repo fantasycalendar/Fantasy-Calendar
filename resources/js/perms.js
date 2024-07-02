@@ -1,4 +1,4 @@
-class Perms {
+export default class Perms {
     constructor(userid, owner, level, playerLevel) {
 
         this.userid = userid;
@@ -52,5 +52,3 @@ class Perms {
         return static_data.clock.enabled && static_data.clock.render && !isNaN(static_data.clock.hours) && !isNaN(static_data.clock.minutes) && !isNaN(static_data.clock.offset) && (this.player_at_least('co-owner') || !static_data.settings.hide_clock);
     }
 }
-
-module.exports = Perms;

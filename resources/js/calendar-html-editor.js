@@ -1,4 +1,4 @@
-const calendar_html_editor = {
+export default {
 
 	open: false,
 	era_id: false,
@@ -116,6 +116,3 @@ const calendar_html_editor = {
 	}
 
 }
-
-
-module.exports = calendar_html_editor;

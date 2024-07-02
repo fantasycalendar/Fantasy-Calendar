@@ -1,4 +1,4 @@
-class RandomCalendar{
+export default class RandomCalendar{
 
 	get rndUNorm(){
 		this.idx++;
@@ -180,5 +180,3 @@ class RandomCalendar{
 	}
 
 }
-
-module.exports = RandomCalendar;

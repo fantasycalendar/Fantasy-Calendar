@@ -1,4 +1,4 @@
-const render_data_generator = {
+export default {
 
 	get_weather_icon: function(epoch) {
         let epoch_data = this.epoch_data[epoch];
@@ -667,5 +667,3 @@ const render_data_generator = {
         }
     }
 }
-
-module.exports = render_data_generator;

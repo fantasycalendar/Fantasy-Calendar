@@ -1,4 +1,4 @@
-const calendar_events_editor = {
+export default {
 
 	open: false,
 	new_event: true,
@@ -2596,6 +2596,3 @@ const calendar_events_editor = {
 	}
 
 }
-
-
-module.exports = calendar_events_editor;
