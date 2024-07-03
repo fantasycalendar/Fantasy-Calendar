@@ -7,11 +7,11 @@ html { font-family: 'Inter', sans-serif; }
 
 @import 'calendar/colors';
 @import 'darkly-twishvars';
-@import '~bootstrap/scss/bootstrap';
-@import '~bootswatch/dist/darkly/bootswatch';
+@import 'bootstrap/scss/bootstrap';
+@import 'bootswatch/dist/darkly/bootswatch';
 
 
-@import '~sweetalert2/src/variables';
+@import 'sweetalert2/src/variables';
 
 $swal2-dark-theme-black: $gray-800;
 $swal2-dark-theme-white: $gray-100;
@@ -49,16 +49,16 @@ $swal2-button-focus-box-shadow: 0 0 0 1px $swal2-background, 0 0 0 3px $swal2-ou
 $swal2-toast-background: $swal2-dark-theme-black;
 $swal2-toast-button-focus-box-shadow: 0 0 0 1px $swal2-background, 0 0 0 3px $swal2-outline-color;
 
-@import '~sweetalert2/src/sweetalert2';
+@import 'sweetalert2/src/sweetalert2';
 
-@import '~@fortawesome/fontawesome-free/scss/fontawesome';
-@import '~@fortawesome/fontawesome-free/scss/solid';
-@import '~@fortawesome/fontawesome-free/scss/regular';
-@import '~@fortawesome/fontawesome-free/scss/brands';
+@import '@fortawesome/fontawesome-free/scss/fontawesome';
+@import '@fortawesome/fontawesome-free/scss/solid';
+@import '@fortawesome/fontawesome-free/scss/regular';
+@import '@fortawesome/fontawesome-free/scss/brands';
 
-@import '~trumbowyg/dist/ui/sass/trumbowyg';
+@import 'trumbowyg/dist/ui/sass/trumbowyg';
 
-@import '~protip/css/protip';
+@import 'protip/css/protip';
 
 // Variables
 // @import 'calendar/colors';
@@ -73,8 +73,8 @@ $swal2-toast-button-focus-box-shadow: 0 0 0 1px $swal2-background, 0 0 0 3px $sw
 @import 'calendar/event_colors-dark';
 
 // select2
-@import '~select2';
-@import '~select2-bootstrap-theme/dist/select2-bootstrap';
+@import 'select2';
+@import 'select2-bootstrap-theme/dist/select2-bootstrap';
 
 body {
     color: $text-gray-200;
@@ -106,7 +106,7 @@ body {
 
 
 // contextmenu
-@import '~jquery-contextmenu/dist/jquery.contextMenu';
+@import 'jquery-contextmenu/dist/jquery.contextMenu';
 // override stupid preset color
 .context-menu-icon.context-menu-icon--fa5 i{
     color: inherit;

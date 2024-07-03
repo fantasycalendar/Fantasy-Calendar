@@ -1,4 +1,4 @@
-export default {
+export default () => ({
 
     open: false,
     current_layout: undefined,
@@ -42,9 +42,9 @@ export default {
             window.onbeforeunload = function () {}
             window.location.reload(false);
         }, function(){
-            static_data.settings.layout = previous_layout;
-            hide_loading_screen();
-        });
+                static_data.settings.layout = previous_layout;
+                hide_loading_screen();
+            });
     }
 
-}
+})

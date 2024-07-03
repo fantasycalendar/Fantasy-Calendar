@@ -5,16 +5,16 @@ html { font-family: 'Inter', sans-serif; }
     html { font-family: 'Inter var', sans-serif; }
 }
 
-@import '~bootstrap/scss/bootstrap';
+@import 'bootstrap/scss/bootstrap';
 
-@import '~@fortawesome/fontawesome-free/scss/fontawesome';
-@import '~@fortawesome/fontawesome-free/scss/solid';
-@import '~@fortawesome/fontawesome-free/scss/regular';
-@import '~@fortawesome/fontawesome-free/scss/brands';
+@import '@fortawesome/fontawesome-free/scss/fontawesome';
+@import '@fortawesome/fontawesome-free/scss/solid';
+@import '@fortawesome/fontawesome-free/scss/regular';
+@import '@fortawesome/fontawesome-free/scss/brands';
 
-@import '~trumbowyg/dist/ui/sass/trumbowyg';
+@import 'trumbowyg/dist/ui/sass/trumbowyg';
 
-@import '~protip/css/protip';
+@import 'protip/css/protip';
 
 // Variables
 @import 'calendar/colors';
@@ -29,11 +29,11 @@ html { font-family: 'Inter', sans-serif; }
 @import 'calendar/event_colors';
 
 // select2
-@import '~select2';
-@import '~select2-bootstrap-theme/dist/select2-bootstrap';
+@import 'select2';
+@import 'select2-bootstrap-theme/dist/select2-bootstrap';
 
 // contextmenu
-@import '~jquery-contextmenu/dist/jquery.contextMenu';
+@import 'jquery-contextmenu/dist/jquery.contextMenu';
 // override stupid preset color
 .context-menu-icon.context-menu-icon--fa5 i{
     color: inherit;

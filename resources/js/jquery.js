@@ -4,8 +4,6 @@
  * code may be modified to fit the specific needs of your application.
  */
 
-console.log('here');
-
 import $ from 'jquery';
 window.$ = $;
 window.jQuery = $;

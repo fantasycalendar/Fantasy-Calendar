@@ -1,4 +1,4 @@
-export default {
+export default () => ({
     open: false,
 
     event_categories: [],
@@ -135,13 +135,13 @@ export default {
         }
 
         const selectedEvents = Object.entries(this.selected)
-            .filter((entry) => {
-                console.log(entry[1]);
-                return entry[1];
-            })
-            .map((entry) =>
-                window.events.find((event) => event.id === +entry[0]),
-            );
+        .filter((entry) => {
+            console.log(entry[1]);
+            return entry[1];
+        })
+        .map((entry) =>
+            window.events.find((event) => event.id === +entry[0]),
+        );
 
         return selectedEvents.length > 0;
     },
@@ -182,14 +182,14 @@ export default {
             (categorized, event) => {
                 if (
                     (this.search.length && !this.inSearch(event)) ||
-                    !this.matchesVisibility(event)
+                        !this.matchesVisibility(event)
                 ) {
                     return categorized;
                 }
 
                 const categoryName =
                     get_category(event.event_category_id)?.name ??
-                    "Uncategorized";
+                        "Uncategorized";
                 categorized[categoryName] = categorized[categoryName] ?? [];
                 categorized[categoryName].push(event);
                 return categorized;
@@ -232,8 +232,8 @@ export default {
         return searchComponents.every(
             (search) =>
                 event.name.toLowerCase().includes(search) ||
-                event.description.toLowerCase().includes(search) ||
-                (event.author && event.author.toLowerCase().includes(search)),
+                    event.description.toLowerCase().includes(search) ||
+                    (event.author && event.author.toLowerCase().includes(search)),
         );
     },
 
@@ -270,7 +270,7 @@ export default {
 
         if (
             this.search.length &&
-            output.toLowerCase().includes(this.search.toLowerCase())
+                output.toLowerCase().includes(this.search.toLowerCase())
         ) {
             let found = output.toLowerCase().indexOf(this.search.toLowerCase());
 
@@ -281,11 +281,11 @@ export default {
             output = output
                 .substring(index, index + lengthLimit)
                 .replace(
-                new RegExp(this.search, "gi"),
-                function(str) {
-                    return `<mark>${str}</mark>`;
-                },
-            );
+                    new RegExp(this.search, "gi"),
+                    function(str) {
+                        return `<mark>${str}</mark>`;
+                    },
+                );
         }
 
         if (ellipses) {
@@ -309,4 +309,4 @@ export default {
     close_modal: function($event) {
         this.open = false;
     },
-};
+});

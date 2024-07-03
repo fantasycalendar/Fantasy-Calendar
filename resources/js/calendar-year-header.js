@@ -1,4 +1,4 @@
-export default {
+export default () => ({
 
     static_data: undefined,
     eras: undefined,
@@ -127,4 +127,4 @@ export default {
             : this.dynamic_data.epoch;
     },
 
-}
+})
