@@ -73,6 +73,17 @@ services:
       - "MIXVERSION=true"
       - "NODE_OPTIONS=--max-old-space-size=4096"
 
+  composer:
+    image: fc-bref-composer
+    build:
+      context: .
+      dockerfile: setup/php/composer.Dockerfile
+    user: "${FC_USER_ID:-1000}:${FC_GROUP_ID:-1000}"
+    volumes:
+      - .:/var/task
+    command: ["composer", "install"]
+
+
   mailpit:
     image: 'axllent/mailpit:latest'
     ports:
