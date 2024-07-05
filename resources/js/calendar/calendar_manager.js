@@ -1,3 +1,5 @@
+import { error_message } from "./header";
+
 var utcDate1 = Date.now();
 
 var registered_click_callbacks = {}

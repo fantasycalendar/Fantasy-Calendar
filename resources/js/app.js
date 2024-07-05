@@ -12,3 +12,6 @@ window.IntervalsCollection = IntervalsCollection;
 
 import Sortable from 'sortablejs';
 window.Sortable = Sortable;
+
+import { header_initialize } from './calendar/header.js';
+window.header_initialize = header_initialize;

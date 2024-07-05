@@ -1,5 +1,4 @@
-// import $ from 'jquery';
-// import 'jquery-ui';
+import { error_message } from "./header";
 
 function set_up_edit_inputs(){
 
