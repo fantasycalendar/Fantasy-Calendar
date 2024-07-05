@@ -1,23 +1,3 @@
-@push('head')
-    <script>
-
-    $(document).ready(function(){
-
-        $('#btn_share, .share-body').click(function(){
-            var copyText = document.querySelector(".share-body");
-            copyText.select();
-            document.execCommand("copy");
-            $.notify(
-                "Copied to clipboard!",
-                "success"
-            );
-        });
-
-    })
-
-    </script>
-@endpush
-
 <div id="input_container" class="d-print-none d-flex flex-column justify-content-between">
     <div>
         @include('inputs.sidebar.header')
@@ -27,9 +7,16 @@
 
         <div class='d-flex flex-column mx-3 my-2'>
             <div class="input-group">
-                <input type="text" class="form-control form-control-sm share-body" readonly value="{{ url()->current() }}"/>
+                <input type="text" x-ref="share_url_input" class="form-control form-control-sm share-body" readonly value="{{ url()->current() }}"/>
                 <div class="input-group-append">
-                    <button id="btn_share" type="button" class='btn btn-sm btn-secondary btn-block'>Copy URL</button>
+                    <button x-on:click="() => {
+                        $refs.share_url_input.select();
+                        document.execCommand('copy');
+                        $dispatch('notify', {
+                            content: 'Copied to clipboard!',
+                            type: 'success'
+                        });
+                    }" id="btn_share" type="button" class='btn btn-sm btn-secondary btn-block'>Copy URL</button>
                 </div>
             </div>
         </div>

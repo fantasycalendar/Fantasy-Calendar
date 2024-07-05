@@ -50,20 +50,20 @@ export default () => ({
 
         if (!this.comment_editor){
             this.comment_editor = $(this.$refs.trumbowyg_comment_input);
-            this.comment_editor.trumbowyg({
-                btns: [
-                    ['strong', 'em', 'del'],
-                    ['superscript', 'subscript'],
-                    ['link'],
-                    ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-                    ['unorderedList', 'orderedList'],
-                ['removeformat']
-                ]
-            });
+            // this.comment_editor.trumbowyg({
+            //     btns: [
+            //         ['strong', 'em', 'del'],
+            //         ['superscript', 'subscript'],
+            //         ['link'],
+            //         ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+            //         ['unorderedList', 'orderedList'],
+            //     ['removeformat']
+            //     ]
+            // });
         }
 
         if (this.user_can_comment && this.can_comment_on_event){
-            this.comment_editor.trumbowyg('html', '');
+            // this.comment_editor.trumbowyg('html', '');
         }
 
         if(this.db_id) {
@@ -127,33 +127,33 @@ export default () => ({
     },
 
     submit_comment() {
-        let comment_content = this.comment_editor.trumbowyg('html');
+        let comment_content = "this.comment_editor.trumbowyg('html')";
         submit_new_comment(comment_content, this.db_id, function(comment){
             window.dispatchEvent(new CustomEvent('event-viewer-modal-add-comment', { detail: { comment: comment } }));
         });
-        this.comment_editor.trumbowyg('html', '');
+        // this.comment_editor.trumbowyg('html', '');
     },
 
     start_edit_comment(comment) {
         this.cancel_edit_comment();
         comment.editing = true;
         const element = $(document.getElementById(`comment-editor-${comment.index}`))
-        element.trumbowyg({
-            btns: [
-                ['strong', 'em', 'del'],
-                ['superscript', 'subscript'],
-                ['link'],
-                ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-                ['unorderedList', 'orderedList'],
-                ['removeformat']
-            ]
-            }).trumbowyg('html', comment.content);
+        // element.trumbowyg({
+        //     btns: [
+        //         ['strong', 'em', 'del'],
+        //         ['superscript', 'subscript'],
+        //         ['link'],
+        //         ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+        //         ['unorderedList', 'orderedList'],
+        //         ['removeformat']
+        //     ]
+        //     }).trumbowyg('html', comment.content);
         comment.editor = element;
     },
 
     submit_edit_comment(comment) {
 
-        let comment_content = comment.editor.trumbowyg('html');
+        let comment_content = "comment.editor.trumbowyg('html')";
 
         if(comment_content == "" || comment_content == "<p><br></p>"){
             $.notify("Comment cannot be empty.");
@@ -189,7 +189,7 @@ export default () => ({
     cancel_edit_comment() {
         for (let entry in this.comments){
             if(this.comments[entry].editor){
-                this.comments[entry].editor.trumbowyg('destroy');
+                // this.comments[entry].editor.trumbowyg('destroy');
                 this.comments[entry].editor = undefined;
             };
             this.comments[entry].editing = false;
@@ -223,7 +223,7 @@ export default () => ({
     confirm_clone: function() {
 
         if (this.user_can_comment && this.can_comment_on_event) {
-            let comment_content = this.comment_editor.trumbowyg('html');
+            let comment_content = "this.comment_editor.trumbowyg('html')";
             if (comment_content != "" && comment_content != "<p><br></p>") {
                 swal.fire(this.swal_content).then((result) => {
                     if (!result.dismiss) {
@@ -247,7 +247,7 @@ export default () => ({
     confirm_edit: function() {
 
         if (this.user_can_comment && this.can_comment_on_event) {
-            let comment_content = this.comment_editor.trumbowyg('html');
+            let comment_content = "this.comment_editor.trumbowyg('html')";
             if (comment_content != "" && comment_content != "<p><br></p>") {
                 swal.fire(this.swal_content).then((result) => {
                     if (!result.dismiss) {
@@ -287,7 +287,7 @@ export default () => ({
         }
 
         if (this.user_can_comment && this.can_comment_on_event) {
-            let comment_content = this.comment_editor.trumbowyg('html');
+            let comment_content = "this.comment_editor.trumbowyg('html')";
             if (comment_content != "" && comment_content != "<p><br></p>") {
                 swal.fire(this.swal_content).then((result) => {
                     if (!result.dismiss) {
@@ -313,7 +313,7 @@ export default () => ({
         this.comments = [];
         this.loading_comments = true;
         if(this.user_can_comment && this.can_comment_on_event) {
-            this.comment_editor.trumbowyg('html');
+            // this.comment_editor.trumbowyg('html');
         }
 
     }

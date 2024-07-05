@@ -59,7 +59,7 @@ export default () => ({
 
             this.nth_input = $(this.$refs.nth_input);
 
-            this.description_input.trumbowyg();
+            // this.description_input.trumbowyg();
 
             this.event_conditions_container.nestedSortable({
                 handle: ".handle",
@@ -298,7 +298,7 @@ export default () => ({
         };
 
         if(this.description_input) {
-            this.description_input.trumbowyg('html', this.working_event.description);
+            // this.description_input.trumbowyg('html', this.working_event.description);
         }
 
         let category_id = static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
@@ -364,7 +364,7 @@ export default () => ({
         this.set_up_moon_data();
 
         if(this.description_input) {
-            this.description_input.trumbowyg('html', this.working_event.description);
+            // this.description_input.trumbowyg('html', this.working_event.description);
         }
 
         this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
@@ -383,7 +383,7 @@ export default () => ({
 
         this.working_event.name = sanitizeHtml((this.working_event.name === "") ? "New Event" : this.working_event.name);
 
-        this.working_event.description = this.description_input.trumbowyg('html');
+        this.working_event.description = "this.description_input.trumbowyg('html')";
 
         events[this.event_id] = clone(this.working_event);
 
@@ -436,7 +436,7 @@ export default () => ({
         this.cloning_event = false;
 
         if(this.description_input) {
-            this.description_input.trumbowyg('html', '');
+            // this.description_input.trumbowyg('html', '');
         }
 
         this.working_event = {
@@ -509,7 +509,7 @@ export default () => ({
                     let new_event = clone(this.working_event);
                     new_event.data = this.create_event_data();
                     new_event.name = sanitizeHtml(((new_event.name === "") ? "New Event" : new_event.name) + " (clone)");
-                    new_event.description = this.description_input.trumbowyg('html');
+                    new_event.description = "this.description_input.trumbowyg('html')";
                     this.close();
                     window.dispatchEvent(new CustomEvent('event-editor-modal-clone-event', { detail: { event_data: new_event, epoch: this.epoch } }));
                 }
@@ -787,7 +787,7 @@ export default () => ({
 
             event_check.data = this.create_event_data();
 
-            event_check.description = this.description_input.trumbowyg('html');
+            event_check.description = "this.description_input.trumbowyg('html')";
 
             event_check.settings = clone(this.working_event.settings)
 

@@ -8,13 +8,12 @@ import $ from 'jquery';
 window.$ = $;
 window.jQuery = $;
 
-import 'jquery-ui';
+// import 'jquery-ui';
 
 import Popper from 'popper.js';
 window.Popper = Popper;
 
 import 'chart.js';
-import 'trumbowyg';
 import 'notifyjs';
 
 /**

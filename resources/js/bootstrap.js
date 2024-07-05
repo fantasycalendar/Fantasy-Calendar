@@ -116,6 +116,8 @@ import collectJS from 'collect.js';
 window.Collection = collectJS.Collection;
 window.collect = collectJS.collect;
 
+import Perms from './perms.js';
+window.Perms = Perms;
 
 import Alpine from 'alpinejs'
 import CalendarPresets from './calendar-presets.js';
@@ -135,6 +137,60 @@ Alpine.data('EventsManager', EventsManager);
 Alpine.data('CalendarEventEditor', CalendarEventEditor);
 Alpine.data('CalendarEventViewer', CalendarEventViewer);
 Alpine.data('CalendarYearHeader', CalendarYearHeader);
+
+Alpine.data('MainApp', () => ({
+    init: function() {
+        this.$nextTick(() => {
+            console.log("here");
+
+            window.onerror = function(error, url, line) {
+                $.notify("Error:\n " + error + " \nin file " + url + " \non line " + line);
+            }
+
+            $.protip({
+                defaults: {
+                    "delay-in": 2000,
+                    position: "bottom",
+                    scheme: "leaf",
+                    classes: "box-shadow accent-bg-color",
+                    animate: "bounceIn",
+                    target: "#protip_container"
+                }
+            });
+
+            var cookiedomain = window.location.hostname.split(".")[window.location.hostname.split(".").length - 2] + "." + window.location.hostname.split(".")[window.location.hostname.split(".").length - 1];
+            document.cookie = "fantasycalendar_remember=; Max-Age=0; path=/; domain=" + cookiedomain;
+
+            if (window.localStorage.getItem("inputs_collapsed") != null) {
+                toggle_sidebar(window.localStorage.getItem("inputs_collapsed") == "true");
+            } else {
+                if (deviceType() == "Mobile Phone") {
+                    toggle_sidebar(false);
+                }
+            }
+
+            if (window.navigator.userAgent.includes("LM-G850")) {
+                $("#input_container").addClass("sidebar-mobile-half");
+            }
+
+            if (window.navigator.userAgent.includes("Surface Duo") && !window.navigator.userAgent.includes("Surface Duo 2")) {
+                $("#input_container").addClass("sidebar-surface-duo");
+                $("#input_collapse_btn").addClass("sidebar-surface-duo");
+            }
+
+            if (window.navigator.userAgent.includes("Surface Duo 2")) {
+                $("#input_container").addClass("sidebar-surface-duo-2");
+                $("#input_collapse_btn").addClass("sidebar-surface-duo-2");
+            }
+        })
+    },
+    notify(content, type = "success") {
+        window.dispatchEvent(new CustomEvent("notify", {
+            bubbles: true,
+            detail: { content, type }
+        }));
+    }
+}));
 
 Alpine.data('moon_tooltip', () => ({
     element: false,

@@ -1,8 +1,6 @@
 import $ from 'jquery';
 import jQuery from 'jquery';
 
-import 'trumbowyg';
-
 export default () => ({
 
     open: false,
@@ -16,7 +14,7 @@ export default () => ({
 
             this.html_input = $(this.$refs.html_input);
 
-            this.html_input.trumbowyg();
+            // this.html_input.trumbowyg();
 
             this.has_initialized = true;
 
@@ -32,7 +30,7 @@ export default () => ({
 
         this.description = static_data.eras[this.era_id].description ? static_data.eras[this.era_id].description : "";
 
-        this.html_input.trumbowyg("html", this.description);
+        // this.html_input.trumbowyg("html", this.description);
 
         this.open = true;
 
@@ -40,7 +38,7 @@ export default () => ({
 
     save_html: function(){
 
-        static_data.eras[this.era_id].description = this.html_input.trumbowyg("html");
+        static_data.eras[this.era_id].description = 'this.html_input.trumbowyg("html")';
 
         this.close()
 
@@ -60,7 +58,7 @@ export default () => ({
             return false;
         }
 
-        let description = this.html_input.trumbowyg("html");
+        let description = 'this.html_input.trumbowyg("html")';
 
         if (description != this.description) {
         swal.fire({
@@ -87,7 +85,7 @@ export default () => ({
             return false;
         }
 
-        let description = this.html_input.trumbowyg("html");
+        let description = 'this.html_input.trumbowyg("html")';
 
         if (description != this.description) {
         swal.fire({
@@ -115,7 +113,7 @@ export default () => ({
         this.open = false;
         this.era_id = false;
         this.description = false;
-        this.html_input.trumbowyg("html", "");
+        // this.html_input.trumbowyg("html", "");
         evaluate_save_button();
 
     }
