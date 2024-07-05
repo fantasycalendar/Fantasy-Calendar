@@ -4,7 +4,7 @@
 
 @include('templates._head_content')
 
-<body class="page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class')" x-data="MainApp">
+<body class="page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class')" x-data="MainApp" @toggle_sidebar.window="window.toggle_sidebar($event.detail.force ?? false)">
 
 <div id="protip_container" class='d-print-none'></div>
 

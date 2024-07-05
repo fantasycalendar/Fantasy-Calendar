@@ -2,14 +2,13 @@
 
 @push('head')
     <script>
-        const generatorData = () => {
+        function generatorData() {
             return {
-                init: () => {
+                init() {
                     @include('calendar._loadcalendar')
 
-                    preview_date = clone(dynamic_data);
+                    preview_date = _.cloneDeep(dynamic_data);
                     preview_date.follow = true;
-
 
                     set_up_view_inputs();
                     set_up_view_values();
