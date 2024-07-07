@@ -1,6 +1,7 @@
 import { submit_new_event, submit_edit_event, submit_delete_event } from "./calendar/calendar_ajax_functions";
 import { matcher, ordinal_suffix_of, precisionRound, clone } from "./calendar/calendar_functions";
 import { condition_mapping, moon_phases } from "./calendar/calendar_variables";
+import { repopulate_timespan_select, repopulate_day_select } from "./calendar/calendar_inputs_visitor";
 
 export default () => ({
 

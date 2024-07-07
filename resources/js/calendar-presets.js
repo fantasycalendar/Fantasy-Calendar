@@ -1,6 +1,8 @@
 import RandomCalendar from './random-calendar.js';
 import { get_preset_data } from './calendar/calendar_ajax_functions.js';
 import { convert_year, clone, evaluate_calendar_start } from './calendar/calendar_functions.js';
+import { set_up_visitor_values } from './calendar/calendar_inputs_visitor.js';
+import { set_up_view_values } from './calendar/calendar_inputs_view.js';
 
 export default () => ({
 

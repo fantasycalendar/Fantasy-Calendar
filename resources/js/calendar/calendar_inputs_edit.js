@@ -39,6 +39,19 @@ import {
 } from "./calendar_functions";
 import { preset_data } from "./calendar_variables";
 import { climate_charts } from "./calendar_weather_layout";
+import {
+    set_up_visitor_values,
+    preview_date_follow,
+    update_preview_calendar,
+    set_preview_date,
+    update_current_day,
+    evaluate_settings,
+    evaluate_sun,
+    repopulate_event_category_lists,
+    repopulate_timespan_select,
+    repopulate_day_select,
+} from "./calendar_inputs_visitor";
+import { evaluate_dynamic_change, repopulate_location_select_list, set_up_view_values } from "./calendar_inputs_view";
 
 function set_up_edit_inputs(){
 
