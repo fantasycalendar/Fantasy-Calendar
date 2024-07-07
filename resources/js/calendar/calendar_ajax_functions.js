@@ -19,13 +19,13 @@ export function getUrlParameter(sParam) {
 
 export function update_name() {
     $.ajax({
-        url: window.baseurl + "calendars/" + hash,
+        url: window.baseurl + "calendars/" + window.hash,
         type: "post",
         dataType: 'json',
-        data: { _method: 'PATCH', name: calendar_name, hash: hash },
+        data: { _method: 'PATCH', name: window.calendar_name, hash: window.hash },
         success: function(result) {
-            prev_calendar_name = calendar_name;
-            document.title = calendar_name + " - Fantasy Calendar";
+            window.prev_calendar_name = window.calendar_name;
+            document.title = window.calendar_name + " - Fantasy Calendar";
             calendar_saved();
         },
         error: function(error) {
@@ -91,7 +91,7 @@ export function update_dynamic(calendar_hash, callback) {
 
 export function update_all() {
 
-    check_last_change(hash, function(output) {
+    check_last_change(window.hash, function(output) {
 
         var new_static_change = new Date(output.last_static_change)
 
@@ -105,7 +105,7 @@ export function update_all() {
 
         }
 
-        do_update_all(hash);
+        do_update_all(window.hash);
 
     });
 }
@@ -218,12 +218,12 @@ export function link_child_calendar(child_hash, parent_link_date, parent_offset)
         dataType: 'json',
         data: {
             _method: "PATCH",
-            parent_hash: hash,
+            parent_hash: window.hash,
             parent_link_date: parent_link_date,
             parent_offset: parent_offset
         },
         success: function(result) {
-            update_dynamic(hash, () => {
+            update_dynamic(window.hash, () => {
                 window.location.reload();
             });
         },
@@ -248,7 +248,7 @@ export function unlink_child_calendar(output, child_hash) {
             parent_offset: "",
         },
         success: function(result) {
-            update_dynamic(hash, () => {
+            update_dynamic(window.hash, () => {
                 window.location.reload();
             });
         },
@@ -262,7 +262,7 @@ export function unlink_child_calendar(output, child_hash) {
 
 export function get_calendar_users(callback) {
     $.ajax({
-        url: window.apiurl + "/calendar/" + hash + "/users",
+        url: window.apiurl + "/calendar/" + window.hash + "/users",
         type: "get",
         dataType: "json",
         success: function(result) {
@@ -275,7 +275,7 @@ export function get_calendar_users(callback) {
 }
 
 export function add_calendar_user(email, output) {
-    axios.post(window.apiurl + "/calendar/" + hash + "/inviteUser", { email: email })
+    axios.post(window.apiurl + "/calendar/" + window.hash + "/inviteUser", { email: email })
         .then(function(result) {
             output(true, `Sent email to ${email}!`);
         })
@@ -286,7 +286,7 @@ export function add_calendar_user(email, output) {
 
 export function update_calendar_user(user_id, permission, output) {
 
-    axios.post(window.apiurl + "/calendar/" + hash + "/changeUserRole", { user_role: permission, user_id: user_id })
+    axios.post(window.apiurl + "/calendar/" + window.hash + "/changeUserRole", { user_role: permission, user_id: user_id })
         .then(function(result) {
             output(true, 'Updated permissions!');
         })
@@ -302,7 +302,7 @@ export function remove_calendar_user(user_id, remove_all, callback, email = null
         userdata.email = email;
     }
 
-    axios.post(window.apiurl + "/calendar/" + hash + "/removeUser", userdata)
+    axios.post(window.apiurl + "/calendar/" + window.hash + "/removeUser", userdata)
         .then(function(result) {
             callback();
         })
@@ -315,7 +315,7 @@ export function remove_calendar_user(user_id, remove_all, callback, email = null
 
 export function resend_calendar_invite(email, output) {
 
-    axios.post(window.apiurl + "/calendar/" + hash + "/resend_invite", { email: email })
+    axios.post(window.apiurl + "/calendar/" + window.hash + "/resend_invite", { email: email })
         .then(function(result) {
             output(true, 'Resent invitation');
         })
@@ -472,7 +472,7 @@ export function submit_delete_comment(comment_id, callback) {
 
 export function get_owned_calendars(output) {
     $.ajax({
-        url: window.apiurl + "/calendar/" + hash + "/owned",
+        url: window.apiurl + "/calendar/" + window.hash + "/owned",
         type: "get",
         dataType: 'json',
         data: {},

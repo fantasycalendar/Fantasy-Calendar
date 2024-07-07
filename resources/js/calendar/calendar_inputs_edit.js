@@ -110,7 +110,7 @@ export function set_up_edit_inputs() {
         if (!events_same || !event_categories_same || !static_same || !advancement_same) {
             update_all();
         } else if (!dynamic_same) {
-            update_dynamic(hash);
+            update_dynamic(window.hash);
         } else if (!calendar_name_same) {
             update_name();
         }
@@ -145,7 +145,7 @@ export function set_up_edit_inputs() {
     delete_button = $('#btn_delete');
 
     delete_button.click(function() {
-        delete_calendar(hash, calendar_name, function() { self.location = '/calendars' });
+        delete_calendar(window.hash, calendar_name, function() { self.location = '/calendars' });
     });
 
     calendar_container = $('#calendar');
@@ -5472,7 +5472,7 @@ function populate_calendar_lists() {
 
             var calendar = owned_calendars[calendar_hash];
 
-            if (calendar.hash == hash) {
+            if (calendar.hash == window.hash) {
 
                 for (var index in calendar.children) {
 
@@ -5495,13 +5495,13 @@ function populate_calendar_lists() {
 
             var child_calendar = owned_calendars[calendar_hash];
 
-            if (child_calendar.hash != hash) {
+            if (child_calendar.hash != window.hash) {
 
                 if (child_calendar.parent_hash) {
 
                     var calendar_owner = clone(owned_calendars[child_calendar.parent_hash]);
 
-                    if (calendar_owner.hash == hash) {
+                    if (calendar_owner.hash == window.hash) {
                         calendar_owner.name = "this calendar";
                     }
 

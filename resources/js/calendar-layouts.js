@@ -41,7 +41,7 @@ export default () => ({
         show_loading_screen();
         let previous_layout = window.static_data.settings.layout;
         window.static_data.settings.layout = layout.name.toLowerCase();
-        do_update_all(hash, function(){
+        do_update_all(window.hash, function(){
             window.onbeforeunload = function () {}
             window.location.reload(false);
         }, function(){

@@ -1661,7 +1661,7 @@ export default () => ({
             let type = condition_selected[0][0];
             let placeholder = condition_selected[0][1];
             let alt = condition_selected[0][0];
-            let value = this.epoch_data ? this.epoch_data.year : dynamic_data.year;
+            let value = this.epoch_data ? this.epoch_data.year : window.dynamic_data.year;
             let min = condition_selected[0][4];
             let max = condition_selected[0][5];
 
@@ -2500,7 +2500,7 @@ export default () => ({
             let post = "";
 
             if (window.location.pathname !== '/calendars/create' && !event_has_changed) {
-                pre = `<a href='${window.baseurl}calendars/${hash}?year=${year}&month=${timespan}&day=${day}' target="_blank">`;
+                pre = `<a href='${window.baseurl}calendars/${window.hash}?year=${year}&month=${timespan}&day=${day}' target="_blank">`;
                 post = `</a>`;
             }
 
