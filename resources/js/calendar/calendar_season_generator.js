@@ -9,6 +9,8 @@ import {
     fract,
     mid,
     norm,
+    convert_year,
+    clone
 } from "./calendar_functions";
 
 class Climate{

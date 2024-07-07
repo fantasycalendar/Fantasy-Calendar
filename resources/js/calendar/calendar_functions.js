@@ -1486,32 +1486,3 @@ export function evaluate_calendar_start(static_data, _year, _timespan, _day, deb
     };
 
 }
-
-
-
-/**
- * This simple function returns a bool whether any given year has an era that ends it. Used to prevent users to create two eras that end years in one year.
- *
- * @param  {object}     static_data     The calendar's static_data object.
- * @param  {int}        year            The number of a year passed through the convert_year function.
- * @return {bool}                       A boolean to indicate whether that year has been terminated by an era or not
- */
-export function has_year_ending_era(static_data, year) {
-
-    for (var era_index = 0; era_index < static_data.eras.length; era_index++) {
-
-        var era = static_data.eras[era_index];
-
-        if (era.settings.starting_era) continue;
-
-        if (era.settings.ends_year && year == convert_year(static_data, era.date.year)) {
-
-            return true;
-
-        }
-
-    }
-
-    return false;
-
-}

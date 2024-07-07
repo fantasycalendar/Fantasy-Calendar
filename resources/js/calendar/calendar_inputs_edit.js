@@ -27,6 +27,15 @@ import {
     fract,
     get_moon_granularity,
     get_current_era,
+    date_manager,
+    convert_year,
+    unconvert_year,
+    get_timespans_in_year,
+    does_timespan_appear,
+    avg_year_length,
+    avg_month_length,
+    clone,
+    evaluate_calendar_start,
 } from "./calendar_functions";
 
 function set_up_edit_inputs(){

@@ -1,6 +1,15 @@
 // import CalendarClock from '../clock.js';
 import { submit_hide_show_event } from "./calendar_ajax_functions";
-import { get_calendar_data, debounce } from "./calendar_functions";
+import {
+    get_calendar_data,
+    debounce,
+    date_manager,
+    valid_preview_date,
+    convert_year,
+    get_days_in_timespan,
+    does_timespan_appear,
+    evaluate_calendar_start,
+} from "./calendar_functions";
 
 function context_set_current_date(key, opt){
 

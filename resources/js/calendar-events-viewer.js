@@ -1,4 +1,5 @@
 import { submit_new_comment, submit_delete_comment, get_event_comments } from "./calendar/calendar_ajax_functions";
+import { clone } from "./calendar/calendar_functions";
 
 export default () => ({
 

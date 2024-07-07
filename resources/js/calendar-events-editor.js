@@ -1,5 +1,5 @@
 import { submit_new_event, submit_edit_event, submit_delete_event } from "./calendar/calendar_ajax_functions";
-import { matcher, ordinal_suffix_of, precisionRound } from "./calendar/calendar_functions";
+import { matcher, ordinal_suffix_of, precisionRound, clone } from "./calendar/calendar_functions";
 
 export default () => ({
 

@@ -1,4 +1,4 @@
-import { precisionRound, fract, get_current_era } from "./calendar_functions";
+import { precisionRound, fract, get_current_era, date_manager, convert_year } from "./calendar_functions";
 
 rebuild_type = 'calendar';
 

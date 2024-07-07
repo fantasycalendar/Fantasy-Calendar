@@ -1,4 +1,4 @@
-import { ordinal_suffix_of } from "./calendar/calendar_functions";
+import { ordinal_suffix_of, get_cycle } from "./calendar/calendar_functions";
 
 export default () => ({
 
