@@ -9,6 +9,7 @@ import {
     get_timespan_occurrences,
     evaluate_calendar_start,
 } from "./calendar_functions";
+import { Climate } from "./calendar_season_generator";
 
 export const calendar_data_generator = {
 

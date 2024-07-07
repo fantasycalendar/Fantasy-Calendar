@@ -37,6 +37,8 @@ import {
     clone,
     evaluate_calendar_start,
 } from "./calendar_functions";
+import { preset_data } from "./calendar_variables";
+import { climate_charts } from "./calendar_weather_layout";
 
 function set_up_edit_inputs(){
 

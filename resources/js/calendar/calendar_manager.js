@@ -1,5 +1,7 @@
 import { error_message } from "./header";
 import { execution_time } from "./calendar_functions";
+import { climate_charts } from "./calendar_weather_layout";
+import { Climate } from "./calendar_season_generator";
 
 var utcDate1 = Date.now();
 

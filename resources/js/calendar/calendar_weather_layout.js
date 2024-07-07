@@ -35,7 +35,7 @@ function addData(chart, label, dataset) {
     chart.update(0);
 }
 
-var climate_charts = {
+export var climate_charts = {
 
 	day_length: undefined,
 	precipitation: undefined,

@@ -1,4 +1,6 @@
-day_data_tooltip = {
+import { moon_phases } from "./calendar_variables";
+
+export var day_data_tooltip = {
 
     elements: {},
 

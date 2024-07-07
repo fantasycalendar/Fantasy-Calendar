@@ -10,6 +10,7 @@ import {
     does_timespan_appear,
     evaluate_calendar_start,
 } from "./calendar_functions";
+import { day_data_tooltip } from "./calendar_day_data_layout";
 
 function context_set_current_date(key, opt){
 

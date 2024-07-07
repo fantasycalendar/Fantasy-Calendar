@@ -1,4 +1,4 @@
-var condition_mapping = {
+export var condition_mapping = {
 
 	"Date": [
 		["Date is exactly", 			[["date", "==", 0, 1, 2]],		[["number", "Number", "Year", "1"], ["select"], ["number", "Number", "Day", "1"]]],
@@ -296,7 +296,7 @@ var moon_paths = [
 	"M16,26.72a10.52,10.52,0,0,1-3.77-.7C9.77,24.81,7,22.1,7,16S9.77,7.19,12.23,6A10.52,10.52,0,0,1,16,5.28a10.72,10.72,0,0,1,0,21.44Z"
 ];
 
-var moon_phases = {
+export var moon_phases = {
 	'4': {
         'New Moon':                 moon_paths[0],
         'First Quarter':            moon_paths[12],
@@ -405,7 +405,7 @@ var moon_phases = {
 	}
 };
 
-var preset_data = {
+export var preset_data = {
 
 	temperature_gauge: {
 		'Polar': -40,

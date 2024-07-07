@@ -1,4 +1,5 @@
 import { ordinal_suffix_of } from "./calendar/calendar_functions";
+import { moon_phases } from "./calendar/calendar_variables";
 
 export default {
 

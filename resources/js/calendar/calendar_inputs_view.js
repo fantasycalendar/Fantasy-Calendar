@@ -1,6 +1,8 @@
 import { precisionRound, fract, get_current_era, date_manager, convert_year } from "./calendar_functions";
+import { preset_data } from "./calendar_variables";
 
 rebuild_type = 'calendar';
+import { preset_data } from "./calendar_variables";
 
 export function set_up_view_inputs(){
 
