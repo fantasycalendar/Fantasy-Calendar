@@ -1418,9 +1418,9 @@ export function set_up_edit_inputs() {
                 $(this).closest('.sortable-container').remove();
                 $(this).closest('.sortable-container').parent().sortable('refresh');
                 reindex_timespan_sortable();
-                dynamic_date_manager.cap_timespan();
-                dynamic_data.timespan = dynamic_date_manager.timespan;
-                dynamic_data.epoch = dynamic_date_manager.epoch;
+                window.dynamic_date_manager.cap_timespan();
+                dynamic_data.timespan = window.dynamic_date_manager.timespan;
+                dynamic_data.epoch = window.dynamic_date_manager.epoch;
                 recalc_stats();
                 break;
 
@@ -1498,7 +1498,7 @@ export function set_up_edit_inputs() {
                 $(this).closest('.sortable-container').remove();
                 $(this).closest('.sortable-container').parent().sortable('refresh');
                 window.static_data.year_data.leap_days.splice(index, 1)
-                dynamic_data.epoch = dynamic_date_manager.epoch;
+                dynamic_data.epoch = window.dynamic_date_manager.epoch;
                 reindex_leap_day_list();
                 recalc_stats();
                 break;
@@ -1839,7 +1839,7 @@ export function set_up_edit_inputs() {
             era.date.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, era.date.year), era.date.timespan, era.date.day).epoch;
         }
         dynamic_data.current_era = get_current_era(window.static_data, dynamic_data.epoch);
-        dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+        window.dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
     });
 
     $(document).on('change', '#era_list .starting_era', function() {
@@ -1851,7 +1851,7 @@ export function set_up_edit_inputs() {
             era.date.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, era.date.year), era.date.timespan, era.date.day).epoch;
         }
         dynamic_data.current_era = get_current_era(window.static_data, dynamic_data.epoch);
-        dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+        window.dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
     });
 
     $(document).on('click', '.preview_era_date', function() {
@@ -2048,9 +2048,9 @@ export function set_up_edit_inputs() {
 
         $('.leap_day_occurance_input').change();
 
-        dynamic_date_manager.cap_timespan();
-        dynamic_data.timespan = dynamic_date_manager.timespan;
-        dynamic_data.epoch = dynamic_date_manager.epoch;
+        window.dynamic_date_manager.cap_timespan();
+        dynamic_data.timespan = window.dynamic_date_manager.timespan;
+        dynamic_data.epoch = window.dynamic_date_manager.epoch;
 
     });
 
@@ -2179,7 +2179,7 @@ export function set_up_edit_inputs() {
 
         $(this).closest('.sortable-container').find('.leap_day_variance_output').html(get_interval_text(false, data));
 
-        dynamic_data.epoch = dynamic_date_manager.epoch;
+        dynamic_data.epoch = window.dynamic_date_manager.epoch;
 
         do_error_check();
 
@@ -5125,11 +5125,11 @@ function reindex_era_list() {
 
     });
 
-    dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
-    dynamic_data.epoch = dynamic_date_manager.epoch;
+    window.dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+    dynamic_data.epoch = window.dynamic_date_manager.epoch;
 
-    preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
-    preview_date.epoch = preview_date_manager.epoch;
+    window.preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+    preview_date.epoch = window.preview_date_manager.epoch;
 
     do_error_check();
 }

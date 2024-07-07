@@ -303,7 +303,7 @@ Alpine.data('moon_tooltip', () => ({
     }
 }));
 
-Alpine.data('calendar_weather', () => ({
+window.calendar_weather = {
 
     epoch_data: {},
 
@@ -334,7 +334,7 @@ Alpine.data('calendar_weather', () => ({
 
         sticky: function(icon) {
 
-            if (registered_click_callbacks['sticky_weather_ui']) {
+            if (window.registered_click_callbacks['sticky_weather_ui']) {
                 return;
             }
 
@@ -344,7 +344,7 @@ Alpine.data('calendar_weather', () => ({
 
             this.stop_hide = true;
 
-            registered_click_callbacks['sticky_weather_ui'] = this.sticky_callback;
+            window.registered_click_callbacks['sticky_weather_ui'] = this.sticky_callback;
 
         },
 
@@ -352,17 +352,17 @@ Alpine.data('calendar_weather', () => ({
 
             if ($(event.target).closest('#weather_tooltip_box').length == 0 && $(event.target).closest('.sticky').length == 0) {
 
-                calendar_weather.tooltip.stop_hide = false;
+                window.calendar_weather.tooltip.stop_hide = false;
 
-                calendar_weather.tooltip.hide();
+                window.calendar_weather.tooltip.hide();
 
-                delete registered_click_callbacks['sticky_weather_ui'];
+                delete window.registered_click_callbacks['sticky_weather_ui'];
 
-                calendar_weather.tooltip.sticky_icon.removeClass('sticky');
+                window.calendar_weather.tooltip.sticky_icon.removeClass('sticky');
 
                 if ($(event.target).closest('.has_weather_popup').length != 0) {
-                    calendar_weather.tooltip.show($(event.target).closest('.has_weather_popup'));
-                    calendar_weather.tooltip.sticky($(event.target).closest('.has_weather_popup'));
+                    window.calendar_weather.tooltip.show($(event.target).closest('.has_weather_popup'));
+                    window.calendar_weather.tooltip.sticky($(event.target).closest('.has_weather_popup'));
                 }
 
             }
@@ -371,7 +371,7 @@ Alpine.data('calendar_weather', () => ({
 
         show: function(icon) {
 
-            if (registered_click_callbacks['sticky_weather_ui']) {
+            if (window.registered_click_callbacks['sticky_weather_ui']) {
                 return;
             }
 
@@ -390,7 +390,7 @@ Alpine.data('calendar_weather', () => ({
             this.day_container.toggleClass('hidden', !icon.hasClass('day_title_popup'));
 
             if (icon.hasClass('day_title_popup')) {
-                let epoch_data = calendar_weather.epoch_data[epoch];
+                let epoch_data = window.calendar_weather.epoch_data[epoch];
                 if (epoch_data.leap_day !== undefined) {
                     let index = epoch_data.leap_day;
                     leap_day = window.static_data.year_data.leap_days[index];
@@ -407,7 +407,7 @@ Alpine.data('calendar_weather', () => ({
             this.stop_hide = false;
             this.sticky_icon = false;
 
-            if (calendar_weather.processed_weather && !icon.hasClass('noweather')) {
+            if (window.calendar_weather.processed_weather && !icon.hasClass('noweather')) {
 
                 this.weather_title.toggleClass('hidden', !icon.hasClass('moon_popup'));
                 this.weather_temp_desc.parent().toggleClass('hidden', false);
@@ -423,7 +423,7 @@ Alpine.data('calendar_weather', () => ({
                     this.weather_temp_desc.parent().css('display', 'none');
                 }
 
-                var weather = calendar_weather.epoch_data[epoch].weather;
+                var weather = window.calendar_weather.epoch_data[epoch].weather;
 
                 var desc = weather.temperature.cinematic;
 
@@ -499,7 +499,7 @@ Alpine.data('calendar_weather', () => ({
                 this.weather_feature.parent().toggleClass('hidden', true);
             }
 
-            if ((calendar_weather.processed_weather && !icon.hasClass('noweather')) || icon.hasClass('moon_popup')) {
+            if ((window.calendar_weather.processed_weather && !icon.hasClass('noweather')) || icon.hasClass('moon_popup')) {
 
                 this.popper = new Popper(icon, this.weather_tooltip_box, {
                     placement: 'top',
@@ -554,6 +554,8 @@ Alpine.data('calendar_weather', () => ({
 
     }
 
-}));
+};
+
+Alpine.data('calendar_weather', () => (window.calendar_weather));
 
 Alpine.start();

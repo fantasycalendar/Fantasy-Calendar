@@ -415,6 +415,10 @@ export class date_manager {
 
     constructor(year, timespan, day) {
 
+        if (typeof window.static_data.settings === 'undefined') {
+            console.log(window.static_data);
+        }
+
         this._year = convert_year(window.static_data, year);
 
         this._timespan = timespan;

@@ -21,10 +21,10 @@ function context_set_current_date(key, opt) {
 
     var epoch_data = evaluated_static_data.epoch_data[epoch];
 
-    dynamic_date_manager.year = convert_year(window.static_data, epoch_data.year);
-    dynamic_date_manager.timespan = epoch_data.timespan_number;
-    dynamic_date_manager.day = epoch_data.day;
-    dynamic_date_manager.epoch = epoch_data.epoch;
+    window.dynamic_date_manager.year = convert_year(window.static_data, epoch_data.year);
+    window.dynamic_date_manager.timespan = epoch_data.timespan_number;
+    window.dynamic_date_manager.day = epoch_data.day;
+    window.dynamic_date_manager.epoch = epoch_data.epoch;
 
     evaluate_dynamic_change();
 }
@@ -480,9 +480,9 @@ export function set_up_visitor_inputs() {
             }
         }
 
-        follower_year_buttons_add.prop('disabled', !preview_date_manager.check_max_year(preview_date_manager.year + 1));
+        follower_year_buttons_add.prop('disabled', !window.preview_date_manager.check_max_year(window.preview_date_manager.year + 1));
 
-        follower_timespan_buttons_add.prop('disabled', !preview_date_manager.check_max_timespan(preview_date_manager.timespan + 1));
+        follower_timespan_buttons_add.prop('disabled', !window.preview_date_manager.check_max_timespan(window.preview_date_manager.timespan + 1));
 
         follower_eval();
 
@@ -496,7 +496,7 @@ export function set_up_visitor_inputs() {
 
     sub_target_day.click(function() {
 
-        preview_date_manager.subtract_day();
+        window.preview_date_manager.subtract_day();
 
         evaluate_preview_change();
 
@@ -504,7 +504,7 @@ export function set_up_visitor_inputs() {
 
     sub_target_timespan.click(function() {
 
-        preview_date_manager.subtract_timespan();
+        window.preview_date_manager.subtract_timespan();
 
         evaluate_preview_change();
 
@@ -512,7 +512,7 @@ export function set_up_visitor_inputs() {
 
     sub_target_year.click(function() {
 
-        preview_date_manager.subtract_year();
+        window.preview_date_manager.subtract_year();
 
         evaluate_preview_change();
 
@@ -520,7 +520,7 @@ export function set_up_visitor_inputs() {
 
     add_target_day.click(function() {
 
-        preview_date_manager.add_day();
+        window.preview_date_manager.add_day();
 
         evaluate_preview_change();
 
@@ -528,7 +528,7 @@ export function set_up_visitor_inputs() {
 
     add_target_timespan.click(function() {
 
-        preview_date_manager.add_timespan();
+        window.preview_date_manager.add_timespan();
 
         evaluate_preview_change();
 
@@ -536,7 +536,7 @@ export function set_up_visitor_inputs() {
 
     add_target_year.click(function() {
 
-        preview_date_manager.add_year();
+        window.preview_date_manager.add_year();
 
         evaluate_preview_change();
 
@@ -545,56 +545,56 @@ export function set_up_visitor_inputs() {
 
     target_year.change(function(e) {
 
-        if (typeof preview_date_manager == "undefined") set_up_visitor_values();
+        if (typeof window.preview_date_manager == "undefined") set_up_visitor_values();
 
         if (e.originalEvent) {
-            preview_date_manager.year = convert_year(window.static_data, $(this).val() | 0);
+            window.preview_date_manager.year = convert_year(window.static_data, $(this).val() | 0);
         }
 
         var year = $(this).val() | 0;
 
-        if (year != preview_date_manager.adjusted_year) {
-            $(this).val(preview_date_manager.adjusted_year);
-            repopulate_timespan_select(target_timespan, preview_date_manager.timespan, false, preview_date_manager.last_valid_timespan);
-            repopulate_day_select(target_day, preview_date_manager.day, false, false, preview_date_manager.last_valid_day);
+        if (year != window.preview_date_manager.adjusted_year) {
+            $(this).val(window.preview_date_manager.adjusted_year);
+            repopulate_timespan_select(target_timespan, window.preview_date_manager.timespan, false, window.preview_date_manager.last_valid_timespan);
+            repopulate_day_select(target_day, window.preview_date_manager.day, false, false, window.preview_date_manager.last_valid_day);
         }
 
-        add_target_year.prop('disabled', !preview_date_manager.check_max_year(target_year.val() | 0));
+        add_target_year.prop('disabled', !window.preview_date_manager.check_max_year(target_year.val() | 0));
 
-        add_target_timespan.prop('disabled', !preview_date_manager.check_max_timespan((target_timespan.val() | 0) + 1));
+        add_target_timespan.prop('disabled', !window.preview_date_manager.check_max_timespan((target_timespan.val() | 0) + 1));
 
-        add_target_day.prop('disabled', !preview_date_manager.check_max_day((target_day.val() | 0) + 1));
+        add_target_day.prop('disabled', !window.preview_date_manager.check_max_day((target_day.val() | 0) + 1));
 
     });
 
     target_timespan.change(function(e) {
 
-        if (typeof preview_date_manager == "undefined") set_up_visitor_values();
+        if (typeof window.preview_date_manager == "undefined") set_up_visitor_values();
 
         if (e.originalEvent) {
-            preview_date_manager.timespan = $(this).val() | 0;
+            window.preview_date_manager.timespan = $(this).val() | 0;
         } else {
-            target_timespan.children().eq(preview_date_manager.timespan).prop('selected', true);
+            target_timespan.children().eq(window.preview_date_manager.timespan).prop('selected', true);
         }
-        repopulate_day_select(target_day, preview_date_manager.day, false, false, preview_date_manager.last_valid_day);
+        repopulate_day_select(target_day, window.preview_date_manager.day, false, false, window.preview_date_manager.last_valid_day);
 
-        add_target_timespan.prop('disabled', !preview_date_manager.check_max_timespan((target_timespan.val() | 0) + 1));
+        add_target_timespan.prop('disabled', !window.preview_date_manager.check_max_timespan((target_timespan.val() | 0) + 1));
 
-        add_target_day.prop('disabled', !preview_date_manager.check_max_day((target_day.val() | 0) + 1));
+        add_target_day.prop('disabled', !window.preview_date_manager.check_max_day((target_day.val() | 0) + 1));
 
     });
 
     target_day.change(function(e) {
 
-        if (typeof preview_date_manager == "undefined") set_up_visitor_values();
+        if (typeof window.preview_date_manager == "undefined") set_up_visitor_values();
 
         if (e.originalEvent) {
-            preview_date_manager.day = $(this).val() | 0;
+            window.preview_date_manager.day = $(this).val() | 0;
         } else {
-            target_day.children().eq(preview_date_manager.day - 1).prop('selected', true);
+            target_day.children().eq(window.preview_date_manager.day - 1).prop('selected', true);
         }
 
-        add_target_day.prop('disabled', !preview_date_manager.check_max_day((target_day.val() | 0) + 1));
+        add_target_day.prop('disabled', !window.preview_date_manager.check_max_day((target_day.val() | 0) + 1));
 
     });
 
@@ -614,12 +614,12 @@ export function set_up_visitor_inputs() {
 
 export function preview_date_follow() {
     if (preview_date.follow) {
-        if (typeof dynamic_date_manager == "undefined") set_up_view_values();
-        if (typeof preview_date_manager == "undefined") set_up_visitor_values();
+        if (typeof window.dynamic_date_manager == "undefined") set_up_view_values();
+        if (typeof window.preview_date_manager == "undefined") set_up_visitor_values();
 
-        preview_date_manager.year = dynamic_date_manager.year;
-        preview_date_manager.timespan = dynamic_date_manager.timespan;
-        preview_date_manager.day = dynamic_date_manager.day;
+        window.preview_date_manager.year = window.dynamic_date_manager.year;
+        window.preview_date_manager.timespan = window.dynamic_date_manager.timespan;
+        window.preview_date_manager.day = window.dynamic_date_manager.day;
 
         evaluate_preview_change();
     }
@@ -627,43 +627,43 @@ export function preview_date_follow() {
 
 export function evaluate_preview_change() {
 
-    if (preview_date_manager.adjusted_year != target_year.val() | 0) {
+    if (window.preview_date_manager.adjusted_year != target_year.val() | 0) {
         target_year.change()
-    } else if (preview_date_manager.timespan != target_timespan.val() | 0) {
+    } else if (window.preview_date_manager.timespan != target_timespan.val() | 0) {
         target_timespan.change()
-    } else if (preview_date_manager.day != target_day.val() | 0) {
+    } else if (window.preview_date_manager.day != target_day.val() | 0) {
         target_day.change()
     }
 
 }
 
 export function refresh_preview_inputs() {
-    target_year.val(preview_date_manager.adjusted_year);
-    repopulate_timespan_select(target_timespan, preview_date_manager.timespan, false, preview_date_manager.last_valid_timespan);
-    repopulate_day_select(target_day, preview_date_manager.day, false, false, preview_date_manager.last_valid_day);
+    target_year.val(window.preview_date_manager.adjusted_year);
+    repopulate_timespan_select(target_timespan, window.preview_date_manager.timespan, false, window.preview_date_manager.last_valid_timespan);
+    repopulate_day_select(target_day, window.preview_date_manager.day, false, false, window.preview_date_manager.last_valid_day);
 }
 
 
 export function update_preview_calendar() {
 
-    preview_date_manager = new date_manager(target_year.val() | 0, target_timespan.val() | 0, target_day.val() | 0);
+    window.preview_date_manager = new date_manager(target_year.val() | 0, target_timespan.val() | 0, target_day.val() | 0);
 
-    preview_date.year = preview_date_manager.adjusted_year;
-    preview_date.timespan = preview_date_manager.timespan;
-    preview_date.day = preview_date_manager.day;
-    preview_date.epoch = preview_date_manager.epoch;
+    preview_date.year = window.preview_date_manager.adjusted_year;
+    preview_date.timespan = window.preview_date_manager.timespan;
+    preview_date.day = window.preview_date_manager.day;
+    preview_date.epoch = window.preview_date_manager.epoch;
 
 }
 
 export function set_preview_date(year, timespan, day, epoch) {
 
-    preview_date_manager.year = convert_year(window.static_data, year);
-    preview_date_manager.timespan = timespan;
-    preview_date_manager.day = day;
+    window.preview_date_manager.year = convert_year(window.static_data, year);
+    window.preview_date_manager.timespan = timespan;
+    window.preview_date_manager.day = day;
     if (epoch !== undefined) {
-        preview_date_manager.epoch = epoch;
+        window.preview_date_manager.epoch = epoch;
     } else {
-        preview_date_manager.update_epoch()
+        window.preview_date_manager.update_epoch()
     }
 
     go_to_preview_date();
@@ -675,7 +675,7 @@ export function go_to_preview_date(rebuild) {
 
     preview_date.follow = false;
 
-    var data = preview_date_manager.compare(preview_date);
+    var data = window.preview_date_manager.compare(preview_date);
 
     preview_date.year = data.year;
     preview_date.timespan = data.timespan;
@@ -684,15 +684,15 @@ export function go_to_preview_date(rebuild) {
 
     display_preview_back_button();
 
-    add_target_year.prop('disabled', !preview_date_manager.check_max_year(preview_date_manager.year));
+    add_target_year.prop('disabled', !window.preview_date_manager.check_max_year(window.preview_date_manager.year));
 
-    add_target_timespan.prop('disabled', !preview_date_manager.check_max_timespan(preview_date_manager.timespan));
+    add_target_timespan.prop('disabled', !window.preview_date_manager.check_max_timespan(window.preview_date_manager.timespan));
 
-    add_target_day.prop('disabled', !preview_date_manager.check_max_day(preview_date_manager.day));
+    add_target_day.prop('disabled', !window.preview_date_manager.check_max_day(window.preview_date_manager.day));
 
-    follower_year_buttons_add.prop('disabled', !preview_date_manager.check_max_year(preview_date_manager.year + 1));
+    follower_year_buttons_add.prop('disabled', !window.preview_date_manager.check_max_year(window.preview_date_manager.year + 1));
 
-    follower_timespan_buttons_add.prop('disabled', !preview_date_manager.check_max_timespan(preview_date_manager.timespan + 1));
+    follower_timespan_buttons_add.prop('disabled', !window.preview_date_manager.check_max_timespan(window.preview_date_manager.timespan + 1));
 
     rebuild = rebuild !== undefined ? rebuild : data.rebuild;
 
@@ -755,13 +755,13 @@ export function go_to_dynamic_date(rebuild) {
 
     preview_date.follow = true
 
-    preview_date_manager.year = dynamic_date_manager.year;
-    preview_date_manager.timespan = dynamic_date_manager.timespan;
-    preview_date_manager.day = dynamic_date_manager.day;
+    window.preview_date_manager.year = window.dynamic_date_manager.year;
+    window.preview_date_manager.timespan = window.dynamic_date_manager.timespan;
+    window.preview_date_manager.day = window.dynamic_date_manager.day;
 
     evaluate_preview_change();
 
-    var data = dynamic_date_manager.compare(preview_date)
+    var data = window.dynamic_date_manager.compare(preview_date)
 
     preview_date.year = data.year;
     preview_date.timespan = data.timespan;
@@ -804,32 +804,32 @@ export function evaluate_settings() {
 
     if (!Perms.player_at_least('co-owner') && window.static_data.settings.allow_view && (window.static_data.settings.only_backwards || window.static_data.settings.only_reveal_today)) {
 
-        preview_date_manager.max_year = dynamic_data.year;
+        window.preview_date_manager.max_year = dynamic_data.year;
 
         if (window.static_data.settings.show_current_month) {
-            preview_date_manager.max_timespan = dynamic_data.timespan;
+            window.preview_date_manager.max_timespan = dynamic_data.timespan;
         } else {
-            preview_date_manager.max_timespan = preview_date_manager.last_timespan;
+            window.preview_date_manager.max_timespan = window.preview_date_manager.last_timespan;
         }
 
-        add_target_year.prop('disabled', !preview_date_manager.check_max_year(preview_date_manager.year + 1));
-        follower_year_buttons_add.prop('disabled', !preview_date_manager.check_max_year(preview_date_manager.year + 1));
+        add_target_year.prop('disabled', !window.preview_date_manager.check_max_year(window.preview_date_manager.year + 1));
+        follower_year_buttons_add.prop('disabled', !window.preview_date_manager.check_max_year(window.preview_date_manager.year + 1));
 
-        add_target_timespan.prop('disabled', !preview_date_manager.check_max_timespan(preview_date_manager.timespan + 1));
-        follower_timespan_buttons_add.prop('disabled', !preview_date_manager.check_max_timespan(preview_date_manager.timespan + 1));
+        add_target_timespan.prop('disabled', !window.preview_date_manager.check_max_timespan(window.preview_date_manager.timespan + 1));
+        follower_timespan_buttons_add.prop('disabled', !window.preview_date_manager.check_max_timespan(window.preview_date_manager.timespan + 1));
 
         if (window.static_data.settings.only_reveal_today) {
-            preview_date_manager.max_day = dynamic_data.day;
+            window.preview_date_manager.max_day = dynamic_data.day;
         } else {
-            preview_date_manager.max_day = preview_date_manager.num_days;
+            window.preview_date_manager.max_day = window.preview_date_manager.num_days;
         }
 
-        add_target_day.prop('disabled', !preview_date_manager.check_max_day(preview_date_manager.day + 1));
+        add_target_day.prop('disabled', !window.preview_date_manager.check_max_day(window.preview_date_manager.day + 1));
 
     } else {
-        preview_date_manager.max_year = false;
-        preview_date_manager.max_timespan = false;
-        preview_date_manager.max_day = false;
+        window.preview_date_manager.max_year = false;
+        window.preview_date_manager.max_timespan = false;
+        window.preview_date_manager.max_day = false;
     }
 }
 
@@ -902,11 +902,12 @@ export function repopulate_event_category_lists() {
 
         if (!category.category_settings.player_usable && !Perms.player_at_least('co-owner')) continue;
 
-        if (!isNaN(category.id)) {
-            slug = category.id;
-        } else {
+        let slug = category.id;
+
+        if (isNaN(category.id)) {
             slug = slugify(category.name);
         }
+
         html.push(`<option value='${slug}'>`)
         html.push(sanitizeHtml(category.name))
         html.push("</option>")
@@ -1082,18 +1083,18 @@ export function set_up_visitor_values() {
     $('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
     $('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 
-    preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+    window.preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
 
-    target_year.val(preview_date_manager.adjusted_year);
-    if (preview_date_manager.last_valid_year) {
-        target_year.prop('max', preview_date_manager.last_valid_year)
+    target_year.val(window.preview_date_manager.adjusted_year);
+    if (window.preview_date_manager.last_valid_year) {
+        target_year.prop('max', window.preview_date_manager.last_valid_year)
     } else {
         target_year.removeAttr('max')
     }
 
-    repopulate_timespan_select(target_timespan, preview_date_manager.timespan, false, preview_date_manager.last_valid_timespan);
-    repopulate_day_select(target_day, preview_date_manager.day, false, false, preview_date_manager.last_valid_day);
+    repopulate_timespan_select(target_timespan, window.preview_date_manager.timespan, false, window.preview_date_manager.last_valid_timespan);
+    repopulate_day_select(target_day, window.preview_date_manager.day, false, false, window.preview_date_manager.last_valid_day);
 
     repopulate_event_category_lists();
 

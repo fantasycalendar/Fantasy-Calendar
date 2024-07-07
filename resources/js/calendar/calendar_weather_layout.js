@@ -87,17 +87,17 @@ export var climate_charts = {
 			return;
 		}
 
-		if(calendar_weather.epoch_data[calendar_weather.start_epoch] === undefined){
+		if(window.calendar_weather.epoch_data[window.calendar_weather.start_epoch] === undefined){
 			this.day_length.addClass('hidden');
 			return;
 		}
 
-		if(!calendar_weather.epoch_data[calendar_weather.start_epoch].season){
+		if(!window.calendar_weather.epoch_data[window.calendar_weather.start_epoch].season){
 			this.day_length.addClass('hidden');
 			return;
 		}
 
-		if(!calendar_weather.epoch_data[calendar_weather.start_epoch].season.time.sunrise){
+		if(!window.calendar_weather.epoch_data[window.calendar_weather.start_epoch].season.time.sunrise){
 			this.day_length.addClass('hidden');
 			return;
 		}
@@ -105,9 +105,9 @@ export var climate_charts = {
 		var day_length = [[],[]];
 		var labels = [];
 
-		for(var epoch = calendar_weather.start_epoch, i = 0; epoch < calendar_weather.end_epoch; epoch++, i++){
+		for(var epoch = window.calendar_weather.start_epoch, i = 0; epoch < window.calendar_weather.end_epoch; epoch++, i++){
 
-			var epoch_data = calendar_weather.epoch_data[epoch];
+			var epoch_data = window.calendar_weather.epoch_data[epoch];
 
 			var day = ordinal_suffix_of(epoch_data.day)
 			var month_name = epoch_data.timespan_name;
@@ -227,13 +227,13 @@ export var climate_charts = {
 			removeData(this.temperature_chart);
 		}
 
-		if(!calendar_weather.processed_weather){
+		if(!window.calendar_weather.processed_weather){
 			this.temperature.addClass('hidden');
 			this.precipitation.addClass('hidden');
 			return;
 		}
 
-		if(!calendar_weather.epoch_data[calendar_weather.start_epoch].weather){
+		if(!window.calendar_weather.epoch_data[window.calendar_weather.start_epoch].weather){
 			this.temperature.addClass('hidden');
 			this.precipitation.addClass('hidden');
 			return;
@@ -250,9 +250,9 @@ export var climate_charts = {
 			var temp_sys = "metric";
 		}
 
-		for(var epoch = calendar_weather.start_epoch, i = 0; epoch < calendar_weather.end_epoch; epoch++, i++){
+		for(var epoch = window.calendar_weather.start_epoch, i = 0; epoch < window.calendar_weather.end_epoch; epoch++, i++){
 
-			var epoch_data = calendar_weather.epoch_data[epoch];
+			var epoch_data = window.calendar_weather.epoch_data[epoch];
 
 			if(epoch_data.weather){
 

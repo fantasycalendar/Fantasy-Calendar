@@ -7,50 +7,50 @@ import { changes_applied, evaluate_save_button } from "./calendar_inputs_edit";
 
 var utcDate1 = Date.now();
 
-var registered_click_callbacks = {}
-var registered_keydown_callbacks = {}
-var registered_onfocus_callbacks = {}
-var registered_onblur_callbacks = {}
-var registered_mousemove_callbacks = {}
+window.registered_click_callbacks = {}
+window.registered_keydown_callbacks = {}
+window.registered_onfocus_callbacks = {}
+window.registered_onblur_callbacks = {}
+window.registered_mousemove_callbacks = {}
 
 export function bind_calendar_events() {
     document.addEventListener('keydown', function(event) {
-        for (let callback_id in registered_keydown_callbacks) {
-            registered_keydown_callbacks[callback_id](event);
+        for (let callback_id in window.registered_keydown_callbacks) {
+            window.registered_keydown_callbacks[callback_id](event);
         }
     });
 
     document.addEventListener('click', function(event) {
-        for (let callback_id in registered_click_callbacks) {
-            registered_click_callbacks[callback_id](event);
+        for (let callback_id in window.registered_click_callbacks) {
+            window.registered_click_callbacks[callback_id](event);
         }
     });
 
     window.onfocus = function(event) {
-        for (let callback_id in registered_onfocus_callbacks) {
-            registered_onfocus_callbacks[callback_id](event);
+        for (let callback_id in window.registered_onfocus_callbacks) {
+            window.registered_onfocus_callbacks[callback_id](event);
         }
     };
 
     window.onblur = function(event) {
-        for (let callback_id in registered_onblur_callbacks) {
-            registered_onblur_callbacks[callback_id](event);
+        for (let callback_id in window.registered_onblur_callbacks) {
+            window.registered_onblur_callbacks[callback_id](event);
         }
     };
 
     window.addEventListener('mousemove', function(event) {
-        for (let callback_id in registered_mousemove_callbacks) {
-            registered_mousemove_callbacks[callback_id](event);
+        for (let callback_id in window.registered_mousemove_callbacks) {
+            window.registered_mousemove_callbacks[callback_id](event);
         }
     });
 
     $('body').addClass('page-focused').removeClass('page-unfocused');
 
-    registered_onfocus_callbacks['page_focused'] = function() {
+    window.registered_onfocus_callbacks['page_focused'] = function() {
         setTimeout(function() { $('body').addClass('page-focused').removeClass('page-unfocused'); }, 140);
     }
 
-    registered_onblur_callbacks['page_unfocused'] = function() {
+    window.registered_onblur_callbacks['page_unfocused'] = function() {
         $('body').addClass('page-unfocused').removeClass('page-focused');
     }
 
@@ -58,10 +58,10 @@ export function bind_calendar_events() {
         toggle_sidebar();
     });
 
-    calendar_weather.tooltip.set_up();
+    window.calendar_weather.tooltip.set_up();
 
     $('#calendar_container').on('scroll', function() {
-        calendar_weather.tooltip.hide();
+        window.calendar_weather.tooltip.hide();
     });
 
     $(document).on('change', '.event-text-input', function() {
@@ -257,10 +257,10 @@ export async function rebuild_calendar(action, dynamic_data) {
 
         rerender_calendar(evaluated_static_data);
 
-        calendar_weather.epoch_data = evaluated_static_data.epoch_data;
-        calendar_weather.processed_weather = evaluated_static_data.processed_weather;
-        calendar_weather.start_epoch = evaluated_static_data.year_data.start_epoch;
-        calendar_weather.end_epoch = evaluated_static_data.year_data.end_epoch;
+        window.calendar_weather.epoch_data = evaluated_static_data.epoch_data;
+        window.calendar_weather.processed_weather = evaluated_static_data.processed_weather;
+        window.calendar_weather.start_epoch = evaluated_static_data.year_data.start_epoch;
+        window.calendar_weather.end_epoch = evaluated_static_data.year_data.end_epoch;
 
         climate_charts.evaluate_day_length_chart();
         climate_charts.evaluate_weather_charts();
@@ -287,12 +287,12 @@ export async function rebuild_climate() {
         evaluated_static_data.year_data.end_epoch
     );
 
-    let prev_seasons = calendar_weather.processed_seasons;
-    let prev_weather = calendar_weather.processed_weather;
+    let prev_seasons = window.calendar_weather.processed_seasons;
+    let prev_weather = window.calendar_weather.processed_weather;
 
     climate_generator.generate().then((result) => {
 
-        calendar_weather.epoch_data = result;
+        window.calendar_weather.epoch_data = result;
         evaluated_static_data.epoch_data = result;
 
         climate_charts.evaluate_day_length_chart();

@@ -70,7 +70,7 @@ export function set_up_view_inputs() {
 
     sub_current_day.click(function() {
 
-        dynamic_date_manager.subtract_day();
+        window.dynamic_date_manager.subtract_day();
 
         evaluate_dynamic_change();
 
@@ -78,11 +78,11 @@ export function set_up_view_inputs() {
 
     sub_current_timespan.click(function() {
 
-        if (preview_date_manager.timespan == dynamic_date_manager.timespan) {
-            preview_date_manager.subtract_timespan();
+        if (window.preview_date_manager.timespan == window.dynamic_date_manager.timespan) {
+            window.preview_date_manager.subtract_timespan();
         }
 
-        dynamic_date_manager.subtract_timespan();
+        window.dynamic_date_manager.subtract_timespan();
 
         evaluate_dynamic_change();
 
@@ -90,7 +90,7 @@ export function set_up_view_inputs() {
 
     sub_current_year.click(function() {
 
-        dynamic_date_manager.subtract_year();
+        window.dynamic_date_manager.subtract_year();
 
         evaluate_dynamic_change();
 
@@ -98,7 +98,7 @@ export function set_up_view_inputs() {
 
     add_current_day.click(function() {
 
-        dynamic_date_manager.add_day();
+        window.dynamic_date_manager.add_day();
 
         evaluate_dynamic_change();
 
@@ -106,7 +106,7 @@ export function set_up_view_inputs() {
 
     add_current_timespan.click(function() {
 
-        dynamic_date_manager.add_timespan();
+        window.dynamic_date_manager.add_timespan();
 
         evaluate_dynamic_change();
 
@@ -114,7 +114,7 @@ export function set_up_view_inputs() {
 
     add_current_year.click(function() {
 
-        dynamic_date_manager.add_year();
+        window.dynamic_date_manager.add_year();
 
         evaluate_dynamic_change();
 
@@ -124,16 +124,16 @@ export function set_up_view_inputs() {
     current_year.change(function(e) {
 
         if (e.originalEvent) {
-            dynamic_date_manager.year = convert_year(window.static_data, $(this).val() | 0);
+            window.dynamic_date_manager.year = convert_year(window.static_data, $(this).val() | 0);
             evaluate_dynamic_change();
         }
 
         var year = $(this).val() | 0;
 
-        if (year != dynamic_date_manager.adjusted_year) {
-            $(this).val(dynamic_date_manager.adjusted_year);
-            repopulate_timespan_select(current_timespan, dynamic_date_manager.timespan, false);
-            repopulate_day_select(current_day, dynamic_date_manager.day, false);
+        if (year != window.dynamic_date_manager.adjusted_year) {
+            $(this).val(window.dynamic_date_manager.adjusted_year);
+            repopulate_timespan_select(current_timespan, window.dynamic_date_manager.timespan, false);
+            repopulate_day_select(current_day, window.dynamic_date_manager.day, false);
         }
 
     });
@@ -141,22 +141,22 @@ export function set_up_view_inputs() {
     current_timespan.change(function(e) {
 
         if (e.originalEvent) {
-            dynamic_date_manager.timespan = $(this).val() | 0;
+            window.dynamic_date_manager.timespan = $(this).val() | 0;
             evaluate_dynamic_change();
         } else {
-            current_timespan.children().eq(dynamic_date_manager.timespan).prop('selected', true);
+            current_timespan.children().eq(window.dynamic_date_manager.timespan).prop('selected', true);
         }
-        repopulate_day_select(current_day, dynamic_date_manager.day, false);
+        repopulate_day_select(current_day, window.dynamic_date_manager.day, false);
 
     });
 
     current_day.change(function(e) {
 
         if (e.originalEvent) {
-            dynamic_date_manager.day = $(this).val() | 0;
+            window.dynamic_date_manager.day = $(this).val() | 0;
             evaluate_dynamic_change();
         } else {
-            current_day.children().eq(dynamic_date_manager.day - 1).prop('selected', true);
+            current_day.children().eq(window.dynamic_date_manager.day - 1).prop('selected', true);
         }
 
     });
@@ -317,9 +317,9 @@ export function set_up_view_inputs() {
 
         if (day_adjust != 0) {
             if (day_adjust > 0) {
-                dynamic_date_manager.add_day();
+                window.dynamic_date_manager.add_day();
             } else {
-                dynamic_date_manager.subtract_day();
+                window.dynamic_date_manager.subtract_day();
             }
             evaluate_dynamic_change();
         }
@@ -364,9 +364,9 @@ function increment_date_units(current) {
     var unit_minutes = $('#unit_minutes').val() | 0;
 
     if (current) {
-        var manager = dynamic_date_manager;
+        var manager = window.dynamic_date_manager;
     } else {
-        var manager = preview_date_manager;
+        var manager = window.preview_date_manager;
     }
 
     for (var years = 1; years <= Math.abs(unit_years); years++) {
@@ -430,15 +430,15 @@ function increment_date_units(current) {
 }
 
 export function evaluate_dynamic_change() {
-    if (dynamic_date_manager.adjusted_year != current_year.val() | 0) {
+    if (window.dynamic_date_manager.adjusted_year != current_year.val() | 0) {
         current_year.change()
-    } else if (dynamic_date_manager.timespan != current_timespan.val() | 0) {
+    } else if (window.dynamic_date_manager.timespan != current_timespan.val() | 0) {
         current_timespan.change()
-    } else if (dynamic_date_manager.day != current_day.val() | 0) {
+    } else if (window.dynamic_date_manager.day != current_day.val() | 0) {
         current_day.change()
     }
 
-    data = dynamic_date_manager.compare(dynamic_data);
+    data = window.dynamic_date_manager.compare(dynamic_data);
 
     dynamic_data.year = data.year;
     dynamic_data.timespan = data.timespan;
@@ -530,9 +530,9 @@ export function repopulate_location_select_list() {
 }
 
 export function set_up_view_values() {
-    dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+    window.dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
-    current_year.val(dynamic_date_manager.adjusted_year);
+    current_year.val(window.dynamic_date_manager.adjusted_year);
 
     repopulate_timespan_select(current_timespan, dynamic_data.timespan, false);
 
@@ -549,5 +549,5 @@ export function set_up_view_values() {
 
     evaluate_clock_inputs();
 
-    dynamic_data.epoch = dynamic_date_manager.epoch;
+    dynamic_data.epoch = window.dynamic_date_manager.epoch;
 }

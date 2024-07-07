@@ -14,16 +14,16 @@ window.hash = @js($calendar->hash);
 
 window.calendar_name = @js($calendar->name);
 window.calendar_id = @js($calendar->id);
-window.static_data = @js(json_encode($calendar->static_data));
-window.dynamic_data = @js(json_encode($calendar->dynamic_data));
+window.static_data = @js($calendar->static_data);
+window.dynamic_data = @js($calendar->dynamic_data);
 
 window.is_linked = @js($calendar->isLinked() ? "true" : "null");
 window.has_parent = @js($calendar->parent == null ? "null" : "true");
 window.parent_hash = @js($calendar->parent);
 window.parent_offset = @js($calendar->parent);
 
-window.events = @js(json_encode($calendar->events));
-window.event_categories = @js(json_encode($calendar->event_categories));
+window.events = @js($calendar->events);
+window.event_categories = @js($calendar->event_categories);
 
 window.last_static_change = new Date("@js($calendar->last_static_change)")
 window.last_dynamic_change = new Date("@js($calendar->last_dynamic_change)")
@@ -41,20 +41,20 @@ window.advancement = {
 window.dispatchEvent(
     new CustomEvent('calendar-loaded', {
         detail: {
-            window.hash,
-            window.calendar_name,
-            window.calendar_id,
-            window.static_data,
-            window.dynamic_data,
-            window.is_linked,
-            window.has_parent,
-            window.parent_hash,
-            window.parent_offset,
-            window.events,
-            window.event_categories,
-            window.last_static_change,
-            window.last_dynamic_change,
-            window.advancement
+            hash: window.hash,
+            calendar_name: window.calendar_name,
+            calendar_id: window.calendar_id,
+            static_data: window.static_data,
+            dynamic_data: window.dynamic_data,
+            is_linked: window.is_linked,
+            has_parent: window.has_parent,
+            parent_hash: window.parent_hash,
+            parent_offset: window.parent_offset,
+            events: window.events,
+            event_categories: window.event_categories,
+            last_static_change: window.last_static_change,
+            last_dynamic_change: window.last_dynamic_change,
+            advancement: window.advancement
         }
     })
 )

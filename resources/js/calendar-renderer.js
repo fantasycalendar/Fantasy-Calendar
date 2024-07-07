@@ -46,15 +46,15 @@ export default () => ({
     },
 
     weather_click: function (day, event) {
-        calendar_weather.tooltip.sticky($(event.target));
+        window.calendar_weather.tooltip.sticky($(event.target));
     },
 
     weather_mouse_enter: function (day, event) {
-        calendar_weather.tooltip.show($(event.target));
+        window.calendar_weather.tooltip.show($(event.target));
     },
 
     weather_mouse_leave: function () {
-        calendar_weather.tooltip.hide();
+        window.calendar_weather.tooltip.hide();
     },
 
     moon_mouse_enter: function (moon, event) {

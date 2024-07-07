@@ -34,7 +34,7 @@
                         check_dates();
                     });
 
-                    registered_mousemove_callbacks['view_update'] = function () {
+                    window.registered_mousemove_callbacks['view_update'] = function () {
                         last_mouse_move = Date.now();
                         if (instapoll) {
                             instapoll = false;
@@ -65,17 +65,17 @@
                     if(year === 0 && !window.static_data.settings.year_zero_exists){
                         return false;
                     }
-                    preview_date_manager.year = convert_year(window.static_data, year);
+                    window.preview_date_manager.year = convert_year(window.static_data, year);
 
-                    if(timespan < 0 || timespan > preview_date_manager.last_timespan){
+                    if(timespan < 0 || timespan > window.preview_date_manager.last_timespan){
                         return false;
                     }
-                    preview_date_manager.timespan = timespan;
+                    window.preview_date_manager.timespan = timespan;
 
-                    if(day < 0 || day > preview_date_manager.num_days){
+                    if(day < 0 || day > window.preview_date_manager.num_days){
                         return false;
                     }
-                    preview_date_manager.day = day;
+                    window.preview_date_manager.day = day;
 
                     go_to_preview_date(true);
                     refresh_preview_inputs();
@@ -161,14 +161,14 @@
 
         function check_update(rebuild){
 
-            var data = dynamic_date_manager.compare(dynamic_data);
+            var data = window.dynamic_date_manager.compare(dynamic_data);
 
-            dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+            window.dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
             if(preview_date.follow){
                 preview_date = clone(dynamic_data);
                 preview_date.follow = true;
-                preview_date_manager = new date_manager(preview_date.year, preview_date.timespan, preview_date.day);
+                window.preview_date_manager = new date_manager(preview_date.year, preview_date.timespan, preview_date.day);
             }
 
             current_year.val(dynamic_data.year);
