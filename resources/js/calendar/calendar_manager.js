@@ -124,7 +124,7 @@ async function testCalendarAccuracy(fromYear = -100, toYear = 100) {
     execution_time.start();
 
     window.calendar_data_generator.static_data = window.static_data;
-    window.calendar_data_generator.dynamic_data = dynamic_data;
+    window.calendar_data_generator.dynamic_data = window.dynamic_data;
     window.calendar_data_generator.owner = Perms.player_at_least('co-owner');
     window.calendar_data_generator.events = events;
     window.calendar_data_generator.event_categories = event_categories;
@@ -156,14 +156,14 @@ async function testCalendarAccuracy(fromYear = -100, toYear = 100) {
         if ((year_zero_exists && year === 0) || (!year_zero_exists && year === 1)) {
             if (thisYearStartEpoch !== 0) {
                 console.error(`YEAR ${year} FAILED! Expected 0, got ${thisYearStartEpoch}!`)
-                dynamic_data.year = currentYear;
+                window.dynamic_data.year = currentYear;
                 return;
             }
         }
 
         if (lastYearEndEpoch !== thisYearStartEpoch - 1) {
             console.error(`YEAR ${year} FAILED! Expected ${lastYearEndEpoch + 1}, got ${thisYearStartEpoch}!`)
-            dynamic_data.year = currentYear;
+            window.dynamic_data.year = currentYear;
             return;
         }
 
@@ -172,7 +172,7 @@ async function testCalendarAccuracy(fromYear = -100, toYear = 100) {
     }
 
     console.log("Test succeeded, calendar calculation accurate!")
-    dynamic_data.year = currentYear;
+    window.dynamic_data.year = currentYear;
 
     execution_time.end("Testing took:");
 }
@@ -181,7 +181,7 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000) {
     if (window.static_data.seasons.data.length === 0) return;
 
     window.calendar_data_generator.static_data = window.static_data;
-    window.calendar_data_generator.dynamic_data = dynamic_data;
+    window.calendar_data_generator.dynamic_data = window.dynamic_data;
     window.calendar_data_generator.owner = Perms.player_at_least('co-owner');
     window.calendar_data_generator.events = events;
     window.calendar_data_generator.event_categories = event_categories;
@@ -212,7 +212,7 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000) {
 
         if (previous_year_end_season_day + 1 !== current_year_start_season_day && current_year_start_season_day !== 1) {
             console.error(`YEAR ${window.calendar_data_generator.dynamic_data.year} FAILED! Start/End Fail. Expected ${previous_year_end_season_day + 1}, got ${current_year_start_season_day}!`);
-            dynamic_data.year = originalYear;
+            window.dynamic_data.year = originalYear;
             return;
         }
 
@@ -224,7 +224,7 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000) {
 
             if (prev_season_day + 1 !== season_day && season_day !== 1) {
                 console.error(`YEAR ${window.calendar_data_generator.dynamic_data.year} FAILED! Inner year failed. Expected ${prev_season_day + 1}, got ${season_day}!`)
-                dynamic_data.year = originalYear;
+                window.dynamic_data.year = originalYear;
                 return;
             }
 
@@ -238,14 +238,14 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000) {
 
     console.log(`Test succeeded, seasons are accurate across ${Math.abs(fromYear) + Math.abs(toYear)} years!`)
 
-    dynamic_data.year = originalYear;
+    window.dynamic_data.year = originalYear;
 }
 
 export var evaluated_static_data = {};
 
 export async function rebuild_calendar(action, dynamic_data) {
     window.calendar_data_generator.static_data = window.static_data;
-    window.calendar_data_generator.dynamic_data = dynamic_data;
+    window.calendar_data_generator.dynamic_data = window.dynamic_data;
     window.calendar_data_generator.owner = Perms.player_at_least('co-owner');
     window.calendar_data_generator.events = events;
     window.calendar_data_generator.event_categories = event_categories;
@@ -282,8 +282,8 @@ export async function rebuild_climate() {
     let climate_generator = new Climate(
         evaluated_static_data.epoch_data,
         window.static_data,
-        dynamic_data,
-        dynamic_data.year,
+        window.dynamic_data,
+        window.dynamic_data.year,
         evaluated_static_data.year_data.start_epoch,
         evaluated_static_data.year_data.end_epoch
     );

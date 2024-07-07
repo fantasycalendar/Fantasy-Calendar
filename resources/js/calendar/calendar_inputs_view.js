@@ -193,7 +193,7 @@ export function set_up_view_inputs() {
             curr_hour = 0;
         }
 
-        dynamic_data.hour = curr_hour;
+        window.dynamic_data.hour = curr_hour;
         current_hour.val(curr_hour);
 
         var apply_changes_immediately = $('#apply_changes_immediately');
@@ -245,7 +245,7 @@ export function set_up_view_inputs() {
             curr_minute = Math.abs(window.static_data.clock.minutes - curr_minute);
         }
 
-        dynamic_data.minute = curr_minute;
+        window.dynamic_data.minute = curr_minute;
         current_minute.val(curr_minute);
 
         var apply_changes_immediately = $('#apply_changes_immediately');
@@ -267,53 +267,53 @@ export function set_up_view_inputs() {
 
     location_select.change(function() {
 
-        var prev_location_type = dynamic_data.custom_location;
+        var prev_location_type = window.dynamic_data.custom_location;
 
         if (prev_location_type) {
-            var prev_location = window.static_data.seasons.locations[dynamic_data.location];
+            var prev_location = window.static_data.seasons.locations[window.dynamic_data.location];
         } else {
-            var prev_location = preset_data.locations[dynamic_data.location];
+            var prev_location = preset_data.locations[window.dynamic_data.location];
         }
 
-        dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === "custom" && !location_select.find('option:selected').prop('disabled');
+        window.dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === "custom" && !location_select.find('option:selected').prop('disabled');
 
-        dynamic_data.location = location_select.val();
+        window.dynamic_data.location = location_select.val();
 
-        if (dynamic_data.custom_location) {
-            var location = window.static_data.seasons.locations[dynamic_data.location];
+        if (window.dynamic_data.custom_location) {
+            var location = window.static_data.seasons.locations[window.dynamic_data.location];
         } else {
-            var location = preset_data.locations[dynamic_data.location];
+            var location = preset_data.locations[window.dynamic_data.location];
         }
 
         if (prev_location_type) {
-            dynamic_data.hour -= prev_location.settings.timezone.hour;
-            dynamic_data.minute -= prev_location.settings.timezone.minute;
+            window.dynamic_data.hour -= prev_location.settings.timezone.hour;
+            window.dynamic_data.minute -= prev_location.settings.timezone.minute;
         }
 
-        if (dynamic_data.custom_location) {
-            dynamic_data.hour += location.settings.timezone.hour;
-            dynamic_data.minute += location.settings.timezone.minute;
+        if (window.dynamic_data.custom_location) {
+            window.dynamic_data.hour += location.settings.timezone.hour;
+            window.dynamic_data.minute += location.settings.timezone.minute;
         }
 
-        if (dynamic_data.minute < 0) {
-            dynamic_data.minute = Math.abs(window.static_data.clock.minutes + dynamic_data.minute);
-            dynamic_data.hour--;
-        } else if (dynamic_data.minute >= window.static_data.clock.minutes) {
-            dynamic_data.minute = Math.abs(window.static_data.clock.minutes - dynamic_data.minute);
-            dynamic_data.hour++;
+        if (window.dynamic_data.minute < 0) {
+            window.dynamic_data.minute = Math.abs(window.static_data.clock.minutes + window.dynamic_data.minute);
+            window.dynamic_data.hour--;
+        } else if (window.dynamic_data.minute >= window.static_data.clock.minutes) {
+            window.dynamic_data.minute = Math.abs(window.static_data.clock.minutes - window.dynamic_data.minute);
+            window.dynamic_data.hour++;
         }
 
         var day_adjust = 0;
-        if (dynamic_data.hour < 0) {
-            dynamic_data.hour = Math.abs(window.static_data.clock.hours + dynamic_data.hour);
+        if (window.dynamic_data.hour < 0) {
+            window.dynamic_data.hour = Math.abs(window.static_data.clock.hours + window.dynamic_data.hour);
             day_adjust = -1;
-        } else if (dynamic_data.hour >= window.static_data.clock.hours) {
-            dynamic_data.hour = Math.abs(window.static_data.clock.hours - dynamic_data.hour);
+        } else if (window.dynamic_data.hour >= window.static_data.clock.hours) {
+            window.dynamic_data.hour = Math.abs(window.static_data.clock.hours - window.dynamic_data.hour);
             day_adjust = 1;
         }
 
-        current_hour.val(dynamic_data.hour);
-        current_minute.val(dynamic_data.minute);
+        current_hour.val(window.dynamic_data.hour);
+        current_minute.val(window.dynamic_data.minute);
 
         if (day_adjust != 0) {
             if (day_adjust > 0) {
@@ -389,8 +389,8 @@ function increment_date_units(current) {
 
     if (window.static_data.clock.enabled) {
 
-        let extra_hours = (unit_minutes + dynamic_data.minute) / window.static_data.clock.minutes;
-        extra_days = (unit_hours + extra_hours + dynamic_data.hour) / window.static_data.clock.hours;
+        let extra_hours = (unit_minutes + window.dynamic_data.minute) / window.static_data.clock.minutes;
+        extra_days = (unit_hours + extra_hours + window.dynamic_data.hour) / window.static_data.clock.hours;
 
         var new_hour = precisionRound(fract(extra_days) * window.static_data.clock.hours, 4);
         var new_minute = Math.floor(fract(new_hour) * window.static_data.clock.minutes);
@@ -413,9 +413,9 @@ function increment_date_units(current) {
     if (current) {
 
         if (window.static_data.clock.enabled) {
-            if (dynamic_data.hour != new_hour || dynamic_data.minute != new_minute) {
-                dynamic_data.hour = new_hour
-                dynamic_data.minute = new_minute;
+            if (window.dynamic_data.hour != new_hour || window.dynamic_data.minute != new_minute) {
+                window.dynamic_data.hour = new_hour
+                window.dynamic_data.minute = new_minute;
                 current_hour.val(new_hour);
                 current_minute.val(new_minute);
                 eval_clock();
@@ -438,13 +438,13 @@ export function evaluate_dynamic_change() {
         current_day.change()
     }
 
-    data = window.dynamic_date_manager.compare(dynamic_data);
+    data = window.dynamic_date_manager.compare(window.dynamic_data);
 
-    dynamic_data.year = data.year;
-    dynamic_data.timespan = data.timespan;
-    dynamic_data.day = data.day;
-    dynamic_data.epoch = data.epoch;
-    dynamic_data.current_era = get_current_era(window.static_data, dynamic_data.epoch);
+    window.dynamic_data.year = data.year;
+    window.dynamic_data.timespan = data.timespan;
+    window.dynamic_data.day = data.day;
+    window.dynamic_data.epoch = data.epoch;
+    window.dynamic_data.current_era = get_current_era(window.static_data, dynamic_data.epoch);
 
     var apply_changes_immediately = $('#apply_changes_immediately');
 
@@ -464,7 +464,7 @@ export function evaluate_dynamic_change() {
         preview_date.epoch = data.epoch;
 
         if (data.rebuild || (!Perms.owner && window.static_data.settings.only_reveal_today) || !apply_changes_immediately) {
-            pre_rebuild_calendar('calendar', dynamic_data)
+            pre_rebuild_calendar('calendar', window.dynamic_data)
         } else {
             update_current_day(false);
         }
@@ -514,7 +514,7 @@ export function repopulate_location_select_list() {
 
     if (html.length > 0) {
 
-        location_select.prop('disabled', false).html(html.join('')).val(dynamic_data.location);
+        location_select.prop('disabled', false).html(html.join('')).val(window.dynamic_data.location);
 
     } else {
 
@@ -524,24 +524,24 @@ export function repopulate_location_select_list() {
 
     if (location_select.val() === null) {
         location_select.children().find('option').first().prop('selected', true);
-        dynamic_data.location = location_select.val();
-        dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === 'custom';
+        window.dynamic_data.location = location_select.val();
+        window.dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === 'custom';
     }
 }
 
 export function set_up_view_values() {
-    window.dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+    window.dynamic_date_manager = new date_manager(window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
 
     current_year.val(window.dynamic_date_manager.adjusted_year);
 
-    repopulate_timespan_select(current_timespan, dynamic_data.timespan, false);
+    repopulate_timespan_select(current_timespan, window.dynamic_data.timespan, false);
 
-    repopulate_day_select(current_day, dynamic_data.day, false);
+    repopulate_day_select(current_day, window.dynamic_data.day, false);
 
-    if (window.static_data.clock && dynamic_data.hour !== undefined && dynamic_data.minute !== undefined) {
+    if (window.static_data.clock && window.dynamic_data.hour !== undefined && window.dynamic_data.minute !== undefined) {
 
-        current_hour.val(dynamic_data.hour).prop('min', -1).prop('max', window.static_data.clock.hours);
-        current_minute.val(dynamic_data.minute).prop('min', -1).prop('max', window.static_data.clock.minutes);
+        current_hour.val(window.dynamic_data.hour).prop('min', -1).prop('max', window.static_data.clock.hours);
+        current_minute.val(window.dynamic_data.minute).prop('min', -1).prop('max', window.static_data.clock.minutes);
 
     }
 
@@ -549,5 +549,5 @@ export function set_up_view_values() {
 
     evaluate_clock_inputs();
 
-    dynamic_data.epoch = window.dynamic_date_manager.epoch;
+    window.dynamic_data.epoch = window.dynamic_date_manager.epoch;
 }

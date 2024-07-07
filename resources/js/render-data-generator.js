@@ -17,7 +17,7 @@ export var render_data_generator = {
                     (
                         window.static_data.settings.hide_future_weather
                         &&
-                        epoch > dynamic_data.epoch
+                        epoch > window.dynamic_data.epoch
                     )
                 )
             )
@@ -119,7 +119,7 @@ export var render_data_generator = {
 	get_day_data: function(epoch) {
 		let epoch_data = this.epoch_data[epoch];
 
-		if (window.static_data.settings.only_reveal_today && epoch > dynamic_data.epoch && !Perms.player_at_least('co-owner')) {
+		if (window.static_data.settings.only_reveal_today && epoch > window.dynamic_data.epoch && !Perms.player_at_least('co-owner')) {
 			return {
 				"number": "",
 				"text": "",
@@ -213,8 +213,8 @@ export var render_data_generator = {
         this.epoch_data = this.processed_data.epoch_data;
 
         this.render_data = {
-            "year": preview_date.year !== dynamic_data.year ? preview_date.year : dynamic_data.year,
-            "current_epoch": dynamic_data.epoch,
+            "year": preview_date.year !== window.dynamic_data.year ? preview_date.year : window.dynamic_data.year,
+            "current_epoch": window.dynamic_data.epoch,
             "preview_epoch": preview_date.epoch,
             "render_style": window.static_data.settings.layout,
             "timespans": [],
@@ -241,7 +241,7 @@ export var render_data_generator = {
             if (filtered_leap_days_beforestart.length > 0) {
                 let timespan_data = {
                     "title": "",
-                    "id": [renderIndex++, JSON.stringify(timespan), epoch, dynamic_data.year, JSON.stringify(filtered_leap_days_beforestart)].join('.'),
+                    "id": [renderIndex++, JSON.stringify(timespan), epoch, window.dynamic_data.year, JSON.stringify(filtered_leap_days_beforestart)].join('.'),
                     "show_title": false,
                     "short_weekdays": timespan.truncated_week,
                     "weekdays": window.static_data.year_data.global_week,
@@ -288,7 +288,7 @@ export var render_data_generator = {
 
             let timespan_data = {
                 "title": window.static_data.settings.add_month_number ? `${timespan.name} - Month ${timespan_epoch_data.timespan_number + 1}` : timespan.name,
-                "id": [renderIndex++, JSON.stringify(timespan), epoch, dynamic_data.year].join('.'),
+                "id": [renderIndex++, JSON.stringify(timespan), epoch, window.dynamic_data.year].join('.'),
                 "show_title": true,
                 "weekdays": timespan.week,
                 "short_weekdays": timespan.truncated_week,
@@ -332,7 +332,7 @@ export var render_data_generator = {
 
                             timespan_data = {
                                 "title": "",
-                                "id": [renderIndex++, JSON.stringify(timespan), epoch, dynamic_data.year, JSON.stringify(filtered_leap_days)].join('.'),
+                                "id": [renderIndex++, JSON.stringify(timespan), epoch, window.dynamic_data.year, JSON.stringify(filtered_leap_days)].join('.'),
                                 "show_title": false,
                                 "weekdays": window.static_data.year_data.global_week,
                                 "short_weekdays": timespan.truncated_week,
@@ -374,7 +374,7 @@ export var render_data_generator = {
 
                             timespan_data = {
                                 "title": window.static_data.settings.add_month_number ? `${timespan.name} - Month ${index+1}` : timespan.name,
-                                "id": [renderIndex++, JSON.stringify(timespan), epoch, dynamic_data.year].join('.'),
+                                "id": [renderIndex++, JSON.stringify(timespan), epoch, window.dynamic_data.year].join('.'),
                                 "show_title": true,
                                 "weekdays": timespan.week,
                                 "short_weekdays": timespan.truncated_week,
@@ -418,7 +418,7 @@ export var render_data_generator = {
 
             if (Perms.player_at_least('co-owner')
                 || !window.static_data.settings.only_reveal_today
-                || (window.static_data.settings.only_reveal_today && epoch > dynamic_data.epoch)
+                || (window.static_data.settings.only_reveal_today && epoch > window.dynamic_data.epoch)
             ) {
                 var filtered_leap_days_end = timespan.leap_days.filter(function(features) {
                     return features.intercalary && features.day === timespan.length;
@@ -427,7 +427,7 @@ export var render_data_generator = {
                 if (filtered_leap_days_end.length > 0) {
                     let timespan_data = {
                         "title": "",
-                        "id": [renderIndex++, JSON.stringify(timespan), epoch, dynamic_data.year, JSON.stringify(filtered_leap_days_end)].join('.'),
+                        "id": [renderIndex++, JSON.stringify(timespan), epoch, window.dynamic_data.year, JSON.stringify(filtered_leap_days_end)].join('.'),
                         "show_title": false,
                         "short_weekdays": timespan.truncated_week,
                         "weekdays": window.static_data.year_data.global_week,
@@ -469,7 +469,7 @@ export var render_data_generator = {
                 }
             }
 
-            if (window.static_data.settings.only_reveal_today && epoch > dynamic_data.epoch && !Perms.player_at_least('co-owner')) {
+            if (window.static_data.settings.only_reveal_today && epoch > window.dynamic_data.epoch && !Perms.player_at_least('co-owner')) {
                 break;
             }
         }
@@ -651,7 +651,7 @@ export var render_data_generator = {
 	create_event_data: function() {
         let evaluated_event_data = event_evaluator.init(
             window.static_data,
-            dynamic_data,
+            window.dynamic_data,
             events,
             event_categories,
             this.epoch_data,

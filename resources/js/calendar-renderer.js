@@ -77,7 +77,7 @@ export default () => ({
         this.render_data.preview_epoch = event.detail.preview_epoch;
         CalendarYearHeader.update(
             window.static_data,
-            dynamic_data,
+            window.dynamic_data,
             preview_date,
             evaluated_static_data.epoch_data
         );
@@ -101,7 +101,7 @@ export default () => ({
 
         CalendarYearHeader.update(
             window.static_data,
-            dynamic_data,
+            window.dynamic_data,
             preview_date,
             evaluated_static_data.epoch_data
         );

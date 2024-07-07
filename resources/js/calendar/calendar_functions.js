@@ -711,31 +711,31 @@ export function valid_preview_date(year, timespan, day) {
 
     if (window.static_data.settings.only_reveal_today) {
 
-        if (year > dynamic_data.year) {
+        if (year > window.dynamic_data.year) {
             return false;
         }
 
-        if (year === dynamic_data.year) {
-            if (timespan > dynamic_data.timespan) {
+        if (year === window.dynamic_data.year) {
+            if (timespan > window.dynamic_data.timespan) {
                 return false;
             }
 
-            if (timespan === dynamic_data.timespan && day > dynamic_data.day) {
+            if (timespan === window.dynamic_data.timespan && day > window.dynamic_data.day) {
                 return false;
             }
         }
 
     } else if (window.static_data.settings.only_backwards) {
 
-        if (!window.static_data.settings.show_current_month && year > dynamic_data.year) {
+        if (!window.static_data.settings.show_current_month && year > window.dynamic_data.year) {
             return false;
         }
 
-        if (year >= dynamic_data.year) {
-            if (timespan > dynamic_data.timespan) {
+        if (year >= window.dynamic_data.year) {
+            if (timespan > window.dynamic_data.timespan) {
                 return false;
             }
-            if (timespan === dynamic_data.timespan && day > dynamic_data.day) {
+            if (timespan === window.dynamic_data.timespan && day > window.dynamic_data.day) {
                 return false;
             }
         }

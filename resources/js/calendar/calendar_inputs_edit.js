@@ -60,7 +60,7 @@ export var changes_applied = true;
 export function set_up_edit_inputs() {
 
     prev_calendar_name = clone(calendar_name);
-    prev_dynamic_data = clone(dynamic_data);
+    prev_dynamic_data = clone(window.dynamic_data);
     prev_static_data = clone(window.static_data);
     prev_events = clone(events);
     prev_event_categories = clone(event_categories);
@@ -70,7 +70,7 @@ export function set_up_edit_inputs() {
 
     calendar_name_same = calendar_name == prev_calendar_name;
     static_same = JSON.stringify(window.static_data) === JSON.stringify(prev_static_data);
-    dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+    dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(prev_dynamic_data);
     events_same = JSON.stringify(events) === JSON.stringify(prev_events);
     event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
     advancement_same = JSON.stringify(advancement) === JSON.stringify(advancement);
@@ -79,7 +79,7 @@ export function set_up_edit_inputs() {
 
         calendar_name_same = calendar_name == prev_calendar_name;
         static_same = JSON.stringify(window.static_data) === JSON.stringify(prev_static_data);
-        dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+        dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(prev_dynamic_data);
         events_same = JSON.stringify(events) === JSON.stringify(prev_events);
         event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
         advancement_same = JSON.stringify(advancement) === JSON.stringify(prev_advancement);
@@ -194,7 +194,7 @@ export function set_up_edit_inputs() {
                             update_preview_calendar();
                             pre_rebuild_calendar('preview', preview_date);
                         } else {
-                            pre_rebuild_calendar('calendar', dynamic_data);
+                            pre_rebuild_calendar('calendar', window.dynamic_data);
                             preview_date_follow();
                         }
                     }
@@ -215,7 +215,7 @@ export function set_up_edit_inputs() {
                             update_preview_calendar();
                             pre_rebuild_calendar('preview', preview_date);
                         } else {
-                            pre_rebuild_calendar('calendar', dynamic_data);
+                            pre_rebuild_calendar('calendar', window.dynamic_data);
                             preview_date_follow();
                         }
                     }
@@ -340,8 +340,8 @@ export function set_up_edit_inputs() {
         window.static_data.clock.render = $(this).is(':checked');
         $('#render_clock').prop('checked', window.static_data.clock.render);
 
-        dynamic_data.hour = 0;
-        dynamic_data.minute = 0;
+        window.dynamic_data.hour = 0;
+        window.dynamic_data.minute = 0;
 
         evaluate_clock_inputs();
 
@@ -1264,10 +1264,10 @@ export function set_up_edit_inputs() {
                 "restart": false
             },
             "date": {
-                "year": dynamic_data.year,
-                "timespan": dynamic_data.timespan,
-                "day": dynamic_data.day,
-                "epoch": dynamic_data.epoch
+                "year": window.dynamic_data.year,
+                "timespan": window.dynamic_data.timespan,
+                "day": window.dynamic_data.day,
+                "epoch": window.dynamic_data.epoch
             }
         };
 
@@ -1277,12 +1277,12 @@ export function set_up_edit_inputs() {
 
         window.static_data.eras.push(stats);
         var era = add_era_to_list(era_list, id, stats);
-        repopulate_timespan_select(era.find('.timespan-list'), dynamic_data.timespan, false);
-        repopulate_day_select(era.find('.timespan-day-list'), dynamic_data.day, false);
+        repopulate_timespan_select(era.find('.timespan-list'), window.dynamic_data.timespan, false);
+        repopulate_day_select(era.find('.timespan-day-list'), window.dynamic_data.day, false);
         reindex_era_list();
         name.val("");
         do_error_check("eras");
-        dynamic_data.current_era = get_current_era(window.static_data, dynamic_data.epoch);
+        window.dynamic_data.current_era = get_current_era(window.static_data, window.dynamic_data.epoch);
 
     });
 
@@ -1420,8 +1420,8 @@ export function set_up_edit_inputs() {
                 $(this).closest('.sortable-container').parent().sortable('refresh');
                 reindex_timespan_sortable();
                 window.dynamic_date_manager.cap_timespan();
-                dynamic_data.timespan = window.dynamic_date_manager.timespan;
-                dynamic_data.epoch = window.dynamic_date_manager.epoch;
+                window.dynamic_data.timespan = window.dynamic_date_manager.timespan;
+                window.dynamic_data.epoch = window.dynamic_date_manager.epoch;
                 recalc_stats();
                 break;
 
@@ -1466,7 +1466,7 @@ export function set_up_edit_inputs() {
                 $(this).closest('.sortable-container').remove();
                 $(this).closest('.sortable-container').parent().sortable('refresh');
                 reindex_era_list();
-                dynamic_data.current_era = get_current_era(window.static_data, dynamic_data.epoch);
+                window.dynamic_data.current_era = get_current_era(window.static_data, window.dynamic_data.epoch);
                 break;
 
             case "event_category_list":
@@ -1499,7 +1499,7 @@ export function set_up_edit_inputs() {
                 $(this).closest('.sortable-container').remove();
                 $(this).closest('.sortable-container').parent().sortable('refresh');
                 window.static_data.year_data.leap_days.splice(index, 1)
-                dynamic_data.epoch = window.dynamic_date_manager.epoch;
+                window.dynamic_data.epoch = window.dynamic_date_manager.epoch;
                 reindex_leap_day_list();
                 recalc_stats();
                 break;
@@ -1817,7 +1817,7 @@ export function set_up_edit_inputs() {
 
         reindex_era_list();
 
-        dynamic_data.current_era = get_current_era(window.static_data, dynamic_data.epoch);
+        window.dynamic_data.current_era = get_current_era(window.static_data, window.dynamic_data.epoch);
 
     });
 
@@ -1828,7 +1828,7 @@ export function set_up_edit_inputs() {
 
     const debounce_era_reindex = debounce(function() {
         reindex_era_list();
-        dynamic_data.current_era = get_current_era(window.static_data, dynamic_data.epoch);
+        window.dynamic_data.current_era = get_current_era(window.static_data, window.dynamic_data.epoch);
     }, 50)
 
     $(document).on('change', '#era_list .ends_year', function() {
@@ -1839,8 +1839,8 @@ export function set_up_edit_inputs() {
             var era = window.static_data.eras[i];
             era.date.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, era.date.year), era.date.timespan, era.date.day).epoch;
         }
-        dynamic_data.current_era = get_current_era(window.static_data, dynamic_data.epoch);
-        window.dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+        window.dynamic_data.current_era = get_current_era(window.static_data, window.dynamic_data.epoch);
+        window.dynamic_date_manager = new date_manager(window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
     });
 
     $(document).on('change', '#era_list .starting_era', function() {
@@ -1851,8 +1851,8 @@ export function set_up_edit_inputs() {
             var era = window.static_data.eras[i];
             era.date.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, era.date.year), era.date.timespan, era.date.day).epoch;
         }
-        dynamic_data.current_era = get_current_era(window.static_data, dynamic_data.epoch);
-        window.dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+        window.dynamic_data.current_era = get_current_era(window.static_data, window.dynamic_data.epoch);
+        window.dynamic_date_manager = new date_manager(window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
     });
 
     $(document).on('click', '.preview_era_date', function() {
@@ -2050,8 +2050,8 @@ export function set_up_edit_inputs() {
         $('.leap_day_occurance_input').change();
 
         window.dynamic_date_manager.cap_timespan();
-        dynamic_data.timespan = window.dynamic_date_manager.timespan;
-        dynamic_data.epoch = window.dynamic_date_manager.epoch;
+        window.dynamic_data.timespan = window.dynamic_date_manager.timespan;
+        window.dynamic_data.epoch = window.dynamic_date_manager.epoch;
 
     });
 
@@ -2180,7 +2180,7 @@ export function set_up_edit_inputs() {
 
         $(this).closest('.sortable-container').find('.leap_day_variance_output').html(get_interval_text(false, data));
 
-        dynamic_data.epoch = window.dynamic_date_manager.epoch;
+        window.dynamic_data.epoch = window.dynamic_date_manager.epoch;
 
         do_error_check();
 
@@ -2189,7 +2189,7 @@ export function set_up_edit_inputs() {
     $(document).on('change', '.timespan_length', function() {
         var index = $(this).closest('.sortable-container').attr('index') | 0;
         repopulate_day_select($(`.timespan-day-list`), undefined, undefined, undefined, undefined, index);
-        dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+        window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
         preview_date.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
     });
 
@@ -2234,7 +2234,7 @@ export function set_up_edit_inputs() {
             repopulate_day_select($(this), $(this).val(), changed_days == $(this));
         });
 
-        dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+        window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
         preview_date.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
 
     });
@@ -2574,7 +2574,7 @@ export function set_up_edit_inputs() {
 
             } else {
 
-                pre_rebuild_calendar('calendar', dynamic_data);
+                pre_rebuild_calendar('calendar', window.dynamic_data);
 
                 preview_date_follow();
 
@@ -2609,7 +2609,7 @@ export function set_up_edit_inputs() {
 
             } else {
 
-                rebuild_calendar('calendar', dynamic_data);
+                rebuild_calendar('calendar', window.dynamic_data);
 
                 preview_date_follow();
 
@@ -2824,7 +2824,7 @@ function update_data(e) {
             refresh_interval_texts();
             set_up_view_values();
             set_up_visitor_values();
-            dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+            window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
             preview_date.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, preview_date.year), preview_date.timespan, preview_date.day).epoch;
         }
 
@@ -4451,7 +4451,7 @@ function error_check(parent, rebuild) {
 
         } else {
 
-            pre_rebuild_calendar('calendar', dynamic_data);
+            pre_rebuild_calendar('calendar', window.dynamic_data);
 
             preview_date_follow();
 
@@ -4462,7 +4462,7 @@ function error_check(parent, rebuild) {
         if (parent !== undefined && (parent === "seasons")) {
             rebuild_climate();
         } else {
-            pre_rebuild_calendar('calendar', dynamic_data);
+            pre_rebuild_calendar('calendar', window.dynamic_data);
             update_current_day(true);
             evaluate_sun();
         }
@@ -4987,8 +4987,8 @@ function reindex_location_list() {
     });
 
     if (window.static_data.seasons.locations.length == 0) {
-        dynamic_data.location = "";
-        dynamic_data.custom_location = false;
+        window.dynamic_data.location = "";
+        window.dynamic_data.custom_location = false;
     }
 
     location_list.empty();
@@ -5126,10 +5126,10 @@ function reindex_era_list() {
 
     });
 
-    window.dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
-    dynamic_data.epoch = window.dynamic_date_manager.epoch;
+    window.dynamic_date_manager = new date_manager(window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
+    window.dynamic_data.epoch = window.dynamic_date_manager.epoch;
 
-    window.preview_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+    window.preview_date_manager = new date_manager(window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
     preview_date.epoch = window.preview_date_manager.epoch;
 
     do_error_check();
@@ -5285,8 +5285,8 @@ function evaluate_season_lengths() {
         'season_length': 0
     };
 
-    var epoch_start = evaluate_calendar_start(window.static_data, convert_year(window.static_data, dynamic_data.year)).epoch;
-    var epoch_end = evaluate_calendar_start(window.static_data, convert_year(window.static_data, dynamic_data.year) + 1).epoch - 1;
+    var epoch_start = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year)).epoch;
+    var epoch_end = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year) + 1).epoch - 1;
     var season_length = epoch_end - epoch_start;
 
     for (var i = 0; i < window.static_data.seasons.data.length; i++) {
@@ -5318,9 +5318,9 @@ export function evaluate_season_daylength_warning() {
 
     $('#season_daylength_text').toggleClass('hidden', disable).empty();
 
-    if (disable || !dynamic_data.custom_location) return;
+    if (disable || !window.dynamic_data.custom_location) return;
 
-    let custom_location = window.static_data.seasons.locations[dynamic_data.location];
+    let custom_location = window.static_data.seasons.locations[window.dynamic_data.location];
 
     if (custom_location.season_based_time) return;
 
@@ -5387,7 +5387,7 @@ export function evaluate_save_button(override) {
 
             calendar_name_same = calendar_name == prev_calendar_name;
             static_same = JSON.stringify(window.static_data) === JSON.stringify(prev_static_data);
-            dynamic_same = JSON.stringify(dynamic_data) === JSON.stringify(prev_dynamic_data);
+            dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(prev_dynamic_data);
             events_same = JSON.stringify(events) === JSON.stringify(prev_events);
             event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
             advancement_same = JSON.stringify(advancement) === JSON.stringify(prev_advancement);
@@ -5829,7 +5829,7 @@ function autosave() {
     var saved_data = JSON.stringify({
         calendar_name: calendar_name,
         static_data: window.static_data,
-        dynamic_data: dynamic_data,
+        dynamic_data: window.dynamic_data,
         events: events,
         event_categories: event_categories
     })
@@ -5873,17 +5873,17 @@ export function autoload(popup) {
     if (saved_data) {
 
         var data = JSON.parse(saved_data);
-        prev_calendar_name = {};
-        prev_dynamic_data = {};
-        prev_static_data = {};
-        prev_events = {};
-        prev_event_categories = {};
-        calendar_name = data.calendar_name;
-        static_data = data.static_data;
-        dynamic_data = data.dynamic_data;
-        events = data.events;
-        event_categories = data.event_categories;
-        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+        window.prev_calendar_name = {};
+        window.prev_dynamic_data = {};
+        window.prev_static_data = {};
+        window.prev_events = {};
+        window.prev_event_categories = {};
+        window.calendar_name = data.calendar_name;
+        window.static_data = data.static_data;
+        window.dynamic_data = data.dynamic_data;
+        window.events = data.events;
+        window.event_categories = data.event_categories;
+        window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
         empty_edit_values();
         set_up_edit_values();
         set_up_view_values();

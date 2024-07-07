@@ -165,10 +165,10 @@ export default () => ({
                             prev_static_data = {}
                             calendar_name = clone(calendar.name);
                             window.static_data = clone(calendar.static_data);
-                            dynamic_data = clone(calendar.dynamic_data);
+                            window.dynamic_data = clone(calendar.dynamic_data);
                             event_categories = clone(calendar.event_categories);
                             events = clone(calendar.events);
-                            dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+                            window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
                             empty_edit_values();
                             set_up_edit_values();
                             set_up_view_values();
@@ -205,7 +205,7 @@ export default () => ({
 
                             calendar_name = "Random Calendar";
                             window.static_data = RandomCalendar.randomize(static_data);
-                            dynamic_data = {
+                            window.dynamic_data = {
                                 "year": 1,
                                 "timespan": 0,
                                 "day": 1,
@@ -257,22 +257,22 @@ export default () => ({
 
         calendar_name = data.name;
         window.static_data = data.static_data;
-        dynamic_data = data.dynamic_data;
+        window.dynamic_data = data.dynamic_data;
         events = data.events;
         event_categories = data.categories;
 
         if (calendar_name.indexOf("Gregorian Calendar") > -1) {
             let current_date = new Date();
-            dynamic_data.year = current_date.getFullYear();
-            dynamic_data.timespan = current_date.getMonth();
-            dynamic_data.day = current_date.getDate();
-            dynamic_data.hour = current_date.getHours();
-            dynamic_data.minute = current_date.getMinutes();
+            window.dynamic_data.year = current_date.getFullYear();
+            window.dynamic_data.timespan = current_date.getMonth();
+            window.dynamic_data.day = current_date.getDate();
+            window.dynamic_data.hour = current_date.getHours();
+            window.dynamic_data.minute = current_date.getMinutes();
         }
 
-        dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+        window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
 
-        preview_date = clone(dynamic_data);
+        window.preview_date = clone(window.dynamic_data);
 
         for (var index in events) {
             var event = events[index];

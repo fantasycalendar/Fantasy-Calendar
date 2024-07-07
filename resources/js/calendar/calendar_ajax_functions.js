@@ -43,7 +43,7 @@ export function update_view_dynamic(calendar_hash) {
         url: window.baseurl + "calendars/" + calendar_hash,
         type: "post",
         dataType: 'json',
-        data: { _method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data) },
+        data: { _method: 'PATCH', dynamic_data: JSON.stringify(window.dynamic_data) },
         success: function(result) {
             last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
         },
@@ -63,11 +63,11 @@ export function update_dynamic(calendar_hash, callback) {
         url: window.baseurl + "calendars/" + calendar_hash,
         type: "post",
         dataType: 'json',
-        data: { _method: 'PATCH', dynamic_data: JSON.stringify(dynamic_data) },
+        data: { _method: 'PATCH', dynamic_data: JSON.stringify(window.dynamic_data) },
         success: function(result) {
 
             if (!dynamic_same) {
-                prev_dynamic_data = clone(dynamic_data);
+                prev_dynamic_data = clone(window.dynamic_data);
             }
 
             calendar_saved();
@@ -118,7 +118,7 @@ export function do_update_all(calendar_hash, success_callback, failure_callback)
         dataType: 'json',
         data: {
             _method: 'PATCH',
-            dynamic_data: JSON.stringify(dynamic_data),
+            dynamic_data: JSON.stringify(window.dynamic_data),
             static_data: JSON.stringify(window.static_data),
             events: JSON.stringify(events),
             event_categories: JSON.stringify(event_categories),
@@ -136,7 +136,7 @@ export function do_update_all(calendar_hash, success_callback, failure_callback)
             }
 
             if (!dynamic_same) {
-                prev_dynamic_data = clone(dynamic_data);
+                prev_dynamic_data = clone(window.dynamic_data);
             }
 
             if (!events_same) {
@@ -559,7 +559,7 @@ export function create_calendar(callback) {
         dataType: 'json',
         data: {
             name: calendar_name,
-            dynamic_data: JSON.stringify(dynamic_data),
+            dynamic_data: JSON.stringify(window.dynamic_data),
             static_data: JSON.stringify(window.static_data),
             events: JSON.stringify(events),
             event_categories: JSON.stringify(event_categories)
