@@ -59,7 +59,7 @@ export var changes_applied = true;
 
 export function set_up_edit_inputs() {
 
-    prev_calendar_name = clone(calendar_name);
+    prev_calendar_name = clone(window.calendar_name);
     prev_dynamic_data = clone(window.dynamic_data);
     prev_static_data = clone(window.static_data);
     prev_events = clone(events);
@@ -68,7 +68,7 @@ export function set_up_edit_inputs() {
 
     owned_calendars = {};
 
-    calendar_name_same = calendar_name == prev_calendar_name;
+    calendar_name_same = window.calendar_name == prev_calendar_name;
     static_same = JSON.stringify(window.static_data) === JSON.stringify(prev_static_data);
     dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(prev_dynamic_data);
     events_same = JSON.stringify(events) === JSON.stringify(prev_events);
@@ -77,7 +77,7 @@ export function set_up_edit_inputs() {
 
     window.onbeforeunload = function(e) {
 
-        calendar_name_same = calendar_name == prev_calendar_name;
+        calendar_name_same = window.calendar_name == prev_calendar_name;
         static_same = JSON.stringify(window.static_data) === JSON.stringify(prev_static_data);
         dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(prev_dynamic_data);
         events_same = JSON.stringify(events) === JSON.stringify(prev_events);
@@ -145,7 +145,7 @@ export function set_up_edit_inputs() {
     delete_button = $('#btn_delete');
 
     delete_button.click(function() {
-        delete_calendar(window.hash, calendar_name, function() { self.location = '/calendars' });
+        delete_calendar(window.hash, window.calendar_name, function() { self.location = '/calendars' });
     });
 
     calendar_container = $('#calendar');
@@ -314,7 +314,7 @@ export function set_up_edit_inputs() {
     /* ------------------- Dynamic and static callbacks ------------------- */
 
     $('#calendar_name').change(function() {
-        calendar_name = $(this).val();
+        window.calendar_name = $(this).val();
         do_error_check();
     });
 
@@ -4232,7 +4232,7 @@ function get_errors() {
 
     var errors = [];
 
-    if (calendar_name == "") {
+    if (window.calendar_name == "") {
         errors.push("The calendar name cannot be empty.")
     }
 
@@ -4325,7 +4325,7 @@ export const creation = {
         this.text = [];
 
         if (this.current_step >= 1) {
-            if (calendar_name == "") {
+            if (window.calendar_name == "") {
                 this.text.push(`<span><i class="mr-2 fas fa-calendar"></i> Your calendar must have a name</span>.`)
                 this.current_step = 1;
             } else {
@@ -5385,7 +5385,7 @@ export function evaluate_save_button(override) {
 
         } else {
 
-            calendar_name_same = calendar_name == prev_calendar_name;
+            calendar_name_same = window.calendar_name == prev_calendar_name;
             static_same = JSON.stringify(window.static_data) === JSON.stringify(prev_static_data);
             dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(prev_dynamic_data);
             events_same = JSON.stringify(events) === JSON.stringify(prev_events);
@@ -5550,7 +5550,7 @@ var block_inputs = false;
 export function set_up_edit_values() {
     block_inputs = true;
 
-    $('#calendar_name').val(calendar_name);
+    $('#calendar_name').val(window.calendar_name);
 
     $('.static_input').each(function() {
 
@@ -5827,7 +5827,7 @@ export function empty_edit_values() {
 
 function autosave() {
     var saved_data = JSON.stringify({
-        calendar_name: calendar_name,
+        calendar_name: window.calendar_name,
         static_data: window.static_data,
         dynamic_data: window.dynamic_data,
         events: events,
@@ -5895,7 +5895,7 @@ export function autoload(popup) {
             swal.fire({
                 icon: "success",
                 title: "Loaded!",
-                text: "The calendar " + calendar_name + " has been loaded."
+                text: "The calendar " + window.calendar_name + " has been loaded."
             });
         }
 

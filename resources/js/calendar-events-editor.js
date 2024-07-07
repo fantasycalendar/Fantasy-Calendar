@@ -2409,7 +2409,7 @@ export default () => ({
         this.worker_event_tester = new Worker('/js/webworkers/worker_event_tester.js')
 
         this.worker_event_tester.postMessage(JSON.parse(JSON.stringify({
-            calendar_name: calendar_name,
+            calendar_name: window.calendar_name,
             static_data: window.static_data,
             dynamic_data: preview_date,
             events: events,

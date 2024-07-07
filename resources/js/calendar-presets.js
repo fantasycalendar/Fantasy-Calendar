@@ -163,7 +163,7 @@ export default () => ({
                         if (calendar.success) {
                             prev_dynamic_data = {}
                             prev_static_data = {}
-                            calendar_name = clone(calendar.name);
+                            window.calendar_name = clone(calendar.name);
                             window.static_data = clone(calendar.static_data);
                             window.dynamic_data = clone(calendar.dynamic_data);
                             event_categories = clone(calendar.event_categories);
@@ -203,7 +203,7 @@ export default () => ({
                     .then((result) => {
                         if (result.value) {
 
-                            calendar_name = "Random Calendar";
+                            window.calendar_name = "Random Calendar";
                             window.static_data = RandomCalendar.randomize(static_data);
                             window.dynamic_data = {
                                 "year": 1,
@@ -255,13 +255,13 @@ export default () => ({
 
     apply_preset: function(data) {
 
-        calendar_name = data.name;
+        window.calendar_name = data.name;
         window.static_data = data.static_data;
         window.dynamic_data = data.dynamic_data;
         events = data.events;
         event_categories = data.categories;
 
-        if (calendar_name.indexOf("Gregorian Calendar") > -1) {
+        if (window.calendar_name.indexOf("Gregorian Calendar") > -1) {
             let current_date = new Date();
             window.dynamic_data.year = current_date.getFullYear();
             window.dynamic_data.timespan = current_date.getMonth();

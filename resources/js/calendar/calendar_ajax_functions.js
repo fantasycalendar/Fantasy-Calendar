@@ -127,8 +127,8 @@ export function do_update_all(calendar_hash, success_callback, failure_callback)
         success: function(result) {
 
             if (!calendar_name_same) {
-                prev_calendar_name = clone(calendar_name);
-                document.title = calendar_name + " - Fantasy Calendar";
+                prev_calendar_name = clone(window.calendar_name);
+                document.title = window.calendar_name + " - Fantasy Calendar";
             }
 
             if (!static_same) {
@@ -520,7 +520,7 @@ export function delete_calendar(calendar_hash, calendar_name, callback) {
 
             if (result.dismiss || !result.value) throw null;
 
-            if (result.value !== calendar_name) throw `Sorry! "${result.value}" isn't the same as "${calendar_name}"`;
+            if (result.value !== window.calendar_name) throw `Sorry! "${result.value}" isn't the same as "${calendar_name}"`;
 
             return axios.delete(window.apiurl + '/calendar/' + calendar_hash);
 
@@ -533,7 +533,7 @@ export function delete_calendar(calendar_hash, calendar_name, callback) {
             swal.fire({
                 icon: "success",
                 title: "Deleted!",
-                text: "The calendar " + calendar_name + " has been deleted.",
+                text: "The calendar " + window.calendar_name + " has been deleted.",
                 button: true
             })
                 .then(success => {
@@ -558,7 +558,7 @@ export function create_calendar(callback) {
         type: "post",
         dataType: 'json',
         data: {
-            name: calendar_name,
+            name: window.calendar_name,
             dynamic_data: JSON.stringify(window.dynamic_data),
             static_data: JSON.stringify(window.static_data),
             events: JSON.stringify(events),
