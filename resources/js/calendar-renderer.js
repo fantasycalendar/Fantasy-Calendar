@@ -1,3 +1,5 @@
+import { evaluated_static_data } from "./calendar/calendar_manager";
+
 export default () => ({
 
     loaded: false,

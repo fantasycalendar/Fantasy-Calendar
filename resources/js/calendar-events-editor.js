@@ -3,9 +3,9 @@ import { matcher, ordinal_suffix_of, precisionRound, clone } from "./calendar/ca
 import { condition_mapping, moon_phases } from "./calendar/calendar_variables";
 import { repopulate_timespan_select, repopulate_day_select } from "./calendar/calendar_inputs_visitor";
 import { evaluate_save_button, get_category } from "./calendar/calendar_inputs_edit";
+import { eval_apply_changes, evaluated_static_data, rerender_calendar } from "./calendar/calendar_manager";
 
 export default () => ({
-
     open: false,
     new_event: true,
     cloning_event: false,

@@ -1,4 +1,7 @@
+import { calendar_data_generator, event_evaluator } from "../calendar/calendar_workers";
+
 var version = new Date().getTime();
+
 
 importScripts('/js/calendar/calendar_functions.js?v='+version);
 importScripts('/js/calendar/calendar_variables.js?v='+version);

@@ -13,124 +13,113 @@ var registered_onfocus_callbacks = {}
 var registered_onblur_callbacks = {}
 var registered_mousemove_callbacks = {}
 
-function bind_calendar_events(){
-
-	document.addEventListener('keydown', function(event){
-		for(let callback_id in registered_keydown_callbacks){
+export function bind_calendar_events() {
+    document.addEventListener('keydown', function(event) {
+        for (let callback_id in registered_keydown_callbacks) {
             registered_keydown_callbacks[callback_id](event);
-		}
-	});
+        }
+    });
 
-	document.addEventListener('click', function(event){
-		for(let callback_id in registered_click_callbacks){
+    document.addEventListener('click', function(event) {
+        for (let callback_id in registered_click_callbacks) {
             registered_click_callbacks[callback_id](event);
-		}
-	});
+        }
+    });
 
-	window.onfocus = function(event){
-		for(let callback_id in registered_onfocus_callbacks){
+    window.onfocus = function(event) {
+        for (let callback_id in registered_onfocus_callbacks) {
             registered_onfocus_callbacks[callback_id](event);
-		}
-	};
+        }
+    };
 
-	window.onblur = function(event){
-		for(let callback_id in registered_onblur_callbacks){
+    window.onblur = function(event) {
+        for (let callback_id in registered_onblur_callbacks) {
             registered_onblur_callbacks[callback_id](event);
-		}
-	};
+        }
+    };
 
-	window.addEventListener('mousemove', function(event){
-		for(let callback_id in registered_mousemove_callbacks){
+    window.addEventListener('mousemove', function(event) {
+        for (let callback_id in registered_mousemove_callbacks) {
             registered_mousemove_callbacks[callback_id](event);
-		}
-	});
+        }
+    });
 
-	$('body').addClass('page-focused').removeClass('page-unfocused');
+    $('body').addClass('page-focused').removeClass('page-unfocused');
 
-	registered_onfocus_callbacks['page_focused'] = function(){
-		setTimeout(function(){ $('body').addClass('page-focused').removeClass('page-unfocused'); }, 140);
-	}
+    registered_onfocus_callbacks['page_focused'] = function() {
+        setTimeout(function() { $('body').addClass('page-focused').removeClass('page-unfocused'); }, 140);
+    }
 
-	registered_onblur_callbacks['page_unfocused'] = function(){
-		$('body').addClass('page-unfocused').removeClass('page-focused');
-	}
+    registered_onblur_callbacks['page_unfocused'] = function() {
+        $('body').addClass('page-unfocused').removeClass('page-focused');
+    }
 
-	$('#input_collapse_btn').click(function(){
-	    toggle_sidebar();
-	});
+    $('#input_collapse_btn').click(function() {
+        toggle_sidebar();
+    });
 
-	calendar_weather.tooltip.set_up();
+    calendar_weather.tooltip.set_up();
 
-	$('#calendar_container').on('scroll', function(){
-		calendar_weather.tooltip.hide();
-	});
+    $('#calendar_container').on('scroll', function() {
+        calendar_weather.tooltip.hide();
+    });
 
-	$(document).on('change', '.event-text-input', function() {
+    $(document).on('change', '.event-text-input', function() {
 
-		let parent = $(this).closest('.sortable-container');
+        let parent = $(this).closest('.sortable-container');
 
-		let value_input = this;
+        let value_input = this;
 
-		let output = parent.find('.event-text-output');
-		let input = parent.find('.event-text-input');
+        let output = parent.find('.event-text-output');
+        let input = parent.find('.event-text-input');
 
-		output.each(function() {
+        output.each(function() {
 
-			var classes = $(this).attr('class').split(' ');
+            var classes = $(this).attr('class').split(' ');
 
-			if (classes.indexOf("hidden_event") > -1) {
-				classes.length = 4;
-			} else {
-				classes.length = 3;
-			}
+            if (classes.indexOf("hidden_event") > -1) {
+                classes.length = 4;
+            } else {
+                classes.length = 3;
+            }
 
-			classes.push($(value_input).val());
-			classes.push(input.not(value_input).val());
+            classes.push($(value_input).val());
+            classes.push(input.not(value_input).val());
 
-			classes = classes.join(' ');
+            classes = classes.join(' ');
 
-			$(this).prop('class', classes);
-
-		})
-
-	});
-
+            $(this).prop('class', classes);
+        })
+    });
 }
 
-function eval_apply_changes(output){
+export function eval_apply_changes(output) {
+    let apply_changes_immediately = $('#apply_changes_immediately');
 
-	let apply_changes_immediately = $('#apply_changes_immediately');
-
-	if(apply_changes_immediately.length === 0){
-		output();
-	}else if(!apply_changes_immediately.is(':checked')){
-		if(!changes_applied){
-			evaluate_save_button();
+    if (apply_changes_immediately.length === 0) {
+        output();
+    } else if (!apply_changes_immediately.is(':checked')) {
+        if (!changes_applied) {
+            evaluate_save_button();
             $('#reload_background').removeClass('hidden').css('display', 'flex');
-		}else{
+        } else {
             $('#reload_background').addClass('hidden').css('display', 'none');
-			evaluate_save_button(true);
-			output();
-		}
-	}else{
-		evaluate_save_button();
-		output();
-	}
-
+            evaluate_save_button(true);
+            output();
+        }
+    } else {
+        evaluate_save_button();
+        output();
+    }
 }
 
-function pre_rebuild_calendar(action, dynamic_data){
-
-	eval_apply_changes(function(){
-
-		rebuild_calendar(action, dynamic_data);
-
-	});
-
+export function pre_rebuild_calendar(action, dynamic_data) {
+    eval_apply_changes(function() {
+        rebuild_calendar(action, dynamic_data);
+    });
 }
 
-async function testCalendarAccuracy(fromYear = -100, toYear = 100){
-
+async function testCalendarAccuracy(fromYear = -100, toYear = 100) {
     execution_time.start();
 
     calendar_data_generator.static_data = static_data;
@@ -150,10 +139,10 @@ async function testCalendarAccuracy(fromYear = -100, toYear = 100){
     let year_zero_exists = static_data.settings.year_zero_exists;
 
     fromYear++;
-    for(let year = fromYear; year < toYear; year++){
+    for (let year = fromYear; year < toYear; year++) {
 
         calendar_data_generator.dynamic_data.year = year;
-        if(!year_zero_exists && year === 0){
+        if (!year_zero_exists && year === 0) {
             continue;
         }
 
@@ -163,16 +152,16 @@ async function testCalendarAccuracy(fromYear = -100, toYear = 100){
 
         console.log(`${year} - Last year ended on ${lastYearEndEpoch} and this year started on ${thisYearStartEpoch} - total of ${Object.keys(result.epoch_data).length}`)
 
-        if((year_zero_exists && year === 0) || (!year_zero_exists && year === 1)){
-            if(thisYearStartEpoch !== 0){
+        if ((year_zero_exists && year === 0) || (!year_zero_exists && year === 1)) {
+            if (thisYearStartEpoch !== 0) {
                 console.error(`YEAR ${year} FAILED! Expected 0, got ${thisYearStartEpoch}!`)
                 dynamic_data.year = currentYear;
                 return;
             }
         }
 
-        if(lastYearEndEpoch !== thisYearStartEpoch-1){
-            console.error(`YEAR ${year} FAILED! Expected ${lastYearEndEpoch+1}, got ${thisYearStartEpoch}!`)
+        if (lastYearEndEpoch !== thisYearStartEpoch - 1) {
+            console.error(`YEAR ${year} FAILED! Expected ${lastYearEndEpoch + 1}, got ${thisYearStartEpoch}!`)
             dynamic_data.year = currentYear;
             return;
         }
@@ -185,12 +174,10 @@ async function testCalendarAccuracy(fromYear = -100, toYear = 100){
     dynamic_data.year = currentYear;
 
     execution_time.end("Testing took:");
-
 }
 
-async function testSeasonAccuracy(fromYear = -1000, toYear = 1000){
-
-    if(static_data.seasons.data.length === 0) return;
+async function testSeasonAccuracy(fromYear = -1000, toYear = 1000) {
+    if (static_data.seasons.data.length === 0) return;
 
     calendar_data_generator.static_data = static_data;
     calendar_data_generator.dynamic_data = dynamic_data;
@@ -206,10 +193,10 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000){
 
     let previous_year_end_season_day = result.epoch_data[result.year_data.end_epoch].season.season_day;
 
-    for(let year = fromYear; year < toYear; year++){
+    for (let year = fromYear; year < toYear; year++) {
 
         calendar_data_generator.dynamic_data.year++;
-        if(!static_data.settings.year_zero_exists && calendar_data_generator.dynamic_data.year === 0){
+        if (!static_data.settings.year_zero_exists && calendar_data_generator.dynamic_data.year === 0) {
             calendar_data_generator.dynamic_data.year++;
         }
 
@@ -222,20 +209,20 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000){
 
         let current_year_start_season_day = result.epoch_data[start_epoch].season.season_day;
 
-        if(previous_year_end_season_day+1 !== current_year_start_season_day && current_year_start_season_day !== 1){
-            console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Start/End Fail. Expected ${previous_year_end_season_day+1}, got ${current_year_start_season_day}!`);
+        if (previous_year_end_season_day + 1 !== current_year_start_season_day && current_year_start_season_day !== 1) {
+            console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Start/End Fail. Expected ${previous_year_end_season_day + 1}, got ${current_year_start_season_day}!`);
             dynamic_data.year = originalYear;
             return;
         }
 
         let prev_season_day = current_year_start_season_day;
 
-        for(let epoch = start_epoch+1; epoch < end_epoch; epoch++){
+        for (let epoch = start_epoch + 1; epoch < end_epoch; epoch++) {
 
             let season_day = result.epoch_data[epoch].season.season_day;
 
-            if(prev_season_day+1 !== season_day && season_day !== 1){
-                console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Inner year failed. Expected ${prev_season_day+1}, got ${season_day}!`)
+            if (prev_season_day + 1 !== season_day && season_day !== 1) {
+                console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Inner year failed. Expected ${prev_season_day + 1}, got ${season_day}!`)
                 dynamic_data.year = originalYear;
                 return;
             }
@@ -248,16 +235,14 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000){
 
     }
 
-    console.log(`Test succeeded, seasons are accurate across ${Math.abs(fromYear)+Math.abs(toYear)} years!`)
+    console.log(`Test succeeded, seasons are accurate across ${Math.abs(fromYear) + Math.abs(toYear)} years!`)
 
     dynamic_data.year = originalYear;
-
 }
 
-var evaluated_static_data = {};
+export var evaluated_static_data = {};
 
-async function rebuild_calendar(action, dynamic_data){
-
+export async function rebuild_calendar(action, dynamic_data) {
     calendar_data_generator.static_data = static_data;
     calendar_data_generator.dynamic_data = dynamic_data;
     calendar_data_generator.owner = Perms.player_at_least('co-owner');
@@ -283,18 +268,16 @@ async function rebuild_calendar(action, dynamic_data){
         eval_clock();
 
     }).catch(result => {
-        if(!result?.errors){
+        if (!result?.errors) {
             console.error(result)
             return;
         }
         let errors = result.errors.map(e => { return `<li>${e}</li>` });
         error_message(`Errors:<ol>${errors.join()}</ol>`);
     });
-
 }
 
-async function rebuild_climate(){
-
+export async function rebuild_climate() {
     let climate_generator = new Climate(
         evaluated_static_data.epoch_data,
         static_data,
@@ -315,21 +298,19 @@ async function rebuild_climate(){
         climate_charts.evaluate_day_length_chart();
         climate_charts.evaluate_weather_charts();
 
-        if(prev_seasons !== climate_generator.process_seasons || prev_weather !== climate_generator.process_weather) {
+        if (prev_seasons !== climate_generator.process_seasons || prev_weather !== climate_generator.process_weather) {
             rerender_calendar();
             eval_clock();
-        }else{
+        } else {
             eval_current_time();
         }
 
     })
 }
 
-function rerender_calendar(processed_data) {
+export function rerender_calendar(processed_data) { if (processed_data === undefined) processed_data = evaluated_static_data;
 
-	if (processed_data === undefined) processed_data = evaluated_static_data;
-
-	RenderDataGenerator.create_render_data(processed_data).then((result) => {
+    RenderDataGenerator.create_render_data(processed_data).then((result) => {
         window.dispatchEvent(new CustomEvent('render-data-change', { detail: result }));
     }).catch((err) => {
         $.notify(err);

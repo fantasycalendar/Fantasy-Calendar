@@ -19,6 +19,7 @@ import {
     evaluate_save_button,
     evaluate_clock_inputs,
 } from "./calendar_inputs_edit";
+import { pre_rebuild_calendar } from "./calendar_manager";
 
 export function set_up_view_inputs() {
 

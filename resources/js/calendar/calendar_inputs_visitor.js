@@ -13,6 +13,7 @@ import {
 import { day_data_tooltip } from "./calendar_day_data_layout";
 import { evaluate_dynamic_change, set_up_view_values } from "./calendar_inputs_view";
 import { get_category } from "./calendar_inputs_edit";
+import { evaluated_static_data, rebuild_calendar } from "./calendar_manager";
 
 function context_set_current_date(key, opt) {
     var epoch = $(opt.$trigger[0]).attr('epoch');

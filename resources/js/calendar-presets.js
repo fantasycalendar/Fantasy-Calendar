@@ -6,7 +6,6 @@ import { set_up_view_values } from './calendar/calendar_inputs_view.js';
 import { do_error_check, evaluate_save_button, set_up_edit_values, empty_edit_values } from './calendar/calendar_inputs_edit.js';
 
 export default () => ({
-
     open: false,
     loaded: false,
     preset_applied: false,
@@ -47,17 +46,17 @@ export default () => ({
 
     },
 
-    get pages(){
+    get pages() {
         return Array.from({
             length: Math.ceil(this.total / this.size),
         });
     },
 
-    next_page: function(){
+    next_page: function() {
         this.page_number++;
     },
 
-    prev_page: function(){
+    prev_page: function() {
         this.page_number--;
     },
 
@@ -66,12 +65,12 @@ export default () => ({
     },
 
     //Return the start range of the paginated results
-    get start_results(){
+    get start_results() {
         return this.page_number * this.size + 1;
     },
 
     //Return the end range of the paginated results
-    get end_results(){
+    get end_results() {
         let resultsOnPage = (this.page_number + 1) * this.size;
 
         if (resultsOnPage <= this.total) {
@@ -81,22 +80,22 @@ export default () => ({
         return this.total;
     },
 
-    view_page: function(index){
+    view_page: function(index) {
         this.page_number = index;
     },
 
-    load: function(){
+    load: function() {
         this.open = true;
-        if(this.loaded){
+        if (this.loaded) {
             return;
         }
         let loader = this;
         let callback = this.populate_presets;
-        axios.get(window.apiurl+'/presets')
-            .then(function (result){
-                if(!result.data.error && result.data != "") {
+        axios.get(window.apiurl + '/presets')
+            .then(function(result) {
+                if (!result.data.error && result.data != "") {
                     callback(loader, result.data);
-                } else if(result.data == ""){
+                } else if (result.data == "") {
                     callback(loader, []);
                 } else {
                     $.notify(
@@ -107,12 +106,12 @@ export default () => ({
             });
     },
 
-    populate_presets: function(loader, presets){
+    populate_presets: function(loader, presets) {
 
-        for(let index in presets){
+        for (let index in presets) {
             presets[index]['author'] = `Author: ${presets[index]['author']}`;
 
-            if(presets[index]['featured']) {
+            if (presets[index]['featured']) {
                 presets[index].icon = "star";
                 loader.featured.push(presets[index]);
             }
@@ -140,11 +139,11 @@ export default () => ({
 
     },
 
-    fetch_preset: function(id, name){
+    fetch_preset: function(id, name) {
 
-        if(id <= 0){
+        if (id <= 0) {
 
-            if(name == "Load custom JSON"){
+            if (name == "Load custom JSON") {
 
                 swal.fire({
                     text: "Input your JSON data below:",
@@ -158,10 +157,10 @@ export default () => ({
                 })
                     .then(result => {
 
-                        if(result.dismiss || !result.value) return;
+                        if (result.dismiss || !result.value) return;
 
                         var calendar = parse_json(result.value);
-                        if(calendar.success){
+                        if (calendar.success) {
                             prev_dynamic_data = {}
                             prev_static_data = {}
                             calendar_name = clone(calendar.name);
@@ -177,7 +176,7 @@ export default () => ({
                             do_error_check('calendar', true);
                             this.open = false;
                             this.preset_applied = true;
-                        }else{
+                        } else {
                             swal.fire({
                                 title: "Error!",
                                 text: calendar.message,
@@ -190,7 +189,7 @@ export default () => ({
 
                     });
 
-            }else{
+            } else {
 
                 swal.fire({
                     title: "Are you sure?",
@@ -202,7 +201,7 @@ export default () => ({
                     icon: "warning",
                 })
                     .then((result) => {
-                        if(result.value) {
+                        if (result.value) {
 
                             calendar_name = "Random Calendar";
                             static_data = RandomCalendar.randomize(static_data);
@@ -227,9 +226,9 @@ export default () => ({
 
             }
 
-        }else{
+        } else {
 
-            if(this.preset_applied){
+            if (this.preset_applied) {
                 swal.fire({
                     title: "Are you sure?",
                     text: `Applying this preset will overwrite all of your current progress.`,
@@ -240,13 +239,13 @@ export default () => ({
                     icon: "warning",
                 })
                     .then((result) => {
-                        if(result.value) {
+                        if (result.value) {
                             get_preset_data(id, this.apply_preset);
                             this.open = false;
                             this.preset_applied = true;
                         }
                     });
-            }else{
+            } else {
                 get_preset_data(id, this.apply_preset);
                 this.open = false;
                 this.preset_applied = true;
@@ -254,7 +253,7 @@ export default () => ({
         }
     },
 
-    apply_preset: function(data){
+    apply_preset: function(data) {
 
         calendar_name = data.name;
         static_data = data.static_data;
@@ -262,7 +261,7 @@ export default () => ({
         events = data.events;
         event_categories = data.categories;
 
-        if(calendar_name.indexOf("Gregorian Calendar") > -1){
+        if (calendar_name.indexOf("Gregorian Calendar") > -1) {
             let current_date = new Date();
             dynamic_data.year = current_date.getFullYear();
             dynamic_data.timespan = current_date.getMonth();
@@ -275,7 +274,7 @@ export default () => ({
 
         preview_date = clone(dynamic_data);
 
-        for(var index in events){
+        for (var index in events) {
             var event = events[index];
             delete event.preset_event_category_id;
             delete event.preset_id;
@@ -284,7 +283,7 @@ export default () => ({
             delete event.deleted_at;
         }
 
-        for(var index in event_categories){
+        for (var index in event_categories) {
             var category = event_categories[index];
             category.id = category.label;
             delete category.label;
@@ -305,4 +304,4 @@ export default () => ({
             "success"
         );
     }
-})
+});
