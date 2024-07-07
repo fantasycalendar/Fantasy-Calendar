@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-export function initialize() {
+export function header_initialize() {
     $(window).on('resize', function() {
         evaluate_background_size();
     });
@@ -32,26 +32,6 @@ export function error_message(message) {
     $('#modal').removeClass().addClass('error');
 
     evaluate_background_size();
-}
-
-export function creation_message(message) {
-    $('#modal_text').empty().append(message);
-    $('#modal_background').removeClass().addClass('flexible_background transparent').css('display', 'flex');
-    $('#modal').removeClass().addClass('creation');
-
-    evaluate_background_size();
-}
-
-export function close_message_modal() {
-    $('#modal_background').removeClass().addClass('flexible_background').css('display', 'none');
-}
-
-export function show_changes_button() {
-    $('#reload_background').removeClass('hidden').css('display', 'flex');
-}
-
-export function hide_changes_button() {
-    $('#reload_background').addClass('hidden').css('display', 'none');
 }
 
 var loading_screen_texts = [
@@ -232,24 +212,6 @@ export function set_loading_screen_text(array) {
 }
 
 var progress = 0;
-
-export function update_loading_bar(percentage, message) {
-
-    percentage = precisionRound(percentage, 3);
-
-    if (progress == percentage) {
-        return;
-    }
-
-    loading_bar.set(percentage);
-
-    progress = percentage;
-
-    if (message) {
-        $('#loading_information_text').text(message).removeClass("hidden");
-    }
-
-}
 
 export function slugify(string) {
     const a = 'àáäâãåăæąçćčđďèéěėëêęğǵḧìíïîįłḿǹńňñòóöôœøṕŕřßşśšșťțùúüûǘůűūųẃẍÿýźžż·/_,:;'

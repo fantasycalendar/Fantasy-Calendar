@@ -1,4 +1,6 @@
-const calendar_data_generator = {
+import { truncate_weekdays, fract } from "./calendar_functions";
+
+export const calendar_data_generator = {
 
 	dynamic_data: {},
 	static_data: {},
@@ -912,7 +914,7 @@ const calendar_data_generator = {
 
 }
 
-var event_evaluator = {
+export var event_evaluator = {
 
 	events: [],
 	categories: [],

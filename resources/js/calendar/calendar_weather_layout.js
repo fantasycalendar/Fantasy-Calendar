@@ -1,3 +1,5 @@
+import { ordinal_suffix_of, precisionRound } from "./calendar_functions";
+
 var UID = {
 	_current: 0,
 	getNew: function(){

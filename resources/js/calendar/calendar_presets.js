@@ -1,3 +1,5 @@
+import { get_moon_granularity } from "./calendar_functions";
+
 function create_season_events(complex) {
 
     if (complex) {

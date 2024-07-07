@@ -1,3 +1,5 @@
+import { ordinal_suffix_of } from "./calendar/calendar_functions";
+
 export default () => ({
 
     static_data: undefined,

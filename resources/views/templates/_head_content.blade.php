@@ -95,7 +95,6 @@
     @else
         @vite('resources/sass/app.scss')
     @endif
-    <link rel="stylesheet" href="{{ asset("/js/vendor/spectrum/spectrum.css") }}">
 
     @stack('head')
 </head>

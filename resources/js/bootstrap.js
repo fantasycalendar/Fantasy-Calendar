@@ -138,6 +138,8 @@ Alpine.data('CalendarEventEditor', CalendarEventEditor);
 Alpine.data('CalendarEventViewer', CalendarEventViewer);
 Alpine.data('CalendarYearHeader', CalendarYearHeader);
 
+import { precisionRound } from './calendar/calendar_functions.js';
+
 Alpine.data('MainApp', () => ({
     init: function() {
         this.$nextTick(() => {

@@ -1,3 +1,6 @@
+import { submit_new_event, submit_edit_event, submit_delete_event } from "./calendar/calendar_ajax_functions";
+import { matcher, ordinal_suffix_of, precisionRound } from "./calendar/calendar_functions";
+
 export default () => ({
 
     open: false,
@@ -2420,7 +2423,19 @@ export default () => ({
 
         this.worker_event_tester.onmessage = e => {
             if (e.data.callback) {
-                update_loading_bar(e.data.percentage, e.data.message);
+                percentage = precisionRound(percentage, 3);
+
+                if (progress == percentage) {
+                    return;
+                }
+
+                loading_bar.set(percentage);
+
+                progress = percentage;
+
+                if (message) {
+                    $('#loading_information_text').text(message).removeClass("hidden");
+                }
             } else {
 
                 event_editor_ui.event_testing.occurrences = e.data.occurrences;

@@ -1,4 +1,5 @@
 import RandomCalendar from './random-calendar.js';
+import { get_preset_data } from './calendar/calendar_ajax_functions.js';
 
 export default () => ({
 

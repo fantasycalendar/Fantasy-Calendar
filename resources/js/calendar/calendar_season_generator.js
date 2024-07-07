@@ -1,3 +1,16 @@
+import {
+    fahrenheit_to_celcius,
+    celcius_to_fahrenheit,
+    pick_from_table,
+    random,
+    precisionRound,
+    clamp,
+    lerp,
+    fract,
+    mid,
+    norm,
+} from "./calendar_functions";
+
 class Climate{
 
 	constructor(

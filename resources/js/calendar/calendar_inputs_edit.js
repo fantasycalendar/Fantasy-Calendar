@@ -1,4 +1,33 @@
-import { error_message } from "./header";
+import { error_message, evaluate_background_size } from "./header";
+import {
+    update_name,
+    update_dynamic,
+    update_all,
+    link_child_calendar,
+    unlink_child_calendar,
+    get_calendar_users,
+    add_calendar_user,
+    update_calendar_user,
+    remove_calendar_user,
+    resend_calendar_invite,
+    get_owned_calendars,
+    delete_calendar,
+    create_calendar,
+} from "./calendar_ajax_functions";
+import {
+    escapeHtml,
+    unescapeHtml,
+    get_colors_for_season,
+    fahrenheit_to_celcius,
+    celcius_to_fahrenheit,
+    debounce,
+    ordinal_suffix_of,
+    precisionRound,
+    lerp,
+    fract,
+    get_moon_granularity,
+    get_current_era,
+} from "./calendar_functions";
 
 function set_up_edit_inputs(){
 
@@ -2358,7 +2387,7 @@ function set_up_edit_inputs(){
 
 		$(this).prop('disabled', true);
 
-		let valid_email = validateEmail(email);
+        let valid_email = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email);
 
 		$('#email_input').toggleClass('invalid', !valid_email);
 
@@ -2541,7 +2570,7 @@ function set_up_edit_inputs(){
 
 			changes_applied = false;
 
-			hide_changes_button();
+            $('#reload_background').addClass('hidden').css('display', 'none');
 			evaluate_save_button(true);
 
 			if(!preview_date.follow){
@@ -4341,7 +4370,11 @@ var do_error_check = debounce(function(type, rebuild){
 
 		text.push(`<img class="w-100" src='/resources/calendar_create.svg'>`);
 
-		creation_message(text.join(''));
+        $('#modal_text').empty().append(message);
+        $('#modal_background').removeClass().addClass('flexible_background transparent').css('display', 'flex');
+        $('#modal').removeClass().addClass('creation');
+
+        evaluate_background_size();
 
 		$('#generator_container').removeClass();
 		$('#generator_container').addClass('step-'+(creation.current_step));
@@ -4354,7 +4387,7 @@ var do_error_check = debounce(function(type, rebuild){
 
 		if(errors.length == 0 && $('.static_input.invalid').length == 0 && $('.dynamic_input.invalid').length == 0){
 
-			close_message_modal();
+            $('#modal_background').removeClass().addClass('flexible_background').css('display', 'none');
 
 			error_check(type, rebuild);
 			recalc_stats();

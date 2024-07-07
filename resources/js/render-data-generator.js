@@ -1,3 +1,5 @@
+import { ordinal_suffix_of } from "./calendar/calendar_functions";
+
 export default {
 
 	get_weather_icon: function(epoch) {

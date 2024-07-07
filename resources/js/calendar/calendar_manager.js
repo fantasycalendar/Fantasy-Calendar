@@ -1,4 +1,5 @@
 import { error_message } from "./header";
+import { execution_time } from "./calendar_functions";
 
 var utcDate1 = Date.now();
 
@@ -101,9 +102,9 @@ function eval_apply_changes(output){
 	}else if(!apply_changes_immediately.is(':checked')){
 		if(!changes_applied){
 			evaluate_save_button();
-			show_changes_button();
+            $('#reload_background').removeClass('hidden').css('display', 'flex');
 		}else{
-			hide_changes_button();
+            $('#reload_background').addClass('hidden').css('display', 'none');
 			evaluate_save_button(true);
 			output();
 		}

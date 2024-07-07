@@ -1,3 +1,5 @@
+import { do_update_all } from "./calendar/calendar_ajax_functions";
+
 export default () => ({
 
     open: false,

@@ -1,37 +1,4 @@
-function update_date(new_date){
-
-	if(dynamic_data.year != new_date.year){
-		dynamic_data.day = new_date.day;
-		dynamic_data.timespan = new_date.timespan;
-		dynamic_data.year = new_date.year;
-		rebuild_calendar('calendar', dynamic_data);
-		update_current_day(true);
-	}else if(dynamic_data.timespan != new_date.timespan){
-		if(static_data.settings.show_current_month){
-			rebuild_calendar('calendar', dynamic_data);
-			update_current_day(true);
-		}else{
-			dynamic_data.day = new_date.day;
-			dynamic_data.timespan = new_date.timespan;
-			update_current_day(true);
-		}
-	}else if(dynamic_data.day != new_date.day){
-		dynamic_data.epoch += (new_date.day-dynamic_data.day);
-		dynamic_data.day = new_date.day;
-		update_current_day(false);
-	}else{
-		dynamic_data.day = new_date.day;
-		dynamic_data.timespan = new_date.timespan;
-		dynamic_data.year = new_date.year;
-	}
-}
-
-function validateEmail(email) {
-	const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-	return re.test(email);
-}
-
-function getUrlParameter(sParam) {
+export function getUrlParameter(sParam) {
 	var sPageURL = decodeURIComponent(window.location.search.substring(1)),
 		sURLVariables = sPageURL.split('&'),
 		sParameterName,
@@ -46,7 +13,7 @@ function getUrlParameter(sParam) {
 	}
 };
 
-function update_name(){
+export function update_name(){
 	$.ajax({
 		url:window.baseurl+"calendars/"+hash,
 		type: "post",
@@ -67,7 +34,7 @@ function update_name(){
 	});
 }
 
-function update_view_dynamic(calendar_hash){
+export function update_view_dynamic(calendar_hash){
 
 	$.ajax({
 		url:window.baseurl+"calendars/"+calendar_hash,
@@ -88,7 +55,7 @@ function update_view_dynamic(calendar_hash){
 }
 
 
-function update_dynamic(calendar_hash, callback){
+export function update_dynamic(calendar_hash, callback){
 
 	$.ajax({
 		url:window.baseurl+"calendars/"+calendar_hash,
@@ -121,7 +88,7 @@ function update_dynamic(calendar_hash, callback){
 
 }
 
-function update_all(){
+export function update_all(){
 
 	check_last_change(hash, function(output){
 
@@ -142,7 +109,7 @@ function update_all(){
 	});
 }
 
-function do_update_all(calendar_hash, success_callback, failure_callback){
+export function do_update_all(calendar_hash, success_callback, failure_callback){
 
 	$.ajax({
 		url:window.baseurl+"calendars/"+calendar_hash,
@@ -202,7 +169,7 @@ function do_update_all(calendar_hash, success_callback, failure_callback){
 	});
 }
 
-function get_all_data(calendar_hash, output){
+export function get_all_data(calendar_hash, output){
 
 	$.ajax({
 		url:window.apiurl+"/calendar/"+calendar_hash,
@@ -221,7 +188,7 @@ function get_all_data(calendar_hash, output){
 	});
 }
 
-function get_dynamic_data(calendar_hash, output){
+export function get_dynamic_data(calendar_hash, output){
 
 	$.ajax({
 		url:window.apiurl+"/calendar/"+calendar_hash+"/dynamic_data",
@@ -243,7 +210,7 @@ function get_dynamic_data(calendar_hash, output){
 
 }
 
-function link_child_calendar(child_hash, parent_link_date, parent_offset){
+export function link_child_calendar(child_hash, parent_link_date, parent_offset){
 
 	show_loading_screen();
 
@@ -269,7 +236,7 @@ $.ajax({
 });
 }
 
-function unlink_child_calendar(output, child_hash){
+export function unlink_child_calendar(output, child_hash){
 
 	show_loading_screen();
 
@@ -297,7 +264,7 @@ function unlink_child_calendar(output, child_hash){
     });
 }
 
-function get_calendar_users(callback) {
+export function get_calendar_users(callback) {
     $.ajax({
         url: window.apiurl+"/calendar/"+hash+"/users",
         type: "get",
@@ -311,7 +278,7 @@ function get_calendar_users(callback) {
     })
 }
 
-function add_calendar_user(email, output){
+export function add_calendar_user(email, output){
     axios.post(window.apiurl+"/calendar/"+hash+"/inviteUser", {email: email})
         .then(function(result) {
             output(true, `Sent email to ${email}!`);
@@ -321,7 +288,7 @@ function add_calendar_user(email, output){
         });
 }
 
-function update_calendar_user(user_id, permission, output){
+export function update_calendar_user(user_id, permission, output){
 
     axios.post(window.apiurl+"/calendar/"+hash+"/changeUserRole", {user_role: permission, user_id: user_id})
         .then(function(result) {
@@ -332,7 +299,7 @@ function update_calendar_user(user_id, permission, output){
         });
 }
 
-function remove_calendar_user(user_id, remove_all, callback, email = null){
+export function remove_calendar_user(user_id, remove_all, callback, email = null){
 
     let userdata = {user_id: user_id, remove_all: remove_all};
     if(email) {
@@ -350,7 +317,7 @@ function remove_calendar_user(user_id, remove_all, callback, email = null){
         });
 }
 
-function resend_calendar_invite(email, output){
+export function resend_calendar_invite(email, output){
 
     axios.post(window.apiurl+"/calendar/"+hash+"/resend_invite", {email: email})
         .then(function(result){
@@ -364,7 +331,7 @@ function resend_calendar_invite(email, output){
         });
 }
 
-async function submit_new_event(event_id, callback){
+export async function submit_new_event(event_id, callback){
 
 	var new_event = clone(events[event_id]);
 	new_event.calendar_id = calendar_id;
@@ -395,7 +362,7 @@ async function submit_new_event(event_id, callback){
     });
 }
 
-function submit_hide_show_event(event_id){
+export function submit_hide_show_event(event_id){
 
 	var edit_event = clone(events[event_id]);
 	edit_event.calendar_id = calendar_id;
@@ -420,7 +387,7 @@ function submit_hide_show_event(event_id){
     });
 }
 
-function submit_edit_event(event_id, callback){
+export function submit_edit_event(event_id, callback){
 
 	var edit_event = clone(events[event_id]);
 	edit_event.calendar_id = calendar_id;
@@ -440,7 +407,7 @@ function submit_edit_event(event_id, callback){
     });
 }
 
-function submit_delete_event(event_id, callback){
+export function submit_delete_event(event_id, callback){
 
 	$.ajax({
 		url:window.apiurl+"/event/"+event_id,
@@ -466,23 +433,7 @@ function submit_delete_event(event_id, callback){
 
 }
 
-
-function get_event_comments(event_id, callback){
-	$.ajax({
-		url: window.apiurl+"/eventcomment/event/"+event_id,
-		type: "get",
-		dataType: "json",
-		success: function ( result ) {
-			callback(result['data']);
-		},
-		error: function ( result ) {
-			callback(false);
-		}
-	});
-
-}
-
-function submit_new_comment(content, event_id, callback) {
+export function submit_new_comment(content, event_id, callback) {
 
     axios.post(window.apiurl+"/eventcomment", {
         calendar_id: calendar_id,
@@ -504,32 +455,7 @@ function submit_new_comment(content, event_id, callback) {
         });
 }
 
-function submit_edit_comment(comment_id, content, callback){
-
-    axios.patch(window.apiurl+"/eventcomment/"+comment_id, {
-		content: content
-	})
-        .then(function (result){
-            if(result.data.success && result.data != "") {
-                $.notify(
-					"Comment edited.",
-					"success"
-                );
-				callback();
-            } else if(result.data == ""){
-                $.notify(
-                    "Error editing comment."
-                );
-            } else {
-				$.notify(
-					result.data.message
-				);
-            }
-		});
-
-}
-
-function submit_delete_comment(comment_id, callback){
+export function submit_delete_comment(comment_id, callback){
 
     axios.delete(window.apiurl+"/eventcomment/"+comment_id)
         .then(function (result){
@@ -549,7 +475,7 @@ function submit_delete_comment(comment_id, callback){
 }
 
 
-function get_owned_calendars(output){
+export function get_owned_calendars(output){
 	$.ajax({
 		url:window.apiurl+"/calendar/"+hash+"/owned",
 		type: "get",
@@ -567,7 +493,7 @@ function get_owned_calendars(output){
 	});
 }
 
-function check_last_change(calendar_hash, output){
+export function check_last_change(calendar_hash, output){
 	$.ajax({
 		url:window.apiurl+"/calendar/"+calendar_hash+"/last_changed",
 		type: "post",
@@ -585,7 +511,7 @@ function check_last_change(calendar_hash, output){
 	});
 }
 
-function delete_calendar(calendar_hash, calendar_name, callback){
+export function delete_calendar(calendar_hash, calendar_name, callback){
 
     swal.fire({
         text: "If you're sure about deleting this calendar, please type '" + calendar_name + "' below:",
@@ -632,65 +558,7 @@ function delete_calendar(calendar_hash, calendar_name, callback){
 
 }
 
-function copy_calendar(calendar_hash, calendar_name, callback){
-
-    swal.fire({
-        text: "What would you like to call your new copy of '" + calendar_name + "'?",
-        input: "text",
-		inputPlaceholder: calendar_name + " (clone)",
-		showCancelButton: true,
-		confirmButtonText: 'Clone',
-    })
-        .then(result => {
-
-        	if(result.dismiss || result.value === false) throw null;
-
-        	var name = result.value;
-
-            let new_calendar_name = "";
-
-            if (!name) {
-                new_calendar_name = calendar_name  + " (clone)";
-            } else {
-                new_calendar_name = name;
-            }
-
-            return axios({
-                method: 'post',
-                url: window.apiurl + '/calendar/' + calendar_hash + "/clone",
-                data: {
-                    new_calendar_name: new_calendar_name
-                }
-            });
-        })
-        .then(results => {
-
-            if(results.data.error) {
-                throw "Error: " + results.data.message;
-            }
-
-            swal.fire({
-                icon: "success",
-                title: "Copied!",
-                text: "The calendar " + calendar_name + " has been cloned.",
-                button: true
-            })
-                .then(success => {
-                    callback();
-                })
-        })
-        .catch(err => {
-            if(err) {
-                swal.fire("Oh no!", err, "error");
-            } else {
-                swal.hideLoading();
-                swal.close();
-            }
-        });
-
-}
-
-function create_calendar(callback){
+export function create_calendar(callback){
 
 	$.ajax({
 		url:window.baseurl+"calendars",
@@ -718,7 +586,7 @@ function create_calendar(callback){
 }
 
 
-function get_event_comments(event_id, callback){
+export function get_event_comments(event_id, callback){
 
 	$.ajax({
 		url: window.apiurl+"/eventcomment/event/"+event_id,
@@ -734,29 +602,7 @@ function get_event_comments(event_id, callback){
 
 }
 
-function create_event_comment(content, event_id, callback) {
-
-    axios.post(window.apiurl+"/eventcomment", {
-        calendar_id: calendar_id,
-        content: content,
-        event_id: event_id
-    })
-        .then(function (result){
-            if(result.data.success && result.data != "") {
-                callback(result.data.data.id, result.data.data);
-            } else if(result.data == ""){
-                $.notify(
-                    "Error adding comment."
-                );
-            } else {
-				$.notify(
-					result.data.message
-				);
-            }
-        });
-}
-
-function get_preset_data(preset_id, callback){
+export function get_preset_data(preset_id, callback){
 
 	axios.get(window.apiurl+'/preset/'+preset_id)
 		.then(function (result){

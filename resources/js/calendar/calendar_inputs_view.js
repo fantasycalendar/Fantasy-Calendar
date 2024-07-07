@@ -1,6 +1,8 @@
+import { precisionRound, fract, get_current_era } from "./calendar_functions";
+
 rebuild_type = 'calendar';
 
-function set_up_view_inputs(){
+export function set_up_view_inputs(){
 
 	/* if(just_converted && !JSON.parse(localStorage.getItem('hide_welcome_back'))){
 
@@ -335,7 +337,7 @@ function set_up_view_inputs(){
 }
 
 
-function increment_date_units(current){
+export function increment_date_units(current){
 
 	var unit_years = $('#unit_years').val()|0;
 	var unit_months = $('#unit_months').val()|0;
@@ -410,7 +412,7 @@ function increment_date_units(current){
 
 }
 
-function evaluate_dynamic_change(){
+export function evaluate_dynamic_change(){
 
 	if(dynamic_date_manager.adjusted_year != current_year.val()|0){
 		current_year.change()
@@ -467,7 +469,7 @@ function evaluate_dynamic_change(){
 
 }
 
-function repopulate_location_select_list(){
+export function repopulate_location_select_list(){
 
 	if(!creation.is_done()){
 		return;
@@ -515,7 +517,7 @@ function repopulate_location_select_list(){
 
 }
 
-function set_up_view_values(){
+export function set_up_view_values(){
 
 	dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
