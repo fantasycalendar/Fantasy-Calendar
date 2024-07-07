@@ -50,6 +50,7 @@ import {
     repopulate_event_category_lists,
     repopulate_timespan_select,
     repopulate_day_select,
+    eval_clock,
 } from "./calendar_inputs_visitor";
 import { evaluate_dynamic_change, repopulate_location_select_list, set_up_view_values } from "./calendar_inputs_view";
 import { pre_rebuild_calendar, rebuild_calendar, rebuild_climate } from "./calendar_manager";

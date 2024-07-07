@@ -2,7 +2,7 @@ import { error_message } from "./header";
 import { execution_time } from "./calendar_functions";
 import { climate_charts } from "./calendar_weather_layout";
 import { Climate } from "./calendar_season_generator";
-import { eval_current_time } from "./calendar_inputs_visitor";
+import { eval_current_time, eval_clock } from "./calendar_inputs_visitor";
 import { changes_applied, evaluate_save_button } from "./calendar_inputs_edit";
 
 var utcDate1 = Date.now();
@@ -122,17 +122,17 @@ export function pre_rebuild_calendar(action, dynamic_data) {
 async function testCalendarAccuracy(fromYear = -100, toYear = 100) {
     execution_time.start();
 
-    calendar_data_generator.static_data = window.static_data;
-    calendar_data_generator.dynamic_data = dynamic_data;
-    calendar_data_generator.owner = Perms.player_at_least('co-owner');
-    calendar_data_generator.events = events;
-    calendar_data_generator.event_categories = event_categories;
+    window.calendar_data_generator.static_data = window.static_data;
+    window.calendar_data_generator.dynamic_data = dynamic_data;
+    window.calendar_data_generator.owner = Perms.player_at_least('co-owner');
+    window.calendar_data_generator.events = events;
+    window.calendar_data_generator.event_categories = event_categories;
 
-    let currentYear = calendar_data_generator.dynamic_data.year;
+    let currentYear = window.calendar_data_generator.dynamic_data.year;
 
-    calendar_data_generator.dynamic_data.year = fromYear;
+    window.calendar_data_generator.dynamic_data.year = fromYear;
 
-    let result = await calendar_data_generator.run();
+    let result = await window.calendar_data_generator.run();
 
     let lastYearEndEpoch = result.year_data.end_epoch;
 
@@ -141,12 +141,12 @@ async function testCalendarAccuracy(fromYear = -100, toYear = 100) {
     fromYear++;
     for (let year = fromYear; year < toYear; year++) {
 
-        calendar_data_generator.dynamic_data.year = year;
+        window.calendar_data_generator.dynamic_data.year = year;
         if (!year_zero_exists && year === 0) {
             continue;
         }
 
-        let result = await calendar_data_generator.run();
+        let result = await window.calendar_data_generator.run();
 
         let thisYearStartEpoch = result.year_data.start_epoch;
 
@@ -179,30 +179,30 @@ async function testCalendarAccuracy(fromYear = -100, toYear = 100) {
 async function testSeasonAccuracy(fromYear = -1000, toYear = 1000) {
     if (window.static_data.seasons.data.length === 0) return;
 
-    calendar_data_generator.static_data = window.static_data;
-    calendar_data_generator.dynamic_data = dynamic_data;
-    calendar_data_generator.owner = Perms.player_at_least('co-owner');
-    calendar_data_generator.events = events;
-    calendar_data_generator.event_categories = event_categories;
+    window.calendar_data_generator.static_data = window.static_data;
+    window.calendar_data_generator.dynamic_data = dynamic_data;
+    window.calendar_data_generator.owner = Perms.player_at_least('co-owner');
+    window.calendar_data_generator.events = events;
+    window.calendar_data_generator.event_categories = event_categories;
 
-    let originalYear = calendar_data_generator.dynamic_data.year;
+    let originalYear = window.calendar_data_generator.dynamic_data.year;
 
-    calendar_data_generator.dynamic_data.year = fromYear;
+    window.calendar_data_generator.dynamic_data.year = fromYear;
 
-    let result = await calendar_data_generator.run();
+    let result = await window.calendar_data_generator.run();
 
     let previous_year_end_season_day = result.epoch_data[result.year_data.end_epoch].season.season_day;
 
     for (let year = fromYear; year < toYear; year++) {
 
-        calendar_data_generator.dynamic_data.year++;
-        if (!window.static_data.settings.year_zero_exists && calendar_data_generator.dynamic_data.year === 0) {
-            calendar_data_generator.dynamic_data.year++;
+        window.calendar_data_generator.dynamic_data.year++;
+        if (!window.static_data.settings.year_zero_exists && window.calendar_data_generator.dynamic_data.year === 0) {
+            window.calendar_data_generator.dynamic_data.year++;
         }
 
-        console.log(`Testing year ${calendar_data_generator.dynamic_data.year}...`)
+        console.log(`Testing year ${window.calendar_data_generator.dynamic_data.year}...`)
 
-        let result = await calendar_data_generator.run();
+        let result = await window.calendar_data_generator.run();
 
         let start_epoch = result.year_data.start_epoch;
         let end_epoch = result.year_data.end_epoch;
@@ -210,7 +210,7 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000) {
         let current_year_start_season_day = result.epoch_data[start_epoch].season.season_day;
 
         if (previous_year_end_season_day + 1 !== current_year_start_season_day && current_year_start_season_day !== 1) {
-            console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Start/End Fail. Expected ${previous_year_end_season_day + 1}, got ${current_year_start_season_day}!`);
+            console.error(`YEAR ${window.calendar_data_generator.dynamic_data.year} FAILED! Start/End Fail. Expected ${previous_year_end_season_day + 1}, got ${current_year_start_season_day}!`);
             dynamic_data.year = originalYear;
             return;
         }
@@ -222,7 +222,7 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000) {
             let season_day = result.epoch_data[epoch].season.season_day;
 
             if (prev_season_day + 1 !== season_day && season_day !== 1) {
-                console.error(`YEAR ${calendar_data_generator.dynamic_data.year} FAILED! Inner year failed. Expected ${prev_season_day + 1}, got ${season_day}!`)
+                console.error(`YEAR ${window.calendar_data_generator.dynamic_data.year} FAILED! Inner year failed. Expected ${prev_season_day + 1}, got ${season_day}!`)
                 dynamic_data.year = originalYear;
                 return;
             }
@@ -243,15 +243,15 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000) {
 export var evaluated_static_data = {};
 
 export async function rebuild_calendar(action, dynamic_data) {
-    calendar_data_generator.static_data = window.static_data;
-    calendar_data_generator.dynamic_data = dynamic_data;
-    calendar_data_generator.owner = Perms.player_at_least('co-owner');
-    calendar_data_generator.events = events;
-    calendar_data_generator.event_categories = event_categories;
+    window.calendar_data_generator.static_data = window.static_data;
+    window.calendar_data_generator.dynamic_data = dynamic_data;
+    window.calendar_data_generator.owner = Perms.player_at_least('co-owner');
+    window.calendar_data_generator.events = events;
+    window.calendar_data_generator.event_categories = event_categories;
 
     execution_time.start();
 
-    calendar_data_generator.run().then(result => {
+    window.calendar_data_generator.run().then(result => {
 
         evaluated_static_data = result;
 
@@ -310,7 +310,7 @@ export async function rebuild_climate() {
 
 export function rerender_calendar(processed_data) { if (processed_data === undefined) processed_data = evaluated_static_data;
 
-    RenderDataGenerator.create_render_data(processed_data).then((result) => {
+    window.render_data_generator.create_render_data(processed_data).then((result) => {
         window.dispatchEvent(new CustomEvent('render-data-change', { detail: result }));
     }).catch((err) => {
         $.notify(err);

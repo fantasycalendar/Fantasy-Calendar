@@ -9,6 +9,7 @@ import {
     eval_current_time,
     repopulate_timespan_select,
     repopulate_day_select,
+    eval_clock,
 } from "./calendar_inputs_visitor";
 
 import {

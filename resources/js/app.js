@@ -11,6 +11,12 @@ import $default, { jQuery, $ } from "jquery";
 window.$ = $;
 window.jQuery = jQuery;
 
+window.$.notify = (name, detail = {}) => {
+    window.dispatchEvent(new CustomEvent('notify', {
+        detail
+    }));
+}
+
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
@@ -146,7 +152,7 @@ window.get_all_data = get_all_data;
 window.get_dynamic_data = get_dynamic_data;
 window.check_last_change = check_last_change;
 
- import { debounce, date_manager, valid_preview_date, convert_year } from './calendar/calendar_functions.js';
+import { debounce, date_manager, valid_preview_date, convert_year } from './calendar/calendar_functions.js';
 window.debounce = debounce;
 window.date_manager = date_manager;
 window.valid_preview_date = valid_preview_date;
@@ -164,6 +170,7 @@ import {
     evaluate_settings,
     repopulate_timespan_select,
     repopulate_day_select,
+    eval_clock,
 } from './calendar/calendar_inputs_visitor.js';
 window.set_up_visitor_values = set_up_visitor_values;
 window.refresh_preview_inputs = refresh_preview_inputs;
@@ -173,6 +180,7 @@ window.update_current_day = update_current_day;
 window.evaluate_settings = evaluate_settings;
 window.repopulate_timespan_select = repopulate_timespan_select;
 window.repopulate_day_select = repopulate_day_select;
+window.eval_clock = eval_clock;
 
 import { set_up_view_values } from './calendar/calendar_inputs_view.js';
 window.set_up_view_values = set_up_view_values;
@@ -200,6 +208,12 @@ import { bind_calendar_events, rebuild_calendar, rerender_calendar } from './cal
 window.bind_calendar_events = bind_calendar_events;
 window.rebuild_calendar = rebuild_calendar;
 window.rerender_calendar = rerender_calendar;
+
+import { calendar_data_generator } from './calendar/calendar_workers.js';
+window.calendar_data_generator = calendar_data_generator;
+
+import { render_data_generator } from './render-data-generator.js';
+window.render_data_generator = render_data_generator;
 
 import Alpine from 'alpinejs'
 import CalendarPresets from './calendar-presets.js';

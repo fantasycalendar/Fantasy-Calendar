@@ -3,8 +3,7 @@ import { moon_phases } from "./calendar/calendar_variables";
 import { get_category } from "./calendar/calendar_inputs_edit";
 import { event_evaluator } from "./calendar/calendar_workers";
 
-export default {
-
+export var render_data_generator = {
 	get_weather_icon: function(epoch) {
         let epoch_data = this.epoch_data[epoch];
         let weather = epoch_data.weather;
