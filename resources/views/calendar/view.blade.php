@@ -62,10 +62,10 @@
 
                 if(valid_preview_date(year, timespan, day) || window.Perms.player_at_least('co-owner')){
 
-                    if(year === 0 && !static_data.settings.year_zero_exists){
+                    if(year === 0 && !window.static_data.settings.year_zero_exists){
                         return false;
                     }
-                    preview_date_manager.year = convert_year(static_data, year);
+                    preview_date_manager.year = convert_year(window.static_data, year);
 
                     if(timespan < 0 || timespan > preview_date_manager.last_timespan){
                         return false;
@@ -115,7 +115,7 @@
                                 throw result.message;
                             }
 
-                            static_data = clone(result.static_data);
+                            window.static_data = clone(result.static_data);
                             dynamic_data = clone(result.dynamic_data);
 
                             check_update(true);
@@ -179,7 +179,7 @@
 
             display_preview_back_button();
 
-            if(rebuild || ((data.rebuild || static_data.settings.only_reveal_today) && preview_date.follow)){
+            if(rebuild || ((data.rebuild || window.static_data.settings.only_reveal_today) && preview_date.follow)){
                 rebuild_calendar('calendar', dynamic_data);
                 set_up_visitor_values();
             }else{

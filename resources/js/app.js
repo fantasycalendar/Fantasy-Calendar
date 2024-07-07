@@ -7,7 +7,9 @@
 import _ from 'lodash';
 window._ = _;
 
-import $ from 'jquery';
+import $default, { jQuery, $ } from "jquery";
+window.$ = $;
+window.jQuery = jQuery;
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
@@ -95,7 +97,7 @@ window.sanitizeHtml = sanitizeHtml;
  * menus without providing actual markup, as $.contextMenu generates DOMElements as needed.
  */
 
-import 'jquery-contextmenu';
+await import('jquery-contextmenu');
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
@@ -133,7 +135,8 @@ window.Perms = Perms;
 import IntervalsCollection from "./fantasycalendar/Collections/IntervalsCollection.js";
 window.IntervalsCollection = IntervalsCollection;
 
-import { header_initialize } from './calendar/header.js';
+import { header_initialize, toggle_sidebar } from './calendar/header.js';
+window.toggle_sidebar = toggle_sidebar;
 window.header_initialize = header_initialize;
 
 import { update_dynamic, update_view_dynamic, get_all_data, get_dynamic_data, check_last_change } from './calendar/calendar_ajax_functions.js';
@@ -222,8 +225,6 @@ import { precisionRound } from './calendar/calendar_functions.js';
 Alpine.data('MainApp', () => ({
     init: function() {
         this.$nextTick(() => {
-            console.log("here");
-
             window.onerror = (error, url, line) => {
                 this.notify("Error:\n " + error + " \nin file " + url + " \non line " + line);
             }
@@ -392,7 +393,7 @@ Alpine.data('calendar_weather', () => ({
                 let epoch_data = calendar_weather.epoch_data[epoch];
                 if (epoch_data.leap_day !== undefined) {
                     let index = epoch_data.leap_day;
-                    leap_day = static_data.year_data.leap_days[index];
+                    leap_day = window.static_data.year_data.leap_days[index];
                     if (leap_day.show_text) {
                         this.day_container.text(leap_day.name);
                     }
@@ -416,7 +417,7 @@ Alpine.data('calendar_weather', () => ({
                 this.weather_clouds.parent().toggleClass('hidden', false);
                 this.weather_feature.parent().toggleClass('hidden', false);
 
-                if (static_data.seasons.global_settings.cinematic) {
+                if (window.static_data.seasons.global_settings.cinematic) {
                     this.weather_temp_desc.parent().css('display', '');
                 } else {
                     this.weather_temp_desc.parent().css('display', 'none');
@@ -426,10 +427,10 @@ Alpine.data('calendar_weather', () => ({
 
                 var desc = weather.temperature.cinematic;
 
-                var temp_sys = static_data.seasons.global_settings.temp_sys;
+                var temp_sys = window.static_data.seasons.global_settings.temp_sys;
 
                 var temp = "";
-                if (!static_data.settings.hide_weather_temp || Perms.player_at_least('co-owner')) {
+                if (!window.static_data.settings.hide_weather_temp || Perms.player_at_least('co-owner')) {
                     if (temp_sys == 'imperial') {
                         temp_symbol = '°F';
                         var temp = `${precisionRound(weather.temperature[temp_sys].value[0], 1).toString() + temp_symbol} to ${precisionRound(weather.temperature[temp_sys].value[1], 1).toString() + temp_symbol}`;
@@ -442,21 +443,21 @@ Alpine.data('calendar_weather', () => ({
                         var temp = `${temp_f}${temp_c}`;
                     }
                 }
-                this.weather_temp.toggleClass('newline', (temp_sys == 'both_i' || temp_sys == 'both_m') && (!static_data.settings.hide_weather_temp || Perms.player_at_least('co-owner')));
+                this.weather_temp.toggleClass('newline', (temp_sys == 'both_i' || temp_sys == 'both_m') && (!window.static_data.settings.hide_weather_temp || Perms.player_at_least('co-owner')));
 
 
-                var wind_sys = static_data.seasons.global_settings.wind_sys;
+                var wind_sys = window.static_data.seasons.global_settings.wind_sys;
 
                 var wind_text = ""
                 if (wind_sys == 'both') {
                     wind_text = `${weather.wind_speed} (${weather.wind_direction})`;
-                    if (!static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')) {
+                    if (!window.static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')) {
                         wind_text += `<span class='newline'>(${weather.wind_velocity.imperial} MPH | ${weather.wind_velocity.metric} KPH | ${weather.wind_velocity.knots} KN)</span>`;
                     }
                 } else {
                     var wind_symbol = wind_sys == "imperial" ? "MPH" : "KPH";
                     wind_text = `${weather.wind_speed} (${weather.wind_direction})`
-                    if (!static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')) {
+                    if (!window.static_data.settings.hide_wind_velocity || Perms.player_at_least('co-owner')) {
                         wind_text += `<span class='newline'>(${weather.wind_velocity[wind_sys]} ${wind_symbol} | ${weather.wind_velocity.knots} KN)</span>`;
                     }
                 }
@@ -467,7 +468,7 @@ Alpine.data('calendar_weather', () => ({
 
                 this.weather_temp.each(function() {
                     $(this).html(temp);
-                }).parent().toggleClass('hidden', static_data.settings.hide_weather_temp !== undefined && static_data.settings.hide_weather_temp && !Perms.player_at_least('co-owner'));
+                }).parent().toggleClass('hidden', window.static_data.settings.hide_weather_temp !== undefined && static_data.settings.hide_weather_temp && !Perms.player_at_least('co-owner'));
 
                 this.weather_wind.each(function() {
                     $(this).html(wind_text);

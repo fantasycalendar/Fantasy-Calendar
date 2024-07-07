@@ -307,7 +307,7 @@ export default () => ({
             // this.description_input.trumbowyg('html', this.working_event.description);
         }
 
-        let category_id = static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
+        let category_id = window.static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
 
         if (category_id !== -1) {
             let category = get_category(category_id);
@@ -809,11 +809,11 @@ export default () => ({
 
     set_up_moon_data() {
 
-        if(!static_data.moons.length) return;
+        if(!window.static_data.moons.length) return;
 
         this.moons = [];
-        for (let index in static_data.moons) {
-            let moon = clone(static_data.moons[index])
+        for (let index in window.static_data.moons) {
+            let moon = clone(window.static_data.moons[index])
             moon.index = index;
             moon.hidden = false;
             moon.shadow_color = moon.shadow_color ? moon.shadow_color : "#292b4a";
@@ -968,13 +968,13 @@ export default () => ({
 
         this.moon_presets = [];
 
-        if(!static_data.moons.length) return;
+        if(!window.static_data.moons.length) return;
 
         let moon_phase_collection = ''
 
-        for (let moon_index in static_data.moons) {
+        for (let moon_index in window.static_data.moons) {
 
-            let moon = static_data.moons[moon_index];
+            let moon = window.static_data.moons[moon_index];
 
             const moonName = sanitizeHtml(moon.name);
 
@@ -1285,9 +1285,9 @@ export default () => ({
 
             case 'multimoon_every':
                 result = [];
-                for (let i = 0; i < static_data.moons.length; i++) {
+                for (let i = 0; i < window.static_data.moons.length; i++) {
                     result.push(['Moons', '0', [i, this.epoch_data.moon_phase[i]]])
-                    if (i !== static_data.moons.length - 1) {
+                    if (i !== window.static_data.moons.length - 1) {
                         result.push(['&&']);
                     }
                 }
@@ -1620,9 +1620,9 @@ export default () => ({
 
                     html.push("<select class='form-control order-1'>")
 
-                    for (let i = 0; i < static_data.year_data.timespans.length; i++) {
+                    for (let i = 0; i < window.static_data.year_data.timespans.length; i++) {
                         html.push(`<option value='${i}'>`);
-                        html.push(sanitizeHtml(static_data.year_data.timespans[i].name));
+                        html.push(sanitizeHtml(window.static_data.year_data.timespans[i].name));
                         html.push("</option>");
                     }
 
@@ -1717,7 +1717,7 @@ export default () => ({
 
                     html.push("<select class='form-control'>")
 
-                    let phases = Object.keys(moon_phases[static_data.moons[selected_moon].granularity]);
+                    let phases = Object.keys(moon_phases[window.static_data.moons[selected_moon].granularity]);
 
                     for (let i = 0; i < phases.length; i++) {
                         html.push(`<option value='${i}'>`);
@@ -1761,11 +1761,11 @@ export default () => ({
 
             html.push("<select class='form-control order-1'>")
 
-            for (let i = 0; i < static_data.cycles.data.length; i++) {
+            for (let i = 0; i < window.static_data.cycles.data.length; i++) {
                 html.push(`<optgroup label='${ordinal_suffix_of(i + 1)} cycle group' value='${i}'>`);
-                for (let j = 0; j < static_data.cycles.data[i].names.length; j++) {
+                for (let j = 0; j < window.static_data.cycles.data[i].names.length; j++) {
                     html.push(`<option value='${j}'>`);
-                    html.push(`Cycle ${i + 1}: ${sanitizeHtml(static_data.cycles.data[i].names[j])}`);
+                    html.push(`Cycle ${i + 1}: ${sanitizeHtml(window.static_data.cycles.data[i].names[j])}`);
                     html.push("</option>");
                 }
                 html.push("</optgroup>");
@@ -1779,9 +1779,9 @@ export default () => ({
 
             html.push("<select class='form-control order-1'>");
 
-            for (let i = 0; i < static_data.eras.length; i++) {
+            for (let i = 0; i < window.static_data.eras.length; i++) {
                 html.push(`<option value='${i}'>`);
-                html.push(sanitizeHtml(static_data.eras[i].name));
+                html.push(sanitizeHtml(window.static_data.eras[i].name));
                 html.push("</option>");
             }
 
@@ -1802,9 +1802,9 @@ export default () => ({
 
                 if (type === "select") {
                     html.push("<select class='form-control order-1'>")
-                    for (let i = 0; i < static_data.seasons.data.length; i++) {
+                    for (let i = 0; i < window.static_data.seasons.data.length; i++) {
                         html.push(`<option value='${i}'>`);
-                        html.push(sanitizeHtml(static_data.seasons.data[i].name));
+                        html.push(sanitizeHtml(window.static_data.seasons.data[i].name));
                         html.push("</option>");
                     }
 
@@ -1857,22 +1857,22 @@ export default () => ({
 
                     let weekdays = [];
 
-                    for (let i = 0; i < static_data.year_data.global_week.length; i++) {
+                    for (let i = 0; i < window.static_data.year_data.global_week.length; i++) {
 
-                        if (weekdays.indexOf(static_data.year_data.global_week[i]) === -1) {
-                            weekdays.push(static_data.year_data.global_week[i]);
+                        if (weekdays.indexOf(window.static_data.year_data.global_week[i]) === -1) {
+                            weekdays.push(window.static_data.year_data.global_week[i]);
                         }
 
                     }
 
-                    for (let i = 0; i < static_data.year_data.timespans.length; i++) {
+                    for (let i = 0; i < window.static_data.year_data.timespans.length; i++) {
 
-                        if (static_data.year_data.timespans[i].week) {
+                        if (window.static_data.year_data.timespans[i].week) {
 
-                            for (let j = 0; j < static_data.year_data.timespans[i].week.length; j++) {
+                            for (let j = 0; j < window.static_data.year_data.timespans[i].week.length; j++) {
 
-                                if (weekdays.indexOf(static_data.year_data.timespans[i].week[j]) === -1) {
-                                    weekdays.push(static_data.year_data.timespans[i].week[j]);
+                                if (weekdays.indexOf(window.static_data.year_data.timespans[i].week[j]) === -1) {
+                                    weekdays.push(window.static_data.year_data.timespans[i].week[j]);
                                 }
                             }
                         }
@@ -1921,9 +1921,9 @@ export default () => ({
 
             html.push("<select class='form-control'>")
 
-            for (let locationId in static_data.seasons.locations) {
+            for (let locationId in window.static_data.seasons.locations) {
 
-                let location = static_data.seasons.locations[locationId]
+                let location = window.static_data.seasons.locations[locationId]
 
                 html.push(`<option value="${locationId}">`);
                 html.push(sanitizeHtml(location.name));
@@ -2097,9 +2097,9 @@ export default () => ({
         html.push(`<div class='condition_container ${type}'>`);
         html.push("<div class='handle icon-reorder'></div>");
         html.push("<select class='form-control moon_select'>");
-        for (let i = 0; i < static_data.moons.length; i++) {
+        for (let i = 0; i < window.static_data.moons.length; i++) {
             html.push(`<option value='${i}'>`);
-            html.push(sanitizeHtml(static_data.moons[i].name));
+            html.push(sanitizeHtml(window.static_data.moons[i].name));
             html.push("</option>");
         }
         html.push("</select>");
@@ -2110,23 +2110,23 @@ export default () => ({
         for (let i = 0; i < keys.length; i++) {
 
             if (
-                (keys[i] === "Era year" && static_data.eras === undefined)
+                (keys[i] === "Era year" && window.static_data.eras === undefined)
                     ||
-                    (keys[i] === "Era" && static_data.eras === undefined)
+                    (keys[i] === "Era" && window.static_data.eras === undefined)
                     ||
-                    (keys[i] === "Month" && static_data.year_data.timespans === undefined)
+                    (keys[i] === "Month" && window.static_data.year_data.timespans === undefined)
                     ||
-                    (keys[i] === "Weekday" && static_data.year_data.global_week === undefined)
+                    (keys[i] === "Weekday" && window.static_data.year_data.global_week === undefined)
                     ||
-                    (keys[i] === "Moons" && static_data.moons === undefined)
+                    (keys[i] === "Moons" && window.static_data.moons === undefined)
                     ||
-                    (keys[i] === "Cycle" && static_data.cycles === undefined)
+                    (keys[i] === "Cycle" && window.static_data.cycles === undefined)
                     ||
                     (keys[i] === "Events" && events.length <= 1)
                     ||
-                    (keys[i] === "Season" && static_data.seasons.data.length < 1)
+                    (keys[i] === "Season" && window.static_data.seasons.data.length < 1)
                     ||
-                    (keys[i] === "Location" && static_data.seasons.locations.length < 1)
+                    (keys[i] === "Location" && window.static_data.seasons.locations.length < 1)
             ) {
                 continue;
             }
@@ -2410,7 +2410,7 @@ export default () => ({
 
         this.worker_event_tester.postMessage(JSON.parse(JSON.stringify({
             calendar_name: calendar_name,
-            static_data: static_data,
+            static_data: window.static_data,
             dynamic_data: preview_date,
             events: events,
             event_categories: event_categories,
@@ -2492,7 +2492,7 @@ export default () => ({
 
             let year = occurrence.year;
             let timespan = occurrence.timespan;
-            let timespan_name = sanitizeHtml(static_data.year_data.timespans[occurrence.timespan].name);
+            let timespan_name = sanitizeHtml(window.static_data.year_data.timespans[occurrence.timespan].name);
             let day = occurrence.day;
             let intercalary = occurrence.intercalary;
 

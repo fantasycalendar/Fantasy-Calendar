@@ -122,7 +122,7 @@ export function pre_rebuild_calendar(action, dynamic_data) {
 async function testCalendarAccuracy(fromYear = -100, toYear = 100) {
     execution_time.start();
 
-    calendar_data_generator.static_data = static_data;
+    calendar_data_generator.static_data = window.static_data;
     calendar_data_generator.dynamic_data = dynamic_data;
     calendar_data_generator.owner = Perms.player_at_least('co-owner');
     calendar_data_generator.events = events;
@@ -136,7 +136,7 @@ async function testCalendarAccuracy(fromYear = -100, toYear = 100) {
 
     let lastYearEndEpoch = result.year_data.end_epoch;
 
-    let year_zero_exists = static_data.settings.year_zero_exists;
+    let year_zero_exists = window.static_data.settings.year_zero_exists;
 
     fromYear++;
     for (let year = fromYear; year < toYear; year++) {
@@ -177,9 +177,9 @@ async function testCalendarAccuracy(fromYear = -100, toYear = 100) {
 }
 
 async function testSeasonAccuracy(fromYear = -1000, toYear = 1000) {
-    if (static_data.seasons.data.length === 0) return;
+    if (window.static_data.seasons.data.length === 0) return;
 
-    calendar_data_generator.static_data = static_data;
+    calendar_data_generator.static_data = window.static_data;
     calendar_data_generator.dynamic_data = dynamic_data;
     calendar_data_generator.owner = Perms.player_at_least('co-owner');
     calendar_data_generator.events = events;
@@ -196,7 +196,7 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000) {
     for (let year = fromYear; year < toYear; year++) {
 
         calendar_data_generator.dynamic_data.year++;
-        if (!static_data.settings.year_zero_exists && calendar_data_generator.dynamic_data.year === 0) {
+        if (!window.static_data.settings.year_zero_exists && calendar_data_generator.dynamic_data.year === 0) {
             calendar_data_generator.dynamic_data.year++;
         }
 
@@ -243,7 +243,7 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000) {
 export var evaluated_static_data = {};
 
 export async function rebuild_calendar(action, dynamic_data) {
-    calendar_data_generator.static_data = static_data;
+    calendar_data_generator.static_data = window.static_data;
     calendar_data_generator.dynamic_data = dynamic_data;
     calendar_data_generator.owner = Perms.player_at_least('co-owner');
     calendar_data_generator.events = events;
@@ -280,7 +280,7 @@ export async function rebuild_calendar(action, dynamic_data) {
 export async function rebuild_climate() {
     let climate_generator = new Climate(
         evaluated_static_data.epoch_data,
-        static_data,
+        window.static_data,
         dynamic_data,
         dynamic_data.year,
         evaluated_static_data.year_data.start_epoch,

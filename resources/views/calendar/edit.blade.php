@@ -2,7 +2,7 @@
 
 @push('head')
     <script>
-        const generatorData = () => {
+        function generatorData() {
             return {
                 init: () => {
                     @include('calendar._loadcalendar')
@@ -109,7 +109,7 @@
 
             display_preview_back_button();
 
-            if(rebuild || ((data.rebuild || static_data.settings.only_reveal_today) && preview_date.follow)){
+            if(rebuild || ((data.rebuild || window.static_data.settings.only_reveal_today) && preview_date.follow)){
                 rebuild_calendar('calendar', dynamic_data);
                 set_up_visitor_values();
             }else{

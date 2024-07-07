@@ -41,20 +41,20 @@ window.advancement = {
 window.dispatchEvent(
     new CustomEvent('calendar-loaded', {
         detail: {
-            hash,
-            calendar_name,
-            calendar_id,
-            static_data,
-            dynamic_data,
-            is_linked,
-            has_parent,
-            parent_hash,
-            parent_offset,
-            events,
-            event_categories,
-            last_static_change,
-            last_dynamic_change,
-            advancement
+            window.hash,
+            window.calendar_name,
+            window.calendar_id,
+            window.static_data,
+            window.dynamic_data,
+            window.is_linked,
+            window.has_parent,
+            window.parent_hash,
+            window.parent_offset,
+            window.events,
+            window.event_categories,
+            window.last_static_change,
+            window.last_dynamic_change,
+            window.advancement
         }
     })
 )

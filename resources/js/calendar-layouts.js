@@ -28,7 +28,7 @@ export default () => ({
 
         if(evaluate_save_button()){
             this.open = true;
-            this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() === static_data.settings.layout);
+            this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() === window.static_data.settings.layout);
         }else{
             $('#btn_layouts').notify(
                 "Please save your calendar before applying a preset.",
@@ -39,13 +39,13 @@ export default () => ({
 
     apply_layout: function(layout){
         show_loading_screen();
-        let previous_layout = static_data.settings.layout;
-        static_data.settings.layout = layout.name.toLowerCase();
+        let previous_layout = window.static_data.settings.layout;
+        window.static_data.settings.layout = layout.name.toLowerCase();
         do_update_all(hash, function(){
             window.onbeforeunload = function () {}
             window.location.reload(false);
         }, function(){
-                static_data.settings.layout = previous_layout;
+                window.static_data.settings.layout = previous_layout;
                 hide_loading_screen();
             });
     }

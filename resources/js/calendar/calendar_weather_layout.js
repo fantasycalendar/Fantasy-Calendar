@@ -82,7 +82,7 @@ export var climate_charts = {
 			removeData(this.day_length_chart);
 		}
 
-		if(!static_data.clock.enabled){
+		if(!window.static_data.clock.enabled){
 			this.day_length.addClass('hidden');
 			return;
 		}
@@ -160,7 +160,7 @@ export var climate_charts = {
 							label: function(item, data) {
 								var datasetLabel = data.datasets[item.datasetIndex].label || "";
 								var dataPoint = item.yLabel;
-								return datasetLabel + ": " + time_data_to_string(static_data, dataPoint);
+								return datasetLabel + ": " + time_data_to_string(window.static_data, dataPoint);
 							}
 						}
 					},
@@ -179,7 +179,7 @@ export var climate_charts = {
 						}],
 						yAxes: [{
 							ticks: {
-								suggestedMax: static_data.clock.hours-1,
+								suggestedMax: window.static_data.clock.hours-1,
 								callback: function(value, index, values) {
 									return value+":00";//time_data_to_string(static_data, dataPoint);
 								}
@@ -243,7 +243,7 @@ export var climate_charts = {
 		var precipitation = [[], [], []];
 		var labels = [];
 
-		var temp_sys = static_data.seasons.global_settings.temp_sys;
+		var temp_sys = window.static_data.seasons.global_settings.temp_sys;
 		if(temp_sys === "both_i"){
 			var temp_sys = "imperial";
 		}else if(temp_sys === "both_m"){

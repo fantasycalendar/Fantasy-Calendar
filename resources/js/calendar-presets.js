@@ -164,11 +164,11 @@ export default () => ({
                             prev_dynamic_data = {}
                             prev_static_data = {}
                             calendar_name = clone(calendar.name);
-                            static_data = clone(calendar.static_data);
+                            window.static_data = clone(calendar.static_data);
                             dynamic_data = clone(calendar.dynamic_data);
                             event_categories = clone(calendar.event_categories);
                             events = clone(calendar.events);
-                            dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+                            dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
                             empty_edit_values();
                             set_up_edit_values();
                             set_up_view_values();
@@ -204,7 +204,7 @@ export default () => ({
                         if (result.value) {
 
                             calendar_name = "Random Calendar";
-                            static_data = RandomCalendar.randomize(static_data);
+                            window.static_data = RandomCalendar.randomize(static_data);
                             dynamic_data = {
                                 "year": 1,
                                 "timespan": 0,
@@ -256,7 +256,7 @@ export default () => ({
     apply_preset: function(data) {
 
         calendar_name = data.name;
-        static_data = data.static_data;
+        window.static_data = data.static_data;
         dynamic_data = data.dynamic_data;
         events = data.events;
         event_categories = data.categories;
@@ -270,7 +270,7 @@ export default () => ({
             dynamic_data.minute = current_date.getMinutes();
         }
 
-        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+        dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 
         preview_date = clone(dynamic_data);
 

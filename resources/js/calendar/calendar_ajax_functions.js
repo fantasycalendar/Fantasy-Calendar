@@ -119,7 +119,7 @@ export function do_update_all(calendar_hash, success_callback, failure_callback)
         data: {
             _method: 'PATCH',
             dynamic_data: JSON.stringify(dynamic_data),
-            static_data: JSON.stringify(static_data),
+            static_data: JSON.stringify(window.static_data),
             events: JSON.stringify(events),
             event_categories: JSON.stringify(event_categories),
             advancement: JSON.stringify(advancement)
@@ -132,7 +132,7 @@ export function do_update_all(calendar_hash, success_callback, failure_callback)
             }
 
             if (!static_same) {
-                prev_static_data = clone(static_data);
+                prev_static_data = clone(window.static_data);
             }
 
             if (!dynamic_same) {
@@ -560,7 +560,7 @@ export function create_calendar(callback) {
         data: {
             name: calendar_name,
             dynamic_data: JSON.stringify(dynamic_data),
-            static_data: JSON.stringify(static_data),
+            static_data: JSON.stringify(window.static_data),
             events: JSON.stringify(events),
             event_categories: JSON.stringify(event_categories)
         },

@@ -29,7 +29,7 @@ export default () => ({
 
         this.era_id = $event.detail.era_id;
 
-        this.description = static_data.eras[this.era_id].description ? static_data.eras[this.era_id].description : "";
+        this.description = window.static_data.eras[this.era_id].description ? static_data.eras[this.era_id].description : "";
 
         // this.html_input.trumbowyg("html", this.description);
 
@@ -39,7 +39,7 @@ export default () => ({
 
     save_html: function(){
 
-        static_data.eras[this.era_id].description = 'this.html_input.trumbowyg("html")';
+        window.static_data.eras[this.era_id].description = 'this.html_input.trumbowyg("html")';
 
         this.close()
 

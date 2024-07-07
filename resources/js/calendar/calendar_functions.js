@@ -197,12 +197,12 @@ function is_roman_numeral(string) {
 export function get_calendar_data(data) {
     data = data.split('.')
     if (data[0] !== "") {
-        var current_calendar_data = static_data[data[0]];
+        var current_calendar_data = window.static_data[data[0]];
         for (var i = 1; i < data.length; i++) {
             current_calendar_data = current_calendar_data[data[i]];
         }
     } else {
-        var current_calendar_data = static_data;
+        var current_calendar_data = window.static_data;
     }
     return current_calendar_data;
 }
@@ -415,7 +415,7 @@ export class date_manager {
 
     constructor(year, timespan, day) {
 
-        this._year = convert_year(static_data, year);
+        this._year = convert_year(window.static_data, year);
 
         this._timespan = timespan;
         this._day = day;
@@ -424,13 +424,13 @@ export class date_manager {
         this._max_timespan = false;
         this._max_day = false;
 
-        this.timespans_in_year = get_timespans_in_year(static_data, this.year, true);
+        this.timespans_in_year = get_timespans_in_year(window.static_data, this.year, true);
 
     }
 
     compare(data) {
 
-        var rebuild = data.year != this.adjusted_year || (static_data.settings.show_current_month && data.timespan != this.timespan);
+        var rebuild = data.year != this.adjusted_year || (window.static_data.settings.show_current_month && data.timespan != this.timespan);
 
         return {
             year: this.adjusted_year,
@@ -442,21 +442,21 @@ export class date_manager {
     }
 
     get epoch() {
-        return evaluate_calendar_start(static_data, this.year, this.timespan, this.day).epoch;
+        return evaluate_calendar_start(window.static_data, this.year, this.timespan, this.day).epoch;
     }
 
     update_epoch() {
-        this.epoch = evaluate_calendar_start(static_data, this.year, this.timespan, this.day).epoch;
+        this.epoch = evaluate_calendar_start(window.static_data, this.year, this.timespan, this.day).epoch;
     }
 
     get adjusted_year() {
 
-        return unconvert_year(static_data, this.year);
+        return unconvert_year(window.static_data, this.year);
 
     }
 
     set max_year(year) {
-        this._max_year = convert_year(static_data, year);
+        this._max_year = convert_year(window.static_data, year);
     }
 
     get max_year() {
@@ -517,7 +517,7 @@ export class date_manager {
     get last_valid_year() {
 
         if (this.max_year) {
-            return unconvert_year(static_data, this.max_year);
+            return unconvert_year(window.static_data, this.max_year);
         } else {
             return false;
         }
@@ -554,9 +554,9 @@ export class date_manager {
 
         if (this.year == year || !this.check_max_year(year)) return;
 
-        if (get_timespans_in_year(static_data, year, false).length != 0) {
+        if (get_timespans_in_year(window.static_data, year, false).length != 0) {
             this._year = year;
-            this.timespans_in_year = get_timespans_in_year(static_data, this.year, true);
+            this.timespans_in_year = get_timespans_in_year(window.static_data, this.year, true);
             this.cap_timespan();
         } else {
             if (year < this.year) {
@@ -646,7 +646,7 @@ export class date_manager {
     }
 
     get num_days() {
-        return get_days_in_timespan(static_data, this.year, this.timespan).length;
+        return get_days_in_timespan(window.static_data, this.year, this.timespan).length;
     }
 
     get day() {
@@ -701,11 +701,11 @@ export class date_manager {
 
 export function valid_preview_date(year, timespan, day) {
 
-    if (!static_data.settings.allow_view) {
+    if (!window.static_data.settings.allow_view) {
         return false;
     }
 
-    if (static_data.settings.only_reveal_today) {
+    if (window.static_data.settings.only_reveal_today) {
 
         if (year > dynamic_data.year) {
             return false;
@@ -721,9 +721,9 @@ export function valid_preview_date(year, timespan, day) {
             }
         }
 
-    } else if (static_data.settings.only_backwards) {
+    } else if (window.static_data.settings.only_backwards) {
 
-        if (!static_data.settings.show_current_month && year > dynamic_data.year) {
+        if (!window.static_data.settings.show_current_month && year > dynamic_data.year) {
             return false;
         }
 
