@@ -5,8 +5,6 @@
         const generatorData = () => {
             return {
                 init: () => {
-                    debugger;
-
                     @include('calendar._loadcalendar')
 
                     preview_date = clone(dynamic_data);

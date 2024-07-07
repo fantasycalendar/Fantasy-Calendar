@@ -1,6 +1,6 @@
 import { clone } from "./calendar_functions";
 import { calendar_saved, calendar_save_failed, evaluate_save_button } from "./calendar_inputs_edit";
-import { rerender_calendar } from './calendar/calendar_manager.js';
+import { rerender_calendar } from './calendar_manager.js';
 
 export function getUrlParameter(sParam) {
     var sPageURL = decodeURIComponent(window.location.search.substring(1)),
