@@ -7,7 +7,7 @@
                 init: () => {
                     @include('calendar._loadcalendar')
 
-                    preview_date = clone(dynamic_data);
+                    preview_date = _.cloneDeep(dynamic_data);
                     preview_date.follow = true;
 
                     rebuild_calendar('calendar', dynamic_data);

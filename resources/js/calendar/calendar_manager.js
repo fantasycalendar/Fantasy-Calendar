@@ -3,7 +3,7 @@ import { execution_time } from "./calendar_functions";
 import { climate_charts } from "./calendar_weather_layout";
 import { Climate } from "./calendar_season_generator";
 import { eval_current_time } from "./calendar_inputs_visitor";
-import { evaluate_save_button } from "./calendar_inputs_edit";
+import { changes_applied, evaluate_save_button } from "./calendar_inputs_edit";
 
 var utcDate1 = Date.now();
 

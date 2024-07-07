@@ -2,7 +2,6 @@ import {
     fahrenheit_to_celcius,
     celcius_to_fahrenheit,
     pick_from_table,
-    random,
     precisionRound,
     clamp,
     lerp,
@@ -15,6 +14,7 @@ import {
 } from "./calendar_functions";
 
 import { preset_data } from "./calendar_variables";
+import random from "../random";
 
 export class Climate {
 

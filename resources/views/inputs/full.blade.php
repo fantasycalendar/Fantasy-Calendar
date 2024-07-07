@@ -1406,7 +1406,7 @@
 													event.sort_by = i;
 											}
 
-	                    window.events = clone(this.events);
+	                    window.events = _.cloneDeep(this.events);
 
 	                    rerender_calendar();
 
