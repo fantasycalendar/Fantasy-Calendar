@@ -1282,7 +1282,6 @@ export var event_evaluator = {
         }
 
         function evaluate_event(event_index) {
-
             this.current_event = event_evaluator.events[event_index];
 
             if (!event_evaluator.event_data.valid[event_index]) {
@@ -1358,15 +1357,10 @@ export var event_evaluator = {
                                 epoch += this.current_event.data.limited_repeat_num - 1;
                                 event_evaluator.current_number_of_epochs += this.current_event.data.limited_repeat_num - 1;
                             }
-
                         }
-
                     }
-
                 }
-
             }
-
         }
 
         function add_to_epoch(event, event_index, epoch) {

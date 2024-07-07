@@ -93,8 +93,8 @@ window.Mustache = Mustache;
  */
 
 
-import sanitizeHtml from 'sanitize-html';
-window.sanitizeHtml = sanitizeHtml;
+// import sanitizeHtml from 'sanitize-html';
+// window.sanitizeHtml = sanitizeHtml;
 
 /**
  * $.contextMenu is a management facility for - you guessed it - context menus.
@@ -125,6 +125,15 @@ await import('jquery-contextmenu');
 import tailwindColors from 'tailwindcss/colors';
 window.tailwindColors = tailwindColors;
 
+// DIRTY, TEMPORARY HACK
+// This is *only* here to stop sanitize-html from barfing a bunch of "Module x has been externalized for browser compatibility"
+// to the JS console _during the massive refactor we're doing to vite_.
+//
+// Either put back sanitize-html before merging in this rework or find a better alternative.
+window.sanitizeHtml = function(value) {
+    return value;
+}
+
 /**
  * Convenient and dependency free wrapper for working with arrays and objects.
  */
@@ -136,6 +145,8 @@ window.collect = collectJS.collect;
 import Perms from './perms.js';
 window.Perms = Perms;
 
+import { changes_applied } from './calendar/calendar_inputs_edit.js';
+window.changes_applied = changes_applied;
 
 // Calendar specific modules
 import IntervalsCollection from "./fantasycalendar/Collections/IntervalsCollection.js";

@@ -20,7 +20,6 @@ import {
     evaluate_clock_inputs,
 } from "./calendar_inputs_edit";
 import { pre_rebuild_calendar } from "./calendar_manager";
-import { changes_applied } from "./calendar_inputs_edit";
 
 export function set_up_view_inputs() {
 
@@ -455,7 +454,7 @@ export function evaluate_dynamic_change() {
         apply_changes_immediately = apply_changes_immediately.is(':checked');
     }
 
-    changes_applied = false;
+    window.changes_applied = false;
 
     if (preview_date.follow) {
 

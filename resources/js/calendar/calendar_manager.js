@@ -3,7 +3,8 @@ import { execution_time } from "./calendar_functions";
 import { climate_charts } from "./calendar_weather_layout";
 import { Climate } from "./calendar_season_generator";
 import { eval_current_time, eval_clock } from "./calendar_inputs_visitor";
-import { changes_applied, evaluate_save_button } from "./calendar_inputs_edit";
+import { evaluate_save_button } from "./calendar_inputs_edit";
+import { $ } from 'jquery';
 
 var utcDate1 = Date.now();
 
@@ -99,7 +100,7 @@ export function eval_apply_changes(output) {
     if (apply_changes_immediately.length === 0) {
         output();
     } else if (!apply_changes_immediately.is(':checked')) {
-        if (!changes_applied) {
+        if (!window.changes_applied) {
             evaluate_save_button();
             $('#reload_background').removeClass('hidden').css('display', 'flex');
         } else {
@@ -308,7 +309,10 @@ export async function rebuild_climate() {
     })
 }
 
-export function rerender_calendar(processed_data) { if (processed_data === undefined) processed_data = evaluated_static_data;
+export function rerender_calendar(processed_data) {
+    if (processed_data === undefined) {
+        processed_data = evaluated_static_data
+    };
 
     window.render_data_generator.create_render_data(processed_data).then((result) => {
         window.dispatchEvent(new CustomEvent('render-data-change', { detail: result }));
