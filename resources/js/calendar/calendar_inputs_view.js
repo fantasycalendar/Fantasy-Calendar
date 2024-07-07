@@ -12,6 +12,13 @@ import {
 } from "./calendar_inputs_visitor";
 
 rebuild_type = 'calendar';
+import {
+    creation,
+    do_error_check,
+    evaluate_season_daylength_warning,
+    evaluate_save_button,
+    evaluate_clock_inputs,
+} from "./calendar_inputs_edit";
 
 export function set_up_view_inputs() {
 

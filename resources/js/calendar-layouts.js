@@ -1,4 +1,5 @@
 import { do_update_all } from "./calendar/calendar_ajax_functions";
+import { evaluate_save_button } from "./calendar/calendar_inputs_edit";
 
 export default () => ({
 

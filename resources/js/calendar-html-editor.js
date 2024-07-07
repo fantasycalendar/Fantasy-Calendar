@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import jQuery from 'jquery';
+import { evaluate_save_button } from './calendar/calendar_inputs_edit';
 
 export default () => ({
 

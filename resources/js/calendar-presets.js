@@ -3,6 +3,7 @@ import { get_preset_data } from './calendar/calendar_ajax_functions.js';
 import { convert_year, clone, evaluate_calendar_start } from './calendar/calendar_functions.js';
 import { set_up_visitor_values } from './calendar/calendar_inputs_visitor.js';
 import { set_up_view_values } from './calendar/calendar_inputs_view.js';
+import { do_error_check, evaluate_save_button, set_up_edit_values, empty_edit_values } from './calendar/calendar_inputs_edit.js';
 
 export default () => ({
 

@@ -53,3 +53,22 @@ window.repopulate_day_select = repopulate_day_select;
 
 import { set_up_view_values } from './calendar/calendar_inputs_view.js';
 window.set_up_view_values = set_up_view_values;
+
+import {
+    set_up_edit_inputs,
+    do_error_check,
+    adjustInput,
+    evaluate_save_button,
+    set_up_edit_values,
+    query_autoload,
+    autoload,
+    linked_popup,
+} from './calendar/calendar_inputs_edit.js';
+window.set_up_edit_inputs = set_up_edit_inputs;
+window.do_error_check = do_error_check;
+window.adjustInput = adjustInput;
+window.evaluate_save_button = evaluate_save_button;
+window.set_up_edit_values = set_up_edit_values;
+window.query_autoload = query_autoload;
+window.autoload = autoload;
+window.linked_popup = linked_popup;
