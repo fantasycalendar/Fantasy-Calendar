@@ -4,6 +4,7 @@ import { condition_mapping, moon_phases } from "./calendar/calendar_variables";
 import { repopulate_timespan_select, repopulate_day_select } from "./calendar/calendar_inputs_visitor";
 import { evaluate_save_button, get_category } from "./calendar/calendar_inputs_edit";
 import { eval_apply_changes, evaluated_static_data, rerender_calendar } from "./calendar/calendar_manager";
+import { hide_loading_screen } from "./calendar/header";
 
 export default () => ({
     open: false,
@@ -2432,7 +2433,7 @@ export default () => ({
                     return;
                 }
 
-                loading_bar.set(percentage);
+                window.loading_bar.set(percentage);
 
                 progress = percentage;
 

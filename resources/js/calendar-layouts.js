@@ -1,5 +1,6 @@
 import { do_update_all } from "./calendar/calendar_ajax_functions";
 import { evaluate_save_button } from "./calendar/calendar_inputs_edit";
+import { hide_loading_screen } from "./calendar/header";
 
 export default () => ({
 

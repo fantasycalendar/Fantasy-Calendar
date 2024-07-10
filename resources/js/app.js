@@ -226,6 +226,8 @@ window.calendar_data_generator = calendar_data_generator;
 import { render_data_generator } from './render-data-generator.js';
 window.render_data_generator = render_data_generator;
 
+$(() => header_initialize());
+
 import Alpine from 'alpinejs'
 import CalendarPresets from './calendar-presets.js';
 import CalendarRenderer from './calendar-renderer.js';
@@ -243,7 +245,9 @@ Alpine.data('CalendarLayouts', CalendarLayouts);
 Alpine.data('EventsManager', EventsManager);
 Alpine.data('CalendarEventEditor', CalendarEventEditor);
 Alpine.data('CalendarEventViewer', CalendarEventViewer);
-Alpine.data('CalendarYearHeader', CalendarYearHeader);
+
+window.calendar_year_header = CalendarYearHeader();
+Alpine.data('CalendarYearHeader', window.calendar_year_header);
 
 import { precisionRound } from './calendar/calendar_functions.js';
 
@@ -584,3 +588,4 @@ window.calendar_weather = {
 Alpine.data('calendar_weather', () => (window.calendar_weather));
 
 Alpine.start();
+

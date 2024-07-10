@@ -7,7 +7,7 @@ export function header_initialize() {
 
     evaluate_background_size();
 
-    loading_bar = new ProgressBar.Line('.loading_bar', {
+    window.loading_bar = new ProgressBar.Line('.loading_bar', {
         strokeWidth: 2,
         easing: 'easeInOut',
         color: '#FFEA82',
@@ -144,19 +144,19 @@ var loading_screen_texts = [
 var loading_screen_timer;
 var loading_screen_text_timer;
 
-export function show_loading_screen_buffered(loading_bar, cancel_button_callback) {
+export function show_loading_screen_buffered() {
     loading_screen_timer = setTimeout(function() {
-        show_loading_screen_timed(loading_bar, cancel_button_callback)
+        show_loading_screen_timed()
     }, 100);
 }
 
-export function show_loading_screen_timed(loading_bar, cancel_button_callback) {
+export function show_loading_screen_timed() {
 
     // Prevents infinite loading screen in case the buffered loading screen shows up
     // JUST at the right time to avoid being cleared by hide_loading_screen
     if (loading_screen_timer === undefined) return;
 
-    show_loading_screen(loading_bar, cancel_button_callback);
+    show_loading_screen();
 
 }
 
@@ -167,7 +167,7 @@ export function show_loading_screen(loading_bar, cancel_button_callback, object)
     clearTimeout(loading_screen_text_timer)
     set_loading_screen_text(loading_screen_texts.slice(0));
 
-    if (loading_bar !== undefined) {
+    if (loading_bar ?? window.loading_bar !== undefined) {
         $('.loading_spinner').addClass('hidden');
         $('.loading_bar').removeClass('hidden');
     }
@@ -185,7 +185,7 @@ export function hide_loading_screen() {
     loading_screen_timer = undefined;
     clearTimeout(loading_screen_text_timer);
     loading_screen_text_timer = undefined;
-    loading_bar.set(0)
+    window.loading_bar.set(0)
     $('#loading_background').addClass('hidden');
     $('.loading_spinner').removeClass('hidden');
     $('.loading_bar').addClass('hidden');

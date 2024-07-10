@@ -1,4 +1,6 @@
 import { evaluated_static_data } from "./calendar/calendar_manager";
+import { show_loading_screen_buffered, hide_loading_screen } from "./calendar/header";
+import { execution_time } from "./calendar/calendar_functions";
 
 export default () => ({
 
@@ -75,7 +77,7 @@ export default () => ({
         this.loading_message = "Structuring days...";
         this.render_data.current_epoch = event.detail.current_epoch;
         this.render_data.preview_epoch = event.detail.preview_epoch;
-        CalendarYearHeader.update(
+        window.calendar_year_header.update(
             window.static_data,
             window.dynamic_data,
             preview_date,
@@ -99,7 +101,7 @@ export default () => ({
             this.scroll_to_epoch();
         }
 
-        CalendarYearHeader.update(
+        window.calendar_year_header.update(
             window.static_data,
             window.dynamic_data,
             preview_date,
