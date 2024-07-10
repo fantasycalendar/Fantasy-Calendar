@@ -573,8 +573,8 @@ export var render_data_generator = {
             }
         }
 
-        for(let event_index = 0; event_index < events.length; event_index++) {
-            let event = events[event_index];
+        for(let event_index = 0; event_index < window.events.length; event_index++) {
+            let event = window.events[event_index];
 
             let category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
 
@@ -652,8 +652,8 @@ export var render_data_generator = {
         let evaluated_event_data = event_evaluator.init(
             window.static_data,
             window.dynamic_data,
-            events,
-            event_categories,
+            window.events,
+            window.event_categories,
             this.epoch_data,
             undefined,
             this.processed_data.year_data.start_epoch,

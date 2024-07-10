@@ -29,7 +29,7 @@ export default () => ({
         let event_index = $event.detail.event_id;
 
         if ($event.detail.event_db_id !== undefined) {
-            event_index = events.findIndex((item) => item.id === $event.detail.event_db_id);
+            event_index = window.events.findIndex((item) => item.id === $event.detail.event_db_id);
         }
 
         this.id = event_index;
@@ -39,7 +39,7 @@ export default () => ({
         if(this.era){
             this.data = clone(window.static_data.eras[this.id]);
         }else{
-            this.data = clone(events[this.id]);
+            this.data = clone(window.events[this.id]);
             this.db_id = this.data.id !== undefined ? this.data.id : false;
         }
         if(this.data.description == ""){

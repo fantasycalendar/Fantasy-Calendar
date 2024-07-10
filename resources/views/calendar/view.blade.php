@@ -104,10 +104,10 @@
                     new_dynamic_change = new Date(result.last_dynamic_change)
                     new_static_change = new Date(result.last_static_change)
 
-                    if(new_static_change > last_static_change){
+                    if(new_static_change > window.last_static_change){
 
-                        last_dynamic_change = new_dynamic_change
-                        last_static_change = new_static_change
+                        window.last_dynamic_change = new_dynamic_change
+                        window.last_static_change = new_static_change
 
                         get_all_data(hash, function(result){
 
@@ -125,9 +125,9 @@
 
                         });
 
-                    }else if(new_dynamic_change > last_dynamic_change){
+                    }else if(new_dynamic_change > window.last_dynamic_change){
 
-                        last_dynamic_change = new_dynamic_change
+                        window.last_dynamic_change = new_dynamic_change
 
                         get_dynamic_data(hash, function(result){
 

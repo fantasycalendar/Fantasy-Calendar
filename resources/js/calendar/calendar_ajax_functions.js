@@ -45,7 +45,7 @@ export function update_view_dynamic(calendar_hash) {
         dataType: 'json',
         data: { _method: 'PATCH', dynamic_data: JSON.stringify(window.dynamic_data) },
         success: function(result) {
-            last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
+            window.last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
         },
         error: function(error) {
             $.notify(
@@ -67,12 +67,12 @@ export function update_dynamic(calendar_hash, callback) {
         success: function(result) {
 
             if (!dynamic_same) {
-                prev_dynamic_data = clone(window.dynamic_data);
+                window.prev_dynamic_data = clone(window.dynamic_data);
             }
 
             calendar_saved();
 
-            last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
+            window.last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
 
             if (callback) {
                 callback();
@@ -95,13 +95,13 @@ export function update_all() {
 
         var new_static_change = new Date(output.last_static_change)
 
-        if (last_static_change > new_static_change) {
+        if (window.last_static_change > new_static_change) {
 
             if (!confirm('The calendar was updated before you saved. Do you want to override your last changes?')) {
                 return;
             }
 
-            last_static_change = new_static_change;
+            window.last_static_change = new_static_change;
 
         }
 
@@ -120,39 +120,39 @@ export function do_update_all(calendar_hash, success_callback, failure_callback)
             _method: 'PATCH',
             dynamic_data: JSON.stringify(window.dynamic_data),
             static_data: JSON.stringify(window.static_data),
-            events: JSON.stringify(events),
-            event_categories: JSON.stringify(event_categories),
-            advancement: JSON.stringify(advancement)
+            events: JSON.stringify(window.events),
+            event_categories: JSON.stringify(window.event_categories),
+            advancement: JSON.stringify(window.advancement)
         },
         success: function(result) {
 
             if (!calendar_name_same) {
-                prev_calendar_name = clone(window.calendar_name);
+                window.prev_calendar_name = clone(window.calendar_name);
                 document.title = window.calendar_name + " - Fantasy Calendar";
             }
 
             if (!static_same) {
-                prev_static_data = clone(window.static_data);
+                window.prev_static_data = clone(window.static_data);
             }
 
             if (!dynamic_same) {
-                prev_dynamic_data = clone(window.dynamic_data);
+                window.prev_dynamic_data = clone(window.dynamic_data);
             }
 
             if (!events_same) {
-                prev_events = clone(events);
+                window.prev_events = clone(window.events);
             }
 
             if (!event_categories_same) {
-                prev_event_categories = clone(event_categories);
+                window.prev_event_categories = clone(window.event_categories);
             }
 
             if (!advancement_same) {
-                prev_advancement = clone(advancement);
+                window.prev_advancement = clone(window.advancement);
             }
 
-            last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
-            last_static_change = new Date(result.last_changed.last_static_change)
+            window.last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
+            window.last_static_change = new Date(result.last_changed.last_static_change)
 
             calendar_saved();
 
@@ -329,28 +329,28 @@ export function resend_calendar_invite(email, output) {
 
 export async function submit_new_event(event_id, callback) {
 
-    var new_event = clone(events[event_id]);
-    new_event.calendar_id = calendar_id;
-    new_event.sort_by = Object.keys(events).length;
+    var new_event = clone(window.events[event_id]);
+    new_event.calendar_id = window.calendar_id;
+    new_event.sort_by = Object.keys(window.events).length;
 
     axios.post(window.apiurl + '/event', new_event)
         .then(function(result) {
             if (result.data.data !== undefined) {
-                events[event_id] = result.data.data;
+                window.events[event_id] = result.data.data;
                 $.notify(
                     "Event created.",
                     "success"
                 );
                 callback(true);
             } else {
-                events.pop(); // Discard most recent event
+                window.events.pop(); // Discard most recent event
                 callback(false);
                 $.notify(
                     result.data.message
                 );
             }
         }).catch(function(error) {
-            events.pop(); // Discard most recent event
+            window.events.pop(); // Discard most recent event
             callback(false);
             $.notify(
                 error
@@ -360,14 +360,14 @@ export async function submit_new_event(event_id, callback) {
 
 export function submit_hide_show_event(event_id) {
 
-    var edit_event = clone(events[event_id]);
-    edit_event.calendar_id = calendar_id;
+    var edit_event = clone(window.events[event_id]);
+    edit_event.calendar_id = window.calendar_id;
     edit_event.settings.hide = !edit_event.settings.hide;
 
     axios.patch(window.apiurl + "/event/" + edit_event.id, edit_event)
         .then(function(result) {
             if (result.data.success) {
-                events[event_id].settings.hide = !events[event_id].settings.hide;
+                window.events[event_id].settings.hide = !window.events[event_id].settings.hide;
                 rerender_calendar();
                 evaluate_save_button();
             }
@@ -385,8 +385,8 @@ export function submit_hide_show_event(event_id) {
 
 export function submit_edit_event(event_id, callback) {
 
-    var edit_event = clone(events[event_id]);
-    edit_event.calendar_id = calendar_id;
+    var edit_event = clone(window.events[event_id]);
+    edit_event.calendar_id = window.calendar_id;
 
     axios.patch(window.apiurl + '/event/' + edit_event.id, edit_event)
         .then(function(result) {
@@ -431,7 +431,7 @@ export function submit_delete_event(event_id, callback) {
 export function submit_new_comment(content, event_id, callback) {
 
     axios.post(window.apiurl + "/eventcomment", {
-        calendar_id: calendar_id,
+        calendar_id: window.calendar_id,
         content: content,
         event_id: event_id
     })
@@ -561,8 +561,8 @@ export function create_calendar(callback) {
             name: window.calendar_name,
             dynamic_data: JSON.stringify(window.dynamic_data),
             static_data: JSON.stringify(window.static_data),
-            events: JSON.stringify(events),
-            event_categories: JSON.stringify(event_categories)
+            events: JSON.stringify(window.events),
+            event_categories: JSON.stringify(window.event_categories)
         },
         success: function(result) {
             localStorage.clear();

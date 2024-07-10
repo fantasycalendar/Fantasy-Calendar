@@ -36,6 +36,7 @@ import {
     avg_month_length,
     clone,
     evaluate_calendar_start,
+    get_calendar_data,
 } from "./calendar_functions";
 import { preset_data } from "./calendar_variables";
 import { climate_charts } from "./calendar_weather_layout";
@@ -57,32 +58,58 @@ import { pre_rebuild_calendar, rebuild_calendar, rebuild_climate } from "./calen
 
 export var changes_applied = true;
 
+let save_button = null;
+let log_in_button = null;
+let create_button = null;
+let calendar_container = null;
+let weather_container = null;
+let removing = false;
+
+let input_container = null;
+let timespan_sortable = null;
+let first_day = null;
+let global_week_sortable = null;
+let leap_day_list = null;
+let moon_list = null;
+let periodic_seasons_checkbox = null;
+let season_sortable = null;
+let cycle_sortable = null;
+let era_list = null;
+let event_category_list = null;
+let location_list = null;
+let calendar_link_select = null;
+let calendar_link_list = null;
+let calendar_new_link_list = null;
+
+let previous_view_type = 'owner';
+let view_type = 'owner';
+
 export function set_up_edit_inputs() {
 
-    prev_calendar_name = clone(window.calendar_name);
-    prev_dynamic_data = clone(window.dynamic_data);
-    prev_static_data = clone(window.static_data);
-    prev_events = clone(events);
-    prev_event_categories = clone(event_categories);
-    prev_advancement = clone(advancement);
+    window.prev_calendar_name = clone(window.calendar_name);
+    window.prev_dynamic_data = clone(window.dynamic_data);
+    window.prev_static_data = clone(window.static_data);
+    window.prev_events = clone(window.events);
+    window.prev_event_categories = clone(window.event_categories);
+    window.prev_advancement = clone(window.advancement);
 
-    owned_calendars = {};
+    window.owned_calendars = {};
 
-    calendar_name_same = window.calendar_name == prev_calendar_name;
-    static_same = JSON.stringify(window.static_data) === JSON.stringify(prev_static_data);
-    dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(prev_dynamic_data);
-    events_same = JSON.stringify(events) === JSON.stringify(prev_events);
-    event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
-    advancement_same = JSON.stringify(advancement) === JSON.stringify(advancement);
+    window.calendar_name_same = window.calendar_name == window.prev_calendar_name;
+    window.static_same = JSON.stringify(window.static_data) === JSON.stringify(window.prev_static_data);
+    window.dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(window.prev_dynamic_data);
+    window.events_same = JSON.stringify(window.events) === JSON.stringify(window.prev_events);
+    window.event_categories_same = JSON.stringify(window.event_categories) === JSON.stringify(window.prev_event_categories);
+    window.advancement_same = JSON.stringify(window.advancement) === JSON.stringify(window.advancement);
 
     window.onbeforeunload = function(e) {
 
-        calendar_name_same = window.calendar_name == prev_calendar_name;
-        static_same = JSON.stringify(window.static_data) === JSON.stringify(prev_static_data);
-        dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(prev_dynamic_data);
-        events_same = JSON.stringify(events) === JSON.stringify(prev_events);
-        event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
-        advancement_same = JSON.stringify(advancement) === JSON.stringify(prev_advancement);
+        window.calendar_name_same = window.calendar_name == window.prev_calendar_name;
+        window.static_same = JSON.stringify(window.static_data) === JSON.stringify(window.prev_static_data);
+        window.dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(window.prev_dynamic_data);
+        window.events_same = JSON.stringify(window.events) === JSON.stringify(window.prev_events);
+        window.event_categories_same = JSON.stringify(window.event_categories) === JSON.stringify(window.prev_event_categories);
+        window.advancement_same = JSON.stringify(window.advancement) === JSON.stringify(window.prev_advancement);
 
         var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same && advancement_same;
 
@@ -142,16 +169,13 @@ export function set_up_edit_inputs() {
     save_button.prop('disabled', true);
     create_button.prop('disabled', true);
 
-    delete_button = $('#btn_delete');
-
-    delete_button.click(function() {
+    $('#btn_delete').click(function() {
         delete_calendar(window.hash, window.calendar_name, function() { self.location = '/calendars' });
     });
 
     calendar_container = $('#calendar');
-    weather_contrainer = $('#weather_container');
+    weather_container = $('#weather_container');
 
-    removing = null;
     input_container = $('#input_container');
     timespan_sortable = $('#timespan_sortable');
     first_day = $('#first_day');
@@ -201,7 +225,7 @@ export function set_up_edit_inputs() {
                 }
                 climate_charts.active_view = false;
                 calendar_container.removeClass('hidden');
-                weather_contrainer.addClass('hidden');
+                weather_container.addClass('hidden');
                 CalendarRenderer.scroll_to_last();
                 previous_view_type = view_type;
                 break;
@@ -222,7 +246,7 @@ export function set_up_edit_inputs() {
                 }
                 climate_charts.active_view = false;
                 calendar_container.removeClass('hidden');
-                weather_contrainer.addClass('hidden');
+                weather_container.addClass('hidden');
                 CalendarRenderer.scroll_to_last();
                 previous_view_type = view_type;
                 break;
@@ -234,7 +258,7 @@ export function set_up_edit_inputs() {
                     climate_charts.active_view = true;
                 }
                 calendar_container.addClass('hidden');
-                weather_contrainer.removeClass('hidden');
+                weather_container.removeClass('hidden');
                 break;
 
         }
@@ -245,71 +269,71 @@ export function set_up_edit_inputs() {
 
     });
 
-    global_week_sortable.sortable({
-        placeholder: "highlight",
-        handle: '.handle',
-        opacity: 0.5,
-        update: function() {
-            input_container.change();
-            reindex_weekday_sortable();
-        },
-        start: function(e, ui) {
-            ui.placeholder.height(ui.item.height());
-        }
-    });
+    // global_week_sortable.sortable({
+    //     placeholder: "highlight",
+    //     handle: '.handle',
+    //     opacity: 0.5,
+    //     update: function() {
+    //         input_container.change();
+    //         reindex_weekday_sortable();
+    //     },
+    //     start: function(e, ui) {
+    //         ui.placeholder.height(ui.item.height());
+    //     }
+    // });
 
-    timespan_sortable.sortable({
-        placeholder: "highlight",
-        handle: '.handle',
-        opacity: 0.5,
-        update: function() {
-            input_container.change();
-            reindex_timespan_sortable();
-        },
-        start: function(e, ui) {
-            ui.placeholder.height(ui.item.height());
-        }
-    });
+    // timespan_sortable.sortable({
+    //     placeholder: "highlight",
+    //     handle: '.handle',
+    //     opacity: 0.5,
+    //     update: function() {
+    //         input_container.change();
+    //         reindex_timespan_sortable();
+    //     },
+    //     start: function(e, ui) {
+    //         ui.placeholder.height(ui.item.height());
+    //     }
+    // });
 
-    season_sortable.sortable({
-        placeholder: "highlight",
-        handle: '.handle',
-        opacity: 0.5,
-        update: function() {
-            input_container.change();
-            reindex_season_sortable();
-            do_error_check(season_sortable);
-        },
-        start: function(e, ui) {
-            ui.placeholder.height(ui.item.height());
-        }
-    });
+    // season_sortable.sortable({
+    //     placeholder: "highlight",
+    //     handle: '.handle',
+    //     opacity: 0.5,
+    //     update: function() {
+    //         input_container.change();
+    //         reindex_season_sortable();
+    //         do_error_check(season_sortable);
+    //     },
+    //     start: function(e, ui) {
+    //         ui.placeholder.height(ui.item.height());
+    //     }
+    // });
 
-    cycle_sortable.sortable({
-        placeholder: "highlight",
-        handle: '.handle',
-        opacity: 0.5,
-        update: function() {
-            input_container.change();
-            reindex_cycle_sortable();
-        },
-        start: function(e, ui) {
-            ui.placeholder.height(ui.item.height());
-        }
-    });
+    // cycle_sortable.sortable({
+    //     placeholder: "highlight",
+    //     handle: '.handle',
+    //     opacity: 0.5,
+    //     update: function() {
+    //         input_container.change();
+    //         reindex_cycle_sortable();
+    //     },
+    //     start: function(e, ui) {
+    //         ui.placeholder.height(ui.item.height());
+    //     }
+    // });
 
-    cycle_sortable.sortable({
-        placeholder: "highlight",
-        handle: '.handle',
-        opacity: 0.5,
-        update: function() {
-            input_container.change();
-            reindex_cycle_sortable();
-        },
-        start: function(e, ui) {
-            ui.placeholder.height(ui.item.height());
-        }
-    });
+    // cycle_sortable.sortable({
+    //     placeholder: "highlight",
+    //     handle: '.handle',
+    //     opacity: 0.5,
+    //     update: function() {
+    //         input_container.change();
+    //         reindex_cycle_sortable();
+    //     },
+    //     start: function(e, ui) {
+    //         ui.placeholder.height(ui.item.height());
+    //     }
+    // });
 
     /* ------------------- Dynamic and static callbacks ------------------- */
 
@@ -385,7 +409,7 @@ export function set_up_edit_inputs() {
         window.static_data.year_data.global_week.push(name_val);
         var hidden = !window.static_data.year_data.overflow || window.static_data.year_data.global_week.length == 0;
         $('#first_week_day_container').toggleClass('hidden', hidden).find('select').prop('disabled', hidden);
-        global_week_sortable.sortable('refresh');
+        // global_week_sortable.sortable('refresh');
         reindex_weekday_sortable();
         name.val("");
         set_up_view_values();
@@ -424,7 +448,7 @@ export function set_up_edit_inputs() {
 
         add_timespan_to_sortable(timespan_sortable, id, stats);
         window.static_data.year_data.timespans.push(stats);
-        timespan_sortable.sortable('refresh');
+        // timespan_sortable.sortable('refresh');
         reindex_timespan_sortable();
         name.val("");
         set_up_view_values();
@@ -661,17 +685,17 @@ export function set_up_edit_inputs() {
 
         add_season_to_sortable(season_sortable, id, stats);
 
-        season_sortable.children().last().find('.start_color').spectrum({
-            color: stats.color[0],
-            preferredFormat: "hex",
-            showInput: true
-        });
+        // season_sortable.children().last().find('.start_color').spectrum({
+        //     color: stats.color[0],
+        //     preferredFormat: "hex",
+        //     showInput: true
+        // });
 
-        season_sortable.children().last().find('.end_color').spectrum({
-            color: stats.color[1],
-            preferredFormat: "hex",
-            showInput: true
-        });
+        // season_sortable.children().last().find('.end_color').spectrum({
+        //     color: stats.color[1],
+        //     preferredFormat: "hex",
+        //     showInput: true
+        // });
 
         if (!window.static_data.seasons.global_settings.periodic_seasons) {
 
@@ -681,7 +705,7 @@ export function set_up_edit_inputs() {
 
         }
 
-        season_sortable.sortable('refresh');
+        // season_sortable.sortable('refresh');
         reindex_season_sortable();
         populate_preset_season_list();
         evaluate_season_lengths();
@@ -709,8 +733,8 @@ export function set_up_edit_inputs() {
         new Promise((resolve, reject) => {
 
             let found = false;
-            for (let i in events) {
-                if (['spring equinox', 'summer solstice', 'autumn equinox', 'winter solstice'].indexOf(events[i].name.toLowerCase()) > -1) {
+            for (let i in window.events) {
+                if (['spring equinox', 'summer solstice', 'autumn equinox', 'winter solstice'].indexOf(window.events[i].name.toLowerCase()) > -1) {
                     found = true;
                 }
             }
@@ -773,7 +797,7 @@ export function set_up_edit_inputs() {
                         var season_events = create_season_events(complex);
 
                         for (index in season_events) {
-                            events.push(season_events[index])
+                            window.events.push(season_events[index])
                         }
 
                         window.dispatchEvent(new CustomEvent("events-changed"));
@@ -837,21 +861,21 @@ export function set_up_edit_inputs() {
 
         name.val('');
 
-        location_list.children().last().find('.slider_percentage').slider({
-            min: 0,
-            max: 100,
-            step: 1,
-            change: function(event, ui) {
-                $(this).parent().parent().find('.slider_input').val($(this).slider('value')).change();
-            },
-            slide: function(event, ui) {
-                $(this).parent().parent().find('.slider_input').val($(this).slider('value'));
-            }
-        });
+        // location_list.children().last().find('.slider_percentage').slider({
+        //     min: 0,
+        //     max: 100,
+        //     step: 1,
+        //     change: function(event, ui) {
+        //         $(this).parent().parent().find('.slider_input').val($(this).slider('value')).change();
+        //     },
+        //     slide: function(event, ui) {
+        //         $(this).parent().parent().find('.slider_input').val($(this).slider('value'));
+        //     }
+        // });
 
-        location_list.children().last().find('.slider_percentage').each(function() {
-            $(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
-        });
+        // location_list.children().last().find('.slider_percentage').each(function() {
+        //     $(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
+        // });
 
         location_select.find(`option[value="${id}"]`).prop('selected', true).change();
 
@@ -960,21 +984,21 @@ export function set_up_edit_inputs() {
 
         window.static_data.seasons.locations.push(stats);
 
-        location_list.children().last().find('.slider_percentage').slider({
-            min: 0,
-            max: 100,
-            step: 1,
-            change: function(event, ui) {
-                $(this).parent().parent().find('.slider_input').val($(this).slider('value')).change();
-            },
-            slide: function(event, ui) {
-                $(this).parent().parent().find('.slider_input').val($(this).slider('value'));
-            }
-        });
+        // location_list.children().last().find('.slider_percentage').slider({
+        //     min: 0,
+        //     max: 100,
+        //     step: 1,
+        //     change: function(event, ui) {
+        //         $(this).parent().parent().find('.slider_input').val($(this).slider('value')).change();
+        //     },
+        //     slide: function(event, ui) {
+        //         $(this).parent().parent().find('.slider_input').val($(this).slider('value'));
+        //     }
+        // });
 
-        location_list.children().last().find('.slider_percentage').each(function() {
-            $(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
-        });
+        // location_list.children().last().find('.slider_percentage').each(function() {
+        //     $(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
+        // });
 
         repopulate_location_select_list();
 
@@ -1072,8 +1096,8 @@ export function set_up_edit_inputs() {
             var precipitation = precisionRound(lerp(prev_season.weather.precipitation, next_season.weather.precipitation, perc), 2);
             var precipitation_intensity = precisionRound(lerp(prev_season.weather.precipitation_intensity, next_season.weather.precipitation_intensity, perc), 2);
 
-            current_season.find("input[fc-index='precipitation']").parent().parent().find('.slider_percentage').slider('option', 'value', precipitation * 100);
-            current_season.find("input[fc-index='precipitation_intensity']").parent().parent().find('.slider_percentage').slider('option', 'value', precipitation_intensity * 100);
+            // current_season.find("input[fc-index='precipitation']").parent().parent().find('.slider_percentage').slider('option', 'value', precipitation * 100);
+            // current_season.find("input[fc-index='precipitation_intensity']").parent().parent().find('.slider_percentage').slider('option', 'value', precipitation_intensity * 100);
 
             current_season.find("input[fc-index='temp_high']").val(temp_high)
             current_season.find("input[fc-index='temp_low']").val(temp_low)
@@ -1295,7 +1319,7 @@ export function set_up_edit_inputs() {
 
         var name = $('#event_category_name_input');
 
-        var sort_by = event_categories.length;
+        var sort_by = window.event_categories.length;
 
         var name_val = name.val() == "" ? `Category ${sort_by + 1}` : name.val();
 
@@ -1313,13 +1337,13 @@ export function set_up_edit_inputs() {
                 "hide": false,
                 "print": false
             },
-            "calendar_id": typeof calendar_id != "undefined" ? calendar_id : null,
+            "calendar_id": typeof window.calendar_id != "undefined" ? window.calendar_id : null,
             "id": slug
         };
 
         add_category_to_list(event_category_list, sort_by, stats);
 
-        event_categories[sort_by] = stats;
+        window.event_categories[sort_by] = stats;
 
         repopulate_event_category_lists();
 
@@ -1335,23 +1359,23 @@ export function set_up_edit_inputs() {
 
         let category_index = $(this).closest('.sortable-container').attr('index') | 0;
 
-        event_categories[category_index].name = new_name;
+        window.event_categories[category_index].name = new_name;
 
-        if (isNaN(event_categories[category_index].id)) {
+        if (isNaN(window.event_categories[category_index].id)) {
             let slug = slugify(new_name);
 
-            for (let index in events) {
-                if (events[index].event_category_id == event_categories[category_index].id) {
-                    events[index].event_category_id = slug;
+            for (let index in window.events) {
+                if (window.events[index].event_category_id == window.event_categories[category_index].id) {
+                    window.events[index].event_category_id = slug;
                 }
             }
 
             var default_event_category = window.static_data.settings.default_category !== undefined ? window.static_data.settings.default_category : -1;
-            if (default_event_category == event_categories[category_index].id) {
+            if (default_event_category == window.event_categories[category_index].id) {
                 window.static_data.settings.default_category = slug;
             }
 
-            event_categories[category_index].id = slug;
+            window.event_categories[category_index].id = slug;
         }
 
         repopulate_event_category_lists();
@@ -1417,7 +1441,7 @@ export function set_up_edit_inputs() {
         switch (type) {
             case "timespan_sortable":
                 $(this).closest('.sortable-container').remove();
-                $(this).closest('.sortable-container').parent().sortable('refresh');
+                // $(this).closest('.sortable-container').parent().sortable('refresh');
                 reindex_timespan_sortable();
                 window.dynamic_date_manager.cap_timespan();
                 window.dynamic_data.timespan = window.dynamic_date_manager.timespan;
@@ -1427,13 +1451,13 @@ export function set_up_edit_inputs() {
 
             case "global_week_sortable":
                 $(this).closest('.sortable-container').remove();
-                $(this).closest('.sortable-container').parent().sortable('refresh');
+                // $(this).closest('.sortable-container').parent().sortable('refresh');
                 reindex_weekday_sortable();
                 break;
 
             case "season_sortable":
                 $(this).closest('.sortable-container').remove();
-                $(this).closest('.sortable-container').parent().sortable('refresh');
+                // $(this).closest('.sortable-container').parent().sortable('refresh');
                 type = 'seasons';
                 reindex_season_sortable(index);
                 reindex_location_list();
@@ -1445,39 +1469,39 @@ export function set_up_edit_inputs() {
 
             case "location_list":
                 $(this).closest('.sortable-container').remove();
-                $(this).closest('.sortable-container').parent().sortable('refresh');
+                // $(this).closest('.sortable-container').parent().sortable('refresh');
                 type = 'seasons';
                 reindex_location_list();
                 break;
 
             case "cycle_sortable":
                 $(this).closest('.sortable-container').remove();
-                $(this).closest('.sortable-container').parent().sortable('refresh');
+                // $(this).closest('.sortable-container').parent().sortable('refresh');
                 reindex_cycle_sortable();
                 break;
 
             case "moon_list":
                 $(this).closest('.sortable-container').remove();
-                $(this).closest('.sortable-container').parent().sortable('refresh');
+                // $(this).closest('.sortable-container').parent().sortable('refresh');
                 reindex_moon_list();
                 break;
 
             case "era_list":
                 $(this).closest('.sortable-container').remove();
-                $(this).closest('.sortable-container').parent().sortable('refresh');
+                // $(this).closest('.sortable-container').parent().sortable('refresh');
                 reindex_era_list();
                 window.dynamic_data.current_era = get_current_era(window.static_data, window.dynamic_data.epoch);
                 break;
 
             case "event_category_list":
                 $(this).closest('.sortable-container').remove();
-                $(this).closest('.sortable-container').parent().sortable('refresh');
+                // $(this).closest('.sortable-container').parent().sortable('refresh');
 
-                var category = event_categories[index];
+                var category = window.event_categories[index];
 
-                for (var event in events) {
-                    if (events[event].category == category.id) {
-                        events[event].category = -1;
+                for (var event in window.events) {
+                    if (window.events[event].category == category.id) {
+                        window.events[event].category = -1;
                     }
                 }
 
@@ -1488,7 +1512,7 @@ export function set_up_edit_inputs() {
                 }
 
                 reindex_event_category_list();
-                event_categories = event_categories.filter(function(category) { return category; });
+                window.event_categories = window.event_categories.filter(function(category) { return category; });
                 repopulate_event_category_lists();
 
                 window.dispatchEvent(new CustomEvent("events-changed"));
@@ -1497,7 +1521,7 @@ export function set_up_edit_inputs() {
 
             case "leap_day_list":
                 $(this).closest('.sortable-container').remove();
-                $(this).closest('.sortable-container').parent().sortable('refresh');
+                // $(this).closest('.sortable-container').parent().sortable('refresh');
                 window.static_data.year_data.leap_days.splice(index, 1)
                 window.dynamic_data.epoch = window.dynamic_date_manager.epoch;
                 reindex_leap_day_list();
@@ -1895,8 +1919,8 @@ export function set_up_edit_inputs() {
 
                 window.static_data.seasons.data[i].color = clone(colors[i]);
 
-                $(this).find('.season_color_enabled').find('.start_color').spectrum("set", window.static_data.seasons.data[i].color[0]);
-                $(this).find('.season_color_enabled').find('.end_color').spectrum("set", window.static_data.seasons.data[i].color[1]);
+                // $(this).find('.season_color_enabled').find('.start_color').spectrum("set", window.static_data.seasons.data[i].color[0]);
+                // $(this).find('.season_color_enabled').find('.end_color').spectrum("set", window.static_data.seasons.data[i].color[1]);
 
             } else {
                 delete window.static_data.seasons.data[i].color;
@@ -2310,7 +2334,7 @@ export function set_up_edit_inputs() {
         calendar_new_link_list.empty();
         if ($(this).val() != "None") {
             var calendar_hash = $(this).val();
-            var calendar = owned_calendars[calendar_hash];
+            var calendar = window.owned_calendars[calendar_hash];
             add_link_to_list(calendar_new_link_list, calendar_new_link_list.children().length, false, calendar);
         }
     });
@@ -2381,10 +2405,10 @@ export function set_up_edit_inputs() {
             });
     });
 
-    user_list_opened = false;
+    window.user_list_opened = false;
 
     $('#collapsible_users').change(function() {
-        if (!user_list_opened) {
+        if (!window.user_list_opened) {
             set_up_user_list();
         }
     });
@@ -2662,7 +2686,7 @@ function update_data(e) {
         var type = data.split('.');
 
         if (target.hasClass('category_dynamic_input')) {
-            var current_calendar_data = event_categories[type[0]];
+            var current_calendar_data = window.event_categories[type[0]];
         } else {
             var current_calendar_data = window.static_data[type[0]];
         }
@@ -2726,7 +2750,7 @@ function update_data(e) {
                         break;
 
                     case "color":
-                        var value = target.spectrum("get").toString();
+                        var value = "#00CBFC"; // target.spectrum("get").toString();
                         break;
 
                     default:
@@ -2749,13 +2773,13 @@ function update_data(e) {
 
         if (target.hasClass('category_dynamic_input')) {
             var key = type[0];
-            for (var eventkey in events) {
-                if (events[eventkey].event_category_id == event_categories[key].id) {
-                    events[eventkey].settings.hide_full = event_categories[key].event_settings.hide_full;
-                    events[eventkey].settings.print = event_categories[key].event_settings.print;
-                    events[eventkey].settings.hide = event_categories[key].event_settings.hide;
-                    events[eventkey].settings.color = event_categories[key].event_settings.color;
-                    events[eventkey].settings.text = event_categories[key].event_settings.text;
+            for (var eventkey in window.events) {
+                if (window.events[eventkey].event_category_id == window.event_categories[key].id) {
+                    window.events[eventkey].settings.hide_full = window.event_categories[key].event_settings.hide_full;
+                    window.events[eventkey].settings.print = window.event_categories[key].event_settings.print;
+                    window.events[eventkey].settings.hide = window.event_categories[key].event_settings.hide;
+                    window.events[eventkey].settings.color = window.event_categories[key].event_settings.color;
+                    window.events[eventkey].settings.text = window.event_categories[key].event_settings.text;
                 }
             }
 
@@ -2803,7 +2827,7 @@ function update_data(e) {
                 break;
 
             case "color":
-                var value = target.spectrum("get").toString();
+                var value = "#00CBFC"; // target.spectrum("get").toString();
                 break;
 
             default:
@@ -3865,9 +3889,9 @@ function add_era_to_list(parent, key, data) {
     element.push("<div class='col'>");
     element.push("Event category:");
     element.push(`<select type='text' class='custom-select form-control event-category-list dynamic_input' data='eras.${key}.settings' fc-index='event_category_id'>`);
-    for (var catkey in event_categories) {
-        var name = event_categories[catkey].name;
-        var id = event_categories[catkey].id;
+    for (var catkey in window.event_categories) {
+        var name = window.event_categories[catkey].name;
+        var id = window.event_categories[catkey].id;
         element.push(`<option value="${id}" ${(catkey == data.event_category_id ? "selected" : "")}>${name}</option>`);
     }
     element.push("</select>");
@@ -4734,8 +4758,10 @@ function reindex_season_sortable(key) {
         window.static_data.seasons.data[i] = {
             "name": $(this).find('.name-input').val(),
             "color": [
-                $(this).find('.start_color').spectrum('get', 'hex').toString(),
-                $(this).find('.end_color').spectrum('get', 'hex').toString(),
+                "#00CBFC",
+                "#00CBFC",
+                // $(this).find('.start_color').spectrum('get', 'hex').toString(),
+                // $(this).find('.end_color').spectrum('get', 'hex').toString(),
             ],
             "time": {
                 "sunrise": {
@@ -4997,21 +5023,21 @@ function reindex_location_list() {
         add_location_to_list(location_list, i, window.static_data.seasons.locations[i]);
     }
 
-    $('.slider_percentage').slider({
-        min: 0,
-        max: 100,
-        step: 1,
-        change: function(event, ui) {
-            $(this).parent().parent().find('.slider_input').val($(this).slider('value')).change();
-        },
-        slide: function(event, ui) {
-            $(this).parent().parent().find('.slider_input').val($(this).slider('value'));
-        }
-    });
+    // $('.slider_percentage').slider({
+    //     min: 0,
+    //     max: 100,
+    //     step: 1,
+    //     change: function(event, ui) {
+    //         $(this).parent().parent().find('.slider_input').val($(this).slider('value')).change();
+    //     },
+    //     slide: function(event, ui) {
+    //         $(this).parent().parent().find('.slider_input').val($(this).slider('value'));
+    //     }
+    // });
 
-    $('.slider_percentage').each(function() {
-        $(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
-    });
+    // $('.slider_percentage').each(function() {
+    //     $(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
+    // });
 
     repopulate_location_select_list();
 }
@@ -5056,7 +5082,8 @@ function reindex_moon_list() {
         window.static_data.moons[i] = {
             'name': $(this).find('.name-input').val(),
             'custom_phase': $(this).find('.custom_phase').is(':checked'),
-            'color': $(this).find('.color').spectrum('get', 'hex').toString(),
+            'color': "#00CBFC",
+            // 'color': $(this).find('.color').spectrum('get', 'hex').toString(),
             'hidden': $(this).find('.moon-hidden').is(':checked'),
             'custom_cycle': $(this).find('.custom_cycle').val(),
             'cycle': ($(this).find('.cycle').val() | 0),
@@ -5244,32 +5271,32 @@ function reindex_event_category_list() {
         }
 
 
-        new_order[index] = event_categories[index];
+        new_order[index] = window.event_categories[index];
 
     });
 
-    event_categories = clone(new_order);
+    window.event_categories = clone(new_order);
 
     return;
 }
 
 function recreate_moon_colors() {
-    $('.moon_inputs .color').spectrum({
-        color: "#FFFFFF",
-        preferredFormat: "hex",
-        showInput: true
-    });
+    // $('.moon_inputs .color').spectrum({
+    //     color: "#FFFFFF",
+    //     preferredFormat: "hex",
+    //     showInput: true
+    // });
 
-    $('.moon_inputs .shadow_color').spectrum({
-        color: "#292b4a",
-        preferredFormat: "hex",
-        showInput: true
-    });
+    // $('.moon_inputs .shadow_color').spectrum({
+    //     color: "#292b4a",
+    //     preferredFormat: "hex",
+    //     showInput: true
+    // });
 
-    $('#moon_list').children().each(function(i) {
-        $(this).find('.color').spectrum("set", window.static_data.moons[i].color ? window.static_data.moons[i].color : "#FFFFFF");
-        $(this).find('.shadow_color').spectrum("set", window.static_data.moons[i].shadow_color ? window.static_data.moons[i].shadow_color : "#292b4a");
-    });
+    // $('#moon_list').children().each(function(i) {
+    //     $(this).find('.color').spectrum("set", window.static_data.moons[i].color ? window.static_data.moons[i].color : "#FFFFFF");
+    //     $(this).find('.shadow_color').spectrum("set", window.static_data.moons[i].shadow_color ? window.static_data.moons[i].shadow_color : "#292b4a");
+    // });
 }
 
 function evaluate_season_lengths() {
@@ -5290,9 +5317,9 @@ function evaluate_season_lengths() {
     var season_length = epoch_end - epoch_start;
 
     for (var i = 0; i < window.static_data.seasons.data.length; i++) {
-        current_season = window.static_data.seasons.data[i];
-        data.season_length += current_season.transition_length;
-        data.season_length += current_season.duration;
+        window.current_season = window.static_data.seasons.data[i];
+        data.season_length += window.current_season.transition_length;
+        data.season_length += window.current_season.duration;
     }
 
     data.season_offset = window.static_data.seasons.global_settings.offset;
@@ -5385,12 +5412,12 @@ export function evaluate_save_button(override) {
 
         } else {
 
-            calendar_name_same = window.calendar_name == prev_calendar_name;
-            static_same = JSON.stringify(window.static_data) === JSON.stringify(prev_static_data);
-            dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(prev_dynamic_data);
-            events_same = JSON.stringify(events) === JSON.stringify(prev_events);
-            event_categories_same = JSON.stringify(event_categories) === JSON.stringify(prev_event_categories);
-            advancement_same = JSON.stringify(advancement) === JSON.stringify(prev_advancement);
+            calendar_name_same = window.calendar_name == window.prev_calendar_name;
+            static_same = JSON.stringify(window.static_data) === JSON.stringify(window.prev_static_data);
+            dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(window.prev_dynamic_data);
+            events_same = JSON.stringify(window.events) === JSON.stringify(window.prev_events);
+            event_categories_same = JSON.stringify(window.event_categories) === JSON.stringify(window.prev_event_categories);
+            advancement_same = JSON.stringify(window.advancement) === JSON.stringify(window.prev_advancement);
 
             var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same && advancement_same;
 
@@ -5464,20 +5491,20 @@ export function evaluate_save_button(override) {
 function populate_calendar_lists() {
     get_owned_calendars(function(calendars) {
 
-        owned_calendars = calendars;
+        window.owned_calendars = calendars;
 
         calendar_link_list.html('');
 
-        for (var calendar_hash in owned_calendars) {
+        for (var calendar_hash in window.owned_calendars) {
 
-            var calendar = owned_calendars[calendar_hash];
+            var calendar = window.owned_calendars[calendar_hash];
 
             if (calendar.hash == window.hash) {
 
                 for (var index in calendar.children) {
 
                     var child_hash = calendar.children[index];
-                    var child = owned_calendars[child_hash];
+                    var child = window.owned_calendars[child_hash];
 
                     add_link_to_list(calendar_link_list, index, true, child);
 
@@ -5491,15 +5518,15 @@ function populate_calendar_lists() {
 
         html.push(`<option>None</option>`);
 
-        for (var calendar_hash in owned_calendars) {
+        for (var calendar_hash in window.owned_calendars) {
 
-            var child_calendar = owned_calendars[calendar_hash];
+            var child_calendar = window.owned_calendars[calendar_hash];
 
             if (child_calendar.hash != window.hash) {
 
                 if (child_calendar.parent_hash) {
 
-                    var calendar_owner = clone(owned_calendars[child_calendar.parent_hash]);
+                    var calendar_owner = clone(window.owned_calendars[child_calendar.parent_hash]);
 
                     if (calendar_owner.hash == window.hash) {
                         calendar_owner.name = "this calendar";
@@ -5567,7 +5594,7 @@ export function set_up_edit_values() {
                     break;
 
                 case "color":
-                    $(this).spectrum("set", current_calendar_data[key]);
+                    // $(this).spectrum("set", current_calendar_data[key]);
                     break;
 
                 default:
@@ -5600,14 +5627,14 @@ export function set_up_edit_values() {
 
     populate_first_day_select(window.static_data.year_data.first_day);
     $('#first_week_day_container').toggleClass('hidden', !window.static_data.year_data.overflow || window.static_data.year_data.global_week.length == 0).find('select').prop('disabled', !window.static_data.year_data.overflow || window.static_data.year_data.global_week.length == 0);
-    global_week_sortable.sortable('refresh');
+    // global_week_sortable.sortable('refresh');
 
     if (window.static_data.year_data.timespans.length > 0) {
 
         for (var i = 0; i < window.static_data.year_data.timespans.length; i++) {
             add_timespan_to_sortable(timespan_sortable, i, window.static_data.year_data.timespans[i]);
         }
-        timespan_sortable.sortable('refresh');
+        // timespan_sortable.sortable('refresh');
 
     }
 
@@ -5648,42 +5675,42 @@ export function set_up_edit_values() {
 
         periodic_seasons_checkbox.prop("checked", window.static_data.seasons.global_settings.periodic_seasons);
 
-        $('.slider_percentage').slider({
-            min: 0,
-            max: 100,
-            step: 1,
-            change: function(event, ui) {
-                $(this).parent().parent().find('.slider_input').val($(this).slider('value')).change();
-            },
-            slide: function(event, ui) {
-                $(this).parent().parent().find('.slider_input').val($(this).slider('value'));
-            }
-        });
+        // $('.slider_percentage').slider({
+        //     min: 0,
+        //     max: 100,
+        //     step: 1,
+        //     change: function(event, ui) {
+        //         $(this).parent().parent().find('.slider_input').val($(this).slider('value')).change();
+        //     },
+        //     slide: function(event, ui) {
+        //         $(this).parent().parent().find('.slider_input').val($(this).slider('value'));
+        //     }
+        // });
 
-        $('.slider_percentage').each(function() {
-            $(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
-        });
+        // $('.slider_percentage').each(function() {
+        //     $(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
+        // });
 
-        $('.season .start_color').spectrum({
-            color: "#FFFFFF",
-            preferredFormat: "hex",
-            showInput: true
-        });
+        // $('.season .start_color').spectrum({
+        //     color: "#FFFFFF",
+        //     preferredFormat: "hex",
+        //     showInput: true
+        // });
 
-        $('.season .end_color').spectrum({
-            color: "#FFFFFF",
-            preferredFormat: "hex",
-            showInput: true
-        });
+        // $('.season .end_color').spectrum({
+        //     color: "#FFFFFF",
+        //     preferredFormat: "hex",
+        //     showInput: true
+        // });
 
         if (window.static_data.seasons.global_settings.color_enabled) {
 
-            $('#season_sortable').children().each(function(i) {
+            // $('#season_sortable').children().each(function(i) {
 
-                $(this).find('.start_color').spectrum("set", window.static_data.seasons.data[i].color[0]);
-                $(this).find('.end_color').spectrum("set", window.static_data.seasons.data[i].color[1]);
+            //     $(this).find('.start_color').spectrum("set", window.static_data.seasons.data[i].color[0]);
+            //     $(this).find('.end_color').spectrum("set", window.static_data.seasons.data[i].color[1]);
 
-            });
+            // });
 
         }
 
@@ -5751,9 +5778,9 @@ export function set_up_edit_values() {
         })
     }
 
-    if (event_categories) {
-        for (var key in event_categories) {
-            var category = event_categories[key];
+    if (window.event_categories) {
+        for (var key in window.event_categories) {
+            var category = window.event_categories[key];
             var catkey = (typeof category.sort_by !== "undefined") ? category.sort_by : slugify(category.name);
             add_category_to_list(event_category_list, catkey, category);
         }
@@ -5787,16 +5814,16 @@ export function set_up_edit_values() {
 }
 
 export function get_category(search) {
-    if (event_categories.length == 0) {
+    if (window.event_categories.length == 0) {
         return { id: -1 };
     }
 
     if (isNaN(search)) {
-        var results = event_categories.filter(function(element) {
+        var results = window.event_categories.filter(function(element) {
             return slugify(element.name) == search;
         });
     } else {
-        var results = event_categories.filter(function(element) {
+        var results = window.event_categories.filter(function(element) {
             return element.id == search;
         });
     }
@@ -5830,8 +5857,8 @@ function autosave() {
         calendar_name: window.calendar_name,
         static_data: window.static_data,
         dynamic_data: window.dynamic_data,
-        events: events,
-        event_categories: event_categories
+        events: window.events,
+        event_categories: window.event_categories
     })
 
     localStorage.setItem('autosave', saved_data);
@@ -5873,7 +5900,7 @@ export function autoload(popup) {
     if (saved_data) {
 
         var data = JSON.parse(saved_data);
-        window.prev_calendar_name = {};
+        window.prev_calendar_name = "";
         window.prev_dynamic_data = {};
         window.prev_static_data = {};
         window.prev_events = {};
@@ -6078,7 +6105,7 @@ function set_up_user_list() {
                 add_user_to_list($('#calendar_user_list'), index, user)
             }
 
-            user_list_opened = true;
+            window.user_list_opened = true;
 
         });
     }

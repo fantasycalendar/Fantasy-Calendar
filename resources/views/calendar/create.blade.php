@@ -14,7 +14,7 @@
 
         preset_applied = false;
         calendar_name = '';
-        has_parent = false;
+        window.has_parent = false;
         is_linked = false;
         window.static_data = {
             "year_data":{

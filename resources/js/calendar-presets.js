@@ -161,13 +161,13 @@ export default () => ({
 
                         var calendar = parse_json(result.value);
                         if (calendar.success) {
-                            prev_dynamic_data = {}
-                            prev_static_data = {}
+                            window.prev_dynamic_data = {}
+                            window.prev_static_data = {}
                             window.calendar_name = clone(calendar.name);
                             window.static_data = clone(calendar.static_data);
                             window.dynamic_data = clone(calendar.dynamic_data);
-                            event_categories = clone(calendar.event_categories);
-                            events = clone(calendar.events);
+                            window.event_categories = clone(calendar.event_categories);
+                            window.events = clone(calendar.events);
                             window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
                             empty_edit_values();
                             set_up_edit_values();
@@ -258,8 +258,8 @@ export default () => ({
         window.calendar_name = data.name;
         window.static_data = data.static_data;
         window.dynamic_data = data.dynamic_data;
-        events = data.events;
-        event_categories = data.categories;
+        window.events = data.events;
+        window.event_categories = data.categories;
 
         if (window.calendar_name.indexOf("Gregorian Calendar") > -1) {
             let current_date = new Date();
@@ -274,8 +274,8 @@ export default () => ({
 
         window.preview_date = clone(window.dynamic_data);
 
-        for (var index in events) {
-            var event = events[index];
+        for (var index in window.events) {
+            var event = window.events[index];
             delete event.preset_event_category_id;
             delete event.preset_id;
             delete event.created_at;
@@ -283,8 +283,8 @@ export default () => ({
             delete event.deleted_at;
         }
 
-        for (var index in event_categories) {
-            var category = event_categories[index];
+        for (var index in window.event_categories) {
+            var category = window.event_categories[index];
             category.id = category.label;
             delete category.label;
             delete category.preset_id;

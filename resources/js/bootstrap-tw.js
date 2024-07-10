@@ -53,8 +53,8 @@ window.swal = swal;
  * Sanitize HTML inputs browser-side using sanitize-html!
  */
 
-import sanitizeHtml from 'sanitize-html';
-window.sanitizeHtml = sanitizeHtml;
+// import sanitizeHtml from 'sanitize-html';
+// window.sanitizeHtml = sanitizeHtml;
 
 
 

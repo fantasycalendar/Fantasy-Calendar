@@ -126,8 +126,8 @@ async function testCalendarAccuracy(fromYear = -100, toYear = 100) {
     window.calendar_data_generator.static_data = window.static_data;
     window.calendar_data_generator.dynamic_data = window.dynamic_data;
     window.calendar_data_generator.owner = Perms.player_at_least('co-owner');
-    window.calendar_data_generator.events = events;
-    window.calendar_data_generator.event_categories = event_categories;
+    window.calendar_data_generator.events = window.events;
+    window.calendar_data_generator.event_categories = window.event_categories;
 
     let currentYear = window.calendar_data_generator.dynamic_data.year;
 
@@ -183,8 +183,8 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000) {
     window.calendar_data_generator.static_data = window.static_data;
     window.calendar_data_generator.dynamic_data = window.dynamic_data;
     window.calendar_data_generator.owner = Perms.player_at_least('co-owner');
-    window.calendar_data_generator.events = events;
-    window.calendar_data_generator.event_categories = event_categories;
+    window.calendar_data_generator.events = window.events;
+    window.calendar_data_generator.event_categories = window.event_categories;
 
     let originalYear = window.calendar_data_generator.dynamic_data.year;
 
@@ -247,8 +247,8 @@ export async function rebuild_calendar(action, dynamic_data) {
     window.calendar_data_generator.static_data = window.static_data;
     window.calendar_data_generator.dynamic_data = window.dynamic_data;
     window.calendar_data_generator.owner = Perms.player_at_least('co-owner');
-    window.calendar_data_generator.events = events;
-    window.calendar_data_generator.event_categories = event_categories;
+    window.calendar_data_generator.events = window.events;
+    window.calendar_data_generator.event_categories = window.event_categories;
 
     execution_time.start();
 

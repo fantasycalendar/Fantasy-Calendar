@@ -19,7 +19,7 @@
 
                     bind_calendar_events();
 
-                    if(has_parent){
+                    if(window.has_parent){
 
                         last_mouse_move = Date.now();
                         poll_timer = setTimeout(check_dates, 5000);
@@ -54,9 +54,9 @@
 
                     new_dynamic_change = new Date(result.last_dynamic_change)
 
-                    if(new_dynamic_change > last_dynamic_change){
+                    if(new_dynamic_change > window.last_dynamic_change){
 
-                        last_dynamic_change = new_dynamic_change
+                        window.last_dynamic_change = new_dynamic_change
 
                         get_dynamic_data(hash, function(result){
 

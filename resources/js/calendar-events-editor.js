@@ -244,7 +244,7 @@ export default () => ({
         this.initialize($event);
 
         if($event.detail.event_data === undefined && $event.detail.event_id){
-            $event.detail.event_data = clone(events[$event.detail.event_id]);
+            $event.detail.event_data = clone(window.events[$event.detail.event_id]);
             $event.detail.event_data.name += " (clone)";
         }
 
@@ -258,7 +258,7 @@ export default () => ({
 
         this.set_up_moon_data();
 
-        this.event_id = Object.keys(events).length;
+        this.event_id = Object.keys(window.events).length;
 
         this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
 
@@ -323,7 +323,7 @@ export default () => ({
 
         this.set_up_moon_data();
 
-        this.event_id = Object.keys(events).length;
+        this.event_id = Object.keys(window.events).length;
 
         this.populate_condition_presets();
         this.update_every_nth_presets();
@@ -360,12 +360,12 @@ export default () => ({
         let event_index = $event.detail.event_id;
 
         if ($event.detail.event_db_id !== undefined) {
-            event_index = events.findIndex((item) => item.id === $event.detail.event_db_id);
+            event_index = window.events.findIndex((item) => item.id === $event.detail.event_db_id);
         }
 
         this.event_id = event_index;
 
-        this.working_event = clone(events[this.event_id]);
+        this.working_event = clone(window.events[this.event_id]);
 
         this.set_up_moon_data();
 
@@ -391,13 +391,13 @@ export default () => ({
 
         this.working_event.description = "this.description_input.trumbowyg('html')";
 
-        events[this.event_id] = clone(this.working_event);
+        window.events[this.event_id] = clone(this.working_event);
 
         let not_view_page = window.location.pathname.indexOf('/edit') > -1 || window.location.pathname.indexOf('/calendars/create') > -1;
 
         if (not_view_page) {
             if (!this.new_event) {
-                $(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${sanitizeHtml(events[this.event_id].name)}`);
+                $(`.events_input[index="${this.event_id}"]`).find(".event_name").text(`Edit - ${sanitizeHtml(window.events[this.event_id].name)}`);
             }
 
             this.submit_event_callback(true);
@@ -781,11 +781,11 @@ export default () => ({
 
     event_has_changed() {
 
-        if (events[this.event_id] && this.inputs_changed) {
+        if (window.events[this.event_id] && this.inputs_changed) {
 
-            let event_check = clone(events[this.event_id])
+            let event_check = clone(window.events[this.event_id])
 
-            let eventid = events[this.event_id].id;
+            let eventid = window.events[this.event_id].id;
 
             if (eventid !== undefined) {
                 event_check.id = eventid;
@@ -797,7 +797,7 @@ export default () => ({
 
             event_check.settings = clone(this.working_event.settings)
 
-            return !Object.compare(event_check, events[this.event_id])
+            return !Object.compare(event_check, window.events[this.event_id])
 
         } else {
 
@@ -1937,9 +1937,9 @@ export default () => ({
 
             html.push("<select class='event_select form-control'>")
 
-            for (let eventId = 0; eventId < events.length; eventId++) {
+            for (let eventId = 0; eventId < window.events.length; eventId++) {
 
-                let event = events[eventId];
+                let event = window.events[eventId];
 
                 if (eventId === this.event_id) {
                     html.push(`<option disabled>`);
@@ -2122,7 +2122,7 @@ export default () => ({
                     ||
                     (keys[i] === "Cycle" && window.static_data.cycles === undefined)
                     ||
-                    (keys[i] === "Events" && events.length <= 1)
+                    (keys[i] === "Events" && window.events.length <= 1)
                     ||
                     (keys[i] === "Season" && window.static_data.seasons.data.length < 1)
                     ||
@@ -2228,15 +2228,15 @@ export default () => ({
         let delete_event_id = $event.detail.event_id;
 
         if ($event.detail.event_db_id !== undefined) {
-            delete_event_id = events.findIndex((item) => item.id === $event.detail.event_db_id);
+            delete_event_id = window.events.findIndex((item) => item.id === $event.detail.event_db_id);
         }
 
         let warnings = [];
 
-        for (let eventId = 0; eventId < events.length; eventId++) {
+        for (let eventId = 0; eventId < window.events.length; eventId++) {
             if(eventId === delete_event_id) continue;
-            if (events[eventId].data.connected_events !== undefined) {
-                let connected_events = events[eventId].data.connected_events;
+            if (window.events[eventId].data.connected_events !== undefined) {
+                let connected_events = window.events[eventId].data.connected_events;
                 if (connected_events.includes(String(delete_event_id)) || connected_events.includes(Number(delete_event_id))) {
                     warnings.push(eventId);
                 }
@@ -2247,14 +2247,14 @@ export default () => ({
 
             let html = [];
             html.push(`<div class='text-left'>`)
-            html.push(`<h5>You trying to delete "${events[delete_event_id].name}" which is used in the conditions of the following events:</h5>`)
+            html.push(`<h5>You trying to delete "${window.events[delete_event_id].name}" which is used in the conditions of the following events:</h5>`)
             html.push(`<ul>`);
             for (let i = 0; i < warnings.length; i++) {
                 let warning_event_id = warnings[i];
-                html.push(`<li>${events[warning_event_id].name}</li>`);
+                html.push(`<li>${window.events[warning_event_id].name}</li>`);
             }
             html.push(`</ul>`);
-            html.push(`<p>Please remove the conditions using "${events[delete_event_id].name}" in these events before trying to delete it.</p>`)
+            html.push(`<p>Please remove the conditions using "${window.events[delete_event_id].name}" in these events before trying to delete it.</p>`)
             html.push(`</div>`);
 
             swal.fire({
@@ -2271,7 +2271,7 @@ export default () => ({
             swal.fire({
 
                 title: "Warning!",
-                html: `Are you sure you want to delete the event<br>"${events[delete_event_id].name}"?`,
+                html: `Are you sure you want to delete the event<br>"${window.events[delete_event_id].name}"?`,
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',
@@ -2292,7 +2292,7 @@ export default () => ({
 
                         } else {
 
-                            let event_id = events[delete_event_id].id;
+                            let event_id = window.events[delete_event_id].id;
 
                             submit_delete_event(event_id, () => {
                                 this.delete_event(delete_event_id);
@@ -2310,19 +2310,19 @@ export default () => ({
 
     delete_event(delete_event_id) {
 
-        for (let eventId = 0; eventId < events.length; eventId++) {
-            if (events[eventId].data.connected_events !== undefined) {
-                const connectedEvents = events[eventId].data.connected_events;
+        for (let eventId = 0; eventId < window.events.length; eventId++) {
+            if (window.events[eventId].data.connected_events !== undefined) {
+                const connectedEvents = window.events[eventId].data.connected_events;
                 for (let connectedIndex = 0; connectedIndex < connectedEvents.length; connectedIndex++) {
                     let connectedIdNumber = Number(connectedEvents[connectedIndex])
                     if (connectedIdNumber > delete_event_id) {
-                        events[eventId].data.connected_events[connectedIndex] = connectedIdNumber - 1;
+                        window.events[eventId].data.connected_events[connectedIndex] = connectedIdNumber - 1;
                     }
                 }
             }
         }
 
-        events.splice(delete_event_id, 1);
+        window.events.splice(delete_event_id, 1);
 
         this.close();
 
@@ -2391,15 +2391,15 @@ export default () => ({
 
         if (this.new_event) {
 
-            events[this.event_id] = {}
+            window.events[this.event_id] = {}
 
-            events[this.event_id].data = this.create_event_data();
+            window.events[this.event_id].data = this.create_event_data();
 
         } else {
 
-            this.backup_event_data = clone(events[this.event_id].data);
+            this.backup_event_data = clone(window.events[this.event_id].data);
 
-            events[this.event_id].data = this.create_event_data();
+            window.events[this.event_id].data = this.create_event_data();
 
         }
 
@@ -2411,12 +2411,12 @@ export default () => ({
         this.worker_event_tester.postMessage(JSON.parse(JSON.stringify({
             calendar_name: window.calendar_name,
             static_data: window.static_data,
-            dynamic_data: preview_date,
-            events: events,
-            event_categories: event_categories,
+            dynamic_data: window.preview_date,
+            events: window.events,
+            event_categories: window.event_categories,
             owner: Perms.player_at_least('co-owner'),
-            start_year: start_year,
-            end_year: end_year,
+            start_year: window.start_year,
+            end_year: window.end_year,
             callback: true,
             event_id: this.event_id,
             build_seasons: this.build_seasons
@@ -2449,7 +2449,7 @@ export default () => ({
 
                 if (!event_editor_ui.new_event) {
 
-                    events[event_editor_ui.event_id].data = clone(event_editor_ui.backup_event_data)
+                    window.events[event_editor_ui.event_id].data = clone(event_editor_ui.backup_event_data)
                     event_editor_ui.backup_event_data = {}
 
                 }
@@ -2567,7 +2567,7 @@ export default () => ({
         if (working_event){
             current_event = clone(this.working_event);
         }else{
-            current_event = events[event_id];
+            current_event = window.events[event_id];
         }
         this.checked_events.push(current_event);
 
@@ -2593,16 +2593,16 @@ export default () => ({
 
         this.event_chain_looked_at.push(parent_id);
 
-        if (events[parent_id].data.connected_events !== undefined && events[parent_id].data.connected_events.length > 0) {
+        if (window.events[parent_id].data.connected_events !== undefined && window.events[parent_id].data.connected_events.length > 0) {
 
-            if (events[parent_id].data.connected_events.includes(child)) {
+            if (window.events[parent_id].data.connected_events.includes(child)) {
 
                 return false;
 
             } else {
 
-                for (let id of events[parent_id].data.connected_events) {
-                    if(id === null || !isNaN(id) || child === parent_id || !events[id]) continue;
+                for (let id of window.events[parent_id].data.connected_events) {
+                    if(id === null || !isNaN(id) || child === parent_id || !window.events[id]) continue;
                     if (!this.look_through_event_chain(child, id)) {
                         return false;
                     }

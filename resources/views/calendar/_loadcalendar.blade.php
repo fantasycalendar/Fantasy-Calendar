@@ -19,8 +19,8 @@ window.dynamic_data = @js($calendar->dynamic_data);
 
 window.is_linked = @js($calendar->isLinked() ? "true" : "null");
 window.has_parent = @js($calendar->parent == null ? "null" : "true");
-window.parent_hash = @js($calendar->parent);
-window.parent_offset = @js($calendar->parent);
+window.parent_hash = @js($calendar->parent?->hash);
+window.parent_offset = @js($calendar->parent_offset);
 
 window.events = @js($calendar->events);
 window.event_categories = @js($calendar->event_categories);

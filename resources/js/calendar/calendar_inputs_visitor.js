@@ -795,8 +795,8 @@ export function evaluate_settings() {
     $('.date_control').toggleClass('hidden', (!Perms.player_at_least('co-owner') && !window.static_data.settings.allow_view));
     $('.date_control').find('select, input').not('#current_hour, #current_minute').prop('disabled', !Perms.player_at_least('co-owner') && !window.static_data.settings.allow_view);
 
-    $("#date_inputs :input, #date_inputs :button").prop("disabled", has_parent);
-    $(".calendar_link_explanation").toggleClass("hidden", !has_parent);
+    $("#date_inputs :input, #date_inputs :button").prop("disabled", window.has_parent);
+    $(".calendar_link_explanation").toggleClass("hidden", !window.has_parent);
 
     follower_buttons.toggleClass('hidden', (!Perms.player_at_least('co-owner') && !window.static_data.settings.allow_view));
     follower_year_buttons.prop('disabled', (!Perms.player_at_least('co-owner') && !window.static_data.settings.allow_view)).toggleClass('hidden', (!Perms.player_at_least('co-owner') && !static_data.settings.allow_view));
@@ -896,9 +896,9 @@ export function repopulate_event_category_lists() {
     var html = [];
     html.push("<option selected value='-1'>None</option>")
 
-    for (var categoryId in event_categories) {
+    for (var categoryId in window.event_categories) {
 
-        var category = event_categories[categoryId];
+        var category = window.event_categories[categoryId];
 
         if (!category.category_settings.player_usable && !Perms.player_at_least('co-owner')) continue;
 
