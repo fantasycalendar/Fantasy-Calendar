@@ -1,4 +1,4 @@
-alias npm='docker run -it -u $(id -u):$(id -g) -v "${PWD}/:/app" -w /app node:20 npm'
+alias npm='docker run -it -u $(id -u):$(id -g) -v "${PWD}/:/app" -w /app node:20 npm --legacy-peer-deps'
 alias npx='docker run -it -e AWS_PROFILE=fc -u $(id -u):$(id -g) -v "${PWD}/:/app" -v ~/.aws/:/home/node/.aws -w /app node:20 npx'
 alias node='docker run -it -u $(id -u):$(id -g) -v "${PWD}/:/app" -w /app node:20'
 alias artisan='docker compose exec php php artisan'

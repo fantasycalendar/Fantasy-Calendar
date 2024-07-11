@@ -1,24 +1,13 @@
 <div
 	x-data='moon_tooltip'
-	@moon-mouse-enter.window="
-		element = $event.detail.element;
-		title = $event.detail.title;
-		show = true;
-		$nextTick(() => { set_popper() });
-	"
-	@moon-mouse-leave.window="
-		element = false;
-		title = '';
-		show = false;
-	"
-	@scroll.window="
-		element = false;
-		title = '';
-		show = false;
-	"
-	id='moon_tooltip_box'
+	@moon-mouse-enter.window="activate"
+	@moon-mouse-leave.window="deactivate"
+	@scroll.window="deactivate"
+    id='moon_tooltip_box'
+	x-ref='moon_tooltip_box'
 	x-show="show"
     x-cloak
+    :style="`left: ${x}px; top: ${y}px; opacity: ${opacity}; pointer-events: none;`"
 >
 	<div x-text='title'></div>
 </div>

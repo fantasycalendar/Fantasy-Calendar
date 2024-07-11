@@ -64,13 +64,14 @@
 /* ------------------ Moon tooltip Layout ----------------- */
 
 #moon_tooltip_box {
+    width: max-content;
     position: absolute;
+    top: 0;
+    left: 0;
     background: $accent-color;
     color: white;
     text-align: center;
-    top:0;
-    width: fit-content;
-    border-radius: 7px;
+    border-radius: 4px;
     padding:10px;
     font-size:11pt;
     z-index: 299;

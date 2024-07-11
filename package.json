@@ -10,7 +10,6 @@
         "bootstrap": "^4.6.2",
         "laravel-vite-plugin": "^1.0.4",
         "lodash": "^4.17.21",
-        "popper.js": "^1.16.1",
         "resolve-url-loader": "^5.0.0",
         "sass": "^1.57.1",
         "sass-loader": "^12.4.0",
@@ -22,6 +21,7 @@
     },
     "dependencies": {
         "@alpinejs/intersect": "^3.10.5",
+        "@floating-ui/dom": "^1.6.7",
         "@fortawesome/fontawesome-free": "^5.15.4",
         "@tailwindcss/aspect-ratio": "^0.4.2",
         "@tailwindcss/forms": "^0.5.0",
@@ -36,6 +36,7 @@
         "jquery-ui": "^1.13.3",
         "mustache": "^3.2.1",
         "notifyjs": "^3.0.0",
+        "popper.js": "^1.16.1",
         "postcss": "^8.4.21",
         "progressbar.js": "^1.1.1",
         "protip": "^1.4.21",

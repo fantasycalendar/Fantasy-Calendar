@@ -17,8 +17,6 @@ window.$.notify = (name, detail = {}) => {
     }));
 }
 
-import Popper from 'popper.js';
-
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
@@ -307,32 +305,8 @@ Alpine.data('MainApp', () => ({
     }
 }));
 
-Alpine.data('moon_tooltip', () => ({
-    element: false,
-    title: "",
-    show: false,
-
-    init: function() {
-        this.tooltip_box = $('#moon_tooltip_box');
-    },
-
-    set_popper: function() {
-        if (this.element) {
-            this.popper = new Popper(this.element, this.tooltip_box, {
-                placement: 'top',
-                modifiers: {
-                    preventOverflow: {
-                        boundariesElement: $('#calendar')[0],
-                    },
-                    offset: {
-                        enabled: true,
-                        offset: '0, 5px'
-                    }
-                }
-            });
-        }
-    }
-}));
+import MoonTooltip from './calendar-moon-tooltip.js';
+Alpine.data('moon_tooltip', MoonTooltip);
 
 window.calendar_weather = {
 
@@ -532,18 +506,18 @@ window.calendar_weather = {
 
             if ((window.calendar_weather.processed_weather && !icon.hasClass('noweather')) || icon.hasClass('moon_popup')) {
 
-                this.popper = new Popper(icon, this.weather_tooltip_box, {
-                    placement: 'top',
-                    modifiers: {
-                        preventOverflow: {
-                            boundariesElement: $('#calendar')[0],
-                        },
-                        offset: {
-                            enabled: true,
-                            offset: '0, 14px'
-                        }
-                    }
-                });
+                // this.popper = new Popper(icon, this.weather_tooltip_box, {
+                //     placement: 'top',
+                //     modifiers: {
+                //         preventOverflow: {
+                //             boundariesElement: $('#calendar')[0],
+                //         },
+                //         offset: {
+                //             enabled: true,
+                //             offset: '0, 14px'
+                //         }
+                //     }
+                // });
 
                 this.weather_tooltip_box.show();
 
