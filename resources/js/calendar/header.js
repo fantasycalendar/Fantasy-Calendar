@@ -6,19 +6,6 @@ export function header_initialize() {
     });
 
     evaluate_background_size();
-
-    window.loading_bar = new ProgressBar.Line('.loading_bar', {
-        strokeWidth: 2,
-        easing: 'easeInOut',
-        color: '#FFEA82',
-        trailColor: '#eee',
-        trailWidth: 1,
-        from: { color: '#FFEA82' },
-        to: { color: '#ED6A5A' },
-        step: (state, bar) => {
-            bar.path.setAttribute('stroke', state.color);
-        }
-    });
 };
 
 export function evaluate_background_size() {
@@ -160,17 +147,12 @@ export function show_loading_screen_timed() {
 
 }
 
-export function show_loading_screen(loading_bar, cancel_button_callback, object) {
+export function show_loading_screen(cancel_button_callback, object) {
 
     $('#loading_background').removeClass('hidden');
 
     clearTimeout(loading_screen_text_timer)
     set_loading_screen_text(loading_screen_texts.slice(0));
-
-    if (loading_bar ?? window.loading_bar !== undefined) {
-        $('.loading_spinner').addClass('hidden');
-        $('.loading_bar').removeClass('hidden');
-    }
 
     if (cancel_button_callback !== undefined) {
         $('.loading_cancel_button').removeClass('hidden').click(function() {
@@ -185,10 +167,8 @@ export function hide_loading_screen() {
     loading_screen_timer = undefined;
     clearTimeout(loading_screen_text_timer);
     loading_screen_text_timer = undefined;
-    window.loading_bar.set(0)
     $('#loading_background').addClass('hidden');
     $('.loading_spinner').removeClass('hidden');
-    $('.loading_bar').addClass('hidden');
     $('.loading_cancel_button').addClass('hidden');
     $('#loading_information_text').addClass("hidden");
 }

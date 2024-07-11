@@ -2433,8 +2433,6 @@ export default () => ({
                     return;
                 }
 
-                window.loading_bar.set(percentage);
-
                 progress = percentage;
 
                 if (message) {

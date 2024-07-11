@@ -585,7 +585,5 @@ window.calendar_weather = {
 
 };
 
-Alpine.data('calendar_weather', () => (window.calendar_weather));
-
 Alpine.start();
 
