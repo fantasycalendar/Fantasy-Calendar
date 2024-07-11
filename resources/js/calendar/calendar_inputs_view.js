@@ -22,30 +22,6 @@ import {
 import { pre_rebuild_calendar } from "./calendar_manager";
 
 export function set_up_view_inputs() {
-
-    /* if(just_converted && !JSON.parse(localStorage.getItem('hide_welcome_back'))){
-
-        html =  `<p>Hi there, [USERNAME]! Welcome to the new and upgraded Fantasy-Calendar 2.0!</p>`;
-        html += `<p>Don't worry, your calendar is safe. We've quadruple-checked to make sure that they are exactly how you left them.</p>`;
-        html += `<p>If you want to see what has changed in the 2.0 update, you can <a href='${window.location.origin}/whats-new' target="_blank">click on this link</a>, or you can just explore by yourself and see the many, many improvements.</p>`;
-        html += `<p>Have fun!</p>`;
-
-        swal.fire({
-            title: "Welcome back!",
-            html: html,
-            input: 'checkbox',
-            inputPlaceholder: 'Remember to not show this again',
-            inputClass: "form-control",
-            showCancelButton: false,
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'Okay',
-            icon: "info"
-        })
-        .then((result) => {
-            localStorage.setItem('hide_welcome_back', Boolean(result.value));
-        });
-    } */
-
     set_up_visitor_inputs();
 
     calendar_container = $('#calendar');

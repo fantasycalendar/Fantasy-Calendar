@@ -1,4 +1,5 @@
 import { moon_phases } from "./calendar_variables";
+import Popper from "popper.js";
 
 export var day_data_tooltip = {
 

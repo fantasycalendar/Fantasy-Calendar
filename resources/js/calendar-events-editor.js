@@ -68,31 +68,31 @@ export default () => ({
 
             // this.description_input.trumbowyg();
 
-            this.event_conditions_container.nestedSortable({
-                handle: ".handle",
-                containerSelector: ".group_list_root, .group_list",
-                onDragStart(item, container, _super, event) {
-                    item.css({
-                        height: item.outerHeight(),
-                        width: item.outerWidth()
-                    })
-                    item.addClass(container.group.options.draggedClass)
-                    $("body").addClass(container.group.options.bodyClass)
-                    container.rootGroup.placeholder.css('height', item.css("height"));
-                    $('#condition_remove_button .icon').addClass('wiggle');
-                },
-                onDrop(item, container, _super, event) {
-                    item.removeClass(container.group.options.draggedClass).removeAttr("style");
-                    $("body").removeClass(container.group.options.bodyClass);
-                    $('#condition_remove_button .icon').removeClass('wiggle').removeClass('faster');
-                    if (event_editor_ui.isDeletingDroppable) {
-                        item.remove();
-                    }
-                    event_editor_ui.evaluate_condition_selects(event_editor_ui.event_conditions_container);
-                    event_editor_ui.inputs_changed = true;
-                },
-                tolerance: -5
-            });
+            // this.event_conditions_container.nestedSortable({
+            //     handle: ".handle",
+            //     containerSelector: ".group_list_root, .group_list",
+            //     onDragStart(item, container, _super, event) {
+            //         item.css({
+            //             height: item.outerHeight(),
+            //             width: item.outerWidth()
+            //         })
+            //         item.addClass(container.group.options.draggedClass)
+            //         $("body").addClass(container.group.options.bodyClass)
+            //         container.rootGroup.placeholder.css('height', item.css("height"));
+            //         $('#condition_remove_button .icon').addClass('wiggle');
+            //     },
+            //     onDrop(item, container, _super, event) {
+            //         item.removeClass(container.group.options.draggedClass).removeAttr("style");
+            //         $("body").removeClass(container.group.options.bodyClass);
+            //         $('#condition_remove_button .icon').removeClass('wiggle').removeClass('faster');
+            //         if (event_editor_ui.isDeletingDroppable) {
+            //             item.remove();
+            //         }
+            //         event_editor_ui.evaluate_condition_selects(event_editor_ui.event_conditions_container);
+            //         event_editor_ui.inputs_changed = true;
+            //     },
+            //     tolerance: -5
+            // });
 
             this.evaluate_condition_selects(event_editor_ui.event_conditions_container);
 
@@ -1479,7 +1479,7 @@ export default () => ({
 
             } else {
 
-                condition = this.add_condition(parent, element[0]);
+                let condition = this.add_condition(parent, element[0]);
 
                 condition.find('.condition_type').find(`optgroup[label='${element[0]}']`).find(`option[value='${element[1]}']`).prop('selected', true).trigger('change');
 
@@ -2161,9 +2161,9 @@ export default () => ({
         let condition = $(html.join(''));
         parent.append(condition);
 
-        condition.find('.condition_type').select2({
-            matcher: matcher
-        });
+        // condition.find('.condition_type').select2({
+        //     matcher: matcher
+        // });
 
         condition.find('.select2').removeAttr('style');
 
