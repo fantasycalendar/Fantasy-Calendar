@@ -305,7 +305,10 @@ Alpine.data('MainApp', () => ({
     }
 }));
 
-import MoonTooltip from './calendar-moon-tooltip.js';
+import ContextMenu from './context-menu.js';
+Alpine.data('context_menu', ContextMenu);
+
+import MoonTooltip from './moon-tooltip.js';
 Alpine.data('moon_tooltip', MoonTooltip);
 
 window.calendar_weather = {

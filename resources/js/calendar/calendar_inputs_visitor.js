@@ -16,62 +16,6 @@ import { evaluate_dynamic_change, set_up_view_values } from "./calendar_inputs_v
 import { get_category } from "./calendar_inputs_edit";
 import { evaluated_static_data, rebuild_calendar } from "./calendar_manager";
 
-function context_set_current_date(key, opt) {
-    var epoch = $(opt.$trigger[0]).attr('epoch');
-
-    var epoch_data = evaluated_static_data.epoch_data[epoch];
-
-    window.dynamic_date_manager.year = convert_year(window.static_data, epoch_data.year);
-    window.dynamic_date_manager.timespan = epoch_data.timespan_number;
-    window.dynamic_date_manager.day = epoch_data.day;
-    window.dynamic_date_manager.epoch = epoch_data.epoch;
-
-    evaluate_dynamic_change();
-}
-
-function context_set_preview_date(key, opt) {
-    var epoch = $(opt.$trigger[0]).attr('epoch');
-
-    var epoch_data = evaluated_static_data.epoch_data[epoch];
-
-    set_preview_date(epoch_data.year, epoch_data.timespan_number, epoch_data.day, epoch_data.epoch);
-}
-
-function context_copy_link_date(element) {
-    var epoch = element.attr('epoch') | 0;
-
-    var epoch_data = evaluated_static_data.epoch_data[epoch];
-
-    var year = epoch_data.year;
-    var timespan = epoch_data.timespan_number;
-    var day = epoch_data.day;
-
-    if (!valid_preview_date(year, timespan, day) && !window.hide_copy_warning) {
-        swal.fire({
-            title: "Date inaccessible",
-            html: '<p>This date is not visible to guests or players, settings such as "Allow advancing view in calendar" and "Show only up to current day" can affect this.</p><p>Are you sure you want to copy a link to it?</p>',
-            input: 'checkbox',
-            inputPlaceholder: 'Remember this choice',
-            inputClass: "form-control",
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes',
-            icon: "info"
-        })
-            .then((result) => {
-                if (!result.dismiss) {
-                    copy_link(epoch_data);
-                    if (result.value) {
-                        window.hide_copy_warning = true;
-                    }
-                }
-            });
-    } else {
-        copy_link(epoch_data);
-    }
-}
-
 function copy_link(epoch_data) {
 
     var year = epoch_data.year;
@@ -102,8 +46,6 @@ function copy_link(epoch_data) {
 }
 
 function context_add_event(key, opt) {
-    var epoch = $(opt.$trigger[0]).attr('epoch') | 0;
-    window.dispatchEvent(new CustomEvent('event-editor-modal-new-event', { detail: { name: "", epoch: epoch } }));
 }
 
 function context_open_day_data(key, opt) {
@@ -292,83 +234,7 @@ export function set_up_visitor_inputs() {
 
     var items = {};
 
-    items.set_current_date = {
-        name: "Set as Current Date",
-        icon: "fas fa-hourglass-half",
-        callback: context_set_current_date,
-        disabled: function(key, opt) {
-            let element = $(opt.$trigger[0]);
-            let epoch = element.attr('epoch');
-            return epoch == window.dynamic_data.epoch || !Perms.player_at_least('co-owner');
-        },
-        visible: function() {
-            return Perms.player_at_least('co-owner');
-        }
-    }
 
-    items.set_preview_date = {
-        name: "Set as Preview Date",
-        icon: "fas fa-hourglass",
-        callback: context_set_preview_date,
-        disabled: function(key, opt) {
-            let element = $(opt.$trigger[0]);
-            let epoch = element.attr('epoch');
-            return epoch == preview_date.epoch || !window.static_data.settings.allow_view && !Perms.player_at_least('co-owner');
-        },
-        visible: function(key, opt) {
-            return window.static_data.settings.allow_view || Perms.player_at_least('co-owner');
-        }
-    }
-
-    items.add_event = {
-        name: "Add new event",
-        icon: "fas fa-calendar-plus",
-        callback: context_add_event,
-        disabled: function() {
-            return !(Perms.player_at_least('player'));
-        },
-        visible: function(key, opt) {
-            return Perms.player_at_least('player');
-        }
-    }
-
-    items.copy_link_date = {
-        name: "Copy link to date",
-        icon: "fas fa-link",
-        callback: function(key, opt) {
-            context_copy_link_date($(opt.$trigger[0]));
-        },
-        disabled: function() {
-            return !window.static_data.settings.allow_view && !Perms.player_at_least('co-owner');
-        },
-        visible: function(key, opt) {
-            return window.static_data.settings.allow_view || Perms.player_at_least('co-owner');
-        }
-    }
-
-    items.day_data = {
-        name: "View advanced day info",
-        icon: "fas fa-cogs",
-        callback: context_open_day_data,
-        disabled: function() {
-            return !Perms.player_at_least('co-owner');
-        },
-        visible: function() {
-            return Perms.player_at_least('co-owner');
-        }
-    }
-
-    items.view_events = {
-        name: "View events on this date",
-        icon: "fas fa-eye",
-        callback: function(key, opt) {
-            let epoch = $(opt.$trigger[0]).attr('epoch') | 0;
-            let found_events = CalendarRenderer.render_data.event_epochs[epoch].events;
-            let event_id = found_events[0].index;
-            let era_event = found_events[0].era;
-            window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: event_id, era: era_event, epoch: epoch } }));
-        }
-    }
 
     // $.contextMenu({
     //     selector: ".timespan_day:not(.empty_timespan_day)",
