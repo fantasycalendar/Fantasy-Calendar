@@ -16,7 +16,7 @@ import { evaluate_dynamic_change, set_up_view_values } from "./calendar_inputs_v
 import { get_category } from "./calendar_inputs_edit";
 import { evaluated_static_data, rebuild_calendar } from "./calendar_manager";
 
-function copy_link(epoch_data) {
+export function copy_link(epoch_data) {
 
     var year = epoch_data.year;
     var timespan = epoch_data.timespan_number;
@@ -43,9 +43,6 @@ function copy_link(epoch_data) {
         );
     }
 
-}
-
-function context_add_event(key, opt) {
 }
 
 function context_open_day_data(key, opt) {

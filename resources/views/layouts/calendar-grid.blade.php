@@ -50,7 +50,7 @@
                                     name: 'Set as Current Date',
                                     icon: 'fas fa-hourglass-half',
                                     callback: function() {
-                                        var epoch_data = evaluated_static_data.epoch_data[day.epoch];
+                                        var epoch_data = window.evaluated_static_data.epoch_data[day.epoch];
 
                                         window.dynamic_date_manager.year = convert_year(window.static_data, epoch_data.year);
                                         window.dynamic_date_manager.timespan = epoch_data.timespan_number;
@@ -70,7 +70,7 @@
                                     name: 'Set as Preview Date',
                                     icon: 'fas fa-hourglass',
                                     callback: function() {
-                                        var epoch_data = evaluated_static_data.epoch_data[day.epoch];
+                                        var epoch_data = window.evaluated_static_data.epoch_data[day.epoch];
 
                                         window.set_preview_date(epoch_data.year, epoch_data.timespan_number, epoch_data.day, epoch_data.epoch);
                                     },

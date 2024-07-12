@@ -182,6 +182,7 @@ import {
     repopulate_timespan_select,
     repopulate_day_select,
     eval_clock,
+    copy_link,
 } from './calendar/calendar_inputs_visitor.js';
 window.set_up_visitor_values = set_up_visitor_values;
 window.refresh_preview_inputs = refresh_preview_inputs;
@@ -192,6 +193,7 @@ window.evaluate_settings = evaluate_settings;
 window.repopulate_timespan_select = repopulate_timespan_select;
 window.repopulate_day_select = repopulate_day_select;
 window.eval_clock = eval_clock;
+window.copy_link = copy_link;
 
 import { set_up_view_values } from './calendar/calendar_inputs_view.js';
 window.set_up_view_values = set_up_view_values;
@@ -215,11 +217,10 @@ window.query_autoload = query_autoload;
 window.autoload = autoload;
 window.linked_popup = linked_popup;
 
-import { bind_calendar_events, rebuild_calendar, rerender_calendar, evaluated_static_data } from './calendar/calendar_manager.js';
+import { bind_calendar_events, rebuild_calendar, rerender_calendar } from './calendar/calendar_manager.js';
 window.bind_calendar_events = bind_calendar_events;
 window.rebuild_calendar = rebuild_calendar;
 window.rerender_calendar = rerender_calendar;
-window.evaluated_static_data = evaluated_static_data;
 
 import { calendar_data_generator } from './calendar/calendar_workers.js';
 window.calendar_data_generator = calendar_data_generator;
@@ -238,6 +239,7 @@ import EventsManager from './events-manager.js';
 import CalendarEventEditor from './calendar-events-editor.js';
 import CalendarEventViewer from './calendar-events-viewer.js';
 import CalendarYearHeader from './calendar-year-header.js';
+import CalendarGridDay from './calendar-grid-day.js';
 
 Alpine.data('CalendarPresets', CalendarPresets);
 Alpine.data('CalendarRenderer', CalendarRenderer);
@@ -246,6 +248,7 @@ Alpine.data('CalendarLayouts', CalendarLayouts);
 Alpine.data('EventsManager', EventsManager);
 Alpine.data('CalendarEventEditor', CalendarEventEditor);
 Alpine.data('CalendarEventViewer', CalendarEventViewer);
+Alpine.data('CalendarGridDay', CalendarGridDay);
 
 window.calendar_year_header = CalendarYearHeader();
 Alpine.data('CalendarYearHeader', window.calendar_year_header);
@@ -313,7 +316,6 @@ import MoonTooltip from './moon-tooltip.js';
 Alpine.data('moon_tooltip', MoonTooltip);
 
 window.calendar_weather = {
-
     epoch_data: {},
 
     start_epoch: null,
@@ -322,7 +324,6 @@ window.calendar_weather = {
     processed_weather: true,
 
     tooltip: {
-
         set_up: function() {
             this.weather_tooltip_box = $('#weather_tooltip_box');
             this.base_height = parseInt(this.weather_tooltip_box.css('height'));
@@ -560,9 +561,7 @@ window.calendar_weather = {
                 this.weather_tooltip_box.removeClass();
             }
         }
-
     }
-
 };
 
 Alpine.start();

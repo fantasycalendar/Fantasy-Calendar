@@ -243,6 +243,8 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000) {
 
 export var evaluated_static_data = {};
 
+window.evaluated_static_data = evaluated_static_data;
+
 export async function rebuild_calendar(action, dynamic_data) {
     window.calendar_data_generator.static_data = window.static_data;
     window.calendar_data_generator.dynamic_data = window.dynamic_data;
@@ -255,6 +257,7 @@ export async function rebuild_calendar(action, dynamic_data) {
     window.calendar_data_generator.run().then(result => {
 
         evaluated_static_data = result;
+        window.evaluated_static_data = evaluated_static_data;
 
         rerender_calendar(evaluated_static_data);
 
