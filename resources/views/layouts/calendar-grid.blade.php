@@ -44,6 +44,7 @@
                             'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
                         }"
                         @contextmenu.prevent="$dispatch('context-menu', {
+                            click: $event,
                             element: $el,
                             items: [
                                 {
@@ -136,7 +137,8 @@
                                     name: 'View events on this date',
                                     icon: 'fas fa-eye',
                                     callback: function() {
-                                        let found_events = CalendarRenderer.render_data.event_epochs[day.epoch].events;
+                                        console.log(render_data.event_epochs);
+                                        let found_events = render_data.event_epochs[day.epoch].events;
 
                                         $dispatch('event-viewer-modal-view-event', {
                                             event_id: found_events[0].index,

@@ -8,23 +8,26 @@ export default () => ({
     items: [],
 
     activate($event) {
-        console.log($event);
         this.items = $event.detail.items;
 
-        console.log(this.items[0].name);
-
-        computePosition(
-            $event.detail.element,
-            this.$refs.context_menu,
-            {
-                placement: 'top',
-                middleware: [flip(), shift()],
-            }
-        ).then(({ x, y }) => {
-            this.x = x;
-            this.y = y;
+        this.$nextTick(() => {
+            this.x = $event.detail.click.clientX;
+            this.y = $event.detail.click.clientY;
             this.opacity = 1;
         });
+
+        // computePosition(
+        //     $event.detail.element,
+        //     this.$refs.context_menu,
+        //     {
+        //         placement: 'top',
+        //         middleware: [flip(), shift()],
+        //     }
+        // ).then(({ x, y }) => {
+        //     this.x = x;
+        //     this.y = y;
+        //     this.opacity = 1;
+        // });
     },
 
     deactivate() {
