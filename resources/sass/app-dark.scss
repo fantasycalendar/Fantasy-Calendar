@@ -103,21 +103,6 @@ body {
 }
 
 
-// contextmenu
-@import 'jquery-contextmenu/dist/jquery.contextMenu';
-// override stupid preset color
-.context-menu-icon.context-menu-icon--fa5 i{
-    color: inherit;
-}
-.context-menu-item.context-menu-hover{
-    background-color:$accent-color;
-}
-.context-menu-list, .context-menu-item {
-    background-color: $card-bg-color;
-    color: $main-text-color;
-    border: $gray-600;
-}
-
 // Overrides
 .form-control {
     background-color: $gray-700;
