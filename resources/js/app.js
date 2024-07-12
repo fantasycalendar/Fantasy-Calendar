@@ -215,10 +215,11 @@ window.query_autoload = query_autoload;
 window.autoload = autoload;
 window.linked_popup = linked_popup;
 
-import { bind_calendar_events, rebuild_calendar, rerender_calendar } from './calendar/calendar_manager.js';
+import { bind_calendar_events, rebuild_calendar, rerender_calendar, evaluated_static_data } from './calendar/calendar_manager.js';
 window.bind_calendar_events = bind_calendar_events;
 window.rebuild_calendar = rebuild_calendar;
 window.rerender_calendar = rerender_calendar;
+window.evaluated_static_data = evaluated_static_data;
 
 import { calendar_data_generator } from './calendar/calendar_workers.js';
 window.calendar_data_generator = calendar_data_generator;

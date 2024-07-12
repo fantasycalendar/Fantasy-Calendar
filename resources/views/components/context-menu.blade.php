@@ -9,13 +9,13 @@
     :style="`left: ${x}px; top: ${y}px; opacity: ${opacity};`"
     >
     <template x-for="item in items">
-        <div class="d-flex align-items-center">
+        <div class="context_menu_item">
             <i :class="item.icon" class="pr-2"></i>
             <div
                 x-text="item.name"
                 @click="item.callback"
-                :disabled="item.disabled()"
-                x-show="item.visible()"
+                :disabled="item.disabled"
+                x-show="item.visible"
                 ></div>
         </div>
     </template>
