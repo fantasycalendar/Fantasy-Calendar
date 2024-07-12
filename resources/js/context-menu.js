@@ -15,19 +15,6 @@ export default () => ({
             this.y = $event.detail.click.clientY;
             this.opacity = 1;
         });
-
-        // computePosition(
-        //     $event.detail.element,
-        //     this.$refs.context_menu,
-        //     {
-        //         placement: 'top',
-        //         middleware: [flip(), shift()],
-        //     }
-        // ).then(({ x, y }) => {
-        //     this.x = x;
-        //     this.y = y;
-        //     this.opacity = 1;
-        // });
     },
 
     deactivate() {
