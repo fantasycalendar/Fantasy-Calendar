@@ -414,7 +414,7 @@ export function evaluate_dynamic_change() {
         current_day.change()
     }
 
-    data = window.dynamic_date_manager.compare(window.dynamic_data);
+    let data = window.dynamic_date_manager.compare(window.dynamic_data);
 
     window.dynamic_data.year = data.year;
     window.dynamic_data.timespan = data.timespan;

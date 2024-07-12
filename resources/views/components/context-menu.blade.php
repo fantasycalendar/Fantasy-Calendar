@@ -13,7 +13,7 @@
             <i :class="item.icon" class="pr-2"></i>
             <div
                 x-text="item.name"
-                @click="item.callback"
+                @click="item.callback(); deactivate();"
                 :disabled="item.disabled"
                 x-show="item.visible"
                 ></div>

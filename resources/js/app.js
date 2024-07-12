@@ -183,6 +183,7 @@ import {
     repopulate_day_select,
     eval_clock,
     copy_link,
+    set_preview_date,
 } from './calendar/calendar_inputs_visitor.js';
 window.set_up_visitor_values = set_up_visitor_values;
 window.refresh_preview_inputs = refresh_preview_inputs;
@@ -194,9 +195,11 @@ window.repopulate_timespan_select = repopulate_timespan_select;
 window.repopulate_day_select = repopulate_day_select;
 window.eval_clock = eval_clock;
 window.copy_link = copy_link;
+window.set_preview_date = set_preview_date;
 
-import { set_up_view_values } from './calendar/calendar_inputs_view.js';
+import { set_up_view_values, evaluate_dynamic_change } from './calendar/calendar_inputs_view.js';
 window.set_up_view_values = set_up_view_values;
+window.evaluate_dynamic_change = evaluate_dynamic_change;
 
 import {
     set_up_edit_inputs,
