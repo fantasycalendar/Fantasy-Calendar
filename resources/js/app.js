@@ -156,12 +156,13 @@ import { header_initialize, toggle_sidebar } from './calendar/header.js';
 window.toggle_sidebar = toggle_sidebar;
 window.header_initialize = header_initialize;
 
-import { update_dynamic, update_view_dynamic, get_all_data, get_dynamic_data, check_last_change } from './calendar/calendar_ajax_functions.js';
+import { update_dynamic, update_view_dynamic, get_all_data, get_dynamic_data, check_last_change, submit_hide_show_event } from './calendar/calendar_ajax_functions.js';
 window.update_dynamic = update_dynamic;
 window.update_view_dynamic = update_view_dynamic;
 window.get_all_data = get_all_data;
 window.get_dynamic_data = get_dynamic_data;
 window.check_last_change = check_last_change;
+window.submit_hide_show_event = submit_hide_show_event;
 
 import { debounce, date_manager, valid_preview_date, convert_year } from './calendar/calendar_functions.js';
 window.debounce = debounce;

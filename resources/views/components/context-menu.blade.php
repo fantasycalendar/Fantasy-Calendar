@@ -14,8 +14,8 @@
             <div
                 x-text="item.name"
                 @click="item.callback(); deactivate();"
-                :disabled="(typeof item.disabled == 'undefined') || item.disabled()"
-                x-show="(typeof item.visible == 'undefined') || item.visible()"
+                :disabled="shouldDisable(item)"
+                x-show="shouldBeVisible(item)"
                 ></div>
         </div>
     </template>
