@@ -316,7 +316,6 @@ export function set_up_visitor_inputs() {
 
     $('.reset_preview_date, #reset_preview_date_button').click(function() {
         if ($(this).prop('disabled')) return;
-        $(this).protipHide();
         go_to_dynamic_date();
     });
 
