@@ -11,9 +11,12 @@ import $default, { jQuery, $ } from "jquery";
 window.$ = $;
 window.jQuery = jQuery;
 
-window.$.notify = (name, detail = {}) => {
+window.$.notify = (name, type) => {
     window.dispatchEvent(new CustomEvent('notify', {
-        detail
+        detail: {
+            content: name,
+            type,
+        }
     }));
 }
 

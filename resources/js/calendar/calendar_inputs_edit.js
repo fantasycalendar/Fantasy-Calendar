@@ -200,7 +200,7 @@ export function set_up_edit_inputs() {
         view_type = $(this).attr('data-view-type');
 
 
-        owner = true;
+        let owner = true;
 
         $('.view-tabs .btn-primary').removeClass('btn-primary').addClass('btn-secondary');
 
