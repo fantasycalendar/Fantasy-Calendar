@@ -75,6 +75,83 @@
                                 x-text="calendar_event.name"
                                 :event_id="calendar_event.index"
                                 @click="$dispatch('event-viewer-modal-view-event', { event_id: calendar_event.index, era: calendar_event.era, epoch: day.epoch })"
+                                @contextmenu.prevent.stop="$dispatch('context-menu', {
+                                    click: $event,
+                                    element: $el,
+                                    items: [
+                                        {
+                                            name: 'View event',
+                                            icon: 'fas fa-eye',
+                                            callback: function() {
+                                                $dispatch('event-viewer-modal-view-event', { event_id: calendar_event.index, era: calendar_event.era, epoch: day.epoch });
+                                            },
+                                            disabled: calendar_event.era,
+                                            visible: !calendar_event.era,
+                                        },
+                                        {
+                                            name: 'Edit event',
+                                            icon: 'fas fa-edit',
+                                            callback: function() {
+                                                $dispatch('event-editor-modal-edit-event', { event_id: calendar_event.index, era: calendar_event.era, epoch: day.epoch });
+                                            },
+                                            disabled: (!Perms.can_modify_event(calendar_event.index)) || calendar_event.era,
+                                            visible: Perms.can_modify_event(calendar_event.index) && !calendar_event.era,
+                                        },
+                                        {
+                                            name: 'Clone event',
+                                            icon: 'fas fa-clone',
+                                            callback: function() {
+                                                $dispatch('event-editor-modal-clone-event', { event_id: calendar_event.index, era: calendar_event.era, epoch: day.epoch });
+                                            },
+                                            disabled: (!Perms.can_modify_event(calendar_event.index)) || calendar_event.era,
+                                            visible: Perms.can_modify_event(calendar_event.index) && !calendar_event.era,
+                                        },
+                                        {
+                                            name: 'View era description',
+                                            icon: 'fas fa-eye',
+                                            callback: function() {
+                                                $dispatch('event-viewer-modal-view-event', { event_id: calendar_event.index, era: calendar_event.era, epoch: day.epoch });
+                                            },
+                                            disabled: !calendar_event.era,
+                                            visible: calendar_event.era,
+                                        },
+                                        {
+                                            name: 'Edit era description',
+                                            icon: 'fas fa-edit',
+                                            callback: function() {
+                                                $dispatch('html-editor-modal-edit-html', { era_id: calendar_event.index });
+                                            },
+                                            disabled: function() {
+                                                return !calendar_event.era || !Perms.user_is_owner() || window.location.href.indexOf('/edit') == -1;
+                                            },
+                                            visible: function() {
+                                                return calendar_event.era && Perms.user_is_owner() && window.location.href.indexOf('/edit') != -1;
+                                            }
+                                        },
+                                        {
+                                            name: events[calendar_event.index].settings.hide ? 'Show event' : 'Hide event',
+                                            icon: 'fas fa-eye-slash',
+                                            callback: function() {
+                                                window.submit_hide_show_event(calendar_event.index);
+                                            },
+                                            disabled: function() {
+                                                return calendar_event.era || !Perms.can_modify_event(calendar_event.index);
+                                            },
+                                            visible: function() {
+                                                return !calendar_event.era && Perms.can_modify_event(calendar_event.index);
+                                            }
+                                        },
+                                        {
+                                            name: 'Delete event',
+                                            icon: 'fas fa-trash-alt',
+                                            callback: function() {
+                                                $dispatch('event-editor-modal-delete-event', { event_id: calendar_event.index });
+                                            },
+                                            disabled: calendar_event.era || !Perms.can_modify_event(calendar_event.index),
+                                            visible: !calendar_event.era && Perms.can_modify_event(calendar_event.index),
+                                        }
+                                    ]
+                                })"
                             ></div>
                         </template>
                     </div>
