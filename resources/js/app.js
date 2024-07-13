@@ -266,17 +266,6 @@ Alpine.data('MainApp', () => ({
                 this.notify("Error:\n " + error + " \nin file " + url + " \non line " + line);
             }
 
-            // $.protip({
-            //     defaults: {
-            //         "delay-in": 2000,
-            //         position: "bottom",
-            //         scheme: "leaf",
-            //         classes: "box-shadow accent-bg-color",
-            //         animate: "bounceIn",
-            //         target: "#protip_container"
-            //     }
-            // });
-
             var cookiedomain = window.location.hostname.split(".")[window.location.hostname.split(".").length - 2] + "." + window.location.hostname.split(".")[window.location.hostname.split(".").length - 1];
             document.cookie = "fantasycalendar_remember=; Max-Age=0; path=/; domain=" + cookiedomain;
 
