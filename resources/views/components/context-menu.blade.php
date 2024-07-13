@@ -9,13 +9,15 @@
     :style="`left: ${x}px; top: ${y}px; opacity: ${opacity};`"
     >
     <template x-for="item in items">
-        <div class="context_menu_item">
+        <div
+            class="context_menu_item"
+            x-show="shouldBeVisible(item)"
+        >
             <i :class="item.icon" class="pr-2"></i>
             <div
                 x-text="item.name"
                 @click="item.callback(); deactivate();"
                 :disabled="shouldDisable(item)"
-                x-show="shouldBeVisible(item)"
                 ></div>
         </div>
     </template>

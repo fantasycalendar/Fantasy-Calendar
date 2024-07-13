@@ -208,7 +208,7 @@
                                                         name: 'Edit event',
                                                         icon: 'fas fa-edit',
                                                         callback: function() {
-                                                            $dispatch('event-viewer-modal-edit-event', { event_id: calendar_event.index, era: calendar_event.era, epoch: day.epoch });
+                                                            $dispatch('event-editor-modal-edit-event', { event_id: calendar_event.index, era: calendar_event.era, epoch: day.epoch });
                                                         },
                                                         disabled: (!Perms.can_modify_event(calendar_event.index)) || calendar_event.era,
                                                         visible: Perms.can_modify_event(calendar_event.index) && !calendar_event.era,
@@ -217,7 +217,7 @@
                                                         name: 'Clone event',
                                                         icon: 'fas fa-clone',
                                                         callback: function() {
-                                                            $dispatch('event-viewer-modal-clone-event', { event_id: calendar_event.index, era: calendar_event.era, epoch: day.epoch });
+                                                            $dispatch('event-editor-modal-clone-event', { event_id: calendar_event.index, era: calendar_event.era, epoch: day.epoch });
                                                         },
                                                         disabled: (!Perms.can_modify_event(calendar_event.index)) || calendar_event.era,
                                                         visible: Perms.can_modify_event(calendar_event.index) && !calendar_event.era,
