@@ -12,12 +12,12 @@
         <div
             class="context_menu_item"
             x-show="shouldBeVisible(item)"
+            :disabled="shouldDisable(item)"
         >
-            <i :class="item.icon" class="pr-2"></i>
+            <i :class="item.icon"></i>
             <div
                 x-text="item.name"
                 @click="item.callback(); deactivate();"
-                :disabled="shouldDisable(item)"
                 ></div>
         </div>
     </template>
