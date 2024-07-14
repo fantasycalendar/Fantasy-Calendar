@@ -372,12 +372,10 @@ export function set_preview_date(year, timespan, day, epoch) {
     window.preview_date_manager.day = day;
 
     go_to_preview_date();
-
 }
 
 
 export function go_to_preview_date(rebuild) {
-
     preview_date.follow = false;
 
     var data = window.preview_date_manager.compare(preview_date);

@@ -55,6 +55,7 @@ import {
 } from "./calendar_inputs_visitor";
 import { evaluate_dynamic_change, repopulate_location_select_list, set_up_view_values } from "./calendar_inputs_view";
 import { pre_rebuild_calendar, rebuild_calendar, rebuild_climate } from "./calendar_manager";
+import CalendarRenderer from "../calendar-renderer";
 
 export var changes_applied = true;
 
@@ -226,7 +227,7 @@ export function set_up_edit_inputs() {
                 climate_charts.active_view = false;
                 calendar_container.removeClass('hidden');
                 weather_container.addClass('hidden');
-                CalendarRenderer.scroll_to_last();
+                $("#calendar_container").scrollTop(this.last_scroll_height);
                 previous_view_type = view_type;
                 break;
 
@@ -247,7 +248,7 @@ export function set_up_edit_inputs() {
                 climate_charts.active_view = false;
                 calendar_container.removeClass('hidden');
                 weather_container.addClass('hidden');
-                CalendarRenderer.scroll_to_last();
+                $("#calendar_container").scrollTop(this.last_scroll_height);
                 previous_view_type = view_type;
                 break;
 
