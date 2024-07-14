@@ -238,7 +238,7 @@ export function set_up_edit_inputs() {
                         evaluate_settings();
                         if (!preview_date.follow) {
                             update_preview_calendar();
-                            pre_rebuild_calendar('preview', preview_date);
+                            pre_rebuild_calendar('preview', window.preview_date);
                         } else {
                             pre_rebuild_calendar('calendar', window.dynamic_data);
                             preview_date_follow();
