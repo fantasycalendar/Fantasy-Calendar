@@ -449,10 +449,6 @@ export class date_manager {
         return evaluate_calendar_start(window.static_data, this.year, this.timespan, this.day).epoch;
     }
 
-    update_epoch() {
-        this.epoch = evaluate_calendar_start(window.static_data, this.year, this.timespan, this.day).epoch;
-    }
-
     get adjusted_year() {
 
         return unconvert_year(window.static_data, this.year);

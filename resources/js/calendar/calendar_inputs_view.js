@@ -24,27 +24,27 @@ import { pre_rebuild_calendar } from "./calendar_manager";
 export function set_up_view_inputs() {
     set_up_visitor_inputs();
 
-    calendar_container = $('#calendar');
+    window.calendar_container = $('#calendar');
 
-    current_year = $('#current_year');
-    current_timespan = $('#current_timespan');
-    current_day = $('#current_day');
+    window.current_year = $('#current_year');
+    window.current_timespan = $('#current_timespan');
+    window.current_day = $('#current_day');
 
-    current_hour = $('#current_hour');
-    current_minute = $('#current_minute');
+    window.current_hour = $('#current_hour');
+    window.current_minute = $('#current_minute');
 
-    location_select = $('#location_select');
+    window.location_select = $('#location_select');
 
-    sub_current_year = $('#sub_current_year');
-    add_current_year = $('#add_current_year');
+    window.sub_current_year = $('#sub_current_year');
+    window.add_current_year = $('#add_current_year');
 
-    sub_current_timespan = $('#sub_current_timespan');
-    add_current_timespan = $('#add_current_timespan');
+    window.sub_current_timespan = $('#sub_current_timespan');
+    window.add_current_timespan = $('#add_current_timespan');
 
-    sub_current_day = $('#sub_current_day');
-    add_current_day = $('#add_current_day');
+    window.sub_current_day = $('#sub_current_day');
+    window.add_current_day = $('#add_current_day');
 
-    sub_current_day.click(function() {
+    window.sub_current_day.click(function() {
 
         window.dynamic_date_manager.subtract_day();
 
@@ -52,7 +52,7 @@ export function set_up_view_inputs() {
 
     });
 
-    sub_current_timespan.click(function() {
+    window.sub_current_timespan.click(function() {
 
         if (window.preview_date_manager.timespan == window.dynamic_date_manager.timespan) {
             window.preview_date_manager.subtract_timespan();
@@ -64,7 +64,7 @@ export function set_up_view_inputs() {
 
     });
 
-    sub_current_year.click(function() {
+    window.sub_current_year.click(function() {
 
         window.dynamic_date_manager.subtract_year();
 
@@ -72,7 +72,7 @@ export function set_up_view_inputs() {
 
     });
 
-    add_current_day.click(function() {
+    window.add_current_day.click(function() {
 
         window.dynamic_date_manager.add_day();
 
@@ -80,7 +80,7 @@ export function set_up_view_inputs() {
 
     });
 
-    add_current_timespan.click(function() {
+    window.add_current_timespan.click(function() {
 
         window.dynamic_date_manager.add_timespan();
 
@@ -88,7 +88,7 @@ export function set_up_view_inputs() {
 
     });
 
-    add_current_year.click(function() {
+    window.add_current_year.click(function() {
 
         window.dynamic_date_manager.add_year();
 
@@ -97,7 +97,7 @@ export function set_up_view_inputs() {
     });
 
 
-    current_year.change(function(e) {
+    window.current_year.change(function(e) {
 
         if (e.originalEvent) {
             window.dynamic_date_manager.year = convert_year(window.static_data, $(this).val() | 0);
@@ -114,7 +114,7 @@ export function set_up_view_inputs() {
 
     });
 
-    current_timespan.change(function(e) {
+    window.current_timespan.change(function(e) {
 
         if (e.originalEvent) {
             window.dynamic_date_manager.timespan = $(this).val() | 0;
@@ -126,7 +126,7 @@ export function set_up_view_inputs() {
 
     });
 
-    current_day.change(function(e) {
+    window.current_day.change(function(e) {
 
         if (e.originalEvent) {
             window.dynamic_date_manager.day = $(this).val() | 0;
@@ -142,35 +142,35 @@ export function set_up_view_inputs() {
     $('.adjust_hour').click(function() {
 
         var adjust = $(this).attr('val') | 0;
-        var curr_hour = current_hour.val() | 0;
+        var curr_hour = window.current_hour.val() | 0;
         curr_hour = curr_hour + adjust;
 
         if (curr_hour < 0) {
-            sub_current_day.click();
+            window.sub_current_day.click();
             curr_hour = window.static_data.clock.hours - 1;
         } else if (curr_hour >= window.static_data.clock.hours) {
-            add_current_day.click();
+            window.add_current_day.click();
             curr_hour = 0;
         }
 
-        current_hour.val(curr_hour).change();
+        window.current_hour.val(curr_hour).change();
 
     });
 
-    current_hour.change(function() {
+    window.current_hour.change(function() {
 
-        var curr_hour = current_hour.val() | 0;
+        var curr_hour = window.current_hour.val() | 0;
 
         if (curr_hour < 0) {
-            sub_current_day.click();
+            window.sub_current_day.click();
             curr_hour = window.static_data.clock.hours - 1;
         } else if (curr_hour >= window.static_data.clock.hours) {
-            add_current_day.click();
+            window.add_current_day.click();
             curr_hour = 0;
         }
 
         window.dynamic_data.hour = curr_hour;
-        current_hour.val(curr_hour);
+        window.current_hour.val(curr_hour);
 
         var apply_changes_immediately = $('#apply_changes_immediately');
 
@@ -194,7 +194,7 @@ export function set_up_view_inputs() {
     $('.adjust_minute').click(function() {
 
         var adjust = $(this).attr('val') | 0;
-        var curr_minute = current_minute.val() | 0;
+        var curr_minute = window.current_minute.val() | 0;
         curr_minute = curr_minute + adjust;
 
         if (curr_minute < 0) {
@@ -205,13 +205,13 @@ export function set_up_view_inputs() {
             curr_minute = Math.abs(window.static_data.clock.minutes - curr_minute);
         }
 
-        current_minute.val(curr_minute).change();
+        window.current_minute.val(curr_minute).change();
 
     });
 
-    current_minute.change(function() {
+    window.current_minute.change(function() {
 
-        var curr_minute = current_minute.val() | 0;
+        var curr_minute = window.current_minute.val() | 0;
 
         if (curr_minute < 0) {
             $('.adjust_hour[val=-1]').click();
@@ -222,7 +222,7 @@ export function set_up_view_inputs() {
         }
 
         window.dynamic_data.minute = curr_minute;
-        current_minute.val(curr_minute);
+        window.current_minute.val(curr_minute);
 
         var apply_changes_immediately = $('#apply_changes_immediately');
 
@@ -241,7 +241,7 @@ export function set_up_view_inputs() {
         evaluate_save_button();
     });
 
-    location_select.change(function() {
+    window.location_select.change(function() {
 
         var prev_location_type = window.dynamic_data.custom_location;
 
@@ -251,9 +251,9 @@ export function set_up_view_inputs() {
             var prev_location = preset_data.locations[window.dynamic_data.location];
         }
 
-        window.dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === "custom" && !location_select.find('option:selected').prop('disabled');
+        window.dynamic_data.custom_location = window.location_select.find('option:selected').parent().attr('value') === "custom" && !window.location_select.find('option:selected').prop('disabled');
 
-        window.dynamic_data.location = location_select.val();
+        window.dynamic_data.location = window.location_select.val();
 
         if (window.dynamic_data.custom_location) {
             var location = window.static_data.seasons.locations[window.dynamic_data.location];
@@ -288,8 +288,8 @@ export function set_up_view_inputs() {
             day_adjust = 1;
         }
 
-        current_hour.val(window.dynamic_data.hour);
-        current_minute.val(window.dynamic_data.minute);
+        window.current_hour.val(window.dynamic_data.hour);
+        window.current_minute.val(window.dynamic_data.minute);
 
         if (day_adjust != 0) {
             if (day_adjust > 0) {
@@ -392,8 +392,8 @@ function increment_date_units(current) {
             if (window.dynamic_data.hour != new_hour || window.dynamic_data.minute != new_minute) {
                 window.dynamic_data.hour = new_hour
                 window.dynamic_data.minute = new_minute;
-                current_hour.val(new_hour);
-                current_minute.val(new_minute);
+                window.current_hour.val(new_hour);
+                window.current_minute.val(new_minute);
                 eval_clock();
             }
         }
@@ -490,18 +490,18 @@ export function repopulate_location_select_list() {
 
     if (html.length > 0) {
 
-        location_select.prop('disabled', false).html(html.join('')).val(window.dynamic_data.location);
+        window.location_select.prop('disabled', false).html(html.join('')).val(window.dynamic_data.location);
 
     } else {
 
-        location_select.prop('disabled', true).html(html.join(''));
+        window.location_select.prop('disabled', true).html(html.join(''));
 
     }
 
-    if (location_select.val() === null) {
-        location_select.children().find('option').first().prop('selected', true);
-        window.dynamic_data.location = location_select.val();
-        window.dynamic_data.custom_location = location_select.find('option:selected').parent().attr('value') === 'custom';
+    if (window.location_select.val() === null) {
+        window.location_select.children().find('option').first().prop('selected', true);
+        window.dynamic_data.location = window.location_select.val();
+        window.dynamic_data.custom_location = window.location_select.find('option:selected').parent().attr('value') === 'custom';
     }
 }
 
@@ -516,8 +516,8 @@ export function set_up_view_values() {
 
     if (window.static_data.clock && window.dynamic_data.hour !== undefined && window.dynamic_data.minute !== undefined) {
 
-        current_hour.val(window.dynamic_data.hour).prop('min', -1).prop('max', window.static_data.clock.hours);
-        current_minute.val(window.dynamic_data.minute).prop('min', -1).prop('max', window.static_data.clock.minutes);
+        window.current_hour.val(window.dynamic_data.hour).prop('min', -1).prop('max', window.static_data.clock.hours);
+        window.current_minute.val(window.dynamic_data.minute).prop('min', -1).prop('max', window.static_data.clock.minutes);
 
     }
 

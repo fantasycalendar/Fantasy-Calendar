@@ -370,11 +370,6 @@ export function set_preview_date(year, timespan, day, epoch) {
     window.preview_date_manager.year = convert_year(window.static_data, year);
     window.preview_date_manager.timespan = timespan;
     window.preview_date_manager.day = day;
-    if (epoch !== undefined) {
-        window.preview_date_manager.epoch = epoch;
-    } else {
-        window.preview_date_manager.update_epoch()
-    }
 
     go_to_preview_date();
 

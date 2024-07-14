@@ -8,8 +8,6 @@ export default () => ({
     items: [],
 
     activate($event) {
-        console.log("Activating with", JSON.parse(JSON.stringify($event.detail)));
-
         this.items = $event.detail.items;
 
         this.$nextTick(() => {
