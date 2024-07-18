@@ -25,7 +25,7 @@ export default () => ({
         confirmButtonText: 'OK',
     },
 
-    view_event($event){
+    view_event($event) {
         let event_index = $event.detail.event_id;
 
         if ($event.detail.event_db_id !== undefined) {
@@ -36,13 +36,13 @@ export default () => ({
         this.era = $event.detail.era ?? false;
         this.epoch = $event.detail.epoch;
 
-        if(this.era){
+        if (this.era) {
             this.data = clone(window.static_data.eras[this.id]);
-        }else{
+        } else {
             this.data = clone(window.events[this.id]);
             this.db_id = this.data.id !== undefined ? this.data.id : false;
         }
-        if(this.data.description == ""){
+        if (this.data.description == "") {
             this.data.description = "<i>No description.</i>"
         }
 
@@ -51,7 +51,7 @@ export default () => ({
         this.can_comment_on_event = this.db_id !== false;
         this.can_edit = Perms.can_modify_event(this.id);
 
-        if (!this.comment_editor){
+        if (!this.comment_editor) {
             this.comment_editor = $(this.$refs.trumbowyg_comment_input);
             // this.comment_editor.trumbowyg({
             //     btns: [
@@ -65,39 +65,39 @@ export default () => ({
             // });
         }
 
-        if (this.user_can_comment && this.can_comment_on_event){
+        if (this.user_can_comment && this.can_comment_on_event) {
             // this.comment_editor.trumbowyg('html', '');
         }
 
-        if(this.db_id) {
+        if (this.db_id) {
             this.get_event_comments();
-        }else{
+        } else {
             this.loading_comments = false;
         }
 
     },
 
-    get_event_comments(){
+    get_event_comments() {
 
-        if(this.era){
+        if (this.era) {
             return;
         }
 
-        get_event_comments(this.db_id, function(comments){
+        get_event_comments(this.db_id, function(comments) {
             if (comments) {
-                window.dispatchEvent(new CustomEvent('event-viewer-modal-load-comments', { detail: { comments: comments }}));
+                window.dispatchEvent(new CustomEvent('event-viewer-modal-load-comments', { detail: { comments: comments } }));
                 this.loading_comments = false;
             } else {
                 this.loading_comments = false;
             }
-        });
+        }.bind(this));
 
     },
 
     load_comments($event) {
         let comments = $event.detail.comments;
         this.comments = []
-        for(let index in comments){
+        for (let index in comments) {
             let comment = comments[index];
             this.comments.push({
                 index: index,
@@ -131,7 +131,7 @@ export default () => ({
 
     submit_comment() {
         let comment_content = "this.comment_editor.trumbowyg('html')";
-        submit_new_comment(comment_content, this.db_id, function(comment){
+        submit_new_comment(comment_content, this.db_id, function(comment) {
             window.dispatchEvent(new CustomEvent('event-viewer-modal-add-comment', { detail: { comment: comment } }));
         });
         // this.comment_editor.trumbowyg('html', '');
@@ -158,21 +158,21 @@ export default () => ({
 
         let comment_content = "comment.editor.trumbowyg('html')";
 
-        if(comment_content == "" || comment_content == "<p><br></p>"){
+        if (comment_content == "" || comment_content == "<p><br></p>") {
             $.notify("Comment cannot be empty.");
             return;
         }
 
-        axios.patch(window.apiurl+"/eventcomment/"+comment.id, {
+        axios.patch(window.apiurl + "/eventcomment/" + comment.id, {
             content: comment_content
         })
-            .then(function (result){
-                if(result.data.success && result.data != "") {
+            .then(function(result) {
+                if (result.data.success && result.data != "") {
                     $.notify(
                         "Comment edited.",
                         "success"
                     );
-                } else if(result.data === ""){
+                } else if (result.data === "") {
                     $.notify(
                         "Error editing comment."
                     );
@@ -190,8 +190,8 @@ export default () => ({
     },
 
     cancel_edit_comment() {
-        for (let entry in this.comments){
-            if(this.comments[entry].editor){
+        for (let entry in this.comments) {
+            if (this.comments[entry].editor) {
                 // this.comments[entry].editor.trumbowyg('destroy');
                 this.comments[entry].editor = undefined;
             };
@@ -210,16 +210,16 @@ export default () => ({
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
             confirmButtonText: 'OK',
-            }).then((result) => {
-                if (!result.dismiss) {
-                    submit_delete_comment(comment.id, function() {
-                        $.notify(
-                            "Removed comment.",
-                            "success"
-                        );
-                        event_viewer_ui.comments.splice(index, 1);
-                    });
-                }
+        }).then((result) => {
+            if (!result.dismiss) {
+                submit_delete_comment(comment.id, function() {
+                    $.notify(
+                        "Removed comment.",
+                        "success"
+                    );
+                    event_viewer_ui.comments.splice(index, 1);
+                });
+            }
         });
     },
 
@@ -236,13 +236,13 @@ export default () => ({
             } else {
                 this.dispatch_clone();
             }
-        }else{
+        } else {
             this.dispatch_clone();
         }
 
     },
 
-    dispatch_clone(){
+    dispatch_clone() {
         window.dispatchEvent(new CustomEvent('event-editor-modal-clone-event', { detail: { event_id: this.id, epoch: this.epoch } }));
         this.close();
     },
@@ -260,13 +260,13 @@ export default () => ({
             } else {
                 this.dispatch_edit();
             }
-        }else{
+        } else {
             this.dispatch_edit();
         }
 
     },
 
-    dispatch_edit: function(){
+    dispatch_edit: function() {
         if (this.era) {
             window.dispatchEvent(new CustomEvent('html-editor-modal-edit-html', { detail: { era_id: this.id } }));
         } else {
@@ -282,10 +282,10 @@ export default () => ({
             Array.from($event.target?.parentElement?.parentElement?.classList ?? []),
         );
 
-        if(possibleTrumbowyg.some(entry => entry.startsWith('trumbowyg-'))) return false;
+        if (possibleTrumbowyg.some(entry => entry.startsWith('trumbowyg-'))) return false;
 
         // Don't do anything if a swal is open.
-        if(swal.isVisible()) {
+        if (swal.isVisible()) {
             return false;
         }
 
@@ -315,7 +315,7 @@ export default () => ({
         this.data = {};
         this.comments = [];
         this.loading_comments = true;
-        if(this.user_can_comment && this.can_comment_on_event) {
+        if (this.user_can_comment && this.can_comment_on_event) {
             // this.comment_editor.trumbowyg('html');
         }
 
