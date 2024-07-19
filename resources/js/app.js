@@ -306,8 +306,6 @@ Alpine.data('rich_editor', () => ({
     init() {
         let quill = new Quill(this.$refs.quill, { theme: 'snow' })
 
-        console.log(quill);
-
         quill.root.innerHTML = this.value
 
         quill.on('text-change', () => {

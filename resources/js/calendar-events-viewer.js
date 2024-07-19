@@ -1,3 +1,4 @@
+import Quill from "quill";
 import { submit_new_comment, submit_delete_comment, get_event_comments } from "./calendar/calendar_ajax_functions";
 import { clone } from "./calendar/calendar_functions";
 
@@ -10,6 +11,7 @@ export default () => ({
     can_comment_on_event: false,
     loading_comments: true,
     comment_content: '',
+    event_editor: null,
     id: -1,
     db_id: false,
     data: {},
@@ -51,19 +53,8 @@ export default () => ({
         this.can_comment_on_event = this.db_id !== false;
         this.can_edit = Perms.can_modify_event(this.id);
 
-        if (!this.comment_editor) {
-            this.comment_editor = $(this.$refs.trumbowyg_comment_input);
-            // this.comment_editor.trumbowyg({
-            //     btns: [
-            //         ['strong', 'em', 'del'],
-            //         ['superscript', 'subscript'],
-            //         ['link'],
-            //         ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-            //         ['unorderedList', 'orderedList'],
-            //     ['removeformat']
-            //     ]
-            // });
-        }
+        // if (!this.comment_editor) {
+        // }
 
         if (this.user_can_comment && this.can_comment_on_event) {
             // this.comment_editor.trumbowyg('html', '');
@@ -140,16 +131,23 @@ export default () => ({
     start_edit_comment(comment) {
         this.cancel_edit_comment();
         comment.editing = true;
-        const element = $(document.getElementById(`comment-editor-${comment.index}`))
-        comment.editor = element;
+
+        this.event_editor = new Quill(document.querySelector(`#comment-editor-${comment.index} > div`), { theme: 'snow' });
+
+        this.event_editor.root.innerHTML = comment.content;
+
+        this.event_editor.on('text-change', () => {
+            this.comment_content = this.event_editor.root.innerHTML;
+        })
     },
 
     submit_edit_comment(comment) {
 
-        let comment_content = "comment.editor.trumbowyg('html')";
+        let comment_content = this.comment_content;
 
         if (comment_content == "" || comment_content == "<p><br></p>") {
-            $.notify("Comment cannot be empty.");
+            this.delete_comment(comment);
+
             return;
         }
 
@@ -180,12 +178,11 @@ export default () => ({
     },
 
     cancel_edit_comment() {
+        this.event_editor = null;
+
         for (let entry in this.comments) {
-            if (this.comments[entry].editor) {
-                // this.comments[entry].editor.trumbowyg('destroy');
-                this.comments[entry].editor = undefined;
-            };
             this.comments[entry].editing = false;
+            document.querySelector(`#comment-editor-${this.comments[entry].index}`).innerHTML = "<div></div>";
         }
     },
 
@@ -216,8 +213,7 @@ export default () => ({
     confirm_clone: function() {
 
         if (this.user_can_comment && this.can_comment_on_event) {
-            let comment_content = "this.comment_editor.trumbowyg('html')";
-            if (comment_content != "" && comment_content != "<p><br></p>") {
+            if (this.comment_content != "" && this.comment_content != "<p><br></p>") {
                 swal.fire(this.swal_content).then((result) => {
                     if (!result.dismiss) {
                         this.dispatch_clone();
@@ -240,8 +236,7 @@ export default () => ({
     confirm_edit: function() {
 
         if (this.user_can_comment && this.can_comment_on_event) {
-            let comment_content = "this.comment_editor.trumbowyg('html')";
-            if (comment_content != "" && comment_content != "<p><br></p>") {
+            if (this.comment_content != "" && this.comment_content != "<p><br></p>") {
                 swal.fire(this.swal_content).then((result) => {
                     if (!result.dismiss) {
                         this.dispatch_edit();
@@ -280,8 +275,7 @@ export default () => ({
         }
 
         if (this.user_can_comment && this.can_comment_on_event) {
-            let comment_content = "this.comment_editor.trumbowyg('html')";
-            if (comment_content != "" && comment_content != "<p><br></p>") {
+            if (this.comment_content != "" && this.comment_content != "<p><br></p>") {
                 swal.fire(this.swal_content).then((result) => {
                     if (!result.dismiss) {
                         this.close();
