@@ -5,6 +5,7 @@ import { repopulate_timespan_select, repopulate_day_select } from "./calendar/ca
 import { evaluate_save_button, get_category } from "./calendar/calendar_inputs_edit";
 import { eval_apply_changes, evaluated_static_data, rerender_calendar } from "./calendar/calendar_manager";
 import { hide_loading_screen } from "./calendar/header";
+import Quill from "quill";
 
 export default () => ({
     open: false,
@@ -16,7 +17,8 @@ export default () => ({
     event_id: undefined,
     epoch_data: undefined,
     event_conditions_container: undefined,
-    event_description: '',
+    event_description_content: '',
+    event_description_editor: null,
     inputs_changed: false,
     delete_hover_element: undefined,
     isDeletingDroppable: false,
@@ -55,18 +57,27 @@ export default () => ({
         this.epoch = $event.detail.epoch;
         this.epoch_data = evaluated_static_data.epoch_data[this.epoch];
 
+        this.event_description_editor = new Quill(this.$refs.event_description, {
+            theme: 'snow',
+            placeholder: 'Dear Fantasy Calendar, the party was dumb today...',
+        });
+
+        this.event_description_editor.root.innerHTML = this.event_description_content;
+        this.event_description_editor.on('text-change', () => {
+            this.event_description_content = this.event_description_editor.root.innerHTML;
+        });
+
+        this.$watch('event_description_content', newText => {
+            this.event_description_editor.root.innerHTML = newText
+        });
+
         /* Some scripts are loaded after Alpine, so we need to set everything up when the UI is first opened */
-        if(!this.has_initialized){
+        if (!this.has_initialized) {
 
             let event_editor_ui = this;
 
             this.event_conditions_container = $(this.$refs.event_conditions_container);
-
-            this.description_input = $(this.$refs.description);
-
             this.nth_input = $(this.$refs.nth_input);
-
-            // this.description_input.trumbowyg();
 
             // this.event_conditions_container.nestedSortable({
             //     handle: ".handle",
@@ -202,13 +213,13 @@ export default () => ({
                             icon: "warning",
                         }).then((result) => {
 
-                                if (!result.dismiss) {
-                                    group_list.parent().remove();
-                                    event_editor_ui.evaluate_condition_selects(event_editor_ui.event_conditions_container);
-                                    event_editor_ui.inputs_changed = true;
-                                }
+                            if (!result.dismiss) {
+                                group_list.parent().remove();
+                                event_editor_ui.evaluate_condition_selects(event_editor_ui.event_conditions_container);
+                                event_editor_ui.inputs_changed = true;
+                            }
 
-                            });
+                        });
 
                     } else {
                         group_list.parent().remove();
@@ -250,7 +261,7 @@ export default () => ({
 
         this.initialize($event);
 
-        if($event.detail.event_data === undefined && $event.detail.event_id){
+        if ($event.detail.event_data === undefined && $event.detail.event_id) {
             $event.detail.event_data = clone(window.events[$event.detail.event_id]);
             $event.detail.event_data.name += " (clone)";
         }
@@ -310,7 +321,7 @@ export default () => ({
             },
         };
 
-        if(this.description_input) {
+        if (this.description_input) {
             // this.description_input.trumbowyg('html', this.working_event.description);
         }
 
@@ -341,7 +352,7 @@ export default () => ({
 
     },
 
-    event_category_changed(){
+    event_category_changed() {
 
         if (this.working_event.event_category_id !== -1) {
             let category = get_category(this.working_event.event_category_id);
@@ -376,7 +387,7 @@ export default () => ({
 
         this.set_up_moon_data();
 
-        if(this.description_input) {
+        if (this.description_input) {
             // this.description_input.trumbowyg('html', this.working_event.description);
         }
 
@@ -423,7 +434,7 @@ export default () => ({
 
     },
 
-    submit_event_callback(success){
+    submit_event_callback(success) {
 
         if (success) {
 
@@ -448,7 +459,7 @@ export default () => ({
         this.show_nth = false;
         this.cloning_event = false;
 
-        if(this.description_input) {
+        if (this.description_input) {
             // this.description_input.trumbowyg('html', '');
         }
 
@@ -482,7 +493,7 @@ export default () => ({
         this.event_testing.visible_occurrences_2 = [];
         this.event_testing.text = "";
 
-        if(this.event_conditions_container) {
+        if (this.event_conditions_container) {
             this.event_conditions_container.empty();
         }
 
@@ -492,12 +503,12 @@ export default () => ({
 
     esc_clicked($event) {
 
-        if(this.isDeletingConditions){
+        if (this.isDeletingConditions) {
             this.remove_clicked();
             return;
         }
 
-        if(this.open){
+        if (this.open) {
             this.confirm_close($event);
         }
 
@@ -505,7 +516,7 @@ export default () => ({
 
     confirm_clone() {
         // Don't do anything if a swal is open or the user is deleting conditions
-        if(swal.isVisible() || this.isDeletingConditions){
+        if (swal.isVisible() || this.isDeletingConditions) {
             this.remove_clicked();
             return false;
         }
@@ -518,15 +529,15 @@ export default () => ({
             cancelButtonColor: '#3085d6',
             icon: "warning",
         }).then((result) => {
-                if (!result.dismiss) {
-                    let new_event = clone(this.working_event);
-                    new_event.data = this.create_event_data();
-                    new_event.name = sanitizeHtml(((new_event.name === "") ? "New Event" : new_event.name) + " (clone)");
-                    new_event.description = "this.description_input.trumbowyg('html')";
-                    this.close();
-                    window.dispatchEvent(new CustomEvent('event-editor-modal-clone-event', { detail: { event_data: new_event, epoch: this.epoch } }));
-                }
-            });
+            if (!result.dismiss) {
+                let new_event = clone(this.working_event);
+                new_event.data = this.create_event_data();
+                new_event.name = sanitizeHtml(((new_event.name === "") ? "New Event" : new_event.name) + " (clone)");
+                new_event.description = "this.description_input.trumbowyg('html')";
+                this.close();
+                window.dispatchEvent(new CustomEvent('event-editor-modal-clone-event', { detail: { event_data: new_event, epoch: this.epoch } }));
+            }
+        });
 
     },
 
@@ -537,10 +548,10 @@ export default () => ({
             Array.from($event.target?.parentElement?.parentElement?.classList ?? []),
         );
 
-        if(possibleTrumbowyg.some(entry => entry.startsWith('trumbowyg-'))) return false;
+        if (possibleTrumbowyg.some(entry => entry.startsWith('trumbowyg-'))) return false;
 
         // Don't do anything if a swal is open or the user is deleting conditions
-        if(swal.isVisible() || this.isDeletingConditions){
+        if (swal.isVisible() || this.isDeletingConditions) {
             return false;
         }
 
@@ -553,10 +564,10 @@ export default () => ({
                 cancelButtonColor: '#3085d6',
                 icon: "warning",
             }).then((result) => {
-                    if (!result.dismiss) {
-                        this.close();
-                    }
-                });
+                if (!result.dismiss) {
+                    this.close();
+                }
+            });
         } else {
             this.close();
         }
@@ -574,11 +585,11 @@ export default () => ({
                 cancelButtonColor: '#3085d6',
                 icon: "warning",
             }).then((result) => {
-                    if (!result.dismiss) {
-                        window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.event_id, era: false, epoch: this.epoch } }));
-                        this.close();
-                    }
-                });
+                if (!result.dismiss) {
+                    window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.event_id, era: false, epoch: this.epoch } }));
+                    this.close();
+                }
+            });
         } else {
             window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.event_id, era: false, epoch: this.epoch } }));
             this.close();
@@ -586,7 +597,7 @@ export default () => ({
 
     },
 
-    create_event_data(){
+    create_event_data() {
 
         this.working_event.data.connected_events = [];
         let conditions = Perms.player_at_least("co-owner")
@@ -644,24 +655,24 @@ export default () => ({
 
 
         let moon_data = {}
-        for(let index in this.moons){
+        for (let index in this.moons) {
             let moon = this.moons[index];
             moon_data[index] = {};
-            if (moon.hidden){
+            if (moon.hidden) {
                 moon_data[index]['hidden'] = true;
                 continue
             }
-            if(moon.override_phase){
+            if (moon.override_phase) {
                 moon_data[index]['override_phase'] = moon.override_phase;
                 moon_data[index]['phase'] = moon.phase;
             }
-            if(moon.color !== moon.original_color){
+            if (moon.color !== moon.original_color) {
                 moon_data[index]['color'] = moon.color;
             }
-            if(moon.shadow_color !== moon.original_shadow_color){
+            if (moon.shadow_color !== moon.original_shadow_color) {
                 moon_data[index]['shadow_color'] = moon.shadow_color;
             }
-            if(moon.phase_name !== ""){
+            if (moon.phase_name !== "") {
                 moon_data[index]['phase_name'] = moon.phase_name;
             }
             if (Object.keys(moon_data[index]).length === 0) {
@@ -671,10 +682,10 @@ export default () => ({
 
         return JSON.parse(JSON.stringify({
             has_duration: this.working_event.data.has_duration,
-            duration: this.working_event.data.duration|0,
+            duration: this.working_event.data.duration | 0,
             show_first_last: this.working_event.data.show_first_last,
             limited_repeat: this.working_event.data.limited_repeat,
-            limited_repeat_num: this.working_event.data.limited_repeat_num|0,
+            limited_repeat_num: this.working_event.data.limited_repeat_num | 0,
             conditions: conditions,
             connected_events: this.working_event.data.connected_events,
             date: date,
@@ -722,7 +733,7 @@ export default () => ({
 
     },
 
-    reset_moon_color(index, shadow){
+    reset_moon_color(index, shadow) {
 
         let color_key = (shadow ? "shadow_" : "") + "color";
 
@@ -816,7 +827,7 @@ export default () => ({
 
     set_up_moon_data() {
 
-        if(!window.static_data.moons.length) return;
+        if (!window.static_data.moons.length) return;
 
         this.moons = [];
         for (let index in window.static_data.moons) {
@@ -887,7 +898,7 @@ export default () => ({
 
     },
 
-    condition_preset_changed($event){
+    condition_preset_changed($event) {
 
         if (this.preset === this.previous_preset) {
             return;
@@ -907,18 +918,18 @@ export default () => ({
                 icon: "warning",
             }).then((result) => {
 
-                    if (result.dismiss) {
+                if (result.dismiss) {
 
-                        this.update_every_nth_presets();
+                    this.update_every_nth_presets();
 
-                        this.event_conditions_container.empty();
-                        this.add_preset_conditions(this.preset, this.nth);
+                    this.event_conditions_container.empty();
+                    this.add_preset_conditions(this.preset, this.nth);
 
-                        this.previous_preset = this.preset;
+                    this.previous_preset = this.preset;
 
-                    }
+                }
 
-                });
+            });
 
             return;
 
@@ -931,7 +942,7 @@ export default () => ({
 
         this.previous_preset = this.preset;
 
-        if(this.selected_preset.nth){
+        if (this.selected_preset.nth) {
             setTimeout(() => {
                 $(this.$refs.nth_input).focus();
             }, 100);
@@ -939,7 +950,7 @@ export default () => ({
 
     },
 
-    populate_condition_presets(){
+    populate_condition_presets() {
 
         this.presets.weekly = {
             text: `Weekly on ${this.epoch_data.week_day_name}`,
@@ -975,7 +986,7 @@ export default () => ({
 
         this.moon_presets = [];
 
-        if(!window.static_data.moons.length) return;
+        if (!window.static_data.moons.length) return;
 
         let moon_phase_collection = ''
 
@@ -1032,13 +1043,13 @@ export default () => ({
         })
     },
 
-    nth_input_changed(){
+    nth_input_changed() {
         this.update_every_nth_presets();
         this.event_conditions_container.empty();
         this.add_preset_conditions(this.preset, this.nth);
     },
 
-    update_every_nth_presets(){
+    update_every_nth_presets() {
 
         let repeat_string = !isNaN(this.nth) && this.nth > 1 ? `Every ${ordinal_suffix_of(this.nth)} ` : (this.nth === "" ? "Every nth" : "Every");
 
@@ -1366,9 +1377,9 @@ export default () => ({
                 } else if (type === "Date") {
 
                     let inputs = $(this).find('.input_container').find('.date_control').children();
-                    let year = inputs.eq(0).val()|0;
-                    let timespan = inputs.eq(1).find('option:selected').val()|0;
-                    let day = inputs.eq(2).find('option:selected').val()|0;
+                    let year = inputs.eq(0).val() | 0;
+                    let timespan = inputs.eq(1).find('option:selected').val() | 0;
+                    let day = inputs.eq(2).find('option:selected').val() | 0;
 
                     values.push(year);
                     values.push(timespan);
@@ -1515,7 +1526,7 @@ export default () => ({
 
                     condition.find('.input_container').find(`optgroup[value=${element[2][0]}]`).find(`option[value=${element[2][1]}]`).prop('selected', true);
 
-                } else if (element[0] === "Date"){
+                } else if (element[0] === "Date") {
                     condition.find('.input_container').children().first().children().each(function(i) {
                         $(this).val(element[2][i]).change();
                     })
@@ -1635,7 +1646,7 @@ export default () => ({
 
                     html.push("</select>")
 
-                }else {
+                } else {
 
                     html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-2'`);
 
@@ -1676,19 +1687,19 @@ export default () => ({
 
             html.push(`<input type='${type}' placeholder='${placeholder}' class='date form-control ${placeholder} order-1 year-input'`);
 
-            if(typeof alt !== 'undefined'){
+            if (typeof alt !== 'undefined') {
                 html.push(` alt='${alt}'`)
             }
 
-            if(typeof value !== 'undefined'){
+            if (typeof value !== 'undefined') {
                 html.push(` value='${value}'`);
             }
 
-            if(typeof min !== 'undefined'){
+            if (typeof min !== 'undefined') {
                 html.push(` min='${min}'`);
             }
 
-            if(typeof max !== 'undefined'){
+            if (typeof max !== 'undefined') {
                 html.push(` max='${max}'`);
             }
 
@@ -1736,7 +1747,7 @@ export default () => ({
 
 
 
-                }else{
+                } else {
 
                     html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder} order-1'`);
 
@@ -2052,7 +2063,7 @@ export default () => ({
 
                     html.push(`<input type='hidden' value='1'>`);
 
-                }else{
+                } else {
 
                     html.push(`<input type='${type}' placeholder='${placeholder}' class='form-control ${placeholder}'`);
 
@@ -2118,22 +2129,22 @@ export default () => ({
 
             if (
                 (keys[i] === "Era year" && window.static_data.eras === undefined)
-                    ||
-                    (keys[i] === "Era" && window.static_data.eras === undefined)
-                    ||
-                    (keys[i] === "Month" && window.static_data.year_data.timespans === undefined)
-                    ||
-                    (keys[i] === "Weekday" && window.static_data.year_data.global_week === undefined)
-                    ||
-                    (keys[i] === "Moons" && window.static_data.moons === undefined)
-                    ||
-                    (keys[i] === "Cycle" && window.static_data.cycles === undefined)
-                    ||
-                    (keys[i] === "Events" && window.events.length <= 1)
-                    ||
-                    (keys[i] === "Season" && window.static_data.seasons.data.length < 1)
-                    ||
-                    (keys[i] === "Location" && window.static_data.seasons.locations.length < 1)
+                ||
+                (keys[i] === "Era" && window.static_data.eras === undefined)
+                ||
+                (keys[i] === "Month" && window.static_data.year_data.timespans === undefined)
+                ||
+                (keys[i] === "Weekday" && window.static_data.year_data.global_week === undefined)
+                ||
+                (keys[i] === "Moons" && window.static_data.moons === undefined)
+                ||
+                (keys[i] === "Cycle" && window.static_data.cycles === undefined)
+                ||
+                (keys[i] === "Events" && window.events.length <= 1)
+                ||
+                (keys[i] === "Season" && window.static_data.seasons.data.length < 1)
+                ||
+                (keys[i] === "Location" && window.static_data.seasons.locations.length < 1)
             ) {
                 continue;
             }
@@ -2241,7 +2252,7 @@ export default () => ({
         let warnings = [];
 
         for (let eventId = 0; eventId < window.events.length; eventId++) {
-            if(eventId === delete_event_id) continue;
+            if (eventId === delete_event_id) continue;
             if (window.events[eventId].data.connected_events !== undefined) {
                 let connected_events = window.events[eventId].data.connected_events;
                 if (connected_events.includes(String(delete_event_id)) || connected_events.includes(Number(delete_event_id))) {
@@ -2287,29 +2298,29 @@ export default () => ({
 
             }).then((result) => {
 
-                    if (!result.dismiss) {
+                if (!result.dismiss) {
 
-                        let not_view_page = window.location.pathname.indexOf('/edit') > -1 || window.location.pathname.indexOf('/calendars/create') > -1;
+                    let not_view_page = window.location.pathname.indexOf('/edit') > -1 || window.location.pathname.indexOf('/calendars/create') > -1;
 
-                        if (not_view_page) {
+                    if (not_view_page) {
 
+                        this.delete_event(delete_event_id);
+
+                        evaluate_save_button();
+
+                    } else {
+
+                        let event_id = window.events[delete_event_id].id;
+
+                        submit_delete_event(event_id, () => {
                             this.delete_event(delete_event_id);
-
-                            evaluate_save_button();
-
-                        } else {
-
-                            let event_id = window.events[delete_event_id].id;
-
-                            submit_delete_event(event_id, () => {
-                                this.delete_event(delete_event_id);
-                            })
-
-                        }
+                        })
 
                     }
 
-                });
+                }
+
+            });
 
         }
 
@@ -2368,11 +2379,11 @@ export default () => ({
                     icon: "warning",
                 }).then((result) => {
 
-                        if (!result.dismiss) {
-                            this.run_test_event(years);
-                        }
+                    if (!result.dismiss) {
+                        this.run_test_event(years);
+                    }
 
-                    });
+                });
 
             }
 
@@ -2380,7 +2391,7 @@ export default () => ({
 
     },
 
-    cancel_event_test(self){
+    cancel_event_test(self) {
 
         try {
             self.worker_event_tester.terminate();
@@ -2478,7 +2489,7 @@ export default () => ({
         text: "",
     },
 
-    set_up_event_text(years){
+    set_up_event_text(years) {
 
         let event_has_changed = this.event_has_changed();
 
@@ -2526,23 +2537,23 @@ export default () => ({
 
     },
 
-    next_page(){
-        this.set_page(this.event_testing.page+1);
+    next_page() {
+        this.set_page(this.event_testing.page + 1);
     },
 
-    prev_page(){
-        this.set_page(this.event_testing.page-1);
+    prev_page() {
+        this.set_page(this.event_testing.page - 1);
     },
 
     set_page(page) {
 
         this.event_testing.page = page;
 
-        const start = (this.event_testing.page-1) * this.event_testing.items_per_page;
+        const start = (this.event_testing.page - 1) * this.event_testing.items_per_page;
         const end = start + this.event_testing.items_per_page;
 
-        this.event_testing.visible_occurrences_1 = this.event_testing.occurrences_text.slice(start, end-5);
-        this.event_testing.visible_occurrences_2 = this.event_testing.occurrences_text.slice(start+5, end);
+        this.event_testing.visible_occurrences_1 = this.event_testing.occurrences_text.slice(start, end - 5);
+        this.event_testing.visible_occurrences_2 = this.event_testing.occurrences_text.slice(start + 5, end);
 
     },
 
@@ -2569,9 +2580,9 @@ export default () => ({
     check_event_chain(event_id, working_event) {
 
         let current_event = {}
-        if (working_event){
+        if (working_event) {
             current_event = clone(this.working_event);
-        }else{
+        } else {
             current_event = window.events[event_id];
         }
         this.checked_events.push(current_event);
@@ -2579,7 +2590,7 @@ export default () => ({
         if (current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false") {
 
             for (let parent_id of current_event.data.connected_events) {
-                if(parent_id !== null && parent_id === event_id) {
+                if (parent_id !== null && parent_id === event_id) {
                     this.check_event_chain(parent_id, false);
                 }
             }
@@ -2592,7 +2603,7 @@ export default () => ({
 
     look_through_event_chain(child, parent_id) {
 
-        if(this.event_chain_looked_at.indexOf(parent_id) === -1){
+        if (this.event_chain_looked_at.indexOf(parent_id) === -1) {
             return true;
         }
 
@@ -2607,7 +2618,7 @@ export default () => ({
             } else {
 
                 for (let id of window.events[parent_id].data.connected_events) {
-                    if(id === null || !isNaN(id) || child === parent_id || !window.events[id]) continue;
+                    if (id === null || !isNaN(id) || child === parent_id || !window.events[id]) continue;
                     if (!this.look_through_event_chain(child, id)) {
                         return false;
                     }
