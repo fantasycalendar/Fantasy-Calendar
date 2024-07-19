@@ -9,7 +9,7 @@ export default () => ({
     user_can_comment: false,
     can_comment_on_event: false,
     loading_comments: true,
-    comment_editor: undefined,
+    comment_content: '',
     id: -1,
     db_id: false,
     data: {},
@@ -130,27 +130,17 @@ export default () => ({
     },
 
     submit_comment() {
-        let comment_content = "this.comment_editor.trumbowyg('html')";
-        submit_new_comment(comment_content, this.db_id, function(comment) {
-            window.dispatchEvent(new CustomEvent('event-viewer-modal-add-comment', { detail: { comment: comment } }));
-        });
-        // this.comment_editor.trumbowyg('html', '');
+        submit_new_comment(this.comment_content, this.db_id, function(comment) {
+            this.$dispatch('event-viewer-modal-add-comment', { comment: comment });
+        }.bind(this));
+
+        this.comment_content = '';
     },
 
     start_edit_comment(comment) {
         this.cancel_edit_comment();
         comment.editing = true;
         const element = $(document.getElementById(`comment-editor-${comment.index}`))
-        // element.trumbowyg({
-        //     btns: [
-        //         ['strong', 'em', 'del'],
-        //         ['superscript', 'subscript'],
-        //         ['link'],
-        //         ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-        //         ['unorderedList', 'orderedList'],
-        //         ['removeformat']
-        //     ]
-        //     }).trumbowyg('html', comment.content);
         comment.editor = element;
     },
 

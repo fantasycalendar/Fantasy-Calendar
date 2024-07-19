@@ -5,6 +5,9 @@ html { font-family: 'Inter', sans-serif; }
     html { font-family: 'Inter var', sans-serif; }
 }
 
+@import 'quill/dist/quill.core';
+@import 'quill/dist/quill.snow';
+
 @import 'bootstrap/scss/bootstrap';
 
 @import '@fortawesome/fontawesome-free/css/fontawesome';

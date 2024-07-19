@@ -100,15 +100,6 @@ window.Mustache = Mustache;
 // window.sanitizeHtml = sanitizeHtml;
 
 /**
- * $.contextMenu is a management facility for - you guessed it - context menus.
- * It was designed for an application where there are hundreds of elements that may show a context menu,
- * so intialization speed and memory usage are kept fairly small. It also allows to register context
- * menus without providing actual markup, as $.contextMenu generates DOMElements as needed.
- */
-
-await import('jquery-contextmenu');
-
-/**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.
@@ -307,6 +298,23 @@ Alpine.data('MainApp', () => ({
 
 import ContextMenu from './context-menu.js';
 Alpine.data('context_menu', ContextMenu);
+
+
+import Quill from 'quill';
+Alpine.data('rich_editor', () => ({
+    value: '',
+    init() {
+        let quill = new Quill(this.$refs.quill, { theme: 'snow' })
+
+        console.log(quill);
+
+        quill.root.innerHTML = this.value
+
+        quill.on('text-change', () => {
+            this.value = quill.root.innerHTML
+        })
+    },
+}));
 
 import MoonTooltip from './moon-tooltip.js';
 Alpine.data('moon_tooltip', MoonTooltip);

@@ -12,34 +12,34 @@
     @keydown.escape.window="open && confirm_close($event)"
     x-show.immediate='open'
     x-cloak
->
-	<div class='modal-basic-container'>
-		<div class='modal-basic-wrapper'>
-			<div class='modal-wrapper' @mousedown.outside="confirm_close($event)" x-transition x-show="open">
+    >
+    <div class='modal-basic-container'>
+        <div class='modal-basic-wrapper'>
+            <div class='modal-wrapper' @mousedown.outside="confirm_close($event)" x-transition x-show="open">
 
-				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fa fa-times" @click='confirm_close($event)'></i>
+                <div class='close-ui-btn-bg'></div>
+                <i class="close_ui_btn fa fa-times" @click='confirm_close($event)'></i>
 
-				<div class='row no-gutters modal-form-heading'>
-					<h3 class="d-flex align-items-center">
+                <div class='row no-gutters modal-form-heading'>
+                    <h3 class="d-flex align-items-center">
                         <span class='event_name' x-text='data.name'>Editing Event</span>
                         <i class="fas fa-pencil-alt event_header_action protip" data-pt-position='bottom' data-pt-title="Edit event" @click='confirm_edit' x-show='can_edit'></i>
                         <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone' x-show='can_edit && !era'></i></h3>
-				</div>
+                </div>
 
-				<div class='row'>
-					<div class="col-12" x-html='data.description'></div>
-				</div>
+                <div class='row'>
+                    <div class="col-12" x-html='data.description'></div>
+                </div>
 
-				<div id='event_comment_mastercontainer' x-show="!era" class="row">
+                <div id='event_comment_mastercontainer' x-show="!era" class="row">
 
-					<div class="col-12">
-						<hr>
+                    <div class="col-12">
+                        <hr>
 
-						<h4>Comments:</h4>
+                        <h4>Comments:</h4>
 
-						<div class='row'>
-							<div id='event_comments' class='col-12'>
+                        <div class='row'>
+                            <div id='event_comments' class='col-12'>
                                 <span x-show="comments.length == 0 && can_comment_on_event">No comments on this event yet... Maybe you'll be the first?</span>
                                 <span x-show="!can_comment_on_event">You need to save your calendar before comments can be added to this event!</span>
                                 <template x-for='(comment, index) in comments'>
@@ -82,22 +82,22 @@
                                     </div>
                                 </template>
                             </div>
-						@if(Auth::check())
-							<div class='col-12 mt-2' x-show='user_can_comment && can_comment_on_event'>
+                            @if(Auth::check())
+                                <div class='col-12 mt-2' x-show='user_can_comment && can_comment_on_event'>
 
-                                <div class="rounded border">
-                                    <div x-ref="trumbowyg_comment_input"></div>
+                                    <div class="rounded border">
+                                        <x-wysiwyg.editor x-modelable="value" x-model="comment_content" />
+                                    </div>
+
+                                    <button type='button' class='btn btn-primary mt-2' style="z-index: 200" @click='submit_comment'>Submit</button>
                                 </div>
-
-								<button type='button' class='btn btn-primary mt-2' style="z-index: 200" @click='submit_comment'>Submit</button>
-							</div>
-						@endif
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div
@@ -117,30 +117,30 @@
     @keydown.escape.window="esc_clicked($event)"
     x-show.immediate='open'
     x-cloak
->
+    >
 
     <div class='modal-basic-container'>
-		<div class='modal-basic-wrapper'>
-			<form id="event-form" class="modal-wrapper container" action="post" @mousedown.outside="confirm_close" x-transition x-show="open">
+        <div class='modal-basic-wrapper'>
+            <form id="event-form" class="modal-wrapper container" action="post" @mousedown.outside="confirm_close" x-transition x-show="open">
 
-				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fas fa-times" @click='confirm_close'></i>
+                <div class='close-ui-btn-bg'></div>
+                <i class="close_ui_btn fas fa-times" @click='confirm_close'></i>
 
-				<div class='row no-gutters mb-1 modal-form-heading'>
-					<h3 class='event_action_type d-flex align-items-center'>
+                <div class='row no-gutters mb-1 modal-form-heading'>
+                    <h3 class='event_action_type d-flex align-items-center'>
                         <span x-text="creation_type"></span>
                         <i class="fas fa-eye event_header_action protip" data-pt-position='bottom' data-pt-title="Preview event" @click='confirm_view' x-show="!new_event"></i>
                         <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone' x-show="!new_event"></i>
                     </h3>
-				</div>
+                </div>
 
-				<div class='row no-gutters my-1'>
-					<input maxlength="255" type='text' class='form-control event_editor_name' x-model='working_event.name' placeholder='Event name' autofocus='' @keydown.enter="save_event" @keydown.esc.stop />
-				</div>
+                <div class='row no-gutters my-1'>
+                    <input maxlength="255" type='text' class='form-control event_editor_name' x-model='working_event.name' placeholder='Event name' autofocus='' @keydown.enter="save_event" @keydown.esc.stop />
+                </div>
 
-				<div class='row no-gutters my-1'>
-					<textarea class='form-control event_desc editable' x-ref='description' placeholder='Event description' autofocus=''></textarea>
-				</div>
+                <div class='row no-gutters my-1'>
+                    <textarea class='form-control event_desc editable' x-ref='description' placeholder='Event description' autofocus=''></textarea>
+                </div>
 
                 @if(!isset($calendar) || count($calendar->event_categories) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
                     <h5 class='modal-form-heading mt-3 mb-1'>Category</h5>
@@ -243,115 +243,115 @@
                             </div>
                         </div>--}}{{--
 
-                    </div>--}}
+                        </div>--}}
 
-                    <div x-show="moons.length > 0">
+                        <div x-show="moons.length > 0">
 
-                        <div class='row no-gutters mt-2'>
-                            <div class='separator'></div>
-                        </div>
+                            <div class='row no-gutters mt-2'>
+                                <div class='separator'></div>
+                            </div>
 
-                        <div class='row no-gutters mt-2'>
-                            <h4 @click='moon_overrides_open = !moon_overrides_open' class='cursor-pointer user-select-none'>
-                                <i class="icon fas" :class='{
-                                    "fa-angle-right": !moon_overrides_open,
-                                    "fa-angle-down": moon_overrides_open,
-                                }'></i>
-                                Moon Overrides
-                            </h4>
-                        </div>
-                        <div class='container settings_container p-0' x-transition.origin.top x-show="moon_overrides_open">
-                            <template x-for="moon in moons">
-                                <div class='p-2 mb-2 border rounded'>
-                                    <div class='row no-gutters mb-2'>
-                                        <div class='col-md-1 col-1 px-1'>
-                                            <svg class="moon"
+                            <div class='row no-gutters mt-2'>
+                                <h4 @click='moon_overrides_open = !moon_overrides_open' class='cursor-pointer user-select-none'>
+                                    <i class="icon fas" :class='{
+                                        "fa-angle-right": !moon_overrides_open,
+                                        "fa-angle-down": moon_overrides_open,
+                                        }'></i>
+                                    Moon Overrides
+                                </h4>
+                            </div>
+                            <div class='container settings_container p-0' x-transition.origin.top x-show="moon_overrides_open">
+                                <template x-for="moon in moons">
+                                    <div class='p-2 mb-2 border rounded'>
+                                        <div class='row no-gutters mb-2'>
+                                            <div class='col-md-1 col-1 px-1'>
+                                                <svg class="moon"
                                                     :moon_id="moon.index"
                                                     preserveAspectRatio="xMidYMid"
                                                     width="38"
                                                     height="38"
                                                     viewBox="0 0 32 32"
                                                     :class="{
-                                                        'opacity-1': moon.hidden,
-                                                        'opacity-5': !moon.hidden
+                                                    'opacity-1': moon.hidden,
+                                                    'opacity-5': !moon.hidden
                                                     }"
-                                            >
-                                                <circle cx="16" cy="16" r="10" :style="`fill:${moon.color};`" />
-                                                <path :d="moon.override_phase ? moon.paths[moon.phase] : moon.paths[moon.original_phase]" :style="`fill:${moon.shadow_color};`" />
-                                                <circle cx="16" cy="16" r="10" class="lunar_border"/>
-                                            </svg>
+                                                    >
+                                                    <circle cx="16" cy="16" r="10" :style="`fill:${moon.color};`" />
+                                                    <path :d="moon.override_phase ? moon.paths[moon.phase] : moon.paths[moon.original_phase]" :style="`fill:${moon.shadow_color};`" />
+                                                    <circle cx="16" cy="16" r="10" class="lunar_border"/>
+                                                </svg>
+                                            </div>
+                                            <div class='col-md-11 pl-0 pr-1 event-moon-text' x-text='sanitizeHtml(moon.name) + ", " + (moon.phase_name || (moon.override_phase ? moon.phases[moon.phase] : moon.phases[moon.original_phase]))'>
+                                            </div>
                                         </div>
-                                        <div class='col-md-11 pl-0 pr-1 event-moon-text' x-text='sanitizeHtml(moon.name) + ", " + (moon.phase_name || (moon.override_phase ? moon.phases[moon.phase] : moon.phases[moon.original_phase]))'>
+                                        <div class='row my-1 no-gutters'>
+                                            <div class='col-md-4 col-3 px-1'>
+                                                <label class='form-control checkbox'>
+                                                    <input type='checkbox' class='event_setting' x-model='moon.hidden'> Hidden
+                                                </label>
+                                            </div>
+                                            <div class='col-md-8 px-1'>
+                                                <input type='text' class='form-control full' x-model='moon.phase_name' placeholder='Custom phase name' :disabled='moon.hidden'>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class='row my-1 no-gutters'>
-                                        <div class='col-md-4 col-3 px-1'>
-                                            <label class='form-control checkbox'>
-                                                <input type='checkbox' class='event_setting' x-model='moon.hidden'> Hidden
-                                            </label>
+                                        <div class='row my-1 no-gutters'>
+                                            <div class='col-md-4 px-1'>
+                                                <label class='form-control checkbox' :class="{'disabled': moon.hidden}">
+                                                    <input type='checkbox' class='event_setting' x-model='moon.override_phase' :disabled='moon.hidden'> Override phase
+                                                </label>
+                                            </div>
+                                            <div class='col-md-8 px-1'>
+                                                <select class='form-control' x-model='moon.phase' :disabled='!moon.override_phase || moon.hidden'>
+                                                    <template x-for="(phase, index) in moon.phases">
+                                                        <option x-text='phase' :value="index"></option>
+                                                    </template>
+                                                </select>
+                                            </div>
                                         </div>
-                                        <div class='col-md-8 px-1'>
-                                            <input type='text' class='form-control full' x-model='moon.phase_name' placeholder='Custom phase name' :disabled='moon.hidden'>
-                                        </div>
-                                    </div>
-                                    <div class='row my-1 no-gutters'>
-                                        <div class='col-md-4 px-1'>
-                                            <label class='form-control checkbox' :class="{'disabled': moon.hidden}">
-                                                <input type='checkbox' class='event_setting' x-model='moon.override_phase' :disabled='moon.hidden'> Override phase
-                                            </label>
-                                        </div>
-                                        <div class='col-md-8 px-1'>
-                                            <select class='form-control' x-model='moon.phase' :disabled='!moon.override_phase || moon.hidden'>
-                                                <template x-for="(phase, index) in moon.phases">
-                                                    <option x-text='phase' :value="index"></option>
-                                                </template>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class='row mt-1 no-gutters'>
-                                        <div class='col-md-6 col-4 px-1'>
-                                            <label class='form-control border-0 p-0 input-group color_container' :class="{'disabled': moon.hidden}">
-                                                <input type='color' class='form-control border-right-0 input-lg color inline_moon_color h-100' x-model="moon.shadow_color" :disabled='moon.hidden'/>
-                                                <div class="input-group-append">
-                                                    <button
-                                                        type="button"
-                                                        class="btn btn-sm small-text"
-                                                        @click="reset_moon_color(moon.index, true)"
-                                                        :disabled="moon.shadow_color === moon.original_shadow_color"
-                                                        :class='{
+                                        <div class='row mt-1 no-gutters'>
+                                            <div class='col-md-6 col-4 px-1'>
+                                                <label class='form-control border-0 p-0 input-group color_container' :class="{'disabled': moon.hidden}">
+                                                    <input type='color' class='form-control border-right-0 input-lg color inline_moon_color h-100' x-model="moon.shadow_color" :disabled='moon.hidden'/>
+                                                    <div class="input-group-append">
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-sm small-text"
+                                                            @click="reset_moon_color(moon.index, true)"
+                                                            :disabled="moon.shadow_color === moon.original_shadow_color"
+                                                            :class='{
                                                             "btn-outline-secondary": moon.shadow_color === moon.original_shadow_color,
                                                             "btn-secondary": moon.shadow_color !== moon.original_shadow_color
-                                                        }'>
-                                                        <i class="fas fa-undo"></i>
-                                                    </button>
-                                                </div>
-                                            </label>
-                                        </div>
-                                        <div class='col-md-6 col-4 px-1 col'>
-                                            <label class='form-control border-0 p-0 input-group color_container' :class="{'disabled': moon.hidden}">
-                                                <input type='color' class='form-control border-right-0 input-lg color inline_moon_color h-100' x-model="moon.color" :disabled='moon.hidden'/>
-                                                <div class="input-group-append">
-                                                    <button
-                                                        type="button"
-                                                        class="btn btn-sm small-text"
-                                                        @click="reset_moon_color(moon.index, false)"
-                                                        :disabled="moon.color === moon.original_color"
-                                                        :class='{
+                                                            }'>
+                                                            <i class="fas fa-undo"></i>
+                                                        </button>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                            <div class='col-md-6 col-4 px-1 col'>
+                                                <label class='form-control border-0 p-0 input-group color_container' :class="{'disabled': moon.hidden}">
+                                                    <input type='color' class='form-control border-right-0 input-lg color inline_moon_color h-100' x-model="moon.color" :disabled='moon.hidden'/>
+                                                    <div class="input-group-append">
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-sm small-text"
+                                                            @click="reset_moon_color(moon.index, false)"
+                                                            :disabled="moon.color === moon.original_color"
+                                                            :class='{
                                                             "btn-outline-secondary": moon.color === moon.original_color,
                                                             "btn-secondary": moon.color !== moon.original_color
-                                                        }'>
-                                                        <i class="fas fa-undo"></i>
-                                                    </button>
-                                                </div>
-                                            </label>
+                                                            }'>
+                                                            <i class="fas fa-undo"></i>
+                                                        </button>
+                                                    </div>
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </template>
+                                </template>
+                            </div>
                         </div>
-                    </div>
 
-                @endif
+                    @endif
 
                     <div class='row no-gutters mt-2'>
                         <div class='separator'></div>
@@ -362,7 +362,7 @@
                             <i class="icon fas" :class='{
                                 "fa-angle-right": !settings_open,
                                 "fa-angle-down": settings_open,
-                            }'></i>
+                                }'></i>
                             Settings
                         </h4>
                     </div>
@@ -370,159 +370,159 @@
                     <div class='container settings_container p-0' x-transition.origin.top x-show="settings_open">
 
 
-                    @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('advance-date', $calendar)))
+                        @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('advance-date', $calendar)))
+                            <div class='row no-gutters'>
+                                <div class='col-md-6 pl-0 pr-1'>
+                                    <label class='form-control checkbox'>
+                                        <input type='checkbox' class='event_setting' x-model='working_event.data.limited_repeat'> Limit repetitions
+                                    </label>
+                                </div>
+                                <div class='col-md-6 pl-1 pr-0 form-control' :class='{ "disabled": !working_event.data.limited_repeat }'>
+                                    <label class='row no-gutters'>
+                                        <div class='col-auto pl-4 pr-1'>Limit for</div>
+                                        <div class='col-4'>
+                                            <input type='number' min='1' value='1' class='form-control form-control-sm' x-model='working_event.data.limited_repeat_num' :disabled='!working_event.data.limited_repeat'>
+                                        </div>
+                                        <div class='col-auto pl-1 pr-0'>days.</div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div x-show="working_event.data.limited_repeat" class='row no-gutters p-2 mb-2 border rounded'>
+                                <p class='m-0'><strong>Use with caution.</strong> This setting will simulate to check dates backward to ensure consistency across the beginning of years. That process can take a while if this number is particularly high, like 50 or more. Extremely high numbers <strong>could make your calendar unusable</strong>.</p>
+                            </div>
+
+                            <div class='row no-gutters'>
+                                <div class='col-md-6 pl-0 pr-1'>
+                                    <label class='form-control checkbox'>
+                                        <input type='checkbox' class='event_setting' x-model='working_event.data.has_duration'> Has duration
+                                    </label>
+                                </div>
+
+                                <div class='col-md-6 pl-1 pr-0 form-control' :class='{ "disabled": !working_event.data.has_duration }'>
+                                    <label class='row no-gutters'>
+                                        <div class='col-auto pl-4 pr-1'>Lasts for</div>
+                                        <div class='col-4'>
+                                            <input type='number' min='1' value='1' class='form-control form-control-sm' x-model='working_event.data.duration' :disabled='!working_event.data.has_duration'>
+                                        </div>
+                                        <div class='col-auto pl-1 pr-0'>days.</div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div x-show="working_event.data.has_duration" class='row no-gutters p-2 mb-2 border rounded'>
+                                <p class='m-0'><strong>Use with caution.</strong> This setting will simulate to check dates backward/forward to ensure consistency across the beginning/end of years. That process can take a while if this number is particularly high, like 50 or more. Extremely high numbers <strong>could make your calendar unusable</strong>.</p>
+                            </div>
+
+                            <div class='row no-gutters mb-2'>
+                                <div class='col-12 pl-0 pr-1'>
+                                    <label class='form-control checkbox' :class='{ "disabled": !working_event.data.has_duration }'>
+                                        <input type='checkbox' class='event_setting' x-model='working_event.data.show_first_last' :disabled='!working_event.data.has_duration'> Show only first and last event
+                                    </label>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class='row no-gutters my-2'>
+                            <div class='separator'></div>
+                        </div>
+
+
+                        @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
+                            <div class='row no-gutters'>
+                                <div class='col'>
+                                    <label class='form-control checkbox'>
+                                        <input type='checkbox' class='event_setting' x-model='working_event.settings.hide_full'> Hide ENTIRELY (useful for event-based-events)
+                                    </label>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class='row no-gutters'>
-                            <div class='col-md-6 pl-0 pr-1'>
+                            <div class='col'>
                                 <label class='form-control checkbox'>
-                                    <input type='checkbox' class='event_setting' x-model='working_event.data.limited_repeat'> Limit repetitions
-                                </label>
-                            </div>
-                            <div class='col-md-6 pl-1 pr-0 form-control' :class='{ "disabled": !working_event.data.limited_repeat }'>
-                                <label class='row no-gutters'>
-                                    <div class='col-auto pl-4 pr-1'>Limit for</div>
-                                    <div class='col-4'>
-                                        <input type='number' min='1' value='1' class='form-control form-control-sm' x-model='working_event.data.limited_repeat_num' :disabled='!working_event.data.limited_repeat'>
-                                    </div>
-                                    <div class='col-auto pl-1 pr-0'>days.</div>
+                                    <input type='checkbox' class='event_setting' x-model='working_event.settings.hide'> Hide event
+                                    @if(!isset($calendar) || (Auth::user() != Null && !Auth::user()->can('update', $calendar)))
+                                        (still visible for owner and co-owners)
+                                    @endif
                                 </label>
                             </div>
                         </div>
 
-                        <div x-show="working_event.data.limited_repeat" class='row no-gutters p-2 mb-2 border rounded'>
-                            <p class='m-0'><strong>Use with caution.</strong> This setting will simulate to check dates backward to ensure consistency across the beginning of years. That process can take a while if this number is particularly high, like 50 or more. Extremely high numbers <strong>could make your calendar unusable</strong>.</p>
+                        @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
+                            <div class='row no-gutters'>
+                                <div class='col'>
+                                    <label class='form-control checkbox'>
+                                        <input type='checkbox' class='event_setting' x-model='working_event.settings.print'> Show when printing
+                                    </label>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class='row no-gutters'>
+                            <div class='col pr-1'>
+                                <h5 class='modal-form-heading'>Color:</h5>
+                                <select x-model='working_event.settings.color' class='form-control'>
+                                    <option>Dark-Solid</option>
+                                    <option>Red</option>
+                                    <option>Pink</option>
+                                    <option>Purple</option>
+                                    <option>Deep-Purple</option>
+                                    <option>Blue</option>
+                                    <option>Light-Blue</option>
+                                    <option>Cyan</option>
+                                    <option>Teal</option>
+                                    <option>Green</option>
+                                    <option>Light-Green</option>
+                                    <option>Lime</option>
+                                    <option>Yellow</option>
+                                    <option>Orange</option>
+                                    <option>Blue-Grey</option>
+                                </select>
+                            </div>
+
+                            <div class='col pl-1'>
+                                <h5 class='modal-form-heading'>Display:</h5>
+                                <select x-model='working_event.settings.text' class='form-control'>
+                                    <option value="text">Just text</option>
+                                    <option value="dot">• Dot with text</option>
+                                    <option value="background">Background</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class='row no-gutters mt-3'>
+                            Event look:
+                        </div>
+                        <div class='row no-gutters mt-0'>
+                            <div class='col-4'>
+                                <div class='event-text-output event' :class='working_event.settings.color + " " + working_event.settings.text'>Event (visible)</div>
+                            </div>
+                            <div class='col-4 px-1'>
+                                <div class='event-text-output hidden_event event' :class='working_event.settings.color + " " + working_event.settings.text'>Event (hidden)</div>
+                            </div>
                         </div>
 
                         <div class='row no-gutters'>
-                            <div class='col-md-6 pl-0 pr-1'>
-                                <label class='form-control checkbox'>
-                                    <input type='checkbox' class='event_setting' x-model='working_event.data.has_duration'> Has duration
-                                </label>
-                            </div>
-
-                            <div class='col-md-6 pl-1 pr-0 form-control' :class='{ "disabled": !working_event.data.has_duration }'>
-                                <label class='row no-gutters'>
-                                    <div class='col-auto pl-4 pr-1'>Lasts for</div>
-                                    <div class='col-4'>
-                                        <input type='number' min='1' value='1' class='form-control form-control-sm' x-model='working_event.data.duration' :disabled='!working_event.data.has_duration'>
-                                    </div>
-                                    <div class='col-auto pl-1 pr-0'>days.</div>
-                                </label>
+                            <div class='col'>
+                                <div id='event_messagebox'></div>
                             </div>
                         </div>
+                    </div>
 
-                        <div x-show="working_event.data.has_duration" class='row no-gutters p-2 mb-2 border rounded'>
-                            <p class='m-0'><strong>Use with caution.</strong> This setting will simulate to check dates backward/forward to ensure consistency across the beginning/end of years. That process can take a while if this number is particularly high, like 50 or more. Extremely high numbers <strong>could make your calendar unusable</strong>.</p>
-                        </div>
-
-                        <div class='row no-gutters mb-2'>
-                            <div class='col-12 pl-0 pr-1'>
-                                <label class='form-control checkbox' :class='{ "disabled": !working_event.data.has_duration }'>
-                                    <input type='checkbox' class='event_setting' x-model='working_event.data.show_first_last' :disabled='!working_event.data.has_duration'> Show only first and last event
-                                </label>
-                            </div>
-                        </div>
-                    @endif
-
-                    <div class='row no-gutters my-2'>
+                    <div class='row no-gutters mt-2'>
                         <div class='separator'></div>
                     </div>
 
-
-                    @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
-                        <div class='row no-gutters'>
-                            <div class='col'>
-                                <label class='form-control checkbox'>
-                                    <input type='checkbox' class='event_setting' x-model='working_event.settings.hide_full'> Hide ENTIRELY (useful for event-based-events)
-                                </label>
-                            </div>
-                        </div>
-                    @endif
-
-                    <div class='row no-gutters'>
-                        <div class='col'>
-                            <label class='form-control checkbox'>
-                                <input type='checkbox' class='event_setting' x-model='working_event.settings.hide'> Hide event
-                                @if(!isset($calendar) || (Auth::user() != Null && !Auth::user()->can('update', $calendar)))
-                                    (still visible for owner and co-owners)
-                                @endif
-                            </label>
-                        </div>
+                    <div class='row no-gutters my-1'>
+                        <div class='btn btn-lg btn-primary btn-block' @click="save_event">Save</div>
                     </div>
-
-                    @if(!isset($calendar) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
-                        <div class='row no-gutters'>
-                            <div class='col'>
-                                <label class='form-control checkbox'>
-                                    <input type='checkbox' class='event_setting' x-model='working_event.settings.print'> Show when printing
-                                </label>
-                            </div>
-                        </div>
-                    @endif
-
-                    <div class='row no-gutters'>
-                        <div class='col pr-1'>
-                            <h5 class='modal-form-heading'>Color:</h5>
-                            <select x-model='working_event.settings.color' class='form-control'>
-                                <option>Dark-Solid</option>
-                                <option>Red</option>
-                                <option>Pink</option>
-                                <option>Purple</option>
-                                <option>Deep-Purple</option>
-                                <option>Blue</option>
-                                <option>Light-Blue</option>
-                                <option>Cyan</option>
-                                <option>Teal</option>
-                                <option>Green</option>
-                                <option>Light-Green</option>
-                                <option>Lime</option>
-                                <option>Yellow</option>
-                                <option>Orange</option>
-                                <option>Blue-Grey</option>
-                            </select>
-                        </div>
-
-                        <div class='col pl-1'>
-                            <h5 class='modal-form-heading'>Display:</h5>
-                            <select x-model='working_event.settings.text' class='form-control'>
-                                <option value="text">Just text</option>
-                                <option value="dot">• Dot with text</option>
-                                <option value="background">Background</option>
-                            </select>
-                        </div>
+                    <div class='row no-gutters my-1'>
+                <div class='btn btn-sm btn-danger btn-block' x-show='!new_event' @click='confirm_delete_event({detail: {event_id: event_id}})'>Delete</div>
                     </div>
-
-                    <div class='row no-gutters mt-3'>
-                        Event look:
-                    </div>
-                    <div class='row no-gutters mt-0'>
-                        <div class='col-4'>
-                            <div class='event-text-output event' :class='working_event.settings.color + " " + working_event.settings.text'>Event (visible)</div>
-                        </div>
-                        <div class='col-4 px-1'>
-                            <div class='event-text-output hidden_event event' :class='working_event.settings.color + " " + working_event.settings.text'>Event (hidden)</div>
-                        </div>
-                    </div>
-
-                    <div class='row no-gutters'>
-                        <div class='col'>
-                            <div id='event_messagebox'></div>
-                        </div>
-                    </div>
-				</div>
-
-                <div class='row no-gutters mt-2'>
-                    <div class='separator'></div>
-                </div>
-
-				<div class='row no-gutters my-1'>
-					<div class='btn btn-lg btn-primary btn-block' @click="save_event">Save</div>
-				</div>
-				<div class='row no-gutters my-1'>
-                    <div class='btn btn-sm btn-danger btn-block' x-show='!new_event' @click='confirm_delete_event({detail: {event_id: event_id}})'>Delete</div>
-				</div>
-			</form>
-		</div>
-	</div>
+            </form>
+        </div>
+    </div>
 </div>
 
 <div
@@ -533,27 +533,27 @@
     @keydown.escape.window="open && confirm_close($event)"
     x-show.immediate='open'
     x-cloak
->
-	<div class='modal-basic-container'>
-		<div class='modal-basic-wrapper'>
-			<form id="html-form" class="modal-wrapper" action="post" @mousedown.outside="confirm_close($event)" x-transition x-show="open">
+    >
+    <div class='modal-basic-container'>
+        <div class='modal-basic-wrapper'>
+            <form id="html-form" class="modal-wrapper" action="post" @mousedown.outside="confirm_close($event)" x-transition x-show="open">
 
-				<div class='close-ui-btn-bg'></div>
-				<i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>
+                <div class='close-ui-btn-bg'></div>
+                <i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>
 
-				<div class='row no-gutters mb-1 modal-form-heading'>
-					<h2 class='event_action_type'>
+                <div class='row no-gutters mb-1 modal-form-heading'>
+                    <h2 class='event_action_type'>
                         <span>Editing Era Description</span>
                         <i class="fas fa-eye event_header_action protip" data-pt-position='bottom' data-pt-title="Preview" @click='confirm_view'></i>
                     </h2>
-				</div>
+                </div>
 
-				<div class='row'>
-					<textarea class='form-control' x-ref='html_input' autofocus=''></textarea>
-				</div>
+                <div class='row'>
+                    <textarea class='form-control' x-ref='html_input' autofocus=''></textarea>
+                </div>
 
-				<div class='btn btn-lg btn-primary btn-block' @click="save_html">Save</div>
-			</form>
-		</div>
-	</div>
+                <div class='btn btn-lg btn-primary btn-block' @click="save_html">Save</div>
+            </form>
+        </div>
+    </div>
 </div>
