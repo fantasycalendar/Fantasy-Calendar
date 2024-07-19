@@ -7,8 +7,8 @@
                 init: () => {
                     @include('calendar._loadcalendar')
 
-                    preview_date = _.cloneDeep(dynamic_data);
-                    preview_date.follow = true;
+                    window.preview_date = _.cloneDeep(dynamic_data);
+                    window.preview_date.follow = true;
 
                     rebuild_calendar('calendar', dynamic_data);
 
@@ -91,26 +91,26 @@
 
         function check_update(rebuild){
 
-            var data = window.dynamic_date_manager.compare(dynamic_data);
+            var data = window.dynamic_date_manager.compare(window.dynamic_data);
 
-            window.dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+            window.dynamic_date_manager = new date_manager(window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
 
-            if(preview_date.follow){
-                preview_date = clone(dynamic_data);
-                preview_date.follow = true;
-                window.preview_date_manager = new date_manager(preview_date.year, preview_date.timespan, preview_date.day);
+            if(window.preview_date.follow){
+                window.preview_date = clone(window.dynamic_data);
+                window.preview_date.follow = true;
+                window.preview_date_manager = new date_manager(window.preview_date.year, window.preview_date.timespan, window.preview_date.day);
             }
 
-            current_year.val(dynamic_data.year);
+            window.current_year.val(window.dynamic_data.year);
 
-            repopulate_timespan_select(current_timespan, dynamic_data.timespan, false);
+            repopulate_timespan_select(window.current_timespan, window.dynamic_data.timespan, false);
 
-            repopulate_day_select(current_day, dynamic_data.day, false);
+            repopulate_day_select(window.current_day, window.dynamic_data.day, false);
 
             display_preview_back_button();
 
-            if(rebuild || ((data.rebuild || window.static_data.settings.only_reveal_today) && preview_date.follow)){
-                rebuild_calendar('calendar', dynamic_data);
+            if(rebuild || ((data.rebuild || window.static_data.settings.only_reveal_today) && window.preview_date.follow)){
+                rebuild_calendar('calendar', window.dynamic_data);
                 set_up_visitor_values();
             }else{
                 update_current_day(false);

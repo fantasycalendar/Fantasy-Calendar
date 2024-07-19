@@ -171,7 +171,7 @@
                 window.preview_date_manager = new date_manager(preview_date.year, preview_date.timespan, preview_date.day);
             }
 
-            current_year.val(dynamic_data.year);
+            window.current_year.val(dynamic_data.year);
 
             repopulate_timespan_select(current_timespan, dynamic_data.timespan, false);
 

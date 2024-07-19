@@ -108,8 +108,8 @@ export function set_up_view_inputs() {
 
         if (year != window.dynamic_date_manager.adjusted_year) {
             $(this).val(window.dynamic_date_manager.adjusted_year);
-            repopulate_timespan_select(current_timespan, window.dynamic_date_manager.timespan, false);
-            repopulate_day_select(current_day, window.dynamic_date_manager.day, false);
+            repopulate_timespan_select(window.current_timespan, window.dynamic_date_manager.timespan, false);
+            repopulate_day_select(window.current_day, window.dynamic_date_manager.day, false);
         }
 
     });
@@ -120,9 +120,9 @@ export function set_up_view_inputs() {
             window.dynamic_date_manager.timespan = $(this).val() | 0;
             evaluate_dynamic_change();
         } else {
-            current_timespan.children().eq(window.dynamic_date_manager.timespan).prop('selected', true);
+            window.current_timespan.children().eq(window.dynamic_date_manager.timespan).prop('selected', true);
         }
-        repopulate_day_select(current_day, window.dynamic_date_manager.day, false);
+        repopulate_day_select(window.current_day, window.dynamic_date_manager.day, false);
 
     });
 
@@ -132,7 +132,7 @@ export function set_up_view_inputs() {
             window.dynamic_date_manager.day = $(this).val() | 0;
             evaluate_dynamic_change();
         } else {
-            current_day.children().eq(window.dynamic_date_manager.day - 1).prop('selected', true);
+            window.current_day.children().eq(window.dynamic_date_manager.day - 1).prop('selected', true);
         }
 
     });
@@ -406,12 +406,12 @@ function increment_date_units(current) {
 }
 
 export function evaluate_dynamic_change() {
-    if (window.dynamic_date_manager.adjusted_year != current_year.val() | 0) {
-        current_year.change()
-    } else if (window.dynamic_date_manager.timespan != current_timespan.val() | 0) {
-        current_timespan.change()
-    } else if (window.dynamic_date_manager.day != current_day.val() | 0) {
-        current_day.change()
+    if (window.dynamic_date_manager.adjusted_year != window.current_year.val() | 0) {
+        window.current_year.change()
+    } else if (window.dynamic_date_manager.timespan != window.current_timespan.val() | 0) {
+        window.current_timespan.change()
+    } else if (window.dynamic_date_manager.day != window.current_day.val() | 0) {
+        window.current_day.change()
     }
 
     let data = window.dynamic_date_manager.compare(window.dynamic_data);
@@ -432,12 +432,12 @@ export function evaluate_dynamic_change() {
 
     window.changes_applied = false;
 
-    if (preview_date.follow) {
+    if (window.preview_date.follow) {
 
-        preview_date.year = data.year;
-        preview_date.timespan = data.timespan;
-        preview_date.day = data.day;
-        preview_date.epoch = data.epoch;
+        window.preview_date.year = data.year;
+        window.preview_date.timespan = data.timespan;
+        window.preview_date.day = data.day;
+        window.preview_date.epoch = data.epoch;
 
         if (data.rebuild || (!Perms.owner && window.static_data.settings.only_reveal_today) || !apply_changes_immediately) {
             pre_rebuild_calendar('calendar', window.dynamic_data)
@@ -450,7 +450,7 @@ export function evaluate_dynamic_change() {
     } else {
 
         if (!apply_changes_immediately) {
-            pre_rebuild_calendar('calendar', preview_date)
+            pre_rebuild_calendar('calendar', window.preview_date)
         } else {
             update_current_day(false);
         }
@@ -508,11 +508,11 @@ export function repopulate_location_select_list() {
 export function set_up_view_values() {
     window.dynamic_date_manager = new date_manager(window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
 
-    current_year.val(window.dynamic_date_manager.adjusted_year);
+    window.current_year.val(window.dynamic_date_manager.adjusted_year);
 
-    repopulate_timespan_select(current_timespan, window.dynamic_data.timespan, false);
+    repopulate_timespan_select(window.current_timespan, window.dynamic_data.timespan, false);
 
-    repopulate_day_select(current_day, window.dynamic_data.day, false);
+    repopulate_day_select(window.current_day, window.dynamic_data.day, false);
 
     if (window.static_data.clock && window.dynamic_data.hour !== undefined && window.dynamic_data.minute !== undefined) {
 
