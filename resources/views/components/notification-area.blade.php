@@ -22,20 +22,29 @@
         <div
             x-data="{
                 show: false,
+                timeout: null,
                 init() {
-                    this.$nextTick(() => this.show = true)
+                    this.$nextTick(() => this.show = true);
 
-                    setTimeout(() => this.transitionOut(), 2000)
+                    this.startTimeout();
                 },
                 transitionOut() {
-                    this.show = false
+                    this.show = false;
 
-                    setTimeout(() => this.remove(this.notification), 500)
+                    setTimeout(() => this.remove(this.notification), 500);
                 },
+                cancelTimeout() {
+                    clearTimeout(this.timeout);
+                },
+                startTimeout() {
+                    this.timeout = setTimeout(() => this.transitionOut(), 2000);
+                }
             }"
             x-show="show"
             x-transition.duration.500ms
             class="pointer-events-auto relative w-full max-w-sm rounded-md border border-gray-200 bg-white py-4 pl-6 pr-4 shadow-lg"
+            @mouseenter="cancelTimeout"
+            @mouseleave="startTimeout"
         >
             <div class="flex items-start">
                 <!-- Icons -->
