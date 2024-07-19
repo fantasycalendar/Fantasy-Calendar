@@ -1,8 +1,14 @@
 // Fonts
 @import url('https://rsms.me/inter/inter.css');
-html { font-family: 'Inter', sans-serif; }
+
+html {
+    font-family: 'Inter', sans-serif;
+}
+
 @supports (font-variation-settings: normal) {
-    html { font-family: 'Inter var', sans-serif; }
+    html {
+        font-family: 'Inter var', sans-serif;
+    }
 }
 
 // @import 'quill/dist/quill.core';
@@ -80,6 +86,7 @@ $swal2-toast-button-focus-box-shadow: 0 0 0 1px $swal2-background, 0 0 0 3px $sw
 body {
     color: $text-gray-200;
 }
+
 .select2-container--default .select2-selection--single,
 .select2-container--bootstrap .select2-selection,
 .select2-container--bootstrap .select2-search--dropdown .select2-search__field,
@@ -92,7 +99,8 @@ body {
     border: 1px solid $gray-600;
 }
 
-.form-control:disabled, .form-control[readonly] {
+.form-control:disabled,
+.form-control[readonly] {
     background-color: $gray-600 !important;
     color: $gray-800 !important;
 }
@@ -124,7 +132,7 @@ body {
         color: rgba($gray-400, 0.9);
     }
 
-    & > option {
+    &>option {
         color: $gray-300;
     }
 }
@@ -133,7 +141,8 @@ body {
     border: 1px solid $gray-700;
 }
 
-.form-control:disabled, .form-control[readonly]{
+.form-control:disabled,
+.form-control[readonly] {
     color: white;
     background-color: $input-disabled-color;
 }
@@ -182,7 +191,7 @@ body {
     border-left-color: $accent-color !important;
 }
 
-.border{
+.border {
     border: 1px solid rgb(51, 65, 85) !important;
 }
 
@@ -190,7 +199,8 @@ body {
     border-right: 1px solid rgb(51, 65, 85) !important;
 }
 
-input.form-control, textarea.form-control {
+input.form-control,
+textarea.form-control {
     background-color: $gray-700;
     border-color: $gray-600;
     color: white;
@@ -210,7 +220,8 @@ input.form-control, textarea.form-control {
     }
 }
 
-#go_to_preview_date, #preview_date_btn {
+#go_to_preview_date,
+#preview_date_btn {
     background-color: $bg-amber-800;
     border-color: $bg-amber-800;
 
@@ -219,7 +230,7 @@ input.form-control, textarea.form-control {
     }
 }
 
-.current_day{
+.current_day {
     background-image: linear-gradient(to right, rgba($current-day-color, 0.2), rgba($current-day-color, 0.2));
 }
 
@@ -258,7 +269,7 @@ input.form-control, textarea.form-control {
     border-top: 1px solid $gray-700 !important;
 }
 
-.badge-accent{
+.badge-accent {
     color: #222;
     background-color: #adb5bd;
 }
@@ -267,36 +278,36 @@ input.form-control, textarea.form-control {
     background-color: $gray-800;
 }
 
-.condition_container.Year{
-    background-color:darken(#FFEBEE, 90%);
+.condition_container.Year {
+    background-color: darken(#FFEBEE, 90%);
 }
 
-.condition_container.Month{
-    background-color:darken(#E0F2F1, 80%);
+.condition_container.Month {
+    background-color: darken(#E0F2F1, 80%);
 }
 
-.condition_container.Day{
-    background-color:darken(#F1F8E9, 80%);
+.condition_container.Day {
+    background-color: darken(#F1F8E9, 80%);
 }
 
-.condition_container.Epoch{
-    background-color:darken(#ECEFF1, 80%);
+.condition_container.Epoch {
+    background-color: darken(#ECEFF1, 80%);
 }
 
-.condition_container.Weekday{
-    background-color:darken(#FFFDE7, 80%);
+.condition_container.Weekday {
+    background-color: darken(#FFFDE7, 80%);
 }
 
-.condition_container.Week{
-    background-color:darken(#FFF3E0, 80%);
+.condition_container.Week {
+    background-color: darken(#FFF3E0, 80%);
 }
 
-.condition_container.Moons{
-    background-color:darken(#E3F2FD, 80%);
+.condition_container.Moons {
+    background-color: darken(#E3F2FD, 80%);
 }
 
-.condition_container.Cycle{
-    background-color:darken(#FAFAFA, 80%);
+.condition_container.Cycle {
+    background-color: darken(#FAFAFA, 80%);
 }
 
 .disabled {
@@ -304,11 +315,16 @@ input.form-control, textarea.form-control {
     color: $gray-800;
 }
 
-.form-check-input[disabled] ~ .form-check-label, .form-check-input:disabled ~ .form-check-label {
+.form-check-input[disabled]~.form-check-label,
+.form-check-input:disabled~.form-check-label {
     color: inherit;
 }
 
 mark {
     background-color: $bg-emerald-800;
     color: white;
+}
+
+[x-cloak] {
+    display: none;
 }

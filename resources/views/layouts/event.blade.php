@@ -56,13 +56,21 @@
                                             <div class='col-auto'>
                                                 <p><span class='username' x-text="comment.username"></span><span class='date' x-text='" - "+comment.date'></span></p>
                                             </div>
-                                            <div class='col-auto ml-auto' x-show="comment.comment_owner || comment.can_delete">
-                                                <button class="calendar_action btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" x-show="!comment.editing" type="button" :id="'dropdownButton-comment'+comment.id" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                                                <div class="dropdown-menu dropdown-menu-right" :aria-labelledby="'dropdownButton-comment'+comment.id">
-                                                    <button class='dropdown-item' @click="start_edit_comment(comment)" x-show="comment.comment_owner">
+                                            <div class='col-auto ml-auto' x-show="comment.comment_owner || comment.can_delete" x-data="{ open: false }" @click.away="open = false">
+                                                <button
+                                                    class="calendar_action btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+                                                    x-show="!comment.editing"
+                                                    type="button"
+                                                    :id="'dropdownButton-comment'+comment.id"
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    @click="open = !open"
+                                                ></button>
+                                                <div :class="{ 'show': open }" class="dropdown-menu dropdown-menu-right" :aria-labelledby="'dropdownButton-comment'+comment.id">
+                                                    <button class='dropdown-item' @click="start_edit_comment(comment); open = false;" x-show="comment.comment_owner">
                                                         <i class="fa fa-edit"></i> Edit
                                                     </button>
-                                                    <button class="dropdown-item" @click="delete_comment(comment)" x-show="comment.can_delete">
+                                                    <button class="dropdown-item" @click="delete_comment(comment); open = false;" x-show="comment.can_delete">
                                                         <i class="fa fa-calendar-times"></i> Delete
                                                     </button>
                                                 </div>

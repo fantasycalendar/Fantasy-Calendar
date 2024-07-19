@@ -45,6 +45,7 @@ body.page #content {
     }
 
     &.dropdown-toggle:after {
+        font-weight: 900;
         content: "\f142";
         font-family: "Font Awesome 5 Free";
         margin: 0;

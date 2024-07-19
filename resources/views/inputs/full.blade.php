@@ -1,4 +1,4 @@
-<div id="input_container" class='d-print-none'>
+<div id="input_container" class='d-print-none' x-cloak x-data>
     @include('inputs.sidebar.header')
 
     @yield('label')

@@ -1,8 +1,14 @@
 // Fonts
 @import url('https://rsms.me/inter/inter.css');
-html { font-family: 'Inter', sans-serif; }
+
+html {
+    font-family: 'Inter', sans-serif;
+}
+
 @supports (font-variation-settings: normal) {
-    html { font-family: 'Inter var', sans-serif; }
+    html {
+        font-family: 'Inter var', sans-serif;
+    }
 }
 
 @import 'quill/dist/quill.core';
@@ -35,24 +41,27 @@ html { font-family: 'Inter', sans-serif; }
 
 // contextmenu
 @import 'jquery-contextmenu/dist/jquery.contextMenu';
+
 // override stupid preset color
-.context-menu-icon.context-menu-icon--fa5 i{
+.context-menu-icon.context-menu-icon--fa5 i {
     color: inherit;
 }
-.context-menu-item.context-menu-hover{
-    background-color:$accent-color;
+
+.context-menu-item.context-menu-hover {
+    background-color: $accent-color;
 }
 
 .btn-outline-secondary {
     border-color: rgb(108, 117, 125, 0.3);
 }
 
-.badge-accent{
+.badge-accent {
     color: #fff;
     background-color: #6c757d;
 }
 
-#go_to_preview_date, #preview_date_btn {
+#go_to_preview_date,
+#preview_date_btn {
     background-color: $bg-amber-600;
     border-color: $bg-amber-600;
 
@@ -63,4 +72,8 @@ html { font-family: 'Inter', sans-serif; }
 
 mark {
     background-color: $bg-emerald-200
+}
+
+[x-cloak] {
+    display: none;
 }
