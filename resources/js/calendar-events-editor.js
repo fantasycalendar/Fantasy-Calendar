@@ -16,7 +16,7 @@ export default () => ({
     event_id: undefined,
     epoch_data: undefined,
     event_conditions_container: undefined,
-    trumbowyg: undefined,
+    event_description: '',
     inputs_changed: false,
     delete_hover_element: undefined,
     isDeletingDroppable: false,
@@ -240,6 +240,12 @@ export default () => ({
         }
     },
 
+    show() {
+        this.open = true;
+
+        this.$nextTick(() => this.$refs.event_name.focus());
+    },
+
     clone_event($event) {
 
         this.initialize($event);
@@ -267,7 +273,7 @@ export default () => ({
 
         this.inputs_changed = false;
 
-        this.open = true;
+        this.show();
     },
 
     create_new_event($event) {
@@ -331,7 +337,7 @@ export default () => ({
 
         this.add_preset_conditions(this.preset, this.nth);
 
-        this.open = true;
+        this.show();
 
     },
 
@@ -380,7 +386,7 @@ export default () => ({
 
         this.inputs_changed = false;
 
-        this.open = true;
+        this.show();
 
     },
 

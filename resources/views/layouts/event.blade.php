@@ -108,15 +108,9 @@
     x-data="CalendarEventEditor"
     class='clickable_background'
     id='event_editor'
-    @event-editor-modal-new-event.window="create_new_event($event); $nextTick(() => {
-        document.querySelector('.event_editor_name').focus();
-    });"
-    @event-editor-modal-edit-event.window="edit_event($event); $nextTick(() => {
-        document.querySelector('.event_editor_name').focus();
-    });"
-    @event-editor-modal-clone-event.window="clone_event($event); $nextTick(() => {
-        document.querySelector('.event_editor_name').focus();
-    });"
+    @event-editor-modal-new-event.window="create_new_event"
+    @event-editor-modal-edit-event.window="edit_event"
+    @event-editor-modal-clone-event.window="clone_event"
     @event-editor-modal-delete-event.window="confirm_delete_event"
     @keydown.escape.window="esc_clicked($event)"
     x-show.immediate='open'
@@ -139,7 +133,7 @@
                 </div>
 
                 <div class='row no-gutters my-1'>
-                    <input maxlength="255" type='text' class='form-control event_editor_name' x-model='working_event.name' placeholder='Event name' autofocus='' @keydown.enter="save_event" @keydown.esc.stop />
+                    <input maxlength="255" type='text' x-ref="event_name" class='form-control event_editor_name' x-model='working_event.name' placeholder='Event name' autofocus='' @keydown.enter="save_event" @keydown.esc.stop />
                 </div>
 
                 <div class='row no-gutters my-1'>
