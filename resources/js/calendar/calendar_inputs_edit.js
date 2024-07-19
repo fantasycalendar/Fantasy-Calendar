@@ -496,17 +496,17 @@ export function set_up_edit_inputs() {
     $(document).on('click', '.expand', function() {
         var parent = $(this).closest('.collapsible');
         if (parent.hasClass('collapsed')) {
-            $(this).removeClass('icon-expand').addClass('icon-collapse');
+            $(this).removeClass('fa-caret-square-down').addClass('fa-caret-square-up');
             parent.removeClass('collapsed').addClass('expanded');
         } else {
-            $(this).removeClass('icon-collapse').addClass('icon-expand');
+            $(this).removeClass('fa-caret-square-up').addClass('fa-caret-square-down');
             parent.removeClass('expanded').addClass('collapsed');
         }
     });
 
     $(document).on('click', '.location_toggle', function() {
         var checked = $(this).is(':checked');
-        $(this).parent().find('.icon').toggleClass('icon-collapse', checked).toggleClass('icon-expand', !checked);
+        $(this).parent().find('.icon').toggleClass('fa-caret-square-up', checked).toggleClass('fa-caret-square-down', !checked);
     });
 
     $('.add_inputs.moon .add').click(function() {
@@ -2869,7 +2869,7 @@ function add_weekday_to_sortable(parent, key, name) {
 
     element.push("<div class='sortable-container list-group-item week_day'>");
     element.push("<div class='main-container'>");
-    element.push("<div class='handle icon-reorder'></div>");
+    element.push("<div class='handle fa fa-bars'></div>");
     element.push("<div class='name-container'>");
     element.push(`<input type='text' class='form-control name-input small-input dynamic_input week_day_name' data='year_data.global_week' fc-index='${key}' tabindex='${(key + 1)}'/>`);
     element.push("</div>");
@@ -2877,9 +2877,9 @@ function add_weekday_to_sortable(parent, key, name) {
     element.push("</div>");
     element.push("<div class='remove-container'>");
     element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-    element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-    element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-    element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
+    element.push("<div class='btn_remove btn btn-danger fa fa-trash'></div>");
+    element.push("<div class='btn_cancel btn btn-danger fa fa-xmark'></div>");
+    element.push("<div class='btn_accept btn btn-success fa fa-check'></div>");
     element.push("</div>");
 
     element.push("</div>");
@@ -2899,8 +2899,8 @@ function add_timespan_to_sortable(parent, key, data) {
     var element = $(
         `<div class='sortable-container list-group-item ${data.type} collapsed collapsible' type='${data.type}' index='${key}' x-data="{ type: '${data.type}', week: JSON.parse(decodeURIComponent(atob('${weekBase64}'))) }">
             <div class='main-container' x-data="{ deleting: false }">
-			<div class='handle icon-reorder' x-show="reordering && !deleting"></div>
-			<div class='expand icon-expand' x-show="!reordering && !deleting"></div>
+			<div class='handle fa fa-bars' x-show="reordering && !deleting"></div>
+			<div class='expand fa fa-caret-square-down' x-show="!reordering && !deleting"></div>
 			<div class='name-container input-group' x-show="!deleting">
                 <input value="${data.name}" type='text' step='1.0' tabindex='${(100 + key)}' class='flex-grow-1 name-input small-input form-control dynamic_input pr-0' data='year_data.timespans.${key}' fc-index='name'/>
                 <input @blur="if ((!$event.target.value) || $event.target.value < 1) { $event.target.value = 1; } else { console.log($event.target.value) }" type='number' min='1' class='flex-shrink-1 length-input form-control dynamic_input timespan_length' data='year_data.timespans.${key}' fc-index='length' tabindex='${(100 + key)}' value='${data.length}'/>
@@ -2908,11 +2908,11 @@ function add_timespan_to_sortable(parent, key, data) {
             <div class='d-flex align-items-center justify-content-between full' :class="{ 'hidden': !deleting }">
                 <div class='pl-1'>Are you sure?</div>
                 <div class='d-flex align-items-center'>
-                    <div @click='deleting = false' class='btn btn-danger icon-remove mx-1'></div>
-                    <div class='btn_accept btn btn-success icon-ok d-block'></div>
+                    <div @click='deleting = false' class='btn btn-danger fa fa-xmark mx-1'></div>
+                    <div class='btn_accept btn btn-success fa fa-check d-block'></div>
                 </div>
             </div>
-            <div @click='deleting = true' class='btn btn-danger icon-trash ml-1' x-show="reordering && !deleting"></div>
+            <div @click='deleting = true' class='btn btn-danger fa fa-trash ml-1' x-show="reordering && !deleting"></div>
 		</div>
 
 		<div class='collapse-container container pb-2'>
@@ -3008,7 +3008,7 @@ function add_leap_day_to_list(parent, key, data) {
 
     element.push(`<div class='sortable-container list-group-item ${(data.intercalary ? 'intercalary leap-day' : 'leap-day')} collapsed collapsible' type='${(data.intercalary ? 'intercalary' : 'normal')}' index='${key}'>`);
     element.push("<div class='main-container'>");
-    element.push("<div class='expand icon-expand'></div>");
+    element.push("<div class='expand fa fa-caret-square-down'></div>");
     element.push("<div class='name-container'>");
     element.push(`<input type='text' class='name-input small-input form-control dynamic_input' data='year_data.leap_days.${key}' fc-index='name' tabindex='${(200 + key)}'/>`);
     element.push("</div>");
@@ -3016,9 +3016,9 @@ function add_leap_day_to_list(parent, key, data) {
     element.push("</div>");
     element.push("<div class='remove-container'>");
     element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-    element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-    element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-    element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
+    element.push("<div class='btn_remove btn btn-danger fa fa-trash'></div>");
+    element.push("<div class='btn_cancel btn btn-danger fa fa-xmark'></div>");
+    element.push("<div class='btn_accept btn btn-success fa fa-check'></div>");
     element.push("</div>");
 
     element.push("<div class='collapse-container container mb-2'>");
@@ -3183,9 +3183,9 @@ function add_moon_to_list(parent, key, data) {
     element.push("</div>");
     element.push("<div class='remove-container'>");
     element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-    element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-    element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-    element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
+    element.push("<div class='btn_remove btn btn-danger fa fa-trash'></div>");
+    element.push("<div class='btn_cancel btn btn-danger fa fa-xmark'></div>");
+    element.push("<div class='btn_accept btn btn-success fa fa-check'></div>");
     element.push("</div>");
 
     element.push("<div class='collapse-container container mb-2'>");
@@ -3312,9 +3312,9 @@ function add_season_to_sortable(parent, key, data) {
     element.push(`<div class='sortable-container list-group-item season collapsed collapsible' index='${key}'>`);
     element.push("<div class='main-container'>");
     if (window.static_data.seasons.global_settings.periodic_seasons) {
-        element.push("<div class='handle icon-reorder'></div>");
+        element.push("<div class='handle fa fa-bars'></div>");
     }
-    element.push("<div class='expand icon-expand'></div>");
+    element.push("<div class='expand fa fa-caret-square-down'></div>");
     element.push("<div class='name-container'>");
     element.push(`<input type='text' tabindex='${(400 + key)}'class='name-input small-input form-control dynamic_input' data='seasons.data.${key}' fc-index='name'/>`);
     element.push("</div>");
@@ -3322,9 +3322,9 @@ function add_season_to_sortable(parent, key, data) {
     element.push("</div>");
     element.push("<div class='remove-container'>");
     element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-    element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-    element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-    element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
+    element.push("<div class='btn_remove btn btn-danger fa fa-trash'></div>");
+    element.push("<div class='btn_cancel btn btn-danger fa fa-xmark'></div>");
+    element.push("<div class='btn_accept btn btn-success fa fa-check'></div>");
     element.push("</div>");
     element.push("<div class='collapse-container container mb-2'>");
 
@@ -3477,7 +3477,7 @@ function add_location_to_list(parent, key, data) {
 
     element.push(`<div class='sortable-container list-group-item location collapsed collapsible' index='${key}'>`);
     element.push("<div class='main-container'>");
-    element.push("<div class='expand icon-expand'></div>");
+    element.push("<div class='expand fa fa-caret-square-down'></div>");
     element.push("<div class='name-container'>");
     element.push(`<input type='text' tabindex='${(500 + key)}' class='name-input small-input form-control dynamic_input location-name' data='seasons.locations.${key}' fc-index='name'/>`);
     element.push("</div>");
@@ -3486,9 +3486,9 @@ function add_location_to_list(parent, key, data) {
 
     element.push("<div class='remove-container'>");
     element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-    element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-    element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-    element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
+    element.push("<div class='btn_remove btn btn-danger fa fa-trash'></div>");
+    element.push("<div class='btn_cancel btn btn-danger fa fa-xmark'></div>");
+    element.push("<div class='btn_accept btn btn-success fa fa-check'></div>");
     element.push("</div>");
     element.push("<div class='collapse-container container mb-2'>");
 
@@ -3496,7 +3496,7 @@ function add_location_to_list(parent, key, data) {
 
         element.push(`<div class='m-0 my-2 cycle-container wrap-collapsible location_season' fc-index='${i}'>`);
         element.push(`<input id='collapsible_seasons_${key}_${i}' class='toggle location_toggle' type='checkbox'>`);
-        element.push(`<label for='collapsible_seasons_${key}_${i}' class='lbl-toggle location_name'><div class='icon icon-expand'></div>${window.static_data.seasons.data[i].name} weather</label>`);
+        element.push(`<label for='collapsible_seasons_${key}_${i}' class='lbl-toggle location_name'><div class='icon fa fa-caret-square-down'></div>${window.static_data.seasons.data[i].name} weather</label>`);
 
         element.push("<div class='collapsible-content container p-0'>");
 
@@ -3744,16 +3744,16 @@ function add_cycle_to_sortable(parent, key, data) {
 
     element.push(`<div class='sortable-container list-group-item cycle_inputs collapsed collapsible' index='${key}'>`);
     element.push("<div class='main-container'>");
-    element.push("<div class='handle icon-reorder'></div>");
-    element.push("<div class='expand icon-expand'></div>");
+    element.push("<div class='handle fa fa-bars'></div>");
+    element.push("<div class='expand fa fa-caret-square-down'></div>");
     element.push(`<div class='name-container cycle-text center-text'>Cycle #${(key + 1)} - Using {{${(key + 1)}}}</div>`);
     element.push('<div class="remove-spacer"></div>');
     element.push("</div>");
     element.push("<div class='remove-container'>");
     element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-    element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-    element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-    element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
+    element.push("<div class='btn_remove btn btn-danger fa fa-trash'></div>");
+    element.push("<div class='btn_cancel btn btn-danger fa fa-xmark'></div>");
+    element.push("<div class='btn_accept btn btn-success fa fa-check'></div>");
     element.push("</div>");
 
     element.push("<div class='collapse-container container'>");
@@ -3833,7 +3833,7 @@ function add_era_to_list(parent, key, data) {
 
     element.push(`<div class='sortable-container list-group-item era_inputs collapsed collapsible' index='${key}'>`);
     element.push("<div class='main-container'>");
-    element.push("<div class='expand icon-expand'></div>");
+    element.push("<div class='expand fa fa-caret-square-down'></div>");
     element.push("<div class='name-container'>");
     element.push(`<input type='text' class='form-control name-input small-input dynamic_input' data='eras.${key}' fc-index='name' tabindex='${(800 + key)}'/>`);
     element.push("</div>");
@@ -3841,9 +3841,9 @@ function add_era_to_list(parent, key, data) {
     element.push("</div>");
     element.push("<div class='remove-container'>");
     element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-    element.push("<div class='btn_remove btn btn-danger icon-trash'></div>");
-    element.push("<div class='btn_cancel btn btn-danger icon-remove'></div>");
-    element.push("<div class='btn_accept btn btn-success icon-ok'></div>");
+    element.push("<div class='btn_remove btn btn-danger fa fa-trash'></div>");
+    element.push("<div class='btn_cancel btn btn-danger fa fa-xmark'></div>");
+    element.push("<div class='btn_accept btn btn-success fa fa-check'></div>");
     element.push("</div>");
 
     element.push("<div class='collapse-container container mb-2'>");
@@ -3999,7 +3999,7 @@ function add_category_to_list(parent, key, data) {
     parent.append(`<div class='sortable-container list-group-item category_inputs collapsed collapsible' index='${key}' x-data='{ color: "${data.event_settings.color}", text_style: "${data.event_settings.text}" }'>
 
 		<div class='main-container'>
-			<div class='expand icon-expand'></div>
+			<div class='expand fa fa-caret-square-down'></div>
 			<div class='name-container'>
 				<input value='${data.name}' type='text' name='name_input' fc-index='name' class='form-control name-input small-input category_name_input' data='${key}' tabindex='${(700 + key)}'/>
 			</div>
@@ -4007,9 +4007,9 @@ function add_category_to_list(parent, key, data) {
 		</div>
 		<div class='remove-container'>
 			<div class='remove-container-text'>Are you sure you want to remove this?</div>
-			<div class='btn_remove btn btn-danger icon-trash'></div>
-			<div class='btn_cancel btn btn-danger icon-remove'></div>
-			<div class='btn_accept btn btn-success icon-ok'></div>
+			<div class='btn_remove btn btn-danger fa fa-trash'></div>
+			<div class='btn_cancel btn btn-danger fa fa-xmark'></div>
+			<div class='btn_accept btn btn-success fa fa-check'></div>
 		</div>
 		<div class='collapse-container container mb-2'>
 

@@ -79,31 +79,31 @@
                     @else
                         <div class='input-group protip mt-2' value='current' data-pt-position='right' data-pt-title="The current year">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_year' id='sub_current_year'><i class="icon-minus"></i></button>
+                                <button type='button' class='btn btn-danger sub_year' id='sub_current_year'><i class="fa fa-minus"></i></button>
                             </div>
                             <input class='form-control year-input' id='current_year' type='number'>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_year' id='add_current_year'><i class="icon-plus"></i></button>
+                                <button type='button' class='btn btn-success add_year' id='add_current_year'><i class="fa fa-plus"></i></button>
                             </div>
                         </div>
 
                         <div class='input-group protip mt-2' value='current' data-pt-position='right' data-pt-title="The current month in the year">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_timespan' id='sub_current_timespan'><i class="icon-minus"></i></button>
+                                <button type='button' class='btn btn-danger sub_timespan' id='sub_current_timespan'><i class="fa fa-minus"></i></button>
                             </div>
                             <select class='form-control timespan-list inclusive date' id='current_timespan'></select>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_timespan' id='add_current_timespan'><i class="icon-plus"></i></button>
+                                <button type='button' class='btn btn-success add_timespan' id='add_current_timespan'><i class="fa fa-plus"></i></button>
                             </div>
                         </div>
 
                         <div class='input-group protip mt-2' value='current' data-pt-position='right' data-pt-title="The current day in the month">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_day' id='sub_current_day'><i class="icon-minus"></i></button>
+                                <button type='button' class='btn btn-danger sub_day' id='sub_current_day'><i class="fa fa-minus"></i></button>
                             </div>
                             <select class='form-control timespan-day-list inclusive date' id='current_day'></select>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_day' id='add_current_day'><i class="icon-plus"></i></button>
+                                <button type='button' class='btn btn-success add_day' id='add_current_day'><i class="fa fa-plus"></i></button>
                             </div>
                         </div>
 
@@ -133,31 +133,31 @@
                 }">
                 <div class='input-group protip mt-2' value='target' data-pt-position='right' data-pt-title="The preview year">
                     <div class='input-group-prepend'>
-                        <button type='button' class='btn btn-danger sub_year' id='sub_target_year'><i class="icon-minus"></i></button>
+                        <button type='button' class='btn btn-danger sub_year' id='sub_target_year'><i class="fa fa-minus"></i></button>
                     </div>
                     <input class='form-control year-input' id='target_year' type='number'>
                     <div class='input-group-append'>
-                        <button type='button' class='btn btn-success add_year' id='add_target_year'><i class="icon-plus"></i></button>
+                        <button type='button' class='btn btn-success add_year' id='add_target_year'><i class="fa fa-plus"></i></button>
                     </div>
                 </div>
 
                 <div class='input-group protip mt-2' value='target' data-pt-position='right' data-pt-title="The preview month of the preview year">
                     <div class='input-group-prepend'>
-                        <button type='button' class='btn btn-danger sub_timespan' id='sub_target_timespan'><i class="icon-minus"></i></button>
+                        <button type='button' class='btn btn-danger sub_timespan' id='sub_target_timespan'><i class="fa fa-minus"></i></button>
                     </div>
                     <select class='form-control timespan-list inclusive date' id='target_timespan'></select>
                     <div class='input-group-append'>
-                        <button type='button' class='btn btn-success add_timespan' id='add_target_timespan'><i class="icon-plus"></i></button>
+                        <button type='button' class='btn btn-success add_timespan' id='add_target_timespan'><i class="fa fa-plus"></i></button>
                     </div>
                 </div>
 
                 <div class='input-group protip mt-2' value='target' data-pt-position='right' data-pt-title="The current day of the preview month">
                     <div class='input-group-prepend'>
-                        <button type='button' class='btn btn-danger sub_day' id='sub_target_day'><i class="icon-minus"></i></button>
+                        <button type='button' class='btn btn-danger sub_day' id='sub_target_day'><i class="fa fa-minus"></i></button>
                     </div>
                     <select class='form-control timespan-day-list inclusive date' id='target_day'></select>
                     <div class='input-group-append'>
-                        <button type='button' class='btn btn-success add_day' id='add_target_day'><i class="icon-plus"></i></button>
+                        <button type='button' class='btn btn-success add_day' id='add_target_day'><i class="fa fa-plus"></i></button>
                     </div>
                 </div>
 

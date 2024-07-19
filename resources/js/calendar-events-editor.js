@@ -240,14 +240,14 @@ export default () => ({
             this.delete_hover_element.removeClass('hover').removeClass('cursor-pointer');
             this.delete_hover_element.find('select').not('.condition_operator').prop('disabled', false);
             this.delete_hover_element.find('input').prop('disabled', false);
-            this.delete_hover_element.find('.icon-reorder').addClass('handle');
+            this.delete_hover_element.find('.fa-bars').addClass('handle');
         }
         this.delete_hover_element = element;
         if (this.delete_hover_element !== undefined) {
             this.delete_hover_element.addClass('hover').addClass('cursor-pointer');
             this.delete_hover_element.find('select').not('.condition_operator').prop('disabled', true);
             this.delete_hover_element.find('input').prop('disabled', true);
-            this.delete_hover_element.find('.icon-reorder').removeClass('handle');
+            this.delete_hover_element.find('.fa-bars').removeClass('handle');
         }
     },
 
@@ -2113,7 +2113,7 @@ export default () => ({
 
         html.push("<li class='condition'>");
         html.push(`<div class='condition_container ${type}'>`);
-        html.push("<div class='handle icon-reorder'></div>");
+        html.push("<div class='handle fa fa-bars'></div>");
         html.push("<select class='form-control moon_select'>");
         for (let i = 0; i < window.static_data.moons.length; i++) {
             html.push(`<option value='${i}'>`);
@@ -2213,7 +2213,7 @@ export default () => ({
         html.push(`<label><input type='radio' ${(group_class === "num" ? "checked" : "")} name=''>AT LEAST</label><input type='number' class='form-control num_group_con' disabled>`);
         html.push("</div>");
         html.push("</div>");
-        html.push("<div class='handle icon-reorder'></div>");
+        html.push("<div class='handle fa fa-bars'></div>");
         html.push("<ol class='group_list'></ol>");
         html.push("<select class='form-control condition_operator' disabled>");
         html.push("<option value='&&'>AND  - both must be true</option>");

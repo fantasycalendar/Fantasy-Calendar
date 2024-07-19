@@ -43,7 +43,7 @@
                                                                                     data-pt-title='More Info: Statistics'
                                                                                     href='{{ helplink('statistics') }}'
                                                                                     class="wiki protip">
-                    <i class="icon-question-sign"></i></a>
+                    <i class="fa fa-question-circle"></i></a>
             </label>
             <div class="collapsible-content card-body">
                 <div class='row no-gutters'>
@@ -81,7 +81,7 @@
                                                                                 data-pt-title='More Info: Date'
                                                                                 href='{{ helplink('current_date_and_time') }}'
                                                                                 class="wiki protip"><i
-                            class="icon-question-sign"></i></a></label>
+                            class="fa fa-question-circle"></i></a></label>
             <div class="collapsible-content card-body">
                 <div id='clock'>
                     <canvas style="z-index: 2;" id="clock_face"></canvas>
@@ -116,31 +116,31 @@
                         @else
                             <div class='input-group protip mt-2' value='current' data-pt-position='right' data-pt-title="The current year">
                                 <div class='input-group-prepend'>
-                                    <button type='button' class='btn btn-danger sub_year' id='sub_current_year'><i class="icon-minus"></i></button>
+                                    <button type='button' class='btn btn-danger sub_year' id='sub_current_year'><i class="fa fa-minus"></i></button>
                                 </div>
                                 <input class='form-control year-input' id='current_year' type='number'>
                                 <div class='input-group-append'>
-                                    <button type='button' class='btn btn-success add_year' id='add_current_year'><i class="icon-plus"></i></button>
+                                    <button type='button' class='btn btn-success add_year' id='add_current_year'><i class="fa fa-plus"></i></button>
                                 </div>
                             </div>
 
                             <div class='input-group protip mt-2' value='current' data-pt-position='right' data-pt-title="The current month in the year">
                                 <div class='input-group-prepend'>
-                                    <button type='button' class='btn btn-danger sub_timespan' id='sub_current_timespan'><i class="icon-minus"></i></button>
+                                    <button type='button' class='btn btn-danger sub_timespan' id='sub_current_timespan'><i class="fa fa-minus"></i></button>
                                 </div>
                                 <select class='form-control timespan-list inclusive date' id='current_timespan'></select>
                                 <div class='input-group-append'>
-                                    <button type='button' class='btn btn-success add_timespan' id='add_current_timespan'><i class="icon-plus"></i></button>
+                                    <button type='button' class='btn btn-success add_timespan' id='add_current_timespan'><i class="fa fa-plus"></i></button>
                                 </div>
                             </div>
 
                             <div class='input-group protip mt-2' value='current' data-pt-position='right' data-pt-title="The current day in the month">
                                 <div class='input-group-prepend'>
-                                    <button type='button' class='btn btn-danger sub_day' id='sub_current_day'><i class="icon-minus"></i></button>
+                                    <button type='button' class='btn btn-danger sub_day' id='sub_current_day'><i class="fa fa-minus"></i></button>
                                 </div>
                                 <select class='form-control timespan-day-list inclusive date' id='current_day'></select>
                                 <div class='input-group-append'>
-                                    <button type='button' class='btn btn-success add_day' id='add_current_day'><i class="icon-plus"></i></button>
+                                    <button type='button' class='btn btn-success add_day' id='add_current_day'><i class="fa fa-plus"></i></button>
                                 </div>
                             </div>
 
@@ -166,31 +166,31 @@
                     <div class='date_control preview_date_controls mt-3' :class="{ 'd-flex flex-column': activeDateAdjustment === 'preview', 'd-none': activeDateAdjustment !== 'preview' }">
                         <div class='input-group protip mt-2' value='target' data-pt-position='right' data-pt-title="The preview year">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_year' id='sub_target_year'><i class="icon-minus"></i></button>
+                                <button type='button' class='btn btn-danger sub_year' id='sub_target_year'><i class="fa fa-minus"></i></button>
                             </div>
                             <input class='form-control year-input' id='target_year' type='number'>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_year' id='add_target_year'><i class="icon-plus"></i></button>
+                                <button type='button' class='btn btn-success add_year' id='add_target_year'><i class="fa fa-plus"></i></button>
                             </div>
                         </div>
 
                         <div class='input-group protip mt-2' value='target' data-pt-position='right' data-pt-title="The preview month of the preview year">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_timespan' id='sub_target_timespan'><i class="icon-minus"></i></button>
+                                <button type='button' class='btn btn-danger sub_timespan' id='sub_target_timespan'><i class="fa fa-minus"></i></button>
                             </div>
                             <select class='form-control timespan-list inclusive date' id='target_timespan'></select>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_timespan' id='add_target_timespan'><i class="icon-plus"></i></button>
+                                <button type='button' class='btn btn-success add_timespan' id='add_target_timespan'><i class="fa fa-plus"></i></button>
                             </div>
                         </div>
 
                         <div class='input-group protip mt-2' value='target' data-pt-position='right' data-pt-title="The current day of the preview month">
                             <div class='input-group-prepend'>
-                                <button type='button' class='btn btn-danger sub_day' id='sub_target_day'><i class="icon-minus"></i></button>
+                                <button type='button' class='btn btn-danger sub_day' id='sub_target_day'><i class="fa fa-minus"></i></button>
                             </div>
                             <select class='form-control timespan-day-list inclusive date' id='target_day'></select>
                             <div class='input-group-append'>
-                                <button type='button' class='btn btn-success add_day' id='add_target_day'><i class="icon-plus"></i></button>
+                                <button type='button' class='btn btn-success add_day' id='add_target_day'><i class="fa fa-plus"></i></button>
                             </div>
                         </div>
 
@@ -243,7 +243,7 @@
             <label for="collapsible_clock" class="lbl-toggle py-2 pr-3 card-header"><i class="mr-2 fa fa-clock"></i>
                 Clock <a target="_blank" data-pt-position="right" data-pt-title='More Info: Clock'
                          href='{{ helplink('clock') }}' class="wiki protip"><i
-                            class="icon-question-sign"></i></a></label>
+                            class="fa fa-question-circle"></i></a></label>
             <div class="collapsible-content card-body">
 
                 <div class='row'>
@@ -287,14 +287,14 @@
                             @else
                                 <div class='input-group-prepend'>
                                     <button type='button' class='btn btn-sm btn-danger'
-                                            onclick='adjustInput(this, "#clock_hours", -1);'><i class="icon-minus"></i>
+                                            onclick='adjustInput(this, "#clock_hours", -1);'><i class="fa fa-minus"></i>
                                     </button>
                                 </div>
                                 <input class='form-control form-control-sm static_input' min='1' id='clock_hours'
                                        data='clock' fc-index='hours' type='number'>
                                 <div class='input-group-append'>
                                     <button type='button' class='btn btn-sm btn-success'
-                                            onclick='adjustInput(this, "#clock_hours", +1);'><i class="icon-plus"></i>
+                                            onclick='adjustInput(this, "#clock_hours", +1);'><i class="fa fa-plus"></i>
                                     </button>
                                 </div>
                             @endif
@@ -307,13 +307,13 @@
                                 <div class='input-group-prepend'>
                                     <button type='button' class='btn btn-sm btn-danger'
                                             onclick='adjustInput(this, "#clock_minutes", -1);'><i
-                                                class="icon-minus"></i></button>
+                                                class="fa fa-minus"></i></button>
                                 </div>
                                 <input class='form-control form-control-sm static_input' min='1' id='clock_minutes'
                                        data='clock' fc-index='minutes' type='number'>
                                 <div class='input-group-append'>
                                     <button type='button' class='btn btn-sm btn-success'
-                                            onclick='adjustInput(this, "#clock_minutes", +1);'><i class="icon-plus"></i>
+                                            onclick='adjustInput(this, "#clock_minutes", +1);'><i class="fa fa-plus"></i>
                                     </button>
                                 </div>
                             @endif
@@ -335,7 +335,7 @@
                         <div class='col-6 input-group'>
                             <div class='input-group-prepend'>
                                 <button type='button' class='btn btn-sm btn-danger'
-                                        onclick='adjustInput(this, "#clock_offset", -1);'><i class="icon-minus"></i>
+                                        onclick='adjustInput(this, "#clock_offset", -1);'><i class="fa fa-minus"></i>
                                 </button>
                             </div>
 
@@ -344,7 +344,7 @@
 
                             <div class='input-group-append'>
                                 <button type='button' class='btn btn-sm btn-success'
-                                        onclick='adjustInput(this, "#clock_offset", +1);'><i class="icon-plus"></i>
+                                        onclick='adjustInput(this, "#clock_offset", +1);'><i class="fa fa-plus"></i>
                                 </button>
                             </div>
                         </div>
@@ -352,7 +352,7 @@
                         <div class='col-6 pl-0 input-group'>
                             <div class='input-group-prepend'>
                                 <button type='button' class='btn btn-sm btn-danger'
-                                        onclick='adjustInput(this, "#clock_crowding", -1);'><i class="icon-minus"></i>
+                                        onclick='adjustInput(this, "#clock_crowding", -1);'><i class="fa fa-minus"></i>
                                 </button>
                             </div>
 
@@ -361,7 +361,7 @@
 
                             <div class='input-group-append'>
                                 <button type='button' class='btn btn-sm btn-success'
-                                        onclick='adjustInput(this, "#clock_crowding", +1);'><i class="icon-plus"></i>
+                                        onclick='adjustInput(this, "#clock_crowding", +1);'><i class="fa fa-plus"></i>
                                 </button>
                             </div>
                         </div>
@@ -398,7 +398,7 @@
                     @endif
                     <a target="_blank" data-pt-position="right" data-pt-title='More Info: Real-Time Advancement'
                        href='{{ helplink('real_time_advancement') }}' class="wiki protip"><i
-                                class="icon-question-sign"></i></a></label>
+                                class="fa fa-question-circle"></i></a></label>
                 <div class="collapsible-content card-body">
 
                     @if(isset($calendar) && $calendar->isPremium())
@@ -577,7 +577,7 @@
                                                                            data-pt-title='More Info: Weekdays'
                                                                            href='{{ helplink('weekdays') }}'
                                                                            class="wiki protip"><i
-                            class="icon-question-sign"></i></a></label>
+                            class="fa fa-question-circle"></i></a></label>
             <div class="collapsible-content card-body">
 
                 <div class='row center-text hidden' id='overflow_explanation'>
@@ -685,7 +685,7 @@
                                                                         data-pt-title='More Info: Months & Intercalaries'
                                                                         href='{{ helplink('months') }}'
                                                                         class="wiki protip"><i
-                            class="icon-question-sign"></i></a></label>
+                            class="fa fa-question-circle"></i></a></label>
             <div class="collapsible-content card-body" x-data="{ reordering: false }">
 
                 @if(request()->is('calendars/*/edit') && $calendar->isLinked())
@@ -785,7 +785,7 @@
                                                                            data-pt-title='More Info: Leap Days'
                                                                            href='{{ helplink('leap_days') }}'
                                                                            class="wiki protip"><i
-                            class="icon-question-sign"></i></a></label>
+                            class="fa fa-question-circle"></i></a></label>
             <div class="collapsible-content content card-body">
 
                 @if(request()->is('calendars/*/edit') && $calendar->isLinked())
@@ -871,7 +871,7 @@
             <input id="collapsible_eras" class="toggle" type="checkbox">
             <label for="collapsible_eras" class="lbl-toggle py-2 pr-3 card-header"><i class="mr-2 fas fa-infinity"></i>
                 Eras <a target="_blank" data-pt-position="right" data-pt-title='More Info: Eras'
-                        href='{{ helplink('eras') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+                        href='{{ helplink('eras') }}' class="wiki protip"><i class="fa fa-question-circle"></i></a></label>
             <div class="collapsible-content card-body">
 
                 @if(request()->is('calendars/*/edit') && $calendar->isLinked())
@@ -938,7 +938,7 @@
             <label for="collapsible_moon" class="lbl-toggle py-2 pr-3 card-header"><i class="mr-2 fas fa-moon"></i>
                 Moons <a target="_blank" data-pt-position="right" data-pt-title='More Info: Moons'
                          href='{{ helplink('moons') }}' class="wiki protip"><i
-                            class="icon-question-sign"></i></a></label>
+                            class="fa fa-question-circle"></i></a></label>
             <div class="collapsible-content card-body">
 
                 <div class='row bold-text'>
@@ -996,7 +996,7 @@
                     </div>
                 </div>
                 Seasons<a target="_blank" data-pt-position="right" data-pt-title='More Info: Seasons'
-                          href='{{ helplink('seasons') }}' class="wiki protip"><i class="icon-question-sign"></i></a>
+                          href='{{ helplink('seasons') }}' class="wiki protip"><i class="fa fa-question-circle"></i></a>
             </label>
             <div class="collapsible-content card-body">
 
@@ -1088,7 +1088,7 @@
                                                                           data-pt-title='More Info: Weather'
                                                                           href='{{ helplink('weather') }}'
                                                                           class="wiki protip"><i
-                            class="icon-question-sign"></i></a></label>
+                            class="fa fa-question-circle"></i></a></label>
             <div class="collapsible-content card-body">
 
                 <div id='no_seasons_container' class='row no-gutters'>
@@ -1184,7 +1184,7 @@
                                                                       data-pt-title='More Info: Locations'
                                                                       href='{{ helplink('locations') }}'
                                                                       class="wiki protip"><i
-                            class="icon-question-sign"></i></a></label>
+                            class="fa fa-question-circle"></i></a></label>
             <div class="collapsible-content card-body">
 
                 <div id='locations_warning' class='row no-gutters mb-2'>
@@ -1248,7 +1248,7 @@
             <label for="collapsible_cycles" class="lbl-toggle py-2 pr-3 card-header"><i class="mr-2 fas fa-redo"></i>
                 Cycles <a target="_blank" data-pt-position="right" data-pt-title='More Info: Cycles'
                           href='{{ helplink('cycles') }}' class="wiki protip"><i
-                            class="icon-question-sign"></i></a></label>
+                            class="fa fa-question-circle"></i></a></label>
             <div class="collapsible-content card-body">
 
                 <div class='row no-gutters bold-text'>
@@ -1285,7 +1285,7 @@
                                                                              data-pt-title='More Info: Event Categories'
                                                                              href='{{ helplink('event_categories') }}'
                                                                              class="wiki protip"><i
-                            class="icon-question-sign"></i></a></label>
+                            class="fa fa-question-circle"></i></a></label>
             <div class="collapsible-content card-body">
 
                 <div class='row no-gutters bold-text'>
@@ -1330,7 +1330,7 @@
                                    data-pt-title='More Info: Events'
                                    href='{{ helplink('events') }}'
                                    class="wiki protip">
-                    <i class="icon-question-sign"></i></a>
+                    <i class="fa fa-question-circle"></i></a>
             </label>
             <div class="collapsible-content card-body">
 
@@ -1421,7 +1421,7 @@
                         <template x-for="(event, index) in events" :key="index" x-ref="events-sortable-template">
                             <div class='sortable-container border-t -mt-px list-group-item draggable-source' :data-id="index">
                                 <div class='main-container'>
-                                    <i class='handle icon-reorder'></i>
+                                    <i class='handle fa fa-bars'></i>
                                     <div class="input-group row no-gutters">
                                         <div class="input-group-prepend col">
                                             <button type="button"
@@ -1431,7 +1431,7 @@
                                             </button>
                                         </div>
                                         <div class="input-group-append col-auto">
-                                            <div class='btn btn-danger icon-trash' @click="$dispatch('event-editor-modal-delete-event', { event_id: index })"></div>
+                                            <div class='btn btn-danger fa fa-trash' @click="$dispatch('event-editor-modal-delete-event', { event_id: index })"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -1452,7 +1452,7 @@
             <input id="collapsible_settings" class="toggle" type="checkbox">
             <label for="collapsible_settings" class="lbl-toggle py-2 pr-3 card-header"><i class="mr-2 fas fa-cog"></i>
                 Settings <a target="_blank" data-pt-position="right" data-pt-title='More Info: Settings'
-                            href='{{ helplink('settings') }}' class="wiki protip"><i class="icon-question-sign"></i></a></label>
+                            href='{{ helplink('settings') }}' class="wiki protip"><i class="fa fa-question-circle"></i></a></label>
             <div class="collapsible-content card-body">
 
                 <div class='add_inputs'>
@@ -1718,7 +1718,7 @@
                     @endif
                     <a target="_blank" data-pt-position="right" data-pt-title='More Info: User Management'
                        href='{{ helplink('user_management') }}' class="wiki protip"><i
-                                class="icon-question-sign"></i></a></label>
+                                class="fa fa-question-circle"></i></a></label>
                 <div class="collapsible-content card-body">
 
                     @if(Auth::user()->can('add-users', $calendar))
@@ -1778,7 +1778,7 @@
                         </span>
                     @endif
                     <a target="_blank" data-pt-position="right" data-pt-title='More Info: Calendar Linking'
-                       href='{{ helplink('calendar_linking') }}' class="wiki protip"><i class="icon-question-sign"></i></a>
+                       href='{{ helplink('calendar_linking') }}' class="wiki protip"><i class="fa fa-question-circle"></i></a>
                 </label>
 
                 <div class="collapsible-content card-body">
@@ -1788,7 +1788,7 @@
                             the other!</p>
                         <p><small>This is a complex feature, we recommend you check out the article on <a
                                         href='{{ helplink('calendar_linking') }}' target="_blank"><i
-                                            class="icon-question-sign"></i> Calendar Linking</a>.</small></p>
+                                            class="fa fa-question-circle"></i> Calendar Linking</a>.</small></p>
                     </div>
 
                     @if(Auth::user()->can('link', $calendar))

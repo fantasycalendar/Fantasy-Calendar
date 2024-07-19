@@ -6,7 +6,7 @@
             <div class='col-12 mb-2'>
                 <div class="input-group">
                     <input type='text' class='form-control form-control-lg' id='calendar_name' placeholder='Calendar name' />
-                    <div class="dropdown input-group-append" x-data="{ open: true }">
+                    <div class="dropdown input-group-append" x-data="{ open: false }">
                         <button class="btn btn-secondary dropdown-toggle" id="calendarMenuToggle" @click="open = !open">
                             <i class="fa fa-cog"></i>
                         </button>
