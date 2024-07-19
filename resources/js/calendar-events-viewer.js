@@ -132,7 +132,13 @@ export default () => ({
         this.cancel_edit_comment();
         comment.editing = true;
 
-        this.event_editor = new Quill(document.querySelector(`#comment-editor-${comment.index} > div`), { theme: 'snow' });
+        this.event_editor = new Quill(
+            document.querySelector(`#comment-editor-${comment.index} > div`),
+            {
+                theme: 'snow',
+                placeholder: 'Compose an epic...',
+            },
+        );
 
         this.event_editor.root.innerHTML = comment.content;
 

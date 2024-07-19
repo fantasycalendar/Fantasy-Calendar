@@ -44,7 +44,7 @@
                                 <span x-show="!can_comment_on_event">You need to save your calendar before comments can be added to this event!</span>
                                 <template x-for='(comment, index) in comments'>
                                     <div
-                                        class='container p-2 rounded event_comment'
+                                        class='event_comment'
                                         :date='comment.date'
                                         :comment_id='comment.id'
                                         :class='{
@@ -78,14 +78,10 @@
                                                 <button class='btn btn-sm btn-danger cancel_edit_comment_btn ml-2' @click='cancel_edit_comment(comment)' x-show='comment.editing'>Cancel</button>
                                             </div>
                                         </div>
-                                        <div class='row'>
-                                            <div class='col'>
-                                                <div class='comment' x-show="!comment.editing" x-html='comment.content'></div>
+                                        <div class='event_comment_body' x-show="!comment.editing" x-html='comment.content'></div>
 
-                                                <div class="rounded border" x-show="comment.editing">
-                                                    <div :id="'comment-editor-'+comment.index"><div></div></div>
-                                                </div>
-                                            </div>
+                                        <div class="rounded border" x-show="comment.editing">
+                                            <div :id="'comment-editor-'+comment.index"><div></div></div>
                                         </div>
                                     </div>
                                 </template>

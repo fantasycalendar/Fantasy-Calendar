@@ -889,12 +889,26 @@ input[type="number"]:not(.spinner) {
     display: flex;
     flex-direction: column;
     width: 100%;
+    margin-bottom: 10px;
 }
 
 .event_comment {
-    margin-bottom: 0.5em;
-    padding: 1rem;
-    border: 1px solid $calendar-border-color;
+    padding: 8px;
+    border: 1px solid $modal-content-bg-color;
+}
+
+.event_comment:first-of-type {
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.event_comment:last-child {
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.event_comment:not(:last-child) {
+    margin-bottom: -1px;
 }
 
 .event_comment.calendar_owner .username {
@@ -917,7 +931,7 @@ input[type="number"]:not(.spinner) {
     margin: 0;
     padding: 0;
     line-height: 1.2rem;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
 }
 
 .event_comment .username {
@@ -931,7 +945,8 @@ input[type="number"]:not(.spinner) {
     font-size: 0.7rem;
 }
 
-body .event_comment .comment_context_btn:not(:hover) {
+body .event_comment .calendar_action {
+    padding: 0.2px !important;
     background-color: transparent !important;
     border: none !important;
 }

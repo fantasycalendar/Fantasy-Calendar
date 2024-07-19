@@ -304,7 +304,10 @@ import Quill from 'quill';
 Alpine.data('rich_editor', () => ({
     value: '',
     init() {
-        let quill = new Quill(this.$refs.quill, { theme: 'snow' })
+        let quill = new Quill(this.$refs.quill, {
+            theme: 'snow',
+            placeholder: 'Compose an epic...',
+        })
 
         quill.root.innerHTML = this.value
 
