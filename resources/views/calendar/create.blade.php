@@ -90,8 +90,7 @@
 
         preview_date = clone(dynamic_data);
 
-        $(document).ready(function(){
-
+        document.addEventListener("DOMContentLoaded", function(){
             if(window.static_data){
                 $('.date_inputs').toggleClass('hidden', window.static_data.year_data.global_week.length == 0 || window.static_data.year_data.timespans.length == 0);
                 $('.date_inputs').find('select, input').prop('disabled', window.static_data.year_data.global_week.length == 0 || window.static_data.year_data.timespans.length == 0);

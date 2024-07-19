@@ -17,8 +17,8 @@ window.calendar_id = @js($calendar->id);
 window.static_data = @js($calendar->static_data);
 window.dynamic_data = @js($calendar->dynamic_data);
 
-window.is_linked = @js($calendar->isLinked() ? "true" : "null");
-window.has_parent = @js($calendar->parent == null ? "null" : "true");
+window.is_linked = @js($calendar->isLinked());
+window.has_parent = @js($calendar->parent);
 window.parent_hash = @js($calendar->parent?->hash);
 window.parent_offset = @js($calendar->parent_offset);
 

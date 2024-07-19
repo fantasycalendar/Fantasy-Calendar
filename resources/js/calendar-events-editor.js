@@ -57,22 +57,22 @@ export default () => ({
         this.epoch = $event.detail.epoch;
         this.epoch_data = evaluated_static_data.epoch_data[this.epoch];
 
-        this.event_description_editor = new Quill(this.$refs.event_description, {
-            theme: 'snow',
-            placeholder: 'Dear Fantasy Calendar, the party was dumb today...',
-        });
-
-        this.event_description_editor.root.innerHTML = this.event_description_content;
-        this.event_description_editor.on('text-change', () => {
-            this.event_description_content = this.event_description_editor.root.innerHTML;
-        });
-
-        this.$watch('event_description_content', newText => {
-            this.event_description_editor.root.innerHTML = newText
-        });
-
         /* Some scripts are loaded after Alpine, so we need to set everything up when the UI is first opened */
         if (!this.has_initialized) {
+            this.event_description_editor = new Quill(this.$refs.event_description, {
+                theme: 'snow',
+                placeholder: 'Dear Fantasy Calendar, the party was dumb today...',
+            });
+
+            this.event_description_editor.root.innerHTML = this.event_description_content;
+            this.event_description_editor.on('text-change', () => {
+                this.event_description_content = this.event_description_editor.root.innerHTML;
+            });
+
+            // this.$watch('event_description_content', newText => {
+            //     this.event_description_editor.root.innerHTML = newText
+            // });
+
 
             let event_editor_ui = this;
 
@@ -387,9 +387,7 @@ export default () => ({
 
         this.set_up_moon_data();
 
-        if (this.description_input) {
-            // this.description_input.trumbowyg('html', this.working_event.description);
-        }
+        this.event_description_editor.root.innerHTML = this.working_event.description;
 
         this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
 
@@ -407,7 +405,7 @@ export default () => ({
 
         this.working_event.name = sanitizeHtml((this.working_event.name === "") ? "New Event" : this.working_event.name);
 
-        this.working_event.description = "this.description_input.trumbowyg('html')";
+        this.working_event.description = this.event_description_content;
 
         window.events[this.event_id] = clone(this.working_event);
 

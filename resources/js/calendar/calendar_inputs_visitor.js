@@ -15,6 +15,7 @@ import { day_data_tooltip } from "./calendar_day_data_layout";
 import { evaluate_dynamic_change, set_up_view_values } from "./calendar_inputs_view";
 import { get_category } from "./calendar_inputs_edit";
 import { evaluated_static_data, rebuild_calendar } from "./calendar_manager";
+import CalendarClock from '../clock';
 
 export function copy_link(epoch_data) {
 
@@ -551,16 +552,16 @@ export function eval_clock() {
         clock_face_canvas,
         clock_sun_canvas,
         clock_background_canvas,
-        width = $('#clock').width(),
-        hours = window.static_data.clock.hours,
-        minutes = window.static_data.clock.minutes,
-        offset = window.static_data.clock.offset,
-        crowding = window.static_data.clock.crowding,
-        hour = window.dynamic_data.hour,
-        minute = window.dynamic_data.minute,
-        has_sun = evaluated_static_data.processed_seasons,
-        sunrise = -1,
-        sunset = window.static_data.clock.hours + 1,
+        $('#clock').width(),
+        window.static_data.clock.hours,
+        window.static_data.clock.minutes,
+        window.static_data.clock.offset,
+        window.static_data.clock.crowding,
+        window.dynamic_data.hour,
+        window.dynamic_data.minute,
+        evaluated_static_data.processed_seasons,
+        -1,
+        window.static_data.clock.hours + 1,
     );
 
     $('#clock').css('display', 'block');
