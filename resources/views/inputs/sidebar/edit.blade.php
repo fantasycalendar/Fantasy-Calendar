@@ -6,11 +6,11 @@
             <div class='col-12 mb-2'>
                 <div class="input-group">
                     <input type='text' class='form-control form-control-lg' id='calendar_name' placeholder='Calendar name' />
-                    <div class="dropdown input-group-append">
-                        <button type="button" class="btn btn-secondary dropdown-toggle" id="calendarMenuToggle" data-toggle="dropdown">
+                    <div class="dropdown input-group-append" x-data="{ open: true }">
+                        <button class="btn btn-secondary dropdown-toggle" id="calendarMenuToggle" @click="open = !open">
                             <i class="fa fa-cog"></i>
                         </button>
-                        <div class="dropdown-menu" aria-labelleddby="calendarMenuToggle">
+                        <div x-show="open" :class="{ 'show': open }" class="dropdown-menu !left-auto right-0" aria-labelleddby="calendarMenuToggle" @click.away="open = false" x-cloak>
                             <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}" class="dropdown-item">
                                 View
                             </a>
