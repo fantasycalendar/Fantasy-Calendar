@@ -45,9 +45,9 @@
 
         <div x-show="shouldShow" x-data="{
         activeDateAdjustment: @can('advance-date', $calendar) 'current' @else 'preview' @endcan,
-        shouldShow: false,
+        shouldShow: window.Perms.player_at_least('co-owner') || window.static_data.settings.allow_view,
         calculateShouldShow: function () {
-        this.shouldShow = window.Perms.player_at_least('co-owner') || static_data.settings.allow_view;
+        this.shouldShow = window.Perms.player_at_least('co-owner') || window.static_data.settings.allow_view;
         },
         }" @calendar-loaded.window="calculateShouldShow">
             <ul class="nav justify-content-center nav-tabs mx-3 mt-3">

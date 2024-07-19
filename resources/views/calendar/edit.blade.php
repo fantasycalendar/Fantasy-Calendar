@@ -4,7 +4,7 @@
     <script>
         function generatorData() {
             return {
-                init: () => {
+                init() {
                     @include('calendar._loadcalendar')
 
                     window.preview_date = _.cloneDeep(dynamic_data);

@@ -7,8 +7,8 @@
                 init() {
                     @include('calendar._loadcalendar')
 
-                    preview_date = _.cloneDeep(dynamic_data);
-                    preview_date.follow = true;
+                    window.preview_date = _.cloneDeep(dynamic_data);
+                    window.preview_date.follow = true;
 
                     set_up_view_inputs();
                     set_up_view_values();
@@ -17,14 +17,15 @@
                     bind_calendar_events();
 
                     if(!evaluate_queryString(window.location.search)){
-                        rebuild_calendar('calendar', dynamic_data);
+                        rebuild_calendar('calendar', window.dynamic_data);
                     }else{
-                        rebuild_calendar('calendar', preview_date);
+                        rebuild_calendar('calendar', window.preview_date);
                     }
 
-                    $('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select').change(function(){
-                        do_update_dynamic(hash);
-                    });
+                    $('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select')
+                        .change(debounce(function(type){
+                            window.update_view_dynamic(window.hash);
+                        }, 500));
 
                     last_mouse_move = Date.now();
                     poll_timer = setTimeout(check_dates, 5000);
@@ -43,7 +44,7 @@
                     }
 
                     window.dispatchEvent(new CustomEvent("events-changed"));
-                }
+                },
             }
         }
 
@@ -189,14 +190,6 @@
             set_up_view_values();
 
         }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            if(typeof debounce !== 'undefined'){
-                var do_update_dynamic = debounce(function(type){
-                    update_view_dynamic(hash);
-                }, 500);
-            }
-        });
     </script>
 @endpush
 

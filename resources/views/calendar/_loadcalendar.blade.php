@@ -38,9 +38,9 @@ window.advancement = {
     advancement_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 }
 
-window.dispatchEvent(
-    new CustomEvent('calendar-loaded', {
-        detail: {
+this.$nextTick(
+    () => this.$dispatch(
+        'calendar-loaded', {
             hash: window.hash,
             calendar_name: window.calendar_name,
             calendar_id: window.calendar_id,
@@ -56,5 +56,5 @@ window.dispatchEvent(
             last_dynamic_change: window.last_dynamic_change,
             advancement: window.advancement
         }
-    })
-)
+    )
+);
