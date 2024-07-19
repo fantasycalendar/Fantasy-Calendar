@@ -1,4 +1,4 @@
-<div class="bg-primary-700 flex justify-between items-center w-full h-[40px] px-3">
+<div class="bg-primary-600 dark:bg-primary-700 flex justify-between items-center w-full h-[40px] px-3">
     @auth
         <a class="text-white font-semibold" href="{{ route('calendars.index') }}"><i class="fa fa-arrow-left"></i> My Calendars</a>
     @endauth
@@ -7,7 +7,7 @@
     @endguest
 
     <span x-data="{ toggle() { window.toggle_sidebar(); } }">
-        <button class="text-white font-semibold py-0.5 px-1.5 rounded-sm hover:bg-primary-900/50" @click.prevent="toggle">
+        <button class="text-white font-semibold py-0.5 px-1.5 rounded-sm hover:bg-primary-900/50 transition ease-in-out" @click.prevent="toggle">
             <i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i>
         </button>
     </span>
