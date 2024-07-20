@@ -90,7 +90,7 @@
                                 <div class='col-12 mt-2' x-show='user_can_comment && can_comment_on_event'>
 
                                     <div class="rounded border">
-                                        <x-wysiwyg.editor x-modelable="value" x-model="comment_content" />
+                                        <x-wysiwyg.editor x-modelable="value" x-model="new_comment_content" />
                                     </div>
 
                                     <button type='button' class='btn btn-primary mt-2' style="z-index: 200" @click='submit_comment'>Submit</button>

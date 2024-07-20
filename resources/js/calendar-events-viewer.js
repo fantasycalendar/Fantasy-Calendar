@@ -10,7 +10,8 @@ export default () => ({
     user_can_comment: false,
     can_comment_on_event: false,
     loading_comments: true,
-    comment_content: '',
+    editing_comment_content: '',
+    new_comment_content: '',
     event_editor: null,
     id: -1,
     db_id: false,
@@ -116,16 +117,17 @@ export default () => ({
             content: comment.content,
             username: `${comment.username}${comment.comment_owner ? " (you)" : (comment.calendar_owner ? " (owner)" : "")}`,
             editing: false,
-            editor: undefined
+            editor: undefined,
+            can_delete: true,
         })
     },
 
     submit_comment() {
-        submit_new_comment(this.comment_content, this.db_id, function(comment) {
+        submit_new_comment(this.new_comment_content, this.db_id, function(comment) {
             this.$dispatch('event-viewer-modal-add-comment', { comment: comment });
         }.bind(this));
 
-        this.comment_content = '';
+        this.new_comment_content = '';
     },
 
     start_edit_comment(comment) {
@@ -143,22 +145,22 @@ export default () => ({
         this.event_editor.root.innerHTML = comment.content;
 
         this.event_editor.on('text-change', () => {
-            this.comment_content = this.event_editor.root.innerHTML;
+            this.editing_comment_content = this.event_editor.root.innerHTML;
         })
     },
 
     submit_edit_comment(comment) {
 
-        let comment_content = this.comment_content;
+        let editing_comment_content = this.editing_comment_content;
 
-        if (comment_content == "" || comment_content == "<p><br></p>") {
+        if (editing_comment_content == "" || editing_comment_content == "<p><br></p>") {
             this.delete_comment(comment);
 
             return;
         }
 
         axios.patch(window.apiurl + "/eventcomment/" + comment.id, {
-            content: comment_content
+            content: editing_comment_content
         })
             .then(function(result) {
                 if (result.data.success && result.data != "") {
@@ -175,11 +177,11 @@ export default () => ({
                         result.data.message
                     );
                 }
-            }).then(() => { this.edit_comment_success(comment, comment_content) });
+            }).then(() => { this.edit_comment_success(comment, editing_comment_content) });
     },
 
-    edit_comment_success(comment, comment_content) {
-        comment.content = comment_content;
+    edit_comment_success(comment, editing_comment_content) {
+        comment.content = editing_comment_content;
         this.cancel_edit_comment();
     },
 
@@ -219,7 +221,7 @@ export default () => ({
     confirm_clone: function() {
 
         if (this.user_can_comment && this.can_comment_on_event) {
-            if (this.comment_content != "" && this.comment_content != "<p><br></p>") {
+            if (this.new_comment_content != "" && this.new_comment_content != "<p><br></p>" && this.edit_comment_content != "" && this.edit_comment_content != "<p><br></p>") {
                 swal.fire(this.swal_content).then((result) => {
                     if (!result.dismiss) {
                         this.dispatch_clone();
@@ -242,7 +244,7 @@ export default () => ({
     confirm_edit: function() {
 
         if (this.user_can_comment && this.can_comment_on_event) {
-            if (this.comment_content != "" && this.comment_content != "<p><br></p>") {
+            if (this.edit_comment_content != "" && this.edit_comment_content != "<p><br></p>") {
                 swal.fire(this.swal_content).then((result) => {
                     if (!result.dismiss) {
                         this.dispatch_edit();
@@ -281,7 +283,7 @@ export default () => ({
         }
 
         if (this.user_can_comment && this.can_comment_on_event) {
-            if (this.comment_content != "" && this.comment_content != "<p><br></p>") {
+            if (this.new_comment_content != "" && this.new_comment_content != "<p><br></p>" && this.edit_comment_content != "" && this.edit_comment_content != "<p><br></p>") {
                 swal.fire(this.swal_content).then((result) => {
                     if (!result.dismiss) {
                         this.close();
