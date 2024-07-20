@@ -14,7 +14,7 @@ import {
 import { day_data_tooltip } from "./calendar_day_data_layout";
 import { evaluate_dynamic_change, set_up_view_values } from "./calendar_inputs_view";
 import { get_category } from "./calendar_inputs_edit";
-import { evaluated_static_data, rebuild_calendar } from "./calendar_manager";
+import { rebuild_calendar } from "./calendar_manager";
 import CalendarClock from '../clock';
 
 export function copy_link(epoch_data) {
@@ -50,7 +50,7 @@ function context_open_day_data(key, opt) {
 
     var day_element = $(opt.$trigger[0]);
     var epoch = day_element.attr('epoch') | 0;
-    var epoch_data = evaluated_static_data.epoch_data[epoch];
+    var epoch_data = window.evaluated_static_data.epoch_data[epoch];
     day_data_tooltip.show(day_element, epoch_data);
 
 }
@@ -401,6 +401,7 @@ export function go_to_preview_date(rebuild) {
     rebuild = rebuild !== undefined ? rebuild : data.rebuild;
 
     if (rebuild) {
+        debugger;
         rebuild_calendar('preview', preview_date)
     } else {
         update_current_day();
@@ -559,7 +560,7 @@ export function eval_clock() {
         window.static_data.clock.crowding,
         window.dynamic_data.hour,
         window.dynamic_data.minute,
-        evaluated_static_data.processed_seasons,
+        window.evaluated_static_data.processed_seasons,
         -1,
         window.static_data.clock.hours + 1,
     );
@@ -586,10 +587,10 @@ export function evaluate_sun() {
         return;
     }
 
-    if (evaluated_static_data.processed_seasons && evaluated_static_data.epoch_data[preview_date.epoch] !== undefined && evaluated_static_data.epoch_data[preview_date.epoch].season !== undefined) {
+    if (window.evaluated_static_data.processed_seasons && window.evaluated_static_data.epoch_data[preview_date.epoch] !== undefined && window.evaluated_static_data.epoch_data[preview_date.epoch].season !== undefined) {
 
-        var sunset = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunset.data;
-        var sunrise = evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunrise.data;
+        var sunset = window.evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunset.data;
+        var sunrise = window.evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunrise.data;
 
         window.Clock.sunrise = sunrise;
         window.Clock.sunset = sunset;

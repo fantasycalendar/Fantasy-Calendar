@@ -1,4 +1,3 @@
-import { evaluated_static_data } from "./calendar/calendar_manager";
 import { show_loading_screen_buffered, hide_loading_screen } from "./calendar/header";
 import { execution_time } from "./calendar/calendar_functions";
 
@@ -80,8 +79,8 @@ export default () => ({
         window.calendar_year_header.update(
             window.static_data,
             window.dynamic_data,
-            preview_date,
-            evaluated_static_data.epoch_data
+            window.preview_date,
+            window.evaluated_static_data.epoch_data
         );
         this.scroll_to_epoch();
     },
@@ -104,8 +103,8 @@ export default () => ({
         window.calendar_year_header.update(
             window.static_data,
             window.dynamic_data,
-            preview_date,
-            evaluated_static_data.epoch_data
+            window.preview_date,
+            window.evaluated_static_data.epoch_data
         );
 
         for (let index in this.render_callbacks) {

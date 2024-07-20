@@ -241,13 +241,11 @@ async function testSeasonAccuracy(fromYear = -1000, toYear = 1000) {
     window.dynamic_data.year = originalYear;
 }
 
-export var evaluated_static_data = {};
+window.evaluated_static_data = {};
 
-window.evaluated_static_data = evaluated_static_data;
-
-export async function rebuild_calendar(action, dynamic_data) {
+export async function rebuild_calendar(action, rebuild_data) {
     window.calendar_data_generator.static_data = window.static_data;
-    window.calendar_data_generator.dynamic_data = window.dynamic_data;
+    window.calendar_data_generator.dynamic_data = rebuild_data;
     window.calendar_data_generator.owner = Perms.player_at_least('co-owner');
     window.calendar_data_generator.events = window.events;
     window.calendar_data_generator.event_categories = window.event_categories;
@@ -256,15 +254,14 @@ export async function rebuild_calendar(action, dynamic_data) {
 
     window.calendar_data_generator.run().then(result => {
 
-        evaluated_static_data = result;
-        window.evaluated_static_data = evaluated_static_data;
+        window.evaluated_static_data = result;
 
-        rerender_calendar(evaluated_static_data);
+        rerender_calendar(window.evaluated_static_data);
 
-        window.calendar_weather.epoch_data = evaluated_static_data.epoch_data;
-        window.calendar_weather.processed_weather = evaluated_static_data.processed_weather;
-        window.calendar_weather.start_epoch = evaluated_static_data.year_data.start_epoch;
-        window.calendar_weather.end_epoch = evaluated_static_data.year_data.end_epoch;
+        window.calendar_weather.epoch_data = window.evaluated_static_data.epoch_data;
+        window.calendar_weather.processed_weather = window.evaluated_static_data.processed_weather;
+        window.calendar_weather.start_epoch = window.evaluated_static_data.year_data.start_epoch;
+        window.calendar_weather.end_epoch = window.evaluated_static_data.year_data.end_epoch;
 
         climate_charts.evaluate_day_length_chart();
         climate_charts.evaluate_weather_charts();
@@ -283,12 +280,12 @@ export async function rebuild_calendar(action, dynamic_data) {
 
 export async function rebuild_climate() {
     let climate_generator = new Climate(
-        evaluated_static_data.epoch_data,
+        window.evaluated_static_data.epoch_data,
         window.static_data,
         window.dynamic_data,
         window.dynamic_data.year,
-        evaluated_static_data.year_data.start_epoch,
-        evaluated_static_data.year_data.end_epoch
+        window.evaluated_static_data.year_data.start_epoch,
+        window.evaluated_static_data.year_data.end_epoch
     );
 
     let prev_seasons = window.calendar_weather.processed_seasons;
@@ -297,7 +294,7 @@ export async function rebuild_climate() {
     climate_generator.generate().then((result) => {
 
         window.calendar_weather.epoch_data = result;
-        evaluated_static_data.epoch_data = result;
+        window.evaluated_static_data.epoch_data = result;
 
         climate_charts.evaluate_day_length_chart();
         climate_charts.evaluate_weather_charts();
@@ -314,7 +311,7 @@ export async function rebuild_climate() {
 
 export function rerender_calendar(processed_data) {
     if (processed_data === undefined) {
-        processed_data = evaluated_static_data
+        processed_data = window.evaluated_static_data
     };
 
     window.render_data_generator.create_render_data(processed_data).then((result) => {

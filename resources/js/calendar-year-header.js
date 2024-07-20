@@ -89,7 +89,7 @@ export default () => ({
     },
 
     getCurrentEra() {
-        return this.getEpochData().era ?? -1;
+        return this.getEpochData()?.era ?? -1;
     },
 
     updateCycleText() {

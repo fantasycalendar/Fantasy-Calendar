@@ -11,6 +11,8 @@ import $default, { jQuery, $ } from "jquery";
 window.$ = $;
 window.jQuery = jQuery;
 
+import 'chart.js';
+
 window.$.notify = (name, type) => {
     window.dispatchEvent(new CustomEvent('notify', {
         detail: {
