@@ -18,7 +18,6 @@ export default () => ({
     epoch_data: undefined,
     event_conditions_container: undefined,
     event_description_content: '',
-    event_description_editor: null,
     inputs_changed: false,
     delete_hover_element: undefined,
     isDeletingDroppable: false,
@@ -59,21 +58,6 @@ export default () => ({
 
         /* Some scripts are loaded after Alpine, so we need to set everything up when the UI is first opened */
         if (!this.has_initialized) {
-            this.event_description_editor = new Quill(this.$refs.event_description, {
-                theme: 'snow',
-                placeholder: 'Dear Fantasy Calendar, the party was dumb today...',
-            });
-
-            this.event_description_editor.root.innerHTML = this.event_description_content;
-            this.event_description_editor.on('text-change', () => {
-                this.event_description_content = this.event_description_editor.root.innerHTML;
-            });
-
-            // this.$watch('event_description_content', newText => {
-            //     this.event_description_editor.root.innerHTML = newText
-            // });
-
-
             let event_editor_ui = this;
 
             this.event_conditions_container = $(this.$refs.event_conditions_container);
@@ -387,7 +371,7 @@ export default () => ({
 
         this.set_up_moon_data();
 
-        this.event_description_editor.root.innerHTML = this.working_event.description;
+        this.event_description_content = this.working_event.description;
 
         this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
 

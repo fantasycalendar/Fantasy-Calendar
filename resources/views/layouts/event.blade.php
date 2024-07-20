@@ -133,7 +133,7 @@
                 <input maxlength="255" type='text' x-ref="event_name" class='form-control event_editor_name' x-model='working_event.name' placeholder='Event name' autofocus='' @keydown.enter="save_event" @keydown.esc.stop />
 
                 <div class="border">
-                    <div x-ref='event_description' placeholder='Event description' autofocus=''></div>
+                    <x-wysiwyg.editor x-modelable="value" x-model="event_description_content" />
                 </div>
 
                 @if(!isset($calendar) || count($calendar->event_categories) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))

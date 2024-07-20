@@ -301,21 +301,8 @@ Alpine.data('context_menu', ContextMenu);
 
 
 import Quill from 'quill';
-Alpine.data('rich_editor', () => ({
-    value: '',
-    init() {
-        let quill = new Quill(this.$refs.quill, {
-            theme: 'snow',
-            placeholder: 'Compose an epic...',
-        })
-
-        quill.root.innerHTML = this.value
-
-        quill.on('text-change', () => {
-            this.value = quill.root.innerHTML
-        })
-    },
-}));
+import RichEditor from './rich-editor.js';
+Alpine.data('rich_editor', RichEditor);
 
 import MoonTooltip from './moon-tooltip.js';
 Alpine.data('moon_tooltip', MoonTooltip);
