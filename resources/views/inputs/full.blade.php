@@ -578,9 +578,15 @@
                                                                            href='{{ helplink('weekdays') }}'
                                                                            class="wiki protip"><i
                             class="fa fa-question-circle"></i></a></label>
-            <div class="collapsible-content card-body">
+            <div
+                class="collapsible-content card-body"
+                x-data="global_week"
+                x-init="$nextTick(() => load(window.static_data))"
+                @calendar-loaded.window="$nextTick(() => load(window.static_data))"
+                @calendar-structure-changed.window="$nextTick(() => load(window.static_data))"
+            >
 
-                <div class='row center-text hidden' id='overflow_explanation'>
+                <div class='row center-text' x-show="show_custom_week_warning" x-cloak>
                     This calendar has a custom week in some months or a leap day is adding a week-day, this will disable
                     overflows between months, because it makes no sense for two weeks that do not go together to
                     overflow into each other. Sorry.
@@ -596,8 +602,7 @@
                     @else
                         <div class='col-4'>
                             <label class="custom-control custom-checkbox right-text">
-                                <input type="checkbox" class="custom-control-input static_input" data='year_data'
-                                       fc-index='overflow' id='month_overflow'>
+                                <input type="checkbox" class="custom-control-input" x-model="overflow_weekdays">
                                 <span class="custom-control-indicator"></span>
                             </label>
                         </div>
@@ -632,15 +637,18 @@
 
                     <div class='row no-gutters add_inputs global_week'>
                         <div class='col input-group'>
-                            <input type='text' class='form-control name' id='weekday_name_input'
-                                   placeholder='Weekday name'>
+                            <input type='text' class='form-control' placeholder='Weekday name' x-model="new_weekday_name">
                             <div class="input-group-append">
                                 <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
                             </div>
                         </div>
                     </div>
 
-                    <div class='sortable list-group' id='global_week_sortable'></div>
+                    <div x-sort>
+                        <template x-for="weekday in weekdays">
+                            <div x-sort:item x-text="weekday"></div>
+                        </template>
+                    </div>
 
                 @endif
 

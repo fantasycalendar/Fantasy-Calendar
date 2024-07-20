@@ -231,6 +231,9 @@ window.render_data_generator = render_data_generator;
 $(() => header_initialize());
 
 import Alpine from 'alpinejs'
+import sort from '@alpinejs/sort';
+Alpine.plugin(sort);
+
 import CalendarPresets from './calendar-presets.js';
 import CalendarRenderer from './calendar-renderer.js';
 import CalendarHTMLEditor from './calendar-html-editor.js';
@@ -301,8 +304,9 @@ Alpine.data('MainApp', () => ({
 import ContextMenu from './context-menu.js';
 Alpine.data('context_menu', ContextMenu);
 
+import GlobalWeek from './calendar/calendar_global_week.js';
+Alpine.data('global_week', GlobalWeek);
 
-import Quill from 'quill';
 import RichEditor from './rich-editor.js';
 Alpine.data('rich_editor', RichEditor);
 
