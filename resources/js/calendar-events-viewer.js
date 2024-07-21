@@ -77,11 +77,10 @@ export default () => ({
 
         get_event_comments(this.db_id, function(comments) {
             if (comments) {
-                window.dispatchEvent(new CustomEvent('event-viewer-modal-load-comments', { detail: { comments: comments } }));
-                this.loading_comments = false;
-            } else {
-                this.loading_comments = false;
+                this.$dispatch('event-viewer-modal-load-comments', { comments: comments } );
             }
+
+            this.loading_comments = false;
         }.bind(this));
 
     },
@@ -235,7 +234,7 @@ export default () => ({
     },
 
     dispatch_clone() {
-        window.dispatchEvent(new CustomEvent('event-editor-modal-clone-event', { detail: { event_id: this.id, epoch: this.epoch } }));
+        this.$dispatch('event-editor-modal-clone-event', { event_id: this.id, epoch: this.epoch });
         this.close();
     },
 
@@ -259,9 +258,9 @@ export default () => ({
 
     dispatch_edit: function() {
         if (this.era) {
-            window.dispatchEvent(new CustomEvent('html-editor-modal-edit-html', { detail: { era_id: this.id } }));
+            this.$dispatch('html-editor-modal-edit-html', { era_id: this.id } );
         } else {
-            window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id, epoch: this.epoch } }));
+            this.$dispatch('event-editor-modal-edit-event', { event_id: this.id, epoch: this.epoch } );
         }
         this.close();
     },
