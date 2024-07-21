@@ -3,7 +3,6 @@ import { submit_new_comment, submit_delete_comment, get_event_comments } from ".
 import { clone } from "./calendar/calendar_functions";
 
 export default () => ({
-
     open: false,
     can_edit: false,
     era: false,
@@ -66,23 +65,20 @@ export default () => ({
         } else {
             this.loading_comments = false;
         }
-
     },
 
     get_event_comments() {
-
         if (this.era) {
             return;
         }
 
         get_event_comments(this.db_id, function(comments) {
             if (comments) {
-                this.$dispatch('event-viewer-modal-load-comments', { comments: comments } );
+                this.$dispatch('event-viewer-modal-load-comments', { comments: comments });
             }
 
             this.loading_comments = false;
         }.bind(this));
-
     },
 
     load_comments($event) {
@@ -216,21 +212,26 @@ export default () => ({
     },
 
     confirm_clone: function() {
+        if (!this.user_can_comment && !this.can_comment_on_event) {
+            this.dispatch_clone();
 
-        if (this.user_can_comment && this.can_comment_on_event) {
-            if (this.new_comment_content != "" && this.new_comment_content != "<p><br></p>" && this.edit_comment_content != "" && this.edit_comment_content != "<p><br></p>") {
-                swal.fire(this.swal_content).then((result) => {
-                    if (!result.dismiss) {
-                        this.dispatch_clone();
-                    }
-                });
-            } else {
-                this.dispatch_clone();
-            }
-        } else {
+            return;
+        }
+
+        if (
+            this.new_comment_content == "" ||
+            this.new_comment_content == "<p><br></p>" ||
+            this.edit_comment_content == "" ||
+            this.edit_comment_content == "<p><br></p>"
+        ) {
             this.dispatch_clone();
         }
 
+        swal.fire(this.swal_content).then((result) => {
+            if (!result.dismiss) {
+                this.dispatch_clone();
+            }
+        });
     },
 
     dispatch_clone() {
@@ -239,7 +240,6 @@ export default () => ({
     },
 
     confirm_edit: function() {
-
         if (this.user_can_comment && this.can_comment_on_event) {
             if (this.new_comment_content != "" && this.new_comment_content != "<p><br></p>" && this.edit_comment_content != "" && this.edit_comment_content != "<p><br></p>") {
                 swal.fire(this.swal_content).then((result) => {
@@ -253,14 +253,13 @@ export default () => ({
         } else {
             this.dispatch_edit();
         }
-
     },
 
     dispatch_edit: function() {
         if (this.era) {
-            this.$dispatch('html-editor-modal-edit-html', { era_id: this.id } );
+            this.$dispatch('html-editor-modal-edit-html', { era_id: this.id });
         } else {
-            this.$dispatch('event-editor-modal-edit-event', { event_id: this.id, epoch: this.epoch } );
+            this.$dispatch('event-editor-modal-edit-event', { event_id: this.id, epoch: this.epoch });
         }
         this.close();
     },
@@ -292,11 +291,9 @@ export default () => ({
         } else {
             this.close();
         }
-
     },
 
     close() {
-
         this.open = false;
         this.era = false;
         this.id = -1;
@@ -309,5 +306,4 @@ export default () => ({
         }
 
     }
-
 })
