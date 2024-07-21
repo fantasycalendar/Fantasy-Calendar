@@ -151,16 +151,14 @@ export default () => ({
 
     submit_edit_comment(comment) {
 
-        let editing_comment_content = this.editing_comment_content;
-
-        if (editing_comment_content == "" || editing_comment_content == "<p><br></p>") {
+        if (this.editing_comment_content == "" || this.editing_comment_content == "<p><br></p>") {
             this.delete_comment(comment);
 
             return;
         }
 
         axios.patch(window.apiurl + "/eventcomment/" + comment.id, {
-            content: editing_comment_content
+            content: this.editing_comment_content
         })
             .then(function(result) {
                 if (result.data.success && result.data != "") {
@@ -177,7 +175,7 @@ export default () => ({
                         result.data.message
                     );
                 }
-            }).then(() => { this.edit_comment_success(comment, editing_comment_content) });
+            }).then(() => { this.edit_comment_success(comment, this.editing_comment_content) });
     },
 
     edit_comment_success(comment, editing_comment_content) {
@@ -244,7 +242,7 @@ export default () => ({
     confirm_edit: function() {
 
         if (this.user_can_comment && this.can_comment_on_event) {
-            if (this.edit_comment_content != "" && this.edit_comment_content != "<p><br></p>") {
+            if (this.new_comment_content != "" && this.new_comment_content != "<p><br></p>" && this.edit_comment_content != "" && this.edit_comment_content != "<p><br></p>") {
                 swal.fire(this.swal_content).then((result) => {
                     if (!result.dismiss) {
                         this.dispatch_edit();
