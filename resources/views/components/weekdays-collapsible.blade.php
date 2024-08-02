@@ -5,22 +5,21 @@
 <!---------------------------------------------->
 
 <div class='wrap-collapsible card settings-weekdays step-2-step'>
-    <input id="collapsible_globalweek" class="toggle" type="checkbox" checked="true">
+    <input id="collapsible_globalweek" class="toggle" type="checkbox">
     <label for="collapsible_globalweek" class="lbl-toggle py-2 pr-3 card-header">
         <i class="mr-2 fas fa-calendar-week"></i> Weekdays
-        <a target="_blank" data-pt-position="right"
-            data-pt-title='More Info: Weekdays'
-            href='{{ helplink('weekdays') }}'
+        <a target="_blank" data-pt-position="right" data-pt-title='More Info: Weekdays' href='{{ helplink("weekdays") }}'
             class="wiki protip">
             <i class="fa fa-question-circle"></i>
-        </a></label>
-    <div
-        class="collapsible-content card-body"
+        </a>
+    </label>
+
+    <!-- Put collapsible-content back -->
+    <div class="card-body"
         x-data="global_week"
         x-init="$nextTick(() => load(window.static_data))"
         @calendar-loaded.window="$nextTick(() => load(window.static_data))"
-        @calendar-structure-changed.window="$nextTick(() => load(window.static_data))"
-        >
+        @calendar-structure-changed.window="$nextTick(() => load(window.static_data))">
 
         <div class='row center-text' x-show="show_custom_week_warning" x-cloak>
             This calendar has a custom week in some months or a leap day is adding a week-day, this will disable
@@ -33,8 +32,8 @@
             <div class='col-8 pr-1 bold-text'>
                 Overflow weekdays:
             </div>
-            @if(request()->is('calendars/*/edit') && $calendar->isLinked())
-                {{ Arr::get($calendar->static_data, 'year_data.overflow') ? "Enabled" : "Disabled" }}
+            @if (request()->is('calendars/*/edit') && $calendar->isLinked())
+                {{ Arr::get($calendar->static_data, 'year_data.overflow') ? 'Enabled' : 'Disabled' }}
             @else
                 <div class='col-4'>
                     <label class="custom-control custom-checkbox right-text">
@@ -49,8 +48,7 @@
             <div class='separator'></div>
         </div>
 
-        @if(request()->is('calendars/*/edit') && $calendar->isLinked())
-
+        @if (request()->is('calendars/*/edit') && $calendar->isLinked())
             <ul class="list-group">
 
                 @php
@@ -62,9 +60,7 @@
                 @endforeach
 
             </ul>
-
         @else
-
             <div class='row no-gutters mt-2 bold-text'>
                 <div class="col">
                     New weekday:
@@ -80,9 +76,15 @@
                 </div>
             </div>
 
-            <div x-sort>
+            <div class="list-group">
                 <template x-for="weekday in weekdays">
-                    <div x-sort:item x-text="weekday"></div>
+                    <div class="list-group-item py-1 px-1 first-of-type:rounded-t !flex items-center">
+                        <i class="fa fa-bars pl-2 pr-2.5 text-xl hover:text-black hover:dark:text-white cursor-move"></i>
+
+                        <input class="form-control" type="text" x-model="weekday">
+
+                        <i class="fa fa-trash pr-2 pl-2.5 text-xl text-red-600/60 dark:text-red-400/60 hover:text-red-600 hover:dark:text-red-400 cursor-pointer"></i>
+                    </div>
                 </template>
             </div>
 
@@ -97,9 +99,13 @@
             <div class='row no-gutters my-2'>
                 <div class='col'>
                     <p class='bold-text m-0'>First week day:</p>
-                    @if(request()->is('calendars/*/edit') && $calendar->isLinked())
+                    @if (request()->is('calendars/*/edit') && $calendar->isLinked())
                         <ul class="list-group">
-                            <li class="list-group-item">{{ Arr::get($calendar->static_data, 'year_data.global_week')[Arr::get($calendar->static_data, 'year_data.first_day')-1] }}</li>
+                            <li class="list-group-item">
+                                {{ Arr::get($calendar->static_data, 'year_data.global_week')[
+                                    Arr::get($calendar->static_data, 'year_data.first_day') - 1
+                                ] }}
+                            </li>
                         </ul>
                     @else
                         <select type='number' class='form-control static_input protip' data-pt-position="right"
@@ -109,7 +115,7 @@
                 </div>
             </div>
         </div>
-        @if(request()->is('calendars/*/edit') && $calendar->isLinked())
+        @if (request()->is('calendars/*/edit') && $calendar->isLinked())
             <p class="mb-0 mt-3"><a onclick="linked_popup();" href='#'>Why can't I edit the weekdays?</a></p>
         @endif
 
