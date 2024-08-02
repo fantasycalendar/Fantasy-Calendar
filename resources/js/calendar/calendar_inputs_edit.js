@@ -401,21 +401,6 @@ export function set_up_edit_inputs() {
         }
     });
 
-
-    $('.add_inputs.global_week .add').click(function() {
-        var name = $("#weekday_name_input");
-        var id = global_week_sortable.children().length;
-        var name_val = name.val() == "" ? `Weekday ${id + 1}` : name.val();
-        add_weekday_to_sortable(global_week_sortable, id, name_val);
-        window.static_data.year_data.global_week.push(name_val);
-        var hidden = !window.static_data.year_data.overflow || window.static_data.year_data.global_week.length == 0;
-        $('#first_week_day_container').toggleClass('hidden', hidden).find('select').prop('disabled', hidden);
-        // global_week_sortable.sortable('refresh');
-        reindex_weekday_sortable();
-        name.val("");
-        set_up_view_values();
-    });
-
     $(document).on('change', '.week_day_name', function() {
         populate_first_day_select(window.static_data.year_data.first_day);
     });
@@ -4502,27 +4487,6 @@ function evaluate_remove_buttons() {
     });
 }
 
-function reindex_weekday_sortable() {
-    var tabindex = 1;
-
-    window.static_data.year_data.global_week = [];
-
-    global_week_sortable.children().each(function(i) {
-
-        $(this).find(".name-input").attr("key", i);
-        $(this).find(".name-input").prop("tabindex", tabindex)
-        tabindex++;
-
-        window.static_data.year_data.global_week[i] = $(this).find('.name-input').val();
-
-    });
-
-    populate_first_day_select();
-
-    do_error_check();
-    evaluate_remove_buttons();
-}
-
 function populate_first_day_select(val) {
     var custom_week = false;
     timespan_sortable.children().each(function() {
@@ -5583,11 +5547,6 @@ export function set_up_edit_values() {
 
     $('input[fc-index="only_backwards"]').prop('disabled', !window.static_data.settings.allow_view);
     $('input[fc-index="only_backwards"]').closest('.setting').toggleClass('disabled', !window.static_data.settings.allow_view);
-
-    for (var i = 0; i < window.static_data.year_data.global_week.length; i++) {
-        let weekdayname = window.static_data.year_data.global_week[i];
-        add_weekday_to_sortable(global_week_sortable, i, weekdayname);
-    }
 
     let custom_week = window.static_data.year_data.timespans.filter(t => t?.week?.length > 0).length > 0
         || window.static_data.year_data.leap_days.filter(l => l.adds_week_day).length > 0;

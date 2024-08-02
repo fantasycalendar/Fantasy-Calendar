@@ -77,13 +77,31 @@
             </div>
 
             <div class="list-group">
-                <template x-for="weekday in weekdays">
-                    <div class="list-group-item py-1 px-1 first-of-type:rounded-t !flex items-center">
-                        <i class="fa fa-bars pl-2 pr-2.5 text-xl hover:text-black hover:dark:text-white cursor-move"></i>
+                <template x-for="(weekday, index) in weekdays">
+                    <div class="list-group-item py-1 px-2 first-of-type:rounded-t">
+                        <div x-show="deleting !== index" class="flex items-center w-full gap-x-2">
+                            <div class="w-[40px] grid place-items-center self-stretch flex-shrink-0 text-center cursor-move">
+                                <i class="fa fa-bars text-xl hover:text-black hover:dark:text-white"></i>
+                            </div>
 
-                        <input class="form-control" type="text" x-model="weekday">
+                            <input class="form-control" type="text" x-model="weekday">
 
-                        <i class="fa fa-trash pr-2 pl-2.5 text-xl text-red-600/60 dark:text-red-400/60 hover:text-red-600 hover:dark:text-red-400 cursor-pointer"></i>
+                            <button class="btn btn-danger w-10" @click="deleting = index">
+                                <i class="fa fa-trash text-lg"></i>
+                            </button>
+                        </div>
+
+                        <div x-show="deleting === index" class="flex items-center w-full gap-x-2.5" x-cloak>
+                            <button class="btn btn-success w-10 !px-0 text-center" @click="removeWeekday(index)">
+                                <i class="fa fa-check text-lg"></i>
+                            </button>
+
+                            <div class="flex-grow">Are you sure?</div>
+
+                            <button class="btn btn-danger w-10 !px-0 text-center" @click="deleting = -1">
+                                <i class="fa fa-times text-lg"></i>
+                            </button>
+                        </div>
                     </div>
                 </template>
             </div>
