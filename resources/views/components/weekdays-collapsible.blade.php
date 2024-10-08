@@ -69,9 +69,10 @@
 
             <div class='row no-gutters add_inputs global_week'>
                 <div class='col input-group'>
-                    <input type='text' class='form-control' placeholder='Weekday name' x-model="new_weekday_name">
+                    <input type='text' class='form-control' placeholder='Weekday name' x-model="new_weekday_name" @keyup.enter="addNewDay">
+
                     <div class="input-group-append">
-                        <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+                        <button type='button' class='btn btn-primary' @click="addNewDay"><i class="fa fa-plus"></i></button>
                     </div>
                 </div>
             </div>

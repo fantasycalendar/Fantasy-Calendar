@@ -180,7 +180,6 @@ export function set_up_edit_inputs() {
     input_container = $('#input_container');
     timespan_sortable = $('#timespan_sortable');
     first_day = $('#first_day');
-    global_week_sortable = $('#global_week_sortable');
     leap_day_list = $('#leap_day_list');
     moon_list = $('#moon_list');
     periodic_seasons_checkbox = $('#periodic_seasons_checkbox');
@@ -394,12 +393,6 @@ export function set_up_edit_inputs() {
     });
 
     /* ------------------- Layout callbacks ------------------- */
-
-    $('.add_inputs').keyup(function(e) {
-        if (e.keyCode == 13) {
-            $(this).find('.add').click();
-        }
-    });
 
     $(document).on('change', '.week_day_name', function() {
         populate_first_day_select(window.static_data.year_data.first_day);
@@ -2850,33 +2843,6 @@ function update_data(e) {
     window.dispatchEvent(new CustomEvent('calendar-structure-changed'));
 }
 
-function add_weekday_to_sortable(parent, key, name) {
-    var element = [];
-
-    element.push("<div class='sortable-container list-group-item week_day'>");
-    element.push("<div class='main-container'>");
-    element.push("<div class='handle fa fa-bars'></div>");
-    element.push("<div class='name-container'>");
-    element.push(`<input type='text' class='form-control name-input small-input dynamic_input week_day_name' data='year_data.global_week' fc-index='${key}' tabindex='${(key + 1)}'/>`);
-    element.push("</div>");
-    element.push("<div class='remove-spacer'></div>");
-    element.push("</div>");
-    element.push("<div class='remove-container'>");
-    element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-    element.push("<div class='btn_remove btn btn-danger fa fa-trash'></div>");
-    element.push("<div class='btn_cancel btn btn-danger fa fa-xmark'></div>");
-    element.push("<div class='btn_accept btn btn-success fa fa-check'></div>");
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element = $(element.join(""))
-
-    element.find('.name-input').val(name);
-
-    parent.append(element);
-}
-
 function add_timespan_to_sortable(parent, key, data) {
     if (key == 0) $('.timespan_sortable_header').removeClass('hidden');
 
@@ -4487,7 +4453,7 @@ function evaluate_remove_buttons() {
     });
 }
 
-function populate_first_day_select(val) {
+export function populate_first_day_select(val) {
     var custom_week = false;
     timespan_sortable.children().each(function() {
         if ($(this).find('.unique-week-input').is(':checked')) {

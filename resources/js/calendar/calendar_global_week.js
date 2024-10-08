@@ -1,4 +1,4 @@
-import { do_error_check } from "./calendar_inputs_edit";
+import { do_error_check, populate_first_day_select } from "./calendar_inputs_edit";
 import { set_up_view_values } from "./calendar_inputs_view";
 
 export default () => ({
@@ -12,7 +12,7 @@ export default () => ({
         this.customWeekWarningCheck(static_data);
     },
     refreshWeekdays(static_data) {
-        this.weekdays = static_data.year_data.global_week;
+        this.weekdays = [...static_data.year_data.global_week];
         this.deleting = -1;
     },
     customWeekWarningCheck(static_data) {
@@ -21,17 +21,19 @@ export default () => ({
     },
     addNewDay() {
         window.static_data.year_data.global_week.push(this.new_weekday_name);
+        this.refreshWeekdays(window.static_data);
 
         this.new_weekday_name = '';
 
         set_up_view_values();
         populate_first_day_select(window.static_data.year_data.first_day);
+        do_error_check();
     },
     removeWeekday(index) {
         console.log("Removing " + index);
 
         window.static_data.year_data.global_week.splice(index, 1);
-        this.weekdays.splice(index, 1);
+        this.refreshWeekdays(window.static_data);
 
         this.deleting = -1;
         do_error_check();
