@@ -30,8 +30,6 @@ export default () => ({
         do_error_check();
     },
     removeWeekday(index) {
-        console.log("Removing " + index);
-
         window.static_data.year_data.global_week.splice(index, 1);
         this.refreshWeekdays(window.static_data);
 
