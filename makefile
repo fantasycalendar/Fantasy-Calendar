@@ -79,7 +79,7 @@ quick_deploy_prod:
 install_dev:
 	cp ./setup/docker.example.env .env || true                                                     # Copy env file, don't overwrite
 	docker-compose build                                                                           # Gotta build our images before we can use them
-	docker run -it -u $(id -u):$(id -g) -v "${PWD}/:/app" -w /app node:20 npm install                # NPM install inside docker container to avoid installing on host
+	docker run -it -u $(id -u):$(id -g) -v "${PWD}/:/app" -w /app node:20 npm install --legacy-peer-deps                # NPM install inside docker container to avoid installing on host
 	docker run -it -u $(id -u):$(id -g) -v "${PWD}/:/var/task" -v ${COMPOSER_HOME:-$HOME/.composer}:/tmp -e COMPOSER_CACHE_DIR=/tmp/composer-cache -w /var/task fc-bref-composer composer install  # Composer install inside docker container (it has all our required PHP modules)
 	docker-compose up -d																		   # Start up our docker containers
 	until docker-compose exec php php artisan migrate:status; do sleep 1; done					   # Wait for mysql to be ready
