@@ -59,12 +59,6 @@ export function bind_calendar_events() {
         toggle_sidebar();
     });
 
-    window.calendar_weather.tooltip.set_up();
-
-    $('#calendar_container').on('scroll', function() {
-        window.calendar_weather.tooltip.hide();
-    });
-
     $(document).on('change', '.event-text-input', function() {
 
         let parent = $(this).closest('.sortable-container');
@@ -258,11 +252,6 @@ export async function rebuild_calendar(action, rebuild_data) {
 
         rerender_calendar(window.evaluated_static_data);
 
-        window.calendar_weather.epoch_data = window.evaluated_static_data.epoch_data;
-        window.calendar_weather.processed_weather = window.evaluated_static_data.processed_weather;
-        window.calendar_weather.start_epoch = window.evaluated_static_data.year_data.start_epoch;
-        window.calendar_weather.end_epoch = window.evaluated_static_data.year_data.end_epoch;
-
         climate_charts.evaluate_day_length_chart();
         climate_charts.evaluate_weather_charts();
 
@@ -288,12 +277,11 @@ export async function rebuild_climate() {
         window.evaluated_static_data.year_data.end_epoch
     );
 
-    let prev_seasons = window.calendar_weather.processed_seasons;
-    let prev_weather = window.calendar_weather.processed_weather;
+    let prev_seasons = window.evaluated_static_data.processed_seasons;
+    let prev_weather = window.evaluated_static_data.processed_weather;
 
     climate_generator.generate().then((result) => {
 
-        window.calendar_weather.epoch_data = result;
         window.evaluated_static_data.epoch_data = result;
 
         climate_charts.evaluate_day_length_chart();

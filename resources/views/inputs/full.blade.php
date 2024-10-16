@@ -565,7 +565,7 @@
         @endif
 
 
-        <x-weekdays-collapsible :calendar="$calendar"></x-weekdays-collapsible>
+        <x-weekdays-collapsible :calendar="$calendar ?? null"></x-weekdays-collapsible>
 
 
         <!---------------------------------------------->

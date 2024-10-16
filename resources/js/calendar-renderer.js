@@ -47,15 +47,28 @@ export default () => ({
     },
 
     weather_click: function (day, event) {
-        window.calendar_weather.tooltip.sticky($(event.target));
+		// TODO: Make weather tooltip sticky
+        //window.calendar_weather.tooltip.sticky($(event.target));
     },
 
     weather_mouse_enter: function (day, event) {
-        window.calendar_weather.tooltip.show($(event.target));
+
+	    let epoch_details = window.evaluated_static_data.epoch_data[day.epoch];
+	    let has_weather = window.evaluated_static_data.processed_weather;
+
+	    window.dispatchEvent(new CustomEvent('weather-mouse-enter', {
+		    detail: {
+			    element: event.target,
+			    static_data: window.static_data,
+			    epoch_details,
+			    has_weather,
+			    day
+		    }
+	    }));
     },
 
     weather_mouse_leave: function () {
-        window.calendar_weather.tooltip.hide();
+	    window.dispatchEvent(new CustomEvent('weather-mouse-leave'));
     },
 
     moon_mouse_enter: function (moon, event) {

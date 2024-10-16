@@ -8,11 +8,14 @@ export default () => ({
     show_custom_week_warning: false,
     deleting: -1,
     load(static_data) {
+		if(!static_data){
+			return;
+		}
         this.refreshWeekdays(static_data);
         this.customWeekWarningCheck(static_data);
     },
     refreshWeekdays(static_data) {
-        this.weekdays = [...static_data.year_data.global_week];
+        this.weekdays = static_data ? [...static_data.year_data.global_week] : [];
         this.deleting = -1;
     },
     customWeekWarningCheck(static_data) {
