@@ -1,4 +1,4 @@
-import { lerp } from "./calendar/calendar_functions";
+import { lerp, fract } from "./calendar/calendar_functions";
 
 /**
  * This class is used to generate a pseudo-random number based on a seed
