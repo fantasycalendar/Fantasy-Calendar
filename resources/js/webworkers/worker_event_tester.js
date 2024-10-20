@@ -1,4 +1,7 @@
+import { window.calendar_data_generator, event_evaluator } from "../calendar/calendar_workers";
+
 var version = new Date().getTime();
+
 
 importScripts('/js/calendar/calendar_functions.js?v='+version);
 importScripts('/js/calendar/calendar_variables.js?v='+version);
@@ -7,14 +10,14 @@ importScripts('/js/calendar/calendar_workers.js?v='+version);
 
 onmessage = async (e) => {
 
-	calendar_data_generator.calendar_name = e.data.calendar_name;
-	calendar_data_generator.static_data = e.data.static_data;
-	calendar_data_generator.dynamic_data = e.data.dynamic_data;
-	calendar_data_generator.owner = e.data.owner;
-	calendar_data_generator.events = e.data.events;
-	calendar_data_generator.event_categories = e.data.event_categories;
+	window.calendar_data_generator.calendar_name = e.data.calendar_name;
+	window.calendar_data_generator.static_data = e.data.static_data;
+	window.calendar_data_generator.dynamic_data = e.data.dynamic_data;
+	window.calendar_data_generator.owner = e.data.owner;
+	window.calendar_data_generator.events = e.data.events;
+	window.calendar_data_generator.event_categories = e.data.event_categories;
 
-	let calendar_data = await calendar_data_generator.run_future(Number(e.data.start_year), Number(e.data.end_year), e.data.build_seasons);
+	let calendar_data = await window.calendar_data_generator.run_future(Number(e.data.start_year), Number(e.data.end_year), e.data.build_seasons);
 
 	let event_data = event_evaluator.init(
 		e.data.static_data,

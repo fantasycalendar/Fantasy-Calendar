@@ -1,3 +1,5 @@
+import { Climate } from "../calendar/calendar_season_generator";
+
 var version = new Date().getTime();
 
 importScripts('/js/calendar/calendar_functions.js?v='+version);
