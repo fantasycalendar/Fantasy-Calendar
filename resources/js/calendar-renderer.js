@@ -46,24 +46,28 @@ export default () => ({
         show_event_ui.clicked_event($(event.target));
     },
 
+	get_weather_data(day, event) {
+		let epoch_details = window.evaluated_static_data.epoch_data[day.epoch];
+		let has_weather = window.evaluated_static_data.processed_weather;
+		return {
+			element: event.target,
+			static_data: window.static_data,
+			show_moons: window.static_data.settings.layout === "minimalistic",
+			epoch_details,
+			has_weather,
+			day
+		}
+	},
+
     weather_click: function (day, event) {
-		// TODO: Make weather tooltip sticky
-        //window.calendar_weather.tooltip.sticky($(event.target));
+	    window.dispatchEvent(new CustomEvent('weather-mouse-click', {
+		    detail: this.get_weather_data(day, event)
+	    }));
     },
 
     weather_mouse_enter: function (day, event) {
-
-	    let epoch_details = window.evaluated_static_data.epoch_data[day.epoch];
-	    let has_weather = window.evaluated_static_data.processed_weather;
-
 	    window.dispatchEvent(new CustomEvent('weather-mouse-enter', {
-		    detail: {
-			    element: event.target,
-			    static_data: window.static_data,
-			    epoch_details,
-			    has_weather,
-			    day
-		    }
+		    detail: this.get_weather_data(day, event)
 	    }));
     },
 

@@ -7,7 +7,8 @@ import {
 
 export default () => ({
 	element: false,
-	show: true,
+	show: false,
+	sticky: false,
 	x: 0,
 	y: 0,
 	opacity: 0,
@@ -15,24 +16,40 @@ export default () => ({
 	epoch_details: {},
 	day: {},
 
-	day_title: "",
-	temp_desc: "",
 	temperature_ranges: [],
-	wind: "",
-	precip: "",
-	clouds: "",
-	feature: "",
+	wind_direction: "",
+	wind_speeds: [],
 	has_weather: false,
+	show_moons: false,
 
+	stickyTooltip: function($event) {
+
+		// TODO: This doesn't appear to work with @click.away or @click.outside
+
+		if(this.day?.epoch !== $event.detail.day.epoch){
+			this.sticky = true;
+			this.day = $event.detail.day;
+			return this.activate($event);
+		}
+
+		this.sticky = !this.sticky;
+		if(!this.sticky) this.deactivate();
+
+	},
 
 	activate: function($event) {
+
+		if(this.sticky && $event.detail.day.epoch !== this.day.epoch) return;
+
 		this.day = $event.detail.day;
 		this.epoch_details = $event.detail.epoch_details;
 		this.has_weather = $event.detail.has_weather;
+		this.show_moons = $event.detail.show_moons;
 
 		let temperature_system = $event.detail.static_data.seasons.global_settings.temp_sys;
 
-		if (!window.static_data.settings.hide_weather_temp || window.Perms.player_at_least('co-owner')) {
+		this.temperature_ranges = [];
+		if (!$event.detail.static_data.settings.hide_weather_temp || window.Perms.player_at_least('co-owner')) {
 			if (temperature_system !== 'metric') {
 				let temperatures = this.epoch_details.weather.temperature['imperial'].value;
 				this.temperature_ranges.push(`${precisionRound(temperatures[0], 1).toString()}°F to ${precisionRound(temperatures[1], 1).toString()}°F`);
@@ -43,6 +60,20 @@ export default () => ({
 			}
 		}
 
+		this.wind_direction = "";
+		this.wind_speeds = [];
+		if(!$event.detail.static_data.settings.hide_wind_velocity || window.Perms.player_at_least('co-owner')) {
+			this.wind_direction = `${this.epoch_details.weather.wind_speed} (${this.epoch_details.weather.wind_direction})`;
+
+			let wind_system = $event.detail.static_data.seasons.global_settings.wind_sys;
+			if (wind_system !== 'metric') {
+				this.wind_speeds.push(`${this.epoch_details.weather.wind_velocity.imperial} MPH`);
+			}
+			if (wind_system !== 'imperial') {
+				this.wind_speeds.push(`${this.epoch_details.weather.wind_velocity.metric} KPH`);
+			}
+			this.wind_speeds.push(`${this.epoch_details.weather.wind_velocity.knots} KN`);
+		}
 
 		computePosition(
 			$event.detail.element,
@@ -59,6 +90,9 @@ export default () => ({
 	},
 
 	deactivate: function() {
+		if(this.sticky) return;
+		this.show = false;
+		this.day = {};
 		this.opacity = 0;
 	}
 });
@@ -155,7 +189,7 @@ window._calendar_weather = {
 				let epoch_data = window.calendar_weather.epoch_data[epoch];
 				if (epoch_data.leap_day !== undefined) {
 					let index = epoch_data.leap_day;
-					let leap_day = window.static_data.year_data.leap_days[index];
+					let leap_day = $event.detail.static_data.year_data.leap_days[index];
 					if (leap_day.show_text) {
 						this.day_container.text(leap_day.name);
 					}
