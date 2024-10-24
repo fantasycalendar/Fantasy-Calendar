@@ -2,14 +2,12 @@
 	x-data="weather_tooltip"
 	@weather-mouse-enter.window="activate"
 	@weather-mouse-leave.window="deactivate"
-	@weather-mouse-click.window="stickyTooltip"
-	@click.outside="stickyTooltip"
 	@scroll.window="deactivate"
 	id='weather_tooltip_box'
 	x-ref='weather_tooltip_box'
 	x-show="show"
 	x-cloak
-	:style="`left: ${x}px; top: ${y}px; opacity: ${opacity}; pointer-events: none;`"
+	:style="`left: ${x}px; top: ${y}px; opacity: ${opacity};`"
 >
 	<div x-show='day.text'>Day Title:</div>
 	<div x-show='day.text' x-text='day.text'></div>
