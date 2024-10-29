@@ -16,7 +16,11 @@
         </a>
     </label>
 
-    <div class="collapsible-content card-body" x-data="{{ $contains }}_collapsible">
+    <div class="collapsible-content card-body"
+        x-data="{{ $contains }}_collapsible"
+        x-init="$nextTick(() => load(window.static_data))"
+        @calendar-loaded.window="$nextTick(() => load(window.static_data))"
+        @calendar-structure-changed.window="$nextTick(() => load(window.static_data))">
         <x-dynamic-component :calendar="$calendar ?? null" :component="$contains . '-collapsible'"></x-dynamic-component>
     </div>
 </div>

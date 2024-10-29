@@ -1,3 +1,7 @@
 export default () => ({
-    reordering: false
+    reordering: false,
+
+    load: function(static_data) {
+        //
+    }
 })

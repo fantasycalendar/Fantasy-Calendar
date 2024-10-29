@@ -565,13 +565,7 @@
         @endif
 
 
-        <x-weekdays-collapsible :calendar="$calendar ?? null"></x-weekdays-collapsible>
-
-
-        <!---------------------------------------------->
-        <!----------------- TIMESPANS ------------------>
-        <!---------------------------------------------->
-
+        <x-collapsible :calendar="$calendar" contains="weekdays" step="2" icon="fa-calendar-week"></x-collapsible>
         <x-collapsible :calendar="$calendar" contains="months" step="3" icon="fa-calendar-alt"></x-collapsible>
 
 
