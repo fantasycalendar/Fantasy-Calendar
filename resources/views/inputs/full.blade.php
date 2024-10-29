@@ -374,8 +374,8 @@
         @endif
 
 
-        <x-collapsible :calendar="$calendar" contains="weekdays" step="2" icon="fa-calendar-week"></x-collapsible>
-        <x-collapsible :calendar="$calendar" contains="months" step="3" icon="fa-calendar-alt"></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Weekdays" step="2" icon="fa-calendar-week"></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Months" step="3" icon="fa-calendar-alt"></x-collapsible>
 
 
         <!---------------------------------------------->
