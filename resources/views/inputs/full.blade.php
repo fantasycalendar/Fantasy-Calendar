@@ -572,7 +572,7 @@
         <!----------------- TIMESPANS ------------------>
         <!---------------------------------------------->
 
-        <x-collapsible :calendar="$calendar" contains="months" step="3"></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="months" step="3" icon="fa-calendar-alt"></x-collapsible>
 
 
         <!---------------------------------------------->
