@@ -7,20 +7,22 @@
     ])>
     <input id="collapsible_{{ $contains }}" class="toggle" type="checkbox">
     <label for="collapsible_{{ $contains }}" class="lbl-toggle py-2 pr-3 card-header">
-        <i class="mr-2 fas {{ $icon }}"></i> {{ Str::headline($contains) }}
+        <i class="mr-2 fas {{ $icon }}"></i> {{ $contains }}
+
+        <!-- TODO: make sure the "contains" values match our helpdocs page links -->
         <a target="_blank"
-            title='More Info: Months & Intercalaries'
-            href='{{ helplink('months') }}'
-            class="wiki protip">
+            title='View helpdocs'
+            href='{{ helplink(Str::slug($contains)) }}'
+            class="wiki">
             <i class="fa fa-question-circle"></i>
         </a>
     </label>
 
     <div class="collapsible-content card-body"
-        x-data="{{ $contains }}_collapsible"
+        x-data="{{ Str::snake($contains) }}_collapsible"
         x-init="$nextTick(() => load(window.static_data))"
         @calendar-loaded.window="$nextTick(() => load(window.static_data))"
         @calendar-structure-changed.window="$nextTick(() => load(window.static_data))">
-        <x-dynamic-component :calendar="$calendar ?? null" :component="$contains . '-collapsible'"></x-dynamic-component>
+        <x-dynamic-component :calendar="$calendar ?? null" :component="Str::kebab($contains) . '-collapsible'"></x-dynamic-component>
     </div>
 </div>

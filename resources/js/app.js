@@ -304,11 +304,18 @@ Alpine.data('MainApp', () => ({
 import ContextMenu from './context-menu.js';
 Alpine.data('context_menu', ContextMenu);
 
+import StatisticsCollapsible from './calendar/statistics_collapsible.js';
+Alpine.data('statistics_collapsible', StatisticsCollapsible);
+
+import CurrentDateCollapsible from './calendar/current_date_collapsible.js';
+Alpine.data('current_date_collapsible', CurrentDateCollapsible);
+
 import WeekdaysCollapsible from './calendar/weekdays_collapsible.js';
 Alpine.data('weekdays_collapsible', WeekdaysCollapsible);
 
 import MonthsCollapsible from './calendar/months_collapsible.js';
 Alpine.data('months_collapsible', MonthsCollapsible);
+
 
 import RichEditor from './rich-editor.js';
 Alpine.data('rich_editor', RichEditor);
