@@ -14,9 +14,8 @@
         </a>
     </label>
 
-    <!-- Put collapsible-content back -->
-    <div class="card-body"
-        x-data="global_week"
+    <div class="collapsible-content card-body"
+        x-data="weekdays_collapsible"
         x-init="$nextTick(() => load(window.static_data))"
         @calendar-loaded.window="$nextTick(() => load(window.static_data))"
         @calendar-structure-changed.window="$nextTick(() => load(window.static_data))">

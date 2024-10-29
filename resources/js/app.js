@@ -304,8 +304,8 @@ Alpine.data('MainApp', () => ({
 import ContextMenu from './context-menu.js';
 Alpine.data('context_menu', ContextMenu);
 
-import GlobalWeek from './calendar/calendar_global_week.js';
-Alpine.data('global_week', GlobalWeek);
+import WeekdaysCollapsible from './calendar/weekdays_collapsible.js';
+Alpine.data('weekdays_collapsible', WeekdaysCollapsible);
 
 import RichEditor from './rich-editor.js';
 Alpine.data('rich_editor', RichEditor);
