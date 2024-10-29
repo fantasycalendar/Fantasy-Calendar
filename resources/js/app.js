@@ -307,6 +307,9 @@ Alpine.data('context_menu', ContextMenu);
 import WeekdaysCollapsible from './calendar/weekdays_collapsible.js';
 Alpine.data('weekdays_collapsible', WeekdaysCollapsible);
 
+import MonthsCollapsible from './calendar/months_collapsible.js';
+Alpine.data('months_collapsible', MonthsCollapsible);
+
 import RichEditor from './rich-editor.js';
 Alpine.data('rich_editor', RichEditor);
 
