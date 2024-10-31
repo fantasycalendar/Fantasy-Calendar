@@ -304,19 +304,6 @@ Alpine.data('MainApp', () => ({
 import ContextMenu from './context-menu.js';
 Alpine.data('context_menu', ContextMenu);
 
-import StatisticsCollapsible from './calendar/statistics_collapsible.js';
-Alpine.data('statistics_collapsible', StatisticsCollapsible);
-
-import CurrentDateCollapsible from './calendar/current_date_collapsible.js';
-Alpine.data('current_date_collapsible', CurrentDateCollapsible);
-
-import WeekdaysCollapsible from './calendar/weekdays_collapsible.js';
-Alpine.data('weekdays_collapsible', WeekdaysCollapsible);
-
-import MonthsCollapsible from './calendar/months_collapsible.js';
-Alpine.data('months_collapsible', MonthsCollapsible);
-
-
 import RichEditor from './rich-editor.js';
 Alpine.data('rich_editor', RichEditor);
 
@@ -325,6 +312,60 @@ Alpine.data('moon_tooltip', MoonTooltip);
 
 import WeatherTooltip from './weather-tooltip.js';
 Alpine.data("weather_tooltip", WeatherTooltip);
+
+import StatisticsCollapsible from './calendar/statistics_collapsible.js';
+Alpine.data('statistics_collapsible', StatisticsCollapsible);
+
+import CurrentDateCollapsible from './calendar/current_date_collapsible.js';
+Alpine.data('current_date_collapsible', CurrentDateCollapsible);
+
+import ClockCollapsible from './calendar/clock_collapsible.js';
+Alpine.data('clock_collapsible', ClockCollapsible);
+
+import RealTimeAdvancementCollapsible from './calendar/real_time_advancement_collapsible.js';
+Alpine.data('real_time_advancement_collapsible', RealTimeAdvancementCollapsible);
+
+import WeekdaysCollapsible from './calendar/weekdays_collapsible.js';
+Alpine.data('weekdays_collapsible', WeekdaysCollapsible);
+
+import MonthsCollapsible from './calendar/months_collapsible.js';
+Alpine.data('months_collapsible', MonthsCollapsible);
+
+import LeapDaysCollapsible from './calendar/leap_days_collapsible.js';
+Alpine.data('leap_days_collapsible', LeapDaysCollapsible);
+
+import ErasCollapsible from './calendar/eras_collapsible.js';
+Alpine.data('eras_collapsible', ErasCollapsible);
+
+import MoonsCollapsible from './calendar/moons_collapsible.js';
+Alpine.data('moons_collapsible', MoonsCollapsible);
+
+import SeasonsCollapsible from './calendar/seasons_collapsible.js';
+Alpine.data('seasons_collapsible', SeasonsCollapsible);
+
+import WeatherCollapsible from './calendar/weather_collapsible.js';
+Alpine.data('weather_collapsible', WeatherCollapsible);
+
+import LocationsCollapsible from './calendar/locations_collapsible.js';
+Alpine.data('locations_collapsible', LocationsCollapsible);
+
+import CyclesCollapsible from './calendar/cycles_collapsible.js';
+Alpine.data('cycles_collapsible', CyclesCollapsible);
+
+import EventCategoriesCollapsible from './calendar/event_categories_collapsible.js';
+Alpine.data('event_categories_collapsible', EventCategoriesCollapsible);
+
+import EventsCollapsible from './calendar/events_collapsible.js';
+Alpine.data('events_collapsible', EventsCollapsible);
+
+import SettingsCollapsible from './calendar/settings_collapsible.js';
+Alpine.data('settings_collapsible', SettingsCollapsible);
+
+import UserManagementCollapsible from './calendar/user_management_collapsible.js';
+Alpine.data('user_management_collapsible', UserManagementCollapsible);
+
+import CalendarLinkingCollapsible from './calendar/calendar_linking_collapsible.js';
+Alpine.data('calendar_linking_collapsible', CalendarLinkingCollapsible);
 
 Alpine.start();
 
