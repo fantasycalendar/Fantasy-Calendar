@@ -358,39 +358,39 @@ export function set_up_edit_inputs() {
         }
     });
 
-    $('#enable_clock').change(function() {
+    // $('#enable_clock').change(function() {
+	//
+    //     window.static_data.clock.enabled = $(this).is(':checked');
+    //     window.static_data.clock.render = $(this).is(':checked');
+    //     $('#render_clock').prop('checked', window.static_data.clock.render);
+	//
+    //     window.dynamic_data.hour = 0;
+    //     window.dynamic_data.minute = 0;
+	//
+    //     evaluate_clock_inputs();
+	//
+    //     $('#create_season_events').prop('disabled', !window.static_data.clock.enabled);
+	//
+    //     var no_locations = (window.static_data.seasons.data.length == 0 || !window.static_data.seasons.global_settings.enable_weather) && !window.static_data.clock.enabled;
+    //     $('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
+    //     $('#locations_warning').toggleClass('hidden', !no_locations);
+	//
+    //     $('.season_middle_btn').toggleClass('hidden', !window.static_data.clock.enabled || window.static_data.seasons.data.length < 3);
+    //     $('.location_middle_btn').toggleClass('hidden', (!window.static_data.seasons.global_settings.enable_weather && !window.static_data.clock.enabled) || window.static_data.seasons.data.length < 3);
+	//
+    //     eval_clock();
+	//
+    //     window.dispatchEvent(new CustomEvent("clock-changed", { detail: { enabled: window.static_data.clock.enabled } }));
+	//
+    // });
 
-        window.static_data.clock.enabled = $(this).is(':checked');
-        window.static_data.clock.render = $(this).is(':checked');
-        $('#render_clock').prop('checked', window.static_data.clock.render);
-
-        window.dynamic_data.hour = 0;
-        window.dynamic_data.minute = 0;
-
-        evaluate_clock_inputs();
-
-        $('#create_season_events').prop('disabled', !window.static_data.clock.enabled);
-
-        var no_locations = (window.static_data.seasons.data.length == 0 || !window.static_data.seasons.global_settings.enable_weather) && !window.static_data.clock.enabled;
-        $('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
-        $('#locations_warning').toggleClass('hidden', !no_locations);
-
-        $('.season_middle_btn').toggleClass('hidden', !window.static_data.clock.enabled || window.static_data.seasons.data.length < 3);
-        $('.location_middle_btn').toggleClass('hidden', (!window.static_data.seasons.global_settings.enable_weather && !window.static_data.clock.enabled) || window.static_data.seasons.data.length < 3);
-
-        eval_clock();
-
-        window.dispatchEvent(new CustomEvent("clock-changed", { detail: { enabled: window.static_data.clock.enabled } }));
-
-    });
-
-    $('#collapsible_clock').change(function() {
-        if ($(this).is(':checked')) {
-            $('#clock').appendTo($(this).parent().children('.collapsible-content'));
-        } else {
-            $('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
-        }
-    });
+    // $('#collapsible_clock').change(function() {
+    //     if ($(this).is(':checked')) {
+    //         $('#clock').appendTo($(this).parent().children('.collapsible-content'));
+    //     } else {
+    //         $('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
+    //     }
+    // });
 
     /* ------------------- Layout callbacks ------------------- */
 
@@ -2819,7 +2819,7 @@ function update_data(e) {
         refresh = refresh === "true" || refresh === undefined;
 
         if (type.includes('clock')) {
-            evaluate_clock_inputs();
+            // evaluate_clock_inputs();
         }
 
         if (key == "year_zero_exists") {
@@ -5454,29 +5454,29 @@ function populate_calendar_lists() {
     });
 }
 
-export function evaluate_clock_inputs() {
-    $('.clock_inputs :input, .clock_inputs :button, .render_clock').not('[clocktype]').prop('disabled', !window.static_data.clock.enabled);
-    $('.clock_inputs, .render_clock').toggleClass('hidden', !window.static_data.clock.enabled);
-
-    $('.do_render_clock :input, .do_render_clock :button').prop('disabled', !window.static_data.clock.render);
-    $('.do_render_clock').toggleClass('hidden', !window.static_data.clock.render);
-
-    $('.hour_input').each(function() {
-        $(this).prop('min', 0).prop('max', window.static_data.clock.hours).not('[clocktype]').prop('disabled', !window.static_data.clock.enabled).toggleClass('hidden', !window.static_data.clock.enabled);
-    });
-    $('.minute_input').each(function() {
-        $(this).prop('min', 1).prop('max', window.static_data.clock.minutes - 1).not('[clocktype]').prop('disabled', !window.static_data.clock.enabled).toggleClass('hidden', !window.static_data.clock.enabled);
-    });
-
-    $('input[clocktype="timezone_hour"]').each(function() {
-        $(this).prop('min', window.static_data.clock.hours * -0.5).prop('max', window.static_data.clock.hours * 0.5).prop('disabled', !window.static_data.clock.enabled).toggleClass('hidden', !window.static_data.clock.enabled);
-    });
-    $('input[clocktype="timezone_minute"]').each(function() {
-        $(this).prop('min', window.static_data.clock.minutes * -0.5).prop('max', window.static_data.clock.minutes * 0.5).prop('disabled', !window.static_data.clock.enabled).toggleClass('hidden', !window.static_data.clock.enabled);
-    });
-
-    $('#create_season_events').prop('disabled', window.static_data.seasons.data.length == 0 && !window.static_data.clock.enabled);
-}
+// export function evaluate_clock_inputs() {
+//     $('.clock_inputs :input, .clock_inputs :button, .render_clock').not('[clocktype]').prop('disabled', !window.static_data.clock.enabled);
+//     $('.clock_inputs, .render_clock').toggleClass('hidden', !window.static_data.clock.enabled);
+//
+//     $('.do_render_clock :input, .do_render_clock :button').prop('disabled', !window.static_data.clock.render);
+//     $('.do_render_clock').toggleClass('hidden', !window.static_data.clock.render);
+//
+//     $('.hour_input').each(function() {
+//         $(this).prop('min', 0).prop('max', window.static_data.clock.hours).not('[clocktype]').prop('disabled', !window.static_data.clock.enabled).toggleClass('hidden', !window.static_data.clock.enabled);
+//     });
+//     $('.minute_input').each(function() {
+//         $(this).prop('min', 1).prop('max', window.static_data.clock.minutes - 1).not('[clocktype]').prop('disabled', !window.static_data.clock.enabled).toggleClass('hidden', !window.static_data.clock.enabled);
+//     });
+//
+//     $('input[clocktype="timezone_hour"]').each(function() {
+//         $(this).prop('min', window.static_data.clock.hours * -0.5).prop('max', window.static_data.clock.hours * 0.5).prop('disabled', !window.static_data.clock.enabled).toggleClass('hidden', !window.static_data.clock.enabled);
+//     });
+//     $('input[clocktype="timezone_minute"]').each(function() {
+//         $(this).prop('min', window.static_data.clock.minutes * -0.5).prop('max', window.static_data.clock.minutes * 0.5).prop('disabled', !window.static_data.clock.enabled).toggleClass('hidden', !window.static_data.clock.enabled);
+//     });
+//
+//     $('#create_season_events').prop('disabled', window.static_data.seasons.data.length == 0 && !window.static_data.clock.enabled);
+// }
 
 var block_inputs = false;
 
@@ -5627,11 +5627,11 @@ export function set_up_edit_values() {
         }
     }
 
-    if ($('#collapsible_clock').is(':checked')) {
-        $('#clock').appendTo($('#collapsible_clock').parent().children('.collapsible-content'));
-    } else {
-        $('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
-    }
+    // if ($('#collapsible_clock').is(':checked')) {
+    //     $('#clock').appendTo($('#collapsible_clock').parent().children('.collapsible-content'));
+    // } else {
+    //     $('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
+    // }
 
     if (window.static_data.year_data.leap_days) {
 

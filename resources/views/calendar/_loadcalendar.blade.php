@@ -37,24 +37,3 @@ window.advancement = {
     advancement_webhook_url: @js($calendar->advancement_webhook_url),
     advancement_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 }
-
-this.$nextTick(
-    () => this.$dispatch(
-        'calendar-loaded', {
-            hash: window.hash,
-            calendar_name: window.calendar_name,
-            calendar_id: window.calendar_id,
-            static_data: window.static_data,
-            dynamic_data: window.dynamic_data,
-            is_linked: window.is_linked,
-            has_parent: window.has_parent,
-            parent_hash: window.parent_hash,
-            parent_offset: window.parent_offset,
-            events: window.events,
-            event_categories: window.event_categories,
-            last_static_change: window.last_static_change,
-            last_dynamic_change: window.last_dynamic_change,
-            advancement: window.advancement
-        }
-    )
-);

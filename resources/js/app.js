@@ -301,6 +301,9 @@ Alpine.data('MainApp', () => ({
     }
 }));
 
+import CalendarEditPage from "./calendar/calendar_edit_page.js";
+Alpine.data('calendar_edit_page', CalendarEditPage);
+
 import ContextMenu from './context-menu.js';
 Alpine.data('context_menu', ContextMenu);
 

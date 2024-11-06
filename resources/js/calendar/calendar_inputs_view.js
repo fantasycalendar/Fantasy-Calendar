@@ -17,7 +17,6 @@ import {
     do_error_check,
     evaluate_season_daylength_warning,
     evaluate_save_button,
-    evaluate_clock_inputs,
 } from "./calendar_inputs_edit";
 import { pre_rebuild_calendar } from "./calendar_manager";
 
@@ -523,7 +522,7 @@ export function set_up_view_values() {
 
     repopulate_location_select_list();
 
-    evaluate_clock_inputs();
+    // evaluate_clock_inputs();
 
     window.dynamic_data.epoch = window.dynamic_date_manager.epoch;
 }

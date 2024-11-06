@@ -7,23 +7,21 @@
 			{{ Arr::get($calendar->static_data, 'clock.enabled') ? "Yes" : "No" }}
 		@else
 			<label class="custom-control custom-checkbox center-text">
-				<input type="checkbox" class="custom-control-input static_input" id='enable_clock'
-							 data='clock' fc-index='enabled'>
+				<input type="checkbox" class="custom-control-input" x-model="clock.enabled"/>
 				<span class="custom-control-indicator"></span>
 			</label>
 		@endif
 	</div>
-	<div class='render_clock col-3 bold-text'>Render:</div>
-	<div class='render_clock col-3 text-right'>
+	<div class='render_clock col-3 bold-text' x-show="clock.enabled">Render:</div>
+	<div class='render_clock col-3 text-right' x-show="clock.enabled">
 		<label class="custom-control custom-checkbox center-text">
-			<input type="checkbox" class="custom-control-input static_input" id='render_clock'
-						 refresh='clock' data='clock' fc-index='render'>
+			<input type="checkbox" class="custom-control-input" x-model="clock.render"/>
 			<span class="custom-control-indicator"></span>
 		</label>
 	</div>
 </div>
 
-<div class='clock_inputs'>
+<div class='clock_inputs' x-show="clock.enabled">
 
 	<div class='row mt-2'>
 		<div class='col-6 bold-text'>
@@ -40,15 +38,14 @@
 				{{ Arr::get($calendar->static_data, 'clock.hours') }}
 			@else
 				<div class='input-group-prepend'>
-					<button type='button' class='btn btn-sm btn-danger'
-									onclick='adjustInput(this, "#clock_hours", -1);'><i class="fa fa-minus"></i>
+					<button type='button' class='btn btn-sm btn-danger' @click="clock.hours = Math.max(0, clock.hours - 1)">
+						<i class="fa fa-minus"></i>
 					</button>
 				</div>
-				<input class='form-control form-control-sm static_input' min='1' id='clock_hours'
-							 data='clock' fc-index='hours' type='number'>
+				<input class='form-control form-control-sm' min='1' :value="clock.hours" @change="clock.hours = Math.max(1, Number($event.target.value))"/>
 				<div class='input-group-append'>
-					<button type='button' class='btn btn-sm btn-success'
-									onclick='adjustInput(this, "#clock_hours", +1);'><i class="fa fa-plus"></i>
+					<button type='button' class='btn btn-sm btn-success' @click="clock.hours += 1">
+						<i class="fa fa-plus"></i>
 					</button>
 				</div>
 			@endif
@@ -59,15 +56,14 @@
 				{{ Arr::get($calendar->static_data, 'clock.minutes') }}
 			@else
 				<div class='input-group-prepend'>
-					<button type='button' class='btn btn-sm btn-danger'
-									onclick='adjustInput(this, "#clock_minutes", -1);'><i
-							class="fa fa-minus"></i></button>
+					<button type='button' class='btn btn-sm btn-danger' @click="clock.minutes = Math.max(1, clock.minutes - 1)">
+						<i class="fa fa-minus"></i>
+					</button>
 				</div>
-				<input class='form-control form-control-sm static_input' min='1' id='clock_minutes'
-							 data='clock' fc-index='minutes' type='number'>
+				<input class='form-control form-control-sm' type='number' :value="clock.minutes" @change="clock.minutes = Math.max(1, Number($event.target.value))"/>
 				<div class='input-group-append'>
-					<button type='button' class='btn btn-sm btn-success'
-									onclick='adjustInput(this, "#clock_minutes", +1);'><i class="fa fa-plus"></i>
+					<button type='button' class='btn btn-sm btn-success' @click="clock.minutes += 1">
+						<i class="fa fa-plus"></i>
 					</button>
 				</div>
 			@endif
@@ -75,7 +71,7 @@
 
 	</div>
 
-	<div class='row mt-2 do_render_clock'>
+	<div class='row mt-2' x-show="clock.render">
 		<div class='col-6 bold-text'>
 			Offset hours:
 		</div>
@@ -84,38 +80,36 @@
 		</div>
 	</div>
 
-	<div class='row mb-1 do_render_clock'>
+	<div class='row mb-1' x-show="clock.render">
 
 		<div class='col-6 input-group'>
 			<div class='input-group-prepend'>
-				<button type='button' class='btn btn-sm btn-danger'
-								onclick='adjustInput(this, "#clock_offset", -1);'><i class="fa fa-minus"></i>
+				<button type='button' class='btn btn-sm btn-danger' @click="clock.offset -= 1">
+					<i class="fa fa-minus"></i>
 				</button>
 			</div>
 
-			<input class='form-control form-control-sm static_input' id='clock_offset' refresh='clock'
-						 data='clock' fc-index='offset' type='number'>
+			<input class='form-control form-control-sm' type='number' :value="clock.offset" @change="clock.offset = Number($event.target.value)">
 
 			<div class='input-group-append'>
-				<button type='button' class='btn btn-sm btn-success'
-								onclick='adjustInput(this, "#clock_offset", +1);'><i class="fa fa-plus"></i>
+				<button type='button' class='btn btn-sm btn-success' @click="clock.offset += 1">
+					<i class="fa fa-plus"></i>
 				</button>
 			</div>
 		</div>
 
 		<div class='col-6 pl-0 input-group'>
 			<div class='input-group-prepend'>
-				<button type='button' class='btn btn-sm btn-danger'
-								onclick='adjustInput(this, "#clock_crowding", -1);'><i class="fa fa-minus"></i>
+				<button type='button' class='btn btn-sm btn-danger' @click="clock.crowding = Math.max(0, clock.crowding - 1)">
+					<i class="fa fa-minus"></i>
 				</button>
 			</div>
 
-			<input class='form-control form-control-sm static_input' min='0' id='clock_crowding'
-						 refresh='clock' data='clock' fc-index='crowding' type='number'>
+			<input class='form-control form-control-sm' type='number' :value="clock.crowding" @change="clock.crowding = Math.max(0, Number($event.target.value))">
 
 			<div class='input-group-append'>
-				<button type='button' class='btn btn-sm btn-success'
-								onclick='adjustInput(this, "#clock_crowding", +1);'><i class="fa fa-plus"></i>
+				<button type='button' class='btn btn-sm btn-success' @click="clock.crowding += 1">
+					<i class="fa fa-plus"></i>
 				</button>
 			</div>
 		</div>
