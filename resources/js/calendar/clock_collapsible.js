@@ -2,6 +2,12 @@ import CollapsibleComponent from "./collapsible_component";
 
 class ClockCollapsible extends CollapsibleComponent {
     key = 'clock';
+    retrieves = {
+        'clock': 'clock'
+    };
+    changes = {
+        'clock': this.changed
+    };
 
     changed(current, previous) {
         this.$dispatch('clock-changed', {

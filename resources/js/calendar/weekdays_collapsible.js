@@ -8,9 +8,9 @@ export default () => ({
     show_custom_week_warning: false,
     deleting: -1,
     load(static_data) {
-		if(!static_data){
-			return;
-		}
+        if (!static_data) {
+            return;
+        }
         this.refreshWeekdays(static_data);
         this.customWeekWarningCheck(static_data);
     },
