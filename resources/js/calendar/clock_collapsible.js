@@ -1,11 +1,11 @@
 import CollapsibleComponent from "./collapsible_component";
 
 class ClockCollapsible extends CollapsibleComponent {
-    key = 'clock';
-    retrieves = {
+    loads = {
         'clock': 'clock'
     };
-    changes = {
+
+    watchers = {
         'clock': this.changed
     };
 

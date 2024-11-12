@@ -1,7 +1,7 @@
 export default class CollapsibleComponent {
     initialized = false;
     retrieves = {};
-    changes = {};
+    watchers = {};
 
     load(static_data) {
         if (!static_data) {
@@ -15,8 +15,8 @@ export default class CollapsibleComponent {
         this.calendar_settings = static_data.settings;
 
         if (!this.initialized) {
-            for (let localKey of Object.keys(this.changes)) {
-                this.$watch(localKey, this.changes[localKey].bind(this));
+            for (let localKey of Object.keys(this.watchers)) {
+                this.$watch(localKey, this.watchers[localKey].bind(this));
             }
 
             this.initialized = true;
@@ -26,10 +26,6 @@ export default class CollapsibleComponent {
     }
 
     loaded(static_data) {
-        // throw new Error(`The component ${this.prototype.constructor.name} must implement 'changed()'!`);
-    }
-
-    changed() {
         // throw new Error(`The component ${this.prototype.constructor.name} must implement 'changed()'!`);
     }
 }
