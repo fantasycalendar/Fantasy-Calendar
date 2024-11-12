@@ -35,9 +35,9 @@
 	<div class="accordion">
 		<x-collapsible :calendar="$calendar" contains="Statistics" icon="fa-chart-pie"></x-collapsible>
 
-		<x-collapsible :calendar="$calendar" contains="Current Date" icon="fa-chart-pie"></x-collapsible>
+		<x-collapsible :calendar="$calendar" contains="Current Date" icon="fa-hourglass-half"></x-collapsible>
 
-		<x-collapsible :calendar="$calendar" contains="Clock" icon="fa-question-circle"></x-collapsible>
+		<x-collapsible :calendar="$calendar" contains="Clock" icon="fa-clock"></x-collapsible>
 
 		@if(request()->is('calendars/*/edit'))
 			<x-collapsible :calendar="$calendar" contains="Real-Time Advancement" icon="fa-history"
