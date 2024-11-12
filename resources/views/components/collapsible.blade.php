@@ -29,7 +29,6 @@
 
     <div class="collapsible-content card-body"
         x-data="{{ Str::snake($contains_clean) }}_collapsible"
-        x-init="$nextTick(() => load(window.static_data))"
         @calendar-loaded.window="$nextTick(() => load(window.static_data))"
         @calendar-structure-changed.window="$nextTick(() => load(window.static_data))">
         <x-dynamic-component :calendar="$calendar ?? null" :component="Str::kebab($contains_clean) . '-collapsible'"></x-dynamic-component>

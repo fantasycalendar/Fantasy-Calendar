@@ -1,38 +1,29 @@
 export default () => ({
-	clock: {},
+    clock: {},
+    initialized: false,
 
-	load (static_data) {
-		if (!static_data) {
-			return
-		}
-		this.clock = static_data.clock;
-	},
+    load(static_data) {
+        if (!static_data) {
+            return
+        }
 
-	init() {
+        this.clock = static_data.clock;
 
-		this.$watch("clock", (current, previous) => {
+        if (!this.initialized) {
+            this.$watch("clock", (current, previous) => {
+                this.$dispatch('clock-changed', {
+                    ...current
+                });
 
-			if(previous?.enabled === undefined){
-				return;
-			}
+                this.$dispatch('calendar-rerender-requested', {
+                    rerender: previous.enabled !== current.enabled
+                        || previous.hours !== current.hours
+                        || previous.minutes !== current.minutes,
+                    calendar: { clock: { ...current } },
+                });
+            });
 
-			window.static_data.clock = { ...current };
-
-			window.dispatchEvent(new CustomEvent('clock-changed', {
-				detail: {
-					...current
-				}
-			}));
-
-			window.dispatchEvent(new CustomEvent('calendar-rerender-requested', {
-				detail: {
-					rerender: previous.enabled !== current.enabled
-						|| previous.hours !== current.hours
-						|| previous.minutes !== current.minutes
-				}
-			}));
-
-		});
-
-	}
+            this.initialized = true;
+        }
+    },
 })
