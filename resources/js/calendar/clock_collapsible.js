@@ -1,29 +1,20 @@
-export default () => ({
-    clock: {},
-    initialized: false,
+import CollapsibleComponent from "./collapsible_component";
 
-    load(static_data) {
-        if (!static_data) {
-            return
-        }
+class ClockCollapsible extends CollapsibleComponent {
+    key = 'clock';
 
-        this.clock = static_data.clock;
+    changed(current, previous) {
+        this.$dispatch('clock-changed', {
+            ...current
+        });
 
-        if (!this.initialized) {
-            this.$watch("clock", (current, previous) => {
-                this.$dispatch('clock-changed', {
-                    ...current
-                });
+        this.$dispatch('calendar-rerender-requested', {
+            rerender: previous.enabled !== current.enabled
+                || previous.hours !== current.hours
+                || previous.minutes !== current.minutes,
+            calendar: { clock: { ...current } },
+        });
+    }
+}
 
-                this.$dispatch('calendar-rerender-requested', {
-                    rerender: previous.enabled !== current.enabled
-                        || previous.hours !== current.hours
-                        || previous.minutes !== current.minutes,
-                    calendar: { clock: { ...current } },
-                });
-            });
-
-            this.initialized = true;
-        }
-    },
-})
+export default () => new ClockCollapsible();
