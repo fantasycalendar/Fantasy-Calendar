@@ -1,6 +1,6 @@
 export default class CollapsibleComponent {
     initialized = false;
-    retrieves = {};
+    loads = {};
     watchers = {};
 
     load(static_data) {
@@ -8,7 +8,7 @@ export default class CollapsibleComponent {
             return
         }
 
-        for (let [localKey, globalKey] of Object.entries(this.retrieves)) {
+        for (let [localKey, globalKey] of Object.entries(this.loads)) {
             this[localKey] = _.get(static_data, globalKey);
         }
 
@@ -23,6 +23,10 @@ export default class CollapsibleComponent {
         }
 
         this.loaded(static_data);
+    }
+
+    rerender(changed) {
+        this.$dispatch('calendar-rerender-requested', { calendar: changed });
     }
 
     loaded(static_data) {
