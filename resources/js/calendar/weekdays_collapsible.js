@@ -17,10 +17,14 @@ class WeekdaysCollapsible extends CollapsibleComponent {
         'weekdays': 'year_data.global_week',
         'first_day': 'year_data.first_day',
         'leap_days': 'year_data.leap_days',
+        'overflow_weekdays': 'year_data.overflow',
     };
     watchers = {
-        'weekdays': this.weekdaysChanged,
-        'overflow_weekdays': this.weekdaysChanged,
+        'weekdays': this.weekdaysChanged
+    };
+    setters = {
+        "overflow_weekdays": "year_data.overflow",
+        "weekdays": "year_data.global_week"
     };
 
     loaded(static_data) {
@@ -30,13 +34,6 @@ class WeekdaysCollapsible extends CollapsibleComponent {
     }
 
     weekdaysChanged() {
-        this.rerender({
-            year_data: {
-                overflow: this.overflow_weekdays,
-                global_week: this.weekdays,
-            },
-        });
-
         this.new_weekday_name = '';
         this.deleting = -1;
 

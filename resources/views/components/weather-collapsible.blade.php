@@ -11,8 +11,7 @@
 		<div class='col-8'>Enable weather:</div>
 		<div class='col-4 text-right'>
 			<label class="custom-control custom-checkbox">
-				<input type="checkbox" class="custom-control-input static_input" id='enable_weather'
-							 refresh='false' data='seasons.global_settings' fc-index='enable_weather'>
+				<input type="checkbox" class="custom-control-input" x-model='weather.enable_weather'>
 				<span class="custom-control-indicator"></span>
 			</label>
 		</div>
@@ -28,8 +27,8 @@
 		<div class='row my-2'>
 			<div class='col'>
 				Weather offset (days):
-				<input class='form-control static_input' type='number' refresh='false'
-							 data='seasons.global_settings' fc-index='weather_offset'/>
+				<input class='form-control' :value='weather.weather_offset' type='number'
+               @change='weather.weather_offset = Math.floor(Number($event.target.value))'/>
 			</div>
 		</div>
 
@@ -39,15 +38,13 @@
 		</div>
 
 		<div class='row no-gutters my-1 input-group'>
-			<select class='custom-select form-control type static_input' id='temp_sys'
-							refresh='false' data='seasons.global_settings' fc-index='temp_sys'>
+			<select class='custom-select form-control' x-model='weather.temp_sys'>
 				<option selected value='metric'>Metric</option>
 				<option value='imperial'>Imperial</option>
 				<option value='both_m'>Both (inputs metric)</option>
 				<option value='both_i'>Both (inputs imperial)</option>
 			</select>
-			<select class='custom-select form-control type static_input' refresh='false'
-							data='seasons.global_settings' fc-index='wind_sys'>
+			<select class='custom-select form-control type' x-model='weather.wind_sys'>
 				<option selected value='metric'>Metric</option>
 				<option value='imperial'>Imperial</option>
 				<option value='both'>Both</option>
@@ -59,8 +56,7 @@
 			<div class='col-8'>Cinematic temperature description:</div>
 			<div class='col-4 text-right'>
 				<label class="custom-control custom-checkbox">
-					<input type="checkbox" class="custom-control-input static_input" refresh='false'
-								 data='seasons.global_settings' fc-index='cinematic'>
+					<input type="checkbox" class="custom-control-input" x-model='weather.cinematic'/>
 					<span class="custom-control-indicator"></span>
 				</label>
 			</div>
@@ -71,8 +67,7 @@
 			<div class='col-auto'>Weather generation seed:</div>
 		</div>
 		<div class='row no-gutters input-group'>
-			<input type='number' id='seasons_seed' class='form-control static_input'
-						 refresh='false' data='seasons.global_settings' fc-index='seed'/>
+			<input type='number' id='seasons_seed' class='form-control' x-model='weather.seed'/>
 			<div class="input-group-append">
 				<div class='btn btn-primary' id='reseed_seasons'><i class="fa fa-redo"></i></div>
 			</div>

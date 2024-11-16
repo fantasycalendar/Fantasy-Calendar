@@ -1,7 +1,17 @@
-export default () => ({
-    reordering: false,
+import CollapsibleComponent from "./collapsible_component.js";
 
-    load: function(static_data) {
-        //
-    }
-})
+class SettingsCollapsible extends CollapsibleComponent {
+
+    settings = {}
+
+    loads = {
+        "settings": "settings"
+    };
+
+    setters = {
+        "settings": "settings"
+    };
+
+}
+
+export default () => new SettingsCollapsible();

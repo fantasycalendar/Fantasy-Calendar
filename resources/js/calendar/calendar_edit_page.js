@@ -180,13 +180,11 @@ export default (calendar_structure) => ({
     },
 
     rerenderRequested($event) {
-        // TODO: Figure out an actual solution that lets us overwrite this
-        window.static_data = {
-            ...window.static_data,
-            ...$event.detail.calendar,
-        };
+        for(const [key, value] of Object.entries($event.detail.calendar)) {
+            window.static_data = _.set(window.static_data, key, _.cloneDeep(value));
+        }
 
-        console.log(window.static_data, $event.detail.calendar);
+        console.log(window.static_data);
 
         do_error_check("calendar", $event.detail.rerender);
     }
