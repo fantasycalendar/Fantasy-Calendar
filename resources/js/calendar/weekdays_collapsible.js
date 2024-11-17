@@ -18,9 +18,11 @@ class WeekdaysCollapsible extends CollapsibleComponent {
         'leap_days': 'year_data.leap_days',
         'overflow_weekdays': 'year_data.overflow',
     };
+
     changeHandlers = {
-        'weekdays': this.weekdaysChanged
+        'weekdays': this.weekdaysChanged.bind(this)
     };
+
     outboundProperties = {
         "overflow_weekdays": "year_data.overflow",
         "weekdays": "year_data.global_week"
@@ -40,7 +42,9 @@ class WeekdaysCollapsible extends CollapsibleComponent {
     }
 
     addNewDay() {
-        this.weekdays.push(this.new_weekday_name);
+        let weekdays = _.clone(this.weekdays);
+        weekdays.push(this.new_weekday_name);
+        this.weekdays = weekdays;
     }
 
     removeWeekday(index) {
