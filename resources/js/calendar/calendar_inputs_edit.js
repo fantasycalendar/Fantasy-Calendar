@@ -71,7 +71,6 @@ let timespan_sortable = null;
 let first_day = null;
 let global_week_sortable = null;
 let leap_day_list = null;
-let moon_list = null;
 let periodic_seasons_checkbox = null;
 let season_sortable = null;
 let cycle_sortable = null;
@@ -181,7 +180,6 @@ export function set_up_edit_inputs() {
     timespan_sortable = $('#timespan_sortable');
     first_day = $('#first_day');
     leap_day_list = $('#leap_day_list');
-    moon_list = $('#moon_list');
     periodic_seasons_checkbox = $('#periodic_seasons_checkbox');
     season_sortable = $('#season_sortable');
     cycle_sortable = $('#cycle_sortable');
@@ -485,51 +483,6 @@ export function set_up_edit_inputs() {
     $(document).on('click', '.location_toggle', function() {
         var checked = $(this).is(':checked');
         $(this).parent().find('.icon').toggleClass('fa-caret-square-up', checked).toggleClass('fa-caret-square-down', !checked);
-    });
-
-    $('.add_inputs.moon .add').click(function() {
-        var name = $('#moon_name_input');
-        var cycle = $('#moon_cycle_input');
-        var shift = $('#moon_shift_input');
-        var cycle_val = cycle.val() | 0;
-        var id = moon_list.children().length;
-
-        var name_val = name.val() == "" ? `Moon ${id + 1}` : name.val();
-
-        var cycle_val = cycle.val();
-        var shift_val = shift.val();
-
-        if (cycle_val == "") {
-            var len = avg_month_length(window.static_data);
-            cycle_val = len ? len : 32;
-        }
-
-        if (shift_val == "") {
-            shift_val = 0;
-        }
-
-        var granularity = get_moon_granularity(cycle_val);
-
-        stats = {
-            'name': name_val,
-            'cycle': cycle_val,
-            'cycle_rounding': "round",
-            'shift': shift_val,
-            'granularity': granularity,
-            'color': '#ffffff',
-            'shadow_color': '#292b4a',
-            'hidden': false
-        };
-        if (window.static_data.moons === undefined) {
-            window.static_data.moons = [];
-        }
-        window.static_data.moons.push(stats);
-        add_moon_to_list(moon_list, id, stats);
-        name.val("");
-        cycle.val("");
-        shift.val("");
-        recreate_moon_colors();
-        do_error_check();
     });
 
     periodic_seasons_checkbox.change(function() {
@@ -1459,12 +1412,6 @@ export function set_up_edit_inputs() {
                 reindex_cycle_sortable();
                 break;
 
-            case "moon_list":
-                $(this).closest('.sortable-container').remove();
-                // $(this).closest('.sortable-container').parent().sortable('refresh');
-                reindex_moon_list();
-                break;
-
             case "era_list":
                 $(this).closest('.sortable-container').remove();
                 // $(this).closest('.sortable-container').parent().sortable('refresh');
@@ -1526,16 +1473,6 @@ export function set_up_edit_inputs() {
     /* ------------------- Custom callbacks ------------------- */
 
 
-    $(document).on('change', '.moon_inputs .cycle', function() {
-
-        var index = $(this).closest('.sortable-container').attr('index') | 0;
-
-        var cycle = $(this).val() | 0;
-
-        window.static_data.moons[index].granularity = get_moon_granularity(cycle);
-
-    });
-
     $(document).on('change', '.custom_phase', function() {
 
         var checked = $(this).is(':checked');
@@ -1575,82 +1512,6 @@ export function set_up_edit_inputs() {
         }
 
     });
-
-
-
-    $(document).on('keyup', '.custom_cycle', function(e) {
-
-        $(this).val($(this).val().replace(/[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z ]/g, '').replace(/,{2,}/g, ","));
-
-    });
-
-    $(document).on('change', '.custom_cycle', function(e) {
-
-        $(this).val($(this).val().replace(/[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z ]/g, '').replace(/,{2,}/g, ","));
-
-        var value = $(this).val();
-
-        var index = $(this).closest('.sortable-container').attr('index') | 0;
-
-        var cycle = Math.max.apply(null, value.split(',')) + 1;
-
-        var invalid = cycle > 40;
-
-        $(this).toggleClass('invalid', invalid).attr('error_msg', invalid ? `${window.static_data.moons[index].name} has an invalid custom cycle. 39 is the highest possible number.` : '');
-
-        if (!invalid) {
-
-            if (cycle <= 4) {
-                var granularity = 4;
-            } else if (cycle <= 8) {
-                var granularity = 8;
-            } else if (cycle <= 16) {
-                var granularity = 16;
-            } else if (cycle <= 24) {
-                var granularity = 24;
-            } else {
-                var granularity = 40;
-            }
-
-            window.static_data.moons[index].granularity = granularity;
-
-            let text = `This moon has ${value.split(',').length} phases, with a granularity of ${window.static_data.moons[index].granularity} moon sprites.`;
-
-            $(this).closest('.sortable-container').find('.custom_phase_text').text(text);
-
-            do_error_check();
-
-        }
-
-    });
-
-    $(document).on('click', '.moon_shift_back, .moon_shift_forward', function(e) {
-
-        if ($(this).hasClass('invalid')) return;
-
-        var value = $(this).closest('.sortable-container').find('.custom_cycle').val().split(',');
-
-        if ($(this).hasClass('moon_shift_back')) {
-
-            value = [...value.slice(value.length - 1), ...value.slice(0, value.length - 1)];
-
-        } else {
-
-            value = [...value.slice(1, value.length), ...value.slice(0, 1)];
-
-        }
-
-        var value = value.join(',');
-
-        $(this).closest('.sortable-container').find('.custom_cycle').val(value);
-
-        do_custom_cycle_change($(this).closest('.sortable-container').find('.custom_cycle'));
-
-    });
-
-    var do_custom_cycle_change = debounce(function(element) {
-        element.change();
-    }, 350);
 
 
     $(document).on('change', '.leap-day .timespan-list', function() {
@@ -3119,142 +2980,6 @@ function add_leap_day_to_list(parent, key, data) {
     element.find('.name-input').val(data.name);
     element.find('.internal-list-name').val(`${data.week_day && !data.intercalary ? data.week_day : 'Weekday'}`)
     element.find('.leap_day_occurance_input.offset').prop('disabled', data.interval == "1" || data.interval == 1)
-
-    parent.append(element);
-}
-
-function add_moon_to_list(parent, key, data) {
-    var element = [];
-
-    element.push(`<div class='sortable-container list-group-item moon_inputs expanded' index='${key}'>`);
-    element.push("<div class='main-container'>");
-    element.push("<div class='name-container'>");
-    element.push(`<input type='text' class='form-control name-input small-input dynamic_input' data='moons.${key}' fc-index='name' tabindex='${(300 + key)}'/>`);
-    element.push("</div>");
-    element.push('<div class="remove-spacer"></div>');
-    element.push("</div>");
-    element.push("<div class='remove-container'>");
-    element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-    element.push("<div class='btn_remove btn btn-danger fa fa-trash'></div>");
-    element.push("<div class='btn_cancel btn btn-danger fa fa-xmark'></div>");
-    element.push("<div class='btn_accept btn btn-success fa fa-check'></div>");
-    element.push("</div>");
-
-    element.push("<div class='collapse-container container mb-2'>");
-
-    element.push(`<div class='row no-gutters my-1'>`);
-    element.push("<div class='form-check col-12 py-2 border rounded'>");
-    element.push(`<input type='checkbox' id='${key}_custom_phase_count' class='form-check-input dynamic_input custom_phase' data='moons.${key}' fc-index='custom_phase'`);
-    element.push(data.custom_phase ? "checked" : "");
-    element.push("/>");
-    element.push(`<label for='${key}_custom_phase_count' class='form-check-label ml-1'>`);
-    element.push("Custom phase count");
-    element.push("</label>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='no_custom_phase_container ${data.custom_phase ? "hidden" : ""}'>`);
-
-    element.push(`<div class='row no-gutters my-1'>`);
-
-    element.push("<div class='col-7'>Cycle:</div>");
-
-    element.push("<div class='col-5'>Shift:</div>");
-
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters mb-1'>`);
-
-    element.push("<div class='col-7 pr-1'>");
-    element.push(`<input type='number' min='1' step="any" class='form-control dynamic_input cycle protip' data-pt-position="top" data-pt-title='How many days it takes for this moon go from Full Moon to the next Full Moon.' data='moons.${key}' fc-index='cycle' value='${!data.custom_phase ? data.cycle : ''}' />`);
-    element.push("</div>");
-
-    element.push("<div class='col-5 pl-1'>");
-    element.push(`<input type='number' step="any" class='form-control dynamic_input shift protip' data-pt-position="top" data-pt-title='This is how many days the cycle is offset by.' data='moons.${key}' fc-index='shift' value='${!data.custom_phase ? data.shift : ''}' />`);
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters mb-1'>`);
-
-    element.push(`<select class='form-control dynamic_input protip' data-pt-position="top" data-pt-title='This determines the way this moon calculates its phases, as in which way it rounds the phase value to the closest sprite.' data='moons.${key}' fc-index='cycle_rounding'>`);
-    element.push(`<option ${data.cycle_rounding == "floor" ? "selected" : ""} value='floor'>Floor (0.7 becomes 0.0)</option>`);
-    element.push(`<option ${data.cycle_rounding == "round" || data.cycle_rounding === undefined ? "selected" : ""} value='round'>Round (< 0.49 becomes 0.0, 0.5 > becomes 1.0)</option>`);
-    element.push(`<option ${data.cycle_rounding == "ceil" ? "selected" : ""} value='ceil'>Ceiling (0.3 becomes 1.0)</option>`);
-    element.push("</select>");
-
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters custom_phase_container ${!data.custom_phase ? "hidden" : ""}'>`);
-
-    element.push("<div class='col'>");
-
-    element.push("<div class='my-1'>Custom phase:</div>");
-
-    element.push("<div class='input-group my-1'>");
-
-    element.push("<div class='input-group-prepend'>");
-    element.push("<button type='button' class='btn btn-sm btn-danger moon_shift_back'><</button>");
-    element.push("</div>");
-
-    element.push(`<input type='text' class='form-control form-control-sm dynamic_input custom_cycle full' data='moons.${key}' fc-index='custom_cycle' value='${data.custom_phase ? data.custom_cycle : ''}' />`);
-
-    element.push("<div class='input-group-append'>");
-    element.push("<button type='button' class='btn btn-sm btn-success moon_shift_forward'>></button>");
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element.push(`<div class='custom_phase_text italics-text small-text my-1'>${data.custom_phase ? `This moon has ${data.custom_cycle.split(',').length} phases, with a granularity of ${data.granularity} moon sprites.` : ''}</div>`);
-
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element.push("<div class='row no-gutters my-2'>");
-    element.push("<div class='col'>");
-    element.push("<div class='separator'></div>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters mt-1'>`);
-
-    element.push("<div class='col-6'>Moon color:</div>");
-
-    element.push("<div class='col-6'>Shadow color:</div>");
-
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters mb-1'>`);
-
-    element.push("<div class='col-6 pr-1'>");
-    element.push(`<input type='color' class='dynamic_input color' data='moons.${key}' fc-index='color'/>`);
-    element.push("</div>");
-
-    element.push("<div class='col-6 pl-1'>");
-    element.push(`<input type='color' class='dynamic_input shadow_color' data='moons.${key}' fc-index='shadow_color'/>`);
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters my-1'>`);
-    element.push("<div class='form-check col-12 py-2 border rounded'>");
-    element.push(`<input type='checkbox' id='${key}_hidden_moon' class='form-check-input dynamic_input moon-hidden' data='moons.${key}' fc-index='hidden'`);
-    element.push(data.hidden ? "checked" : "");
-    element.push("/>");
-    element.push(`<label for='${key}_hidden_moon' class='form-check-label ml-1'>`);
-    element.push("Hide from guest viewers");
-    element.push("</label>");
-    element.push("</div>");
-    element.push("</div>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element = $(element.join(""))
-
-    element.find('.name-input').val(data.name);
 
     parent.append(element);
 }
@@ -5186,25 +4911,6 @@ function reindex_event_category_list() {
     return;
 }
 
-function recreate_moon_colors() {
-    // $('.moon_inputs .color').spectrum({
-    //     color: "#FFFFFF",
-    //     preferredFormat: "hex",
-    //     showInput: true
-    // });
-
-    // $('.moon_inputs .shadow_color').spectrum({
-    //     color: "#292b4a",
-    //     preferredFormat: "hex",
-    //     showInput: true
-    // });
-
-    // $('#moon_list').children().each(function(i) {
-    //     $(this).find('.color').spectrum("set", window.static_data.moons[i].color ? window.static_data.moons[i].color : "#FFFFFF");
-    //     $(this).find('.shadow_color').spectrum("set", window.static_data.moons[i].shadow_color ? window.static_data.moons[i].shadow_color : "#292b4a");
-    // });
-}
-
 function evaluate_season_lengths() {
     var disable = window.static_data.seasons.data.length == 0 || (!window.static_data.seasons.global_settings.periodic_seasons && window.static_data.seasons.global_settings.periodic_seasons !== undefined);
 
@@ -5269,7 +4975,10 @@ export function evaluate_season_daylength_warning() {
 
 function recalc_stats() {
     var year_length = avg_year_length(window.static_data);
-    var month_length = avg_month_length(window.static_data);
+    var month_length = avg_month_length(
+        window.static_data.year_data.timespans,
+        window.static_data.year_data.leap_days
+    );
     $('#fract_year_length').text(year_length);
     $('#fract_year_length').prop('title', year_length);
     $('#avg_month_length').text(month_length);
@@ -5656,13 +5365,6 @@ export function set_up_edit_values() {
         })
     }
 
-    if (window.static_data.moons) {
-        for (var i = 0; i < window.static_data.moons.length; i++) {
-            add_moon_to_list(moon_list, i, window.static_data.moons[i]);
-        }
-        recreate_moon_colors();
-    }
-
     if (window.static_data.eras) {
 
         for (var i = 0; i < window.static_data.eras.length; i++) {
@@ -5739,7 +5441,6 @@ export function empty_edit_values() {
     first_day.empty()
     global_week_sortable.empty()
     leap_day_list.empty()
-    moon_list.empty()
     season_sortable.empty()
     cycle_sortable.empty()
     era_list.empty()

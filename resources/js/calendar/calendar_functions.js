@@ -363,7 +363,7 @@ export function norm(v, min, max) {
  * This function is used to calculate the suggested granularity for a given moon cycle.
  * The granularity is used to select the number of sprites that will be shown for that moon.
  *
- * @param  {float}  cycle   The cycle of a moon
+ * @param  {number}  cycle   The cycle of a moon
  * @return {int}            The given level of granularity suggested for that cycle
  */
 export function get_moon_granularity(cycle) {
@@ -1120,28 +1120,29 @@ export function avg_year_length(static_data) {
  * This function is used to calculate the average length of all of the months in the current calendar.
  * This is only used to display it to the user, mostly as a means for them to deduct the a moon's cycle length.
  *
- * @param  {object}     static_data     A calendar static data object
+ * @param  {object}     months          A calendar's months
+ * @param  {object}     leap_days       A calendar's leap days
  * @return {number}                     The current calendar's average month length
  */
-export function avg_month_length(static_data) {
+export function avg_month_length(months, leap_days) {
 
     let length = 0;
     let num_months = 0;
 
-    for (let i = 0; i < static_data.year_data.timespans.length; i++) {
+    for (let i = 0; i < months.length; i++) {
 
-        if (static_data.year_data.timespans[i].type === 'month') {
+        if (months[i].type === 'month') {
 
             num_months++;
 
-            length += static_data.year_data.timespans[i].length / static_data.year_data.timespans[i].interval;
+            length += months[i].length / months[i].interval;
 
         }
     }
 
-    for (let i = 0; i < static_data.year_data.leap_days.length; i++) {
+    for (let i = 0; i < leap_days.length; i++) {
 
-        const leap_day = static_data.year_data.leap_days[i];
+        const leap_day = leap_days[i];
 
         const interval = IntervalsCollection.make(leap_day);
 
