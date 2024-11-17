@@ -72,7 +72,6 @@ let global_week_sortable = null;
 let leap_day_list = null;
 let periodic_seasons_checkbox = null;
 let season_sortable = null;
-let cycle_sortable = null;
 let era_list = null;
 let event_category_list = null;
 let location_list = null;
@@ -181,7 +180,6 @@ export function set_up_edit_inputs() {
     leap_day_list = $('#leap_day_list');
     periodic_seasons_checkbox = $('#periodic_seasons_checkbox');
     season_sortable = $('#season_sortable');
-    cycle_sortable = $('#cycle_sortable');
     era_list = $('#era_list');
     event_category_list = $('#event_category_list');
     location_list = $('#location_list');
@@ -1175,32 +1173,6 @@ export function set_up_edit_inputs() {
     });
 
 
-    $('.add_inputs.cycle .add').click(function() {
-
-        var id = cycle_sortable.children().length;
-        var stats = {
-            'length': 1,
-            'offset': 0,
-            'names': ["Name 1"]
-        };
-
-        if (window.static_data.cycles === undefined) {
-            window.static_data.cycles = {
-                format: $('#cycle_format').val(),
-                data: []
-            };
-        }
-        window.static_data.cycles.data.push(stats);
-        add_cycle_to_sortable(cycle_sortable, id, stats);
-        do_error_check();
-
-        if ($('#cycle_format').val() == "") {
-            $('#cycle_format').val("Cycle {{1}}").change();
-        }
-
-    });
-
-
     $('.add_inputs.eras .add').click(function() {
 
         var id = era_list.children().length;
@@ -1807,81 +1779,6 @@ export function set_up_edit_inputs() {
     $(document).on('change', '.custom_week_day', function() {
 
         populate_first_day_select();
-
-    });
-
-
-    $(document).on('change', '.cycle-name-length', function() {
-        var parent = $(this).closest('.sortable-container');
-        var cycle_index = parent.attr('index');
-        var cycle_list = parent.find(".cycle_list");
-        var new_val = ($(this).val() | 0);
-        var current_val = (parent.find(".cycle_list").children().length | 0);
-        if (new_val > current_val) {
-            var element = [];
-            for (index = current_val; index < new_val; index++) {
-                element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${cycle_index}.names' fc-index='${index}' value='Name ${(index + 1)}'/>`);
-            }
-            cycle_list.append(element.join(""));
-            cycle_list.find(".internal-list-name").first().change();
-        } else if (new_val < current_val) {
-            cycle_list.children().slice(new_val).remove();
-            cycle_list.find(".internal-list-name").first().change();
-        }
-    });
-
-    $(document).on('click', '.cycle_quick_add', function() {
-
-        var container = $(this).closest('.sortable-container');
-        var cycle_name_list = container.find('.cycle_list');
-
-        var id = (container.attr('index') | 0);
-
-        var cycle = window.static_data.cycles.data[id];
-
-        swal.fire({
-            title: "Cycle Names",
-            text: "Each line entered below creates one name in the cycle list.",
-            input: "textarea",
-            inputValue: cycle.names.join('\n'),
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Okay',
-            icon: "info"
-        }).then((result) => {
-
-            if (result.dismiss) return;
-
-            if (result.value === "") {
-                swal.fire({
-                    title: "Error",
-                    text: "You didn't enter any values!",
-                    icon: "warning"
-                });
-            }
-
-            var names = result.value.split('\n');
-
-            cycle.names = names;
-
-            container.find('.cycle-name-length').val(names.length);
-
-            cycle_name_list.empty();
-
-            var element = [];
-            for (i = 0; i < cycle.names.length; i++) {
-                element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${index}.names' fc-index='${i}'/>`);
-            }
-
-            cycle_name_list.append(element.join(""));
-            cycle_name_list.children().each(function(i) {
-                $(this).val(cycle.names[i]);
-            })
-
-            do_error_check('calendar');
-
-        });
 
     });
 
@@ -3417,95 +3314,6 @@ function add_location_to_list(parent, key, data) {
     parent.append(element);
 }
 
-function add_cycle_to_sortable(parent, key, data) {
-
-    var element = [];
-
-    element.push(`<div class='sortable-container list-group-item cycle_inputs collapsed collapsible' index='${key}'>`);
-    element.push("<div class='main-container'>");
-    element.push("<div class='handle fa fa-bars'></div>");
-    element.push("<div class='expand fa fa-caret-square-down'></div>");
-    element.push(`<div class='name-container cycle-text center-text'>Cycle #${(key + 1)} - Using {{${(key + 1)}}}</div>`);
-    element.push('<div class="remove-spacer"></div>');
-    element.push("</div>");
-    element.push("<div class='remove-container'>");
-    element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-    element.push("<div class='btn_remove btn btn-danger fa fa-trash'></div>");
-    element.push("<div class='btn_cancel btn btn-danger fa fa-xmark'></div>");
-    element.push("<div class='btn_accept btn btn-success fa fa-check'></div>");
-    element.push("</div>");
-
-    element.push("<div class='collapse-container container'>");
-
-    element.push("<div class='col-12 mb-3'>");
-
-    element.push("<div class='row my-2 center-text bold-text'>Cycle settings</div>");
-
-    element.push("<div class='row mt-2'>Cycle is based on:</div>");
-    element.push("<div class='row mb-2'>");
-    element.push(`<select class='form-control full dynamic_input cycle_type' data='cycles.data.${key}' fc-index='type'>`);
-    element.push(`<option ${data.type == "year" ? "selected" : ""} value='year'>Year</option>`);
-    element.push(`<option ${data.type == "era_year" ? "selected" : ""} value='era_year'>Era year</option>`);
-    element.push(`<option ${data.type == "timespan_index" ? "selected" : ""} value='timespan_index'>Month in year</option>`);
-    element.push(`<option ${data.type == "num_timespans" ? "selected" : ""} value='num_timespans'>Month count (since 1/1/1)</option>`);
-    element.push(`<option ${data.type == "day" ? "selected" : ""} value='day'>Day in month</option>`);
-    element.push(`<option ${data.type == "year_day" ? "selected" : ""} value='year_day'>Year day</option>`);
-    element.push(`<option ${data.type == "epoch" ? "selected" : ""} value='epoch'>Epoch (days since 1/1/1)</option>`);
-    element.push(`</select>`);
-    element.push("</div>");
-
-    element.push("<div class='row mt-2'>");
-    element.push("<div class='col-6 pr-1 pl-0'>");
-    element.push("<div>Length:</div>");
-    element.push("</div>");
-
-    element.push("<div class='col-6 pr-0 pl-1'>");
-    element.push("<div>Offset:</div>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push("<div class='row mb-1'>");
-    element.push("<div class='col-6 pr-1 pl-0'>");
-    element.push(`<input type='number' step="1.0" class='form-control length dynamic_input' min='1' data='cycles.data.${key}' fc-index='length' value='${data.length}' />`);
-    element.push("</div>");
-
-    element.push("<div class='col-6 pr-0 pl-1'>");
-    element.push(`<input type='number' step="1.0" class='form-control offset dynamic_input' min='0' data='cycles.data.${key}' fc-index='offset' value='${data.offset}'/>`);
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push("<div class='row mt-3 mb-2'>Number of names:</div>");
-
-    element.push("<div class='row my-2'>");
-    element.push("<div class='col-6 pl-0 pr-1'>");
-    element.push(`<input type='number' step="1.0" class='form-control cycle-name-length' value='${data.names.length}' fc-index='${key}'/>`);
-    element.push("</div>");
-    element.push("<div class='col-6 pl-1 pr-0'>");
-    element.push("<button type='button' class='full btn btn-primary cycle_quick_add'>Quick add</button>");
-    element.push("</div>");
-    element.push("</div>");
-    element.push("<div class='row my-2 cycle-container border'>");
-    element.push("<div class='cycle_list'>");
-    for (index = 0; index < data.names.length; index++) {
-        element.push(`<input type='text' class='form-control internal-list-name dynamic_input' data='cycles.data.${key}.names' fc-index='${index}'/>`);
-    }
-    element.push("</div>");
-    element.push("</div>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element = $(element.join(""));
-
-    element.find('.cycle_list').children().each(function(i) {
-        $(this).val(data.names[i])
-    });
-
-    parent.append(element);
-
-}
-
 function add_era_to_list(parent, key, data) {
 
     var element = [];
@@ -4675,69 +4483,6 @@ function reindex_location_list() {
     repopulate_location_select_list();
 }
 
-function reindex_cycle_sortable() {
-    window.static_data.cycles.data = [];
-
-    $('#cycle_sortable').children().each(function(i) {
-        $('.dynamic_input', this).each(function() {
-            $(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
-        });
-        $(this).attr('key', i);
-        $(this).find('.main-container').find('.cycle-text').text(`Cycle #${i + 1} - Using {{${i + 1}}}`)
-
-        window.static_data.cycles.data[i] = {
-            'length': ($(this).find('.length').val() | 0),
-            'offset': ($(this).find('.offset').val() | 0),
-            'type': $(this).find('.cycle_type').val(),
-            'names': []
-        };
-
-        $(this).find('.cycle_list').children().each(function(j) {
-            window.static_data.cycles.data[i].names[j] = $(this).val();
-        });
-
-    });
-
-    do_error_check();
-}
-
-function reindex_moon_list() {
-    window.static_data.moons = [];
-
-    $('#moon_list').children().each(function(i) {
-
-        $('.dynamic_input', this).each(function() {
-            $(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
-        });
-
-        $(this).attr('key', i);
-
-        window.static_data.moons[i] = {
-            'name': $(this).find('.name-input').val(),
-            'custom_phase': $(this).find('.custom_phase').is(':checked'),
-            'color': "#00CBFC",
-            // 'color': $(this).find('.color').spectrum('get', 'hex').toString(),
-            'hidden': $(this).find('.moon-hidden').is(':checked'),
-            'custom_cycle': $(this).find('.custom_cycle').val(),
-            'cycle': ($(this).find('.cycle').val() | 0),
-            'shift': ($(this).find('.shift').val() | 0),
-
-        };
-
-        if (window.static_data.moons[i].custom_phase) {
-
-            window.static_data.moons[i].granularity = Math.max.apply(null, window.static_data.moons[i].custom_cycle.split(',')) + 1;
-
-        } else {
-
-            window.static_data.moons[i].granularity = get_moon_granularity(window.static_data.moons[i].cycle)
-        }
-
-    });
-
-    do_error_check();
-}
-
 function reindex_era_list() {
     sort_list_by_date(era_list);
 
@@ -5328,12 +5073,6 @@ export function set_up_edit_values() {
 
     $('#create_season_events').prop('disabled', !window.static_data.clock.enabled);
 
-    if (window.static_data.cycles) {
-        for (var i = 0; i < window.static_data.cycles.data.length; i++) {
-            add_cycle_to_sortable(cycle_sortable, i, window.static_data.cycles.data[i]);
-        }
-    }
-
     // if ($('#collapsible_clock').is(':checked')) {
     //     $('#clock').appendTo($('#collapsible_clock').parent().children('.collapsible-content'));
     // } else {
@@ -5405,8 +5144,6 @@ export function set_up_edit_values() {
 
     evaluate_remove_buttons();
 
-    $('#cycle_test_input').click();
-
     recalc_stats();
 
     block_inputs = false;
@@ -5440,7 +5177,6 @@ export function empty_edit_values() {
     global_week_sortable.empty()
     leap_day_list.empty()
     season_sortable.empty()
-    cycle_sortable.empty()
     era_list.empty()
     event_category_list.empty()
     location_list.empty()
