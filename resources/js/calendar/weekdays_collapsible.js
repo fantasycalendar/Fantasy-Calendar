@@ -1,5 +1,4 @@
-import { do_error_check, populate_first_day_select } from "./calendar_inputs_edit";
-import { set_up_view_values } from "./calendar_inputs_view";
+import { populate_first_day_select } from "./calendar_inputs_edit";
 
 import CollapsibleComponent from "./collapsible_component";
 
@@ -29,7 +28,7 @@ class WeekdaysCollapsible extends CollapsibleComponent {
 
     loaded(static_data) {
         this.deleting = -1;
-        this.show_custom_week_warning = static_data.year_data.timespans.some(timespan => timespan.week !== undefined)
+        this.show_custom_week_warning = static_data.year_data.timespans.some(timespan => timespan?.week?.length)
             || static_data.year_data.leap_days.some(leapDay => leapDay.adds_week_day);
     }
 

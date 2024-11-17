@@ -10,8 +10,9 @@
     overflow into each other. Sorry.
 </div>
 
-<div class='row protip month_overflow_container' data-pt-position="right"
-    data-pt-title='Enabling this will continue the week in the next month, and disabling overflow will restart the week so that each month starts with the first week day.'>
+<div class='row protip' data-pt-position="right"
+    data-pt-title='Enabling this will continue the week in the next month, and disabling overflow will restart the week so that each month starts with the first week day.'
+    x-show="!show_custom_week_warning">
     <div class='col-8 pr-1 bold-text'>
         Overflow weekdays:
     </div>
@@ -20,7 +21,7 @@
     @else
         <div class='col-4'>
             <label class="custom-control custom-checkbox right-text">
-                <input type="checkbox" class="custom-control-input" x-model="overflow_weekdays">
+                <input type="checkbox" class="custom-control-input" x-model="overflow_weekdays" :disabled="show_custom_week_warning">
                 <span class="custom-control-indicator"></span>
             </label>
         </div>

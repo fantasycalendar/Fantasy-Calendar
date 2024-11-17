@@ -184,7 +184,10 @@ export default (calendar_structure) => ({
             window.static_data = _.set(window.static_data, key, _.cloneDeep(value));
         }
 
-        console.log(window.static_data);
+        // First of many rules, I'm sure.
+        window.static_data.year_data.overflow = window.static_data.year_data.overflow
+            && !window.static_data.year_data.leap_days.some(leapDay => leapDay.adds_week_day)
+            && !window.static_data.year_data.timespans.some(month => month?.week?.length);
 
         do_error_check("calendar", $event.detail.rerender);
     }
