@@ -71,10 +71,9 @@
     </div>
 
     <div>
-        <template x-for="(leap_day, index) in leap_days">
+        <template x-for="(leap_day, index) in leap_days" :key="index">
 
             <div class="list-group-item p-2 first-of-type:rounded-t" x-data="{ collapsed: true }">
-
 
                 <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
                     <div class='handle fa fa-bars'></div>
@@ -202,10 +201,13 @@
                         </div>
                         <div class='row no-gutters mb-2'>
                             <div class='col-8 pr-1'>
-                                <input type='text' class='form-control protip' :value='leap_day.interval'
-                                       @change="validateLeapDayInterval(leap_day, $event.target.value)"
-                                       data-pt-position="top"
-                                       data-pt-title='Every nth year this leap day appears. Multiple intervals can be separated by commas, like the gregorian leap day: 400,!100,4. Every 4th year, unless it is divisible by 100, but again if it is divisible by 400.'/>
+                                <x-alpine.text-input model="leap_day.interval"
+                                                     path="`leap_days.${index}.interval`"
+                                                     tooltip="Every nth year this leap day appears. Multiple intervals can be separated by commas, like the gregorian leap day: 400,!100,4. Every 4th year, unless it is divisible by 100, but again if it is divisible by 400.">
+                                </x-alpine.text-input>
+{{--                                --}}
+{{--                                <input type='text' class='form-control protip' x-model.lazy='leap_day.interval'/>--}}
+{{--                                <div x-show="hasError(`leap_days.${index}.interval`)" x-text="getError(`leap_days.${index}.interval`)"></div>--}}
                             </div>
                             <div class='col-4 pl-1 '>
                                 <input type='number' step="1" class='form-control'

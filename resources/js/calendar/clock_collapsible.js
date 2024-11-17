@@ -1,24 +1,21 @@
 import CollapsibleComponent from "./collapsible_component";
 
 class ClockCollapsible extends CollapsibleComponent {
-    loads = {
+    inboundProperties = {
         'clock': 'clock'
     };
 
-    watchers = {
+    changeHandlers = {
         'clock': this.changed
     };
+
+    outboundProperties = {
+        "clock": "clock"
+    }
 
     changed(current, previous) {
         this.$dispatch('clock-changed', {
             ...current
-        });
-
-        this.$dispatch('calendar-rerender-requested', {
-            rerender: previous.enabled !== current.enabled
-                || previous.hours !== current.hours
-                || previous.minutes !== current.minutes,
-            calendar: { clock: { ...current } },
         });
     }
 }

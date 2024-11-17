@@ -4,11 +4,11 @@ class WeatherCollapsible extends CollapsibleComponent {
 
     weather = {};
 
-    loads = {
+    inboundProperties = {
         "weather": "seasons.global_settings"
     };
 
-    setters = {
+    outboundProperties = {
         "weather": "seasons.global_settings"
     };
 

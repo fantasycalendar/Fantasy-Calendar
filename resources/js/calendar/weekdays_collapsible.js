@@ -12,16 +12,16 @@ class WeekdaysCollapsible extends CollapsibleComponent {
     leap_days = [];
     first_day;
 
-    loads = {
+    inboundProperties = {
         'weekdays': 'year_data.global_week',
         'first_day': 'year_data.first_day',
         'leap_days': 'year_data.leap_days',
         'overflow_weekdays': 'year_data.overflow',
     };
-    watchers = {
+    changeHandlers = {
         'weekdays': this.weekdaysChanged
     };
-    setters = {
+    outboundProperties = {
         "overflow_weekdays": "year_data.overflow",
         "weekdays": "year_data.global_week"
     };

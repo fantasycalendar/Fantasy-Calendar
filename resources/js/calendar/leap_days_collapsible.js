@@ -15,13 +15,13 @@ class LeapDaysCollapsible extends CollapsibleComponent {
     weekdays = [];
     timespans = [];
 
-    loads = {
+    inboundProperties = {
         "leap_days": "year_data.leap_days",
         "weekdays": "year_data.global_week",
         "timespans": "year_data.timespans"
     }
 
-    setters = {
+    outboundProperties = {
         "leap_days": "year_data.leap_days"
     }
 
@@ -54,59 +54,68 @@ class LeapDaysCollapsible extends CollapsibleComponent {
         return this.timespans[leapDay.timespan].length;
     }
 
-    validateLeapDayInterval(leapDay, interval) {
+    validators = {
+        "leap_days": this.validateLeapDayInterval
+    };
 
-        interval = interval.replace(/,\s*$/, "");
+    validateLeapDayInterval() {
 
-        if (interval === "0") {
-            // TODO: Add proper error messaging to outer components, and prevent re-render
-            // `${leapDay.name}'s interval is 0, please enter a positive number.`
-            return;
-        }
+        for(let leapDay of this.leap_days) {
 
-        let invalid = this.interval_wide_regex.test(interval);
+            let { interval } = leapDay;
 
-        if(invalid) {
-            // TODO: Add proper error messaging to outer components, and prevent re-render
-            // `${leapDay.name} has an invalid interval formula.`
-            return;
-        }
+            interval = interval.replace(/,\s*$/, "");
 
-        let values = interval.split(',');
-
-        for(let value of values){
-            if (!this.interval_internal_regex.test(value)) {
-                invalid = true;
-                break;
+            if (interval === "0") {
+                // TODO: Add proper error messaging to outer components, and prevent re-render
+                // `${leapDay.name}'s interval is 0, please enter a positive number.`
+                return;
             }
+
+            let invalid = this.interval_wide_regex.test(interval);
+
+            if (invalid) {
+                // TODO: Add proper error messaging to outer components, and prevent re-render
+                // `${leapDay.name} has an invalid interval formula.`
+                return;
+            }
+
+            let values = interval.split(',');
+
+            for (let value of values) {
+                if (!this.interval_internal_regex.test(value)) {
+                    invalid = true;
+                    break;
+                }
+            }
+
+            if (invalid) {
+                // TODO: Add proper error messaging to outer components, and prevent re-render
+                // `${leapDay.name} has an invalid interval formula. Plus before exclamation point.` : '');
+                return;
+            }
+
+            let unsorted = [];
+
+            for (let value of values) {
+                unsorted.push(Number(value.match(this.interval_numbers_regex)[0]));
+            }
+
+            let sorted = unsorted.slice(0).sort((a, b) => {
+                if (a < b) return -1;
+                if (a > b) return 1;
+                return 0;
+            }).reverse();
+
+            let result = [];
+
+            for (let value of sorted) {
+                let index = unsorted.indexOf(value);
+                result.push(values[index]);
+            }
+
+            leapDay.interval = result.join(',');
         }
-
-        if(invalid) {
-            // TODO: Add proper error messaging to outer components, and prevent re-render
-            // `${leapDay.name} has an invalid interval formula. Plus before exclamation point.` : '');
-            return;
-        }
-
-        let unsorted = [];
-
-        for (let value of values) {
-            unsorted.push(Number(value.match(this.interval_numbers_regex)[0]));
-        }
-
-        let sorted = unsorted.slice(0).sort((a, b) => {
-            if (a < b) return -1;
-            if (a > b) return 1;
-            return 0;
-        }).reverse();
-
-        let result = [];
-
-        for (let value of sorted) {
-            let index = unsorted.indexOf(value);
-            result.push(values[index]);
-        }
-
-        leapDay.interval = result.join(',');
 
     }
 

@@ -7,12 +7,12 @@ class CyclesCollapsible extends CollapsibleComponent {
     format = "";
     cycles = [];
 
-    loads = {
+    inboundProperties = {
         "format": "cycles.format",
         "cycles": "cycles.data",
     }
 
-    setters = {
+    outboundProperties = {
         "format": "cycles.format",
         "cycles": "cycles.data",
     }
