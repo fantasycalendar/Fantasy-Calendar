@@ -3,7 +3,7 @@
         Avg. year length:
     </div>
     <div class='col-5 align-left'>
-        <div class='detail-text' id='fract_year_length'>
+        <div class='detail-text' x-text='average_year_length'>
         </div>
     </div>
 </div>
@@ -13,7 +13,7 @@
         Avg. month length:
     </div>
     <div class='col-5 align-left'>
-        <div class='detail-text' id='avg_month_length'>
+        <div class='detail-text' x-text='average_month_length'>
         </div>
     </div>
 </div>

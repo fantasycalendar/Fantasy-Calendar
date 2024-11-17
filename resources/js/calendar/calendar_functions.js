@@ -1087,22 +1087,23 @@ export function does_day_appear(static_data, year, timespan, day) {
 /**
  * This function is used to calculate the average length of a year in the current calendar.
  *
- * @param  {object}    static_data     A calendar static data object
+ * @param  {object}     months          A calendar's months
+ * @param  {object}     leap_days       A calendar's leap days
  * @return {float}                     The current calendar's average year length
  */
-export function avg_year_length(static_data) {
+export function avg_year_length(months, leap_days) {
 
     let avg_length = 0;
 
-    for (let timespan_index = 0; timespan_index < static_data.year_data.timespans.length; timespan_index++) {
+    for (let timespan_index = 0; timespan_index < months.length; timespan_index++) {
 
-        let timespan = static_data.year_data.timespans[timespan_index];
+        let timespan = months[timespan_index];
 
         avg_length += timespan.length / timespan.interval;
 
-        for (let leap_day_index = 0; leap_day_index < static_data.year_data.leap_days.length; leap_day_index++) {
+        for (let leap_day_index = 0; leap_day_index < leap_days.length; leap_day_index++) {
 
-            let leap_day = static_data.year_data.leap_days[leap_day_index];
+            let leap_day = leap_days[leap_day_index];
 
             if (leap_day.timespan === timespan_index) {
 
