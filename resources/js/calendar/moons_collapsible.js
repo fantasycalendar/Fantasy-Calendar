@@ -3,6 +3,8 @@ import { avg_month_length, get_moon_granularity } from "./calendar_functions.js"
 
 class MoonsCollapsible extends CollapsibleComponent {
 
+    deleting = -1;
+
     moons = [];
     months = [];
     leap_days = [];
@@ -39,6 +41,12 @@ class MoonsCollapsible extends CollapsibleComponent {
         this.name = "";
         this.cycle = null;
         this.shift = null;
+        this.deleting = -1;
+    }
+
+    removeMoon(index){
+        this.moons.splice(index, 1);
+        this.deleting = -1;
     }
 
     customPhaseChanged(moon) {
