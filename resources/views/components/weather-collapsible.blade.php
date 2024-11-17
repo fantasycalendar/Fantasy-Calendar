@@ -17,7 +17,7 @@
 		</div>
 	</div>
 
-	<div class='weather_inputs'>
+	<div x-show="weather.enable_weather">
 
 		<div class='row no-gutters my-2 small-text'>
 			Custom weather can be configured in locations.
