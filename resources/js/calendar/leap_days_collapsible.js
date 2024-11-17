@@ -2,7 +2,6 @@ import CollapsibleComponent from "./collapsible_component.js";
 import { ordinal_suffix_of } from "./calendar_functions.js";
 
 class LeapDaysCollapsible extends CollapsibleComponent {
-
     name = "";
     type = "";
     deleting = -1;
@@ -25,9 +24,9 @@ class LeapDaysCollapsible extends CollapsibleComponent {
         "leap_days": "year_data.leap_days"
     }
 
-    addLeapDay(){
+    addLeapDay() {
         this.leap_days.push({
-            'name': this.name || `New ${this.type? this.type + " " : ''}leap day`,
+            'name': this.name || `New ${this.type ? this.type + " " : ''}leap day`,
             'intercalary': this.type === 'intercalary',
             'timespan': 0,
             'adds_week_day': false,
@@ -37,20 +36,21 @@ class LeapDaysCollapsible extends CollapsibleComponent {
             'offset': 0,
             'not_numbered': false,
         })
+
         this.name = "";
     }
 
-    removeLeapDay(index){
+    removeLeapDay(index) {
         this.leap_days.splice(index, 1);
     }
 
-    getLeapdayValidWeekdays(leapDay){
+    getLeapdayValidWeekdays(leapDay) {
         return this.timespans[leapDay.timespan]?.week?.length
             ? this.timespans[leapDay.timespan].week
             : this.weekdays;
     }
 
-    getLeapdayValidDays(leapDay){
+    getLeapdayValidDays(leapDay) {
         return this.timespans[leapDay.timespan].length;
     }
 
@@ -60,7 +60,7 @@ class LeapDaysCollapsible extends CollapsibleComponent {
 
     validateLeapDayInterval() {
 
-        for(let leapDay of this.leap_days) {
+        for (let leapDay of this.leap_days) {
 
             let { interval } = leapDay;
 
@@ -145,7 +145,7 @@ class LeapDaysCollapsible extends CollapsibleComponent {
             let leap_offset = leapDay.offset;
 
             let original_offset = ((leap_interval + leap_offset) % leap_interval);
-            let total_offset = original_offset === 0 ?sorted[i] : original_offset;
+            let total_offset = original_offset === 0 ? sorted[i] : original_offset;
 
             total_offset = (total_offset * timespan_interval) + timespan_offset;
 
@@ -203,9 +203,7 @@ class LeapDaysCollapsible extends CollapsibleComponent {
         }
 
         return text;
-
     }
-
 }
 
 export default () => new LeapDaysCollapsible();
