@@ -33,39 +33,44 @@ export default class CollapsibleComponent {
         this.loaded(static_data);
     }
 
-    setupWatchers(){
+    setupWatchers() {
 
         const componentProperties = Array.from(new Set(
             Object.keys(this.changeHandlers).concat(Object.keys(this.outboundProperties))
         ));
 
-        for(let localKey of componentProperties){
-            this.$watch(localKey, (...args) => {
-
-                let isValid = this.validate();
-                if(!isValid){
-                    if(this.is_valid){
-                        this.is_valid = false;
-                    }
-                    return this.validationFailed();
-                }
-
-                if(!this.is_valid) {
-                    return
-                }
-
-                if(!this.processWatchers) return;
-
-                if(this.changeHandlers[localKey]){
-                    this.changeHandlers[localKey](...args);
-                }
-
-                if(this.outboundProperties[localKey]){
-                    this.rerender(this.outboundProperties[localKey], this[localKey]);
-                }
-
-            });
+        for (let localKey of componentProperties) {
+            this.setupWatcher(localKey);
         }
+    }
+
+    setupWatcher(localKey) {
+        this.$watch(localKey, (...args) => {
+            let isValid = this.validate();
+
+            if (!isValid) {
+                if (this.is_valid) {
+                    this.is_valid = false;
+                }
+                return this.validationFailed();
+            }
+
+            if (!this.is_valid) {
+                return;
+            }
+
+            if (!this.processWatchers) {
+                return;
+            };
+
+            if (this.changeHandlers[localKey]) {
+                this.changeHandlers[localKey](...args);
+            }
+
+            if (this.outboundProperties[localKey]) {
+                this.rerender(this.outboundProperties[localKey], this[localKey]);
+            }
+        });
     }
 
     rerender(key, value) {
@@ -79,13 +84,15 @@ export default class CollapsibleComponent {
     validate() {
         this.errors = {};
         let isValid = true;
-        for(let [localKey, validator] of Object.entries(this.validators)){
+
+        for (let [localKey, validator] of Object.entries(this.validators)) {
             let { error, message } = validator(localKey);
-            if(error){
+            if (error) {
                 this.errors[localKey] = message;
                 isValid = false;
             }
         }
+
         return isValid;
     }
 
