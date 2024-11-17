@@ -55,29 +55,23 @@ class LeapDaysCollapsible extends CollapsibleComponent {
     }
 
     validators = {
-        "leap_days": this.validateLeapDayInterval
+        "leap_days": this.validateLeapDayIntervals.bind(this)
     };
 
-    validateLeapDayInterval() {
-
+    validateLeapDayIntervals() {
         for (let leapDay of this.leap_days) {
-
             let { interval } = leapDay;
 
             interval = interval.replace(/,\s*$/, "");
 
             if (interval === "0") {
-                // TODO: Add proper error messaging to outer components, and prevent re-render
-                // `${leapDay.name}'s interval is 0, please enter a positive number.`
-                return;
+                return { error: true, message: `${leapDay.name}'s interval is 0, please enter a positive number.` };
             }
 
             let invalid = this.interval_wide_regex.test(interval);
 
             if (invalid) {
-                // TODO: Add proper error messaging to outer components, and prevent re-render
-                // `${leapDay.name} has an invalid interval formula.`
-                return;
+                return { error: true, message: `${leapDay.name} has an invalid interval formula.` };
             }
 
             let values = interval.split(',');
@@ -90,9 +84,7 @@ class LeapDaysCollapsible extends CollapsibleComponent {
             }
 
             if (invalid) {
-                // TODO: Add proper error messaging to outer components, and prevent re-render
-                // `${leapDay.name} has an invalid interval formula. Plus before exclamation point.` : '');
-                return;
+                return { error: true, message: `${leapDay.name} has an invalid interval formula. The plus goes before the exclamation point.` };
             }
 
             let unsorted = [];
@@ -117,9 +109,13 @@ class LeapDaysCollapsible extends CollapsibleComponent {
             leapDay.interval = result.join(',');
         }
 
+        // TODO: Persist sorted value somehow
     }
 
     getLeapDayIntervalText(leapDay) {
+        if (!this.is_valid) {
+            return "Error detected.";
+        }
 
         let values = leapDay.interval.split(',').reverse();
         let sorted = [];
