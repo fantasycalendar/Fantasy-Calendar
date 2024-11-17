@@ -6,7 +6,7 @@ class ClockCollapsible extends CollapsibleComponent {
     };
 
     changeHandlers = {
-        'clock': this.changed
+        'clock': this.changed.bind(this)
     };
 
     outboundProperties = {
