@@ -1,4 +1,3 @@
-import { error_message } from "./header";
 import { execution_time } from "./calendar_functions";
 import { climate_charts } from "./calendar_weather_layout";
 import { Climate } from "./calendar_season_generator";
@@ -263,7 +262,8 @@ export async function rebuild_calendar(action, rebuild_data) {
             return;
         }
         let errors = result.errors.map(e => { return `<li>${e}</li>` });
-        error_message(`Errors:<ol>${errors.join()}</ol>`);
+        // TODO: Replace with proper error handling
+        // error_message(`Errors:<ol>${errors.join()}</ol>`);
     });
 }
 

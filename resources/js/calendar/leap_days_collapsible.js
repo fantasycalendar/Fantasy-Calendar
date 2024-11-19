@@ -24,6 +24,10 @@ class LeapDaysCollapsible extends CollapsibleComponent {
         "leap_days": "year_data.leap_days"
     }
 
+    changeHandlers = {
+        "leap_days": this.sanitizeLeapDayIntervals
+    }
+
     addLeapDay() {
         this.leap_days.push({
             'name': this.name || `New ${this.type ? this.type + " " : ''}leap day`,
@@ -54,11 +58,45 @@ class LeapDaysCollapsible extends CollapsibleComponent {
         return this.timespans[leapDay.timespan].length;
     }
 
+    sanitizeLeapDayIntervals(){
+
+        for (let leapDay of this.leap_days) {
+
+            let { interval } = leapDay;
+
+            let values = interval.split(',');
+
+            let unsorted = [];
+
+            for (let value of values) {
+                unsorted.push(Number(value.match(this.interval_numbers_regex)[0]));
+            }
+
+            let sorted = unsorted.slice(0).sort((a, b) => {
+                if (a < b) return -1;
+                if (a > b) return 1;
+                return 0;
+            }).reverse();
+
+            let result = [];
+
+            for (let value of sorted) {
+                let index = unsorted.indexOf(value);
+                result.push(values[index]);
+            }
+
+            leapDay.interval = result.join(',');
+
+        }
+
+    }
+
     validators = {
-        "leap_days": this.validateLeapDayIntervals.bind(this)
+        "leap_days": this.validateLeapDayIntervals
     };
 
     validateLeapDayIntervals() {
+
         for (let leapDay of this.leap_days) {
             let { interval } = leapDay;
 
@@ -86,35 +124,16 @@ class LeapDaysCollapsible extends CollapsibleComponent {
             if (invalid) {
                 return { error: true, message: `${leapDay.name} has an invalid interval formula. The plus goes before the exclamation point.` };
             }
-
-            let unsorted = [];
-
-            for (let value of values) {
-                unsorted.push(Number(value.match(this.interval_numbers_regex)[0]));
-            }
-
-            let sorted = unsorted.slice(0).sort((a, b) => {
-                if (a < b) return -1;
-                if (a > b) return 1;
-                return 0;
-            }).reverse();
-
-            let result = [];
-
-            for (let value of sorted) {
-                let index = unsorted.indexOf(value);
-                result.push(values[index]);
-            }
-
-            leapDay.interval = result.join(',');
         }
+
+        return { error: false, message: "" };
 
         // TODO: Persist sorted value somehow
     }
 
     getLeapDayIntervalText(leapDay) {
         if (!this.is_valid) {
-            return "Error detected.";
+            return ["Error detected."];
         }
 
         let values = leapDay.interval.split(',').reverse();

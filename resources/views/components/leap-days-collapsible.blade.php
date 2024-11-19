@@ -110,7 +110,7 @@
                                         class='custom-select form-control full'
                                         x-model='leap_day.timespan'>
                                     <template x-for="(timespan, timespanIndex) in timespans">
-                                        <option :value="timespanIndex" x-text="timespan.name"></option>
+                                        <option :value="timespanIndex" :selected="timespanIndex === leap_day.timespan" x-text="timespan.name"></option>
                                     </template>
                                 </select>
                             </div>
@@ -165,7 +165,7 @@
                                     <select type='number' class='custom-select form-control' x-model.number='leap_day.day'>
                                         <option value='0' x-text="'Before ' + getLeapdayValidWeekdays(leap_day)[0]"></option>
                                         <template x-for="(weekday, dayIndex) in getLeapdayValidWeekdays(leap_day)">
-                                            <option :value='dayIndex+1' x-text="weekday"></option>
+                                            <option :value='dayIndex+1' :selected="dayIndex+1 === leap_day.day" x-text="weekday"></option>
                                         </template>
                                     </select>
                                 </div>
@@ -179,7 +179,7 @@
                                             x-model.number='leap_day.day'>
                                         <option value='0'>Before day 0</option>
                                         <template x-for="dayIndex in getLeapdayValidDays(leap_day)">
-                                            <option :value='dayIndex' x-text='"Day " + (dayIndex)'></option>
+                                            <option :value='dayIndex' :selected="dayIndex === leap_day.day" x-text='"Day " + (dayIndex)'></option>
                                         </template>
                                     </select>
                                 </div>

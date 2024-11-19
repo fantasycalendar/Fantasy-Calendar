@@ -1,4 +1,4 @@
-import { error_message, evaluate_background_size } from "./header";
+import { evaluate_background_size } from "./header";
 import {
     update_name,
     update_dynamic,
@@ -3543,23 +3543,6 @@ export var do_error_check = debounce(function(type, rebuild) {
 
     if (!creation.is_done()) {
 
-        var text = [];
-
-        text.push(`<h3 style="opacity: 0.7;">Calendar Creation (${creation.current_step}/${creation.steps})</h3><ol>`);
-
-        for (var i = 0; i < creation.text.length; i++) {
-
-            text.push(`<li>${creation.text[i]}</li>`);
-
-        }
-        text.push(`</ol class="mb-4">`);
-
-        text.push(`<img class="w-100" src='/resources/calendar_create.svg'>`);
-
-        $('#modal_text').empty().append(message);
-        $('#modal_background').removeClass().addClass('flexible_background transparent').css('display', 'flex');
-        $('#modal').removeClass().addClass('creation');
-
         evaluate_background_size();
 
         $('#generator_container').removeClass();
@@ -3573,33 +3556,8 @@ export var do_error_check = debounce(function(type, rebuild) {
 
         if (errors.length == 0 && $('.static_input.invalid').length == 0 && $('.dynamic_input.invalid').length == 0) {
 
-            $('#modal_background').removeClass().addClass('flexible_background').css('display', 'none');
-
             error_check(type, rebuild);
             recalc_stats();
-
-        } else {
-
-            var text = [];
-
-            $('.static_input.invalid').each(function() {
-                errors.push($(this).attr('error_msg'));
-            })
-
-            $('.dynamic_input.invalid').each(function() {
-                errors.push($(this).attr('error_msg'));
-            })
-
-            text.push(`Errors:<ol>`);
-
-            for (var i = 0; i < errors.length; i++) {
-
-                text.push(`<li>${errors[i]}</li>`);
-
-            }
-            text.push(`</ol>`);
-
-            error_message(text.join(''));
 
         }
 

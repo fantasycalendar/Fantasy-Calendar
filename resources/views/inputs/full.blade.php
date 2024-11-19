@@ -6,14 +6,14 @@
     <div class='wrap-collapsible step-hide'>
         <div class="view-tabs btn-group d-flex mb-2 w-100">
             <button type="button" data-pt-position='top' data-pt-title='What you, the owner, will always see'
-                data-view-type='owner' class="protip owner w-100 btn btn-sm btn-primary">Owner View
+                    data-view-type='owner' class="protip owner w-100 btn btn-sm btn-primary">Owner View
             </button>
             <button type="button" data-pt-position='top'
-                data-pt-title='A simulated view of what guests with the link to this calendar will see'
-                data-view-type='player' class="protip player w-100 btn btn-sm btn-secondary">Guest View
+                    data-pt-title='A simulated view of what guests with the link to this calendar will see'
+                    data-view-type='player' class="protip player w-100 btn btn-sm btn-secondary">Guest View
             </button>
             <button type="button" data-pt-position='top' data-pt-title='Graphs showing the weather curves'
-                data-view-type='weather' class="protip weather w-100 btn btn-sm btn-secondary">Climate view
+                    data-view-type='weather' class="protip weather w-100 btn btn-sm btn-secondary">Climate view
             </button>
         </div>
     </div>
@@ -21,7 +21,7 @@
     <div class='wrap-collapsible step-hide'>
         <div class="d-flex mb-2 w-100">
             <label class="row no-gutters setting border rounded py-2 px-3 protip w-100" data-pt-position="right"
-                data-pt-title="If unchecked, you will be prompted to apply changes after making them, instead of loading the calendar every time.">
+                   data-pt-title="If unchecked, you will be prompted to apply changes after making them, instead of loading the calendar every time.">
                 <div class='col'>
                     <input type='checkbox' class='margin-right' data='settings' id='apply_changes_immediately' checked>
                     <span>
@@ -40,7 +40,8 @@
         <x-collapsible :calendar="$calendar" contains="Clock" icon="fa-clock" done></x-collapsible>
 
         @if(request()->is('calendars/*/edit'))
-            <x-collapsible :calendar="$calendar" contains="Real-Time Advancement" icon="fa-history" premium_feature="true"> </x-collapsible>
+            <x-collapsible :calendar="$calendar" contains="Real-Time Advancement" icon="fa-history"
+                           premium_feature="true"></x-collapsible>
         @endif
 
         <x-collapsible :calendar="$calendar" contains="Weekdays" step="2" icon="fa-calendar-week" done></x-collapsible>
@@ -68,9 +69,11 @@
         <x-collapsible :calendar="$calendar" contains="Settings" icon="fa-cog" done></x-collapsible>
 
         @if(request()->is('calendars/*/edit'))
-            <x-collapsible :calendar="$calendar" contains="User Management" icon="fa-user" premium_feature="true"></x-collapsible>
+            <x-collapsible :calendar="$calendar" contains="User Management" icon="fa-user"
+                           premium_feature="true"></x-collapsible>
 
-            <x-collapsible :calendar="$calendar" contains="Calendar Linking" icon="fa-link" premium_feature="true"></x-collapsible>
+            <x-collapsible :calendar="$calendar" contains="Calendar Linking" icon="fa-link"
+                           premium_feature="true"></x-collapsible>
         @endif
     </div>
 
@@ -84,16 +87,38 @@
 
 <div id="calendar_container">
 
-    <div id="modal_background" class='flexible_background blurred_background' style="pointer-events: none">
-        <div id="modal">
-            <span id="modal_text">
-                This is an alert box.
-            </span>
+    <div x-data="{
+        errors: {},
+        hasErrors: false,
+        addErrors($event) {
+            this.errors[$event.detail.key] = $event.detail.errors;
+        },
+        removeErrors($event) {
+            if(this.errors[$event.detail.key]){
+                delete this.errors[$event.detail.key];
+            }
+        },
+        getErrors(){
+            // Unpack array of arrays
+            return [].concat(...Object.values(this.errors));
+        }
+    }"
+         @calendar-add-errors.window="addErrors"
+         @calendar-remove-errors.window="removeErrors"
+         x-show="getErrors().length"
+         x-cloak
+         class='flexible_background blurred_background' style="pointer-events: none">
+        <div class="error">
+            <ol>
+                <template x-for="error in getErrors()">
+                    <li x-text="error"></li>
+                </template>
+            </ol>
         </div>
     </div>
 
     <div id="reload_background"
-        class='flexible_background blurred_background d-flex flex-column justify-content-center hidden d-print-none'>
+         class='flexible_background blurred_background d-flex flex-column justify-content-center hidden d-print-none'>
         <div class='p-2 text-white'>You have made changes to your calendar.</div>
         <div class='p-2'>
             <button type='button' class='btn btn-primary' id='apply_changes_btn'>Update preview</button>
@@ -101,8 +126,8 @@
     </div>
 
     <div id="top_follower" :class="{ 'single_month': apply == 'single_month' }"
-        x-data="{ apply: '', toggle() { window.toggle_sidebar(); } }"
-        @layout-change.window="apply = $event.detail.apply">
+         x-data="{ apply: '', toggle() { window.toggle_sidebar(); } }"
+         @layout-change.window="apply = $event.detail.apply">
 
 
         <div class='flex-shrink-1 is-active' id='input_collapse_btn'>
@@ -122,19 +147,20 @@
         </div>
 
         <div class='btn_container hidden'>
-            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none sub_year' disabled fc-index='year'
-                value='-1'>&lt; Year
+            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none sub_year' disabled
+                    fc-index='year'
+                    value='-1'>&lt; Year
             </button>
             <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none sub_month' disabled
-                fc-index='timespan'
-                value='-1'>
+                    fc-index='timespan'
+                    value='-1'>
                 <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-left"></i></span>
             </button>
         </div>
 
         <div class='reset_preview_date_container left hidden'>
             <button type='button' class='btn btn-success reset_preview_date protip d-print-none'
-                data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'>&lt;
+                    data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'>&lt;
                 Current
             </button>
         </div>
@@ -148,18 +174,19 @@
 
         <div class='reset_preview_date_container right hidden'>
             <button type='button' class='btn btn-success reset_preview_date protip d-print-none'
-                data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'>
+                    data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'>
                 Current &gt;
             </button>
         </div>
 
         <div class='btn_container hidden'>
-            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none add_year' disabled fc-index='year'
-                value='1'>Year >
+            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none add_year' disabled
+                    fc-index='year'
+                    value='1'>Year >
             </button>
             <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none add_month' disabled
-                fc-index='timespan'
-                value='1'>
+                    fc-index='timespan'
+                    value='1'>
                 <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-right"></i></span>
             </button>
         </div>

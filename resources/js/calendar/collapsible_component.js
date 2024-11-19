@@ -49,9 +49,6 @@ export default class CollapsibleComponent {
             let isValid = this.validate();
 
             if (!isValid) {
-                if (this.is_valid) {
-                    this.is_valid = false;
-                }
                 return this.validationFailed();
             }
 
@@ -61,10 +58,10 @@ export default class CollapsibleComponent {
 
             if (!this.processWatchers) {
                 return;
-            };
+            }
 
             if (this.changeHandlers[localKey]) {
-                this.changeHandlers[localKey](...args);
+                this.changeHandlers[localKey].bind(this)(...args);
             }
 
             if (this.outboundProperties[localKey]) {
@@ -82,29 +79,35 @@ export default class CollapsibleComponent {
     }
 
     validate() {
-        this.errors = {};
         let isValid = true;
 
         for (let [localKey, validator] of Object.entries(this.validators)) {
-            let { error, message } = validator(localKey);
+            let { error, message } = validator.bind(this)(localKey);
             if (error) {
                 this.errors[localKey] = message;
                 isValid = false;
+            } else if (this.errors?.[localKey]) {
+                // TODO: Remove error dispatch?
+                delete this.errors[localKey];
             }
         }
+
+        this.is_valid = !Object.keys(this.errors).length;
 
         return isValid;
     }
 
     validationFailed() {
+        this.$dispatch("calendar-set-errors", {
+            errors: Object.values(this.errors)
+        })
+    }
+
+    getError(path) {
 
     }
 
-    getError() {
-
-    }
-
-    hasError() {
+    hasError(path) {
 
     }
 }
