@@ -12,6 +12,7 @@ export default class CollapsibleComponent {
     is_valid = true;
 
     load(static_data) {
+        console.log('Load called on ', this.constructor.prototype.name);
         if (!static_data) {
             return
         }
@@ -19,22 +20,17 @@ export default class CollapsibleComponent {
         this.calendar_settings = static_data.settings;
 
         // We want to disable the changeHandlers during loading stages so that we don't get recursive calendar rerender calls
+        // TODO: Figure out why this doesn't _actually_ work.
         this.processWatchers = false;
         for (let [localKey, globalKey] of Object.entries(this.inboundProperties)) {
             this[localKey] = _.get(static_data, globalKey);
         }
-        this.processWatchers = true;
-
-        if (!this.initialized) {
-            this.setupWatchers();
-            this.initialized = true;
-        }
+        this.processWatchers = true
 
         this.loaded(static_data);
     }
 
-    setupWatchers() {
-
+    init() {
         const componentProperties = Array.from(new Set(
             Object.keys(this.changeHandlers).concat(Object.keys(this.outboundProperties))
         ));
@@ -46,9 +42,8 @@ export default class CollapsibleComponent {
 
     setupWatcher(localKey) {
         this.$watch(localKey, (...args) => {
-            let isValid = this.validate();
-
-            if (!isValid) {
+            if (!this.validate()) {
+                console.log("Didn't validate", localKey, args);
                 return this.validationFailed();
             }
 
@@ -60,9 +55,13 @@ export default class CollapsibleComponent {
                 return;
             }
 
+            console.log("Running change handlers for " + localKey, JSON.parse(JSON.stringify(args)));
+
             if (this.changeHandlers[localKey]) {
                 this.changeHandlers[localKey].bind(this)(...args);
             }
+
+            console.log("Running outbound properties " + localKey);
 
             if (this.outboundProperties[localKey]) {
                 this.rerender(this.outboundProperties[localKey], this[localKey]);
@@ -79,13 +78,10 @@ export default class CollapsibleComponent {
     }
 
     validate() {
-        let isValid = true;
-
         for (let [localKey, validator] of Object.entries(this.validators)) {
             let { error, message } = validator.bind(this)(localKey);
             if (error) {
                 this.errors[localKey] = message;
-                isValid = false;
             } else if (this.errors?.[localKey]) {
                 // TODO: Remove error dispatch?
                 delete this.errors[localKey];
@@ -94,11 +90,12 @@ export default class CollapsibleComponent {
 
         this.is_valid = !Object.keys(this.errors).length;
 
-        return isValid;
+        return this.is_valid;
     }
 
     validationFailed() {
-        this.$dispatch("calendar-set-errors", {
+        this.$dispatch("calendar-validation-failed", {
+            key: this.constructor.prototype.name,
             errors: Object.values(this.errors)
         })
     }

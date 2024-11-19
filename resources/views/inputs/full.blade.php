@@ -103,7 +103,7 @@
             return [].concat(...Object.values(this.errors));
         }
     }"
-         @calendar-add-errors.window="addErrors"
+         @calendar-validation-failed.window="addErrors"
          @calendar-remove-errors.window="removeErrors"
          x-show="getErrors().length"
          x-cloak

@@ -132,8 +132,8 @@ class LeapDaysCollapsible extends CollapsibleComponent {
     }
 
     getLeapDayIntervalText(leapDay) {
-        if (!this.is_valid) {
-            return ["Error detected."];
+        if (!this.validate()) {
+            return ["Error detected"];
         }
 
         let values = leapDay.interval.split(',').reverse();
