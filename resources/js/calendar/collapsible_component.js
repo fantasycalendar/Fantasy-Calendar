@@ -10,6 +10,7 @@ export default class CollapsibleComponent {
     errors = {};
     calendar_settings = {};
     is_valid = true;
+    collapsible_name = "Not set on the individual component?!?";
 
     load(static_data) {
         if (!static_data) {
@@ -31,6 +32,8 @@ export default class CollapsibleComponent {
     }
 
     init() {
+        console.log(Object.getPrototypeOf(this));
+
         const componentProperties = Array.from(new Set(
             Object.keys(this.changeHandlers).concat(Object.keys(this.outboundProperties))
         ));
@@ -42,9 +45,15 @@ export default class CollapsibleComponent {
 
     setupWatcher(localKey) {
         this.$watch(localKey, (...args) => {
-            if (!this.validate()) {
+            let validationResult = this.validate.bind(this)();
+
+            console.log(localKey, _.cloneDeep(args), this, validationResult);
+
+            if (!validationResult) {
                 return this.validationFailed();
             }
+
+            this.validationSucceeded();
 
             if (!this.is_valid) {
                 return;
@@ -61,7 +70,10 @@ export default class CollapsibleComponent {
     }
 
     rerender(key, value) {
-        this.$dispatch('calendar-rerender-requested', { calendar: { [key]: value } });
+        if (this.is_valid) {
+            console.log("We're valid?!");
+            this.$dispatch('calendar-rerender-requested', { calendar: { [key]: value } });
+        }
     }
 
     loaded(static_data) {
@@ -81,12 +93,20 @@ export default class CollapsibleComponent {
 
         this.is_valid = !Object.keys(this.errors).length;
 
+        console.log(this.is_valid, JSON.parse(JSON.stringify(this.errors)), this.collapsible_name);
+
         return this.is_valid;
+    }
+
+    validationSucceeded() {
+        this.$dispatch("calendar-validation-succeeded", {
+            key: this.collapsible_name,
+        });
     }
 
     validationFailed() {
         this.$dispatch("calendar-validation-failed", {
-            key: this.constructor.prototype.name,
+            key: this.collapsible_name,
             errors: Object.values(this.errors)
         })
     }

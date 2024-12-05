@@ -2,6 +2,8 @@ import CollapsibleComponent from "./collapsible_component.js";
 import { ordinal_suffix_of } from "./calendar_functions.js";
 
 class LeapDaysCollapsible extends CollapsibleComponent {
+    collapsible_name = "Leap days";
+
     name = "";
     type = "";
     deleting = -1;
@@ -13,6 +15,9 @@ class LeapDaysCollapsible extends CollapsibleComponent {
     leap_days = [];
     weekdays = [];
     timespans = [];
+
+    interval_subtexts = [];
+    interval_main_texts = [];
 
     inboundProperties = {
         "leap_days": "year_data.leap_days",
@@ -58,10 +63,8 @@ class LeapDaysCollapsible extends CollapsibleComponent {
         return this.timespans[leapDay.timespan].length;
     }
 
-    sanitizeLeapDayIntervals(){
-
-        for (let leapDay of this.leap_days) {
-
+    sanitizeLeapDayIntervals() {
+        for (let [ index, leapDay ] of this.leap_days.entries()) {
             let { interval } = leapDay;
 
             let values = interval.split(',');
@@ -87,8 +90,11 @@ class LeapDaysCollapsible extends CollapsibleComponent {
 
             leapDay.interval = result.join(',');
 
-        }
+            let texts = this.getLeapDayIntervalText(leapDay);
 
+            this.interval_main_texts[index] = texts.shift();
+            this.interval_subtexts[index] = texts;
+        }
     }
 
     validators = {
@@ -96,11 +102,10 @@ class LeapDaysCollapsible extends CollapsibleComponent {
     };
 
     validateLeapDayIntervals() {
-
         for (let leapDay of this.leap_days) {
             let { interval } = leapDay;
 
-            interval = interval.replace(/,\s*$/, "");
+            interval = interval.trim().replace(/,\s*$/, "");
 
             if (interval === "0") {
                 return { error: true, message: `${leapDay.name}'s interval is 0, please enter a positive number.` };
@@ -127,12 +132,10 @@ class LeapDaysCollapsible extends CollapsibleComponent {
         }
 
         return { error: false, message: "" };
-
-        // TODO: Persist sorted value somehow
     }
 
     getLeapDayIntervalText(leapDay) {
-        if (!this.validate()) {
+        if (!this.is_valid) {
             return ["Error detected"];
         }
 

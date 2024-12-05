@@ -218,9 +218,9 @@
                         </div>
                         <div class='row no-gutters'>
                             <div class='col'>
-                                <div class='italics-text' x-text="getLeapDayIntervalText(leap_day)?.[0]"></div>
+                                <div class='italics-text' x-text="interval_main_texts?.[index]"></div>
                                 <ul class='italics-text list-disc pl-4'>
-                                    <template x-for="text in getLeapDayIntervalText(leap_day).slice(1)">
+                                    <template x-for="text in interval_subtexts?.[index]">
                                         <li x-text="text"></li>
                                     </template>
                                 </ul>

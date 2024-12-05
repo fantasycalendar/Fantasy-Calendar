@@ -104,7 +104,7 @@
         }
     }"
          @calendar-validation-failed.window="addErrors"
-         @calendar-remove-errors.window="removeErrors"
+         @calendar-validation-succeeded.window="removeErrors"
          x-show="getErrors().length"
          x-cloak
          class='flexible_background blurred_background' style="pointer-events: none">

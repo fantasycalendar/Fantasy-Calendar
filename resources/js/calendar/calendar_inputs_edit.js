@@ -2221,13 +2221,6 @@ export function set_up_edit_inputs() {
         }
     });
 
-    input_container.change(function(e) {
-
-        update_data(e);
-
-    });
-
-
     document.addEventListener("advancement-changed", function(event) {
         advancement = event.detail.data;
         evaluate_save_button();
