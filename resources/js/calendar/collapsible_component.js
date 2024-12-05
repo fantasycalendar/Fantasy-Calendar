@@ -32,8 +32,6 @@ export default class CollapsibleComponent {
     }
 
     init() {
-        console.log(Object.getPrototypeOf(this));
-
         const componentProperties = Array.from(new Set(
             Object.keys(this.changeHandlers).concat(Object.keys(this.outboundProperties))
         ));
@@ -46,8 +44,6 @@ export default class CollapsibleComponent {
     setupWatcher(localKey) {
         this.$watch(localKey, (...args) => {
             let validationResult = this.validate.bind(this)();
-
-            console.log(localKey, _.cloneDeep(args), this, validationResult);
 
             if (!validationResult) {
                 return this.validationFailed();
@@ -71,7 +67,6 @@ export default class CollapsibleComponent {
 
     rerender(key, value) {
         if (this.is_valid) {
-            console.log("We're valid?!");
             this.$dispatch('calendar-rerender-requested', { calendar: { [key]: value } });
         }
     }
@@ -92,8 +87,6 @@ export default class CollapsibleComponent {
         }
 
         this.is_valid = !Object.keys(this.errors).length;
-
-        console.log(this.is_valid, JSON.parse(JSON.stringify(this.errors)), this.collapsible_name);
 
         return this.is_valid;
     }
