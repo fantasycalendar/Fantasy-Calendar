@@ -12,20 +12,20 @@ export default class CollapsibleComponent {
     is_valid = true;
 
     load(static_data) {
-        console.log('Load called on ', this.constructor.prototype.name);
         if (!static_data) {
             return
         }
 
         this.calendar_settings = static_data.settings;
 
-        // We want to disable the changeHandlers during loading stages so that we don't get recursive calendar rerender calls
-        // TODO: Figure out why this doesn't _actually_ work.
-        this.processWatchers = false;
         for (let [localKey, globalKey] of Object.entries(this.inboundProperties)) {
-            this[localKey] = _.get(static_data, globalKey);
+            let incoming = _.get(static_data, globalKey);
+            let current = this[localKey];
+
+            if (!_.isEqual(incoming, current)) {
+                this[localKey] = incoming;
+            }
         }
-        this.processWatchers = true
 
         this.loaded(static_data);
     }
@@ -43,7 +43,6 @@ export default class CollapsibleComponent {
     setupWatcher(localKey) {
         this.$watch(localKey, (...args) => {
             if (!this.validate()) {
-                console.log("Didn't validate", localKey, args);
                 return this.validationFailed();
             }
 
@@ -51,17 +50,9 @@ export default class CollapsibleComponent {
                 return;
             }
 
-            if (!this.processWatchers) {
-                return;
-            }
-
-            console.log("Running change handlers for " + localKey, JSON.parse(JSON.stringify(args)));
-
             if (this.changeHandlers[localKey]) {
                 this.changeHandlers[localKey].bind(this)(...args);
             }
-
-            console.log("Running outbound properties " + localKey);
 
             if (this.outboundProperties[localKey]) {
                 this.rerender(this.outboundProperties[localKey], this[localKey]);
