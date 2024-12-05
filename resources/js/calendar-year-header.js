@@ -67,14 +67,15 @@ export default () => ({
 
         const epochData = this.getEpochData();
 
+        // TODO: FIXIT
         let mustacheData = {
-            "year": epochData.year,
-            "nth_year": ordinal_suffix_of(epochData.year),
-            "abs_year": Math.abs(epochData.year),
-            "abs_nth_year": ordinal_suffix_of(Math.abs(epochData.year)),
-            "era_year": epochData.era_year,
-            "era_nth_year": ordinal_suffix_of(epochData.era_year),
-            "abs_era_nth_year": ordinal_suffix_of(Math.abs(epochData.era_year))
+            "year": epochData?.year ?? "{PLACEHOLDER year}",
+            "nth_year": ordinal_suffix_of(epochData?.year ?? "{PLACEHOLDER year}"),
+            "abs_year": Math.abs(epochData?.year ?? "{PLACEHOLDER year}"),
+            "abs_nth_year": ordinal_suffix_of(Math.abs(epochData?.year ?? "{PLACEHOLDER year}")),
+            "era_year": epochData?.era_year ?? "{PLACEHOLDER era_year}",
+            "era_nth_year": ordinal_suffix_of(epochData?.era_year ?? "{PLACEHOLDER era_year}"),
+            "abs_era_nth_year": ordinal_suffix_of(Math.abs(epochData?.era_year ?? "{PLACEHOLDER era_year}"))
         };
 
         if (eraName) {
