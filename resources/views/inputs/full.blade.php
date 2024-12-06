@@ -107,7 +107,7 @@
          @calendar-validation-succeeded.window="removeErrors"
          x-show="getErrors().length"
          x-cloak
-         class='flexible_background blurred_background' style="pointer-events: none">
+         class='flexible_background blurred_background'>
         <div class="error">
             <ol>
                 <template x-for="error in getErrors()">
