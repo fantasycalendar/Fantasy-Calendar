@@ -1,4 +1,5 @@
-window._ = require('lodash');
+import _ from 'lodash';
+window._ = _;
 
 import Alpine from 'alpinejs'
 window.Alpine = Alpine
@@ -10,7 +11,8 @@ Alpine.start()
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
-window.axios = require('axios');
+import axios from 'axios';
+window.axios = axios;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.withCredentials = true;
@@ -43,13 +45,17 @@ if (token) {
  * API, allowing confirmations and very much more. (sweetalert.js.org)
  */
 
-window.swal = require('sweetalert2')
+import swal from 'sweetalert2';
+window.swal = swal;
+
 
 /**
  * Sanitize HTML inputs browser-side using sanitize-html!
  */
 
-window.sanitizeHtml = require('sanitize-html');
+// import sanitizeHtml from 'sanitize-html';
+// window.sanitizeHtml = sanitizeHtml;
+
 
 
 /**
