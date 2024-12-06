@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export default class CollapsibleComponent {
     initialized = false;
     processWatchers = false;
@@ -109,6 +111,8 @@ export default class CollapsibleComponent {
     }
 
     hasError(path) {
+        console.log(path, _.get(this.errors, path));
 
+        return _.get(this.errors, path).length > 0;
     }
 }
