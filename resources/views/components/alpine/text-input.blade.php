@@ -15,4 +15,4 @@
     >
 
 <small class="text-red-600" x-show="hasError({{ $attributes->get('path') }})"
-       x-text="getError({{ $attributes->get('path') }})"></small>
+       x-text="getErrorMessage({{ $attributes->get('path') }})"></small>

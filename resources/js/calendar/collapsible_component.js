@@ -9,7 +9,7 @@ export default class CollapsibleComponent {
     outboundProperties = {};
 
     validators = {};
-    errors = {};
+    errors = [];
     calendar_settings = {};
     is_valid = true;
     collapsible_name = "Not set on the individual component?!?";
@@ -78,17 +78,12 @@ export default class CollapsibleComponent {
     }
 
     validate() {
+        this.errors = [];
         for (let [localKey, validator] of Object.entries(this.validators)) {
-            let { error, message } = validator.bind(this)(localKey);
-            if (error) {
-                this.errors[localKey] = message;
-            } else if (this.errors?.[localKey]) {
-                // TODO: Remove error dispatch?
-                delete this.errors[localKey];
-            }
+            this.errors = this.errors.concat(validator.bind(this)(localKey));
         }
 
-        this.is_valid = !Object.keys(this.errors).length;
+        this.is_valid = !this.errors.length;
 
         return this.is_valid;
     }
@@ -102,17 +97,15 @@ export default class CollapsibleComponent {
     validationFailed() {
         this.$dispatch("calendar-validation-failed", {
             key: this.collapsible_name,
-            errors: Object.values(this.errors)
+            errors: this.errors.map(error => error.message)
         })
     }
 
-    getError(path) {
-
+    getErrorMessage(path) {
+        return this.errors.find(error => error.path === path)?.message ?? "";
     }
 
     hasError(path) {
-        console.log(path, _.get(this.errors, path));
-
-        return _.get(this.errors, path).length > 0;
+        return this.errors.some(error => error.path === path);
     }
 }

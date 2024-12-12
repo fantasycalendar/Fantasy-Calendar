@@ -217,7 +217,7 @@
                             </div>
                         </div>
                         <div class='row no-gutters'>
-                            <div class='col'>
+                            <div class='col' x-show="!hasError(`leap_days.${index}.interval`)">
                                 <div class='italics-text' x-text="interval_main_texts?.[index]"></div>
                                 <ul class='italics-text list-disc pl-4'>
                                     <template x-for="text in interval_subtexts?.[index]">

@@ -102,19 +102,23 @@ class LeapDaysCollapsible extends CollapsibleComponent {
     };
 
     validateLeapDayIntervals() {
-        for (let leapDay of this.leap_days) {
+        let errors = [];
+
+        for (let [index, leapDay] of this.leap_days.entries()) {
             let { interval } = leapDay;
 
             interval = interval.trim().replace(/,\s*$/, "");
 
             if (interval === "0") {
-                return { error: true, message: `${leapDay.name}'s interval is 0, please enter a positive number.` };
+                errors.push({ path: `leap_days.${index}.interval`, message: `${leapDay.name}'s interval is 0, please enter a positive number.` });
+                continue;
             }
 
             let invalid = this.interval_wide_regex.test(interval);
 
             if (invalid) {
-                return { error: true, message: `${leapDay.name} has an invalid interval formula.` };
+                errors.push({ path: `leap_days.${index}.interval`, message: `${leapDay.name} has an invalid interval formula.` });
+                continue;
             }
 
             let values = interval.split(',');
@@ -127,11 +131,11 @@ class LeapDaysCollapsible extends CollapsibleComponent {
             }
 
             if (invalid) {
-                return { error: true, message: `${leapDay.name} has an invalid interval formula. The plus goes before the exclamation point.` };
+                errors.push({ path: `leap_days.${index}.interval`, message: `${leapDay.name} has an invalid interval formula. The plus goes before the exclamation point.` });
             }
         }
 
-        return { error: false, message: "" };
+        return errors;
     }
 
     getLeapDayIntervalText(leapDay) {
