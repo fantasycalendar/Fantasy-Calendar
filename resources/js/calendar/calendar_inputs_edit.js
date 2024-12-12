@@ -47,7 +47,6 @@ import {
     update_current_day,
     evaluate_settings,
     evaluate_sun,
-    repopulate_event_category_lists,
     repopulate_timespan_select,
     repopulate_day_select,
     eval_clock,
@@ -72,7 +71,6 @@ let global_week_sortable = null;
 let periodic_seasons_checkbox = null;
 let season_sortable = null;
 let era_list = null;
-let event_category_list = null;
 let location_list = null;
 let calendar_link_select = null;
 let calendar_link_list = null;
@@ -179,7 +177,6 @@ export function set_up_edit_inputs() {
     periodic_seasons_checkbox = $('#periodic_seasons_checkbox');
     season_sortable = $('#season_sortable');
     era_list = $('#era_list');
-    event_category_list = $('#event_category_list');
     location_list = $('#location_list');
     calendar_link_select = $('#calendar_link_select');
     calendar_link_list = $('#calendar_link_list');
@@ -1182,75 +1179,6 @@ export function set_up_edit_inputs() {
         window.dispatchEvent(new CustomEvent('html-editor-modal-edit-html', { detail: { era_id: era_id } }));
     });
 
-    $('.add_inputs.event_categories .add').click(function() {
-
-        var name = $('#event_category_name_input');
-
-        var sort_by = window.event_categories.length;
-
-        var name_val = name.val() == "" ? `Category ${sort_by + 1}` : name.val();
-
-        var slug = slugify(name_val);
-
-        var stats = {
-            "name": name_val,
-            "category_settings": {
-                "hide": false,
-                "player_usable": false
-            },
-            "event_settings": {
-                "color": "Dark-Solid",
-                "text": "text",
-                "hide": false,
-                "print": false
-            },
-            "calendar_id": typeof window.calendar_id != "undefined" ? window.calendar_id : null,
-            "id": slug
-        };
-
-        add_category_to_list(event_category_list, sort_by, stats);
-
-        window.event_categories[sort_by] = stats;
-
-        repopulate_event_category_lists();
-
-        name.val('');
-
-        do_error_check();
-
-    });
-
-    $(document).on('change', '.category_name_input', function() {
-
-        let new_name = $(this).val();
-
-        let category_index = $(this).closest('.sortable-container').attr('index') | 0;
-
-        window.event_categories[category_index].name = new_name;
-
-        if (isNaN(window.event_categories[category_index].id)) {
-            let slug = slugify(new_name);
-
-            for (let index in window.events) {
-                if (window.events[index].event_category_id == window.event_categories[category_index].id) {
-                    window.events[index].event_category_id = slug;
-                }
-            }
-
-            var default_event_category = window.static_data.settings.default_category !== undefined ? window.static_data.settings.default_category : -1;
-            if (default_event_category == window.event_categories[category_index].id) {
-                window.static_data.settings.default_category = slug;
-            }
-
-            window.event_categories[category_index].id = slug;
-        }
-
-        repopulate_event_category_lists();
-
-        do_error_check();
-
-    });
-
     $('#default_event_category').change(function() {
         let new_default_event_category = $(this).val();
         if (isNaN(new_default_event_category)) {
@@ -1352,32 +1280,6 @@ export function set_up_edit_inputs() {
                 // $(this).closest('.sortable-container').parent().sortable('refresh');
                 reindex_era_list();
                 window.dynamic_data.current_era = get_current_era(window.static_data, window.dynamic_data.epoch);
-                break;
-
-            case "event_category_list":
-                $(this).closest('.sortable-container').remove();
-                // $(this).closest('.sortable-container').parent().sortable('refresh');
-
-                var category = window.event_categories[index];
-
-                for (var event in window.events) {
-                    if (window.events[event].category == category.id) {
-                        window.events[event].category = -1;
-                    }
-                }
-
-                for (var era in window.static_data.eras) {
-                    if (window.static_data.eras[era].settings.event_category_id == index) {
-                        window.static_data.eras[era].settings.event_category_id = -1;
-                    }
-                }
-
-                reindex_event_category_list();
-                window.event_categories = window.event_categories.filter(function(category) { return category; });
-                repopulate_event_category_lists();
-
-                window.dispatchEvent(new CustomEvent("events-changed"));
-
                 break;
 
         }
@@ -2331,23 +2233,6 @@ function update_data(e) {
             }
         }
 
-        if (target.hasClass('category_dynamic_input')) {
-            var key = type[0];
-            for (var eventkey in window.events) {
-                if (window.events[eventkey].event_category_id == window.event_categories[key].id) {
-                    window.events[eventkey].settings.hide_full = window.event_categories[key].event_settings.hide_full;
-                    window.events[eventkey].settings.print = window.event_categories[key].event_settings.print;
-                    window.events[eventkey].settings.hide = window.event_categories[key].event_settings.hide;
-                    window.events[eventkey].settings.color = window.event_categories[key].event_settings.color;
-                    window.events[eventkey].settings.text = window.event_categories[key].event_settings.text;
-                }
-            }
-
-            window.dispatchEvent(new CustomEvent("events-changed"));
-
-            repopulate_event_category_lists();
-        }
-
         var refresh = target.attr('refresh') === "true" || refresh === undefined;
 
         if (type[0] === "seasons" && key == "name") {
@@ -3135,123 +3020,6 @@ function add_era_to_list(parent, key, data) {
 
     return element;
 
-}
-
-function add_category_to_list(parent, key, data) {
-    parent.append(`<div class='sortable-container list-group-item category_inputs collapsed collapsible' index='${key}' x-data='{ color: "${data.event_settings.color}", text_style: "${data.event_settings.text}" }'>
-
-		<div class='main-container'>
-			<div class='expand fa fa-caret-square-down'></div>
-			<div class='name-container'>
-				<input value='${data.name}' type='text' name='name_input' fc-index='name' class='form-control name-input small-input category_name_input' data='${key}' tabindex='${(700 + key)}'/>
-			</div>
-			<div class="remove-spacer"></div>
-		</div>
-		<div class='remove-container'>
-			<div class='remove-container-text'>Are you sure you want to remove this?</div>
-			<div class='btn_remove btn btn-danger fa fa-trash'></div>
-			<div class='btn_cancel btn btn-danger fa fa-xmark'></div>
-			<div class='btn_accept btn btn-success fa fa-check'></div>
-		</div>
-		<div class='collapse-container container mb-2'>
-
-			<div class='row no-gutters my-1 bold-text'>
-				<div class='col'>
-					Settings:
-				</div>
-			</div>
-
-			<input type='hidden' class='category_id' value='${key}'>
-
-			<div class='row no-gutters mt-1 mb-2'>
-                <div class="list-group col-12">
-                    <div class='form-check list-group-item py-2'>
-                        <input type='checkbox' id='${key}_cat_global_hide' class='form-check-input category_dynamic_input dynamic_input global_hide' data='${key}.category_settings' fc-index='hide' ${(data.category_settings.hide ? "checked" : "")} />
-                        <label for='${key}_cat_global_hide' class='form-check-label ml-1'>
-                            Hide category from viewers
-                        </label>
-                    </div>
-
-                    <div class='form-check list-group-item py-2'>
-                        <input type='checkbox' id='${key}_cat_player_usable' class='form-check-input category_dynamic_input dynamic_input player_usable' data='${key}.category_settings' fc-index='player_usable' ${(data.category_settings.player_usable ? "checked" : "")} />
-                        <label for='${key}_cat_player_usable' class='form-check-label ml-1'>
-                            Category usable by players
-                        </label>
-                    </div>
-                </div>
-			</div>
-
-			<div class='row no-gutters bold-text'>
-				<div class='col'>
-					Event overrides:
-				</div>
-			</div>
-
-			<div class='row no-gutters mt-1 mb-2'>
-                <div class="list-group col-12">
-                    <div class='form-check list-group-item py-2'>
-                        <input type='checkbox' id='${key}_cat_hide_full' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='hide_full' ${(data.event_settings.hide_full ? "checked" : "")} />
-                        <label for='${key}_cat_hide_full' class='form-check-label ml-1'>
-                            Fully hide event
-                        </label>
-                    </div>
-
-                    <div class='form-check list-group-item py-2'>
-                        <input type='checkbox' id='${key}_cat_hide' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='hide' ${(data.event_settings.hide ? "checked" : "")} />
-                        <label for='${key}_cat_hide' class='form-check-label ml-1'>
-                            Hide event
-                        </label>
-                    </div>
-
-                    <div class='form-check list-group-item py-2'>
-                        <input type='checkbox' id='${key}_cat_print' class='form-check-input category_dynamic_input dynamic_input' data='${key}.event_settings' fc-index='print' ${(data.event_settings.noprint ? "checked" : "")} />
-                        <label for='${key}_cat_print' class='form-check-label ml-1'>
-                            Show event when printing
-                        </label>
-                    </div>
-                </div>
-			</div>
-
-			<div class='row no-gutters my-2'>
-				<div class='col-md-6 col-sm-12'>
-					Color:
-				</div>
-
-				<div class='col-md-6 col-sm-12'>
-                    Display:
-				</div>
-
-                <div class='input-group col-12 mt-1 mb-2' x-data="{ colorOptions: ['Dark-Solid', 'Red', 'Pink', 'Purple', 'Deep-Purple', 'Blue', 'Light-Blue', 'Cyan', 'Teal', 'Green', 'Light-Green', 'Lime', 'Yellow', 'Orange', 'Blue-Grey'] }">
-                    <select x-model='color' class='custom-select form-control category_dynamic_input dynamic_input event-text-input color_display' data='${key}.event_settings' fc-index='color'>
-                        <template x-for="colorOption in colorOptions">
-                            <option x-text="colorOption" :value="colorOption" :selected="colorOption == color"></option>
-                        </template>
-                    </select>
-                    <select x-model='text_style' class='custom-select form-control category_dynamic_input dynamic_input event-text-input text_display' data='${key}.event_settings' fc-index='text'>
-                        <option value="text"${(data.event_settings.text == 'text' ? ' selected' : '')}>Just text</option>
-                        <option value="dot"${(data.event_settings.text == 'dot' ? ' selected' : '')}>• Dot with text</option>
-                        <option value="background"${(data.event_settings.text == 'background' ? ' selected' : '')}>Background</option>
-                    </select>
-                </div>
-			</div>
-
-			<div class='row no-gutters mt-1'>
-				<div class='col'>
-					Event appearance:
-				</div>
-			</div>
-
-			<div class='row no-gutters'>
-				<div class='col-6'>
-                    <div class='event-text-output event' :class='color + " " + text_style'>Event (visible)</div>
-				</div>
-				<div class='col-6 px-1'>
-					<div class='event-text-output hidden_event event' :class='color + " " + text_style'>Event (hidden)</div>
-				</div>
-			</div>
-		</div>
-
-	</div>`);
 }
 
 
@@ -4208,29 +3976,6 @@ function sort_list_by_partial_date(list) {
     list.empty().append(elements).change();
 }
 
-function reindex_event_category_list() {
-    var new_order = [];
-
-    event_category_list.children().each(function(i) {
-
-        var index = $(this).attr('index');
-
-        if (isNaN(index)) {
-            $(this).attr('index', index);
-        } else {
-            $(this).attr('index', i);
-        }
-
-
-        new_order[index] = window.event_categories[index];
-
-    });
-
-    window.event_categories = clone(new_order);
-
-    return;
-}
-
 function evaluate_season_lengths() {
     var disable = window.static_data.seasons.data.length == 0 || (!window.static_data.seasons.global_settings.periodic_seasons && window.static_data.seasons.global_settings.periodic_seasons !== undefined);
 
@@ -4666,14 +4411,6 @@ export function set_up_edit_values() {
         })
     }
 
-    if (window.event_categories) {
-        for (var key in window.event_categories) {
-            var category = window.event_categories[key];
-            var catkey = (typeof category.sort_by !== "undefined") ? category.sort_by : slugify(category.name);
-            add_category_to_list(event_category_list, catkey, category);
-        }
-    }
-
 
     $('.weather_inputs').toggleClass('hidden', !window.static_data.seasons.global_settings.enable_weather);
     $('.weather_inputs').find('select, input').prop('disabled', !window.static_data.seasons.global_settings.enable_weather);
@@ -4727,7 +4464,6 @@ export function empty_edit_values() {
     global_week_sortable.empty()
     season_sortable.empty()
     era_list.empty()
-    event_category_list.empty()
     location_list.empty()
     calendar_link_select.empty()
     calendar_link_list.empty()

@@ -1,7 +1,11 @@
-export default () => ({
-    reordering: false,
+import CollapsibleComponent from "./collapsible_component.js";
 
-    load: function(static_data) {
-        //
-    }
-})
+class EventCategoriesCollapsible extends CollapsibleComponent {
+
+    inboundProperties = {};
+
+    categories = [];
+
+}
+
+export default () => new EventCategoriesCollapsible();

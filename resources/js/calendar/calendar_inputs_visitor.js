@@ -597,37 +597,6 @@ export function evaluate_sun() {
     }
 }
 
-export function repopulate_event_category_lists() {
-    var html = [];
-    html.push("<option selected value='-1'>None</option>")
-
-    for (var categoryId in window.event_categories) {
-
-        var category = window.event_categories[categoryId];
-
-        if (!category.category_settings.player_usable && !Perms.player_at_least('co-owner')) continue;
-
-        let slug = category.id;
-
-        if (isNaN(category.id)) {
-            slug = slugify(category.name);
-        }
-
-        html.push(`<option value='${slug}'>`)
-        html.push(sanitizeHtml(category.name))
-        html.push("</option>")
-    }
-
-    $('.event-category-list').each(function() {
-        var val = $(this).val();
-        $(this).html(html.join("")).val(val);
-    });
-
-    var default_event_category = window.static_data.settings.default_category !== undefined ? get_category(window.static_data.settings.default_category) : { id: -1 };
-
-    $('#default_event_category').val(default_event_category.id);
-}
-
 export function repopulate_timespan_select(select, val, change, max) {
     if (window.static_data.year_data.timespans.length == 0 || window.static_data.year_data.global_week.length == 0) return;
 
@@ -800,8 +769,6 @@ export function set_up_visitor_values() {
 
     repopulate_timespan_select(target_timespan, window.preview_date_manager.timespan, false, window.preview_date_manager.last_valid_timespan);
     repopulate_day_select(target_day, window.preview_date_manager.day, false, false, window.preview_date_manager.last_valid_day);
-
-    repopulate_event_category_lists();
 
     evaluate_settings();
 }
