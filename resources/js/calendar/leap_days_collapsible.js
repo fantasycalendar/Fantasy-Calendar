@@ -20,9 +20,9 @@ class LeapDaysCollapsible extends CollapsibleComponent {
     interval_main_texts = [];
 
     inboundProperties = {
-        "leap_days": "year_data.leap_days",
-        "weekdays": "year_data.global_week",
-        "timespans": "year_data.timespans"
+        "leap_days": "static_data.year_data.leap_days",
+        "weekdays": "static_data.year_data.global_week",
+        "timespans": "static_data.year_data.timespans"
     }
 
     outboundProperties = {

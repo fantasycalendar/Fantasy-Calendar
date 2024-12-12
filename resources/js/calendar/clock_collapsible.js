@@ -2,7 +2,7 @@ import CollapsibleComponent from "./collapsible_component";
 
 class ClockCollapsible extends CollapsibleComponent {
     inboundProperties = {
-        'clock': 'clock'
+        'clock': 'static_data.clock'
     };
 
     changeHandlers = {

@@ -234,6 +234,9 @@ import Alpine from 'alpinejs'
 import sort from '@alpinejs/sort';
 Alpine.plugin(sort);
 
+import Calendar from "./calendar.js";
+Alpine.store("calendar", new Calendar());
+
 import CalendarPresets from './calendar-presets.js';
 import CalendarRenderer from './calendar-renderer.js';
 import CalendarHTMLEditor from './calendar-html-editor.js';

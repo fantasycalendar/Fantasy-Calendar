@@ -180,8 +180,13 @@ export default (calendar_structure) => ({
     },
 
     rerenderRequested($event) {
+        // TODO: Evaluate whether this should be here or not
+        let structuralKeys = ["year_data"];
+        let structureChanged = false;
         for(const [key, value] of Object.entries($event.detail.calendar)) {
             window.static_data = _.set(window.static_data, key, _.cloneDeep(value));
+            console.log(key)
+            structureChanged = structureChanged || structuralKeys.some(structuralKey => key.startsWith(structuralKey));
         }
 
         // First of many rules, I'm sure.
@@ -190,5 +195,9 @@ export default (calendar_structure) => ({
             && !window.static_data.year_data.timespans.some(month => month?.week?.length);
 
         do_error_check("calendar", $event.detail.rerender);
+
+        if(structureChanged){
+            window.dispatchEvent(new CustomEvent('calendar-structure-changed'));
+        }
     }
 });

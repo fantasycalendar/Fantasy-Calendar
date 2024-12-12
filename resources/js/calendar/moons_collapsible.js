@@ -14,9 +14,9 @@ class MoonsCollapsible extends CollapsibleComponent {
     shift = null;
 
     inboundProperties = {
-        "moons": "moons",
-        "months": "year_data.timespans",
-        "leap_days": "year_data.leap_days",
+        "moons": "static_data.moons",
+        "months": "static_data.year_data.timespans",
+        "leap_days": "static_data.year_data.leap_days",
     };
 
     outboundProperties = {

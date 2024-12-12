@@ -15,10 +15,10 @@ class LocationsCollapsible extends CollapsibleComponent {
     can_use_preset_locations = false;
 
     inboundProperties = {
-        "seasons": "seasons.data",
-        "locations": "seasons.locations",
-        "season_settings": "seasons.global_settings",
-        "clock": "clock",
+        "seasons": "static_data.seasons.data",
+        "locations": "static_data.seasons.locations",
+        "season_settings": "static_data.seasons.global_settings",
+        "clock": "static_data.clock",
     }
 
     outboundProperties = {

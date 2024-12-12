@@ -13,10 +13,10 @@ class WeekdaysCollapsible extends CollapsibleComponent {
     first_day;
 
     inboundProperties = {
-        'weekdays': 'year_data.global_week',
-        'first_day': 'year_data.first_day',
-        'leap_days': 'year_data.leap_days',
-        'overflow_weekdays': 'year_data.overflow',
+        'weekdays': 'static_data.year_data.global_week',
+        'first_day': 'static_data.year_data.first_day',
+        'leap_days': 'static_data.year_data.leap_days',
+        'overflow_weekdays': 'static_data.year_data.overflow',
     };
 
     changeHandlers = {

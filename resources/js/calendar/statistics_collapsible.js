@@ -7,8 +7,8 @@ class StatisticsCollapsible extends CollapsibleComponent {
     average_month_length = 0;
 
     inboundProperties = {
-        "months": "year_data.timespans",
-        "leap_days": "year_data.leap_days",
+        "months": "static_data.year_data.timespans",
+        "leap_days": "static_data.year_data.leap_days",
     };
 
     loaded() {

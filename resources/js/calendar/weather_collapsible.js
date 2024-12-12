@@ -5,7 +5,7 @@ class WeatherCollapsible extends CollapsibleComponent {
     weather = {};
 
     inboundProperties = {
-        "weather": "seasons.global_settings"
+        "weather": "static_data.seasons.global_settings"
     };
 
     outboundProperties = {

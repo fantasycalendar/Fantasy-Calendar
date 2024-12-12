@@ -5,7 +5,7 @@ class SettingsCollapsible extends CollapsibleComponent {
     settings = {}
 
     loads = {
-        "settings": "settings"
+        "settings": "static_data.settings"
     };
 
     setters = {
