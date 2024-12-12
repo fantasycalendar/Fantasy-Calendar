@@ -205,9 +205,6 @@
                                                      path="`leap_days.${index}.interval`"
                                                      tooltip="Every nth year this leap day appears. Multiple intervals can be separated by commas, like the gregorian leap day: 400,!100,4. Every 4th year, unless it is divisible by 100, but again if it is divisible by 400.">
                                 </x-alpine.text-input>
-{{--                                --}}
-{{--                                <input type='text' class='form-control protip' x-model.lazy='leap_day.interval'/>--}}
-{{--                                <div x-show="hasError(`leap_days.${index}.interval`)" x-text="getError(`leap_days.${index}.interval`)"></div>--}}
                             </div>
                             <div class='col-4 pl-1 '>
                                 <input type='number' step="1" class='form-control'
