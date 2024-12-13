@@ -20,7 +20,7 @@ class Webhook
         /**
          * @var Handler $handler
          */
-        $handler = Arr::get(static::$webhookHandlers, $type, 'raw_json');
+        $handler = Arr::get(static::$webhookHandlers, $type, static::$webhookHandlers['raw_json']);
 
         return $handler::make($url, $calendar);
     }
