@@ -26,7 +26,7 @@ class LeapDaysCollapsible extends CollapsibleComponent {
     }
 
     outboundProperties = {
-        "leap_days": "year_data.leap_days"
+        "leap_days": "static_data.year_data.leap_days"
     }
 
     changeHandlers = {

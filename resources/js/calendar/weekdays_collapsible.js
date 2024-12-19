@@ -24,8 +24,8 @@ class WeekdaysCollapsible extends CollapsibleComponent {
     };
 
     outboundProperties = {
-        "overflow_weekdays": "year_data.overflow",
-        "weekdays": "year_data.global_week"
+        "overflow_weekdays": "static_data.year_data.overflow",
+        "weekdays": "static_data.year_data.global_week"
     };
 
     loaded(static_data) {

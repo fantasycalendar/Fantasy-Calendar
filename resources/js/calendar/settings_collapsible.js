@@ -4,12 +4,12 @@ class SettingsCollapsible extends CollapsibleComponent {
 
     settings = {}
 
-    loads = {
+    inboundProperties = {
         "settings": "static_data.settings"
     };
 
-    setters = {
-        "settings": "settings"
+    outboundProperties = {
+        "settings": "static_data.settings"
     };
 
 }

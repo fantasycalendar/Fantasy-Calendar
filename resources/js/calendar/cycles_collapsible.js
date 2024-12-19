@@ -13,8 +13,8 @@ class CyclesCollapsible extends CollapsibleComponent {
     }
 
     outboundProperties = {
-        "format": "cycles.format",
-        "cycles": "cycles.data",
+        "format": "static_data.cycles.format",
+        "cycles": "static_data.cycles.data",
     }
 
     addCycle(){

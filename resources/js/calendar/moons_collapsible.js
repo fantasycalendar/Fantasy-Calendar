@@ -20,7 +20,7 @@ class MoonsCollapsible extends CollapsibleComponent {
     };
 
     outboundProperties = {
-        "moons": "moons"
+        "moons": "static_data.moons"
     }
 
     validCustomCycleRegex = /[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z ]/g;

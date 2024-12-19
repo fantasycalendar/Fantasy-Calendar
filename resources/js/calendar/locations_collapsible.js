@@ -22,7 +22,7 @@ class LocationsCollapsible extends CollapsibleComponent {
     }
 
     outboundProperties = {
-        "locations": "seasons.locations",
+        "locations": "static_data.seasons.locations",
     }
 
     loaded() {

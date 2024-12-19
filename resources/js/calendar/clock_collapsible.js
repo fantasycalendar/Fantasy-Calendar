@@ -10,7 +10,7 @@ class ClockCollapsible extends CollapsibleComponent {
     };
 
     outboundProperties = {
-        "clock": "clock"
+        "clock": "static_data.clock"
     }
 
     changed(current, previous) {
