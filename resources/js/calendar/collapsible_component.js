@@ -15,7 +15,6 @@ export default class CollapsibleComponent {
     collapsible_name = "Not set on the individual component?!?";
 
     load($store) {
-
         this.calendar_settings = $store.calendar.static_data.settings;
 
         for (let [localKey, globalKey] of Object.entries(this.inboundProperties)) {
@@ -28,9 +27,15 @@ export default class CollapsibleComponent {
         }
 
         this.loaded($store.calendar.static_data);
+
+        if (!this.initialized) {
+            this.setupWatchers();
+        }
     }
 
-    init() {
+    setupWatchers() {
+        this.initialized = true;
+
         const componentProperties = Array.from(new Set(
             Object.keys(this.changeHandlers).concat(Object.keys(this.outboundProperties))
         ));
