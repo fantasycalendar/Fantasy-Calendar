@@ -16,7 +16,7 @@
 
 <div class='sortable list-group'>
     <template x-for="category in categories">
-
+        <div x-text="category.name"></div>
     </template>
 </div>
 
@@ -29,7 +29,11 @@
         Default category:
         <select class='form-control event-category-list protip' data-pt-position="right"
             data-pt-title="This sets the category to be selected by default when a new event is created"
-            id='default_event_category'></select>
+            id='default_event_category'>
+            <template x-for="category in categories">
+                <option value="category.id" x-text="category.name"></option>
+            </template>
+        </select>
     </div>
 </div>
 

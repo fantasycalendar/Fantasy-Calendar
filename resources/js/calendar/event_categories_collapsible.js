@@ -2,7 +2,9 @@ import CollapsibleComponent from "./collapsible_component.js";
 
 class EventCategoriesCollapsible extends CollapsibleComponent {
 
-    inboundProperties = {};
+    inboundProperties = {
+        "categories": "event_categories",
+    };
 
     categories = [];
 
