@@ -46,7 +46,7 @@
         <script>window.bugsnagClient = bugsnag('98440cbeef759631f3d987ab45b26a79')</script>
     @endif
 
-    <script src="{{ mix('/js/app-tw.js') }}" defer></script>
+    @vite('resources/js/app-tw.js')
     @feature('stripe')
         <script src="https://js.stripe.com/v3/"></script>
     @endfeature
@@ -77,7 +77,7 @@
 
     </script>
 
-    <link rel="stylesheet" href="{{ mix('css/app-tw.css') }}">
+    @vite('resources/sass/app-tw.css')
 
     @stack('head')
 </head>

@@ -14,9 +14,9 @@
 
         preset_applied = false;
         calendar_name = '';
-        has_parent = false;
+        window.has_parent = false;
         is_linked = false;
-        static_data = {
+        window.static_data = {
             "year_data":{
                 "first_day":1,
                 "overflow":true,
@@ -77,8 +77,6 @@
 
         event_categories = [];
 
-        randomizer = new RandomCalendar();
-
         dynamic_data = {
             "year": 1,
             "timespan": 0,
@@ -92,12 +90,11 @@
 
         preview_date = clone(dynamic_data);
 
-        $(document).ready(function(){
-
-            if(static_data){
-                $('.date_inputs').toggleClass('hidden', static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0);
-                $('.date_inputs').find('select, input').prop('disabled', static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0);
-                $('#empty_calendar_explaination').toggleClass('hidden', !(static_data.year_data.global_week.length == 0 || static_data.year_data.timespans.length == 0));
+        document.addEventListener("DOMContentLoaded", function(){
+            if(window.static_data){
+                $('.date_inputs').toggleClass('hidden', window.static_data.year_data.global_week.length == 0 || window.static_data.year_data.timespans.length == 0);
+                $('.date_inputs').find('select, input').prop('disabled', window.static_data.year_data.global_week.length == 0 || window.static_data.year_data.timespans.length == 0);
+                $('#empty_calendar_explaination').toggleClass('hidden', !(window.static_data.year_data.global_week.length == 0 || window.static_data.year_data.timespans.length == 0));
             }
 
             set_up_edit_inputs(false);
