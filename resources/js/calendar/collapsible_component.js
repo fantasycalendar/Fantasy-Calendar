@@ -110,4 +110,8 @@ export default class CollapsibleComponent {
     hasError(path) {
         return this.errors.some(error => error.path === path);
     }
+
+    debug() {
+        console.log(JSON.parse(JSON.stringify(this)));
+    }
 }

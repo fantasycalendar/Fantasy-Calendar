@@ -2,7 +2,6 @@
 export default class Calendar {
 
     update(incomingChanges) {
-        // TODO: Evaluate whether this should be here or not
         let structuralKeys = [
             "static_data.year_data",
         ];
@@ -43,6 +42,10 @@ export default class Calendar {
             })
     }
 
+    set advancement(value) {
+        window.advancement = value;
+    }
+
     get static_data() {
         return window.static_data;
     }
@@ -61,5 +64,9 @@ export default class Calendar {
 
     get id() {
         return window.calendar_id;
+    }
+
+    get advancement() {
+        return window.advancement;
     }
 }
