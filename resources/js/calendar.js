@@ -29,6 +29,18 @@ export default class Calendar {
 
     set event_categories(value) {
         window.event_categories = value;
+
+        window.event_categories
+            .forEach(category => {
+                window.events
+                    .filter(event => event.event_category_id == category.id)
+                    .forEach(event => {
+                        event.settings = {
+                            ...event.settings,
+                            ...category.event_settings,
+                        };
+                    })
+            })
     }
 
     get static_data() {

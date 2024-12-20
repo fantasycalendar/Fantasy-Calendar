@@ -1,20 +1,14 @@
 @props(['calendar' => null])
 
-<div class='row no-gutters bold-text'>
-    <div class='col'>
-        New event category:
-    </div>
-</div>
-
 <div class='row no-gutters input-group'>
-    <input type='text' class='form-control name' placeholder='Event category name' x-model="new_category_name">
+    <input type='text' class='form-control name' placeholder='New category name' x-model="new_category_name">
 
     <div class="input-group-append">
         <button type='button' class='btn btn-primary' @click="createNewCategory"><i class="fa fa-plus"></i></button>
     </div>
 </div>
 
-<div class='sortable list-group mt-2'>
+<div class='sortable list-group my-2'>
     <template x-for="category in categories" :key="category.id">
         <div class='sortable-container list-group-item collapsible p-2 first-of-type:rounded-t'
             :class="{'collapsed': !collapsed}"
@@ -119,7 +113,7 @@
                             </template>
                         </select>
 
-                        <select x-model='category.event_settings.text_style' class='custom-select form-control text_display'>
+                        <select x-model='category.event_settings.text' class='custom-select form-control text_display'>
                             <option value="text">Just text</option>
                             <option value="dot">• Dot with text</option>
                             <option value="background">Background</option>
@@ -135,10 +129,10 @@
 
                 <div class='row no-gutters'>
                     <div class='col-6'>
-                        <div class='event-text-output event' :class='`${category.event_settings.color} ${category.event_settings.text_style}`'>Event (visible)</div>
+                        <div class='event-text-output event' :class='`${category.event_settings.color} ${category.event_settings.text}`'>Event (visible)</div>
                     </div>
                     <div class='col-6 px-1'>
-                        <div class='event-text-output hidden_event event' :class='`${category.event_settings.color} ${category.event_settings.text_style}`'>Event (hidden)</div>
+                        <div class='event-text-output hidden_event event' :class='`${category.event_settings.color} ${category.event_settings.text}`'>Event (hidden)</div>
                     </div>
                 </div>
             </div>
@@ -146,42 +140,19 @@
     </template>
 </div>
 
-<div class='row no-gutters my-2'>
+<div class='row no-gutters py-2'>
     <div class='separator'></div>
 </div>
 
 <div class='row no-gutters bold-text'>
     <div class='col'>
-        Default category:
-        <select class='form-control event-category-list protip' data-pt-position="right"
-            data-pt-title="This sets the category to be selected by default when a new event is created"
-            id='default_event_category'>
+        Default category
+        <select class='form-control protip mt-1' data-pt-position="right" data-pt-title="This sets the category to be selected by default when a new event is created" >
+            <option value="">No default category</option>
+
             <template x-for="category in categories">
                 <option value="category.id" x-text="category.name"></option>
             </template>
         </select>
     </div>
 </div>
-
-
-{{--
-
-<div class='sortable-container list-group-item category_inputs collapsed collapsible' index='${key}' x-data='{ color: "${data.event_settings.color}", text_style: "${data.event_settings.text}" }'>
-
-		<div class='main-container'>
-			<div class='expand fa fa-caret-square-down'></div>
-			<div class='name-container'>
-				<input value='${data.name}' type='text' name='name_input' fc-index='name' class='form-control name-input small-input category_name_input' data='${key}' tabindex='${(700 + key)}'/>
-			</div>
-			<div class="remove-spacer"></div>
-		</div>
-		<div class='remove-container'>
-			<div class='remove-container-text'>Are you sure you want to remove this?</div>
-			<div class='btn_remove btn btn-danger fa fa-trash'></div>
-			<div class='btn_cancel btn btn-danger fa fa-xmark'></div>
-			<div class='btn_accept btn btn-success fa fa-check'></div>
-		</div>
-
-	</div>
-
---}}
