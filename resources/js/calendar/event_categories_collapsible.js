@@ -11,6 +11,7 @@ class EventCategoriesCollapsible extends CollapsibleComponent {
         "categories": "event_categories",
     };
 
+    deleting = null;
     categories = [];
     new_category_name = "";
 
@@ -34,7 +35,11 @@ class EventCategoriesCollapsible extends CollapsibleComponent {
         });
 
         this.new_category_name = "";
-    }
+    };
+
+    deleteCategory(categoryId) {
+        this.categories = this.categories.filter(category => category.id !== categoryId);
+    };
 }
 
 export default () => new EventCategoriesCollapsible();
