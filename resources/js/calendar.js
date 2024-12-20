@@ -27,6 +27,10 @@ export default class Calendar {
         window.static_data = value;
     }
 
+    set event_categories(value) {
+        window.event_categories = value;
+    }
+
     get static_data() {
         return window.static_data;
     }
@@ -41,5 +45,9 @@ export default class Calendar {
 
     get event_categories() {
         return window.event_categories;
+    }
+
+    get id() {
+        return window.calendar_id;
     }
 }

@@ -6,11 +6,11 @@
     </div>
 </div>
 
-<div class='add_inputs event_categories row no-gutters input-group'>
-    <input type='text' class='form-control name' id='event_category_name_input'
-    placeholder='Event category name'>
+<div class='row no-gutters input-group'>
+    <input type='text' class='form-control name' placeholder='Event category name' x-model="new_category_name">
+
     <div class="input-group-append">
-        <button type='button' class='btn btn-primary add'><i class="fa fa-plus"></i></button>
+        <button type='button' class='btn btn-primary' @click="createNewCategory"><i class="fa fa-plus"></i></button>
     </div>
 </div>
 
