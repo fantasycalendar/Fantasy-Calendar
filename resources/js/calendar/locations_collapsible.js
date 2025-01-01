@@ -1,7 +1,12 @@
 import CollapsibleComponent from "./collapsible_component.js";
 import { preset_data } from "./calendar_variables.js";
 import _ from "lodash";
-import { clone, fahrenheit_to_celcius } from "./calendar_functions.js";
+import {
+    fahrenheit_to_celcius,
+    fract,
+    lerp,
+    precisionRound
+} from "./calendar_functions.js";
 
 class LocationsCollapsible extends CollapsibleComponent {
 
@@ -31,6 +36,10 @@ class LocationsCollapsible extends CollapsibleComponent {
         "locations": "static_data.seasons.locations",
         "using_custom_location": "dynamic_data.custom_location",
         "current_location": "dynamic_data.location",
+    }
+
+    changeHandlers = {
+        "seasons": this.updateLocationsWithSeasonBasedTime
     }
 
     loaded() {
@@ -166,6 +175,109 @@ class LocationsCollapsible extends CollapsibleComponent {
         this.locations.push(newLocation);
         this.current_location = (this.locations.length-1).toString();
         this.using_custom_location = true;
+
+    }
+
+    interpolateSeasonTimes(location_index, season_index){
+
+        let prev_id = (season_index - 1) % this.seasons.length
+        if (prev_id < 0) prev_id += this.seasons.length
+
+        let next_id = (season_index + 1) % this.seasons.length;
+
+        let season_ratio;
+
+        if (this.season_settings.periodic_seasons) {
+
+            let season_length = this.seasons[prev_id].duration + this.seasons[prev_id].transition_length + this.seasons[season_index].duration + this.seasons[season_index].transition_length;
+            let target = this.seasons[prev_id].duration + this.seasons[prev_id].transition_length;
+            season_ratio = target / season_length;
+
+        } else {
+
+            let prev_season = this.seasons[prev_id];
+            let curr_season = this.seasons[season_index];
+            let next_season = this.seasons[next_id];
+
+            let prev_year = 2;
+            if (prev_id > season_index) {
+                prev_year--;
+            }
+
+            let next_year = 2;
+            if (next_id < season_index) {
+                next_year++;
+            }
+
+            let prev_day = this.$store.calendar.evaluate_calendar_start(prev_year, prev_season.timespan, prev_season.day).epoch;
+            let curr_day = this.$store.calendar.evaluate_calendar_start(2, curr_season.timespan, curr_season.day).epoch - prev_day;
+            let next_day = this.$store.calendar.evaluate_calendar_start(next_year, next_season.timespan, next_season.day).epoch - prev_day;
+
+            season_ratio = curr_day / next_day;
+
+        }
+
+        let prev_season = this.locations[location_index].seasons[prev_id];
+        let next_season = this.locations[location_index].seasons[next_id];
+
+        if (this.clock.enabled) {
+
+            let prev_sunrise = prev_season.time.sunrise.hour + (prev_season.time.sunrise.minute / this.clock.minutes);
+            let next_sunrise = next_season.time.sunrise.hour + (next_season.time.sunrise.minute / this.clock.minutes);
+
+            let middle_sunrise = lerp(prev_sunrise, next_sunrise, season_ratio)
+
+            let sunrise_h = Math.floor(middle_sunrise)
+            let sunrise_m = Math.floor(fract(middle_sunrise) * this.clock.minutes)
+
+            this.locations[location_index].seasons[season_index].time.sunrise.hour = sunrise_h;
+            this.locations[location_index].seasons[season_index].time.sunrise.minute = sunrise_m;
+
+
+            let prev_sunset = prev_season.time.sunset.hour + (prev_season.time.sunset.minute / this.clock.minutes);
+            let next_sunset = next_season.time.sunset.hour + (next_season.time.sunset.minute / this.clock.minutes);
+
+            let middle_sunset = lerp(prev_sunset, next_sunset, season_ratio)
+
+            let sunset_h = Math.floor(middle_sunset)
+            let sunset_m = Math.floor(fract(middle_sunset) * this.clock.minutes)
+
+            this.locations[location_index].seasons[season_index].time.sunset.hour = sunset_h;
+            this.locations[location_index].seasons[season_index].time.sunset.minute = sunset_m;
+
+        }
+
+        if (this.season_settings.enable_weather) {
+
+            let temp_low = precisionRound(lerp(prev_season.weather.temp_low, next_season.weather.temp_low, season_ratio), 2);
+            let temp_high = precisionRound(lerp(prev_season.weather.temp_high, next_season.weather.temp_high, season_ratio), 2);
+            let precipitation = precisionRound(lerp(prev_season.weather.precipitation, next_season.weather.precipitation, season_ratio), 2);
+            let precipitation_intensity = precisionRound(lerp(prev_season.weather.precipitation_intensity, next_season.weather.precipitation_intensity, season_ratio), 2);
+
+            this.locations[location_index].seasons[season_index].weather.temp_low = temp_low;
+            this.locations[location_index].seasons[season_index].weather.temp_high = temp_high;
+            this.locations[location_index].seasons[season_index].weather.precipitation = precipitation;
+            this.locations[location_index].seasons[season_index].weather.precipitation_intensity = precipitation_intensity;
+
+        }
+    }
+
+    updateLocationsWithSeasonBasedTime(){
+        for(let location_index in this.locations){
+            this.updateSeasonBasedTime(location_index)
+        }
+    }
+
+    updateSeasonBasedTime(location_index){
+
+        if(!this.locations[location_index].settings.season_based_time) return;
+
+        for(let [season_index, season] of this.seasons.entries()){
+            this.locations[location_index].seasons[season_index].time.sunrise.hour = season.time.sunrise.hour;
+            this.locations[location_index].seasons[season_index].time.sunrise.minute = season.time.sunrise.minute;
+            this.locations[location_index].seasons[season_index].time.sunset.hour = season.time.sunset.hour;
+            this.locations[location_index].seasons[season_index].time.sunset.minute = season.time.sunset.minute;
+        }
 
     }
 

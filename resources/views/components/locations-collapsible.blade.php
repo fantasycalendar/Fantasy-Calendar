@@ -112,29 +112,36 @@
                                     <div class='row no-gutters mt-2'>
                                         Precipitation chance: (%)
                                     </div>
-                                    <div class='row no-gutters mb-2'>
+                                    <!-- TODO: Maybe make this into a component? -->
+                                    <div class='row no-gutters mb-2' x-data="{
+                                        value: Math.round(season.weather.precipitation*100),
+                                        change($event){
+                                            season.weather.precipitation = Math.max(0.0, Math.min(1.0, Number($event.target.value)/100.0))
+                                        }
+                                    }">
                                         <div class='col-9 pt-1'>
-                                            <!-- TODO: Figure out what made the sliders work -->
-                                            <div class='slider_percentage'></div>
+                                            <!-- TODO: Style these properly -->
+                                            <input type='range' class="form-control form-control-sm full" step="1" min="0" max="100" x-model="value" @change='change'/>
                                         </div>
                                         <div class='col-3 pl-1'>
-                                            <input type='number' step="any" class='form-control form-control-sm full slider_input'
-                                                   :value="Math.round(season.weather.precipitation*100)"
-                                                   @change='season.weather.precipitation = Math.max(0.0, Math.min(1.0, Number($event.target.value)))*100'/>
+                                            <input type='number' step="any" class='form-control form-control-sm full slider_input' x-model="value" @change='change'/>
                                         </div>
                                     </div>
                                     <div class='row no-gutters mt-2'>
                                         Precipitation intensity: (%)
                                     </div>
-                                    <div class='row no-gutters mb-2'>
+                                    <div class='row no-gutters mb-2' x-data="{
+                                        value: Math.round(season.weather.precipitation_intensity*100),
+                                        change($event){
+                                            season.weather.precipitation_intensity = Math.max(0.0, Math.min(1.0, Number($event.target.value)/100.0))
+                                        }
+                                    }">
                                         <div class='col-9 pt-1'>
-                                            <!-- TODO: Figure out what made the sliders work -->
-                                            <div class='slider_percentage'></div>
+                                            <!-- TODO: Style these properly -->
+                                            <input type='range' class="form-control form-control-sm full"  step="1" min="0" max="100" x-model="value" @change='change'/>
                                         </div>
                                         <div class='col-3 pl-1'>
-                                            <input type='number' step="any" class='form-control form-control-sm full slider_input'
-                                                   :value="Math.round(season.weather.precipitation_intensity*100)"
-                                                   @change='season.weather.precipitation_intensity = Math.max(0.0, Math.min(1.0, Number($event.target.value)))*100'/>
+                                            <input type='number' step="any" class='form-control form-control-sm full slider_input' x-model="value" @change='change'/>
                                         </div>
                                     </div>
                                     <div class='row no-gutters my-2'>
@@ -155,11 +162,11 @@
                                     </div>
                                     <div class='row no-gutters mb-2 protip'  data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season, in this location">
                                         <div class='col-6 pl-0 pr-1'>
-                                            <input type='number' step="1.0" class='form-control text-right full' x-model.lazy="season.time.sunrise.hour"/>
+                                            <input type='number' step="1.0" class='form-control text-right full' x-model.lazy="season.time.sunrise.hour" :disabled="location.settings.season_based_time ?? false"/>
                                         </div>
                                         <div class='col-auto pt-1'>:</div>
                                         <div class='col pl-1 pr-0'>
-                                            <input type='number' step="1.0" class='form-control full' x-model.lazy="season.time.sunrise.minute"/>
+                                            <input type='number' step="1.0" class='form-control full' x-model.lazy="season.time.sunrise.minute" :disabled="location.settings.season_based_time ?? false"/>
                                         </div>
                                     </div>
                                     <div class='row no-gutters mt-2'>
@@ -175,17 +182,17 @@
                                     </div>
                                     <div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season, in this location">
                                         <div class='col-6 pl-0 pr-1'>
-                                            <input type='number' step="1.0" class='form-control text-right full' x-model.lazy="season.time.sunset.hour"/>
+                                            <input type='number' step="1.0" class='form-control text-right full' x-model.lazy="season.time.sunset.hour" :disabled="location.settings.season_based_time ?? false"/>
                                         </div>
                                         <div class='col-auto pt-1'>:</div>
                                         <div class='col pl-1 pr-0'>
-                                            <input type='number' step="1.0" class='form-control full' x-model.lazy="season.time.sunset.minute"/>
+                                            <input type='number' step="1.0" class='form-control full' x-model.lazy="season.time.sunset.minute" :disabled="location.settings.season_based_time ?? false"/>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class='row no-gutters my-2' x-show="(clock.enabled || season_settings.enable_weather) && location.seasons.length >= 3">
-                                    <button type="button" class="btn btn-sm btn-info full protip" data-pt-position="right" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">
+                                    <button type="button" class="btn btn-sm btn-info full protip" @click="interpolateSeasonTimes(index, season_index)" data-pt-position="right" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">
                                         Interpolate data from surrounding seasons
                                     </button>
                                 </div>
@@ -193,10 +200,10 @@
                             <div class='separator'></div>
                         </div>
                     </template>
-                    <div class='clock_inputs ${!window.static_data.clock.enabled ? "hidden" : ""}'>
+                    <div class='clock_inputs' x-show="clock.enabled">
                         <div class='row no-gutters my-1 protip' data-pt-position="right" data-pt-title="Checking this will base this location's sunrise and sunset times on your season's sunrise and sunset times, and keep them the same">
                             <div class='form-check col-12 py-2 border rounded'>
-                                <input type='checkbox' :id='`${index}_season_based_time`' class='form-check-input' x-model.lazy='location.season_based_time' />
+                                <input type='checkbox' :id='`${index}_season_based_time`' class='form-check-input' x-model='location.settings.season_based_time' @change="updateSeasonBasedTime(index)"/>
                                 <label :for='`${index}_season_based_time`' class='form-check-label ml-1'>
                                     Lock sunset/rise times to season
                                 </label>

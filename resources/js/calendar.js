@@ -1,4 +1,6 @@
 // TODO: ABSOLUTELY rewrite this
+import { evaluate_calendar_start } from "./calendar/calendar_functions.js";
+
 export default class Calendar {
 
     update(incomingChanges) {
@@ -20,6 +22,10 @@ export default class Calendar {
             && !this.static_data.year_data.timespans.some(month => month?.week?.length);
 
         return structureChanged;
+    }
+
+    evaluate_calendar_start(year, month=false, day=false, debug=false){
+        return evaluate_calendar_start(this.static_data, year, month, day, debug);
     }
 
     set static_data(value) {
