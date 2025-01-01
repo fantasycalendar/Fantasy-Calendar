@@ -33,6 +33,10 @@ class LeapDaysCollapsible extends CollapsibleComponent {
         "leap_days": this.sanitizeLeapDayIntervals
     }
 
+    loaded(){
+        this.sanitizeLeapDayIntervals();
+    }
+
     addLeapDay() {
         this.leap_days.push({
             'name': this.name || `New ${this.type ? this.type + " " : ''}leap day`,
