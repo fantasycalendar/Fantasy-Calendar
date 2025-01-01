@@ -22,23 +22,22 @@
         <!--
         TODO: make this select update current location in dynamic data - maybe this is a lil component by itself?
         -->
-        <select class='form-control'>
+        <select class='form-control' @change="locationChanged">
             <optgroup label="Custom" x-show="locations.length">
                 <template x-for="(location, index) in locations">
-                    <option :value="index" x-text="location.name"></option>
+                    <option :value="index + '-custom'" :selected="current_location == index && using_custom_location" x-text="location.name"></option>
                 </template>
             </optgroup>
             <optgroup label="Preset" x-show="preset_locations.length">
                 <template x-for="(location, index) in preset_locations">
-                    <option :value="index" x-text="location.name" :disabled="!can_use_preset_locations"></option>
+                    <option :value="index + '-preset'" :selected="current_location == index && !using_custom_location" x-text="location.name" :disabled="!can_use_preset_locations"></option>
                 </template>
             </optgroup>
         </select>
     </div>
     <div class='row no-gutters my-2'>
         <!-- TODO: make this button copy the current selected location, which is stored in dynamic data -->
-        <input type='button' value='Copy current location' class='btn btn-info full'
-               id='copy_location_data'>
+        <input type='button' value='Copy current location' class='btn btn-info full' @click="copyCurrentLocation">
     </div>
 
     <div class='row no-gutters my-2'>

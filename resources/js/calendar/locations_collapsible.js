@@ -1,5 +1,7 @@
 import CollapsibleComponent from "./collapsible_component.js";
 import { preset_data } from "./calendar_variables.js";
+import _ from "lodash";
+import { clone, fahrenheit_to_celcius } from "./calendar_functions.js";
 
 class LocationsCollapsible extends CollapsibleComponent {
 
@@ -10,6 +12,8 @@ class LocationsCollapsible extends CollapsibleComponent {
     locations = [];
     season_settings = {};
     clock = {};
+    current_location = "0";
+    using_custom_location = false;
 
     preset_locations = [];
     can_use_preset_locations = false;
@@ -19,10 +23,14 @@ class LocationsCollapsible extends CollapsibleComponent {
         "locations": "static_data.seasons.locations",
         "season_settings": "static_data.seasons.global_settings",
         "clock": "static_data.clock",
+        "using_custom_location": "dynamic_data.custom_location",
+        "current_location": "dynamic_data.location",
     }
 
     outboundProperties = {
         "locations": "static_data.seasons.locations",
+        "using_custom_location": "dynamic_data.custom_location",
+        "current_location": "dynamic_data.location",
     }
 
     loaded() {
@@ -72,13 +80,93 @@ class LocationsCollapsible extends CollapsibleComponent {
             }
         });
 
-        // TODO: Change the current location to the new location
-
         this.name = "";
+
+        this.current_location = (this.locations.length-1).toString();
+        this.using_custom_location = true;
     }
 
     removeLocation(index){
         this.locations.splice(index, 1);
+    }
+
+    locationChanged($event) {
+        let [location, type] = $event.target.value.split("-");
+        this.current_location = location;
+        this.using_custom_location = type === "custom";
+    }
+
+    copyCurrentLocation() {
+        const currentLocation = this.using_custom_location
+            ? this.locations[this.current_location]
+            : this.preset_locations[this.current_location];
+
+        let newLocation = _.cloneDeep(currentLocation);
+
+        if(!this.using_custom_location){
+
+            let copiedLocation = _.cloneDeep(currentLocation);
+
+            let preset_seasons = this.seasons.length === 2 ? ['winter', 'summer'] : ['winter', 'spring', 'summer', 'autumn'];
+
+            let valid_preset_order = this.season_settings.preset_order !== undefined
+                && this.season_settings.preset_order.length === this.seasons.length;
+
+            let preset_order = undefined;
+
+            if (!valid_preset_order) {
+
+                let season_test = [];
+                for (let index in this.seasons) {
+                    let season = this.seasons[index];
+                    let preset_index = preset_seasons.indexOf(season.name.toLowerCase());
+                    if (preset_index === -1 && season.name.toLowerCase() === "fall" && this.seasons.length === 4) {
+                        preset_index = 3;
+                    }
+                    if (preset_index > -1) {
+                        season_test.push(preset_index)
+                    }
+                }
+
+                if (season_test.length === this.seasons.length) {
+                    preset_order = season_test;
+                }
+
+            } else {
+
+                preset_order = this.season_settings.preset_order;
+
+            }
+
+            newLocation.settings = _.cloneDeep(preset_data.curves);
+            newLocation.settings.season_based_time = true;
+            newLocation.seasons = [];
+
+            for (let seasonIndex = 0; seasonIndex < this.seasons.length; seasonIndex++) {
+
+                let presetIndex = seasonIndex;
+                if (preset_order !== undefined && preset_order.length === this.seasons.length) {
+                    presetIndex = preset_order[seasonIndex];
+                }
+                newLocation.seasons.push(_.cloneDeep(copiedLocation.seasons[presetIndex]));
+
+                newLocation.seasons[seasonIndex].time = {}
+                newLocation.seasons[seasonIndex].time.sunset = this.seasons[seasonIndex].time.sunset;
+                newLocation.seasons[seasonIndex].time.sunrise = this.seasons[seasonIndex].time.sunrise;
+
+                if (this.season_settings.temp_sys === "metric" || this.season_settings.temp_sys === "both_m") {
+                    newLocation.seasons[seasonIndex].weather.temp_low = fahrenheit_to_celcius(newLocation.seasons[seasonIndex].weather.temp_low);
+                    newLocation.seasons[seasonIndex].weather.temp_high = fahrenheit_to_celcius(newLocation.seasons[seasonIndex].weather.temp_high);
+                }
+
+            }
+
+        }
+
+        this.locations.push(newLocation);
+        this.current_location = (this.locations.length-1).toString();
+        this.using_custom_location = true;
+
     }
 
 }

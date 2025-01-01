@@ -26,6 +26,10 @@ export default class Calendar {
         window.static_data = value;
     }
 
+    set dynamic_data(value) {
+        window.dynamid_data = value;
+    }
+
     set event_categories(value) {
         window.event_categories = value;
 
