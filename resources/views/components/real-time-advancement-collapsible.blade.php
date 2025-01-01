@@ -14,7 +14,7 @@
                     <span x-text="advancement.advancement_enabled ? 'Yes' : 'No'"></span>
                 @else
                     <label class="custom-control custom-checkbox center-text">
-                        <input type="checkbox" class="custom-control-input" x-model="console.log(advancement.advancement_enabled)">
+                        <input type="checkbox" class="custom-control-input" x-model="advancement.advancement_enabled">
                         <span class="custom-control-indicator"></span>
                     </label>
                 @endif
