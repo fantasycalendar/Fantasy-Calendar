@@ -1,5 +1,4 @@
 import CollapsibleComponent from "./collapsible_component.js";
-import { avg_month_length, avg_year_length } from "./calendar_functions.js";
 
 class StatisticsCollapsible extends CollapsibleComponent {
 
@@ -12,8 +11,8 @@ class StatisticsCollapsible extends CollapsibleComponent {
     };
 
     loaded() {
-        this.average_year_length = avg_year_length(this.months, this.leap_days);
-        this.average_month_length = avg_month_length(this.months, this.leap_days);
+        this.average_year_length = this.$store.calendar.average_year_length;
+        this.average_month_length = this.$store.calendar.average_month_length;
     };
 
 }

@@ -1,4 +1,4 @@
-@props(['calendar' => null, 'contains' => null, 'step' => null, 'icon' => null, 'premium_feature' => false, 'done' => false])
+@props(['calendar' => null, 'contains' => null, 'step' => null, 'icon' => null, 'premium_feature' => false, 'done' => false, 'wip' => false])
 
 @php($contains_clean = Str::replace("-", " ", $contains))
 
@@ -21,6 +21,11 @@
         @if($done)
             <!-- TODO: remove this and done property once we have converted all collapsibles -->
             <i class="fa fa-check" style="right: 40px; top: 10px; position: absolute; color: green;"></i>
+        @endif
+
+        @if($wip)
+            <!-- TODO: remove this and done property once we have converted all collapsibles -->
+            <i class="fa fa-question" style="right: 40px; top: 10px; position: absolute; color: yellow;"></i>
         @endif
 
         <!-- TODO: make sure the "contains" values match our helpdocs page links -->

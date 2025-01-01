@@ -1,7 +1,7 @@
 import { get_moon_granularity, convert_year, clone, evaluate_calendar_start } from "./calendar_functions";
 import { condition_mapping, preset_data } from "./calendar_variables";
 
-function create_season_events(complex) {
+export function create_season_events(complex) {
 
     if (complex) {
 
@@ -321,7 +321,6 @@ function parse_json(json) {
             "eras": [],
             "settings": {
                 "layout": "grid",
-                "comments": "none",
                 "show_current_month": false,
                 "add_month_number": false,
                 "add_year_day_number": false,

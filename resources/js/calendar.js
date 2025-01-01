@@ -1,5 +1,5 @@
 // TODO: ABSOLUTELY rewrite this
-import { evaluate_calendar_start } from "./calendar/calendar_functions.js";
+import { avg_month_length, avg_year_length, evaluate_calendar_start } from "./calendar/calendar_functions.js";
 
 export default class Calendar {
 
@@ -86,5 +86,13 @@ export default class Calendar {
 
     get advancement() {
         return window.advancement;
+    }
+
+    get average_year_length() {
+        return avg_year_length(this.static_data.year_data.timespans, this.static_data.year_data.leap_days);
+    }
+
+    get average_month_length() {
+        return avg_month_length(this.static_data.year_data.timespans, this.static_data.year_data.leap_days);
     }
 }

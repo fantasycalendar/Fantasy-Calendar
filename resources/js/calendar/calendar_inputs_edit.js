@@ -68,7 +68,6 @@ let input_container = null;
 let timespan_sortable = null;
 let first_day = null;
 let global_week_sortable = null;
-let periodic_seasons_checkbox = null;
 let season_sortable = null;
 let era_list = null;
 let location_list = null;
@@ -174,7 +173,6 @@ export function set_up_edit_inputs() {
     input_container = $('#input_container');
     timespan_sortable = $('#timespan_sortable');
     first_day = $('#first_day');
-    periodic_seasons_checkbox = $('#periodic_seasons_checkbox');
     season_sortable = $('#season_sortable');
     era_list = $('#era_list');
     location_list = $('#location_list');
@@ -332,10 +330,6 @@ export function set_up_edit_inputs() {
         do_error_check();
     });
 
-    $(document).on('change', '.length-input, .interval, .offset', function() {
-        recalc_stats();
-    });
-
     $(document).on('change', '.disable_local_season_name', function() {
         var checked = $(this).prop('checked');
         var parent = $(this).closest('.wrap-collapsible');
@@ -438,266 +432,6 @@ export function set_up_edit_inputs() {
     $(document).on('click', '.location_toggle', function() {
         var checked = $(this).is(':checked');
         $(this).parent().find('.icon').toggleClass('fa-caret-square-up', checked).toggleClass('fa-caret-square-down', !checked);
-    });
-
-    periodic_seasons_checkbox.change(function() {
-
-        var checked = $(this).prop('checked');
-        $(this).prop('checked', !checked);
-
-        var ends_year = false;
-        for (var era_index in window.static_data.eras) {
-            var era = window.static_data.eras[era_index];
-            if (era.settings.ends_year) {
-                ends_year = true;
-                break;
-            }
-        }
-
-        if (ends_year) {
-            swal.fire({
-                title: "Error!",
-                text: `You have eras that end years - you cannot switch to dated seasons with year-ending eras as the dates might disappear, and that kinda defeats the whole purpose.`,
-                icon: "error"
-            });
-            return;
-        }
-
-        swal.fire({
-            title: "Are you sure?",
-            text: `Are you sure you want to switch to ${checked ? "PERIODIC" : "DATED"} seasons? Your current seasons will be deleted so you can re-create them.`,
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Okay',
-            icon: "warning",
-        })
-            .then((result) => {
-                if (!result.dismiss) {
-                    $(this).prop('checked', checked);
-                    season_sortable.empty();
-                    window.static_data.seasons.data = [];
-                    reindex_location_list();
-                    evaluate_season_lengths();
-                    evaluate_season_daylength_warning();
-                    window.static_data.seasons.global_settings.periodic_seasons = checked;
-
-                    $('.season_text.dated').toggleClass('active', !checked);
-                    $('.season_text.periodic').toggleClass('active', checked);
-
-                    $('.season_offset_container').prop('disabled', !checked).toggleClass('hidden', !checked);
-
-                    $('#has_seasons_container').toggleClass('hidden', true).find('select, input').prop('disabled', true);
-                    $('#no_seasons_container').toggleClass('hidden', false);
-
-                    var no_locations = !window.static_data.seasons.global_settings.enable_weather && !window.static_data.clock.enabled;
-                    $('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
-                    $('#locations_warning').toggleClass('hidden', !no_locations);
-
-                    era_list.children().each(function() {
-                        var input = $(this).find('.ends_year');
-                        var text = $(this).find('.ends_year_explaination');
-                        var parent = input.parent();
-                        input.prop('disabled', !checked);
-                        parent.toggleClass('disabled', !checked);
-                        text.toggleClass('hidden', checked);
-                    });
-
-                    error_check("calendar", true);
-                }
-            });
-
-    });
-
-    $('.add_inputs.seasons .add').click(function() {
-
-        var fract_year_len = avg_year_length(
-            window.static_data.year_data.timespans,
-            window.static_data.year_data.leap_days
-        );
-
-        var name = $("#season_name_input");
-        var id = season_sortable.children().length;
-
-        var name_val = name.val() == "" ? `Season ${id + 1}` : name.val();
-
-        stats = {
-            "name": name_val,
-            "color": [
-                "#" + Math.floor(Math.random() * 16777215).toString(16).toString(),
-                "#" + Math.floor(Math.random() * 16777215).toString(16).toString()
-            ],
-            "time": {
-                "sunrise": {
-                    "hour": 6,
-                    "minute": 0
-                },
-                "sunset": {
-                    "hour": 18,
-                    "minute": 0
-                }
-            }
-        };
-
-        if (window.static_data.seasons.global_settings.periodic_seasons) {
-
-            if (season_sortable.children().length == 0) {
-                stats.transition_length = fract_year_len;
-            } else {
-                if (season_sortable.children().length > 0) {
-                    season_sortable.children().each(function() {
-                        var val = $(this).find('.transition_length').val()
-                        if (val == fract_year_len / (season_sortable.children().length)) {
-                            $(this).find('.transition_length').val(fract_year_len / (season_sortable.children().length + 1));
-                        }
-                    })
-                }
-                stats.transition_length = fract_year_len / (season_sortable.children().length + 1);
-            }
-
-            stats.duration = 0;
-
-        } else {
-
-            if (season_sortable.children().length == 0) {
-
-                stats.timespan = 0;
-                stats.day = 1;
-
-            } else {
-
-                stats.timespan = Math.floor(window.static_data.year_data.timespans.length / (season_sortable.children().length + 1))
-                stats.day = 1;
-
-            }
-
-        }
-
-        add_season_to_sortable(season_sortable, id, stats);
-
-        // season_sortable.children().last().find('.start_color').spectrum({
-        //     color: stats.color[0],
-        //     preferredFormat: "hex",
-        //     showInput: true
-        // });
-
-        // season_sortable.children().last().find('.end_color').spectrum({
-        //     color: stats.color[1],
-        //     preferredFormat: "hex",
-        //     showInput: true
-        // });
-
-        if (!window.static_data.seasons.global_settings.periodic_seasons) {
-
-            repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), stats.timespan, false, false);
-            repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), stats.day, false, false);
-            sort_list_by_partial_date(season_sortable);
-
-        }
-
-        // season_sortable.sortable('refresh');
-        reindex_season_sortable();
-        populate_preset_season_list();
-        evaluate_season_lengths();
-        evaluate_season_daylength_warning();
-        reindex_location_list();
-        name.val("");
-        do_error_check();
-
-        var no_seasons = window.static_data.seasons.data.length == 0;
-        $('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
-        $('#no_seasons_container').toggleClass('hidden', !no_seasons);
-
-        $('#create_season_events').prop('disabled', window.static_data.seasons.data.length == 0 && !window.static_data.clock.enabled);
-
-        $('#season_color_enabled').prop("disabled", window.static_data.seasons.data.length == 0);
-
-        $('.season_middle_btn').toggleClass('hidden', !window.static_data.clock.enabled || window.static_data.seasons.data.length < 3);
-
-    });
-
-    $('#create_season_events').prop('disabled', window.static_data.seasons.data.length == 0 && !window.static_data.clock.enabled);
-
-    $('#create_season_events').click(function() {
-
-        new Promise((resolve, reject) => {
-
-            let found = false;
-            for (let i in window.events) {
-                if (['spring equinox', 'summer solstice', 'autumn equinox', 'winter solstice'].indexOf(window.events[i].name.toLowerCase()) > -1) {
-                    found = true;
-                }
-            }
-
-            if (found) {
-
-                swal.fire({
-                    title: `Events exist!`,
-                    text: "You already have solstice and equinox events, are you sure you want to create another set?",
-                    showCloseButton: false,
-                    showCancelButton: true,
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'Yes',
-                    icon: "warning"
-                })
-                    .then((result) => {
-                        if (result.dismiss === "close" || result.dismiss === "cancel") {
-                            reject();
-                        } else {
-                            resolve();
-                        }
-                    });
-
-            } else {
-                resolve();
-            }
-
-        }).then(() => {
-
-            var html = '<strong><span style="color:#4D61B3;">Simple</span></strong> season events are based on the <strong>specific start dates</strong> of the seasons.<br><br>';
-
-            html += '<strong><span style="color:#84B356;">Complex</span></strong> season events are based on the <strong>longest and shortest day</strong> of the year.<br>';
-            if (!window.static_data.clock.enabled) {
-                html += '<span style="font-style:italic;font-size:0.8rem;">You need to <strong>enable the clock</strong> for this button to be enabled.</span><br>';
-            }
-            html += '<br>';
-            html += '<span style="font-size:0.9rem;">Still unsure? <a href="https://helpdocs.fantasy-calendar.com/topic/seasons#Create_solstice_and_equinox_events" target="_blank">Read more on the Wiki (opens in a new window)</a>.</span><br>';
-
-            swal.fire({
-                title: `Simple or Complex?`,
-                html: html,
-                showCloseButton: true,
-                showCancelButton: true,
-                confirmButtonColor: '#4D61B3',
-                cancelButtonColor: window.static_data.clock.enabled ? '#84B356' : '#999999',
-                confirmButtonText: 'Simple',
-                cancelButtonText: 'Complex',
-                icon: "question",
-                onOpen: function() {
-                    $(swal.getCancelButton()).prop("disabled", !window.static_data.clock.enabled);
-                }
-            })
-                .then((result) => {
-
-                    if (result.dismiss !== "close") {
-
-                        var complex = result.dismiss === "cancel";
-
-                        var season_events = create_season_events(complex);
-
-                        for (index in season_events) {
-                            window.events.push(season_events[index])
-                        }
-
-                        window.dispatchEvent(new CustomEvent("events-changed"));
-
-                        do_error_check();
-
-                    }
-                });
-
-        });
     });
 
     $(document).on('click', '.season_middle_btn', function() {
@@ -904,7 +638,6 @@ export function set_up_edit_inputs() {
                 window.dynamic_date_manager.cap_timespan();
                 window.dynamic_data.timespan = window.dynamic_date_manager.timespan;
                 window.dynamic_data.epoch = window.dynamic_date_manager.epoch;
-                recalc_stats();
                 break;
 
             case "global_week_sortable":
@@ -1434,8 +1167,8 @@ export function set_up_edit_inputs() {
     });
 
     $(document).on('change', '.season-duration', function() {
-        evaluate_season_lengths();
-        evaluate_season_daylength_warning();
+
+
         rebuild_climate();
     });
 
@@ -2981,7 +2714,6 @@ export var do_error_check = debounce(function(type, rebuild) {
         if (errors.length == 0 && $('.static_input.invalid').length == 0 && $('.dynamic_input.invalid').length == 0) {
 
             error_check(type, rebuild);
-            recalc_stats();
 
         }
 
@@ -3639,79 +3371,6 @@ function sort_list_by_partial_date(list) {
     list.empty().append(elements).change();
 }
 
-function evaluate_season_lengths() {
-    var disable = window.static_data.seasons.data.length == 0 || (!window.static_data.seasons.global_settings.periodic_seasons && window.static_data.seasons.global_settings.periodic_seasons !== undefined);
-
-    $('#season_length_text').toggleClass('hidden', disable).empty();
-
-    if (disable) {
-        return;
-    }
-
-    var data = {
-        'season_length': 0
-    };
-
-    var epoch_start = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year)).epoch;
-    var epoch_end = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year) + 1).epoch - 1;
-    var season_length = epoch_end - epoch_start;
-
-    for (var i = 0; i < window.static_data.seasons.data.length; i++) {
-        window.current_season = window.static_data.seasons.data[i];
-        data.season_length += window.current_season.transition_length;
-        data.season_length += window.current_season.duration;
-    }
-
-    data.season_offset = window.static_data.seasons.global_settings.offset;
-
-    let average_year_length = avg_year_length(
-        window.static_data.year_data.timespans,
-        window.static_data.year_data.leap_days
-    );
-
-    var equal = average_year_length == data.season_length;
-
-    var html = []
-    html.push(`<div class='container'>`)
-    html.push(`<div class='row py-1'>`)
-    html.push(equal ? '<i class="col-auto px-0 mr-1 fas fa-check-circle" style="line-height:1.5;"></i>' : '<i class="col-auto px-0 mr-2 fas fa-exclamation-circle" style="line-height:1.5;"></i>');
-    html.push(`<div class='col px-0'>Season length: ${data.season_length} / ${average_year_length} (year length)</div></div>`)
-    html.push(`<div class='row'>${equal ? "The season length and year length are the same, and will not drift away from each other." : "The season length and year length at not the same, and will diverge over time. Use with caution."}</div>`)
-    html.push(`</div>`)
-
-    $('#season_length_text').toggleClass('warning', !equal).toggleClass('valid', equal);
-    $('#season_length_text').html(html.join(''));
-}
-
-export function evaluate_season_daylength_warning() {
-    if (!$('#season_daylength_text').length) return;
-
-    let disable = window.static_data.seasons.data.length == 0 || (!window.static_data.seasons.global_settings.periodic_seasons && window.static_data.seasons.global_settings.periodic_seasons !== undefined);
-
-    $('#season_daylength_text').toggleClass('hidden', disable).empty();
-
-    if (disable || !window.dynamic_data.custom_location) return;
-
-    let custom_location = window.static_data.seasons.locations[window.dynamic_data.location];
-
-    if (custom_location.season_based_time) return;
-
-    let html = []
-    html.push(`<div class='container'>`)
-    html.push(`<div class='row py-1'>`)
-    html.push('<i class="col-auto px-0 mr-2 fas fa-exclamation-circle" style="line-height:1.5;"></i>');
-    html.push(`<div class='col px-0'>You are currently using a custom location with custom season sunrise and sunset times. Solstices and equinoxes may behave unexpectedly.</div>`)
-    html.push(`</div></div>`);
-
-    $('#season_daylength_text').html(html.join(''));
-}
-
-function recalc_stats() {
-    evaluate_season_lengths();
-    evaluate_season_daylength_warning();
-}
-
-
 export function adjustInput(element, target, int) {
     var target = $(target);
     target.val((target.val() | 0) + int).change();
@@ -3998,61 +3657,14 @@ export function set_up_edit_values() {
         $('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
         $('#locations_warning').toggleClass('hidden', !no_locations);
 
-        evaluate_season_lengths();
-        evaluate_season_daylength_warning()
+
+
 
         for (var i = 0; i < window.static_data.seasons.locations.length; i++) {
             add_location_to_list(location_list, i, window.static_data.seasons.locations[i]);
         }
 
-        periodic_seasons_checkbox.prop("checked", window.static_data.seasons.global_settings.periodic_seasons);
-
-        // $('.slider_percentage').slider({
-        //     min: 0,
-        //     max: 100,
-        //     step: 1,
-        //     change: function(event, ui) {
-        //         $(this).parent().parent().find('.slider_input').val($(this).slider('value')).change();
-        //     },
-        //     slide: function(event, ui) {
-        //         $(this).parent().parent().find('.slider_input').val($(this).slider('value'));
-        //     }
-        // });
-
-        // $('.slider_percentage').each(function() {
-        //     $(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
-        // });
-
-        // $('.season .start_color').spectrum({
-        //     color: "#FFFFFF",
-        //     preferredFormat: "hex",
-        //     showInput: true
-        // });
-
-        // $('.season .end_color').spectrum({
-        //     color: "#FFFFFF",
-        //     preferredFormat: "hex",
-        //     showInput: true
-        // });
-
-        if (window.static_data.seasons.global_settings.color_enabled) {
-
-            // $('#season_sortable').children().each(function(i) {
-
-            //     $(this).find('.start_color').spectrum("set", window.static_data.seasons.data[i].color[0]);
-            //     $(this).find('.end_color').spectrum("set", window.static_data.seasons.data[i].color[1]);
-
-            // });
-
-        }
-
-        if (!window.static_data.seasons.global_settings.periodic_seasons) {
-            sort_list_by_partial_date($('#season_sortable'));
-        }
-
     }
-
-    $('#create_season_events').prop('disabled', !window.static_data.clock.enabled);
 
     // if ($('#collapsible_clock').is(':checked')) {
     //     $('#clock').appendTo($('#collapsible_clock').parent().children('.collapsible-content'));
@@ -4093,8 +3705,6 @@ export function set_up_edit_values() {
     }
 
     evaluate_remove_buttons();
-
-    recalc_stats();
 
     block_inputs = false;
 }

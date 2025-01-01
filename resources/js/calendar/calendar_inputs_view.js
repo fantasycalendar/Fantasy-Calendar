@@ -15,7 +15,6 @@ import {
 import {
     creation,
     do_error_check,
-    evaluate_season_daylength_warning,
     evaluate_save_button,
 } from "./calendar_inputs_edit";
 import { pre_rebuild_calendar } from "./calendar_manager";
@@ -300,8 +299,6 @@ export function set_up_view_inputs() {
         }
 
         do_error_check('seasons');
-
-        evaluate_season_daylength_warning();
 
     });
 
