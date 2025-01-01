@@ -42,7 +42,7 @@ export default class Calendar {
         window.event_categories
             .forEach(category => {
                 window.events
-                    .filter(event => event.event_category_id == category.id)
+                    .filter(event => event.event_category_id === category.id)
                     .forEach(event => {
                         event.settings = {
                             ...event.settings,
@@ -56,12 +56,20 @@ export default class Calendar {
         window.advancement = value;
     }
 
+    set events(events) {
+        window.events = events;
+    }
+
     get static_data() {
         return window.static_data;
     }
 
     get dynamic_data() {
         return window.dynamic_data;
+    }
+
+    get preview_date() {
+        return window.preview_date;
     }
 
     get events() {

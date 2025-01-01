@@ -64,7 +64,7 @@
 
         <x-collapsible :calendar="$calendar" contains="Event Categories" icon="fa-th-list"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Events" icon="fa-calendar-check"></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Events" icon="fa-calendar-check" done></x-collapsible>
 
         <x-collapsible :calendar="$calendar" contains="Settings" icon="fa-cog" done></x-collapsible>
 

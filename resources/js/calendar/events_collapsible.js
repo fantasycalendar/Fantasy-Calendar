@@ -1,7 +1,65 @@
-export default () => ({
-    reordering: false,
+import CollapsibleComponent from "./collapsible_component.js";
 
-    load: function(static_data) {
-        //
+class EventsCollapsible extends CollapsibleComponent {
+
+    inboundProperties = {
+        "events": "events",
+        "dynamic_data": "dynamic_data",
+        "preview_date": "preview_date",
     }
-})
+
+    outboundProperties = {
+        "events": "events"
+    }
+
+    events = [];
+    dynamic_data = {};
+    preview_date = {};
+
+    init(){
+        this.draggable = Sortable.create(this.$refs["events-sortable"], {
+            animation: 150,
+            handle: ".handle",
+            onEnd: (event) => {
+                this.dropped(event.oldIndex, event.newIndex);
+            }
+        });
+    }
+
+    get_current_epoch() {
+        return (this.preview_date?.follow ?? true) ? this.dynamic_data.epoch : this.preview_date.epoch;
+    }
+
+    dropped(start, end){
+
+        if(start === end) return;
+
+        let order = this.draggable.toArray();
+        order.shift()
+        const elem = this.events.splice(start, 1)[0];
+        this.events.splice(end, 0, elem);
+        this.$refs["events-sortable-template"]._x_prevKeys = order;
+
+        // TODO: Break this out into a draggable/sortable component?
+
+        for(let i = 0; i < this.events.length; i++){
+            const event = this.events[i];
+            if(event.data.connected_events?.length){
+                for(let connected_id = 0; connected_id < event.data.connected_events.length; connected_id++){
+                    const old_index = event.data.connected_events[connected_id];
+                    if(old_index === null) continue;
+                    event.data.connected_events[connected_id] = this.events.findIndex(event => event.sort_by === old_index);
+                }
+            }
+        }
+
+        for(let i = 0; i < this.events.length; i++){
+            const event = this.events[i];
+            event.sort_by = i;
+        }
+
+    }
+
+}
+
+export default () => new EventsCollapsible();
