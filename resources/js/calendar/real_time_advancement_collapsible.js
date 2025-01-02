@@ -13,10 +13,6 @@ class RealTimeAdvancementCollapsible extends CollapsibleComponent {
         "advancement": "advancement",
     };
 
-    changeHandlers = {
-        "advancement": this.debug
-    };
-
     set clock_enabled(value) {
         this._clock_enabled = value;
 
