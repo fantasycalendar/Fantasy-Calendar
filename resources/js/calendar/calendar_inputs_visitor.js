@@ -401,7 +401,6 @@ export function go_to_preview_date(rebuild) {
     rebuild = rebuild !== undefined ? rebuild : data.rebuild;
 
     if (rebuild) {
-        debugger;
         rebuild_calendar('preview', preview_date)
     } else {
         update_current_day();

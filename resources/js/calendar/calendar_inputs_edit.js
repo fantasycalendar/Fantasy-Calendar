@@ -17,27 +17,20 @@ import {
 import {
     escapeHtml,
     unescapeHtml,
-    get_colors_for_season,
-    fahrenheit_to_celcius,
-    celcius_to_fahrenheit,
     debounce,
     ordinal_suffix_of,
-    precisionRound,
     lerp,
     fract,
-    get_moon_granularity,
     get_current_era,
     date_manager,
     convert_year,
     unconvert_year,
     get_timespans_in_year,
     does_timespan_appear,
-    avg_year_length,
     clone,
     evaluate_calendar_start,
     get_calendar_data,
 } from "./calendar_functions";
-import { preset_data } from "./calendar_variables";
 import { climate_charts } from "./calendar_weather_layout";
 import {
     set_up_visitor_values,
@@ -51,7 +44,7 @@ import {
     repopulate_day_select,
     eval_clock,
 } from "./calendar_inputs_visitor";
-import { evaluate_dynamic_change, repopulate_location_select_list, set_up_view_values } from "./calendar_inputs_view";
+import { evaluate_dynamic_change, set_up_view_values } from "./calendar_inputs_view";
 import { pre_rebuild_calendar, rebuild_calendar, rebuild_climate } from "./calendar_manager";
 import CalendarRenderer from "../calendar-renderer";
 
@@ -68,7 +61,6 @@ let input_container = null;
 let timespan_sortable = null;
 let first_day = null;
 let global_week_sortable = null;
-let season_sortable = null;
 let era_list = null;
 let location_list = null;
 let calendar_link_select = null;
@@ -173,7 +165,6 @@ export function set_up_edit_inputs() {
     input_container = $('#input_container');
     timespan_sortable = $('#timespan_sortable');
     first_day = $('#first_day');
-    season_sortable = $('#season_sortable');
     era_list = $('#era_list');
     location_list = $('#location_list');
     calendar_link_select = $('#calendar_link_select');
@@ -257,89 +248,11 @@ export function set_up_edit_inputs() {
 
     });
 
-    // global_week_sortable.sortable({
-    //     placeholder: "highlight",
-    //     handle: '.handle',
-    //     opacity: 0.5,
-    //     update: function() {
-    //         input_container.change();
-    //         reindex_weekday_sortable();
-    //     },
-    //     start: function(e, ui) {
-    //         ui.placeholder.height(ui.item.height());
-    //     }
-    // });
-
-    // timespan_sortable.sortable({
-    //     placeholder: "highlight",
-    //     handle: '.handle',
-    //     opacity: 0.5,
-    //     update: function() {
-    //         input_container.change();
-    //         reindex_timespan_sortable();
-    //     },
-    //     start: function(e, ui) {
-    //         ui.placeholder.height(ui.item.height());
-    //     }
-    // });
-
-    // season_sortable.sortable({
-    //     placeholder: "highlight",
-    //     handle: '.handle',
-    //     opacity: 0.5,
-    //     update: function() {
-    //         input_container.change();
-    //         reindex_season_sortable();
-    //         do_error_check(season_sortable);
-    //     },
-    //     start: function(e, ui) {
-    //         ui.placeholder.height(ui.item.height());
-    //     }
-    // });
-
-    // cycle_sortable.sortable({
-    //     placeholder: "highlight",
-    //     handle: '.handle',
-    //     opacity: 0.5,
-    //     update: function() {
-    //         input_container.change();
-    //         reindex_cycle_sortable();
-    //     },
-    //     start: function(e, ui) {
-    //         ui.placeholder.height(ui.item.height());
-    //     }
-    // });
-
-    // cycle_sortable.sortable({
-    //     placeholder: "highlight",
-    //     handle: '.handle',
-    //     opacity: 0.5,
-    //     update: function() {
-    //         input_container.change();
-    //         reindex_cycle_sortable();
-    //     },
-    //     start: function(e, ui) {
-    //         ui.placeholder.height(ui.item.height());
-    //     }
-    // });
-
     /* ------------------- Dynamic and static callbacks ------------------- */
 
     $('#calendar_name').change(function() {
         window.calendar_name = $(this).val();
         do_error_check();
-    });
-
-    $(document).on('change', '.disable_local_season_name', function() {
-        var checked = $(this).prop('checked');
-        var parent = $(this).closest('.wrap-collapsible');
-        var index = parent.attr('index') | 0;
-        var name_input = parent.find('input[fc-index="name"]');
-        if (checked) {
-            name_input.prop('disabled', false);
-        } else {
-            name_input.val(window.static_data.seasons.data[index].name).prop('disabled', true);
-        }
     });
 
     // $('#enable_clock').change(function() {
@@ -352,15 +265,6 @@ export function set_up_edit_inputs() {
     //     window.dynamic_data.minute = 0;
 	//
     //     evaluate_clock_inputs();
-	//
-    //     $('#create_season_events').prop('disabled', !window.static_data.clock.enabled);
-	//
-    //     var no_locations = (window.static_data.seasons.data.length == 0 || !window.static_data.seasons.global_settings.enable_weather) && !window.static_data.clock.enabled;
-    //     $('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
-    //     $('#locations_warning').toggleClass('hidden', !no_locations);
-	//
-    //     $('.season_middle_btn').toggleClass('hidden', !window.static_data.clock.enabled || window.static_data.seasons.data.length < 3);
-    //     $('.location_middle_btn').toggleClass('hidden', (!window.static_data.seasons.global_settings.enable_weather && !window.static_data.clock.enabled) || window.static_data.seasons.data.length < 3);
 	//
     //     eval_clock();
 	//
@@ -432,99 +336,6 @@ export function set_up_edit_inputs() {
     $(document).on('click', '.location_toggle', function() {
         var checked = $(this).is(':checked');
         $(this).parent().find('.icon').toggleClass('fa-caret-square-up', checked).toggleClass('fa-caret-square-down', !checked);
-    });
-
-    $(document).on('click', '.season_middle_btn', function() {
-
-        var container = $(this).closest('.sortable-container');
-
-        var season_id = container.attr('index') | 0;
-
-        var prev_id = (season_id - 1) % window.static_data.seasons.data.length
-        if (prev_id < 0) prev_id += window.static_data.seasons.data.length
-
-        var next_id = (season_id + 1) % window.static_data.seasons.data.length;
-
-        var prev_season = window.static_data.seasons.data[prev_id];
-        var next_season = window.static_data.seasons.data[next_id];
-
-        if (window.static_data.seasons.global_settings.periodic_seasons) {
-
-            var season_length = window.static_data.seasons.data[prev_id].duration + window.static_data.seasons.data[prev_id].transition_length + window.static_data.seasons.data[season_id].duration + window.static_data.seasons.data[season_id].transition_length;
-            var target = window.static_data.seasons.data[prev_id].duration + window.static_data.seasons.data[prev_id].transition_length;
-            var perc = target / season_length;
-
-        } else {
-
-            let prev_season = window.static_data.seasons.data[prev_id];
-            let curr_season = window.static_data.seasons.data[season_id];
-            let next_season = window.static_data.seasons.data[next_id];
-
-            let prev_year = 2;
-            if (prev_id > season_id) {
-                prev_year--;
-            }
-
-            let next_year = 2;
-            if (next_id < season_id) {
-                next_year++;
-            }
-
-            let prev_day = evaluate_calendar_start(window.static_data, prev_year, prev_season.timespan, prev_season.day).epoch;
-            let curr_day = evaluate_calendar_start(window.static_data, 2, curr_season.timespan, curr_season.day).epoch - prev_day;
-            let next_day = evaluate_calendar_start(window.static_data, next_year, next_season.timespan, next_season.day).epoch - prev_day;
-
-            var perc = curr_day / next_day;
-
-        }
-
-        if (window.static_data.clock.enabled) {
-
-            var prev_sunrise = prev_season.time.sunrise.hour + (prev_season.time.sunrise.minute / window.static_data.clock.minutes);
-            var next_sunrise = next_season.time.sunrise.hour + (next_season.time.sunrise.minute / window.static_data.clock.minutes);
-
-            var middle = lerp(prev_sunrise, next_sunrise, perc)
-
-            var sunrise_h = Math.floor(middle)
-            var sunrise_m = Math.floor(fract(middle) * window.static_data.clock.minutes)
-
-            container.find("input[clocktype='sunrise_hour']").val(sunrise_h)
-            container.find("input[clocktype='sunrise_minute']").val(sunrise_m)
-
-            window.static_data.seasons.data[season_id].time.sunrise.hour = sunrise_h;
-            window.static_data.seasons.data[season_id].time.sunrise.minute = sunrise_m;
-
-            var prev_sunset = prev_season.time.sunset.hour + (prev_season.time.sunset.minute / window.static_data.clock.minutes);
-            var next_sunset = next_season.time.sunset.hour + (next_season.time.sunset.minute / window.static_data.clock.minutes);
-
-            var middle = lerp(prev_sunset, next_sunset, perc)
-
-            var sunset_h = Math.floor(middle)
-            var sunset_m = Math.floor(fract(middle) * window.static_data.clock.minutes)
-
-            container.find("input[clocktype='sunset_hour']").val(sunset_h)
-            container.find("input[clocktype='sunset_minute']").val(sunset_m)
-
-            window.static_data.seasons.data[season_id].time.sunset.hour = sunset_h;
-            window.static_data.seasons.data[season_id].time.sunset.minute = sunset_m;
-
-            for (let location_index in window.static_data.seasons.locations) {
-                let location = window.static_data.seasons.locations[location_index];
-                if (location.settings.season_based_time) {
-                    location.seasons[season_id].time["sunrise"]["hour"] = sunrise_h;
-                    location.seasons[season_id].time["sunrise"]["minute"] = sunrise_m;
-                    location.seasons[season_id].time["sunset"]["hour"] = sunset_h;
-                    location.seasons[season_id].time["sunset"]["minute"] = sunset_m;
-                    location_list.children().eq(location_index).find(`input[clocktype="sunrise_hour"]`).val(sunrise_h);
-                    location_list.children().eq(location_index).find(`input[clocktype="sunrise_minute"]`).val(sunrise_m);
-                    location_list.children().eq(location_index).find(`input[clocktype="sunset_hour"]`).val(sunset_h);
-                    location_list.children().eq(location_index).find(`input[clocktype="sunset_minute"]`).val(sunset_m);
-                }
-            }
-        }
-
-        do_error_check('seasons');
-
     });
 
 
@@ -638,37 +449,6 @@ export function set_up_edit_inputs() {
                 window.dynamic_date_manager.cap_timespan();
                 window.dynamic_data.timespan = window.dynamic_date_manager.timespan;
                 window.dynamic_data.epoch = window.dynamic_date_manager.epoch;
-                break;
-
-            case "global_week_sortable":
-                $(this).closest('.sortable-container').remove();
-                // $(this).closest('.sortable-container').parent().sortable('refresh');
-                reindex_weekday_sortable();
-                break;
-
-            case "season_sortable":
-                $(this).closest('.sortable-container').remove();
-                // $(this).closest('.sortable-container').parent().sortable('refresh');
-                type = 'seasons';
-                reindex_season_sortable(index);
-                reindex_location_list();
-                $('#season_color_enabled').prop("disabled", window.static_data.seasons.data.length == 0);
-                if (window.static_data.seasons.data.length == 0) {
-                    $('#season_color_enabled').prop("checked", false).change();
-                }
-                break;
-
-            case "location_list":
-                $(this).closest('.sortable-container').remove();
-                // $(this).closest('.sortable-container').parent().sortable('refresh');
-                type = 'seasons';
-                reindex_location_list();
-                break;
-
-            case "cycle_sortable":
-                $(this).closest('.sortable-container').remove();
-                // $(this).closest('.sortable-container').parent().sortable('refresh');
-                reindex_cycle_sortable();
                 break;
 
             case "era_list":
@@ -949,54 +729,6 @@ export function set_up_edit_inputs() {
     });
 
 
-    $(document).on('change', '#season_sortable .date_control', function() {
-        season_debounce();
-    });
-
-    const season_debounce = debounce(function() {
-        reindex_season_sortable();
-    }, 50);
-
-    $(document).on('change', '#season_color_enabled', function() {
-
-        var checked = $(this).is(":checked");
-
-        let colors = []
-        for (let index = 0; index < window.static_data.seasons.data.length; index++) {
-            colors.push([])
-            if (index == 0) {
-                colors[index][0] = get_colors_for_season(window.static_data.seasons.data[index].name);
-                colors[index][1] = get_colors_for_season(window.static_data.seasons.data[index + 1].name);
-            } else if (index == window.static_data.seasons.data.length - 1) {
-                colors[index][0] = clone(colors[index - 1][1]);
-                colors[index][1] = clone(colors[0][0]);
-            } else {
-                colors[index][0] = clone(colors[index - 1][1])
-                colors[index][1] = get_colors_for_season(window.static_data.seasons.data[index + 1].name);
-            }
-        }
-
-        season_sortable.children().each(function(i) {
-
-            if (checked) {
-
-                window.static_data.seasons.data[i].color = clone(colors[i]);
-
-                // $(this).find('.season_color_enabled').find('.start_color').spectrum("set", window.static_data.seasons.data[i].color[0]);
-                // $(this).find('.season_color_enabled').find('.end_color').spectrum("set", window.static_data.seasons.data[i].color[1]);
-
-            } else {
-                delete window.static_data.seasons.data[i].color;
-            }
-
-            $(this).find('.season_color_enabled').toggleClass("hidden", !checked);
-            $(this).find('.season_color_enabled input').prop("disabled", !checked);
-        });
-
-        do_error_check();
-
-    });
-
     $(document).on('change', '.week-length', function() {
 
         var parent = $(this).closest('.sortable-container');
@@ -1082,20 +814,6 @@ export function set_up_edit_inputs() {
         window.preview_date.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.preview_date.year), window.preview_date.timespan, window.preview_date.day).epoch;
     });
 
-    $('#enable_weather').change(function() {
-        var checked = $(this).prop('checked');
-        window.static_data.seasons.global_settings.enable_weather = checked;
-        $('.weather_inputs').toggleClass('hidden', !checked);
-        $('.weather_inputs').find('select, input').prop('disabled', !checked);
-        $('.location_middle_btn').toggleClass('hidden', (!window.static_data.seasons.global_settings.enable_weather && !window.static_data.clock.enabled) || window.static_data.seasons.data.length < 3);
-
-        var no_locations = (window.static_data.seasons.data.length == 0 || !window.static_data.seasons.global_settings.enable_weather) && !window.static_data.clock.enabled;
-        $('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
-        $('#locations_warning').toggleClass('hidden', !no_locations);
-
-        repopulate_location_select_list();
-    });
-
     $(document).on('change', '.year-input', function() {
         repopulate_timespan_select($(this).closest('.date_control').find('.timespan-list'));
         repopulate_day_select($(this).closest('.date_control').find('.timespan-day-list'))
@@ -1103,10 +821,6 @@ export function set_up_edit_inputs() {
 
     $(document).on('change', '.timespan-list', function() {
         repopulate_day_select($(this).closest('.date_control').find('.timespan-day-list'))
-    });
-
-    $('#reseed_seasons').click(function() {
-        $('#seasons_seed').val(Math.abs((Math.random().toString().substr(7) | 0))).change();
     });
 
 
@@ -1129,64 +843,11 @@ export function set_up_edit_inputs() {
     });
 
 
-
-
-    $('#temp_sys').change(function() {
-
-        var new_val = $(this).val();
-        var old_val = window.static_data.seasons.global_settings.temp_sys;
-
-        if ((new_val == "metric" || new_val == "both_m") && (old_val == "imperial" || old_val == "both_i")) {
-
-            $('input[fc-index="temp_low"], input[fc-index="temp_high"]').each(function() {
-
-                var val = $(this).val() | 0;
-
-                $(this).val(precisionRound(fahrenheit_to_celcius(val), 4));
-
-            }).change();
-
-        } else if ((new_val == "imperial" || new_val == "both_i") && (old_val == "metric" || old_val == "both_m")) {
-
-            $('input[fc-index="temp_low"], input[fc-index="temp_high"]').each(function() {
-
-                var val = $(this).val() | 0;
-
-                $(this).val(precisionRound(celcius_to_fahrenheit(val), 4)).change;
-
-            }).change();
-
-        }
-
-    })
-
     $(document).on('change', '.invalid', function() {
         if ($(this).val() !== null) {
             $(this).removeClass('invalid');
         }
     });
-
-    $(document).on('change', '.season-duration', function() {
-
-
-        rebuild_climate();
-    });
-
-
-    $(document).on('change', '.season .name-input', function() {
-        populate_preset_season_list();
-    });
-
-    $(document).on('focusin', '.preset-season-list', function(e) {
-        $(this).data('prev', $(this).val());
-    });
-
-    $(document).on('change', '.preset-season-list', function() {
-        evaluate_clashing_preset_seasons($(this));
-        $(this).data('prev', $(this).val());
-    });
-
-
 
 
     $('#refresh_calendar_list_select').click(function() {
@@ -1631,17 +1292,6 @@ function update_data(e) {
 
         var refresh = target.attr('refresh') === "true" || refresh === undefined;
 
-        if (type[0] === "seasons" && key == "name") {
-            location_list.children().each(function(i) {
-                $(this).find('.location_season').each(function(j) {
-                    $(this).prop('key', j);
-                    $(this).children().first().prop('id', `collapsible_seasons_${i}_${j}`);
-                    $(this).children().first().next().prop('for', `collapsible_seasons_${i}_${j}`).text(`Season name: ${window.static_data.seasons.data[j].name}`);
-                });
-            });
-            repopulate_location_select_list();
-        }
-
         do_error_check(type[0], refresh);
 
 
@@ -1815,437 +1465,6 @@ function add_timespan_to_sortable(parent, key, data) {
             $(this).val(data.week[i]);
         });
     }
-
-    parent.append(element);
-}
-
-function add_season_to_sortable(parent, key, data) {
-    var element = [];
-    element.push(`<div class='sortable-container list-group-item season collapsed collapsible' index='${key}'>`);
-    element.push("<div class='main-container'>");
-    if (window.static_data.seasons.global_settings.periodic_seasons) {
-        element.push("<div class='handle fa fa-bars'></div>");
-    }
-    element.push("<div class='expand fa fa-caret-square-down'></div>");
-    element.push("<div class='name-container'>");
-    element.push(`<input type='text' tabindex='${(400 + key)}'class='name-input small-input form-control dynamic_input' data='seasons.data.${key}' fc-index='name'/>`);
-    element.push("</div>");
-    element.push('<div class="remove-spacer"></div>');
-    element.push("</div>");
-    element.push("<div class='remove-container'>");
-    element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-    element.push("<div class='btn_remove btn btn-danger fa fa-trash'></div>");
-    element.push("<div class='btn_cancel btn btn-danger fa fa-xmark'></div>");
-    element.push("<div class='btn_accept btn btn-success fa fa-check'></div>");
-    element.push("</div>");
-    element.push("<div class='collapse-container container mb-2'>");
-
-    element.push("<div class='row no-gutters my-1 preset-season-list-container'>");
-    element.push("<div class='col-4 pt-1'>Season type:</div>");
-    element.push("<div class='col'>");
-    element.push(`<select type='number' class='form-control dynamic_input preset-season-list' data='seasons.global_settings.preset_order' fc-index='${key}'>`);
-    element.push("</select>");
-    element.push("</div>");
-    element.push("</div>");
-
-    if (window.static_data.seasons.global_settings.periodic_seasons) {
-
-        element.push(`<div class='row no-gutters mt-2'>`);
-
-        element.push("<div class='col-md-6 col-sm-12 pl-0 pr-1'>");
-        element.push("Duration:");
-        var transition_length = data.transition_length == '' || data.transition_length == undefined ? 90 : data.transition_length;
-        element.push(`<input type='number' step='any' class='form-control dynamic_input transition_length protip' data='seasons.data.${key}' fc-index='transition_length' min='1' value='${transition_length}' data-pt-position="right" data-pt-title='How many days until this season ends, and the next begins.'/>`);
-        element.push("</div>");
-
-        element.push("<div class='col-md-6 col-sm-12 pl-1 pr-0'>");
-        element.push("Peak duration:");
-        var duration = data.duration == '' || data.duration == undefined ? 0 : data.duration;
-        element.push(`<input type='number' step='any' class='form-control dynamic_input duration protip' data='seasons.data.${key}' fc-index='duration' min='0' value='${duration}' data-pt-position="right" data-pt-title='If the duration is the path up a mountain, the peak duration is a flat summit. This is how many days the season will pause before going down the other side of the mountain.'/>`);
-        element.push("</div>");
-
-        element.push("</div>");
-
-    } else {
-
-        element.push(`<div class='date_control season-date full'>`);
-
-        element.push("<div class='row no-gutters my-1'>");
-        element.push("<div class='col-4 pt-1'>Month:</div>");
-        element.push("<div class='col'>");
-        element.push(`<select type='number' class='date form-control timespan-list dynamic_input' data='seasons.data.${key}' fc-index='timespan'>`);
-        element.push("</select>");
-        element.push("</div>");
-        element.push("</div>");
-
-        element.push("<div class='row no-gutters my-1'>");
-        element.push("<div class='col-4 pt-1'>Day:</div>");
-        element.push("<div class='col'>");
-        element.push(`<select type='number' class='date form-control timespan-day-list dynamic_input' data='seasons.data.${key}' fc-index='day'>`);
-        element.push("</select>");
-        element.push("</div>");
-        element.push("</div>");
-
-        element.push("</div>");
-
-    }
-
-    element.push(`<div class='mt-1 p-2 border rounded season_color_enabled ${!window.static_data.seasons.global_settings.color_enabled ? "hidden" : ""}'>`);
-
-    element.push(`<div class='row no-gutters'>`);
-    element.push("<div class='col-6 pr-1'>Start color:</div>");
-    element.push("<div class='col-6 pl-1'>End color:</div>");
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters my-1'>`);
-    element.push("<div class='col-6 pr-1'>");
-    element.push(`<input type='color' class='dynamic_input start_color full' data='seasons.data.${key}.color' fc-index='0'/>`);
-    element.push("</div>")
-    element.push("<div class='col-6 pl-1'>");
-    element.push(`<input type='color' class='dynamic_input end_color full' data='seasons.data.${key}.color' fc-index='1'/>`);
-    element.push("</div>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='clock_inputs ${!window.static_data.clock.enabled ? "hidden" : ""}'>`);
-
-    element.push(`<div class='row no-gutters mt-2'>`);
-
-    element.push("<div class='col-12'>Sunrise:</div>");
-
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters sortable-header'>`);
-
-    element.push("<div class='col-6 pr-1'>");
-    element.push(`Hour`);
-    element.push("</div>");
-
-    element.push("<div class='col-6 pl-1'>");
-    element.push(`Minute`);
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season">`);
-
-    element.push("<div class='col-6 pr-1 clock-input'>");
-    element.push(`<input type='number' step="1.0" class='form-control full dynamic_input season_time hour_input' clocktype='sunrise_hour' data='seasons.data.${key}.time.sunrise' fc-index='hour' value='${data.time.sunrise.hour}' />`);
-    element.push("</div>");
-
-    element.push("<div class='col-6 pl-1 clock-input'>");
-    element.push(`<input type='number' step="1.0" class='form-control full dynamic_input season_time' clocktype='sunrise_minute' data='seasons.data.${key}.time.sunrise' fc-index='minute' value='${data.time.sunrise.minute}' />`);
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters mt-2'>`);
-
-    element.push("<div class='col-12 '>Sunset:</div>");
-
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters sortable-header'>`);
-
-    element.push("<div class='col-6 pr-1'>");
-    element.push(`Hour`);
-    element.push("</div>");
-
-    element.push("<div class='col-6 pl-1'>");
-    element.push(`Minute`);
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season">`);
-
-    element.push("<div class='col-6 pr-1 clock-input'>");
-    element.push(`<input type='number' step="1.0" class='form-control full dynamic_input season_time hour_input' clocktype='sunset_hour' data='seasons.data.${key}.time.sunset' fc-index='hour' value='${data.time.sunset.hour}' />`);
-    element.push("</div>");
-
-    element.push("<div class='col-6 pl-1 clock-input'>");
-    element.push(`<input type='number' step="1.0" class='form-control full dynamic_input season_time' clocktype='sunset_minute' data='seasons.data.${key}.time.sunset' fc-index='minute' value='${data.time.sunset.minute}' />`);
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element.push("<div class='row no-gutters my-1'>");
-    element.push(`<button type="button" class="btn btn-sm btn-info season_middle_btn full protip" data-pt-delay-in="100" data-pt-title="Use the median values from the previous and next seasons' time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate sunrise & sunset from surrounding seasons</button>`);
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element = $(element.join(""))
-
-    element.find('.name-input').val(data.name);
-
-    parent.append(element);
-}
-
-function add_location_to_list(parent, key, data) {
-    var element = [];
-
-    element.push(`<div class='sortable-container list-group-item location collapsed collapsible' index='${key}'>`);
-    element.push("<div class='main-container'>");
-    element.push("<div class='expand fa fa-caret-square-down'></div>");
-    element.push("<div class='name-container'>");
-    element.push(`<input type='text' tabindex='${(500 + key)}' class='name-input small-input form-control dynamic_input location-name' data='seasons.locations.${key}' fc-index='name'/>`);
-    element.push("</div>");
-    element.push('<div class="remove-spacer"></div>');
-    element.push("</div>");
-
-    element.push("<div class='remove-container'>");
-    element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-    element.push("<div class='btn_remove btn btn-danger fa fa-trash'></div>");
-    element.push("<div class='btn_cancel btn btn-danger fa fa-xmark'></div>");
-    element.push("<div class='btn_accept btn btn-success fa fa-check'></div>");
-    element.push("</div>");
-    element.push("<div class='collapse-container container mb-2'>");
-
-    for (var i = 0; i < data.seasons.length; i++) {
-
-        element.push(`<div class='m-0 my-2 cycle-container wrap-collapsible location_season' fc-index='${i}'>`);
-        element.push(`<input id='collapsible_seasons_${key}_${i}' class='toggle location_toggle' type='checkbox'>`);
-        element.push(`<label for='collapsible_seasons_${key}_${i}' class='lbl-toggle location_name'><div class='icon fa fa-caret-square-down'></div>${window.static_data.seasons.data[i].name} weather</label>`);
-
-        element.push("<div class='collapsible-content container p-0'>");
-
-        element.push(`<div class='weather_inputs ${!window.static_data.seasons.global_settings.enable_weather ? "hidden" : ""}'>`);
-
-        element.push("<div class='row no-gutters'>");
-        element.push("<div class='col-lg-6 my-1'>");
-        element.push("Temperature low:");
-        element.push(`<input type='number' step="any" class='form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='temp_low' value='${data.seasons[i].weather.temp_low}'>`);
-        element.push("</div>");
-        element.push("<div class='col-lg-6 my-1'>");
-        element.push("Temperature high:");
-        element.push(`<input type='number' step="any" class='form-control full dynamic_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='temp_high' value='${data.seasons[i].weather.temp_high}'>`);
-        element.push("</div>");
-        element.push("</div>");
-
-        element.push("<div class='row no-gutters my-2'>");
-        element.push("<div class='separator'></div>");
-        element.push("</div>");
-
-        element.push("<div class='row no-gutters mt-2'>");
-        element.push("Precipitation chance: (%)");
-        element.push("</div>");
-
-        element.push("<div class='row no-gutters mb-2'>");
-        element.push("<div class='col-9 pt-1'>");
-        element.push("<div class='slider_percentage'></div>");
-        element.push("</div>");
-        element.push("<div class='col-3 pl-1'>");
-        element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation' value='${data.seasons[i].weather.precipitation * 100}'>`);
-        element.push("</div>");
-        element.push("</div>");
-
-
-        element.push("<div class='row no-gutters mt-2'>");
-        element.push("Precipitation intensity: (%)");
-        element.push("</div>");
-
-        element.push("<div class='row no-gutters mb-2'>");
-        element.push("<div class='col-9 pt-1'>");
-        element.push("<div class='slider_percentage'></div>");
-        element.push("</div>");
-        element.push("<div class='col-3 pl-1'>");
-        element.push(`<input type='number' step="any" class='form-control form-control-sm full dynamic_input slider_input' data='seasons.locations.${key}.seasons.${i}.weather' fc-index='precipitation_intensity' value='${data.seasons[i].weather.precipitation_intensity * 100}'>`);
-        element.push("</div>");
-        element.push("</div>");
-
-        element.push("<div class='row no-gutters my-2'>");
-        element.push("<div class='separator'></div>");
-        element.push("</div>");
-        element.push("</div>");
-
-        element.push(`<div class='clock_inputs ${!window.static_data.clock.enabled ? "hidden" : ""}'>`);
-
-        element.push(`<div class='row no-gutters mt-2'>`);
-
-        element.push("<div class='col-12 pl-0 pr-0'>Sunrise:</div>");
-
-        element.push("</div>");
-
-        element.push(`<div class='row no-gutters sortable-header'>`);
-
-        element.push("<div class='col-6 pr-1'>");
-        element.push(`Hour`);
-        element.push("</div>");
-
-        element.push("<div class='col-6 pl-1'>");
-        element.push(`Minute`);
-        element.push("</div>");
-
-        element.push("</div>");
-
-        element.push(`<div class='row no-gutters mb-2 protip'  data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season, in this location">`);
-
-        element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
-        element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunrise_hour' ${data.settings.season_based_time ? "disabled" : ""} data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='hour' value='${data.seasons[i].time.sunrise.hour}' />`);
-        element.push("</div>");
-
-        element.push("<div class='col-auto pt-1'>:</div>");
-
-        element.push("<div class='col pl-1 pr-0 clock-input'>");
-        element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunrise_minute' ${data.settings.season_based_time ? "disabled" : ""} data='seasons.locations.${key}.seasons.${i}.time.sunrise' fc-index='minute' value='${data.seasons[i].time.sunrise.minute}' />`);
-        element.push("</div>");
-
-        element.push("</div>");
-
-        element.push(`<div class='row no-gutters mt-2'>`);
-
-        element.push("<div class='col-12 pl-0 pr-0'>Sunset:</div>");
-
-        element.push("</div>");
-
-        element.push(`<div class='row no-gutters sortable-header'>`);
-
-        element.push("<div class='col-6 pr-1'>");
-        element.push(`Hour`);
-        element.push("</div>");
-
-        element.push("<div class='col-6 pl-1'>");
-        element.push(`Minute`);
-        element.push("</div>");
-
-        element.push("</div>");
-
-        element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season, in this location">`);
-
-        element.push("<div class='col-6 pl-0 pr-1 clock-input'>");
-        element.push(`<input type='number' step="1.0" class='form-control text-right full dynamic_input hour_input' clocktype='sunset_hour' ${data.settings.season_based_time ? "disabled" : ""} data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='hour' value='${data.seasons[i].time.sunset.hour}' />`);
-        element.push("</div>");
-
-        element.push("<div class='col-auto pt-1'>:</div>");
-
-        element.push("<div class='col pl-1 pr-0 clock-input'>");
-        element.push(`<input type='number' step="1.0" class='form-control full dynamic_input' clocktype='sunset_minute' ${data.settings.season_based_time ? "disabled" : ""} data='seasons.locations.${key}.seasons.${i}.time.sunset' fc-index='minute' value='${data.seasons[i].time.sunset.minute}' />`);
-        element.push("</div>");
-
-        element.push("</div>");
-        element.push("</div>");
-        element.push("<div class='row no-gutters my-2'>");
-        element.push(`<button type="button" class="btn btn-sm btn-info location_middle_btn full protip" data-pt-position="right" data-pt-title="Use the median values from the previous and next seasons' weather and time data. This season will act as a transition between the two, similar to Spring or Autumn">Interpolate data from surrounding seasons</button>`);
-        element.push("</div>");
-
-        element.push("</div>");
-
-        element.push("<div class='separator'></div>");
-
-        element.push("</div>");
-
-    }
-
-    element.push(`<div class='clock_inputs ${!window.static_data.clock.enabled ? "hidden" : ""}'>`);
-
-    element.push(`<div class='row no-gutters my-1 protip' data-pt-position="right" data-pt-title="Checking this will base this location's sunrise and sunset times on your season's sunrise and sunset times, and keep them the same">`);
-    element.push("<div class='form-check col-12 py-2 border rounded'>");
-    element.push(`<input type='checkbox' id='${key}_season_based_time' class='form-check-input dynamic_input season_based_time' data='seasons.locations.${key}.settings' fc-index='season_based_time' ${(data.settings.season_based_time ? "checked" : "")} />`);
-    element.push(`<label for='${key}_season_based_time' class='form-check-label ml-1'>`);
-    element.push("Lock sunset/rise times to season");
-    element.push("</label>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='row my-1'>`);
-    element.push("<div class='col'>Timezone:</div>");
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters sortable-header'>`);
-
-    element.push("<div class='col-6 pr-1'>");
-    element.push(`Hour`);
-    element.push("</div>");
-
-    element.push("<div class='col-6 pl-1'>");
-    element.push(`Minute`);
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="When this location becomes active, the current time will change this much to reflect the new location.">`);
-
-    element.push("<div class='col-6 pr-1 clock-input'>");
-    element.push(`<input type='number' step="1.0" min='${window.static_data.clock.hours * -0.5}' max='${window.static_data.clock.hours * 0.5}' class='form-control right-text form-control full dynamic_input hour_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_hour' fc-index='hour' value='${data.settings.timezone.hour}' />`);
-    element.push("</div>");
-
-    element.push("<div class='col-auto pt-1'>:</div>");
-
-    element.push("<div class='col pl-1 clock-input'>");
-    element.push(`<input type='number' step="1.0" min='${window.static_data.clock.minutes * -0.5}' max='${window.static_data.clock.minutes * 0.5}' class='form-control full dynamic_input' data='seasons.locations.${key}.settings.timezone' clocktype='timezone_minute' fc-index='minute' value='${data.settings.timezone.minute}' />`);
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element.push(`<div class='weather_inputs ${!window.static_data.seasons.global_settings.enable_weather ? "hidden" : ""}'>`);
-    element.push("<div class='row no-gutters my-1'>");
-    element.push("<div class='col'>");
-    element.push("Curve noise settings:");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push("<div class='row no-gutters my-1'>");
-    element.push("<div class='col-6 pr-1'>");
-    element.push("Large frequency:");
-    element.push("</div>");
-    element.push("<div class='col-6 pl-1'>");
-    element.push("Large amplitude:");
-    element.push("</div>");
-    element.push("</div>");
-    element.push("<div class='row no-gutters my-1'>");
-    element.push("<div class='col-6 pr-1'>");
-    element.push(`<input type='float' class='form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_frequency' value='${data.settings.large_noise_frequency}' />`);
-    element.push("</div>");
-    element.push("<div class='col-6 pl-1'>");
-    element.push(`<input type='float' class='form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='large_noise_amplitude' value='${data.settings.large_noise_amplitude}'>`);
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push("<div class='row no-gutters my-1'>");
-    element.push("<div class='col-6 pr-1'>");
-    element.push("Medium frequency:");
-    element.push("</div>");
-    element.push("<div class='col-6 pl-1'>");
-    element.push("Medium amplitude:");
-    element.push("</div>");
-    element.push("</div>");
-    element.push("<div class='row no-gutters my-1'>");
-    element.push("<div class='col-6 pr-1'>");
-    element.push(`<input type='float' class='form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_frequency' value='${data.settings.medium_noise_frequency}' />`);
-    element.push("</div>");
-    element.push("<div class='col-6 pl-1'>");
-    element.push(`<input type='float' class='form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='medium_noise_amplitude' value='${data.settings.medium_noise_amplitude}'>`);
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push("<div class='row no-gutters my-1'>");
-    element.push("<div class='col-6 pr-1'>");
-    element.push("Small frequency:");
-    element.push("</div>");
-    element.push("<div class='col-6 pl-1'>");
-    element.push("Small amplitude:");
-    element.push("</div>");
-    element.push("</div>");
-    element.push("<div class='row no-gutters my-1'>");
-    element.push("<div class='col-6 pr-1'>");
-    element.push(`<input type='float' class='form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_frequency' value='${data.settings.small_noise_frequency}' />`);
-    element.push("</div>");
-    element.push("<div class='col-6 pl-1'>");
-    element.push(`<input type='float' class='form-control full dynamic_input' data='seasons.locations.${key}.settings' fc-index='small_noise_amplitude' value='${data.settings.small_noise_amplitude}'>`);
-    element.push("</div>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element = $(element.join(""))
-
-    element.find('.name-input').val(data.name);
 
     parent.append(element);
 }
@@ -2911,313 +2130,6 @@ function reindex_timespan_sortable() {
     window.dispatchEvent(new CustomEvent("events-changed"));
 }
 
-function reindex_season_sortable(key) {
-    var tabindex = 400;
-
-    if (!window.static_data.seasons.global_settings.periodic_seasons) {
-        sort_list_by_partial_date(season_sortable);
-    }
-
-    window.static_data.seasons.data = [];
-
-    season_sortable.children().each(function(i) {
-
-        $(this).attr("index", i);
-
-        $('.dynamic_input', this).each(function() {
-            $(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
-            $(this).attr('fc-index', $(this).attr('fc-index').replace(/[0-9]+/g, i));
-        });
-
-        $(this).find(".name-input").prop("tabindex", tabindex)
-        tabindex++;
-
-        window.static_data.seasons.data[i] = {
-            "name": $(this).find('.name-input').val(),
-            "color": [
-                "#00CBFC",
-                "#00CBFC",
-                // $(this).find('.start_color').spectrum('get', 'hex').toString(),
-                // $(this).find('.end_color').spectrum('get', 'hex').toString(),
-            ],
-            "time": {
-                "sunrise": {
-                    "hour": ($(this).find('input[clocktype="sunrise_hour"]').val() | 0),
-                    "minute": ($(this).find('input[clocktype="sunrise_minute"]').val() | 0)
-                },
-                "sunset": {
-                    "hour": ($(this).find('input[clocktype="sunset_hour"]').val() | 0),
-                    "minute": ($(this).find('input[clocktype="sunset_minute"]').val() | 0)
-                }
-            }
-        };
-
-        if (window.static_data.seasons.global_settings.periodic_seasons) {
-
-            window.static_data.seasons.data[i].transition_length = parseFloat($(this).find('.transition_length').val());
-            window.static_data.seasons.data[i].duration = parseFloat($(this).find('.duration').val());
-
-        } else {
-
-            window.static_data.seasons.data[i].timespan = ($(this).find('.timespan-list').val() | 0);
-            window.static_data.seasons.data[i].day = ($(this).find('.timespan-day-list').val() | 0);
-
-        }
-
-        if ($(this).find('.preset-season-list').children().length > 0) {
-            if (window.static_data.seasons.global_settings.preset_order === undefined) {
-                window.static_data.seasons.global_settings.preset_order = [];
-            }
-            window.static_data.seasons.global_settings.preset_order[i] = $(this).find('.preset-season-list').val() | 0;
-        }
-
-    });
-
-    var no_seasons = window.static_data.seasons.data.length == 0;
-    $('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
-    $('#no_seasons_container').toggleClass('hidden', !no_seasons);
-
-    if (no_seasons) {
-        window.static_data.seasons.global_settings.preset_order = undefined;
-    }
-
-    populate_preset_season_list();
-
-    if (key !== undefined) {
-        location_list.find(`.location_season[fc-index="${key}"]`).remove();
-    }
-
-    eval_clock();
-
-    var no_locations = (window.static_data.seasons.data.length == 0 || !window.static_data.seasons.global_settings.enable_weather) && !window.static_data.clock.enabled;
-    $('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
-    $('#locations_warning').toggleClass('hidden', !no_locations);
-
-    do_error_check('seasons');
-}
-
-function populate_preset_season_list() {
-    let length = window.static_data.seasons.data.length;
-    let preset_seasons;
-
-    if (length === 2) {
-        preset_seasons = ['Winter', 'Summer'];
-    } else if (length === 4) {
-        preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
-    } else {
-        window.static_data.seasons.global_settings.preset_order = undefined;
-        $('.preset-season-list-container').toggleClass('hidden', true).prop('disabled', true);
-        return;
-    }
-
-    let automatic = detect_automatic_mapping();
-
-    if (!automatic) {
-
-        $('.preset-season-list-container').toggleClass('hidden', false).prop('disabled', false);
-
-        let preset_order = []
-
-        if (new Set((window.static_data.seasons.global_settings.preset_order ?? [])).size !== length) {
-            window.static_data.seasons.global_settings.preset_order = undefined;
-        }
-
-        $('.preset-season-list').each(function(i) {
-
-            $(this).empty();
-
-            for (let j in preset_seasons) {
-                let name = preset_seasons[j];
-                let o = new Option(name, j);
-                $(o).html(name);
-                $(this).append(o);
-            }
-
-            if (window.static_data.seasons.global_settings.preset_order === undefined) {
-                $(this)[0].selectedIndex = i;
-                preset_order.push(i);
-            } else {
-                $(this)[0].selectedIndex = window.static_data.seasons.global_settings.preset_order[i];
-            }
-
-        });
-
-        if (window.static_data.seasons.global_settings.preset_order === undefined) {
-            window.static_data.seasons.global_settings.preset_order = clone(preset_order);
-        }
-    } else {
-        $('.preset-season-list').empty();
-        $('.preset-season-list-container').toggleClass('hidden', true).prop('disabled', true);
-    }
-}
-
-function detect_automatic_mapping() {
-    if (window.static_data.seasons.data.length == 2) {
-        var preset_seasons = ['winter', 'summer'];
-    } else if (window.static_data.seasons.data.length == 4) {
-        var preset_seasons = ['winter', 'spring', 'summer', 'autumn'];
-    } else {
-        return false;
-    }
-
-    let season_test = [];
-    for (var index in window.static_data.seasons.data) {
-        var season = window.static_data.seasons.data[index];
-        let preset_index = preset_seasons.indexOf(season.name.toLowerCase());
-        if (preset_index == -1 && season.name.toLowerCase() == "fall" && window.static_data.seasons.data.length == 4) {
-            preset_index = 3;
-        }
-        if (preset_index > -1) {
-            season_test.push(preset_index)
-        }
-    }
-
-    if (season_test.length == window.static_data.seasons.data.length) {
-        window.static_data.seasons.global_settings.preset_order = season_test;
-        return true;
-    }
-
-    return false;
-}
-
-function evaluate_clashing_preset_seasons(element) {
-    let season_index = element.closest('.sortable-container').attr('index') | 0;
-    let prev_preset_index = element.data('prev') | 0;
-    let preset_index = element.val() | 0;
-
-    for (var switch_season_index in window.static_data.seasons.global_settings.preset_order) {
-        if (switch_season_index == season_index) {
-            continue;
-        }
-        if (window.static_data.seasons.global_settings.preset_order[switch_season_index] == preset_index) {
-            break;
-        }
-    }
-
-    window.static_data.seasons.global_settings.preset_order[switch_season_index] = prev_preset_index;
-
-    season_sortable.children().eq(switch_season_index).find('.preset-season-list')[0].selectedIndex = prev_preset_index;
-}
-
-function reindex_location_list() {
-    var tabindex = 500;
-
-    window.static_data.seasons.locations = [];
-
-    location_list.children().each(function(i) {
-
-        var data = {};
-
-        $(this).attr("key", i);
-        $(this).find(".name-input").prop("tabindex", tabindex);
-        tabindex++;
-
-        data = {
-            "name": $(this).find(".name-input").val(),
-            "seasons": [],
-            "settings": {
-                "timezone": {
-                    "hour": ($(this).find("input[fc-index='timezone_hour']").val() | 0),
-                    "minute": ($(this).find("input[fc-index='timezone_minute']").val() | 0),
-                },
-
-                "season_based_time": $(this).find("input[fc-index='season_based_time']").is(":checked"),
-
-                "large_noise_frequency": Number($(this).find("input[fc-index='large_noise_frequency']").val()),
-                "large_noise_amplitude": Number($(this).find("input[fc-index='large_noise_amplitude']").val()),
-
-                "medium_noise_frequency": Number($(this).find("input[fc-index='medium_noise_frequency']").val()),
-                "medium_noise_amplitude": Number($(this).find("input[fc-index='medium_noise_amplitude']").val()),
-
-                "small_noise_frequency": Number($(this).find("input[fc-index='small_noise_frequency']").val()),
-                "small_noise_amplitude": Number($(this).find("input[fc-index='small_noise_amplitude']").val())
-            }
-        };
-
-        $(this).find('.location_season').each(function(j) {
-
-            data.seasons[j] = {};
-
-            data.seasons[j].time = {
-                "sunrise": {
-                    "hour": $(this).find('input[clocktype="sunrise_hour"]').val() | 0,
-                    "minute": $(this).find('input[clocktype="sunrise_minute"]').val() | 0,
-                },
-                "sunset": {
-                    "hour": $(this).find('input[clocktype="sunset_hour"]').val() | 0,
-                    "minute": $(this).find('input[clocktype="sunset_minute"]').val() | 0,
-                }
-            };
-            data.seasons[j].weather = {
-                "temp_low": $(this).find('input[fc-index="temp_low"]').val() | 0,
-                "temp_high": $(this).find('input[fc-index="temp_high"]').val() | 0,
-                "precipitation": ($(this).find('input[fc-index="precipitation"]').val() | 0) / 100,
-                "precipitation_intensity": ($(this).find('input[fc-index="precipitation_intensity"]').val() | 0) / 100
-            };
-
-        });
-
-        var old_season_num = $(this).find('.location_season').length;
-        var new_season_num = window.static_data.seasons.data.length;
-
-        if (old_season_num != new_season_num) {
-
-            if (new_season_num > old_season_num) {
-
-                for (var j = $(this).find('.location_season').length; j < window.static_data.seasons.data.length; j++) {
-
-                    data.seasons[j] = {
-                        "time": window.static_data.seasons.data[i].time,
-                        "weather": {
-                            "temp_low": 0,
-                            "temp_high": 0,
-                            "precipitation": 0,
-                            "precipitation_intensity": 0
-                        }
-                    }
-                }
-
-            } else {
-
-                data.seasons.splice(window.static_data.seasons.data.length, $(this).find('.location_season').length);
-
-            }
-
-        }
-
-        window.static_data.seasons.locations[i] = data;
-
-    });
-
-    if (window.static_data.seasons.locations.length == 0) {
-        window.dynamic_data.location = "";
-        window.dynamic_data.custom_location = false;
-    }
-
-    location_list.empty();
-
-    for (var i = 0; i < window.static_data.seasons.locations.length; i++) {
-        add_location_to_list(location_list, i, window.static_data.seasons.locations[i]);
-    }
-
-    // $('.slider_percentage').slider({
-    //     min: 0,
-    //     max: 100,
-    //     step: 1,
-    //     change: function(event, ui) {
-    //         $(this).parent().parent().find('.slider_input').val($(this).slider('value')).change();
-    //     },
-    //     slide: function(event, ui) {
-    //         $(this).parent().parent().find('.slider_input').val($(this).slider('value'));
-    //     }
-    // });
-
-    // $('.slider_percentage').each(function() {
-    //     $(this).slider('option', 'value', parseInt($(this).parent().parent().find('.slider_input').val()));
-    // });
-
-    repopulate_location_select_list();
-}
 
 function reindex_era_list() {
     sort_list_by_date(era_list);
@@ -3631,41 +2543,6 @@ export function set_up_edit_values() {
 
     }
 
-    if (window.static_data.seasons) {
-
-        for (var i = 0; i < window.static_data.seasons.data.length; i++) {
-            add_season_to_sortable(season_sortable, i, window.static_data.seasons.data[i]);
-
-            repopulate_timespan_select(season_sortable.children().last().find('.timespan-list'), window.static_data.seasons.data[i].timespan, false, false);
-            repopulate_day_select(season_sortable.children().last().find('.timespan-day-list'), window.static_data.seasons.data[i].day, false, false);
-        }
-
-        populate_preset_season_list();
-
-        $('.season_middle_btn').toggleClass('hidden', !window.static_data.clock.enabled || window.static_data.seasons.data.length < 3);
-
-        $('.season_offset_container').prop('disabled', !window.static_data.seasons.global_settings.periodic_seasons).toggleClass('hidden', !window.static_data.seasons.global_settings.periodic_seasons);
-
-        $('.season_text.dated').toggleClass('active', !window.static_data.seasons.global_settings.periodic_seasons);
-        $('.season_text.periodic').toggleClass('active', window.static_data.seasons.global_settings.periodic_seasons);
-
-        var no_seasons = window.static_data.seasons.data.length == 0;
-        $('#has_seasons_container').toggleClass('hidden', no_seasons).find('select, input').prop('disabled', no_seasons);
-        $('#no_seasons_container').toggleClass('hidden', !no_seasons);
-
-        var no_locations = (window.static_data.seasons.data.length == 0 || !window.static_data.seasons.global_settings.enable_weather) && !window.static_data.clock.enabled;
-        $('#locations_warning_hidden').toggleClass('hidden', no_locations).find('select, input').prop('disabled', no_locations);
-        $('#locations_warning').toggleClass('hidden', !no_locations);
-
-
-
-
-        for (var i = 0; i < window.static_data.seasons.locations.length; i++) {
-            add_location_to_list(location_list, i, window.static_data.seasons.locations[i]);
-        }
-
-    }
-
     // if ($('#collapsible_clock').is(':checked')) {
     //     $('#clock').appendTo($('#collapsible_clock').parent().children('.collapsible-content'));
     // } else {
@@ -3685,14 +2562,6 @@ export function set_up_edit_values() {
 
         })
     }
-
-
-    $('.weather_inputs').toggleClass('hidden', !window.static_data.seasons.global_settings.enable_weather);
-    $('.weather_inputs').find('select, input').prop('disabled', !window.static_data.seasons.global_settings.enable_weather);
-
-    $('.location_middle_btn').toggleClass('hidden', (!window.static_data.seasons.global_settings.enable_weather && !window.static_data.clock.enabled) || window.static_data.seasons.data.length < 3);
-
-    $('#season_color_enabled').prop("disabled", window.static_data.seasons.data.length == 0);
 
     if (window.location.pathname != '/calendars/create') {
 
@@ -3735,7 +2604,6 @@ export function empty_edit_values() {
     timespan_sortable.empty()
     first_day.empty()
     global_week_sortable.empty()
-    season_sortable.empty()
     era_list.empty()
     location_list.empty()
     calendar_link_select.empty()
