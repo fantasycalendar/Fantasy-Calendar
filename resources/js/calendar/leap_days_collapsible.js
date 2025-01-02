@@ -33,6 +33,10 @@ class LeapDaysCollapsible extends CollapsibleComponent {
         "leap_days": this.sanitizeLeapDayIntervals
     }
 
+    validators = {
+        "leap_days": this.validateLeapDayIntervals
+    };
+
     loaded(){
         this.sanitizeLeapDayIntervals();
     }
@@ -100,10 +104,6 @@ class LeapDaysCollapsible extends CollapsibleComponent {
             this.interval_subtexts[index] = texts;
         }
     }
-
-    validators = {
-        "leap_days": this.validateLeapDayIntervals
-    };
 
     validateLeapDayIntervals() {
         let errors = [];

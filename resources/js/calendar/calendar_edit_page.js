@@ -38,7 +38,7 @@ export default (calendar_structure) => ({
         window.last_dynamic_change = new Date(calendar_structure.last_dynamic_change)
 
         window.advancement = {
-            advancement_enabled: calendar_structure.advancement_enabled,
+            advancement_enabled: !!calendar_structure.advancement_enabled,
             advancement_real_rate: calendar_structure.advancement_real_rate,
             advancement_real_rate_unit: calendar_structure.advancement_real_rate_unit,
             advancement_rate: calendar_structure.advancement_rate,

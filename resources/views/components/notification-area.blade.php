@@ -3,7 +3,7 @@
         notifications: [],
         add(e) {
             this.notifications.push({
-                id: e.timeStamp,
+                id: e.timeStamp  + this.notifications.length,
                 type: e.detail.type,
                 content: e.detail.content,
             })
