@@ -35,7 +35,7 @@
 @endpush
 
 @section('content')
-    <div id="generator_container" x-data='calendar_edit_page(getCalendarStructure())' @calendar-rerender-requested.window="rerenderRequested">
+    <div id="generator_container" x-data='calendar_edit_page(getCalendarStructure())' @calendar-updating.window="updateCalendar">
         @include('layouts.layouts')
         @include('layouts.events_manager')
         @include('layouts.weather_tooltip')

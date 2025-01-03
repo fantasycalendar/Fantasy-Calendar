@@ -13,7 +13,7 @@
         },
     }"
     @notify.window="add($event)"
-    class="fixed bottom-0 right-0 flex w-full max-w-xs flex-col space-y-4 pr-4 pb-4 sm:justify-start"
+    class="fixed bottom-0 right-0 flex w-full max-w-xs flex-col space-y-4 pr-4 pb-4 sm:justify-start z-50"
     role="status"
     aria-live="polite"
 >
@@ -61,6 +61,11 @@
                 <div x-show="notification.type === 'error'" class="flex-shrink-0">
                     <span aria-hidden="true" class="inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-red-600 text-lg font-bold text-red-600">&times;</span>
                     <span class="sr-only">Error:</span>
+                </div>
+
+                <div x-show="notification.type === 'warning'" class="flex-shrink-0">
+                    <span aria-hidden="true" class="inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-amber-600 text-lg font-bold text-amber-600">!</span>
+                    <span class="sr-only">Warning:</span>
                 </div>
 
                 <!-- Text -->

@@ -179,17 +179,17 @@ export default (calendar_structure) => ({
 
     },
 
-    rerenderRequested($event) {
+    updateCalendar($event) {
         let structureChanged = false;
 
         if ($event.detail.calendar) {
             structureChanged = this.$store.calendar.update($event.detail.calendar);
         }
 
-        do_error_check("calendar", $event.detail.rerender);
-
         if (structureChanged) {
-            window.dispatchEvent(new CustomEvent('calendar-structure-changed'));
+            do_error_check("calendar", $event.detail.rerender);
         }
+
+        this.$dispatch('calendar-updated');
     }
 });

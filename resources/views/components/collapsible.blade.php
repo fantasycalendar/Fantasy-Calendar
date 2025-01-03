@@ -40,7 +40,7 @@
     <div class="collapsible-content card-body"
         x-data="{{ Str::snake($contains_clean) }}_collapsible"
         @calendar-loaded.window="load"
-        @calendar-structure-changed.window="load">
+        @calendar-updated.window="load">
         <x-dynamic-component :calendar="$calendar ?? null" :component="Str::kebab($contains_clean) . '-collapsible'"></x-dynamic-component>
     </div>
 </div>
