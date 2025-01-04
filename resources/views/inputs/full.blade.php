@@ -50,7 +50,7 @@
 
         <x-collapsible :calendar="$calendar" contains="Leap Days" icon="fa-calendar-day" done></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Eras" icon="fa-infinity"></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Eras" icon="fa-infinity" wip></x-collapsible>
 
         <x-collapsible :calendar="$calendar" contains="Moons" icon="fa-moon" done></x-collapsible>
 

@@ -115,6 +115,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
 
     removeSeason(index){
         this.seasons.splice(index, 1);
+        this.deleting = -1;
     }
 
     seasonColorChanged() {

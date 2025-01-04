@@ -19,10 +19,7 @@ import {
     unescapeHtml,
     debounce,
     ordinal_suffix_of,
-    lerp,
-    fract,
     get_current_era,
-    date_manager,
     convert_year,
     unconvert_year,
     get_timespans_in_year,
@@ -36,7 +33,6 @@ import {
     set_up_visitor_values,
     preview_date_follow,
     update_preview_calendar,
-    set_preview_date,
     update_current_day,
     evaluate_settings,
     evaluate_sun,
@@ -44,7 +40,7 @@ import {
     repopulate_day_select,
     eval_clock,
 } from "./calendar_inputs_visitor";
-import { evaluate_dynamic_change, set_up_view_values } from "./calendar_inputs_view";
+import { set_up_view_values } from "./calendar_inputs_view";
 import { pre_rebuild_calendar, rebuild_calendar, rebuild_climate } from "./calendar_manager";
 import CalendarRenderer from "../calendar-renderer";
 
@@ -338,50 +334,6 @@ export function set_up_edit_inputs() {
         $(this).parent().find('.icon').toggleClass('fa-caret-square-up', checked).toggleClass('fa-caret-square-down', !checked);
     });
 
-
-    $('.add_inputs.eras .add').click(function() {
-
-        var id = era_list.children().length;
-
-        var name = $('#era_name_input');
-
-        var name_val = name.val() == "" ? `Era ${id + 1}` : name.val();
-
-        var stats = {
-            "name": name_val,
-            "formatting": "",
-            "description": "",
-            "settings": {
-                "show_as_event": false,
-                "use_custom_format": false,
-                "starting_era": false,
-                "event_category_id": -1,
-                "ends_year": false,
-                "restart": false
-            },
-            "date": {
-                "year": window.dynamic_data.year,
-                "timespan": window.dynamic_data.timespan,
-                "day": window.dynamic_data.day,
-                "epoch": window.dynamic_data.epoch
-            }
-        };
-
-        if (window.static_data.eras === undefined) {
-            window.static_data.eras = [];
-        }
-
-        window.static_data.eras.push(stats);
-        var era = add_era_to_list(era_list, id, stats);
-        repopulate_timespan_select(era.find('.timespan-list'), window.dynamic_data.timespan, false);
-        repopulate_day_select(era.find('.timespan-day-list'), window.dynamic_data.day, false);
-        reindex_era_list();
-        name.val("");
-        do_error_check("eras");
-        window.dynamic_data.current_era = get_current_era(window.static_data, window.dynamic_data.epoch);
-
-    });
-
     $(document).on('click', '.html_edit', function() {
         let era_id = $(this).closest('.sortable-container').attr('index') | 0;
         window.dispatchEvent(new CustomEvent('html-editor-modal-edit-html', { detail: { era_id: era_id } }));
@@ -622,112 +574,6 @@ export function set_up_edit_inputs() {
         });
 
     });
-
-    $(document).on('change', '.show_as_event', function() {
-        var parent = $(this).closest('.sortable-container');
-        var index = parent.attr('index') | 0;
-        if ($(this).is(':checked')) {
-            parent.find('.era_description').parent().parent().removeClass('hidden');
-            parent.find('.event-category-list').parent().parent().parent().removeClass('hidden');
-            parent.find('.event-category-list').prop('disabled', false).val(-1).change();
-        } else {
-            parent.find('.era_description').parent().parent().addClass('hidden');
-            parent.find('.event-category-list').parent().parent().parent().addClass('hidden');
-            parent.find('.event-category-list').prop('disabled', true);
-            delete window.static_data.eras[index].settings.event_category_id;
-        }
-    });
-
-    $(document).on('change', '.restart_era', function() {
-        let parent = $(this).closest('.sortable-container');
-        let index = parent.attr('index') | 0;
-        let checked = $(this).is(':checked')
-        if (!window.static_data.eras[index].settings.use_custom_format) {
-            let text = "";
-            if (checked) {
-                text = 'Era year {{era_year}} (year {{year}}) - {{era_name}}';
-            } else {
-                text = 'Year {{era_year}} - {{era_name}}';
-            }
-            parent.find('.era_formatting').val(text).change();
-        }
-    });
-
-    $(document).on('change', '.use_custom_format', function() {
-        var parent = $(this).closest('.sortable-container');
-        var index = parent.attr('index') | 0;
-        if (window.static_data.eras[index].settings.restart) {
-            var text = 'Era year {{era_year}} (year {{year}}) - {{era_name}}';
-        } else {
-            var text = 'Year {{era_year}} - {{era_name}}';
-        }
-        parent.find('.era_formatting').prop('disabled', !$(this).is(':checked')).val(text).change();
-    });
-
-    $(document).on('change', '.starting_era', function() {
-
-        var changed_era = $(this);
-
-        era_list.children().each(function(i) {
-            if ($(this).find('.starting_era')[0] != changed_era[0] && $(this).find('.starting_era').is(':checked')) {
-                $(this).find('.starting_era').prop('checked', false);
-                $(this).find('.starting_era').closest('.sortable-container').find('.date_control_container').removeClass('hidden');
-                window.static_data.eras[i].settings.starting_era = false;
-            }
-        });
-
-        if (changed_era.is(':checked')) {
-            changed_era.closest('.sortable-container').find('.date_control_container').addClass('hidden');
-        } else {
-            changed_era.closest('.sortable-container').find('.date_control_container').removeClass('hidden');
-        }
-
-        reindex_era_list();
-
-        window.dynamic_data.current_era = get_current_era(window.static_data, window.dynamic_data.epoch);
-
-    });
-
-
-    $(document).on('change', '#era_list .date_control', function() {
-        debounce_era_reindex();
-    });
-
-    const debounce_era_reindex = debounce(function() {
-        reindex_era_list();
-        window.dynamic_data.current_era = get_current_era(window.static_data, window.dynamic_data.epoch);
-    }, 50)
-
-    $(document).on('change', '#era_list .ends_year', function() {
-        evaluate_dynamic_change();
-        var index = $(this).closest('.sortable-container').attr('index') | 0;
-        window.static_data.eras[index].settings.ends_year = $(this).is(":checked");
-        for (var i in window.static_data.eras) {
-            var era = window.static_data.eras[i];
-            era.date.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, era.date.year), era.date.timespan, era.date.day).epoch;
-        }
-        window.dynamic_data.current_era = get_current_era(window.static_data, window.dynamic_data.epoch);
-        window.dynamic_date_manager = new date_manager(window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
-    });
-
-    $(document).on('change', '#era_list .starting_era', function() {
-        evaluate_dynamic_change();
-        var index = $(this).closest('.sortable-container').attr('index') | 0;
-        window.static_data.eras[index].settings.ends_year = $(this).is(":checked");
-        for (var i in window.static_data.eras) {
-            var era = window.static_data.eras[i];
-            era.date.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, era.date.year), era.date.timespan, era.date.day).epoch;
-        }
-        window.dynamic_data.current_era = get_current_era(window.static_data, window.dynamic_data.epoch);
-        window.dynamic_date_manager = new date_manager(window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
-    });
-
-    $(document).on('click', '.preview_era_date', function() {
-        let era_id = $(this).closest('.sortable-container').attr('index') | 0;
-        let era = window.static_data.eras[era_id];
-        set_preview_date(era.date.year, era.date.timespan, era.date.day, era.date.epoch)
-    });
-
 
     $(document).on('change', '.week-length', function() {
 
@@ -1469,174 +1315,6 @@ function add_timespan_to_sortable(parent, key, data) {
     parent.append(element);
 }
 
-function add_era_to_list(parent, key, data) {
-
-    var element = [];
-
-    element.push(`<div class='sortable-container list-group-item era_inputs collapsed collapsible' index='${key}'>`);
-    element.push("<div class='main-container'>");
-    element.push("<div class='expand fa fa-caret-square-down'></div>");
-    element.push("<div class='name-container'>");
-    element.push(`<input type='text' class='form-control name-input small-input dynamic_input' data='eras.${key}' fc-index='name' tabindex='${(800 + key)}'/>`);
-    element.push("</div>");
-    element.push('<div class="remove-spacer"></div>');
-    element.push("</div>");
-    element.push("<div class='remove-container'>");
-    element.push("<div class='remove-container-text'>Are you sure you want to remove this?</div>");
-    element.push("<div class='btn_remove btn btn-danger fa fa-trash'></div>");
-    element.push("<div class='btn_cancel btn btn-danger fa fa-xmark'></div>");
-    element.push("<div class='btn_accept btn btn-success fa fa-check'></div>");
-    element.push("</div>");
-
-    element.push("<div class='collapse-container container mb-2'>");
-
-    element.push(`<div class='row no-gutters my-1'>`);
-    element.push("<div class='form-check col-12 py-2 border rounded'>");
-    element.push(`<input type='checkbox' id='${key}_use_custom_format' class='form-check-input dynamic_input use_custom_format' data='eras.${key}.settings' fc-index='use_custom_format' ${(data.settings.use_custom_format ? "checked" : "")} />`);
-    element.push(`<label for='${key}_use_custom_format' class='form-check-label ml-1'>`);
-    element.push("Custom year header formatting");
-    element.push("</label>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push("<div class='row mt-1'>");
-    element.push("<div class='col'>");
-    element.push("Format:");
-    element.push(`<input type='text' class='form-control small-input dynamic_input era_formatting protip' data='eras.${key}' fc-index='formatting' ${!data.settings.use_custom_format ? "disabled" : ""} data-pt-position="right" data-pt-title="Check out the wiki on this by clicking on the question mark on the 'Eras' bar!"/>`);
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push("<div class='row my-1 no-gutters'>");
-    element.push("<div class='col'>");
-    element.push("<div class='separator'></div>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters my-1'>`);
-    element.push("<div class='form-check col-12 py-2 border rounded'>");
-    element.push(`<input type='checkbox' id='${key}_show_as_event' class='form-check-input dynamic_input show_as_event' data='eras.${key}.settings' fc-index='show_as_event' ${(data.settings.show_as_event ? "checked" : "")} />`);
-    element.push(`<label for='${key}_show_as_event' class='form-check-label ml-1'>`);
-    element.push("Show as event");
-    element.push("</label>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='row my-2 ${(!data.settings.show_as_event ? "hidden" : "")}'>`);
-    element.push("<div class='col'>");
-    element.push(`<div class='btn btn-outline-primary full era_description html_edit' value='${data.description}' data='eras.${key}' fc-index='description'>Edit event description</div>`);
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='era_event_category_container ${(!data.settings.show_as_event ? "hidden" : "")}'>`);
-    element.push("<div class='row mt-2'>");
-    element.push("<div class='col'>");
-    element.push("Event category:");
-    element.push(`<select type='text' class='custom-select form-control event-category-list dynamic_input' data='eras.${key}.settings' fc-index='event_category_id'>`);
-    for (var catkey in window.event_categories) {
-        var name = window.event_categories[catkey].name;
-        var id = window.event_categories[catkey].id;
-        element.push(`<option value="${id}" ${(catkey == data.event_category_id ? "selected" : "")}>${name}</option>`);
-    }
-    element.push("</select>");
-    element.push("</div>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push("<div class='row my-1 no-gutters'>");
-    element.push("<div class='col'>");
-    element.push("<div class='separator'></div>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters my-1'>`);
-    element.push("<div class='form-check col-12 py-2 border rounded'>");
-    element.push(`<input type='checkbox' for='${key}_starting_era' class='form-check-input dynamic_input starting_era' data='eras.${key}.settings' fc-index='starting_era' ${(data.settings.starting_era ? "checked" : "")} />`);
-    element.push(`<label for='${key}_starting_era' class='form-check-label ml-1'>`);
-    element.push("Is starting era (like B.C.)");
-    element.push("</label>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='date_control_container ${data.settings.starting_era ? "hidden" : ""}'>`);
-
-    element.push("<div class='row my-2 '>");
-    element.push("<div class='col'>");
-    element.push("<strong>Date:</strong>");
-
-    element.push(`<div class='date_control'>`);
-    element.push(`<div class='row my-2'>`);
-    element.push("<div class='col'>");
-    element.push(`<input type='number' step="1.0" class='date form-control small-input dynamic_input year-input' refresh data='eras.${key}.date' fc-index='year' value='${data.date.year}'/>`);
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='row my-2'>`);
-    element.push("<div class='col'>");
-    element.push(`<select type='number' class='date custom-select form-control timespan-list dynamic_input timespan_special' refresh data='eras.${key}.date' fc-index='timespan'>`);
-    element.push("</select>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='row my-2'>`);
-    element.push("<div class='col'>");
-    element.push(`<select type='number' class='date custom-select form-control timespan-day-list dynamic_input day_special' refresh data='eras.${key}.date' fc-index='day'>`);
-    element.push("</select>");
-    element.push("</div>");
-    element.push("</div>");
-    element.push("</div>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='row my-2'>`);
-    element.push("<div class='col'>");
-    element.push(`<div class='btn btn-secondary full preview_era_date'>Preview era start date</div>`);
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push("<div class='row my-2 bold-text'>");
-    element.push("<div class='col'>");
-    element.push("Date settings:");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters my-1'>`);
-    element.push("<div class='form-check col-12 py-2 border rounded'>");
-    element.push(`<input type='checkbox' id='${key}_restart_year' class='form-check-input dynamic_input restart_era' data='eras.${key}.settings' fc-index='restart' ${(data.settings.restart ? "checked" : "")} />`);
-    element.push(`<label for='${key}_restart_year' class='form-check-label ml-1'>`);
-    element.push("Restarts year count");
-    element.push("</label>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='row no-gutters my-1'>`);
-    element.push(`<div class='form-check col-12 py-2 border rounded ${!window.static_data.seasons.global_settings.periodic_seasons ? "disabled" : ""}'>`);
-    element.push(`<input type='checkbox' id='${key}_ends_year' class='form-check-input dynamic_input ends_year' ${!window.static_data.seasons.global_settings.periodic_seasons ? "disabled" : ""} data='eras.${key}.settings' fc-index='ends_year' ${(data.settings.ends_year ? "checked" : "")} />`);
-    element.push(`<label for='${key}_ends_year' class='form-check-label ml-1'>`);
-    element.push("Ends year prematurely");
-    element.push("</label>");
-    element.push(`<p class='m-0 mt-2 ends_year_explaination font-italic small-text ${window.static_data.seasons.global_settings.periodic_seasons ? "hidden" : ""}'>This is disabled because you have seasons based on dates - that means that the calendar cannot end its years early because some seasons could disappear.</p>`);
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element.push("</div>");
-
-    element.push("</div>");
-
-    var element = $(element.join(""));
-
-    element.find('.name-input').val(data.name);
-
-    var formatting = data.settings.use_custom_format ? data.formatting : 'Year {{year}} - {{era_name}}';
-    element.find('.era_formatting').val(formatting);
-
-    parent.append(element);
-
-    return element;
-
-}
-
 
 function add_link_to_list(parent, key, locked, calendar) {
 
@@ -2131,158 +1809,6 @@ function reindex_timespan_sortable() {
 }
 
 
-function reindex_era_list() {
-    sort_list_by_date(era_list);
-
-    era_list.children().each(function() {
-
-        var starting_era = $(this).find('.starting_era').is(':checked');
-
-        if (starting_era) {
-            $(this).insertBefore(era_list.children().eq(0))
-        }
-
-    });
-
-    window.static_data.eras = [];
-
-    era_list.children().each(function(i) {
-
-        $('.dynamic_input', this).each(function() {
-            $(this).attr('data', $(this).attr('data').replace(/[0-9]+/g, i));
-        });
-
-        $(this).attr('key', i);
-
-        const starting_era = $(this).find('.starting_era').is(':checked');
-
-        window.static_data.eras[i] = {
-            'name': $(this).find('.name-input').val(),
-            'formatting': $(this).find('.era_formatting').val(),
-            'description': $(this).find('.era_description').attr('value'),
-            'settings': {
-                'use_custom_format': $(this).find('.use_custom_format').is(':checked'),
-                'show_as_event': $(this).find('.show_as_event').is(':checked'),
-                'starting_era': starting_era || $(this).find('.starting_era').val() === "1",
-                'event_category_id': $(this).find('.event-category-list').val(),
-                'ends_year': !starting_era && ($(this).find('.ends_year').is(':checked') || $(this).find('.ends_year').val() === "1"),
-                'restart': !starting_era && ($(this).find('.restart_era').is(':checked'))
-            },
-            'date': {
-                'year': ($(this).find('.year-input').val() | 0),
-                'timespan': ($(this).find('.timespan-list').val() | 0),
-                'day': ($(this).find('.timespan-day-list').val() | 0)
-            }
-        };
-
-        window.static_data.eras[i].date.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.static_data.eras[i].date.year), window.static_data.eras[i].date.timespan, window.static_data.eras[i].date.day).epoch;
-
-    });
-
-    window.dynamic_date_manager = new date_manager(window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
-    window.dynamic_data.epoch = window.dynamic_date_manager.epoch;
-
-    window.preview_date_manager = new date_manager(window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
-    window.preview_date.epoch = window.preview_date_manager.epoch;
-
-    do_error_check();
-}
-
-function sort_list_by_date(list) {
-    let array = [];
-
-    list.children().each(function(i) {
-        let element = $(this);
-        array.push({
-            year: (element.find('.year-input').val() | 0),
-            timespan: (element.find('.timespan-list').val() | 0),
-            day: (element.find('.timespan-day-list').val() | 0),
-            element: element,
-            order: i
-        });
-    });
-
-    array.sort((a, b) => {
-        if (a.year >= b.year) {
-            if (a.year == b.year) {
-                if (a.timespan >= b.timespan) {
-                    if (a.timespan == b.timespan) {
-                        return a.day > b.day ? 1 : -1;
-                    }
-                } else {
-                    return -1;
-                }
-            } else {
-                return 1;
-            }
-        } else {
-            return -1;
-        }
-    });
-
-    let change = false;
-    for (let i = 0; i < array.length - 1; i++) {
-        if (array[i].order != (array[i + 1].order - 1)) {
-            change = true;
-            break;
-        }
-    }
-
-    if (!change) {
-        return;
-    }
-
-    let elements = [];
-    for (let i in array) {
-        elements.push(array[i].element)
-    }
-
-    list.empty().append(elements);
-}
-
-function sort_list_by_partial_date(list) {
-    let array = [];
-
-    list.children().each(function(i) {
-        let element = $(this);
-        array.push({
-            timespan: (element.find('.timespan-list').val() | 0),
-            day: (element.find('.timespan-day-list').val() | 0),
-            element: element,
-            order: i
-        });
-    });
-
-    array.sort((a, b) => {
-        if (a.timespan >= b.timespan) {
-            if (a.timespan == b.timespan) {
-                return a.day > b.day ? 1 : -1;
-            }
-        } else {
-            return -1;
-        }
-    });
-
-    let change = false;
-    for (let i = 0; i < array.length - 1; i++) {
-        if (array[i].order != (array[i + 1].order - 1)) {
-            change = true;
-            break;
-        }
-    }
-
-    if (!change) {
-        return;
-    }
-
-    let elements = [];
-    for (let i in array) {
-        elements.push(array[i].element)
-    }
-
-    list.empty().append(elements).change();
-}
-
 export function adjustInput(element, target, int) {
     var target = $(target);
     target.val((target.val() | 0) + int).change();
@@ -2548,20 +2074,6 @@ export function set_up_edit_values() {
     // } else {
     //     $('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
     // }
-
-    if (window.static_data.eras) {
-
-        for (var i = 0; i < window.static_data.eras.length; i++) {
-            add_era_to_list(era_list, i, window.static_data.eras[i])
-        }
-
-        era_list.children().each(function(i) {
-
-            repopulate_timespan_select($(this).find('.timespan-list'), window.static_data.eras[i].date.timespan, false);
-            repopulate_day_select($(this).find('.timespan-day-list'), window.static_data.eras[i].date.day, false);
-
-        })
-    }
 
     if (window.location.pathname != '/calendars/create') {
 

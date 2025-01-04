@@ -1,4 +1,4 @@
-import { do_error_check } from "./calendar_inputs_edit.js";
+import { do_error_check, evaluate_save_button } from "./calendar_inputs_edit.js";
 import _ from "lodash";
 
 export default (calendar_structure) => ({
@@ -191,5 +191,7 @@ export default (calendar_structure) => ({
         }
 
         this.$dispatch('calendar-updated');
+
+        evaluate_save_button();
     }
 });

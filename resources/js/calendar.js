@@ -1,5 +1,10 @@
 // TODO: ABSOLUTELY rewrite this
-import { avg_month_length, avg_year_length, evaluate_calendar_start } from "./calendar/calendar_functions.js";
+import {
+    avg_month_length,
+    avg_year_length, does_day_appear,
+    does_timespan_appear,
+    evaluate_calendar_start
+} from "./calendar/calendar_functions.js";
 
 export default class Calendar {
 
@@ -26,6 +31,16 @@ export default class Calendar {
 
     evaluate_calendar_start(year, month=false, day=false, debug=false){
         return evaluate_calendar_start(this.static_data, year, month, day, debug);
+    }
+
+    does_timespan_appear(year, timespan){
+        // TODO: Replace this with something a bit more holistic?
+        return does_timespan_appear(this.static_data, year, timespan);
+    }
+
+    does_day_appear(year, timespan, day){
+        // TODO: Replace this with something a bit more holistic?
+        return does_day_appear(this.static_data, year, timespan);
     }
 
     set static_data(value) {
