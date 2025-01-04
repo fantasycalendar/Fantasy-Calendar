@@ -21,7 +21,7 @@ class ErasCollapsible extends CollapsibleComponent {
     }
 
     changeHandlers = {
-        "eras": this.handleCustomFormatting
+        "eras": this.handleChangedEras
     }
 
     validators = {
@@ -70,7 +70,12 @@ class ErasCollapsible extends CollapsibleComponent {
             .map(index => `Day ${index+1}`);
     }
 
-    handleCustomFormatting() {
+    updateEraEpoch(era){
+        if(era.settings.starting_era) return;
+        era.date.epoch = this.$store.calendar.evaluate_calendar_start(era.date.year, era.date.timespan, era.date.day).epoch;
+    }
+
+    handleChangedEras() {
         for(let era of this.eras){
             if(!era.settings.use_custom_format) {
                 if (era.settings.restart) {
@@ -80,6 +85,16 @@ class ErasCollapsible extends CollapsibleComponent {
                 }
             }
         }
+        this.eras.sort((a, b) => {
+            if(a.settings.starting_era){
+                return -1;
+            }
+            return a.date.epoch - b.date.epoch;
+        });
+    }
+
+    previewEraDate(era){
+        // TODO: Set preview_date to era date
     }
 
     validateEraDate(){

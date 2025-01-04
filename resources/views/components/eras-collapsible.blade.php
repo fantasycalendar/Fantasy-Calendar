@@ -152,6 +152,7 @@
                                                 <input type='number' step="1.0"
                                                        class='date form-control small-input'
                                                        x-model.lazy.number='era.date.year'
+                                                       @change="updateEraEpoch(era)"
                                                 />
                                             </div>
                                         </div>
@@ -159,7 +160,9 @@
                                             <div class='col'>
                                                 <select type='number'
                                                         class='date custom-select form-control'
-                                                        x-model.lazy.number='era.date.timespan'>
+                                                        x-model.lazy.number='era.date.timespan'
+                                                        @change="updateEraEpoch(era)"
+                                                >
                                                     <template x-for="(month, index) in months">
                                                         <option :value="index" x-text="month.name"
                                                                 :selected="index === era.date.timespan"
@@ -172,7 +175,9 @@
                                             <div class='col'>
                                                 <select type='number'
                                                         class='date custom-select form-control'
-                                                        x-model.lazy.number='era.date.day'>
+                                                        x-model.lazy.number='era.date.day'
+                                                        @change="updateEraEpoch(era)"
+                                                >
                                                     <template
                                                         x-for="(day, index) in getDaysForMonth(era.date.timespan)">
                                                         <option :value="index+1" x-text="day"
@@ -186,7 +191,7 @@
                             </div>
                             <div class='row my-2'>
                                 <div class='col'>
-                                    <div class='btn btn-secondary full preview_era_date'>Preview era start date</div>
+                                    <div class='btn btn-secondary full' @click="previewEraDate(era)">Preview era start date</div>
                                 </div>
                             </div>
                             <div class='row my-2 bold-text'>
