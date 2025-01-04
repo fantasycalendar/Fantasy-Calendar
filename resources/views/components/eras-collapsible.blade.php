@@ -163,7 +163,7 @@
                                                         x-model.lazy.number='era.date.timespan'
                                                         @change="updateEraEpoch(era)"
                                                 >
-                                                    <template x-for="(month, index) in months">
+                                                    <template x-for="(month, index) in getMonthsInYear(era.date.year)">
                                                         <option :value="index" x-text="month.name"
                                                                 :selected="index === era.date.timespan"
                                                                 :disabled="month.disabled"></option>

@@ -21,7 +21,7 @@ class ErasCollapsible extends CollapsibleComponent {
     }
 
     changeHandlers = {
-        "eras": this.handleChangedEras
+        "eras": this.handleChangedEras,
     }
 
     validators = {
@@ -57,16 +57,17 @@ class ErasCollapsible extends CollapsibleComponent {
         this.deleting = -1;
     }
 
-    get months(){
-        return this.timespans.map(month => ({
-            name: month.name,
-            disabled: month.interval > 1,
-            length: month.length
-        }));
+    getMonthsInYear(year){
+        // TODO: make this refresh when the month intervals are changed - change listener?
+        return this.$store.calendar.get_timespans_in_year(year)
+            .map(({ result, reason }, index) => ({
+                name: this.timespans[index].name + (!result ? ` (${reason})` : ""),
+                disabled: !result
+            }));
     }
 
     getDaysForMonth(month_index){
-        return Array.from(Array(this.months[month_index].length).keys())
+        return Array.from(Array(this.timespans[month_index].length).keys())
             .map(index => `Day ${index+1}`);
     }
 
