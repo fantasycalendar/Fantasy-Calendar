@@ -71,7 +71,7 @@ export default class CollapsibleComponent {
 
     rerender(key, value) {
         if (this.is_valid) {
-            this.$dispatch('calendar-updated', { calendar: { [key]: value } });
+            this.$dispatch('calendar-updating', { calendar: { [key]: value } });
         }
     }
 
