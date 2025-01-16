@@ -41,7 +41,7 @@
 
         @if(request()->is('calendars/*/edit'))
             <x-collapsible :calendar="$calendar" contains="Real-Time Advancement" icon="fa-history"
-                           premium_feature="true"></x-collapsible>
+                           premium_feature="true" done></x-collapsible>
         @endif
 
         <x-collapsible :calendar="$calendar" contains="Weekdays" step="2" icon="fa-calendar-week" done></x-collapsible>

@@ -57,7 +57,7 @@
                         </div>
 
                         <div class='form-check list-group-item py-2'>
-                            <input type='checkbox' class='form-check-input' x-model='category.category_settings.hide' />
+                            <input type='checkbox' class='form-check-input' x-model='category.category_settings.player_usable' />
 
                             <label class='form-check-label ml-1'>
                                 Category usable by players
@@ -109,7 +109,7 @@
                     <div class='input-group col-12 mt-1 mb-2' x-data="{ colorOptions: ['Dark-Solid', 'Red', 'Pink', 'Purple', 'Deep-Purple', 'Blue', 'Light-Blue', 'Cyan', 'Teal', 'Green', 'Light-Green', 'Lime', 'Yellow', 'Orange', 'Blue-Grey'] }">
                         <select x-model='category.event_settings.color' class='custom-select form-control color_display'>
                             <template x-for="colorOption in colorOptions">
-                                <option x-text="colorOption" :value="colorOption"></option>
+                                <option x-text="colorOption" :value="colorOption" :selected="colorOption == category.event_settings.color"></option>
                             </template>
                         </select>
 
