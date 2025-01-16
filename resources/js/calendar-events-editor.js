@@ -309,18 +309,15 @@ export default () => ({
             // this.description_input.trumbowyg('html', this.working_event.description);
         }
 
-        let category_id = window.static_data.settings.default_category !== undefined ? static_data.settings.default_category : -1;
+        let default_category = this.$store.calendar.get_default_event_category();
 
-        if (category_id !== -1) {
-            let category = get_category(category_id);
-            if (category !== undefined && category.id !== -1) {
-                this.working_event.event_category_id = category.id;
-                this.working_event.settings.color = category.event_settings.color;
-                this.working_event.settings.text = category.event_settings.text;
-                this.working_event.settings.hide = category.event_settings.hide;
-                this.working_event.settings.print = category.event_settings.print;
-                this.working_event.settings.hide_full = category.event_settings.hide_full;
-            }
+        if (default_category) {
+            this.working_event.event_category_id = default_category.id;
+            this.working_event.settings.color = default_category.event_settings.color;
+            this.working_event.settings.text = default_category.event_settings.text;
+            this.working_event.settings.hide = default_category.event_settings.hide;
+            this.working_event.settings.print = default_category.event_settings.print;
+            this.working_event.settings.hide_full = default_category.event_settings.hide_full;
         }
 
         this.set_up_moon_data();
@@ -337,18 +334,21 @@ export default () => ({
     },
 
     event_category_changed() {
-
-        if (this.working_event.event_category_id !== -1) {
-            let category = get_category(this.working_event.event_category_id);
-            if (category !== undefined && category.id !== -1) {
-                this.working_event.settings.color = category.event_settings.color;
-                this.working_event.settings.text = category.event_settings.text;
-                this.working_event.settings.hide = category.event_settings.hide;
-                this.working_event.settings.print = category.event_settings.print;
-                this.working_event.settings.hide_full = category.event_settings.hide_full;
-            }
+        if (this.working_event.event_category_id == -1) {
+            return;
         }
 
+        let category = this.$store.calendar.find_event_category(this.working_event.event_category_id);
+
+        if (!category) {
+            return;
+        }
+
+        this.working_event.settings.color = category.event_settings.color;
+        this.working_event.settings.text = category.event_settings.text;
+        this.working_event.settings.hide = category.event_settings.hide;
+        this.working_event.settings.print = category.event_settings.print;
+        this.working_event.settings.hide_full = category.event_settings.hide_full;
     },
 
     edit_event($event) {

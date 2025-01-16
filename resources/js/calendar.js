@@ -54,6 +54,30 @@ export default class Calendar {
         return window.apiurl + urlstring.replace(":hash", window.hash);
     }
 
+    setting(name, givenDefault = null) {
+        let setting = this.static_data.settings[name] ?? givenDefault;
+
+        console.log(name, givenDefault, setting);
+
+        return setting;
+    }
+
+    find_event_category(category_id) {
+        let found_category = this.event_categories.find(category => category.id == category_id) ?? null;
+
+        console.log(found_category);
+
+        return found_category;
+    }
+
+    get_default_event_category() {
+        let default_category = this.find_event_category(this.setting('default_category', -1));
+
+        console.log(default_category);
+
+        return default_category;
+    }
+
     set static_data(value) {
         window.static_data = value;
     }
