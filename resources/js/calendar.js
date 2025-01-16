@@ -11,6 +11,7 @@ export default class Calendar {
     update(incomingChanges) {
         let structuralKeys = [
             "static_data.year_data",
+            "event_categories",
         ];
         let structureChanged = false;
 
@@ -57,7 +58,7 @@ export default class Calendar {
     }
 
     set dynamic_data(value) {
-        window.dynamid_data = value;
+        window.dynamic_data = value;
     }
 
     set event_categories(value) {
