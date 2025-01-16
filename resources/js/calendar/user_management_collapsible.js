@@ -5,6 +5,9 @@ import Swal from "sweetalert2";
 export default () => ({
     reordering: false,
     users: [],
+    invite_email: "",
+    invite_status: "Status will go here",
+    invite_enabled: true,
 
     load: function(static_data) {
         this.loadUsers();
@@ -23,6 +26,58 @@ export default () => ({
                     icon_color: 'text-red-500'
                 });
             });
+    },
+
+    inviteUser() {
+        this.invite_enabled = false;
+
+        axios.post(this.$store.calendar.api_url("/calendar/:hash/inviteUser"), {
+            email: this.invite_email
+        }).then(result => {
+            this.invite_status = `Sent email to ${this.invite_email}!`;
+            this.invite_email = "";
+        }).catch(error => {
+            console.log(error);
+
+            this.invite_status = error.response.data.errors.email[0];
+        }).finally(() => {
+            setTimeout(() => {
+                this.invite_status = "";
+                this.invite_enabled = true;
+            }, 2000);
+
+            this.loadUsers();
+        });
+    },
+
+    removeInvite(invited_email) {
+        Swal.fire({
+            title: "Removing User",
+            html: `<p>Are you sure you want to cancel your invitation to <strong>${invited_email}</strong>?</p>`,
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, remove',
+            cancelButtonText: 'Cancel',
+            icon: "warning"
+        }).then((result) => {
+            if (result.dismiss) {
+                return;
+            }
+
+            axios.post(this.$store.calendar.api_url("/calendar/:hash/removeUser"), {
+                email: invited_email,
+            }).then((response) => {
+                this.loadUsers();
+            }).catch(function(error) {
+                this.$dispatch('notify', {
+                    title: 'Oops!',
+                    body: 'An error occurred, please try again later.',
+                    icon: 'fa-exclamation-triangle',
+                    icon_color: 'text-red-500'
+                });
+            });
+        });
     },
 
     removeUser(user_id) {
