@@ -55,27 +55,15 @@ export default class Calendar {
     }
 
     setting(name, givenDefault = null) {
-        let setting = this.static_data.settings[name] ?? givenDefault;
-
-        console.log(name, givenDefault, setting);
-
-        return setting;
+        return this.static_data.settings[name] ?? givenDefault;
     }
 
     find_event_category(category_id) {
-        let found_category = this.event_categories.find(category => category.id == category_id) ?? null;
-
-        console.log(found_category);
-
-        return found_category;
+        return this.event_categories.find(category => category.id == category_id) ?? null;
     }
 
     get_default_event_category() {
-        let default_category = this.find_event_category(this.setting('default_category', -1));
-
-        console.log(default_category);
-
-        return default_category;
+        return this.find_event_category(this.setting('default_category', -1));
     }
 
     set static_data(value) {
