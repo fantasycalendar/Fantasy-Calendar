@@ -77,7 +77,7 @@
     </div>
 
     <div class='row no-gutters my-1'>
-        <button type='button' class='btn btn-sm btn-secondary full' id='refresh_calendar_users'>
+        <button type='button' class='btn btn-sm btn-secondary full' @click="loadUsers">
             Refresh
         </button>
     </div>
