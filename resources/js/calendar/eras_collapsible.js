@@ -1,7 +1,6 @@
 import CollapsibleComponent from "./collapsible_component.js";
 
 class ErasCollapsible extends CollapsibleComponent {
-
     era_name = "";
     deleting = -1;
 
@@ -28,7 +27,7 @@ class ErasCollapsible extends CollapsibleComponent {
         "eras": this.validateEraDate
     };
 
-    addEra(){
+    addEra() {
         this.eras.push({
             "name": this.era_name || "New Era",
             "formatting": 'Year {{year}}',
@@ -52,12 +51,12 @@ class ErasCollapsible extends CollapsibleComponent {
         this.era_name = "";
     }
 
-    removeEra(era_index){
+    removeEra(era_index) {
         this.eras.splice(era_index, 1);
         this.deleting = -1;
     }
 
-    getMonthsInYear(year){
+    getMonthsInYear(year) {
         // TODO: make this refresh when the month intervals are changed - change listener?
         return this.$store.calendar.get_timespans_in_year(year)
             .map(({ result, reason }, index) => ({
@@ -66,19 +65,20 @@ class ErasCollapsible extends CollapsibleComponent {
             }));
     }
 
-    getDaysForMonth(month_index){
-        return Array.from(Array(this.timespans[month_index].length).keys())
-            .map(index => `Day ${index+1}`);
+    getDaysForMonth(year, month_index) {
+        return this.$store.calendar
+            .get_days_in_timespan_in_year(year, month_index)
+            .map((day, index) =>  `Day ${index + 1}` + (day.text ? ` - ${day.text}` : ""));
     }
 
-    updateEraEpoch(era){
-        if(era.settings.starting_era) return;
+    updateEraEpoch(era) {
+        if (era.settings.starting_era) return;
         era.date.epoch = this.$store.calendar.evaluate_calendar_start(era.date.year, era.date.timespan, era.date.day).epoch;
     }
 
     handleChangedEras() {
-        for(let era of this.eras){
-            if(!era.settings.use_custom_format) {
+        for (let era of this.eras) {
+            if (!era.settings.use_custom_format) {
                 if (era.settings.restart) {
                     era.formatting = 'Era year {{era_year}} (year {{year}}) - {{era_name}}';
                 } else {
@@ -86,32 +86,37 @@ class ErasCollapsible extends CollapsibleComponent {
                 }
             }
         }
+
         this.eras.sort((a, b) => {
-            if(a.settings.starting_era){
+            if (a.settings.starting_era) {
                 return -1;
             }
             return a.date.epoch - b.date.epoch;
         });
     }
 
-    previewEraDate(era){
-        // TODO: Set preview_date to era date
+    previewEraDate(era) {
+        this.$store.calendar.set_preview_date(
+            era.date.year,
+            era.date.timespan,
+            era.date.day,
+        );
     }
 
-    validateEraDate(){
+    validateEraDate() {
         let errors = [];
-        for(let [index, era] of this.eras.entries()){
-            let does_month_appear= this.$store.calendar.does_timespan_appear(era.date.year, era.date.timespan);
-            if(!does_month_appear.result){
-                if(does_month_appear.reason === "era ended"){
+        for (let [index, era] of this.eras.entries()) {
+            let does_month_appear = this.$store.calendar.does_timespan_appear(era.date.year, era.date.timespan);
+            if (!does_month_appear.result) {
+                if (does_month_appear.reason === "era ended") {
                     errors.push({ path: `eras.${index}.date.timespan`, message: `The date the era "${era.name}" is meant to start on doesn't exist on year ${era.date.year} due to another era ending the year prematurely.` });
-                }else{
+                } else {
                     errors.push({ path: `eras.${index}.date.timespan`, message: `The date the era "${era.name}" is meant to start on doesn't exist on year ${era.date.year} due to the month leaping.` });
                 }
                 continue;
             }
             let does_day_appear = this.$store.calendar.does_day_appear(era.date.year, era.date.timespan, era.date.day);
-            if(!does_day_appear.result){
+            if (!does_day_appear.result) {
                 errors.push({ path: `eras.${index}.date.timespan`, message: `The date the era "${era.name}" is meant to start on doesn't exist on year ${era.date.year} due to another era ending the year prematurely.` });
             }
         }

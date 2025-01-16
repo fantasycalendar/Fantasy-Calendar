@@ -3,7 +3,7 @@ import {
     avg_month_length,
     avg_year_length, convert_year, does_day_appear,
     does_timespan_appear,
-    evaluate_calendar_start, get_timespans_in_year
+    evaluate_calendar_start, get_days_in_timespan, get_timespans_in_year
 } from "./calendar/calendar_functions.js";
 
 export default class Calendar {
@@ -45,6 +45,10 @@ export default class Calendar {
         return does_timespan_appear(this.static_data, convert_year(this.static_data, year), timespan);
     }
 
+    get_days_in_timespan_in_year(year, timespan) {
+        return get_days_in_timespan(this.static_data, convert_year(this.static_data, year), timespan);
+    }
+
     does_day_appear(year, timespan, day) {
         // TODO: Replace this with something a bit more holistic?
         return does_day_appear(this.static_data, convert_year(this.static_data, year), timespan);
@@ -64,6 +68,10 @@ export default class Calendar {
 
     get_default_event_category() {
         return this.find_event_category(this.setting('default_category', -1));
+    }
+
+    set_preview_date(year, timespan, day) {
+        window.set_preview_date(year, timespan, day);
     }
 
     set static_data(value) {

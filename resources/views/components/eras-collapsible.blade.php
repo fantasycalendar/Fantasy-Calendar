@@ -179,7 +179,7 @@
                                                         @change="updateEraEpoch(era)"
                                                 >
                                                     <template
-                                                        x-for="(day, index) in getDaysForMonth(era.date.timespan)">
+                                                        x-for="(day, index) in getDaysForMonth(era.date.year, era.date.timespan)">
                                                         <option :value="index+1" x-text="day"
                                                                 :selected="index+1 === era.date.day"></option>
                                                     </template>
