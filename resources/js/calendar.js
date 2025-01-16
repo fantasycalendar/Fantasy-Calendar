@@ -9,7 +9,8 @@ import {
 export default class Calendar {
 
     update(incomingChanges) {
-        let structuralKeys = [
+        // TODO: Make recalculation more atomic
+        let rerenderKeys = [
             "static_data.year_data",
             "event_categories",
         ];
@@ -19,7 +20,7 @@ export default class Calendar {
             _.set(this, key, _.cloneDeep(value));
 
             console.log(key);
-            structureChanged = structureChanged || structuralKeys.some(structuralKey => key.startsWith(structuralKey));
+            structureChanged = structureChanged || rerenderKeys.some(structuralKey => key.startsWith(structuralKey));
         }
 
         // First of many rules, I'm sure.
@@ -30,21 +31,21 @@ export default class Calendar {
         return structureChanged;
     }
 
-    evaluate_calendar_start(year, month=false, day=false, debug=false){
+    evaluate_calendar_start(year, month = false, day = false, debug = false) {
         return evaluate_calendar_start(this.static_data, convert_year(this.static_data, year), month, day, debug);
     }
 
-    get_timespans_in_year(year, inclusive = true){
+    get_timespans_in_year(year, inclusive = true) {
         // TODO: Replace this with something a bit more holistic?
         return get_timespans_in_year(this.static_data, convert_year(this.static_data, year), inclusive);
     }
 
-    does_timespan_appear(year, timespan){
+    does_timespan_appear(year, timespan) {
         // TODO: Replace this with something a bit more holistic?
         return does_timespan_appear(this.static_data, convert_year(this.static_data, year), timespan);
     }
 
-    does_day_appear(year, timespan, day){
+    does_day_appear(year, timespan, day) {
         // TODO: Replace this with something a bit more holistic?
         return does_day_appear(this.static_data, convert_year(this.static_data, year), timespan);
     }
@@ -74,7 +75,13 @@ export default class Calendar {
                             ...category.event_settings,
                         };
                     })
-            })
+            });
+
+        window.events.forEach(event => {
+            if (!window.event_categories.some(category => category.id === event.event_category_id)) {
+                event.event_category_id = -1;
+            }
+        });
     }
 
     set advancement(value) {

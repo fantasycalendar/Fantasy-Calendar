@@ -1,10 +1,10 @@
 @props(['calendar' => null])
 
 <div class='row no-gutters input-group'>
-    <input type='text' class='form-control name' placeholder='New category name' x-model="new_category_name">
+    <input type='text' class='form-control name' placeholder='New category name' x-model="new_category_name" @keydown.enter="createNewCategory">
 
     <div class="input-group-append">
-        <button type='button' class='btn btn-primary' @click="createNewCategory"><i class="fa fa-plus"></i></button>
+        <button type='button' class='btn btn-primary' @click="createNewCategory" :disabled="categoryCreationIsDisabled"><i class="fa fa-plus"></i></button>
     </div>
 </div>
 
@@ -147,11 +147,11 @@
 <div class='row no-gutters bold-text'>
     <div class='col'>
         Default category
-        <select class='form-control protip mt-1' data-pt-position="right" data-pt-title="This sets the category to be selected by default when a new event is created" >
-            <option value="">No default category</option>
+        <select x-model="default_category" class='form-control protip mt-1' data-pt-position="right" data-pt-title="This sets the category to be selected by default when a new event is created" >
+            <option value="-1">No default category</option>
 
             <template x-for="category in categories">
-                <option value="category.id" x-text="category.name"></option>
+                <option :value="category.id" x-text="category.name" :selected="category.id === default_category"></option>
             </template>
         </select>
     </div>

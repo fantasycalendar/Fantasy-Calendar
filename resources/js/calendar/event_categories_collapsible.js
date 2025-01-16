@@ -16,9 +16,13 @@ class EventCategoriesCollapsible extends CollapsibleComponent {
     deleting = null;
     categories = [];
     new_category_name = "";
-    default_category = null;
+    default_category = -1;
 
     createNewCategory() {
+        if (this.categoryCreationIsDisabled) {
+            return;
+        }
+
         let calendar_id = this.$store.calendar.id;
 
         this.categories.push({
@@ -40,8 +44,13 @@ class EventCategoriesCollapsible extends CollapsibleComponent {
         this.new_category_name = "";
     };
 
+    get categoryCreationIsDisabled() {
+        return !this.new_category_name || this.categories.some(category => category.id === slugify(this.new_category_name));
+    };
+
     removeCategory(categoryId) {
         this.categories = this.categories.filter(category => category.id !== categoryId);
+        this.deleting = null;
     };
 }
 
