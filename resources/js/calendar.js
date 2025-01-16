@@ -48,6 +48,10 @@ export default class Calendar {
         return does_day_appear(this.static_data, convert_year(this.static_data, year), timespan);
     }
 
+    api_url(urlstring = "") {
+        return window.apiurl + urlstring.replace(":hash", window.hash);
+    }
+
     set static_data(value) {
         window.static_data = value;
     }
