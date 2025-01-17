@@ -121,8 +121,12 @@
                         <div class='row mt-2'>
                             <div class='col'>
                                 Event category:
-                                <select type='text' class='custom-select form-control event-category-list'
-                                        x-model='era.settings.event_category_id'>
+                                <select x-model="era.settings.event_category_id" class='form-control protip mt-1' data-pt-position="right" data-pt-title="This sets the category to be selected by default when a new event is created" >
+                                    <option value="-1">No default category</option>
+
+                                    <template x-for="category in event_categories">
+                                        <option :value="category.id" x-text="category.name" :selected="category.id == era.settings.event_category_id"></option>
+                                    </template>
                                 </select>
                             </div>
                         </div>

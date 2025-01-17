@@ -7,12 +7,14 @@ class ErasCollapsible extends CollapsibleComponent {
     eras = [];
     season_settings = {};
     dynamic_data = {};
+    event_categories = [];
 
     inboundProperties = {
         "eras": "static_data.eras",
         "season_settings": "static_data.seasons.global_settings",
         "dynamic_data": "dynamic_data",
-        "timespans": "static_data.year_data.timespans"
+        "timespans": "static_data.year_data.timespans",
+        "event_categories": "event_categories"
     }
 
     outboundProperties = {
