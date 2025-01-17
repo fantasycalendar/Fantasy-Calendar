@@ -78,6 +78,17 @@ class ErasCollapsible extends CollapsibleComponent {
         era.date.epoch = this.$store.calendar.evaluate_calendar_start(era.date.year, era.date.timespan, era.date.day).epoch;
     }
 
+    canBeStartingEra(index_to_check) {
+        console.log("checking", index_to_check);
+        let result = this.eras
+            .filter((era, index) => index != index_to_check)
+            .some(era => era.settings.starting_era);
+
+        console.log(result);
+
+        return !result;
+    }
+
     handleChangedEras() {
         for (let era of this.eras) {
             if (!era.settings.use_custom_format) {
@@ -124,7 +135,6 @@ class ErasCollapsible extends CollapsibleComponent {
         }
         return errors;
     }
-
 }
 
 export default () => new ErasCollapsible();

@@ -137,12 +137,19 @@
                         </div>
                     </div>
                     <div class='row no-gutters my-1'>
-                        <div class='form-check col-12 py-2 border rounded'>
+                        <div class='form-check col-12 py-2 border rounded'
+                            x-show="canBeStartingEra(era_index)"
+                            >
                             <input type='checkbox' :id='era_index + "_starting_era"'
-                                   class='form-check-input starting_era' x-model='era.settings.starting_era'/>
+                                   class='form-check-input'
+                                   x-model='era.settings.starting_era'></input>
                             <label :for='era_index + "_starting_era"' class='form-check-label ml-1'>
                                 Is starting era (like B.C.)
                             </label>
+                        </div>
+
+                        <div class='col-12 py-2 border rounded text-center' x-show="!canBeStartingEra(era_index)">
+                            There can only be one starting era.
                         </div>
                     </div>
                     <template x-if='!era.settings.starting_era'>
