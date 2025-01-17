@@ -12,6 +12,7 @@ export default class Calendar {
         // TODO: Make recalculation more atomic
         let rerenderKeys = [
             "static_data.year_data",
+            "static_data.eras",
             "event_categories",
         ];
         let structureChanged = false;
