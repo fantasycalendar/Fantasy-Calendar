@@ -8,11 +8,38 @@ export default class CollapsibleComponent {
     changeHandlers = {};
     outboundProperties = {};
 
+    draggableRef = null;
+
     validators = {};
     errors = [];
     calendar_settings = {};
     is_valid = true;
     collapsible_name = "Not set on the individual component?!?";
+
+    init() {
+        if (this.draggableRef) {
+            this.draggable = Sortable.create(this.$refs[this.draggableRef], {
+                animation: 150,
+                handle: ".handle",
+                onEnd: (event) => {
+                    this.dropped(event.oldIndex, event.newIndex);
+                }
+            });
+        }
+    }
+
+
+    dropped(start, end){
+
+        if(start === end) return;
+
+        let order = this.draggable.toArray();
+        order.shift()
+
+        this.reorderSortable(start, end);
+
+        this.$refs[this.draggableRef + "-template"]._x_prevKeys = order;
+    }
 
     load() {
         this.calendar_settings = this.$store.calendar.static_data.settings;
@@ -113,5 +140,9 @@ export default class CollapsibleComponent {
 
     debug() {
         console.log(JSON.parse(JSON.stringify(this)));
+    }
+
+    reorderSortable() {
+        // Nop
     }
 }

@@ -16,29 +16,15 @@ class EventsCollapsible extends CollapsibleComponent {
     dynamic_data = {};
     preview_date = {};
 
-    init(){
-        this.draggable = Sortable.create(this.$refs["events-sortable"], {
-            animation: 150,
-            handle: ".handle",
-            onEnd: (event) => {
-                this.dropped(event.oldIndex, event.newIndex);
-            }
-        });
-    }
+    draggableRef = "events-sortable";
 
     get_current_epoch() {
         return (this.preview_date?.follow ?? true) ? this.dynamic_data.epoch : this.preview_date.epoch;
     }
 
-    dropped(start, end){
-
-        if(start === end) return;
-
-        let order = this.draggable.toArray();
-        order.shift()
+    reorderSortable(start, end){
         const elem = this.events.splice(start, 1)[0];
         this.events.splice(end, 0, elem);
-        this.$refs["events-sortable-template"]._x_prevKeys = order;
 
         // TODO: Break this out into a draggable/sortable component?
 
@@ -57,9 +43,7 @@ class EventsCollapsible extends CollapsibleComponent {
             const event = this.events[i];
             event.sort_by = i;
         }
-
     }
-
 }
 
 export default () => new EventsCollapsible();
