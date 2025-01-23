@@ -8,7 +8,7 @@
     </div>
 </div>
 
-<div class='sortable list-group my-2'>
+<div class='sortable list-group my-2' x-ref="event-categories-sortable">
     <template x-for="category in categories" :key="category.id">
         <div class='sortable-container list-group-item collapsible p-2 first-of-type:rounded-t'
             :class="{'collapsed': !collapsed}"

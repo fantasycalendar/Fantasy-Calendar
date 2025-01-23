@@ -26,8 +26,6 @@ class EventsCollapsible extends CollapsibleComponent {
         const elem = this.events.splice(start, 1)[0];
         this.events.splice(end, 0, elem);
 
-        // TODO: Break this out into a draggable/sortable component?
-
         for(let i = 0; i < this.events.length; i++){
             const event = this.events[i];
             if(event.data.connected_events?.length){
