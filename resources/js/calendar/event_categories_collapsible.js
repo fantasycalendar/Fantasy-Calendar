@@ -20,6 +20,7 @@ class EventCategoriesCollapsible extends CollapsibleComponent {
     default_category = -1;
 
     draggableRef = "event-categories-sortable";
+    reordering = false;
 
     createNewCategory() {
         if (this.categoryCreationIsDisabled) {

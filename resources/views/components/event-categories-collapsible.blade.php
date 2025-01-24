@@ -8,6 +8,16 @@
     </div>
 </div>
 
+<div class="row no-gutters my-2">
+    <button class="full btn btn-secondary" @click="reordering = true" x-show="!reordering">
+        <i class="fa fa-arrows-alt-v"></i> Change order
+    </button>
+    <button class="full btn btn-secondary" @click="reordering = false" x-show="reordering">
+        <i class="fa fa-check"></i> Done
+    </button>
+</div>
+
+
 <div class='sortable list-group my-2' x-ref="event-categories-sortable">
     <template x-for="(category, index) in categories" :key="index" x-ref="event-categories-sortable-template">
         <div class='sortable-container list-group-item collapsible p-2 first-of-type:rounded-t draggable-source'
@@ -17,10 +27,12 @@
             >
 
             <div class='flex items-center w-full gap-x-2' x-show="deleting !== category.id">
-                <div class='handle fa fa-bars'></div>
+                <div class='handle fa fa-bars' x-show="reordering"></div>
                 <div class='cursor-pointer text-xl fa'
                      :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
-                     @click="collapsed = !collapsed"></div>
+                     @click="collapsed = !collapsed"
+                     x-show="!reordering"
+                     ></div>
                 <input type='text' class='name-input small-input form-control' x-model.lazy='category.name'/>
                 <button class="btn btn-danger w-10" @click="deleting = category.id">
                     <i class="fa fa-trash text-lg"></i>
