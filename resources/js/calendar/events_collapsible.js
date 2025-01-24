@@ -1,6 +1,7 @@
 import CollapsibleComponent from "./collapsible_component.js";
 
 class EventsCollapsible extends CollapsibleComponent {
+    collapsible_name = "events";
 
     inboundProperties = {
         "events": "events",
@@ -22,22 +23,22 @@ class EventsCollapsible extends CollapsibleComponent {
         return (this.preview_date?.follow ?? true) ? this.dynamic_data.epoch : this.preview_date.epoch;
     }
 
-    reorderSortable(start, end){
+    reorderSortable(start, end) {
         const elem = this.events.splice(start, 1)[0];
         this.events.splice(end, 0, elem);
 
-        for(let i = 0; i < this.events.length; i++){
+        for (let i = 0; i < this.events.length; i++) {
             const event = this.events[i];
-            if(event.data.connected_events?.length){
-                for(let connected_id = 0; connected_id < event.data.connected_events.length; connected_id++){
+            if (event.data.connected_events?.length) {
+                for (let connected_id = 0; connected_id < event.data.connected_events.length; connected_id++) {
                     const old_index = event.data.connected_events[connected_id];
-                    if(old_index === null) continue;
+                    if (old_index === null) continue;
                     event.data.connected_events[connected_id] = this.events.findIndex(event => event.sort_by === old_index);
                 }
             }
         }
 
-        for(let i = 0; i < this.events.length; i++){
+        for (let i = 0; i < this.events.length; i++) {
             const event = this.events[i];
             event.sort_by = i;
         }

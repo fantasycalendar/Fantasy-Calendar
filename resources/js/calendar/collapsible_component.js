@@ -9,6 +9,7 @@ export default class CollapsibleComponent {
     outboundProperties = {};
 
     draggableRef = null;
+    draggable = null;
 
     validators = {};
     errors = [];
@@ -25,12 +26,13 @@ export default class CollapsibleComponent {
                     this.dropped(event.oldIndex, event.newIndex);
                 }
             });
+
+            console.log("Setup draggable on ", this.collapsible_name);
         }
     }
 
 
     dropped(start, end){
-
         if(start === end) return;
 
         let order = this.draggable.toArray();

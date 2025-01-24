@@ -2,6 +2,7 @@ import CollapsibleComponent from "./collapsible_component.js";
 import { slugify } from "./header.js";
 
 class EventCategoriesCollapsible extends CollapsibleComponent {
+    collapsible_name = "event_categories";
 
     inboundProperties = {
         "categories": "event_categories",
@@ -17,6 +18,8 @@ class EventCategoriesCollapsible extends CollapsibleComponent {
     categories = [];
     new_category_name = "";
     default_category = -1;
+
+    draggableRef = "event-categories-sortable";
 
     createNewCategory() {
         if (this.categoryCreationIsDisabled) {
@@ -52,6 +55,16 @@ class EventCategoriesCollapsible extends CollapsibleComponent {
         this.categories = this.categories.filter(category => category.id !== categoryId);
         this.deleting = null;
     };
+
+    reorderSortable(start, end) {
+        const elem = this.categories.splice(start, 1)[0];
+        this.categories.splice(end, 0, elem);
+
+        for (let i = 0; i < this.categories.length; i++) {
+            const category = this.categories[i];
+            category.sort_by = i;
+        }
+    }
 }
 
 export default () => new EventCategoriesCollapsible();

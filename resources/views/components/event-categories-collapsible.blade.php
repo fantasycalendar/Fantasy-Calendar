@@ -9,8 +9,9 @@
 </div>
 
 <div class='sortable list-group my-2' x-ref="event-categories-sortable">
-    <template x-for="category in categories" :key="category.id">
-        <div class='sortable-container list-group-item collapsible p-2 first-of-type:rounded-t'
+    <template x-for="(category, index) in categories" :key="index" x-ref="event-categories-sortable-template">
+        <div class='sortable-container list-group-item collapsible p-2 first-of-type:rounded-t draggable-source'
+            :data-id="index"
             :class="{'collapsed': !collapsed}"
             x-data='{ color: "${data.event_settings.color}", text_style: "${data.event_settings.text}", collapsed: false }'
             >
