@@ -54,7 +54,6 @@
                  x-data='{ collapsed: false }'
             >
                 <div class='flex items-center w-full gap-x-2' x-show="deleting !== era_index">
-                    <div class='handle fa fa-bars'></div>
                     <div class='cursor-pointer text-xl fa'
                          :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
                          @click="collapsed = !collapsed"></div>
