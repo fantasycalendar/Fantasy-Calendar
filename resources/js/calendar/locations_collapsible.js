@@ -39,7 +39,7 @@ class LocationsCollapsible extends CollapsibleComponent {
     }
 
     changeHandlers = {
-        "seasons": this.updateLocationsWithSeasonBasedTime
+        "seasons": this.seasonsChanged
     }
 
     loaded() {
@@ -262,8 +262,28 @@ class LocationsCollapsible extends CollapsibleComponent {
         }
     }
 
-    updateLocationsWithSeasonBasedTime(){
+    seasonsChanged(){
         for(let location_index in this.locations){
+
+            const current_season_count = this.locations[location_index].seasons.length;
+            if(current_season_count > this.seasons.length){
+                this.locations[location_index].seasons.splice(this.seasons.length, current_season_count - this.seasons.length);
+            }else if(current_season_count < this.seasons.length){
+
+                this.locations[location_index].seasons = this.locations[location_index].seasons.concat(
+                    this.seasons.slice(current_season_count, this.seasons.length).map(season => {
+                        return {
+                            "time": season.time,
+                            "weather": {
+                                "temp_low": 0,
+                                "temp_high": 0,
+                                "precipitation": 0,
+                                "precipitation_intensity": 0
+                            }
+                        }
+                    })
+                )
+            }
             this.updateSeasonBasedTime(location_index)
         }
     }

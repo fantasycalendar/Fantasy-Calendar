@@ -92,7 +92,7 @@
                             <div class='lbl-toggle' @click="seasonCollapsed = !seasonCollapsed">
                                 <div class='cursor-pointer text-xl fa mr-2'
                                      :class="{ 'fa-caret-square-up': !seasonCollapsed, 'fa-caret-square-down': seasonCollapsed }"></div>
-                                <span x-text='season.name + " weather"'></span>
+                                <span x-text='(seasons?.[season_index]?.name ?? "Unknown") + " weather"'></span>
                             </div>
                             <div class='p-0' x-show="!seasonCollapsed">
                                 <div x-show="season_settings.enable_weather">

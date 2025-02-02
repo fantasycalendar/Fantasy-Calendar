@@ -15,7 +15,7 @@
         </div>
         <div class='col-12 col-md-2 px-md-0 text-center'>
             <label class="custom-control custom-checkbox flexible">
-                <input type="checkbox" class="custom-control-input" @click.prevent="switchPeriodicSeason">
+                <input type="checkbox" class="custom-control-input" :checked="settings.periodic_seasons" @click.prevent="switchPeriodicSeason">
                 <span class="custom-control-indicator"></span>
             </label>
         </div>
@@ -49,8 +49,8 @@
     </div>
 </div>
 
-<div class='sortable list-group my-2'>
-    <template x-for="(season, index) in seasons">
+<div class='sortable list-group my-2' x-ref="seasons-sortable">
+    <template x-for="(season, index) in seasons" x-ref="seasons-sortable-template">
 
         <div class='sortable-container list-group-item collapsible p-2 first-of-type:rounded-t'
              x-data="{ collapsed: true }"
@@ -79,8 +79,8 @@
                 </button>
             </div>
 
-            <div class='collapse-container container mb-2' x-show="presetSeasons.length">
-                <div class='row no-gutters my-1'>
+            <div class='collapse-container container mb-2'>
+                <div class='row no-gutters my-1' x-show="presetSeasons.length">
                     <div class='col-4 pt-1'>Season type:</div>
                     <div class='col'>
                         <select type='number' class='form-control preset-season-list' @change='handlePresetOrderChanged($event, index)'>

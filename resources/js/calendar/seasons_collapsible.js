@@ -52,18 +52,26 @@ class SeasonsCollapsible extends CollapsibleComponent {
         "locations": this.evaluateSeasonLengthText,
     }
 
+    draggableRef = "seasons-sortable";
+
+    reorderSortable(start, end) {
+        const elem = this.seasons.splice(start, 1)[0];
+        this.seasons.splice(end, 0, elem);
+    }
+
     loaded(){
         this.handleSeasonsChanged();
     }
 
     handleSeasonsChanged() {
         this.evaluateSeasonLengthText();
-        this.refreshSeasonPresetOrder()
+        this.refreshSeasonPresetOrder();
+        this.sortSeasons();
     }
 
     addSeason() {
         let newSeason = {
-            "name": this.season_name,
+            "name": this.season_name || "New season",
             "color": [
                 "#" + Math.floor(Math.random() * 16777215).toString(16).toString(),
                 "#" + Math.floor(Math.random() * 16777215).toString(16).toString()
@@ -80,7 +88,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
             }
         };
 
-        let averageYearLength = this.$state.calendar.average_year_length;
+        let averageYearLength = this.$store.calendar.average_year_length;
 
         if(this.settings.periodic_seasons){
             if (this.seasons.length === 0) {
@@ -365,6 +373,16 @@ class SeasonsCollapsible extends CollapsibleComponent {
         return false;
     }
 
+    sortSeasons(){
+        if(this.settings.periodic_seasons) return;
+        this.seasons.sort((a, b) => {
+            return (a.timespan === b.timespan)
+                ? a.day - b.day
+                : a.timespan - b.timespan;
+        });
+        // TODO: Figure out a way to persist the current expanded season even though order changed
+    }
+
     refreshSeasonPresetOrder(){
         let detectedSeasons = this.determineAutomaticSeasonMapping();
 
@@ -397,16 +415,16 @@ class SeasonsCollapsible extends CollapsibleComponent {
         let errors = [];
 
         for (let season_i = 0; season_i < this.seasons.length; season_i++) {
-            let curr_season = window.static_data.seasons.data[season_i];
-            if (window.static_data.seasons.global_settings.periodic_seasons) {
+            let curr_season = this.seasons[season_i];
+            if (this.settings.periodic_seasons) {
                 if (curr_season.transition_length === 0) {
                     errors.push(`Season <i>${curr_season.name}</i> can't have 0 transition length.`);
                 }
             } else {
-                if (window.static_data.year_data.timespans[curr_season.timespan].interval !== 1) {
+                if (this.months[curr_season.timespan].interval !== 1) {
                     errors.push(`Season <i>${curr_season.name}</i> can't be on a leaping month.`);
                 }
-                let next_season = window.static_data.seasons.data[(season_i + 1) % this.seasons.length];
+                let next_season = this.seasons[(season_i + 1) % this.seasons.length];
                 if (curr_season.timespan === next_season.timespan && curr_season.day === next_season.day) {
                     errors.push(`Season <i>${curr_season.name}</i> and <i>${next_season.name}</i> cannot be on the same month and day.`);
                 }
