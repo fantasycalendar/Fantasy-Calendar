@@ -47,6 +47,10 @@ html {
 // contextmenu
 @import 'jquery-contextmenu/dist/jquery.contextMenu';
 
+body {
+    font-size: $font-size-base;
+}
+
 // override stupid preset color
 .context-menu-icon.context-menu-icon--fa5 i {
     color: inherit;

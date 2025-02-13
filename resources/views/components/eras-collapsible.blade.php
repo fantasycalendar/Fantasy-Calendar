@@ -136,10 +136,14 @@
                         </div>
                     </div>
                     <div class='row no-gutters my-1'>
-                        <div class='form-check col-12 py-2 border rounded'
-                            x-show="canBeStartingEra(era_index)"
+                        <div class='form-check col-12 py-2 border'
+                            :class="{
+                                'disabled rounded-t': !canBeStartingEra(era_index),
+                                'rounded': canBeStartingEra(era_index),
+                            }"
                             >
                             <input type='checkbox' :id='era_index + "_starting_era"'
+                                   :disabled="!canBeStartingEra(era_index)"
                                    class='form-check-input'
                                    x-model='era.settings.starting_era'></input>
                             <label :for='era_index + "_starting_era"' class='form-check-label ml-1'>
@@ -147,8 +151,11 @@
                             </label>
                         </div>
 
-                        <div class='col-12 py-2 border rounded text-center' x-show="!canBeStartingEra(era_index)">
-                            There can only be one starting era.
+                        <div class='col-12 border rounded-b text-center' x-show="!canBeStartingEra(era_index)">
+                            <div class="py-2">
+                                <i class="fa fa-exclamation-triangle text-orange-500 dark:text-orange-200"></i>
+                                There can only be one starting era.
+                            </div>
                         </div>
                     </div>
                     <template x-if='!era.settings.starting_era'>
