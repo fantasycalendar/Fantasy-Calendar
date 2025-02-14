@@ -13,6 +13,7 @@ export default class Calendar {
         let rerenderKeys = [
             "static_data.year_data",
             "static_data.eras",
+            "static_data.seasons",
             "event_categories",
         ];
         let structureChanged = false;

@@ -1141,9 +1141,8 @@ export class Climate {
 class Gradient {
 
     constructor(array) {
-
-        let start = this.processHEX(array[0]);
-        let end = this.processHEX(array[1]);
+        let start = this.processHEX(array[0] ?? "#FFF");
+        let end = this.processHEX(array[1] ?? "#000");
 
         this.start = this.RGBToHSL(start[0], start[1], start[2]);
         this.end = this.RGBToHSL(end[0], end[1], end[2]);

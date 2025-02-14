@@ -79,14 +79,9 @@ class ErasCollapsible extends CollapsibleComponent {
     }
 
     canBeStartingEra(index_to_check) {
-        console.log("checking", index_to_check);
-        let result = this.eras
+        return !this.eras
             .filter((era, index) => index != index_to_check)
             .some(era => era.settings.starting_era);
-
-        console.log(result);
-
-        return !result;
     }
 
     handleChangedEras() {

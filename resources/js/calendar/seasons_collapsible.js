@@ -141,39 +141,46 @@ class SeasonsCollapsible extends CollapsibleComponent {
     }
 
     seasonColorChanged() {
+        if (!this.seasons.length) {
+            return;
+        }
 
         // Currently, we have to do this round-about way because the season data structure may not have colors defined
         // so if we turn it on before they exist, we risk having Alpine try to access data that may not exist
-        let seasonColorEnabled = !this.settings.color_enabled;
+        // let seasonColorEnabled = !this.settings.color_enabled;
 
-        if (!seasonColorEnabled) {
-            this.settings.color_enabled = false;
-        }
+        // if (!seasonColorEnabled) {
+        //     this.settings.color_enabled = false;
+        // }
+
+        let seasons = _.cloneDeep(this.seasons);
 
         let colors = []
-        for (let index = 0; index < this.seasons.length; index++) {
-            if (!seasonColorEnabled) {
-                delete this.seasons[index].color;
+        for (let index = 0; index < seasons.length; index++) {
+            if (!this.settings.color_enabled) {
+                delete seasons[index].color;
                 continue;
             }
             colors.push([])
             if (index === 0) {
-                colors[index][0] = get_colors_for_season(this.seasons[index].name);
-                colors[index][1] = get_colors_for_season(this.seasons[index + 1].name);
-            } else if (index === this.seasons.length - 1) {
+                colors[index][0] = get_colors_for_season(seasons[index].name);
+                colors[index][1] = get_colors_for_season(seasons[index + 1].name);
+            } else if (index === seasons.length - 1) {
                 colors[index][0] = _.cloneDeep(colors[index - 1][1]);
                 colors[index][1] = _.cloneDeep(colors[0][0]);
             } else {
                 colors[index][0] = _.cloneDeep(colors[index - 1][1])
-                colors[index][1] = get_colors_for_season(this.seasons[index + 1].name);
+                colors[index][1] = get_colors_for_season(seasons[index + 1].name);
             }
 
-            this.seasons[index].color = _.cloneDeep(colors[index]);
+            seasons[index].color = _.cloneDeep(colors[index]);
         }
 
-        if (seasonColorEnabled) {
-            this.settings.color_enabled = true;
-        }
+        this.seasons = _.cloneDeep(seasons);
+
+        // if (seasonColorEnabled) {
+        //     this.settings.color_enabled = true;
+        // }
     }
 
     switchPeriodicSeason() {
@@ -390,22 +397,17 @@ class SeasonsCollapsible extends CollapsibleComponent {
     sortSeasons() {
         if (this.settings.periodic_seasons) return;
 
-        console.log(JSON.parse(JSON.stringify(this.expandedSeasons)));
-
         // [1, 3]
         let oldExpandedSeasons = _.clone(this.expandedSeasons).reduce((acc, index) => ({
             ...acc,
             [this.seasons[index].name + this.seasons[index].timespan + this.seasons[index].day]: index
         }), {});
 
-        console.log(JSON.parse(JSON.stringify(this.seasons)));
         this.seasons.sort((a, b) => {
             return (a.timespan === b.timespan)
                 ? a.day - b.day
                 : a.timespan - b.timespan;
         });
-
-        console.log(JSON.parse(JSON.stringify(this.seasons)));
 
         this.expandedSeasons = this.seasons.reduce((acc, value, index) => {
             if (oldExpandedSeasons[this.seasons[index].name + this.seasons[index].timespan + this.seasons[index].day] >= 0) {

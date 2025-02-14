@@ -27,7 +27,7 @@
 
 <div class='row no-gutters my-1'>
     <div class='form-check col-12 py-1 border rounded'>
-        <input type='checkbox' class='form-check-input' id="season_color_enabled" :checked="settings.color_enabled" @change="seasonColorChanged"/>
+        <input type='checkbox' class='form-check-input' id="season_color_enabled" x-model="settings.color_enabled" @change="$nextTick(() => seasonColorChanged())" />
         <label for='season_color_enabled' class='form-check-label ml-1'>
             Enable season day color
         </label>
@@ -131,7 +131,7 @@
                         </div>
                     </div>
                 </div>
-                <template x-if="settings.color_enabled">
+                <template x-if="settings.color_enabled && season.color?.length == 2">
                     <div class='mt-1 p-2 border rounded'>
                         <div class='row no-gutters'>
                             <div class='col-6 pr-1'>Start color:</div>
