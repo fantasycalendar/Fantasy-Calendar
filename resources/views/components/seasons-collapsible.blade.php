@@ -83,7 +83,7 @@
                     <div class='col-4 pt-1'>Season type:</div>
                     <div class='col'>
                         <select type='number' class='form-control preset-season-list' @change='handlePresetOrderChanged($event, index)'>
-                            <template x-for="(name, preset_index) of presetSeasons">
+                            <template x-for="(name, preset_index) of presetSeasons" :key="preset_index">
                                 <option :value="preset_index" :selected="preset_index === settings.preset_order[index]" x-text="name"></option>
                             </template>
                         </select>
@@ -111,7 +111,6 @@
                         <div class='col-4 pt-1'>Month:</div>
                         <div class='col'>
                             <select type='number' class='form-control' x-model='season.timespan'>
-                                {{-- TODO: Figure out why x-model doesn't work here, have to use :selected --}}
                                 <template x-for="(month, month_index) in months" :key="month_index">
                                     <option :value="month_index" x-text="month.name"></option>
                                 </template>
@@ -122,9 +121,7 @@
                         <div class='col-4 pt-1'>Day:</div>
                         <div class='col'>
                             <select type='number' class='form-control' x-model.lazy='season.day'>
-                                {{-- TODO: Create day list based on selected month above, with no leap days --}}
-
-                                <template x-for="(day, day_index) in _.range(1, months[season.timespan ?? 0].length)" :key="day_index">
+                                <template x-for="(day, day_index) in _.range(1, months[season.timespan ?? 0].length + 1)" :key="day_index">
                                     <option :value="day" x-text="day"></option>
                                 </template>
                             </select>

@@ -101,7 +101,9 @@ export class Climate {
                 preset_seasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
             }
 
-            let valid_preset_order = this.static_data.seasons.global_settings.preset_order !== undefined && this.static_data.seasons.global_settings.preset_order.reduce((a, b) => a + b, 0) === this.static_data.seasons.data.reduce((a, b) => a + b, 0);
+            let valid_preset_order = this.static_data.seasons.global_settings.preset_order
+                && this.static_data.seasons.global_settings.preset_order !== undefined
+                && this.static_data.seasons.global_settings.preset_order.reduce((a, b) => a + b, 0) === this.static_data.seasons.data.reduce((a, b) => a + b, 0);
 
             let preset_order = undefined;
 

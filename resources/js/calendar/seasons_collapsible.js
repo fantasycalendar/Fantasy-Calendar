@@ -432,6 +432,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
         }
 
         this.presetSeasons = (this.seasons.length === 4 ? ['Winter', 'Spring', 'Summer', 'Autumn'] : ['Winter', 'Summer'])
+        console.log(this.presetSeasons);
     }
 
     handlePresetOrderChanged($event, season_index) {
