@@ -278,9 +278,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
 
     // TODO: This is duplicated from the locations collapsible, with minor changes - perhaps split out? Probably not.
     interpolateSeasonTimes(season_index) {
-        let prev_id = (season_index - 1) % this.seasons.length
-        if (prev_id < 0) prev_id += this.seasons.length
-
+        let prev_id = ((season_index + this.seasons.length) - 1) % this.seasons.length
         let next_id = (season_index + 1) % this.seasons.length;
 
         let season_ratio;
@@ -315,8 +313,8 @@ class SeasonsCollapsible extends CollapsibleComponent {
         let next_season = this.seasons[next_id];
 
         if (this.clock.enabled) {
-            let prev_sunrise = prev_season.time.sunrise.hour + (prev_season.time.sunrise.minute / this.clock.minutes);
-            let next_sunrise = next_season.time.sunrise.hour + (next_season.time.sunrise.minute / this.clock.minutes);
+            let prev_sunrise = Number(prev_season.time.sunrise.hour) + (Number(prev_season.time.sunrise.minute) / this.clock.minutes);
+            let next_sunrise = Number(next_season.time.sunrise.hour) + (Number(next_season.time.sunrise.minute) / this.clock.minutes);
 
             let middle_sunrise = lerp(prev_sunrise, next_sunrise, season_ratio)
 
@@ -327,8 +325,8 @@ class SeasonsCollapsible extends CollapsibleComponent {
             this.seasons[season_index].time.sunrise.minute = sunrise_m;
 
 
-            let prev_sunset = prev_season.time.sunset.hour + (prev_season.time.sunset.minute / this.clock.minutes);
-            let next_sunset = next_season.time.sunset.hour + (next_season.time.sunset.minute / this.clock.minutes);
+            let prev_sunset = Number(prev_season.time.sunset.hour) + (Number(prev_season.time.sunset.minute) / this.clock.minutes);
+            let next_sunset = Number(next_season.time.sunset.hour) + (Number(next_season.time.sunset.minute) / this.clock.minutes);
 
             let middle_sunset = lerp(prev_sunset, next_sunset, season_ratio)
 
@@ -337,6 +335,8 @@ class SeasonsCollapsible extends CollapsibleComponent {
 
             this.seasons[season_index].time.sunset.hour = sunset_h;
             this.seasons[season_index].time.sunset.minute = sunset_m;
+
+            debugger;
         }
     }
 
