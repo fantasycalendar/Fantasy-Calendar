@@ -123,6 +123,10 @@
                         <div class='col'>
                             <select type='number' class='form-control' x-model.lazy='season.day'>
                                 {{-- TODO: Create day list based on selected month above, with no leap days --}}
+
+                                <template x-for="(day, day_index) in _.range(1, months[season.timespan ?? 0].length)" :key="day_index">
+                                    <option :value="day" x-text="day"></option>
+                                </template>
                             </select>
                         </div>
                     </div>
@@ -158,10 +162,10 @@
                     <div class='row no-gutters mb-2 protip' data-pt-position="right"
                          data-pt-title="What time the sun rises at the peak of this season">
                         <div class='col-6 pr-1 clock-input'>
-                            <input type='number' step="1.0" class='form-control full' x-model.lazy='season.time.sunrise'/>
+                            <input type='number' step="1.0" class='form-control full' x-model.lazy='season.time.sunrise.hour'/>
                         </div>
                         <div class='col-6 pl-1 clock-input'>
-                            <input type='number' step="1.0" class='form-control full' x-model.lazy='season.time.sunrise'/>
+                            <input type='number' step="1.0" class='form-control full' x-model.lazy='season.time.sunrise.minute'/>
                         </div>
                     </div>
                     <div class='row no-gutters mt-2'>
@@ -178,10 +182,10 @@
                     <div class='row no-gutters mb-2 protip' data-pt-position="right"
                          data-pt-title="What time the sun sets at the peak of this season">
                         <div class='col-6 pr-1 clock-input'>
-                            <input type='number' step="1.0" class='form-control full' x-model.lazy='season.time.sunset'/>
+                            <input type='number' step="1.0" class='form-control full' x-model.lazy='season.time.sunset.hour'/>
                         </div>
                         <div class='col-6 pl-1 clock-input'>
-                            <input type='number' step="1.0" class='form-control full' x-model.lazy='season.time.sunset'/>
+                            <input type='number' step="1.0" class='form-control full' x-model.lazy='season.time.sunset.minute'/>
                         </div>
                     </div>
                     <div class='row no-gutters my-1'>
