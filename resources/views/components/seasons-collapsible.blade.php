@@ -42,7 +42,7 @@
 
 <div class='add_inputs seasons row no-gutters'>
     <div class='input-group'>
-        <input type='text' class='form-control' placeholder='Season name' x-model="season_name">
+        <input type='text' class='form-control' placeholder='Season name' x-model="season_name" @keyup.enter="addSeason">
         <div class="input-group-append">
             <button type='button' class='btn btn-primary' @click="addSeason"><i class="fa fa-plus"></i></button>
         </div>
@@ -53,14 +53,13 @@
     <template x-for="(season, index) in seasons" x-ref="seasons-sortable-template">
 
         <div class='sortable-container list-group-item collapsible p-2 first-of-type:rounded-t'
-             x-data="{ collapsed: true }"
-             :class="{'collapsed': collapsed}">
+             :class="{'collapsed': isCollapsed(index)}">
 
             <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
                 <div class='handle fa fa-bars' x-show="settings.periodic_seasons"></div>
                 <div class='cursor-pointer text-xl fa'
-                     :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
-                     @click="collapsed = !collapsed"></div>
+                     :class="{ 'fa-caret-square-up': !isCollapsed(index), 'fa-caret-square-down': isCollapsed(index) }"
+                     @click="toggleCollapsed(index)"></div>
                 <input type='text' class='name-input small-input form-control' x-model.lazy='season.name'/>
                 <button class="btn btn-danger w-10" @click="deleting = index">
                     <i class="fa fa-trash text-lg"></i>
@@ -113,8 +112,8 @@
                         <div class='col'>
                             <select type='number' class='form-control' x-model='season.timespan'>
                                 {{-- TODO: Figure out why x-model doesn't work here, have to use :selected --}}
-                                <template x-for="(month, month_index) in months">
-                                    <option :value="month_index" :selected="month_index === season.timespan" x-text="month.name"></option>
+                                <template x-for="(month, month_index) in months" :key="month_index">
+                                    <option :value="month_index" x-text="month.name"></option>
                                 </template>
                             </select>
                         </div>

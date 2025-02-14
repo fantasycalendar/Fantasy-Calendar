@@ -26,6 +26,8 @@ class SeasonsCollapsible extends CollapsibleComponent {
     show_location_season_warning = false;
     presetSeasons = [];
 
+    expandedSeasons = [];
+
     inboundProperties = {
         "seasons": "static_data.seasons.data",
         "settings": "static_data.seasons.global_settings",
@@ -59,7 +61,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
         this.seasons.splice(end, 0, elem);
     }
 
-    loaded(){
+    loaded() {
         this.handleSeasonsChanged();
     }
 
@@ -67,6 +69,18 @@ class SeasonsCollapsible extends CollapsibleComponent {
         this.evaluateSeasonLengthText();
         this.refreshSeasonPresetOrder();
         this.sortSeasons();
+    }
+
+    isCollapsed(index) {
+        return !this.expandedSeasons.includes(index);
+    }
+
+    toggleCollapsed(index) {
+        if (this.expandedSeasons.includes(index)) {
+            this.expandedSeasons.splice(this.expandedSeasons.indexOf(index), 1);
+        } else {
+            this.expandedSeasons.push(index)
+        }
     }
 
     addSeason() {
@@ -90,7 +104,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
 
         let averageYearLength = this.$store.calendar.average_year_length;
 
-        if(this.settings.periodic_seasons){
+        if (this.settings.periodic_seasons) {
             if (this.seasons.length === 0) {
                 newSeason.transition_length = averageYearLength;
             } else {
@@ -121,7 +135,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
         this.season_name = "";
     }
 
-    removeSeason(index){
+    removeSeason(index) {
         this.seasons.splice(index, 1);
         this.deleting = -1;
     }
@@ -132,13 +146,13 @@ class SeasonsCollapsible extends CollapsibleComponent {
         // so if we turn it on before they exist, we risk having Alpine try to access data that may not exist
         let seasonColorEnabled = !this.settings.color_enabled;
 
-        if(!seasonColorEnabled){
+        if (!seasonColorEnabled) {
             this.settings.color_enabled = false;
         }
 
         let colors = []
         for (let index = 0; index < this.seasons.length; index++) {
-            if(!seasonColorEnabled){
+            if (!seasonColorEnabled) {
                 delete this.seasons[index].color;
                 continue;
             }
@@ -157,12 +171,12 @@ class SeasonsCollapsible extends CollapsibleComponent {
             this.seasons[index].color = _.cloneDeep(colors[index]);
         }
 
-        if(seasonColorEnabled){
+        if (seasonColorEnabled) {
             this.settings.color_enabled = true;
         }
     }
 
-    switchPeriodicSeason(){
+    switchPeriodicSeason() {
         let eraEndsYear = this.eras.some(era => era.settings.ends_year);
 
         if (eraEndsYear) {
@@ -180,14 +194,14 @@ class SeasonsCollapsible extends CollapsibleComponent {
             : "Dated seasons start and end on specific dates, regardless of leaping months and days."
 
         swal.fire({
-                title: "Are you sure?",
-                html: `<p>Are you sure you want to switch to ${type} seasons? ${explanation}</p><p>Your current seasons will be deleted so you can re-create them.</p>`,
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Okay',
-                icon: "warning",
-            })
+            title: "Are you sure?",
+            html: `<p>Are you sure you want to switch to ${type} seasons? ${explanation}</p><p>Your current seasons will be deleted so you can re-create them.</p>`,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Okay',
+            icon: "warning",
+        })
             .then((result) => {
                 if (result.dismiss) return;
                 this.seasons = [];
@@ -195,7 +209,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
             });
     }
 
-    createSeasonEvents(){
+    createSeasonEvents() {
         new Promise((resolve, reject) => {
 
             let found = false;
@@ -207,15 +221,15 @@ class SeasonsCollapsible extends CollapsibleComponent {
 
             if (found) {
                 swal.fire({
-                        title: `Season events exist!`,
-                        text: "You already have solstice and equinox events, are you sure you want to create another set?",
-                        showCloseButton: false,
-                        showCancelButton: true,
-                        cancelButtonColor: '#3085d6',
-                        confirmButtonColor: '#d33',
-                        confirmButtonText: 'Yes',
-                        icon: "warning"
-                    })
+                    title: `Season events exist!`,
+                    text: "You already have solstice and equinox events, are you sure you want to create another set?",
+                    showCloseButton: false,
+                    showCancelButton: true,
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Yes',
+                    icon: "warning"
+                })
                     .then((result) => {
                         if (result.dismiss === "close" || result.dismiss === "cancel") {
                             reject();
@@ -240,19 +254,19 @@ class SeasonsCollapsible extends CollapsibleComponent {
 
             let clockEnabled = this.clock.enabled;
             swal.fire({
-                    title: `Simple or Complex?`,
-                    html: html,
-                    showCloseButton: true,
-                    showCancelButton: true,
-                    confirmButtonColor: '#4D61B3',
-                    cancelButtonColor: this.clock.enabled ? '#84B356' : '#999999',
-                    confirmButtonText: 'Simple',
-                    cancelButtonText: 'Complex',
-                    icon: "question",
-                    onOpen: function () {
-                        $(swal.getCancelButton()).prop("disabled", !clockEnabled);
-                    }
-                })
+                title: `Simple or Complex?`,
+                html: html,
+                showCloseButton: true,
+                showCancelButton: true,
+                confirmButtonColor: '#4D61B3',
+                cancelButtonColor: this.clock.enabled ? '#84B356' : '#999999',
+                confirmButtonText: 'Simple',
+                cancelButtonText: 'Complex',
+                icon: "question",
+                onOpen: function() {
+                    $(swal.getCancelButton()).prop("disabled", !clockEnabled);
+                }
+            })
                 .then((result) => {
                     if (result.dismiss === "close") return;
                     let complex = result.dismiss === "cancel";
@@ -263,7 +277,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
     }
 
     // TODO: This is duplicated from the locations collapsible, with minor changes - perhaps split out? Probably not.
-    interpolateSeasonTimes(season_index){
+    interpolateSeasonTimes(season_index) {
         let prev_id = (season_index - 1) % this.seasons.length
         if (prev_id < 0) prev_id += this.seasons.length
 
@@ -326,7 +340,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
         }
     }
 
-    evaluateSeasonLengthText(){
+    evaluateSeasonLengthText() {
         let validSeasons = this.seasons.length && this.settings.periodic_seasons;
 
         if (this.dynamic_data.custom_location) {
@@ -334,7 +348,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
             this.show_location_season_warning = !custom_location.season_based_time && validSeasons;
         }
 
-        if(!validSeasons) return;
+        if (!validSeasons) return;
 
         let total_seasons_length = this.seasons.reduce(season => season.transition_length + season.duration);
         let average_year_length = this.$store.calendar.average_year_length;
@@ -373,26 +387,45 @@ class SeasonsCollapsible extends CollapsibleComponent {
         return false;
     }
 
-    sortSeasons(){
-        if(this.settings.periodic_seasons) return;
+    sortSeasons() {
+        if (this.settings.periodic_seasons) return;
+
+        console.log(JSON.parse(JSON.stringify(this.expandedSeasons)));
+
+        // [1, 3]
+        let oldExpandedSeasons = _.clone(this.expandedSeasons).reduce((acc, index) => ({
+            ...acc,
+            [this.seasons[index].name + this.seasons[index].timespan + this.seasons[index].day]: index
+        }), {});
+
+        console.log(JSON.parse(JSON.stringify(this.seasons)));
         this.seasons.sort((a, b) => {
             return (a.timespan === b.timespan)
                 ? a.day - b.day
                 : a.timespan - b.timespan;
         });
-        // TODO: Figure out a way to persist the current expanded season even though order changed
+
+        console.log(JSON.parse(JSON.stringify(this.seasons)));
+
+        this.expandedSeasons = this.seasons.reduce((acc, value, index) => {
+            if (oldExpandedSeasons[this.seasons[index].name + this.seasons[index].timespan + this.seasons[index].day] >= 0) {
+                acc.push(index);
+            }
+
+            return acc;
+        }, [])
     }
 
-    refreshSeasonPresetOrder(){
+    refreshSeasonPresetOrder() {
         let detectedSeasons = this.determineAutomaticSeasonMapping();
 
-        if(!detectedSeasons){
+        if (!detectedSeasons) {
             this.presetSeasons = [];
             this.settings.preset_order = false;
             return;
         }
 
-        if(!this.settings.preset_order.length){
+        if (!this.settings.preset_order.length) {
             this.settings.preset_order = detectedSeasons;
         }
 
