@@ -129,7 +129,7 @@ export default () => ({
 
     resendCalendarInvite(email, output) {
         axios.post(
-            this.$store.calendar.api_url("/calendar/:hash/resend_invite"),
+            this.$store.calendar.api_url("/calendar/:hash/resendInvite"),
             { email },
         ).then(function(result) {
             output(true, 'Resent invitation');

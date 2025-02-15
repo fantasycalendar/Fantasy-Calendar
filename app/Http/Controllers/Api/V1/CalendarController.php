@@ -92,7 +92,7 @@ class CalendarController extends Controller
         return response()->json(['message' => 'Invite sent.']);
     }
 
-    public function resend_invite(ResendCalendarInvitationRequest $request)
+    public function resendInvite(ResendCalendarInvitationRequest $request)
     {
         if (!$request->invitation->canBeResent()) {
             return response()->json(['error' => true, 'message' => "You're doing that too much. Try again later."], 422);
