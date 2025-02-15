@@ -1135,7 +1135,6 @@ function add_timespan_to_sortable(parent, key, data) {
 
 
 function add_link_to_list(parent, key, locked, calendar) {
-
     var element = [];
 
     element.push(`<div class='sortable-container list-group-item collapsible ${locked ? "collapsed" : "expanded"}' index='${key}'>`);

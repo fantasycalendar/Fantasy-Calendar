@@ -31,8 +31,64 @@
 				</div>
 			</div>
 
-			<div class='sortable' id='calendar_link_list'></div>
-			<div class='sortable mt-1' id='calendar_new_link_list'></div>
+            <template x-for="child in children">
+                <div x-data="{
+                        locked: true,
+                        year: $store.calendar.dynamic_data.year,
+                        timespan: 0,
+                        day: 0,
+                    }">
+                    <div class='sortable-container list-group-item collapsible '
+                        :class="{
+                            'collapsed': locked,
+                            'expanded': !locked,
+                        }">
+                        <div class='main-container'>
+                            <div class='expand  ml-2'
+                                :class="{
+                                    'expand': locked,
+                                    'collapse': !locked,
+                                }"
+                                ></div>
+                            <div class='name-container'>
+                                <div><a :href="`/calendars/${calendar.hash}/edit`" target="_blank" x-text="calendar.name"></a></div>
+                            </div>
+                        </div>
+
+                        <div class='collapse-container container mb-2'>
+                            <div class='row my-1 bold-text'>
+                                <div class='col'>
+                                    Relative Start Date:
+
+                                    <div class='date_control'>
+                                        <div class='row my-2'>
+                                            <div class='col'>
+                                                <input type='number' step="1.0" class='form-control small-input year-input' x-model="year" :disabled="locked">
+                                            </div>
+                                        </div>
+
+                                        <div class='row my-2'>
+                                            <div class='col'>
+                                                <select type='number' class='custom-select form-control' :disabled="locked" x-model="timespan"></select>
+                                            </div>
+                                        </div>
+
+                                        <div class='row my-2'>
+                                            <div class='col'>
+                                                <select type='number' class='custom-select form-control' :disabled="locked" x-model="day"></select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class='row no-gutters my-1'>
+                                <button type='button' class='btn btn-danger full' @click="unlinkChildCalendar(child.hash)" x-show="locked">Unlink</button>
+                                <button type='button' class='btn btn-primary full' @click="linkChildCalendar(child.hash, [year, timespan, day])" x-show="!locked">Link</button>
+                            </div>
+                        </div>
+                    </div>
+            </template>
 		@endif
 	</div>
 
