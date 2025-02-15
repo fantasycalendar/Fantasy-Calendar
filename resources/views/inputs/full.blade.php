@@ -70,7 +70,7 @@
 
         @if(request()->is('calendars/*/edit'))
             <x-collapsible :calendar="$calendar" contains="User Management" icon="fa-user"
-                           premium_feature="true" wip></x-collapsible>
+                           premium_feature="true" done></x-collapsible>
 
             <x-collapsible :calendar="$calendar" contains="Calendar Linking" icon="fa-link"
                            premium_feature="true"></x-collapsible>
