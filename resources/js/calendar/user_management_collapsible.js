@@ -6,7 +6,7 @@ export default () => ({
     reordering: false,
     users: [],
     invite_email: "",
-    invite_status: "Status will go here",
+    invite_status: "",
     invite_enabled: true,
 
     load: function(static_data) {
@@ -117,7 +117,14 @@ export default () => ({
 
     },
 
-    updateUserRole(id, role) {
-        console.log("Would updateuser id")
+    updateUserRole(user_id, user_role, output) {
+        axios.post(
+            this.$store.calendar.api_url("/calendar/:hash/changeUserRole"),
+            { user_role, user_id },
+        ).then(function(result) {
+            output(true, 'Updated permissions!');
+        }).catch(function(error) {
+            output(false, error.response.data.message);
+        });
     }
 })

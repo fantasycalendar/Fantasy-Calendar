@@ -20,7 +20,22 @@
     <div class='sortable'>
         <template x-for="user in users" x-index='user.email'>
             <div class='sortable-container list-group-item'>
-                <div class='collapse-container container mb-2'>
+                <div class='collapse-container container mb-2'
+                    x-data="{
+                        success_message: '',
+                        error_message: '',
+                        success(message) {
+                            this.success_message = message;
+
+                            setTimeout(() => this.success_message = null, 1500)
+                        },
+                        error(message) {
+                            this.error_message = message;
+
+                            setTimeout(() => this.error_message = null, 1500)
+                        }
+                    }"
+                    >
 
                     <div class='row no-gutters my-2'>
                         <div class='col-md'>
@@ -43,7 +58,9 @@
                         <p class='m-0'>Permissions:</p>
                     </div>
 
-                    <div class='row no-gutters mb-1' x-data="{ role: user.user_role }" x-show="user.user_role != 'invited'">
+                    <div class='row no-gutters mb-1' x-data="{
+                            role: user.user_role,
+                        }" x-show="user.user_role != 'invited'">
                         <div class='input-group'>
                             <select x-model="role" class='form-control'>
                                 <option value='observer'>Observer</option>
@@ -52,9 +69,23 @@
                             </select>
 
                             <div class="input-group-append">
-                                <button type='button' class='btn btn btn-primary' :disabled="user.user_role == role" @click="updateUserRole(user.id, role)">Update</button>
+                                <button type='button'
+                                    class='btn btn btn-primary'
+                                    :disabled="user.user_role == role"
+                                    @click="updateUserRole(user.id, role, (succeeded, message) => { if (succeeded) { success(message); user.user_role = role; } else { error(message) } })"
+                                >
+                                    Update
+                                </button>
                             </div>
                         </div>
+                    </div>
+
+                    <div class='row no-gutters my-1 alert alert-success' x-show="success_message" x-transition>
+                        <p class='m-0' x-text="success_message"></p>
+                    </div>
+
+                    <div class='row no-gutters my-1 alert alert-danger' x-show="error_message" x-transition>
+                        <p class='m-0' x-text="error_message"></p>
                     </div>
 
                     <div class='row no-gutters my-1' x-show="user.user_role == 'invited'">
