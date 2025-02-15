@@ -1,5 +1,4 @@
 import axios from "axios";
-import { get_calendar_users } from "./calendar_ajax_functions"
 import Swal from "sweetalert2";
 
 export default () => ({
@@ -123,6 +122,17 @@ export default () => ({
             { user_role, user_id },
         ).then(function(result) {
             output(true, 'Updated permissions!');
+        }).catch(function(error) {
+            output(false, error.response.data.message);
+        });
+    },
+
+    resendCalendarInvite(email, output) {
+        axios.post(
+            this.$store.calendar.api_url("/calendar/:hash/resend_invite"),
+            { email },
+        ).then(function(result) {
+            output(true, 'Resent invitation');
         }).catch(function(error) {
             output(false, error.response.data.message);
         });

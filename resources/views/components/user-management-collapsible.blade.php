@@ -32,7 +32,7 @@
                         error(message) {
                             this.error_message = message;
 
-                            setTimeout(() => this.error_message = null, 1500)
+                            setTimeout(() => this.error_message = null, 2500)
                         }
                     }"
                     >
@@ -80,24 +80,24 @@
                         </div>
                     </div>
 
+                    <div class='row no-gutters my-1' x-show="user.user_role == 'invited'">
+                        <p class='m-0'>We've sent them an invitation to your calendar, and now we're just waiting for them to accept it!</p>
+                    </div>
+
+                    <div class='row no-gutters my-2' x-show="user.user_role == 'invited'">
+                        <button type="button" class="btn btn-primary" @click.prevent='resendCalendarInvite(user.username, (succeeded, message) => { if (succeeded) { success(message) } else { error(message) } })'>Resend invitation email</button>
+                    </div>
+
+                    <div class='row no-gutters my-1 hidden' x-show="user.user_role == 'invited'">
+                        <p class='m-0 user_permissions_text'></p>
+                    </div>
+
                     <div class='row no-gutters my-1 alert alert-success' x-show="success_message" x-transition>
                         <p class='m-0' x-text="success_message"></p>
                     </div>
 
                     <div class='row no-gutters my-1 alert alert-danger' x-show="error_message" x-transition>
                         <p class='m-0' x-text="error_message"></p>
-                    </div>
-
-                    <div class='row no-gutters my-1' x-show="user.user_role == 'invited'">
-                        <p class='m-0'>We've sent them an invitation to your calendar, and now we're just waiting for them to accept it!</p>
-                    </div>
-
-                    <div class='row no-gutters my-2' x-show="user.user_role == 'invited'">
-                        <button type="button" class="btn btn-primary resend_invitation" user_email='${user.username}'>Resend invitation email</button>
-                    </div>
-
-                    <div class='row no-gutters my-1 hidden' x-show="user.user_role == 'invited'">
-                        <p class='m-0 user_permissions_text'></p>
                     </div>
 
                 </div>

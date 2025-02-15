@@ -5,11 +5,6 @@ import {
     update_all,
     link_child_calendar,
     unlink_child_calendar,
-    get_calendar_users,
-    add_calendar_user,
-    update_calendar_user,
-    remove_calendar_user,
-    resend_calendar_invite,
     get_owned_calendars,
     delete_calendar,
     create_calendar,
@@ -776,32 +771,6 @@ export function set_up_edit_inputs() {
                 }
             });
     });
-
-    $(document).on('click', '.resend_invitation', function() {
-
-        var button = $(this);
-        var container = button.closest('.sortable-container');
-        button.prop('disabled', true);
-
-        var email = button.attr('user_email');
-
-        resend_calendar_invite(email, function(success, text) {
-
-            button.prop('disabled', success);
-
-            container.find('.user_permissions_text').parent().toggleClass('hidden', false);
-            container.find('.user_permissions_text').parent().toggleClass('error', !success);
-            container.find('.user_permissions_text').text(text);
-
-            setTimeout(() => {
-                container.find('.user_permissions_text').parent().toggleClass('hidden', true);
-                container.find('.user_permissions_text').text("");
-            }, 5000);
-
-        });
-
-    });
-
 
     $('#apply_changes_btn').click(function() {
 
@@ -2103,24 +2072,6 @@ export function linked_popup() {
         html: html.join(''),
         icon: "info"
     });
-}
-
-function set_up_user_list() {
-    if ($('#calendar_user_list').length) {
-
-        $('#calendar_user_list').empty();
-
-        get_calendar_users(function(userlist) {
-
-            for (var index in userlist) {
-                var user = userlist[index];
-                add_user_to_list($('#calendar_user_list'), index, user)
-            }
-
-            window.user_list_opened = true;
-
-        });
-    }
 }
 
 function user_permissions_select(select) {
