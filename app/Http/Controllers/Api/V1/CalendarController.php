@@ -64,7 +64,7 @@ class CalendarController extends Controller
     {
         CalendarCollection::withoutWrapping();
 
-        return new CalendarCollection($calendar->user->calendars->keyBy('hash'));
+        return new CalendarCollection($calendar->user->calendars);
     }
 
     public function users(GetCalendarUsersRequest $request, Calendar $calendar)

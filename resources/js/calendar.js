@@ -114,6 +114,10 @@ export default class Calendar {
         window.events = events;
     }
 
+    get hash() {
+        return window.hash;
+    }
+
     get static_data() {
         return window.static_data;
     }

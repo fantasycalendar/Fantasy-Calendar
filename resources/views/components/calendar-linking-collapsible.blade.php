@@ -23,13 +23,11 @@
         @else
 
             <div class='input-group my-1'>
-                <span x-text="selectedCalendar.name ?? 'none selected'"></span>
-
                 <select class='form-control' x-model="selectedCalendarHash">
                     <option value="">None</option>
 
                     <template x-for="calendar in owned" x-key="calendar.hash">
-                        <option :value="calendar.hash" x-text="calendar.name"></option>
+                        <option :value="calendar.hash" x-text="calendar.name" :disabled="calendar.hash === $store.calendar.hash"></option>
                     </template>
                 </select>
 
@@ -40,7 +38,7 @@
 
             <template x-for="child in children">
                 <div x-data="{
-                        locked: true,
+                        locked: !!child.parent_hash,
                         year: $store.calendar.dynamic_data.year,
                         timespan: 0,
                         day: 0,
