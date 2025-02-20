@@ -68,19 +68,19 @@
                                     <div class='date_control'>
                                         <div class='row my-2'>
                                             <div class='col'>
-                                                <input type='number' step="1.0" class='form-control small-input year-input' x-model="year" :disabled="locked">
+                                                <input type='number' step="1.0" class='form-control small-input' x-model="year" :disabled="locked">
                                             </div>
                                         </div>
 
                                         <div class='row my-2'>
                                             <div class='col'>
-                                                <select type='number' class='custom-select form-control' :disabled="locked" x-model="timespan"></select>
+                                                <select type='number' class='form-control' :disabled="locked" x-model="timespan"></select>
                                             </div>
                                         </div>
 
                                         <div class='row my-2'>
                                             <div class='col'>
-                                                <select type='number' class='custom-select form-control' :disabled="locked" x-model="day"></select>
+                                                <select type='number' class='form-control' :disabled="locked" x-model="day"></select>
                                             </div>
                                         </div>
                                     </div>
