@@ -42,6 +42,15 @@ export default class Calendar {
         return get_timespans_in_year(this.static_data, convert_year(this.static_data, year), inclusive);
     }
 
+    get_timespans_in_year_as_select_options(year, inclusive = true) {
+        // TODO: Replace this with something a bit more holistic?
+        return get_timespans_in_year(this.static_data, convert_year(this.static_data, year), inclusive)
+            .map(({ result, reason }, index) => ({
+                name: this.static_data.year_data.timespans[index].name + (!result ? ` (${reason})` : ""),
+                disabled: !result
+            }));
+    }
+
     does_timespan_appear(year, timespan) {
         // TODO: Replace this with something a bit more holistic?
         return does_timespan_appear(this.static_data, convert_year(this.static_data, year), timespan);
@@ -49,6 +58,11 @@ export default class Calendar {
 
     get_days_in_timespan_in_year(year, timespan) {
         return get_days_in_timespan(this.static_data, convert_year(this.static_data, year), timespan);
+    }
+
+    get_days_in_timespan_in_year_as_select_options(year, timespan) {
+        return this.get_days_in_timespan_in_year(year, timespan)
+            .map((day, index) => `Day ${index + 1}` + (day.text ? ` - ${day.text}` : ""));
     }
 
     does_day_appear(year, timespan, day) {

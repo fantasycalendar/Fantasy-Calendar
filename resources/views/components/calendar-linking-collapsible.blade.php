@@ -74,13 +74,29 @@
 
                                         <div class='row my-2'>
                                             <div class='col'>
-                                                <select type='number' class='form-control' :disabled="locked" x-model="timespan"></select>
+                                                <select
+                                                    type='number'
+                                                    class='form-control'
+                                                    :disabled="locked"
+                                                    x-model.lazy.number="timespan"
+                                                >
+                                                    <template x-for="(month, index) in $store.calendar.get_timespans_in_year_as_select_options(year)">
+                                                        <option :value="index" x-text="month.name"
+                                                                :selected="index === timespan"
+                                                                :disabled="month.disabled"></option>
+                                                    </template>
+                                                </select>
                                             </div>
                                         </div>
 
                                         <div class='row my-2'>
                                             <div class='col'>
-                                                <select type='number' class='form-control' :disabled="locked" x-model="day"></select>
+                                                <select type='number' class='form-control' :disabled="locked" x-model.lazy.number="day">
+                                                    <template x-for="(timespan_day, index) in $store.calendar.get_days_in_timespan_in_year_as_select_options(year, timespan)">
+                                                        <option :value="index+1" x-text="timespan_day"
+                                                                :selected="index+1 === day"></option>
+                                                    </template>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
