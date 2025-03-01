@@ -12,7 +12,7 @@
     <div class='date_control'>
         <div class='row my-2'>
             <div class='col'>
-                <input type='number' step="1.0" class='form-control small-input' x-model="_date.year" :disabled="locked">
+                <input type='number' step="1.0" class='form-control small-input' x-model="_date.year">
             </div>
         </div>
 
@@ -21,7 +21,6 @@
                 <select
                     type='number'
                     class='form-control'
-                    :disabled="locked"
                     x-model.lazy.number="_date.timespan"
                 >
                     <template x-for="(month, index) in $store.calendar.get_timespans_in_year_as_select_options(_date.year)">
@@ -35,7 +34,7 @@
 
         <div class='row my-2'>
             <div class='col'>
-                <select type='number' class='form-control' :disabled="locked" x-model.lazy.number="_date.day">
+                <select type='number' class='form-control' x-model.lazy.number="_date.day">
                     <template x-for="(timespan_day, index) in $store.calendar.get_days_in_timespan_in_year_as_select_options(_date.year, _date.timespan)">
                         <option :value="index+1" x-text="timespan_day"
                                 :selected="index+1 === _date.day"></option>

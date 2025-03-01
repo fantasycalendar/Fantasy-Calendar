@@ -36,20 +36,19 @@
 
             <template x-for="child in children">
                 <div x-data="{
-                        locked: !!child.parent_hash,
-                        collapsed: !!child.parent_hash,
+                        collapsed: child.locked,
                         date: getRelativeStartDate(child),
                     }">
                     <div class='sortable-container list-group-item collapsible '
                         :class="{
-                            'collapsed': locked && collapsed,
-                            'expanded': !locked || !collapsed,
+                            'collapsed': child.locked && collapsed,
+                            'expanded': !child.locked || !collapsed,
                         }">
                         <div class='main-container'>
                             <div class='cursor-pointer text-xl fa'
                                  :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
                                  @click="collapsed = !collapsed"
-                                 x-show="locked"
+                                 x-show="child.locked"
                                  ></div>
                             <div class='name-container'>
                                 <div><a :href="`/calendars/${child.hash}/edit`" target="_blank" x-text="child.name"></a></div>
@@ -62,8 +61,8 @@
                             </div>
 
                             <div class='row no-gutters my-1'>
-                                <button type='button' class='btn btn-danger full' @click="unlinkChildCalendar(child.hash)" x-show="locked">Unlink</button>
-                                <button type='button' class='btn btn-primary full' @click="linkChildCalendar(child.hash, date)" x-show="!locked">Link</button>
+                                <button type='button' class='btn btn-danger full' @click="unlinkChildCalendar(child.hash)" x-show="child.locked">Unlink</button>
+                                <button type='button' class='btn btn-primary full' @click="linkChildCalendar(child.hash, date)" x-show="!child.locked">Link</button>
                             </div>
                         </div>
                     </div>

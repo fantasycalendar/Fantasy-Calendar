@@ -22,6 +22,10 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
             .then(response => {
                 this.owned = response.data.filter(calendar => {
                     return calendar.hash !== this.$store.calendar.hash;
+                }).map(calendar => {
+                    calendar.locked = !!calendar.parent_hash;
+
+                    return calendar;
                 });
             })
             .catch(error => {
