@@ -74,6 +74,10 @@ export default class Calendar {
         return window.apiurl + urlstring.replace(":hash", window.hash);
     }
 
+    base_url(urlstring = "") {
+        return urlstring.replace(":hash", window.hash);
+    }
+
     setting(name, givenDefault = null) {
         return this.static_data.settings[name] ?? givenDefault;
     }

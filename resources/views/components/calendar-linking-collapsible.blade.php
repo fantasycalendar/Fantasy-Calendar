@@ -69,7 +69,7 @@
 
                             <div class='row no-gutters my-1'>
                                 <button type='button' class='btn btn-danger full' @click="unlinkChildCalendar(child.hash)" x-show="locked">Unlink</button>
-                                <button type='button' class='btn btn-primary full' @click="linkChildCalendar(child.hash, [year, timespan, day])" x-show="!locked">Link</button>
+                                <button type='button' class='btn btn-primary full' @click="linkChildCalendar(child.hash, date)" x-show="!locked">Link</button>
                             </div>
                         </div>
                     </div>
