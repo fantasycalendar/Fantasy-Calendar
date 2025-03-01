@@ -3,7 +3,7 @@ import { get_preset_data } from './calendar/calendar_ajax_functions.js';
 import { convert_year, clone, evaluate_calendar_start } from './calendar/calendar_functions.js';
 import { set_up_visitor_values } from './calendar/calendar_inputs_visitor.js';
 import { set_up_view_values } from './calendar/calendar_inputs_view.js';
-import { do_error_check, evaluate_save_button, set_up_edit_values, empty_edit_values } from './calendar/calendar_inputs_edit.js';
+import { do_error_check, evaluate_save_button, set_up_edit_values } from './calendar/calendar_inputs_edit.js';
 
 export default () => ({
     open: false,
@@ -169,7 +169,6 @@ export default () => ({
                             window.event_categories = clone(calendar.event_categories);
                             window.events = clone(calendar.events);
                             window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
-                            empty_edit_values();
                             set_up_edit_values();
                             set_up_view_values();
                             set_up_visitor_values();
@@ -213,7 +212,6 @@ export default () => ({
                                 "custom_location": false,
                                 "location": "Equatorial"
                             };
-                            empty_edit_values();
                             set_up_edit_values();
                             set_up_view_values();
                             set_up_visitor_values();
@@ -293,7 +291,6 @@ export default () => ({
             delete category.deleted_at;
         }
 
-        empty_edit_values();
         set_up_edit_values();
         set_up_view_values();
         set_up_visitor_values();

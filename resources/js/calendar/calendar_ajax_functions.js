@@ -209,58 +209,6 @@ export function get_dynamic_data(calendar_hash, output) {
 
 }
 
-export function link_child_calendar(child_hash, parent_link_date, parent_offset) {
-
-    show_loading_screen();
-
-    $.ajax({
-        url: window.baseurl + "calendars/" + child_hash,
-        type: "post",
-        dataType: 'json',
-        data: {
-            _method: "PATCH",
-            parent_hash: window.hash,
-            parent_link_date: parent_link_date,
-            parent_offset: parent_offset
-        },
-        success: function(result) {
-            update_dynamic(window.hash, () => {
-                window.location.reload();
-            });
-        },
-        error: function(error) {
-            hide_loading_screen();
-        }
-    });
-}
-
-export function unlink_child_calendar(output, child_hash) {
-
-    show_loading_screen();
-
-    $.ajax({
-        url: window.baseurl + "calendars/" + child_hash,
-        type: "post",
-        dataType: 'json',
-        data: {
-            _method: "PATCH",
-            parent_hash: "",
-            parent_link_date: "",
-            parent_offset: "",
-        },
-        success: function(result) {
-            update_dynamic(window.hash, () => {
-                window.location.reload();
-            });
-        },
-        error: function(error) {
-            $.notify(
-                error
-            );
-        }
-    });
-}
-
 export async function submit_new_event(event_id, callback) {
 
     var new_event = clone(window.events[event_id]);

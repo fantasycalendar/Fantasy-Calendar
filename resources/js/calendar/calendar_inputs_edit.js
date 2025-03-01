@@ -3,9 +3,6 @@ import {
     update_name,
     update_dynamic,
     update_all,
-    link_child_calendar,
-    unlink_child_calendar,
-    get_owned_calendars,
     delete_calendar,
     create_calendar,
 } from "./calendar_ajax_functions";
@@ -690,88 +687,6 @@ export function set_up_edit_inputs() {
         }
     });
 
-
-    $('#refresh_calendar_list_select').click(function() {
-        populate_calendar_lists();
-    });
-
-    $('#link_calendar').prop('disabled', true);
-
-    calendar_link_select.change(function() {
-        calendar_new_link_list.empty();
-        if ($(this).val() != "None") {
-            var calendar_hash = $(this).val();
-            var calendar = window.owned_calendars[calendar_hash];
-            add_link_to_list(calendar_new_link_list, calendar_new_link_list.children().length, false, calendar);
-        }
-    });
-
-    $(document).on('click', '.link_calendar', function() {
-
-        calendar_link_select.prop('disabled', true);
-
-        var calendar_hash = $(this).attr('hash');
-
-        var year = Number($(this).closest('.collapse-container').find('.year-input').val());
-        year = convert_year(window.static_data, year);
-        var timespan = Number($(this).closest('.collapse-container').find('.timespan-list').val());
-        var day = Number($(this).closest('.collapse-container').find('.timespan-day-list').val());
-
-        swal.fire({
-            title: "Linking Calendar",
-            html: "<p>Linking calendars will disable all structural inputs on both calendars (month lengths, week lengths, hours per day, minutes) so the link can be preserved. The link can be broken again at any point.</p>" +
-                "<p>Are you sure you want link and save this calendar?</p>",
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, link and save calendar',
-            cancelButtonText: 'Leave unlinked',
-            icon: "info"
-        })
-            .then((result) => {
-
-                if (!result.dismiss) {
-
-                    calendar_new_link_list.empty();
-
-                    var date = [year, timespan, day];
-
-                    var epoch_offset = evaluate_calendar_start(window.static_data, year, timespan, day).epoch;
-
-                    link_child_calendar(calendar_hash, date, epoch_offset);
-
-                } else {
-                    calendar_link_select.prop('disabled', false);
-                }
-
-            })
-
-    });
-
-    $(document).on('click', '.unlink_calendar', function() {
-
-        swal.fire({
-            title: "Unlinking Calendar",
-            html: "<p>Are you sure you want to break the link to this calendar?</p><p>This cannot be undone.</p>",
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, unlink',
-            cancelButtonText: 'Leave linked',
-            icon: "warning"
-        })
-            .then((result) => {
-
-                if (!result.dismiss) {
-
-                    var calendar_hash = $(this).attr('hash');
-
-                    unlink_child_calendar(populate_calendar_lists, calendar_hash);
-
-                }
-            });
-    });
-
     $('#apply_changes_btn').click(function() {
 
         var errors = get_errors();
@@ -1133,76 +1048,6 @@ function add_timespan_to_sortable(parent, key, data) {
     parent.append(element);
 }
 
-
-function add_link_to_list(parent, key, locked, calendar) {
-    var element = [];
-
-    element.push(`<div class='sortable-container list-group-item collapsible ${locked ? "collapsed" : "expanded"}' index='${key}'>`);
-    element.push("<div class='main-container'>");
-    element.push(`<div class='expand icon-${locked ? "expand" : "collapse"} ml-2'></div>`);
-    element.push("<div class='name-container'>");
-    element.push(`<div><a href="${window.baseurl}calendars/${calendar.hash}/edit" target="_blank">${calendar.name}</a></div>`);
-    element.push(`</div>`);
-    element.push("</div>");
-
-    element.push("<div class='collapse-container container mb-2'>");
-
-    element.push("<div class='row my-1 bold-text'>");
-
-    element.push("<div class='col'>");
-
-    element.push("Relative Start Date:");
-
-    element.push(`<div class='date_control'>`);
-    element.push(`<div class='row my-2'>`);
-    element.push("<div class='col'>");
-    element.push(`<input type='number' step="1.0" class='date form-control small-input year-input' ${(locked ? 'disabled' : '')}>`);
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='row my-2'>`);
-    element.push("<div class='col'>");
-    element.push(`<select type='number' class='date custom-select form-control timespan-list' ${(locked ? 'disabled' : '')}>`);
-    element.push("</select>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push(`<div class='row my-2'>`);
-    element.push("<div class='col'>");
-    element.push(`<select type='number' class='date custom-select form-control timespan-day-list' ${(locked ? 'disabled' : '')}>`);
-    element.push("</select>");
-    element.push("</div>");
-    element.push("</div>");
-    element.push("</div>");
-    element.push("</div>");
-    element.push("</div>");
-
-    element.push("<div class='row no-gutters my-1'>");
-    if (locked) {
-        element.push(`<button type='button' class='btn btn-danger full unlink_calendar' hash='${calendar.hash}'>Unlink</button>`);
-    } else {
-        element.push(`<button type='button' class='btn btn-primary full link_calendar' hash='${calendar.hash}'>Link</button>`);
-    }
-    element.push("</div>");
-
-    element.push("</div>");
-
-    var element = $(element.join(""));
-
-    parent.append(element);
-
-    if (locked) {
-        var parent_link_date = JSON.parse(calendar.parent_link_date);
-    } else {
-        var parent_link_date = [0, 0, 1];
-    }
-
-    element.find('.year-input').val(unconvert_year(window.static_data, Number(parent_link_date[0])));
-    repopulate_timespan_select(element.find('.timespan-list'), Number(parent_link_date[1]), false)
-    repopulate_day_select(element.find('.timespan-day-list'), Number(parent_link_date[2]), false)
-
-    return element;
-}
 
 function add_user_to_list(parent, key, data) {
 
@@ -1741,66 +1586,6 @@ export function evaluate_save_button(override) {
     }
 }
 
-function populate_calendar_lists() {
-    get_owned_calendars(function(calendars) {
-
-        window.owned_calendars = calendars;
-
-        calendar_link_list.html('');
-
-        for (var calendar_hash in window.owned_calendars) {
-
-            var calendar = window.owned_calendars[calendar_hash];
-
-            if (calendar.hash == window.hash) {
-
-                for (var index in calendar.children) {
-
-                    var child_hash = calendar.children[index];
-                    var child = window.owned_calendars[child_hash];
-
-                    add_link_to_list(calendar_link_list, index, true, child);
-
-                }
-
-            }
-
-        }
-
-        var html = [];
-
-        html.push(`<option>None</option>`);
-
-        for (var calendar_hash in window.owned_calendars) {
-
-            var child_calendar = window.owned_calendars[calendar_hash];
-
-            if (child_calendar.hash != window.hash) {
-
-                if (child_calendar.parent_hash) {
-
-                    var calendar_owner = clone(window.owned_calendars[child_calendar.parent_hash]);
-
-                    if (calendar_owner.hash == window.hash) {
-                        calendar_owner.name = "this calendar";
-                    }
-
-                } else {
-
-                    var calendar_owner = false;
-
-                }
-
-                html.push(`<option ${calendar_owner ? "disabled" : ""} value="${child_calendar.hash}">${child_calendar.name}${calendar_owner ? ` | Linked to ${calendar_owner.name}` : ""}</option>`);
-            }
-        }
-
-        calendar_link_select.html(html.join(''));
-        calendar_link_select.prop('disabled', false);
-
-    });
-}
-
 // export function evaluate_clock_inputs() {
 //     $('.clock_inputs :input, .clock_inputs :button, .render_clock').not('[clocktype]').prop('disabled', !window.static_data.clock.enabled);
 //     $('.clock_inputs, .render_clock').toggleClass('hidden', !window.static_data.clock.enabled);
@@ -1878,22 +1663,9 @@ export function set_up_edit_values() {
     // global_week_sortable.sortable('refresh');
 
     if (window.static_data.year_data.timespans.length > 0) {
-
         for (var i = 0; i < window.static_data.year_data.timespans.length; i++) {
             add_timespan_to_sortable(timespan_sortable, i, window.static_data.year_data.timespans[i]);
         }
-        // timespan_sortable.sortable('refresh');
-
-    }
-
-    // if ($('#collapsible_clock').is(':checked')) {
-    //     $('#clock').appendTo($('#collapsible_clock').parent().children('.collapsible-content'));
-    // } else {
-    //     $('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
-    // }
-
-    if (window.location.pathname != '/calendars/create') {
-        populate_calendar_lists();
     }
 
     evaluate_remove_buttons();
@@ -1924,14 +1696,6 @@ export function get_category(search) {
 }
 
 export function empty_edit_values() {
-    timespan_sortable.empty()
-    first_day.empty()
-    global_week_sortable.empty()
-    era_list.empty()
-    location_list.empty()
-    calendar_link_select.empty()
-    calendar_link_list.empty()
-    calendar_new_link_list.empty()
 }
 
 
@@ -1994,7 +1758,6 @@ export function autoload(popup) {
         window.events = data.events;
         window.event_categories = data.event_categories;
         window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
-        empty_edit_values();
         set_up_edit_values();
         set_up_view_values();
         set_up_visitor_values();

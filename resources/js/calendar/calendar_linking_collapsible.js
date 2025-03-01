@@ -20,7 +20,9 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
     retrieveOwnedCalendars() {
         axios.get(this.$store.calendar.api_url("/calendar/:hash/owned"))
             .then(response => {
-                this.owned = response.data.filter(calendar => calendar.hash !== this.$store.calendar.hash);
+                this.owned = response.data.filter(calendar => {
+                    return calendar.hash !== this.$store.calendar.hash;
+                });
             })
             .catch(error => {
                 this.$dispatch('notify', {
@@ -66,6 +68,63 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
             });
 
         })
+    }
+
+    unlinkChildCalendar(hash) {
+        swal.fire({
+            title: "Unlinking Calendar",
+            html: "<p>Are you sure you want to break the link to this calendar?</p><p>This cannot be undone.</p>",
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, unlink',
+            cancelButtonText: 'Leave linked',
+            icon: "warning"
+        })
+            .then((result) => {
+                if (result.dismiss) {
+                    return;
+                }
+
+                axios.patch(this.$store.calendar.base_url(`/calendars/${hash}`), {
+                    parent_hash: null,
+                    parent_link_date: null,
+                    parent_offset: null,
+                }).then(() => {
+                    update_dynamic(this.$store.calendar.hash, () => {
+                        window.location.reload();
+                    })
+                }).catch(() => {
+                    this.$dispatch('notify', {
+                        type: "error",
+                        content: error.response.data.message
+                    })
+                });
+            });
+    }
+
+    isLinkable(calendar) {
+        let returnval = calendar.hash !== this.$store.calendar.hash
+            && !calendar.parent_hash;
+
+        return returnval;
+    }
+
+    getRelativeStartDate(calendar) {
+        return (calendar.parent_link_date && calendar.parent_link_date.length === 3)
+            ? {
+                year: Number(calendar.parent_link_date[0]),
+                timespan: Number(calendar.parent_link_date[1]),
+                day: Number(calendar.parent_link_date[2]),
+            } : {
+                year: this.$store.calendar.dynamic_data.year,
+                timespan: 0,
+                day: 0,
+            };
+    }
+
+    get linkable() {
+        return this.owned.filter(calendar => this.isLinkable(calendar));
     }
 
     get children() {

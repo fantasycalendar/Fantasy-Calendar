@@ -197,7 +197,8 @@ class Calendar extends Model
     protected $casts = [
         'dynamic_data' => 'array',
         'static_data' => 'array',
-        'advancement_next_due' => 'datetime'
+        'advancement_next_due' => 'datetime',
+        'parent_link_date' => 'array',
     ];
 
     public $timestamps = false;
