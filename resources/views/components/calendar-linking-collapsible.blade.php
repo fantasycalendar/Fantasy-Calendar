@@ -39,9 +39,11 @@
             <template x-for="child in children">
                 <div x-data="{
                         locked: !!child.parent_hash,
-                        year: $store.calendar.dynamic_data.year,
-                        timespan: 0,
-                        day: 0,
+                        date: {
+                            year: $store.calendar.dynamic_data.year,
+                            timespan: 0,
+                            day: 0,
+                        }
                     }">
                     <div class='sortable-container list-group-item collapsible '
                         :class="{
@@ -62,45 +64,7 @@
 
                         <div class='collapse-container container mb-2'>
                             <div class='row my-1 bold-text'>
-                                <div class='col'>
-                                    Relative Start Date:
-
-                                    <div class='date_control'>
-                                        <div class='row my-2'>
-                                            <div class='col'>
-                                                <input type='number' step="1.0" class='form-control small-input' x-model="year" :disabled="locked">
-                                            </div>
-                                        </div>
-
-                                        <div class='row my-2'>
-                                            <div class='col'>
-                                                <select
-                                                    type='number'
-                                                    class='form-control'
-                                                    :disabled="locked"
-                                                    x-model.lazy.number="timespan"
-                                                >
-                                                    <template x-for="(month, index) in $store.calendar.get_timespans_in_year_as_select_options(year)">
-                                                        <option :value="index" x-text="month.name"
-                                                                :selected="index === timespan"
-                                                                :disabled="month.disabled"></option>
-                                                    </template>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class='row my-2'>
-                                            <div class='col'>
-                                                <select type='number' class='form-control' :disabled="locked" x-model.lazy.number="day">
-                                                    <template x-for="(timespan_day, index) in $store.calendar.get_days_in_timespan_in_year_as_select_options(year, timespan)">
-                                                        <option :value="index+1" x-text="timespan_day"
-                                                                :selected="index+1 === day"></option>
-                                                    </template>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <x-alpine.date-selector model="date" title="Relative Start Date:"></x-alpine.date-selector>
                             </div>
 
                             <div class='row no-gutters my-1'>
