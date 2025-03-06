@@ -1,20 +1,12 @@
-<div class='row no-gutters'>
-    <div class='col-7 bold-text'>
-        Avg. year length:
+<div class="grid grid-cols-12">
+    <div class="col-span-7">
+        <strong>Avg. year length:</strong>
     </div>
-    <div class='col-5 align-left'>
-        <div class='detail-text' x-text='average_year_length'>
-        </div>
-    </div>
-</div>
+    <div x-text='average_year_length' class="col-span-5"></div>
 
-<div class='row no-gutters'>
-    <div class='col-7 bold-text'>
-        Avg. month length:
+    <div class="col-span-7">
+        <strong>Avg. month length:</strong>
     </div>
-    <div class='col-5 align-left'>
-        <div class='detail-text' x-text='average_month_length'>
-        </div>
-    </div>
+    <div x-text='average_month_length' class="col-span-5"></div>
 </div>
 
