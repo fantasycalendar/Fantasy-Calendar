@@ -8,7 +8,14 @@
                     class="fa fa-question-circle"></i> Calendar Linking</a>.</small></p>
 </div>
 
-@if(Auth::user()->can('enable-linking', $calendar))
+@if(!auth()->user()->isPremium())
+    <div class='row no-gutters my-1'>
+        <p>Link calendars together, and make this calendar's date drive the date of other
+            calendars!</p>
+        <p class='m-0'><a href="{{ route('subscription.pricing') }}" target="_blank">Subscribe
+                now</a> to unlock this feature!</p>
+    </div>
+@elseif($calendar->isLinkable())
     <div id='calendar_link_hide'>
         @if($calendar->parent != null)
             <div class='row no-gutters my-1 center-text hidden calendar_link_explanation'>
@@ -70,10 +77,15 @@
 		@endif
 	</div>
 @else
-	<div class='row no-gutters my-1'>
-		<p>Link calendars together, and make this calendar's date drive the date of other
-			calendars!</p>
-		<p class='m-0'><a href="{{ route('subscription.pricing') }}" target="_blank">Subscribe
-				now</a> to unlock this feature!</p>
-	</div>
+    @php
+        $reason = match(true) {
+            $calendar->isChild() => "This calendar is linked as a child of {$calendar->parent->name}.",
+            boolval($calendar->advancement_enabled) => "This calendar has real-time advancement enabled, which isn't supported when linking calendars.",
+            true => "This calendar cannot be linked."
+        }
+    @endphp
+
+    <x-alert type="warning">
+        {{ $reason }}
+    </x-alert>
 @endif
