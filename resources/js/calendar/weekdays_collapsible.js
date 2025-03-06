@@ -3,6 +3,8 @@ import { populate_first_day_select } from "./calendar_inputs_edit";
 import CollapsibleComponent from "./collapsible_component";
 
 class WeekdaysCollapsible extends CollapsibleComponent {
+    collapsible_name = "Weekdays";
+
     overflow_weekdays = false;
     new_weekday_name = '';
     show_custom_week_warning = false;
@@ -28,6 +30,8 @@ class WeekdaysCollapsible extends CollapsibleComponent {
         "weekdays": "static_data.year_data.global_week"
     };
 
+    draggableRef = "weekdays-sortable";
+
     loaded(static_data) {
         this.deleting = -1;
         this.show_custom_week_warning = static_data.year_data.timespans.some(timespan => timespan?.week?.length)
@@ -50,6 +54,15 @@ class WeekdaysCollapsible extends CollapsibleComponent {
     removeWeekday(index) {
         this.weekdays.splice(index, 1);
         this.deleting = -1;
+    }
+
+    reorderSortable(start, end) {
+        let weekdays = JSON.parse(JSON.stringify(this.weekdays));
+
+        const elem = weekdays.splice(start, 1)[0];
+        weekdays.splice(end, 0, elem);
+
+        this.weekdays = weekdays;
     }
 }
 

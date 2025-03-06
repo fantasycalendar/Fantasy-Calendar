@@ -35,7 +35,11 @@ export default class CollapsibleComponent {
     dropped(start, end){
         if(start === end) return;
 
+        // We've essentially gotta make Alpine aware of the change in key order
+        // First we get the keys of all the elements in the <template>,
+        // then we call `.shift()` to remove the <template> tag itself.
         let order = this.draggable.toArray();
+        console.log(order);
         order.shift()
 
         this.reorderSortable(start, end);
