@@ -25,30 +25,31 @@ export default () => ({
         }
     ],
 
-    open_modal: function($event){
-
-        if(evaluate_save_button()){
+    open_modal: function($event) {
+        if (evaluate_save_button()) {
             this.open = true;
             this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() === window.static_data.settings.layout);
-        }else{
-            $('#btn_layouts').notify(
-                "Please save your calendar before applying a preset.",
-                { position: "top-center" }
-            )
+        } else {
+            this.$dispatch('notify', {
+                content: "Applying a layout refreshes the page, please save your calendar first.",
+                type: "warning"
+            });
         }
     },
 
-    apply_layout: function(layout){
+    apply_layout: function(layout) {
         show_loading_screen();
-        let previous_layout = window.static_data.settings.layout;
-        window.static_data.settings.layout = layout.name.toLowerCase();
-        do_update_all(window.hash, function(){
-            window.onbeforeunload = function () {}
+
+        let previous_layout = this.$store.calendar.static_data.settings.layout;
+        this.$store.calendar.static_data.settings.layout = layout.name.toLowerCase();
+
+        do_update_all(window.hash, function() {
+            window.onbeforeunload = function() { }
             window.location.reload(false);
-        }, function(){
-                window.static_data.settings.layout = previous_layout;
-                hide_loading_screen();
-            });
+        }, function() {
+            window.static_data.settings.layout = previous_layout;
+            hide_loading_screen();
+        });
     }
 
 })

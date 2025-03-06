@@ -2,6 +2,7 @@
     x-data="{
         notifications: [],
         add(e) {
+            console.log('Adding notification:', e);
             this.notifications.push({
                 id: e.timeStamp  + this.notifications.length,
                 type: e.detail.type,
@@ -37,40 +38,40 @@
                     clearTimeout(this.timeout);
                 },
                 startTimeout() {
-                    this.timeout = setTimeout(() => this.transitionOut(), 2000);
+                    this.timeout = setTimeout(() => this.transitionOut(), 20000);
                 }
             }"
             x-show="show"
             x-transition.duration.500ms
-            class="pointer-events-auto relative w-full max-w-sm rounded-md border border-gray-200 bg-white py-4 pl-6 pr-4 shadow-lg"
+            class="pointer-events-auto relative w-full max-w-sm rounded-md border border-gray-200 bg-gray-100 dark:bg-gray-800 py-4 pl-6 pr-4 shadow-lg"
             @mouseenter="cancelTimeout"
             @mouseleave="startTimeout"
         >
             <div class="flex items-start">
                 <!-- Icons -->
                 <div x-show="notification.type === 'info'" class="flex-shrink-0">
-                    <span aria-hidden="true" class="inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-400 text-xl font-bold text-gray-400">!</span>
+                    <span aria-hidden="true" class="inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-gray-400 text-xl font-bold text-gray-400 dark:text-gray-200">!</span>
                     <span class="sr-only">Information:</span>
                 </div>
 
                 <div x-show="notification.type === 'success'" class="flex-shrink-0">
-                    <span aria-hidden="true" class="inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-green-600 text-lg font-bold text-green-600">&check;</span>
+                    <span aria-hidden="true" class="inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-green-600 text-lg font-bold text-green-600 dark:text-green-400">&check;</span>
                     <span class="sr-only">Success:</span>
                 </div>
 
                 <div x-show="notification.type === 'error'" class="flex-shrink-0">
-                    <span aria-hidden="true" class="inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-red-600 text-lg font-bold text-red-600">&times;</span>
+                    <span aria-hidden="true" class="inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-red-600 text-lg font-bold text-red-600 dark:text-red-400">&times;</span>
                     <span class="sr-only">Error:</span>
                 </div>
 
                 <div x-show="notification.type === 'warning'" class="flex-shrink-0">
-                    <span aria-hidden="true" class="inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-amber-600 text-lg font-bold text-amber-600">!</span>
+                    <span aria-hidden="true" class="inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-amber-600 text-lg font-bold text-amber-600 dark:text-amber-400">!</span>
                     <span class="sr-only">Warning:</span>
                 </div>
 
                 <!-- Text -->
                 <div class="ml-3 w-0 flex-1 pt-0.5">
-                    <p x-text="notification.content" class="text-sm font-medium leading-5 text-gray-900"></p>
+                    <p x-text="notification.content" class="text-sm font-medium leading-5 text-gray-900 dark:text-gray-200"></p>
                 </div>
 
                 <!-- Remove button -->

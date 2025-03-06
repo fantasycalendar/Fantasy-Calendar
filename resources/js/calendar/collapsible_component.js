@@ -26,8 +26,6 @@ export default class CollapsibleComponent {
                     this.dropped(event.oldIndex, event.newIndex);
                 }
             });
-
-            console.log("Setup draggable on ", this.collapsible_name);
         }
     }
 

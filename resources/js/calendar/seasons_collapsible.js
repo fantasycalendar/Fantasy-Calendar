@@ -4,6 +4,7 @@ import _ from "lodash";
 import { fract, get_colors_for_season, lerp } from "./calendar_functions.js";
 
 class SeasonsCollapsible extends CollapsibleComponent {
+    collapsible_name = "seasons";
 
     deleting = -1;
 
@@ -55,6 +56,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
     }
 
     draggableRef = "seasons-sortable";
+    reordering = false;
 
     reorderSortable(start, end) {
         const elem = this.seasons.splice(start, 1)[0];

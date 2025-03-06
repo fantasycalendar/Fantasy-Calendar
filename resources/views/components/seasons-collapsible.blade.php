@@ -49,6 +49,15 @@
     </div>
 </div>
 
+<div class="row no-gutters my-2" x-show="settings.periodic_seasons">
+    <button class="full btn btn-secondary" @click="reordering = true; expandedSeasons = []; deleting = -1;" x-show="!reordering">
+        <i class="fa fa-arrows-alt-v"></i> Change order
+    </button>
+    <button class="full btn btn-secondary" @click="reordering = false" x-show="reordering">
+        <i class="fa fa-check"></i> Done
+    </button>
+</div>
+
 <div class='sortable list-group my-2' x-ref="seasons-sortable">
     <template x-for="(season, index) in seasons" x-ref="seasons-sortable-template" :key="index">
         <div class='sortable-container list-group-item collapsible p-2 first-of-type:rounded-t'
@@ -56,12 +65,13 @@
              :data-id="index">
 
             <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
-                <div class='handle fa fa-bars' x-show="settings.periodic_seasons"></div>
+                <div class='handle fa fa-bars' x-show="reordering && settings.periodic_seasons"></div>
                 <div class='cursor-pointer text-xl fa'
                      :class="{ 'fa-caret-square-up': !isCollapsed(index), 'fa-caret-square-down': isCollapsed(index) }"
+                     x-show="!reordering"
                      @click="toggleCollapsed(index)"></div>
-                <input type='text' class='name-input small-input form-control' x-model.lazy='season.name'/>
-                <button class="btn btn-danger w-10" @click="deleting = index">
+                <input type='text' class='name-input small-input form-control' x-model.lazy='season.name'></input>
+                <button class="btn btn-danger w-10" @click="deleting = index" x-show="!reordering">
                     <i class="fa fa-trash text-lg"></i>
                 </button>
             </div>
