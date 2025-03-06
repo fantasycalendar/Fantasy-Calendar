@@ -2,7 +2,7 @@
 
 @if(isset($calendar) && $calendar->isPremium())
 	@if(request()->is('calendars/*/edit') && $calendar->parent()->exists())
-        <p class="mb-0 mt-3"><a onclick="linked_popup();" href='#'>Why can't I edit the real time advancement?</a></p>
+        <p class="mb-0 mt-1"><a @click="linked_popup();" href='#'>Where are the real-time advancement options?</a></p>
 	@else
 		<div x-data="{ discord_webhooks: @json($calendar->discord_webhooks()->count()) }">
 

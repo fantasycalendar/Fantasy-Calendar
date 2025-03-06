@@ -16,7 +16,7 @@
     <div class='col-8 pr-1 bold-text'>
         Overflow weekdays:
     </div>
-    @if (request()->is('calendars/*/edit') && $calendar->isLinked())
+    @if ($calendar->isLinked())
         {{ Arr::get($calendar->static_data, 'year_data.overflow') ? 'Enabled' : 'Disabled' }}
     @else
         <div class='col-4'>
@@ -32,7 +32,7 @@
     <div class='separator'></div>
 </div>
 
-@if (request()->is('calendars/*/edit') && $calendar->isLinked())
+@if ($calendar->isLinked())
     <ul class="list-group">
 
         @php
@@ -93,8 +93,7 @@
 
 @endif
 
-<div id='first_week_day_container' class='hidden'>
-
+<div x-show='overflow_weekdays'>
     <div class='row no-gutters my-2'>
         <div class='separator'></div>
     </div>
@@ -102,7 +101,7 @@
     <div class='row no-gutters my-2'>
         <div class='col'>
             <p class='bold-text m-0'>First week day:</p>
-            @if (request()->is('calendars/*/edit') && $calendar->isLinked())
+            @if ($calendar->isLinked())
                 <ul class="list-group">
                     <li class="list-group-item">
                         {{ Arr::get($calendar->static_data, 'year_data.global_week')[
@@ -125,6 +124,6 @@
     </div>
 </div>
 
-@if (request()->is('calendars/*/edit') && $calendar->isLinked())
-    <p class="mb-0 mt-3"><a onclick="linked_popup();" href='#'>Why can't I edit the weekdays?</a></p>
+@if ($calendar->isLinked())
+    <p class="mb-0 mt-3"><a @click="linked_popup();" href='#'>Why can't I edit the weekdays?</a></p>
 @endif

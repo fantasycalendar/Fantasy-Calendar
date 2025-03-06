@@ -18,7 +18,7 @@ export default class CollapsibleComponent {
     collapsible_name = "Not set on the individual component?!?";
 
     init() {
-        if (this.draggableRef) {
+        if (this.draggableRef && this.$refs[this.draggableRef]) {
             this.draggable = Sortable.create(this.$refs[this.draggableRef], {
                 animation: 150,
                 handle: ".handle",

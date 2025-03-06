@@ -50,10 +50,10 @@
 </div>
 
 <div class='sortable list-group my-2' x-ref="seasons-sortable">
-    <template x-for="(season, index) in seasons" x-ref="seasons-sortable-template">
-
+    <template x-for="(season, index) in seasons" x-ref="seasons-sortable-template" :key="index">
         <div class='sortable-container list-group-item collapsible p-2 first-of-type:rounded-t'
-             :class="{'collapsed': isCollapsed(index)}">
+             :class="{'collapsed': isCollapsed(index)}"
+             :data-id="index">
 
             <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
                 <div class='handle fa fa-bars' x-show="settings.periodic_seasons"></div>

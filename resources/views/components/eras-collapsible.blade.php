@@ -28,7 +28,7 @@
 
     </ul>
 
-    <p class='mb-0 mt-3'><a onclick="linked_popup();" href='#'>Why can't I edit the eras?</a></p>
+    <p class='mb-0 mt-1'><a onclick="linked_popup();" href='#'>Why can't I edit the eras?</a></p>
 
 @else
 
