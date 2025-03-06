@@ -1,6 +1,6 @@
 @props(['calendar' => null])
 
-@if(request()->is('calendars/*/edit') && $calendar->isLinked())
+@if($calendar->isLinked())
 
     <ul class="list-group">
 

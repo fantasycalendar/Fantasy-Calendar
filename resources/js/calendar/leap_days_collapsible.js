@@ -37,8 +37,16 @@ class LeapDaysCollapsible extends CollapsibleComponent {
         "leap_days": this.validateLeapDayIntervals
     };
 
-    loaded(){
+    draggableRef = "leap-days-sortable";
+    reordering = false;
+
+    loaded() {
         this.sanitizeLeapDayIntervals();
+    }
+
+    reorderSortable(start, end) {
+        const elem = this.leap_days.splice(start, 1)[0];
+        this.leap_days.splice(end, 0, elem);
     }
 
     addLeapDay() {
@@ -72,7 +80,7 @@ class LeapDaysCollapsible extends CollapsibleComponent {
     }
 
     sanitizeLeapDayIntervals() {
-        for (let [ index, leapDay ] of this.leap_days.entries()) {
+        for (let [index, leapDay] of this.leap_days.entries()) {
             let { interval } = leapDay;
 
             let values = interval.split(',');

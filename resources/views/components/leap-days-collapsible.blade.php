@@ -1,9 +1,7 @@
 @props(['calendar' => null])
 
-@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-
+@if($calendar->isLinked())
     <ul class="list-group">
-
         @php
             $leap_days = Arr::get($calendar->static_data, 'year_data.leap_days');
         @endphp
@@ -37,18 +35,13 @@
                 @endif
             </li>
         @endforeach
-
     </ul>
 
     <p class='mb-0 mt-3'><a onclick="linked_popup();" href='#'>Why can't I edit the leap days?</a></p>
-
 @else
-
-    <div class='row bold-text'>
-        <div class="col">
-            New leap day:
-        </div>
-    </div>
+    <strong>
+        New leap day:
+    </strong>
 
     <div class='input-group'>
         <input type='text' class='form-control' placeholder='Name' x-model="name">
@@ -65,23 +58,28 @@
         </div>
     </div>
 
-
-    <div class="row">
-        <div style='font-style: italic; margin-left:3.5rem'>Name</div>
+    <div class="my-2">
+        <button class="full btn btn-secondary" @click="reordering = true" x-show="!reordering && (leap_days.length > 1)">
+            <i class="fa fa-arrows-alt-v"></i> Change order
+        </button>
+        <button class="full btn btn-secondary" @click="reordering = false" x-show="reordering">
+            <i class="fa fa-check"></i> Done
+        </button>
     </div>
 
-    <div>
-        <template x-for="(leap_day, index) in leap_days" :key="index">
-
-            <div class="list-group-item p-2 first-of-type:rounded-t" x-data="{ collapsed: true }">
+    <div class="sortable list-group" x-ref="leap-days-sortable">
+        <template x-for="(leap_day, index) in leap_days" :key="index" x-ref="leap-days-sortable-template">
+            <div class="list-group-item p-2 first-of-type:rounded-t draggable-source" x-data="{ collapsed: true }" :data-id="index">
 
                 <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
-                    <div class='handle fa fa-bars'></div>
+                    <div class='handle fa fa-bars' x-show="reordering"></div>
                     <div class='cursor-pointer text-xl fa'
                          :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
-                         @click="collapsed = !collapsed"></div>
+                         @click="collapsed = !collapsed"
+                         x-show="!reordering"
+                         ></div>
                     <input type='text' class='name-input small-input form-control' x-model.lazy='leap_day.name'/>
-                    <button class="btn btn-danger w-10" @click="deleting = index">
+                    <button class="btn btn-danger w-10" @click="deleting = index" x-show="!reordering">
                         <i class="fa fa-trash text-lg"></i>
                     </button>
                 </div>
@@ -102,6 +100,7 @@
                     <div class='row my-2 bold-text big-text italics-text'>
                         <div class='col' x-text='!leap_day.intercalary ? "Leap day" : "Intercalary leap day"'></div>
                     </div>
+
                     <div class='date_control'>
                         <div class='row no-gutters'>
                             <div class='col'>
@@ -226,10 +225,6 @@
                     </div>
                 </div>
             </div>
-
         </template>
-
-
     </div>
-
 @endif
