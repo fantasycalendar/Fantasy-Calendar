@@ -70,7 +70,6 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
                     content: error.response.data.message
                 })
             });
-
         })
     }
 

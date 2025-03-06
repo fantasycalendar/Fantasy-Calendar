@@ -77,15 +77,14 @@
 		@endif
 	</div>
 @else
-    @php
-        $reason = match(true) {
-            $calendar->isChild() => "This calendar is linked as a child of {$calendar->parent->name}.",
-            boolval($calendar->advancement_enabled) => "This calendar has real-time advancement enabled, which isn't supported when linking calendars.",
-            true => "This calendar cannot be linked."
-        }
-    @endphp
+    @if($calendar->isChild())
+        <x-alert type="warning">
+            This calendar is linked as a child of <a class="font-bold text-amber-600 dark:text-amber-200 hover:text-amber-100 underline" target="_blank" href="{{ route('calendars.edit', [ 'calendar' => $calendar ]) }}">{{ $calendar->parent->name }}</a>.
+        </x-alert>
+    @else
+        <x-alert type="warning">
+            This calendar cannot be linked.
+        </x-alert>
+    @endif
 
-    <x-alert type="warning">
-        {{ $reason }}
-    </x-alert>
 @endif

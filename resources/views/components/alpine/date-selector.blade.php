@@ -3,6 +3,22 @@
             year: 0,
             timespan: 0,
             day: 0
+        },
+        get year() {
+            if ($store.calendar.static_data.settings.year_zero_exists) {
+                return this._date.year;
+            } else {
+                return (this._date.year >= 0)
+                    ? this._date.year + 1
+                    : this._date.year;
+            }
+        },
+        set year(value) {
+            if ($store.calendar.static_data.settings.year_zero_exists) {
+                this._date.year = year;
+            } else {
+                this._date.year = year > 0 ? year - 1 : year;
+            }
         }
     }"
     x-modelable="_date"
@@ -13,7 +29,7 @@
     <div>
         <div class='row my-2'>
             <div class='col'>
-                <input type='number' step="1.0" class='form-control small-input' x-model="_date.year" {{ $attributes->whereStartsWith(':disabled') }}>
+                <input type='number' step="1.0" class='form-control small-input' x-model="year" {{ $attributes->whereStartsWith(':disabled') }}>
             </div>
         </div>
 
