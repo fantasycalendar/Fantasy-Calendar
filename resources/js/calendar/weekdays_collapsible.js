@@ -1,5 +1,3 @@
-import { populate_first_day_select } from "./calendar_inputs_edit";
-
 import CollapsibleComponent from "./collapsible_component";
 
 class WeekdaysCollapsible extends CollapsibleComponent {
@@ -26,8 +24,9 @@ class WeekdaysCollapsible extends CollapsibleComponent {
     };
 
     outboundProperties = {
-        "overflow_weekdays": "static_data.year_data.overflow",
-        "weekdays": "static_data.year_data.global_week"
+        'overflow_weekdays': 'static_data.year_data.overflow',
+        'weekdays': 'static_data.year_data.global_week',
+        'first_day': 'static_data.year_data.first_day'
     };
 
     draggableRef = "weekdays-sortable";
@@ -41,8 +40,6 @@ class WeekdaysCollapsible extends CollapsibleComponent {
     weekdaysChanged() {
         this.new_weekday_name = '';
         this.deleting = -1;
-
-        populate_first_day_select(this.first_day);
     }
 
     addNewDay() {

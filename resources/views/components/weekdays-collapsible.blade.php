@@ -111,9 +111,15 @@
                     </li>
                 </ul>
             @else
-                <select type='number' class='form-control static_input protip' data-pt-position="right"
-                    data-pt-title='This sets the first weekday of the first year.' id='first_day'
-                    data='year_data' fc-index='first_day'></select>
+                <select type='number'
+                    class='form-control protip'
+                    data-pt-position="right"
+                    data-pt-title='This sets the first weekday of the first year.'
+                    x-model="first_day">
+                    <template x-for="(weekday, index) in weekdays" :key="index">
+                        <option :value="index + 1" x-text="weekday" :selected="console.log(weekday, index, first_day) || (index + 1) === first_day"></option>
+                    </template>
+                </select>
                 @endif
         </div>
     </div>

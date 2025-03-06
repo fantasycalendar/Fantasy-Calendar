@@ -270,10 +270,6 @@ export function set_up_edit_inputs() {
 
     /* ------------------- Layout callbacks ------------------- */
 
-    $(document).on('change', '.week_day_name', function() {
-        populate_first_day_select(window.static_data.year_data.first_day);
-    });
-
     $('.add_inputs.timespan .add').click(function() {
         var name = $('#timespan_name_input');
         var type = $('#timespan_type_input');
@@ -594,12 +590,6 @@ export function set_up_edit_inputs() {
         }
 
         window.dispatchEvent(new CustomEvent("events-changed"));
-    });
-
-    $(document).on('change', '.custom_week_day', function() {
-
-        populate_first_day_select();
-
     });
 
     $(document).on('focusin', '.timespan_occurance_input', function(e) {
@@ -1313,51 +1303,6 @@ function evaluate_remove_buttons() {
     });
 }
 
-export function populate_first_day_select(val) {
-    var custom_week = false;
-    timespan_sortable.children().each(function() {
-        if ($(this).find('.unique-week-input').is(':checked')) {
-            custom_week = true;
-        }
-    });
-
-    var i = 0;
-
-    var timespan = false;
-
-    if (custom_week) {
-        while (true) {
-            var timespans = get_timespans_in_year(window.static_data, i, true);
-            if (timespans.length > 0) {
-                if (window.static_data.year_data.timespans[timespans[0].id].week !== undefined) {
-                    timespan = timespans[0].id;
-                }
-                break;
-            }
-            if (i > 1000) break;
-            i++;
-        }
-    }
-
-    var week = timespan === false ? window.static_data.year_data.global_week : window.static_data.year_data.timespans[timespan].week;
-
-    var html = [];
-
-    for (var i = 0; i < week.length; i++) {
-
-        html.push(`<option value='${i + 1}'>${week[i]}</option>`);
-
-    }
-
-    if (val !== undefined) {
-        var selected_first_day = val;
-    } else {
-        var selected_first_day = first_day.val() ? first_day.val() : 1;
-    }
-
-    first_day.html(html.join('')).val(selected_first_day);
-}
-
 function repopulate_weekday_select(elements, value, change) {
     change = change === undefined ? true : change;
 
@@ -1608,7 +1553,6 @@ export function set_up_edit_values() {
     $('#calendar_name').val(window.calendar_name);
 
     $('.static_input').each(function() {
-
         var data = $(this).attr('data');
         var key = $(this).attr('fc-index');
 
@@ -1648,7 +1592,6 @@ export function set_up_edit_values() {
     $('.month_overflow_container').toggleClass("hidden", custom_week)
     $('#overflow_explanation').toggleClass('hidden', !custom_week);
 
-    populate_first_day_select(window.static_data.year_data.first_day);
     $('#first_week_day_container').toggleClass('hidden', !window.static_data.year_data.overflow || window.static_data.year_data.global_week.length == 0).find('select').prop('disabled', !window.static_data.year_data.overflow || window.static_data.year_data.global_week.length == 0);
     // global_week_sortable.sortable('refresh');
 
