@@ -1,13 +1,13 @@
 @props(['calendar' => null])
 
-@if(!$calendar->isPremium())
+@if($calendar->isPremium())
 	@if($calendar->parent()->exists())
         <p class="mb-0 mt-1"><a @click="linked_popup();" href='#'>Where are the real-time advancement options?</a></p>
 	@else
         <x-input-toggle x-model="advancement.advancement_enabled" label="Enable real-time advancement:" name="advancement.advancement_enabled"></x-input-toggle>
 
         <div class="flex flex-col mt-[0.5rem]" x-data="{ discord_webhooks: @json($calendar->discord_webhooks()->count()) }" x-show="advancement.advancement_enabled">
-            <div class="w-full border-b-gray-400 dark:border-b-gray-600 border-b-2 my-[1rem]"></div>
+            <x-separator></x-separator>
 
             <strong>For every</strong>
 
@@ -47,7 +47,7 @@
                 </small>
             </div>
 
-            <div class="w-full border-b-gray-400 dark:border-b-gray-600 border-b-2 my-[1rem]"></div>
+            <x-separator></x-separator>
 
             <strong> Notification webhooks </strong>
 

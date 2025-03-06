@@ -3,20 +3,20 @@
 @php($contains_clean = Str::replace("-", " ", $contains))
 
 <div @class([
-        'wrap-collapsible card',
-        $step ? "step-{$step}-step" : null,
-        "settings-" . $contains
+    'wrap-collapsible card',
+    $step ? "step-{$step}-step" : null,
+    "settings-" . $contains
     ])>
     <input id="collapsible_{{ $contains }}" class="toggle" type="checkbox">
     <label for="collapsible_{{ $contains }}" class="lbl-toggle py-2 pr-3 card-header">
         <i class="mr-2 fas {{ $icon }}"></i> {{ $contains }}
 
-			@if($premium_feature && isset($calendar) && !$calendar->isPremium())
-				<span style="color: rgb(56, 161, 105);" class="ml-2 protip" data-pt-position="right"
-							data-pt-title="Subscriber-only feature">
-                            <x-app-logo class="hover-opacity" width="20" height="20"></x-app-logo>
-                        </span>
-			@endif
+        @if($premium_feature && isset($calendar) && !$calendar->isPremium())
+            <span style="color: rgb(56, 161, 105);" class="ml-2 protip" data-pt-position="right"
+                data-pt-title="Subscriber-only feature">
+                <x-app-logo class="hover-opacity" width="20" height="20"></x-app-logo>
+            </span>
+        @endif
 
         @if($done)
             <!-- TODO: remove this and done property once we have converted all collapsibles -->
