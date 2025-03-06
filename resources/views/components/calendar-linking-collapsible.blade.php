@@ -21,8 +21,8 @@
         @else
 
             <div class='input-group my-1'>
-                <select class='form-control' x-model="selectedCalendarHash">
-                    <option value="">Choose an available calendar</option>
+                <select class='form-control' x-model="selectedCalendarHash" :disabled="linkable.length === 0">
+                    <option value="" x-text="linkable.length > 0 ? 'Choose an available calendar' : 'No linkable calendars'"></option>
 
                     <template x-for="calendar in linkable" x-key="calendar.hash">
                         <option :value="calendar.hash" x-text="calendar.name"></option>
@@ -36,28 +36,28 @@
 
             <template x-for="child in children">
                 <div x-data="{
-                        collapsed: child.locked,
+                        collapsed: false,
                         date: getRelativeStartDate(child),
                     }">
-                    <div class='sortable-container list-group-item collapsible '
+                    <div class='sortable-container list-group-item collapsible'
                         :class="{
                             'collapsed': child.locked && collapsed,
                             'expanded': !child.locked || !collapsed,
                         }">
                         <div class='main-container'>
-                            <div class='cursor-pointer text-xl fa'
+                            <div class='cursor-pointer px-2 text-xl fa'
                                  :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
                                  @click="collapsed = !collapsed"
                                  x-show="child.locked"
                                  ></div>
                             <div class='name-container'>
-                                <div><a :href="`/calendars/${child.hash}/edit`" target="_blank" x-text="child.name"></a></div>
+                                <strong><a :href="`/calendars/${child.hash}/edit`" target="_blank" x-text="child.name"></a></strong>
                             </div>
                         </div>
 
                         <div class='collapse-container container mb-2'>
                             <div class='row my-1 bold-text'>
-                                <x-alpine.date-selector model="date" title="Relative Start Date:"></x-alpine.date-selector>
+                                <x-alpine.date-selector x-model="date" title="Relative Start Date:" ::disabled="child.locked"></x-alpine.date-selector>
                             </div>
 
                             <div class='row no-gutters my-1'>

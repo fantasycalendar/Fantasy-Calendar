@@ -652,16 +652,6 @@ export function set_up_edit_inputs() {
         window.preview_date.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.preview_date.year), window.preview_date.timespan, window.preview_date.day).epoch;
     });
 
-    $(document).on('change', '.year-input', function() {
-        repopulate_timespan_select($(this).closest('.date_control').find('.timespan-list'));
-        repopulate_day_select($(this).closest('.date_control').find('.timespan-day-list'))
-    });
-
-    $(document).on('change', '.timespan-list', function() {
-        repopulate_day_select($(this).closest('.date_control').find('.timespan-day-list'))
-    });
-
-
     $(document).on('change', '.sortable-container.leap-day', function() {
 
         var changed_timespan = $(this).find('.timespan-list');

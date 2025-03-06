@@ -23,6 +23,7 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
                 this.owned = response.data.filter(calendar => {
                     return calendar.hash !== this.$store.calendar.hash;
                 }).map(calendar => {
+                    console.log(calendar);
                     calendar.locked = !!calendar.parent_hash;
 
                     return calendar;
@@ -64,7 +65,7 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
                 update_dynamic(this.$store.calendar.hash, () => {
                     window.location.reload();
                 })
-            }).catch(() => {
+            }).catch(error => {
                 this.$dispatch('notify', {
                     type: "error",
                     content: error.response.data.message
@@ -98,7 +99,7 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
                     update_dynamic(this.$store.calendar.hash, () => {
                         window.location.reload();
                     })
-                }).catch(() => {
+                }).catch(error => {
                     this.$dispatch('notify', {
                         type: "error",
                         content: error.response.data.message
@@ -109,7 +110,8 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
 
     isLinkable(calendar) {
         let returnval = calendar.hash !== this.$store.calendar.hash
-            && !calendar.parent_hash;
+            && !calendar.parent_hash
+            && !calendar.advancement_enabled;
 
         return returnval;
     }
