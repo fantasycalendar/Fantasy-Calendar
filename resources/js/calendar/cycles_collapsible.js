@@ -2,6 +2,8 @@ import CollapsibleComponent from "./collapsible_component.js";
 
 class CyclesCollapsible extends CollapsibleComponent {
 
+    collapsible_name = "CyclesCollapsible"
+
     deleting = -1;
 
     format = "";

@@ -2,7 +2,7 @@ import CollapsibleComponent from "./collapsible_component.js";
 import { slugify } from "./header.js";
 
 class EventCategoriesCollapsible extends CollapsibleComponent {
-    collapsible_name = "event_categories";
+    collapsible_name = "EventCategoriesCollapsible";
 
     inboundProperties = {
         "categories": "event_categories",

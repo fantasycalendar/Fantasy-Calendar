@@ -1,7 +1,8 @@
 import CollapsibleComponent from "./collapsible_component";
 
 class WeekdaysCollapsible extends CollapsibleComponent {
-    collapsible_name = "Weekdays";
+
+    collapsible_name = "WeekdaysCollapsible"
 
     overflow_weekdays = false;
     new_weekday_name = '';

@@ -2,6 +2,8 @@ import CollapsibleComponent from "./collapsible_component.js";
 
 class StatisticsCollapsible extends CollapsibleComponent {
 
+    collapsible_name = "StatisticsCollapsible"
+
     average_year_length = 0;
     average_month_length = 0;
 

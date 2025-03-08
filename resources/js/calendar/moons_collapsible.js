@@ -3,6 +3,8 @@ import { avg_month_length, get_moon_granularity } from "./calendar_functions.js"
 
 class MoonsCollapsible extends CollapsibleComponent {
 
+    collapsible_name = "MoonsCollapsible"
+
     deleting = -1;
 
     moons = [];

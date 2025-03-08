@@ -2,7 +2,7 @@ import CollapsibleComponent from "./collapsible_component.js";
 import { ordinal_suffix_of } from "./calendar_functions.js";
 
 class LeapDaysCollapsible extends CollapsibleComponent {
-    collapsible_name = "Leap days";
+    collapsible_name = "LeapDaysCollapsible";
 
     name = "";
     type = "";

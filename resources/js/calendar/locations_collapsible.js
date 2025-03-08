@@ -10,6 +10,8 @@ import {
 
 class LocationsCollapsible extends CollapsibleComponent {
 
+    collapsible_name = "LocationsCollapsible"
+
     deleting = -1;
     name = "";
 

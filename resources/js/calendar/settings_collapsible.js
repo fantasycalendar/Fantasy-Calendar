@@ -2,6 +2,8 @@ import CollapsibleComponent from "./collapsible_component.js";
 
 class SettingsCollapsible extends CollapsibleComponent {
 
+    collapsible_name = "SettingsCollapsible"
+
     settings = {}
 
     inboundProperties = {

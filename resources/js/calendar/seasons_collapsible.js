@@ -4,7 +4,8 @@ import _ from "lodash";
 import { fract, get_colors_for_season, lerp } from "./calendar_functions.js";
 
 class SeasonsCollapsible extends CollapsibleComponent {
-    collapsible_name = "seasons";
+
+    collapsible_name = "SeasonsCollapsible"
 
     deleting = -1;
 

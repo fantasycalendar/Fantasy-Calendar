@@ -1,7 +1,7 @@
 import CollapsibleComponent from "./collapsible_component.js";
 
 class EventsCollapsible extends CollapsibleComponent {
-    collapsible_name = "events";
+    collapsible_name = "EventsCollapsible";
 
     inboundProperties = {
         "events": "events",

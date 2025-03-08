@@ -2,6 +2,8 @@ import CollapsibleComponent from "./collapsible_component.js";
 
 class WeatherCollapsible extends CollapsibleComponent {
 
+    collapsible_name = "WeatherCollapsible"
+
     weather = {};
     seasons = [];
 

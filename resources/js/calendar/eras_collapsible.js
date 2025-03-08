@@ -1,6 +1,9 @@
 import CollapsibleComponent from "./collapsible_component.js";
 
 class ErasCollapsible extends CollapsibleComponent {
+
+    collapsible_name = "ErasCollapsible"
+
     era_name = "";
     deleting = -1;
 
@@ -13,7 +16,7 @@ class ErasCollapsible extends CollapsibleComponent {
         "eras": "static_data.eras",
         "season_settings": "static_data.seasons.global_settings",
         "dynamic_data": "dynamic_data",
-        "timespans": "static_data.year_data.timespans",
+        "months": "static_data.year_data.timespans",
         "event_categories": "event_categories"
     }
 
@@ -62,7 +65,7 @@ class ErasCollapsible extends CollapsibleComponent {
         // TODO: make this refresh when the month intervals are changed - change listener?
         return this.$store.calendar.get_timespans_in_year(year)
             .map(({ result, reason }, index) => ({
-                name: this.timespans[index].name + (!result ? ` (${reason})` : ""),
+                name: this.months[index].name + (!result ? ` (${reason})` : ""),
                 disabled: !result
             }));
     }
