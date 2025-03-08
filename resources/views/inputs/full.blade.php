@@ -111,7 +111,7 @@
         <div class="error">
             <ol>
                 <template x-for="error in getErrors()">
-                    <li x-text="error"></li>
+                    <li x-html="error"></li>
                 </template>
             </ol>
         </div>

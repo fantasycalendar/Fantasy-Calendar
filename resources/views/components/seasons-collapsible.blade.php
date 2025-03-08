@@ -120,9 +120,9 @@
                     <div class='row no-gutters my-1'>
                         <div class='col-4 pt-1'>Month:</div>
                         <div class='col'>
-                            <select type='number' class='form-control' x-model='season.timespan'>
+                            <select type='number' class='form-control' x-model.number='season.timespan'>
                                 <template x-for="(month, month_index) in months" :key="month_index">
-                                    <option :value="month_index" x-text="month.name"></option>
+                                    <option :value="month_index" :selected="month_index === season.timespan" x-text="month.name"></option>
                                 </template>
                             </select>
                         </div>
@@ -130,9 +130,9 @@
                     <div class='row no-gutters my-1'>
                         <div class='col-4 pt-1'>Day:</div>
                         <div class='col'>
-                            <select type='number' class='form-control' x-model.lazy='season.day'>
+                            <select type='number' class='form-control' x-model.number='season.day'>
                                 <template x-for="(day, day_index) in _.range(1, months[season.timespan ?? 0].length + 1)" :key="day_index">
-                                    <option :value="day" x-text="day"></option>
+                                    <option :value="day"  :selected="day === season.day" x-text="day"></option>
                                 </template>
                             </select>
                         </div>

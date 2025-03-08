@@ -55,6 +55,10 @@ class SeasonsCollapsible extends CollapsibleComponent {
         "locations": this.evaluateSeasonLengthText,
     }
 
+    validators = {
+        "seasons": this.validateSeasons
+    };
+
     draggableRef = "seasons-sortable";
     reordering = false;
 
@@ -86,6 +90,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
     }
 
     addSeason() {
+
         let newSeason = {
             "name": this.season_name || "New season",
             "color": [
@@ -221,12 +226,9 @@ class SeasonsCollapsible extends CollapsibleComponent {
     createSeasonEvents() {
         new Promise((resolve, reject) => {
 
-            let found = false;
-            for (let i in this.events) {
-                if (['spring equinox', 'summer solstice', 'autumn equinox', 'winter solstice'].indexOf(this.events[i].name.toLowerCase()) > -1) {
-                    found = true;
-                }
-            }
+            let found = this.events.some(event => {
+                return ['spring equinox', 'summer solstice', 'autumn equinox', 'winter solstice'].indexOf(event.name.toLowerCase()) > 1;
+            });
 
             if (found) {
                 swal.fire({
@@ -285,7 +287,6 @@ class SeasonsCollapsible extends CollapsibleComponent {
         });
     }
 
-    // TODO: This is duplicated from the locations collapsible, with minor changes - perhaps split out? Probably not.
     interpolateSeasonTimes(season_index) {
         let prev_id = ((season_index + this.seasons.length) - 1) % this.seasons.length
         let next_id = (season_index + 1) % this.seasons.length;
@@ -344,8 +345,6 @@ class SeasonsCollapsible extends CollapsibleComponent {
 
             this.seasons[season_index].time.sunset.hour = sunset_h;
             this.seasons[season_index].time.sunset.minute = sunset_m;
-
-            debugger;
         }
     }
 
@@ -359,7 +358,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
 
         if (!validSeasons) return;
 
-        let total_seasons_length = this.seasons.reduce(season => season.transition_length + season.duration);
+        let total_seasons_length = this.seasons.reduce((acc, season) => acc + season.transition_length + season.duration, 0);
         let average_year_length = this.$store.calendar.average_year_length;
 
         this.show_equal_season_length = average_year_length === total_seasons_length;
@@ -444,26 +443,32 @@ class SeasonsCollapsible extends CollapsibleComponent {
         this.settings.preset_order[season_index] = newValue;
     }
 
-    validators = {
-        "seasons": this.validateSeasons
-    };
-
     validateSeasons() {
         let errors = [];
 
-        for (let season_i = 0; season_i < this.seasons.length; season_i++) {
-            let curr_season = this.seasons[season_i];
+        for (let season_index = 0; season_index < this.seasons.length; season_index++) {
+            let season = this.seasons[season_index];
             if (this.settings.periodic_seasons) {
-                if (curr_season.transition_length === 0) {
-                    errors.push(`Season <i>${curr_season.name}</i> can't have 0 transition length.`);
+                if (season.transition_length === 0) {
+                    errors.push({
+                        path: `seasons.data.${season_index}.transition_length`,
+                        message: `Season <i>${season.name}</i> can't have 0 transition length.`
+                });
                 }
             } else {
-                if (this.months[curr_season.timespan].interval !== 1) {
-                    errors.push(`Season <i>${curr_season.name}</i> can't be on a leaping month.`);
+                if (this.months[season.timespan].interval !== 1) {
+                    errors.push({
+                        path: `seasons.data.${season_index}.timespan`,
+                        message: `Season <i>${season.name}</i> can't be on a leaping month.`
+                });
                 }
-                let next_season = this.seasons[(season_i + 1) % this.seasons.length];
-                if (curr_season.timespan === next_season.timespan && curr_season.day === next_season.day) {
-                    errors.push(`Season <i>${curr_season.name}</i> and <i>${next_season.name}</i> cannot be on the same month and day.`);
+
+                let clashingSeason = this.seasons[(season_index + 1) % this.seasons.length];
+                if (season.timespan === clashingSeason.timespan && season.day === clashingSeason.day) {
+                    errors.push({
+                        path: `seasons.data.${season_index}.timespan`,
+                        message: `Season <i>${season.name}</i> and <i>${clashingSeason.name}</i> cannot be on the same month and day.`
+                    });
                 }
             }
         }
