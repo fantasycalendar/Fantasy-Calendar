@@ -37,7 +37,6 @@ export default class CollapsibleComponent {
         // First we get the keys of all the elements in the <template>,
         // then we call `.shift()` to remove the <template> tag itself.
         let order = this.draggable.toArray();
-        console.log(order);
         order.shift()
 
         this.reorderSortable(start, end);

@@ -92,7 +92,7 @@
             title='This sets the first weekday of the first year.'
             x-model="first_day">
             <template x-for="(weekday, index) in weekdays" :key="index">
-                <option :value="index + 1" x-text="weekday" :selected="console.log(weekday, index, first_day) || (index + 1) === first_day"></option>
+                <option :value="index + 1" x-text="weekday" :selected="(index + 1) === first_day"></option>
             </template>
         </select>
     @endif
