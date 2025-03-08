@@ -33,7 +33,7 @@
     </div>
 
     <div class="accordion">
-        <x-collapsible :calendar="$calendar" contains="Statistics" icon="fa-chart-pie" done></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Statistics" icon="fa-chart-pie" polished></x-collapsible>
 
         <x-collapsible :calendar="$calendar" contains="Current Date" icon="fa-hourglass-half"></x-collapsible>
 
@@ -41,10 +41,10 @@
 
         @if(request()->is('calendars/*/edit'))
             <x-collapsible :calendar="$calendar" contains="Real-Time Advancement" icon="fa-history"
-                           premium_feature="true" done></x-collapsible>
+                           premium_feature="true" polished></x-collapsible>
         @endif
 
-        <x-collapsible :calendar="$calendar" contains="Weekdays" step="2" icon="fa-calendar-week" done></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Weekdays" step="2" icon="fa-calendar-week" polished></x-collapsible>
 
         <x-collapsible :calendar="$calendar" contains="Months" step="3" icon="fa-calendar-alt"></x-collapsible>
 
@@ -73,7 +73,7 @@
                            premium_feature="true" done></x-collapsible>
 
             <x-collapsible :calendar="$calendar" contains="Calendar Linking" icon="fa-link"
-                           premium_feature="true" done></x-collapsible>
+                           premium_feature="true" polished></x-collapsible>
         @endif
     </div>
 

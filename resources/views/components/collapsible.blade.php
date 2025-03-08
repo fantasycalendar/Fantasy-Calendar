@@ -1,4 +1,4 @@
-@props(['calendar' => null, 'contains' => null, 'step' => null, 'icon' => null, 'premium_feature' => false, 'done' => false, 'wip' => false])
+@props(['calendar' => null, 'contains' => null, 'step' => null, 'icon' => null, 'premium_feature' => false, 'polished' => false, 'done' => false, 'wip' => false])
 
 @php($contains_clean = Str::replace("-", " ", $contains))
 
@@ -16,6 +16,11 @@
                 data-pt-title="Subscriber-only feature">
                 <x-app-logo class="hover-opacity" width="20" height="20"></x-app-logo>
             </span>
+        @endif
+
+        @if($polished)
+            <!-- TODO: remove this and done property once we have converted all collapsibles -->
+            <i class="fa fa-check" style="right: 40px; top: 10px; position: absolute; color: lime;"></i>
         @endif
 
         @if($done)
