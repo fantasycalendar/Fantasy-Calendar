@@ -77,7 +77,7 @@ export default class CollapsibleComponent {
     }
 
     setupWatcher(localKey) {
-        this.$watch(localKey, (...args) => {
+        this.$watch(localKey, (newValue, oldValue) => {
             let validationResult = this.validate.bind(this)();
 
             if (!validationResult) {
@@ -91,11 +91,11 @@ export default class CollapsibleComponent {
             }
 
             if (this.changeHandlers[localKey]) {
-                this.changeHandlers[localKey].bind(this)(...args);
+                this.changeHandlers[localKey].bind(this)(newValue, oldValue);
             }
 
             if (this.outboundProperties[localKey]) {
-                this.rerender(this.outboundProperties[localKey], this[localKey]);
+                this.rerender(this.outboundProperties[localKey], newValue);
             }
         });
     }
