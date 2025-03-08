@@ -72,11 +72,13 @@
     <div class="list-group mb-[1rem]" x-ref="months-sortable">
         <template x-for="(month, index) in months" :key="index" x-ref="months-sortable-template">
 
-            <div class="list-group-item px-1 py-0 first-of-type:rounded-t draggable-source" :data-id="index" :class="month.type"
+            <div class="list-group-item px-1 py-0 first-of-type:rounded-t draggable-source" :data-id="index"
+                 :class="month.type"
                  x-data="{ collapsed: true }">
 
                 <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
-                    <div x-show="reordering" class="handle w-[20px] grid place-items-center self-stretch flex-shrink-0 text-center cursor-move">
+                    <div x-show="reordering"
+                         class="handle w-[20px] grid place-items-center self-stretch flex-shrink-0 text-center cursor-move">
                         <i class="fa fa-bars text-xl hover:text-black hover:dark:text-white"></i>
                     </div>
                     <div class='cursor-pointer text-xl fa'
@@ -155,39 +157,41 @@
                             </div>
                         </div>
 
-                        <div class='custom-week-container' x-show="month.week?.length">
+                        <template x-if="month.week?.length">
+                            <div class='custom-week-container'>
 
-                            <div class='row no-gutters my-1'>
-                                <div class='col-12'>
-                                    Custom week length:
+                                <div class='row no-gutters my-1'>
+                                    <div class='col-12'>
+                                        Custom week length:
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class='row no-gutters mb-1'>
-                                <div class='input-group'>
-                                    <input @blur="do_error_check('calendar')" type='number' min='1' step="1"
-                                           class='form-control small-input'
-                                           @change="customWeekLengthChanged($event, month)"
-                                           :disabled="!month.week?.length"
-                                           :value='(month.week?.length ?? 0)'/>
-                                    <div class="input-group-append">
-                                        <button type='button' class='full btn btn-primary'
-                                                @click="quickAddCustomWeekdays(month)"
-                                                :disabled="!month.week?.length">Quick add
-                                        </button>
+                                <div class='row no-gutters mb-1'>
+                                    <div class='input-group'>
+                                        <input type='number' min='1' step="1"
+                                               class='form-control small-input'
+                                               @change="customWeekLengthChanged($event, month)"
+                                               :disabled="!month.week?.length"
+                                               :value='(month.week?.length ?? 0)'/>
+                                        <div class="input-group-append">
+                                            <button type='button' class='full btn btn-primary'
+                                                    @click="quickAddCustomWeekdays(month)"
+                                                    :disabled="!month.week?.length">Quick add
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class='row no-gutters border'>
+                                    <div class='week_list col-12 p-1'>
+                                        <template x-for='(day, index) in (month.week ?? [])' :key='index'>
+                                            <input x-model.lazy='month.week[index]' type='text'
+                                                   class='form-control internal-list-name'/>
+                                        </template>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class='row no-gutters border'>
-                                <div class='week_list col-12 p-1'>
-                                    <template x-for='(day, index) in (month.week ?? [])' :key='index'>
-                                        <input :value='day' type='text'
-                                               class='form-control internal-list-name'/>
-                                    </template>
-                                </div>
-                            </div>
-                        </div>
+                        </template>
                     </div>
                 </div>
 

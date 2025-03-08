@@ -1,10 +1,10 @@
 import CollapsibleComponent from "./collapsible_component.js";
-import { set_up_view_values } from "./calendar_inputs_view.js";
 import { ordinal_suffix_of } from "./calendar_functions.js";
 import _ from "lodash";
-import { do_error_check } from "./calendar_inputs_edit.js";
 
 class MonthsCollapsible extends CollapsibleComponent {
+
+    collapsible_name = "MonthsCollapsible"
 
     deleting = -1;
     name = "";
