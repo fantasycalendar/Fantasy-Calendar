@@ -46,8 +46,8 @@
         <template x-for="(weekday, index) in weekdays" x-ref="weekdays-sortable-template" :key="index">
             <div class="list-group-item py-1 px-2 first-of-type:rounded-t draggable-source" :data-id="index">
                 <div x-show="deleting !== index" class="flex items-center w-full gap-x-2">
-                    <div class="w-[40px] grid place-items-center self-stretch flex-shrink-0 text-center cursor-move">
-                        <i class="handle fa fa-bars text-xl hover:text-black hover:dark:text-white"></i>
+                    <div class="handle w-[40px] grid place-items-center self-stretch flex-shrink-0 text-center cursor-move">
+                        <i class="fa fa-bars text-xl hover:text-black hover:dark:text-white"></i>
                     </div>
 
                     <input class="form-control" type="text" x-model="weekday">
