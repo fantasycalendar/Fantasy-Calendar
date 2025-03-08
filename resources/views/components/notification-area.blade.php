@@ -38,7 +38,7 @@
                     clearTimeout(this.timeout);
                 },
                 startTimeout() {
-                    this.timeout = setTimeout(() => this.transitionOut(), 20000);
+                    this.timeout = setTimeout(() => this.transitionOut(), 2000);
                 }
             }"
             x-show="show"

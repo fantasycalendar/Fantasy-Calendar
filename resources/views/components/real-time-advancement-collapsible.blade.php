@@ -2,7 +2,7 @@
 
 @if($calendar->isPremium())
 	@if($calendar->parent()->exists())
-        <p class="mb-0 mt-1"><a @click="linked_popup();" href='#'>Where are the real-time advancement options?</a></p>
+        <a class="mb-0 mt-1" @click="linked_popup();" href='#'>Where are the real-time advancement options?</a>
 	@else
         <x-input-toggle x-model="advancement.advancement_enabled" label="Enable real-time advancement:" name="advancement.advancement_enabled"></x-input-toggle>
 

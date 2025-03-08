@@ -79,7 +79,7 @@
 @else
     @if($calendar->isChild())
         <x-alert type="warning">
-            This calendar is linked as a child of <a class="font-bold text-amber-600 dark:text-amber-200 hover:text-amber-100 underline" target="_blank" href="{{ route('calendars.edit', [ 'calendar' => $calendar ]) }}">{{ $calendar->parent->name }}</a>.
+            This calendar is linked as a child of <a class="font-bold text-amber-600 dark:text-amber-200 hover:text-amber-100 underline" target="_blank" href="{{ route('calendars.edit', [ 'calendar' => $calendar->parent ]) }}">{{ $calendar->parent->name }}</a>.
         </x-alert>
     @else
         <x-alert type="warning">

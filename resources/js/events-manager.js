@@ -138,13 +138,13 @@ export default () => ({
         }
 
         const selectedEvents = Object.entries(this.selected)
-        .filter((entry) => {
-            console.log(entry[1]);
-            return entry[1];
-        })
-        .map((entry) =>
-            window.events.find((event) => event.id === +entry[0]),
-        );
+            .filter((entry) => {
+                console.log(entry[1]);
+                return entry[1];
+            })
+            .map((entry) =>
+                window.events.find((event) => event.id === +entry[0]),
+            );
 
         return selectedEvents.length > 0;
     },
@@ -177,22 +177,22 @@ export default () => ({
         evaluate_save_button();
     },
     refreshCategories() {
-        this.categories = clone(window.event_categories) ?? [];
+        this.categories = clone(this.$store.calendar.event_categories) ?? [];
     },
     refreshEvents() {
         this.refreshCategories();
-        this.categorizedEvents = (clone(window.events) ?? []).reduce(
+        this.categorizedEvents = (clone(this.$store.calendar.events) ?? []).reduce(
             (categorized, event) => {
                 if (
                     (this.search.length && !this.inSearch(event)) ||
-                        !this.matchesVisibility(event)
+                    !this.matchesVisibility(event)
                 ) {
                     return categorized;
                 }
 
                 const categoryName =
                     get_category(event.event_category_id)?.name ??
-                        "Uncategorized";
+                    "Uncategorized";
                 categorized[categoryName] = categorized[categoryName] ?? [];
                 categorized[categoryName].push(event);
                 return categorized;
@@ -235,8 +235,8 @@ export default () => ({
         return searchComponents.every(
             (search) =>
                 event.name.toLowerCase().includes(search) ||
-                    event.description.toLowerCase().includes(search) ||
-                    (event.author && event.author.toLowerCase().includes(search)),
+                event.description.toLowerCase().includes(search) ||
+                (event.author && event.author.toLowerCase().includes(search)),
         );
     },
 
@@ -273,7 +273,7 @@ export default () => ({
 
         if (
             this.search.length &&
-                output.toLowerCase().includes(this.search.toLowerCase())
+            output.toLowerCase().includes(this.search.toLowerCase())
         ) {
             let found = output.toLowerCase().indexOf(this.search.toLowerCase());
 
@@ -303,6 +303,7 @@ export default () => ({
     },
 
     open_modal: function($event) {
+        this.refreshEvents()
         this.open = true;
         setTimeout(() => {
             document.getElementById("eventManagerSearch")?.focus();
