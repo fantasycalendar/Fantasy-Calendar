@@ -99,11 +99,11 @@
                                     <div class='row no-gutters'>
                                         <div class='col-lg-6 my-1'>
                                             Temperature low:
-                                            <input type='number' step="any" class='form-control full' x-model.lazy='season.weather.temp_low'>
+                                            <input type='number' step="any" class='form-control full' x-model.number.lazy='season.weather.temp_low'>
                                         </div>
                                         <div class='col-lg-6 my-1'>
                                             Temperature high:
-                                            <input type='number' step="any" class='form-control full' x-model.lazy='season.weather.temp_high'>
+                                            <input type='number' step="any" class='form-control full' x-model.number.lazy='season.weather.temp_high'>
                                         </div>
                                     </div>
                                     <div class='row no-gutters my-2'>
@@ -121,10 +121,10 @@
                                     }">
                                         <div class='col-9 pt-1'>
                                             <!-- TODO: Style these properly -->
-                                            <input type='range' class="form-control form-control-sm full" step="1" min="0" max="100" x-model="value" @change='change'/>
+                                            <input type='range' class="form-control form-control-sm full" step="1" min="0" max="100" x-model.number="value" @change='change'/>
                                         </div>
                                         <div class='col-3 pl-1'>
-                                            <input type='number' step="any" class='form-control form-control-sm full slider_input' x-model="value" @change='change'/>
+                                            <input type='number' step="any" class='form-control form-control-sm full slider_input' x-model.number="value" @change='change'/>
                                         </div>
                                     </div>
                                     <div class='row no-gutters mt-2'>
@@ -138,10 +138,10 @@
                                     }">
                                         <div class='col-9 pt-1'>
                                             <!-- TODO: Style these properly -->
-                                            <input type='range' class="form-control form-control-sm full"  step="1" min="0" max="100" x-model="value" @change='change'/>
+                                            <input type='range' class="form-control form-control-sm full"  step="1" min="0" max="100" x-model.number="value" @change='change'/>
                                         </div>
                                         <div class='col-3 pl-1'>
-                                            <input type='number' step="any" class='form-control form-control-sm full slider_input' x-model="value" @change='change'/>
+                                            <input type='number' step="any" class='form-control form-control-sm full slider_input' x-model.number="value" @change='change'/>
                                         </div>
                                     </div>
                                     <div class='row no-gutters my-2'>
@@ -162,11 +162,11 @@
                                     </div>
                                     <div class='row no-gutters mb-2 protip'  data-pt-position="right" data-pt-title="What time the sun rises at the peak of this season, in this location">
                                         <div class='col-6 pl-0 pr-1'>
-                                            <input type='number' step="1.0" class='form-control text-right full' x-model.lazy="season.time.sunrise.hour" :disabled="location.settings.season_based_time ?? false"/>
+                                            <input type='number' step="1.0" class='form-control text-right full' x-model.number.lazy="season.time.sunrise.hour" :disabled="location.settings.season_based_time ?? false"/>
                                         </div>
                                         <div class='col-auto pt-1'>:</div>
                                         <div class='col pl-1 pr-0'>
-                                            <input type='number' step="1.0" class='form-control full' x-model.lazy="season.time.sunrise.minute" :disabled="location.settings.season_based_time ?? false"/>
+                                            <input type='number' step="1.0" class='form-control full' x-model.number.lazy="season.time.sunrise.minute" :disabled="location.settings.season_based_time ?? false"/>
                                         </div>
                                     </div>
                                     <div class='row no-gutters mt-2'>
@@ -182,11 +182,11 @@
                                     </div>
                                     <div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="What time the sun sets at the peak of this season, in this location">
                                         <div class='col-6 pl-0 pr-1'>
-                                            <input type='number' step="1.0" class='form-control text-right full' x-model.lazy="season.time.sunset.hour" :disabled="location.settings.season_based_time ?? false"/>
+                                            <input type='number' step="1.0" class='form-control text-right full' x-model.number.lazy="season.time.sunset.hour" :disabled="location.settings.season_based_time ?? false"/>
                                         </div>
                                         <div class='col-auto pt-1'>:</div>
                                         <div class='col pl-1 pr-0'>
-                                            <input type='number' step="1.0" class='form-control full' x-model.lazy="season.time.sunset.minute" :disabled="location.settings.season_based_time ?? false"/>
+                                            <input type='number' step="1.0" class='form-control full' x-model.number.lazy="season.time.sunset.minute" :disabled="location.settings.season_based_time ?? false"/>
                                         </div>
                                     </div>
                                 </div>
@@ -222,11 +222,11 @@
                         </div>
                         <div class='row no-gutters mb-2 protip' data-pt-position="right" data-pt-title="When this location becomes active, the current time will change this much to reflect the new location.">
                             <div class='col-6 pr-1'>
-                                <input type='number' step="1.0" class='form-control full' x-model.lazy='location.settings.timezone.hour' />
+                                <input type='number' step="1.0" class='form-control full' x-model.number.lazy='location.settings.timezone.hour' />
                             </div>
                             <div class='col-auto pt-1'>:</div>
                             <div class='col pl-1'>
-                                <input type='number' step="1.0" class='form-control full' x-model.lazy='location.settings.timezone.minute' />
+                                <input type='number' step="1.0" class='form-control full' x-model.number.lazy='location.settings.timezone.minute' />
                             </div>
                         </div>
                     </div>
@@ -246,10 +246,10 @@
                         </div>
                         <div class='row no-gutters my-1'>
                             <div class='col-6 pr-1'>
-                                <input type='number' class='form-control full' x-model.lazy='location.settings.large_noise_frequency'/>
+                                <input type='number' class='form-control full' x-model.number.lazy='location.settings.large_noise_frequency'/>
                             </div>
                             <div class='col-6 pl-1'>
-                                <input type='number' class='form-control full' x-model.lazy='location.settings.large_noise_amplitude'/>
+                                <input type='number' class='form-control full' x-model.number.lazy='location.settings.large_noise_amplitude'/>
                             </div>
                         </div>
                         <div class='row no-gutters my-1'>
@@ -262,10 +262,10 @@
                         </div>
                         <div class='row no-gutters my-1'>
                             <div class='col-6 pr-1'>
-                                <input type='number' class='form-control full' x-model.lazy='location.settings.medium_noise_frequency'/>
+                                <input type='number' class='form-control full' x-model.number.lazy='location.settings.medium_noise_frequency'/>
                             </div>
                             <div class='col-6 pl-1'>
-                                <input type='number' class='form-control full' x-model.lazy='location.settings.medium_noise_amplitude'/>
+                                <input type='number' class='form-control full' x-model.number.lazy='location.settings.medium_noise_amplitude'/>
                             </div>
                         </div>
                         <div class='row no-gutters my-1'>
@@ -278,10 +278,10 @@
                         </div>
                         <div class='row no-gutters my-1'>
                             <div class='col-6 pr-1'>
-                                <input type='number' class='form-control full' x-model.lazy='location.settings.small_noise_frequency'/>
+                                <input type='number' class='form-control full' x-model.number.lazy='location.settings.small_noise_frequency'/>
                             </div>
                             <div class='col-6 pl-1'>
-                                <input type='number' class='form-control full' x-model.lazy='location.settings.small_noise_amplitude'/>
+                                <input type='number' class='form-control full' x-model.number.lazy='location.settings.small_noise_amplitude'/>
                             </div>
                         </div>
                     </div>
