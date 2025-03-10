@@ -29,7 +29,8 @@ class ErasCollapsible extends CollapsibleComponent {
     }
 
     validators = {
-        "eras": this.validateEraDate
+        "eras": this.validateEraDate,
+        "months": this.validateEraDate
     };
 
     addEra() {

@@ -57,7 +57,8 @@ class SeasonsCollapsible extends CollapsibleComponent {
     }
 
     validators = {
-        "seasons": this.validateSeasons
+        "seasons": this.validateSeasons,
+        "months": this.validateSeasons
     };
 
     draggableRef = "seasons-sortable";

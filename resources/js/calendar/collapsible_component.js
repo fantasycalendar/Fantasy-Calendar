@@ -67,7 +67,7 @@ export default class CollapsibleComponent {
         this.initialized = true;
 
         const componentProperties = Array.from(new Set(
-            Object.keys(this.changeHandlers).concat(Object.keys(this.outboundProperties))
+            Object.keys(this.changeHandlers).concat(Object.keys(this.outboundProperties)).concat(Object.keys(this.validators))
         ));
 
         for (let localKey of componentProperties) {
@@ -111,8 +111,15 @@ export default class CollapsibleComponent {
 
     validate() {
         this.errors = [];
-        for (let [localKey, validator] of Object.entries(this.validators)) {
-            this.errors = this.errors.concat(validator.bind(this)(localKey));
+        const uniqueValidators = Object.values(this.validators).reduce((acc, validator) => {
+            if(acc.indexOf(validator) > -1){
+                return acc;
+            }
+            acc.push(validator)
+            return acc;
+        }, [])
+        for (let validator of uniqueValidators) {
+            this.errors = this.errors.concat(validator.bind(this)());
         }
 
         this.is_valid = !this.errors.length;
