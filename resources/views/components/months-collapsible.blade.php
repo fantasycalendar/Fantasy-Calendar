@@ -42,17 +42,17 @@
 
 @else
 
-    <div class='add_inputs timespan row no-gutters input-group'>
+    <div class='timespan row no-gutters input-group'>
 
-        <input type='text' class='form-control name' placeholder='New month' x-model="name">
+        <input type='text' class='form-control' placeholder='New month' x-model="name">
 
-        <select id='timespan_type_input' class='custom-select form-control type' x-model="type">
+        <select class='custom-select form-control' x-model="type">
             <option value='month'>Month</option>
             <option value='intercalary'>Intercalary</option>
         </select>
 
         <div class="input-group-append">
-            <button type='button' class='btn btn-primary add full'><i class="fa fa-plus"></i></button>
+            <button type='button' class='btn btn-primary add full' @click="addMonth"><i class="fa fa-plus"></i></button>
         </div>
     </div>
 
