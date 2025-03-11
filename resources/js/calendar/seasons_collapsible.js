@@ -210,14 +210,14 @@ class SeasonsCollapsible extends CollapsibleComponent {
             : "Dated seasons start and end on specific dates, regardless of leaping months and days."
 
         swal.fire({
-            title: "Are you sure?",
-            html: `<p>Are you sure you want to switch to ${type} seasons? ${explanation}</p><p>Your current seasons will be deleted so you can re-create them.</p>`,
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Okay',
-            icon: "warning",
-        })
+                title: "Are you sure?",
+                html: `<p>Are you sure you want to switch to ${type} seasons? ${explanation}</p><p>Your current seasons will be deleted so you can re-create them.</p>`,
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Okay',
+                icon: "warning",
+            })
             .then((result) => {
                 if (result.dismiss) return;
                 this.seasons = [];
@@ -234,15 +234,15 @@ class SeasonsCollapsible extends CollapsibleComponent {
 
             if (found) {
                 swal.fire({
-                    title: `Season events exist!`,
-                    text: "You already have solstice and equinox events, are you sure you want to create another set?",
-                    showCloseButton: false,
-                    showCancelButton: true,
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'Yes',
-                    icon: "warning"
-                })
+                        title: `Season events exist!`,
+                        text: "You already have solstice and equinox events, are you sure you want to create another set?",
+                        showCloseButton: false,
+                        showCancelButton: true,
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'Yes',
+                        icon: "warning"
+                    })
                     .then((result) => {
                         if (result.dismiss === "close" || result.dismiss === "cancel") {
                             reject();
@@ -267,19 +267,19 @@ class SeasonsCollapsible extends CollapsibleComponent {
 
             let clockEnabled = this.clock.enabled;
             swal.fire({
-                title: `Simple or Complex?`,
-                html: html,
-                showCloseButton: true,
-                showCancelButton: true,
-                confirmButtonColor: '#4D61B3',
-                cancelButtonColor: this.clock.enabled ? '#84B356' : '#999999',
-                confirmButtonText: 'Simple',
-                cancelButtonText: 'Complex',
-                icon: "question",
-                onOpen: function() {
-                    $(swal.getCancelButton()).prop("disabled", !clockEnabled);
-                }
-            })
+                    title: `Simple or Complex?`,
+                    html: html,
+                    showCloseButton: true,
+                    showCancelButton: true,
+                    confirmButtonColor: '#4D61B3',
+                    cancelButtonColor: this.clock.enabled ? '#84B356' : '#999999',
+                    confirmButtonText: 'Simple',
+                    cancelButtonText: 'Complex',
+                    icon: "question",
+                    onOpen: function () {
+                        $(swal.getCancelButton()).prop("disabled", !clockEnabled);
+                    }
+                })
                 .then((result) => {
                     if (result.dismiss === "close") return;
                     let complex = result.dismiss === "cancel";
@@ -450,19 +450,22 @@ class SeasonsCollapsible extends CollapsibleComponent {
 
         for (let season_index = 0; season_index < this.seasons.length; season_index++) {
             let season = this.seasons[season_index];
-            if (this.settings.periodic_seasons) {
-                if (season.transition_length === 0) {
-                    errors.push({
-                        path: `seasons.data.${season_index}.transition_length`,
-                        message: `Season <i>${season.name}</i> can't have 0 transition length.`
+            if (this.settings.periodic_seasons && season.transition_length === 0) {
+                errors.push({
+                    path: `seasons.data.${season_index}.transition_length`,
+                    message: `Season <i>${season.name}</i> can't have 0 transition length.`
                 });
-                }
+            } else if (season.timespan >= this.months.length) {
+                errors.push({
+                    path: `seasons.data.${season_index}.timespan`,
+                    message: `Season <i>${season.name}</i> is now on a non-existent month!`
+                });
             } else {
                 if (this.months[season.timespan].interval !== 1) {
                     errors.push({
                         path: `seasons.data.${season_index}.timespan`,
                         message: `Season <i>${season.name}</i> can't be on a leaping month.`
-                });
+                    });
                 }
 
                 let clashingSeason = this.seasons[(season_index + 1) % this.seasons.length];
