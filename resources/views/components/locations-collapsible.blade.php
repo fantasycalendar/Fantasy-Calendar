@@ -5,7 +5,7 @@
     to function.
 </div>
 
-<div class='row no-gutters' x-show="season_settings.enable_weather || clock.enabled">
+<div class='row no-gutters' x-show="(season_settings.enable_weather || clock.enabled) && !preset_locations.length">
     <p class="m-0">Preset locations work only with four or two seasons and weather enabled.</p>
     <p>
         <small>If you name your seasons winter, spring, summer, and autumn/fall, the system matches them with the
