@@ -15,9 +15,9 @@
         },
         set year(value) {
             if ($store.calendar.static_data.settings.year_zero_exists) {
-                this._date.year = year;
+                this._date.year = value;
             } else {
-                this._date.year = year > 0 ? year - 1 : year;
+                this._date.year = value > 0 ? value - 1 : value;
             }
         }
     }"
