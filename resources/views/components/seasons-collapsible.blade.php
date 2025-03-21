@@ -89,13 +89,14 @@
             </div>
 
             <div class='collapse-container container mb-2'>
-                <div class='row no-gutters my-1' x-show="presetSeasons.length">
+                <div class='row no-gutters my-1' x-show="seasons.length === 4 || seasons.length === 2">
                     <div class='col-4 pt-1'>Season type:</div>
                     <div class='col'>
-                        <select type='number' class='form-control preset-season-list' @change='handlePresetOrderChanged($event, index)'>
-                            <template x-for="(name, preset_index) of presetSeasons" :key="preset_index">
-                                <option :value="preset_index" :selected="preset_index === settings.preset_order[index]" x-text="name"></option>
-                            </template>
+                        <select class='form-control preset-season-list' @change='ensureMutualTypeExclusivity($event, index)'>
+                            <option value="winter" :selected="season.type === 'winter'">Winter</option>
+                            <option value="spring" :selected="season.type === 'spring'" :disabled="seasons.length < 4">Spring</option>
+                            <option value="summer" :selected="season.type === 'summer'">Summer</option>
+                            <option value="autumn" :selected="season.type === 'autumn'" :disabled="seasons.length < 4">Autumn</option>
                         </select>
                     </div>
                 </div>

@@ -30,8 +30,8 @@ export default class CollapsibleComponent {
     }
 
 
-    dropped(start, end){
-        if(start === end) return;
+    dropped(start, end) {
+        if (start === end) return;
 
         // We've essentially gotta make Alpine aware of the change in key order
         // First we get the keys of all the elements in the <template>,
@@ -67,7 +67,9 @@ export default class CollapsibleComponent {
         this.initialized = true;
 
         const componentProperties = Array.from(new Set(
-            Object.keys(this.changeHandlers).concat(Object.keys(this.outboundProperties)).concat(Object.keys(this.validators))
+            Object.keys(this.changeHandlers)
+                .concat(Object.keys(this.outboundProperties))
+                .concat(Object.keys(this.validators))
         ));
 
         for (let localKey of componentProperties) {
@@ -112,7 +114,7 @@ export default class CollapsibleComponent {
     validate() {
         this.errors = [];
         const uniqueValidators = Object.values(this.validators).reduce((acc, validator) => {
-            if(acc.indexOf(validator) > -1){
+            if (acc.indexOf(validator) > -1) {
                 return acc;
             }
             acc.push(validator)
