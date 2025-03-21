@@ -142,11 +142,15 @@ class SeasonsCollapsible extends CollapsibleComponent {
         this.seasons.push(newSeason);
 
         this.season_name = "";
+
+        this.determineAutomaticSeasonMapping();
     }
 
     removeSeason(index) {
         this.seasons.splice(index, 1);
         this.deleting = -1;
+
+        this.determineAutomaticSeasonMapping();
     }
 
     seasonColorChanged() {
@@ -370,8 +374,14 @@ class SeasonsCollapsible extends CollapsibleComponent {
             : "The season length and year length at not the same, and will diverge over time. Use with caution.";
     }
 
+    resetSeasonTypes() {
+        this.seasons.forEach(season => season.type = null);
+    }
+
     determineAutomaticSeasonMapping() {
-        if (!(this.seasons.length === 2 || this.seasons.length === 4)) {
+        if (![2, 4].includes(this.seasons.length)) {
+            this.resetSeasonTypes();
+
             return false;
         }
 
@@ -379,33 +389,35 @@ class SeasonsCollapsible extends CollapsibleComponent {
             ? ['winter', 'spring', 'summer', 'autumn']
             : ['winter', 'summer'];
 
-        let detectedSeasons = [];
-        for (let season of this.seasons) {
-            let preset_index = preset_seasons.indexOf(season.name.toLowerCase());
-            if (preset_index === -1 && season.name.toLowerCase() === "fall" && this.seasons.length === 4) {
-                preset_index = 3;
-            }
-            if (preset_index > -1) {
-                detectedSeasons.push(preset_index)
-            }
+        let unmatched = this.seasons.filter(
+            season => !preset_seasons.includes(season.name.toLowerCase())
+                && season.name.toLowerCase() !== 'fall'
+        );
+
+        if (unmatched.length) {
+            this.seasons.forEach(season => season.type = preset_seasons.pop());
+
+            return;
         }
 
-        if (detectedSeasons.length === this.seasons.length) {
-            return detectedSeasons;
-        }
 
-        return false;
+        this.seasons.forEach(season =>
+            season.type = (season.name.toLowerCase() === "fall")
+                ? "autumn"
+                : season.name.toLowerCase()
+        );
     }
 
     sortSeasons() {
         if (this.settings.periodic_seasons) return;
         if (this.seasons.length <= 1) return;
 
-        // [1, 3]
-        let oldExpandedSeasons = _.clone(this.expandedSeasons).reduce((acc, index) => ({
-            ...acc,
-            [this.seasons[index].name + this.seasons[index].timespan + this.seasons[index].day]: index
-        }), {});
+        let oldExpandedSeasons = _.clone(this.expandedSeasons)
+            .filter(value => value < this.seasons.length)
+            .reduce((acc, index) => ({
+                ...acc,
+                [this.seasons[index].name + this.seasons[index].timespan + this.seasons[index].day]: index
+            }), {});
 
         this.seasons.sort((a, b) => {
             return (a.timespan === b.timespan)
@@ -422,16 +434,12 @@ class SeasonsCollapsible extends CollapsibleComponent {
         }, [])
     }
 
-    ensureMutualTypeExclusivity($event, season_index) {
-        let selectedType = $event.target.value;
-
+    ensureMutualTypeExclusivity(selectedType, season_index) {
         let changedSeason = this.seasons[season_index];
         let conflictingSeason = this.seasons.find(season => season.type === selectedType);
 
         conflictingSeason.type = changedSeason.type;
         changedSeason.type = selectedType;
-
-        debugger;
     }
 
     validateSeasons() {

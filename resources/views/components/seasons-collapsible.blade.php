@@ -92,7 +92,7 @@
                 <div class='row no-gutters my-1' x-show="seasons.length === 4 || seasons.length === 2">
                     <div class='col-4 pt-1'>Season type:</div>
                     <div class='col'>
-                        <select class='form-control preset-season-list' @change='ensureMutualTypeExclusivity($event, index)'>
+                        <select class='form-control preset-season-list' @change='ensureMutualTypeExclusivity($event.target.value, index)'>
                             <option value="winter" :selected="season.type === 'winter'">Winter</option>
                             <option value="spring" :selected="season.type === 'spring'" :disabled="seasons.length < 4">Spring</option>
                             <option value="summer" :selected="season.type === 'summer'">Summer</option>
