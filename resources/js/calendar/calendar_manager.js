@@ -1,7 +1,6 @@
 import { execution_time } from "./calendar_functions";
 import { climate_charts } from "./calendar_weather_layout";
 import { Climate } from "./calendar_season_generator";
-import { eval_current_time, eval_clock } from "./calendar_inputs_visitor";
 import { evaluate_save_button } from "./calendar_inputs_edit";
 import { $ } from 'jquery';
 
@@ -254,8 +253,6 @@ export async function rebuild_calendar(action, rebuild_data) {
         climate_charts.evaluate_day_length_chart();
         climate_charts.evaluate_weather_charts();
 
-        eval_clock();
-
     }).catch(result => {
         if (!result?.errors) {
             console.error(result)
@@ -289,9 +286,6 @@ export async function rebuild_climate() {
 
         if (prev_seasons !== climate_generator.process_seasons || prev_weather !== climate_generator.process_weather) {
             rerender_calendar();
-            eval_clock();
-        } else {
-            eval_current_time();
         }
 
     })

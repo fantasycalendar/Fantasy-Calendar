@@ -164,6 +164,10 @@ export default class Calendar {
         return window.advancement;
     }
 
+		get evaluated_static_data() {
+			return window.evaluated_static_data;
+		}
+
     get average_year_length() {
         return avg_year_length(this.static_data.year_data.timespans, this.static_data.year_data.leap_days);
     }

@@ -127,7 +127,6 @@ export default (calendar_structure) => ({
 
                         this.check_update(false);
                         evaluate_settings();
-                        eval_clock();
                         this.poll_timer = setTimeout(this.check_dates.bind(this), 5000);
 
                     });

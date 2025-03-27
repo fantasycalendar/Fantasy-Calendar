@@ -225,9 +225,6 @@ export function toggle_sidebar(force = null) {
 
     window.localStorage.setItem('inputs_collapsed', $("#input_container").hasClass('inputs_collapsed'));
 
-    if(typeof window.static_data !== 'undefined' && typeof window.static_data.clock !== 'undefined' && window.static_data.clock.enabled && window.static_data.clock.render && !isNaN(window.static_data.clock.hours) && !isNaN(window.static_data.clock.minutes) && !isNaN(window.static_data.clock.offset)){
-        window.Clock.size = $('#clock').width();
-    }
 
     evaluate_background_size();
 }

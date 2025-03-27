@@ -121,7 +121,6 @@
 
                             check_update(true);
                             evaluate_settings();
-                            eval_clock();
                             poll_timer = setTimeout(check_dates, 5000);
 
                         });
@@ -139,7 +138,6 @@
 
                             check_update(false);
                             evaluate_settings();
-                            eval_clock();
                             poll_timer = setTimeout(check_dates, 5000);
 
                         });

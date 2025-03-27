@@ -1,10 +1,6 @@
 @props(['calendar' => null])
 
-<div id='clock'>
-    <canvas style="z-index: 2;" id="clock_face"></canvas>
-    <canvas style="z-index: 1;" id="clock_sun"></canvas>
-    <canvas style="z-index: 0;" id="clock_background"></canvas>
-</div>
+<x-clock-canvas name="current_date"></x-clock-canvas>
 
 <div x-data="{ activeDateAdjustment: 'current' }">
     <ul class="nav justify-content-center nav-tabs mt-3">

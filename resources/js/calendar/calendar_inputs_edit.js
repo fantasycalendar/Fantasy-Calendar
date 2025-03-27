@@ -27,10 +27,8 @@ import {
     update_preview_calendar,
     update_current_day,
     evaluate_settings,
-    evaluate_sun,
     repopulate_timespan_select,
     repopulate_day_select,
-    eval_clock,
 } from "./calendar_inputs_visitor";
 import { set_up_view_values } from "./calendar_inputs_view";
 import { pre_rebuild_calendar, rebuild_calendar, rebuild_climate } from "./calendar_manager";
@@ -540,7 +538,6 @@ function error_check(parent, rebuild) {
         } else {
             pre_rebuild_calendar('calendar', window.dynamic_data);
             update_current_day(true);
-            evaluate_sun();
         }
     }
 

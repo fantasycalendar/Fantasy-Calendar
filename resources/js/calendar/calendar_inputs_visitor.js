@@ -13,9 +13,7 @@ import {
 } from "./calendar_functions";
 import { day_data_tooltip } from "./calendar_day_data_layout";
 import { evaluate_dynamic_change, set_up_view_values } from "./calendar_inputs_view";
-import { get_category } from "./calendar_inputs_edit";
 import { rebuild_calendar } from "./calendar_manager";
-import CalendarClock from '../clock';
 
 export function copy_link(epoch_data) {
 
@@ -451,8 +449,6 @@ export function update_current_day(recalculate) {
         }
     }));
 
-    evaluate_sun();
-
 }
 
 export function go_to_dynamic_date(rebuild) {
@@ -538,63 +534,63 @@ export function evaluate_settings() {
 }
 
 
-export function eval_clock() {
-    if (!Perms.user_can_see_clock()) {
-        $('#clock').css('display', 'none');
-        return;
-    }
-
-    var clock_face_canvas = document.getElementById("clock_face");
-    var clock_sun_canvas = document.getElementById("clock_sun");
-    var clock_background_canvas = document.getElementById("clock_background");
-
-    window.Clock = new CalendarClock(
-        clock_face_canvas,
-        clock_sun_canvas,
-        clock_background_canvas,
-        $('#clock').width(),
-        window.static_data.clock.hours,
-        window.static_data.clock.minutes,
-        window.static_data.clock.offset,
-        window.static_data.clock.crowding,
-        window.dynamic_data.hour,
-        window.dynamic_data.minute,
-        window.evaluated_static_data.processed_seasons,
-        -1,
-        window.static_data.clock.hours + 1,
-    );
-
-    $('#clock').css('display', 'block');
-
-    eval_current_time();
-}
-
-export function eval_current_time() {
-    if (!Perms.user_can_see_clock()) {
-        $('#clock').css('display', 'none');
-        return;
-    }
-
-    window.Clock.set_time(window.dynamic_data.hour, window.dynamic_data.minute);
-
-    evaluate_sun();
-}
-
-export function evaluate_sun() {
-    if (!Perms.user_can_see_clock()) {
-        $('#clock').css('display', 'none');
-        return;
-    }
-
-    if (window.evaluated_static_data.processed_seasons && window.evaluated_static_data.epoch_data[preview_date.epoch] !== undefined && window.evaluated_static_data.epoch_data[preview_date.epoch].season !== undefined) {
-
-        var sunset = window.evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunset.data;
-        var sunrise = window.evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunrise.data;
-
-        window.Clock.sunrise = sunrise;
-        window.Clock.sunset = sunset;
-    }
-}
+// export function eval_clock() {
+//     if (!Perms.user_can_see_clock()) {
+//         $('#clock').css('display', 'none');
+//         return;
+//     }
+//
+//     var clock_face_canvas = document.getElementById("clock_face");
+//     var clock_sun_canvas = document.getElementById("clock_sun");
+//     var clock_background_canvas = document.getElementById("clock_background");
+//
+//     window.Clock = new CalendarClock(
+//         clock_face_canvas,
+//         clock_sun_canvas,
+//         clock_background_canvas,
+//         $('#clock').width(),
+//         window.static_data.clock.hours,
+//         window.static_data.clock.minutes,
+//         window.static_data.clock.offset,
+//         window.static_data.clock.crowding,
+//         window.dynamic_data.hour,
+//         window.dynamic_data.minute,
+//         window.evaluated_static_data.processed_seasons,
+//         -1,
+//         window.static_data.clock.hours + 1,
+//     );
+//
+//     $('#clock').css('display', 'block');
+//
+//     eval_current_time();
+// }
+//
+// export function eval_current_time() {
+//     if (!Perms.user_can_see_clock()) {
+//         $('#clock').css('display', 'none');
+//         return;
+//     }
+//
+//     window.Clock.set_time(window.dynamic_data.hour, window.dynamic_data.minute);
+//
+//     evaluate_sun();
+// }
+//
+// export function evaluate_sun() {
+//     if (!Perms.user_can_see_clock()) {
+//         $('#clock').css('display', 'none');
+//         return;
+//     }
+//
+//     if (window.evaluated_static_data.processed_seasons && window.evaluated_static_data.epoch_data[preview_date.epoch] !== undefined && window.evaluated_static_data.epoch_data[preview_date.epoch].season !== undefined) {
+//
+//         var sunset = window.evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunset.data;
+//         var sunrise = window.evaluated_static_data.epoch_data[preview_date.epoch].season.time.sunrise.data;
+//
+//         window.Clock.sunrise = sunrise;
+//         window.Clock.sunset = sunset;
+//     }
+// }
 
 export function repopulate_timespan_select(select, val, change, max) {
     if (window.static_data.year_data.timespans.length == 0 || window.static_data.year_data.global_week.length == 0) return;

@@ -4,6 +4,8 @@ class ClockCollapsible extends CollapsibleComponent {
 
     collapsible_name = "ClockCollapsible"
 
+	clock = {};
+
     inboundProperties = {
         'clock': 'static_data.clock'
     };

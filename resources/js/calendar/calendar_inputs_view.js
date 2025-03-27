@@ -6,10 +6,8 @@ import {
     evaluate_preview_change,
     go_to_preview_date,
     update_current_day,
-    eval_current_time,
     repopulate_timespan_select,
     repopulate_day_select,
-    eval_clock,
 } from "./calendar_inputs_visitor";
 
 import {
@@ -183,7 +181,6 @@ export function set_up_view_inputs() {
             return;
         }
 
-        eval_current_time();
         evaluate_save_button();
 
     });
@@ -235,7 +232,6 @@ export function set_up_view_inputs() {
             return;
         }
 
-        eval_current_time();
         evaluate_save_button();
     });
 
@@ -390,7 +386,6 @@ function increment_date_units(current) {
                 window.dynamic_data.minute = new_minute;
                 window.current_hour.val(new_hour);
                 window.current_minute.val(new_minute);
-                eval_clock();
             }
         }
 

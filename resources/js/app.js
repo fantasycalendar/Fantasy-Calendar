@@ -178,7 +178,6 @@ import {
     evaluate_settings,
     repopulate_timespan_select,
     repopulate_day_select,
-    eval_clock,
     copy_link,
     set_preview_date,
 } from './calendar/calendar_inputs_visitor.js';
@@ -190,7 +189,6 @@ window.update_current_day = update_current_day;
 window.evaluate_settings = evaluate_settings;
 window.repopulate_timespan_select = repopulate_timespan_select;
 window.repopulate_day_select = repopulate_day_select;
-window.eval_clock = eval_clock;
 window.copy_link = copy_link;
 window.set_preview_date = set_preview_date;
 
@@ -324,6 +322,9 @@ Alpine.data('statistics_collapsible', StatisticsCollapsible);
 
 import CurrentDateCollapsible from './calendar/current_date_collapsible.js';
 Alpine.data('current_date_collapsible', CurrentDateCollapsible);
+
+import ClockCanvas from "./clock-canvas.js";
+Alpine.data("clock_canvas", ClockCanvas);
 
 import ClockCollapsible from './calendar/clock_collapsible.js';
 Alpine.data('clock_collapsible', ClockCollapsible);
