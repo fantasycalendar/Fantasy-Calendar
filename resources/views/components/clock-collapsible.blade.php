@@ -1,5 +1,7 @@
 @props(['calendar' => null])
 
+<x-clock-canvas name="clock"></x-clock-canvas>
+
 <div class='row'>
     <div class='col-3 bold-text'>Enable:</div>
     <div class='col-3 text-right'>
