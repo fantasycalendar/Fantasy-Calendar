@@ -1,4 +1,8 @@
-const calendar_layouts = {
+import { do_update_all } from "./calendar/calendar_ajax_functions";
+import { evaluate_save_button } from "./calendar/calendar_inputs_edit";
+import { show_loading_screen, hide_loading_screen } from "./calendar/header";
+
+export default () => ({
 
     open: false,
     current_layout: undefined,
@@ -21,32 +25,31 @@ const calendar_layouts = {
         }
     ],
 
-    open_modal: function($event){
-
-        if(evaluate_save_button()){
+    open_modal: function($event) {
+        if (evaluate_save_button()) {
             this.open = true;
-            this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() === static_data.settings.layout);
-        }else{
-            $('#btn_layouts').notify(
-                "Please save your calendar before applying a preset.",
-                { position: "top-center" }
-            )
+            this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() === window.static_data.settings.layout);
+        } else {
+            this.$dispatch('notify', {
+                content: "Applying a layout refreshes the page, please save your calendar first.",
+                type: "warning"
+            });
         }
     },
 
-    apply_layout: function(layout){
+    apply_layout: function(layout) {
         show_loading_screen();
-        let previous_layout = static_data.settings.layout;
-        static_data.settings.layout = layout.name.toLowerCase();
-        do_update_all(hash, function(){
-            window.onbeforeunload = function () {}
+
+        let previous_layout = this.$store.calendar.static_data.settings.layout;
+        this.$store.calendar.static_data.settings.layout = layout.name.toLowerCase();
+
+        do_update_all(window.hash, function() {
+            window.onbeforeunload = function() { }
             window.location.reload(false);
-        }, function(){
-            static_data.settings.layout = previous_layout;
+        }, function() {
+            window.static_data.settings.layout = previous_layout;
             hide_loading_screen();
         });
     }
 
-}
-
-module.exports = calendar_layouts;
+})

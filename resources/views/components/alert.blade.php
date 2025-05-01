@@ -3,7 +3,7 @@
         <div class="flex-shrink-0">
             <i class="{{ $iconClasses }}"></i>
         </div>
-        <div class="ml-3 flex-grow">
+        <div class="ml-[0.75rem] flex-grow">
             <div class="{{ $innerClasses }}" @if($attributes->has('x-text')) x-text="{{ $attributes->get('x-text') }}" @endif>
                 {{ $slot }}
             </div>

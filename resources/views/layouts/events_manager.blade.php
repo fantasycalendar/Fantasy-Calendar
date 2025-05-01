@@ -202,30 +202,30 @@
                                     <hr>
 
                                     <div class="col-12 rounded overflow-hidden d-flex flex-column drop-shadow">
-                                        <template x-for="event_data in shownEvents" :key="event_data.id">
-                                            <div class="managed_event" @click="selectEvent(event_data, $dispatch)">
+                                        <template x-for="event in shownEvents" :key="event.id">
+                                            <div class="managed_event" @click="selectEvent(event, $dispatch)">
                                                 <div class="d-flex align-items-center justify-content-start justify-self-start text-left" style="white-space: nowrap;" >
                                                     <div class="icon"><i :class="{
                                                         'fas fa-calendar': !multiselect,
-                                                        'far fa-calendar': multiselect && !isSelected(event_data.id),
-                                                        'far fa-calendar-check valid': multiselect && isSelected(event_data.id)
+                                                        'far fa-calendar': multiselect && !isSelected(event.id),
+                                                        'far fa-calendar-check valid': multiselect && isSelected(event.id)
                                                     }"></i></div>
                                                 </div>
                                                 <div class="managed_event_description text-left flex-grow-1">
-                                                    <span class="pl-2 pl-md-3" x-html="highlight_match(event_data.name)"></span>
+                                                    <span class="pl-2 pl-md-3 d-inline" x-html="highlight_match(event.name)"></span>
                                                     <span class="px-2 d-none d-sm-inline" style="opacity: 0.4;">&bull;</span>
-                                                    <span class="d-none d-sm-inline" :class="{'opacity-70': event_data.description, 'opacity-30': !event_data.description }" x-html="event_data.description ? highlight_match(event_data.description, event_data.name.length) : 'Event has no description'"></span>
+                                                    <span class="d-none d-sm-inline" :class="{'opacity-70': event.description, 'opacity-30': !event.description }" x-html="event.description ? highlight_match(event.description, event.name.length) : 'Event has no description'"></span>
                                                 </div>
-                                                <button class="managed_event_action_icon" :style="multiselect ? 'pointer-events: none;' : ''" @click.stop="toggleEventPrint(event_data, $dispatch)">
-                                                    <i class="fa fa-print" :class="{ 'slashed opacity-60': !event_data.settings.print }"></i>
+                                                <button class="managed_event_action_icon" :style="multiselect ? 'pointer-events: none;' : ''" @click.stop="toggleEventPrint(event, $dispatch)">
+                                                    <i class="fa fa-print" :class="{ 'slashed opacity-60': !event.settings.print }"></i>
                                                 </button>
-                                                <button class="managed_event_action_icon" :style="(multiselect || event_data.settings.hide_full) ? 'pointer-events: none;' : ''" @click.stop="toggleEventHidden(event_data, $dispatch)">
-                                                    <i class="fa" :title="eventVisibilityTooltip(event_data)" :class="{  'fa-eye-slash opacity-60': event_data.settings.hide || event_data.settings.hide_full, 'fa-eye': !event_data.settings.hide, 'opacity-50 pointer-events-none' : event_data.settings.hide_full }"></i>
+                                                <button class="managed_event_action_icon" :style="(multiselect || event.settings.hide_full) ? 'pointer-events: none;' : ''" @click.stop="toggleEventHidden(event, $dispatch)">
+                                                    <i class="fa" :title="eventVisibilityTooltip(event)" :class="{  'fa-eye-slash opacity-60': event.settings.hide || event.settings.hide_full, 'fa-eye': !event.settings.hide, 'opacity-50 pointer-events-none' : event.settings.hide_full }"></i>
                                                 </button>
-                                                <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-edit-event', { event_db_id: event_data.id, epoch: window.dynamic_data.epoch })">
+                                                <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-edit-event', { event_db_id: event.id, epoch: window.dynamic_data.epoch })">
                                                     <i class="fa fa-edit"></i>
                                                 </button>
-                                                <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-delete-event', { event_db_id: event_data.id })">
+                                                <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-delete-event', { event_db_id: event.id })">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             </div>

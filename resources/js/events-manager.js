@@ -1,4 +1,7 @@
-const events_manager = {
+import { clone } from "./calendar/calendar_functions";
+import { evaluate_save_button, get_category } from "./calendar/calendar_inputs_edit";
+
+export default () => ({
     open: false,
 
     event_categories: [],
@@ -174,11 +177,11 @@ const events_manager = {
         evaluate_save_button();
     },
     refreshCategories() {
-        this.categories = clone(window.event_categories) ?? [];
+        this.categories = clone(this.$store.calendar.event_categories) ?? [];
     },
     refreshEvents() {
         this.refreshCategories();
-        this.categorizedEvents = (clone(window.events) ?? []).reduce(
+        this.categorizedEvents = (clone(this.$store.calendar.events) ?? []).reduce(
             (categorized, event) => {
                 if (
                     (this.search.length && !this.inSearch(event)) ||
@@ -281,11 +284,11 @@ const events_manager = {
             output = output
                 .substring(index, index + lengthLimit)
                 .replace(
-                new RegExp(this.search, "gi"),
-                function(str) {
-                    return `<mark>${str}</mark>`;
-                },
-            );
+                    new RegExp(this.search, "gi"),
+                    function(str) {
+                        return `<mark>${str}</mark>`;
+                    },
+                );
         }
 
         if (ellipses) {
@@ -300,6 +303,7 @@ const events_manager = {
     },
 
     open_modal: function($event) {
+        this.refreshEvents()
         this.open = true;
         setTimeout(() => {
             document.getElementById("eventManagerSearch")?.focus();
@@ -309,6 +313,4 @@ const events_manager = {
     close_modal: function($event) {
         this.open = false;
     },
-};
-
-module.exports = events_manager;
+});

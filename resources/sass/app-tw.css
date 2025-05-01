@@ -2,9 +2,9 @@
 
 /* @import '../../vendor/filament/forms/dist/module.esm.css'; */
 
-@import '~@fortawesome/fontawesome-free/css/fontawesome.css';
-@import '~@fortawesome/fontawesome-free/css/solid.css';
-@import '~@fortawesome/fontawesome-free/css/brands.css';
+@import '@fortawesome/fontawesome-free/css/fontawesome.css';
+@import '@fortawesome/fontawesome-free/css/solid.css';
+@import '@fortawesome/fontawesome-free/css/brands.css';
 
 @tailwind base;
 @tailwind components;
@@ -16,13 +16,16 @@
   .scrollbar::-webkit-scrollbar {
     width: .5rem;
   }
+
   .scrollbar::-webkit-scrollbar-thumb {
     background: #27272E;
     border-radius: 1rem;
   }
+
   .scrollbar::-webkit-scrollbar-thumb:active {
     background-color: #131314;
   }
+
   .scrollbar::-webkit-scrollbar-thumb:hover {
     background: #3B3B46;
     box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
@@ -32,10 +35,12 @@
   .scrollbar::-webkit-scrollbar-track {
     background: #131314;
   }
+
   .scrollbar::-webkit-scrollbar-track:hover,
   .scrollbar::-webkit-scrollbar-track:active {
     background: #131314;
   }
+
   [x-cloak] {
     display: none;
   }
