@@ -33,6 +33,7 @@ export default class Calendar {
         return structureChanged;
     }
 
+    // "Broker" methods
     evaluate_calendar_start(year, month = false, day = false, debug = false) {
         return evaluate_calendar_start(this.static_data, convert_year(this.static_data, year), month, day, debug);
     }
@@ -70,12 +71,57 @@ export default class Calendar {
         return does_day_appear(this.static_data, convert_year(this.static_data, year), timespan);
     }
 
+    set_preview_date(year, timespan, day) {
+        window.set_preview_date(year, timespan, day);
+    }
+
+    decrement_current_timespan() {
+        if (window.preview_date_manager.timespan == window.dynamic_date_manager.timespan) {
+            window.preview_date_manager.subtract_timespan();
+        }
+
+        window.dynamic_date_manager.subtract_timespan();
+
+        evaluate_dynamic_change();
+    };
+
+    decrement_current_year() {
+        window.dynamic_date_manager.subtract_year();
+
+        evaluate_dynamic_change();
+    };
+
+    decrement_current_day() {
+        window.dynamic_date_manager.subtract_day();
+
+        evaluate_dynamic_change();
+    }
+
+    increment_current_day() {
+        window.dynamic_date_manager.add_day();
+
+        evaluate_dynamic_change();
+    };
+
+    increment_current_timespan() {
+        window.dynamic_date_manager.add_timespan();
+
+        evaluate_dynamic_change();
+    };
+
+    increment_current_year() {
+        window.dynamic_date_manager.add_year();
+
+        evaluate_dynamic_change();
+    };
+
+    // Helpers
     api_url(urlstring = "") {
-        return window.apiurl + urlstring.replace(":hash", window.hash);
+        return window.apiurl + urlstring.replace(":hash", this.hash);
     }
 
     base_url(urlstring = "") {
-        return urlstring.replace(":hash", window.hash);
+        return urlstring.replace(":hash", this.hash);
     }
 
     setting(name, givenDefault = null) {
@@ -86,14 +132,7 @@ export default class Calendar {
         return this.event_categories.find(category => category.id == category_id) ?? null;
     }
 
-    get_default_event_category() {
-        return this.find_event_category(this.setting('default_category', -1));
-    }
-
-    set_preview_date(year, timespan, day) {
-        window.set_preview_date(year, timespan, day);
-    }
-
+    // Setters
     set static_data(value) {
         window.static_data = value;
     }
@@ -132,6 +171,7 @@ export default class Calendar {
         window.events = events;
     }
 
+    // Getters
     get hash() {
         return window.hash;
     }
@@ -164,9 +204,9 @@ export default class Calendar {
         return window.advancement;
     }
 
-		get evaluated_static_data() {
-			return window.evaluated_static_data;
-		}
+    get evaluated_static_data() {
+        return window.evaluated_static_data;
+    }
 
     get average_year_length() {
         return avg_year_length(this.static_data.year_data.timespans, this.static_data.year_data.leap_days);
@@ -175,4 +215,9 @@ export default class Calendar {
     get average_month_length() {
         return avg_month_length(this.static_data.year_data.timespans, this.static_data.year_data.leap_days);
     }
+
+    get default_event_category() {
+        return this.find_event_category(this.setting('default_category', -1));
+    }
+
 }

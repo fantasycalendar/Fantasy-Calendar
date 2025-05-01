@@ -1,5 +1,26 @@
 import CollapsibleComponent from "./collapsible_component";
 
+/*
+* 1. Just try and hook up the minimum possible to make the current UI work
+*       (Same thing we've done elsewhere, more or less)
+*       (Without jQuery)
+* 2. Think about the flow of data, and responsibility over that data
+*       - `calendar.date`?
+*       - `$store.date`?
+*
+*
+* ----
+*  Options:
+*   - decrement_current_day = () { this.current_date = this.store.calendar.subtract_day_from(year, timespan, day) }
+*       - Have to build out `subtract_day_from`. Discuss what'd be required?
+*       - Follows existing pattern by having the `outboundProperties` be the thing that drives the upstream state
+*       - Data more consistently flows through `outboundProperties`
+*
+*   - decrement_current_day = () { this.$store.calendar.subtract_day(); }
+*       - Minimal effort up-front, leverages existing data structures
+*       - Has two general update paths for data
+*
+*/
 class CurrentDateCollapsible extends CollapsibleComponent {
     collapsible_name = "CurrentDateCollapsible";
 
@@ -13,41 +34,29 @@ class CurrentDateCollapsible extends CollapsibleComponent {
         'current_date': "dynamic_data",
     }
 
-    sub_current_day() {
-        this.$store.calendar.subtractDay();
+    decrement_current_day() {
+        this.$store.calendar.subtract_day();
     };
 
-    sub_current_timespan() {
-        if (window.preview_date_manager.timespan == window.dynamic_date_manager.timespan) {
-            window.preview_date_manager.subtract_timespan();
-        }
-
-        window.dynamic_date_manager.subtract_timespan();
-
-        evaluate_dynamic_change();
+    decrement_current_timespan() {
+        this.$store.calendar.decrement_current_timespan();
     };
 
-    sub_current_year() {
-        window.dynamic_date_manager.subtract_year();
-
-        evaluate_dynamic_change();
+    decrement_current_year() {
+        this.$store.calendar.decrement_current_year();
     };
 
-    add_current_day() {
-        window.dynamic_date_manager.add_day();
-
-        evaluate_dynamic_change();
+    increment_current_day() {
+        this.$store.calendar.increment_current_day();
     };
 
-    add_current_timespan() {
-        window.dynamic_date_manager.add_timespan();
-
-        evaluate_dynamic_change();
+    increment_current_timespan() {
+        this.$store.calendar.increment_current_timespan();
     };
 
-    add_current_year() {
-        window.dynamic_date_manager.add_year();
-
-        evaluate_dynamic_change();
+    increment_current_year() {
+        this.$store.calendar.increment_current_year();
     };
 }
+
+export default () => new CurrentDateCollapsible();

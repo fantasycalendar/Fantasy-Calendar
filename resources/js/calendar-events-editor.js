@@ -309,7 +309,7 @@ export default () => ({
             // this.description_input.trumbowyg('html', this.working_event.description);
         }
 
-        let default_category = this.$store.calendar.get_default_event_category();
+        let default_category = this.$store.calendar.default_event_category;
 
         if (default_category) {
             this.working_event.event_category_id = default_category.id;
