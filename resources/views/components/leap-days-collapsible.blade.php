@@ -39,12 +39,8 @@
 
     <p class='mb-0 mt-3'><a onclick="linked_popup();" href='#'>Why can't I edit the leap days?</a></p>
 @else
-    <strong>
-        New leap day:
-    </strong>
-
     <div class='input-group'>
-        <input type='text' class='form-control' placeholder='Name' x-model="name">
+        <input type='text' class='form-control' placeholder='New leap day' x-model="name">
 
         <select class='custom-select form-control' x-model="type">
             <option value=''>Normal day</option>

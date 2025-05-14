@@ -72,120 +72,89 @@
     <div class="list-group mb-[1rem]" x-ref="months-sortable">
         <template x-for="(month, index) in months" :key="index" x-ref="months-sortable-template">
 
-            <div class="list-group-item px-2 !py-0.5 first-of-type:rounded-t draggable-source" :data-id="index"
-                 :class="{ 'bg-gray-100 dark:bg-white/5': month.type == 'intercalary'}"
-                 x-data="{ collapsed: true }">
+            <x-sortable-item
+                highlight-row-when="month.type == 'intercalary'"
+                delete-function="removeMonth(index)"
+                >
+                <x-slot:inputs>
+                    <input x-model="month.name" type='text' class='flex-grow-1 w-auto form-control pr-0' placeholder='Month name'/>
+                    <input x-model="month.length" type='number' min='1' class='flex-shrink-1 form-control'/>
+                </x-slot:inputs>
 
-                <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
-                    <div x-show="reordering"
-                         class="handle w-[20px] grid place-items-center self-stretch flex-shrink-0 text-center cursor-move">
-                        <i class="fa fa-bars text-xl hover:text-black hover:dark:text-white"></i>
-                    </div>
-                    <div class='cursor-pointer text-xl fa'
-                         :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
-                         @click="collapsed = !collapsed" x-show="!reordering">
-                    </div>
+                <div x-text="'Intercalary: ' + (month.type === 'month' ? 'No' : 'Yes')"></div>
 
-                    <div class="flex flex-grow-1 input-group">
-                        <input x-model="month.name" type='text' class='flex-grow-1 w-auto form-control pr-0'/>
-                        <input x-model="month.length" type='number' min='1' class='flex-shrink-1 form-control'/>
+                <div class='flex flex-col'>
+                    <div class="grid grid-cols-2">
+                        <div>Leap interval:</div>
+                        <div>Leap offset:</div>
                     </div>
 
-                    <div>
-                        <i class="fa fa-trash text-lg hover:text-red-400 hover:dark:text-red-600 cursor-pointer" @click="deleting = index" x-show="!reordering"></i>
+                    <div class='input-group w-full'>
+                        <input type='number' step="1" min='1' class='form-control small-input'
+                        x-model.lazy.number="month.interval"/>
+                        <input type='number' step="1" min='0' class='form-control small-input'
+                        x-model.lazy.number="month.offset" :disabled="month.interval === 1"/>
                     </div>
+
                 </div>
 
-                <div x-show="deleting === index" class="flex items-center w-full gap-x-2.5" x-cloak>
-                    <button class="btn btn-success w-10 !px-0 text-center" @click="removeMonth(index)">
-                        <i class="fa fa-check text-lg"></i>
-                    </button>
-
-                    <div class="flex-grow">Are you sure?</div>
-
-                    <button class="btn btn-danger w-10 !px-0 text-center" @click="deleting = -1">
-                        <i class="fa fa-times text-lg"></i>
-                    </button>
+                <div class='flex'>
+                    <div class='col-12 italics-text' x-text="getMonthIntervalText(month)"></div>
                 </div>
 
-                <div class="flex flex-col px-2.5 py-2.5 space-y-2" x-show="!collapsed && !reordering && deleting === -1">
-                    <div x-text="'Intercalary: ' + (month.type === 'month' ? 'No' : 'Yes')"></div>
-
-                    <div class='flex flex-col'>
-                        <div class="grid grid-cols-2">
-                            <div>Leap interval:</div>
-                            <div>Leap offset:</div>
-                        </div>
-
-                        <div class='input-group w-full'>
-                            <input type='number' step="1" min='1' class='form-control small-input'
-                            x-model.lazy.number="month.interval"/>
-                            <input type='number' step="1" min='0' class='form-control small-input'
-                            x-model.lazy.number="month.offset" :disabled="month.interval === 1"/>
-                        </div>
-
+                <div x-show="type === 'month'">
+                    <div class='flex my-1'>
+                        <div class='separator'></div>
                     </div>
 
-                    <div class='flex'>
-                        <div class='col-12 italics-text' x-text="getMonthIntervalText(month)"></div>
+                    <div class='flex my-1'>
+                        <div class='form-check w-full py-2 border rounded'>
+                            <input type='checkbox' :id='index + "_custom_week"'
+                            class='form-check-input'
+                            @click="toggleCustomWeek(month)"
+                            :checked="month.week?.length"
+                            />
+                            <label :for='index + "_custom_week"' class='form-check-label ml-1'>
+                                Use custom week
+                            </label>
+                        </div>
                     </div>
 
-                    <div x-show="type === 'month'">
-                        <div class='flex my-1'>
-                            <div class='separator'></div>
-                        </div>
+                    <template x-if="month.week?.length">
+                        <div class='custom-week-container'>
 
-                        <div class='flex my-1'>
-                            <div class='form-check w-full py-2 border rounded'>
-                                <input type='checkbox' :id='index + "_custom_week"'
-                                       class='form-check-input'
-                                       @click="toggleCustomWeek(month)"
-                                       :checked="month.week?.length"
-                                />
-                                <label :for='index + "_custom_week"' class='form-check-label ml-1'>
-                                    Use custom week
-                                </label>
+                            <div class='flex my-1'>
+                                Custom week length:
                             </div>
-                        </div>
 
-                        <template x-if="month.week?.length">
-                            <div class='custom-week-container'>
-
-                                <div class='flex my-1'>
-                                    Custom week length:
-                                </div>
-
-                                <div class='flex mb-1'>
-                                    <div class='input-group'>
-                                        <input type='number' min='1' step="1"
-                                               class='form-control small-input'
-                                               @change="customWeekLengthChanged($event, month)"
-                                               :disabled="!month.week?.length"
-                                               :value='(month.week?.length ?? 0)'/>
-                                        <div class="input-group-append">
-                                            <button type='button' class='full btn btn-primary'
-                                                    @click="quickAddCustomWeekdays(month)"
-                                                    :disabled="!month.week?.length">Quick add
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class='flex border'>
-                                    <div class='week_list w-full p-1'>
-                                        <template x-for='(day, index) in (month.week ?? [])' :key='index'>
-                                            <input x-model.lazy='month.week[index]' type='text'
-                                                   class='form-control internal-list-name'/>
-                                        </template>
+                            <div class='flex mb-1'>
+                                <div class='input-group'>
+                                    <input type='number' min='1' step="1"
+                                    class='form-control small-input'
+                                    @change="customWeekLengthChanged($event, month)"
+                                    :disabled="!month.week?.length"
+                                    :value='(month.week?.length ?? 0)'/>
+                                    <div class="input-group-append">
+                                        <button type='button' class='full btn btn-primary'
+                                            @click="quickAddCustomWeekdays(month)"
+                                            :disabled="!month.week?.length">Quick add
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        </template>
-                    </div>
+
+                            <div class='flex border'>
+                                <div class='week_list w-full p-1'>
+                                    <template x-for='(day, index) in (month.week ?? [])' :key='index'>
+                                        <input x-model.lazy='month.week[index]' type='text'
+                                        class='form-control internal-list-name'/>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </div>
-
-            </div>
-
+            </x-sortable-item>
         </template>
     </div>
 
