@@ -109,7 +109,7 @@
                 </div>
 
                 <div class="flex flex-col px-2.5 py-2.5 space-y-2" x-show="!collapsed && !reordering && deleting === -1">
-                    <div x-text="'Intercalary: ' + (month.type === 'month' ? 'Yes' : 'No')"></div>
+                    <div x-text="'Intercalary: ' + (month.type === 'month' ? 'No' : 'Yes')"></div>
 
                     <div class='flex flex-col'>
                         <div class="grid grid-cols-2">
