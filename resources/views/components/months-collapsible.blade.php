@@ -64,16 +64,16 @@
             <i class="fa fa-check"></i> Done
         </button>
     </div>
-    <div class="row sortable-header timespan_sortable_header" x-show="months.length">
-        <div class='col-6' style="padding-left:55px">Name</div>
-        <div class='col-6' style="padding-left:20%;">Length</div>
+    <div class="flex justify-between sortable-header timespan_sortable_header" x-show="months.length">
+        <div class='pl-[36px]'>Name</div>
+        <div class='pr-[40px]'>Length</div>
     </div>
 
     <div class="list-group mb-[1rem]" x-ref="months-sortable">
         <template x-for="(month, index) in months" :key="index" x-ref="months-sortable-template">
 
-            <div class="list-group-item px-2 py-0 !pt-0.5 !pb-0.5 first-of-type:rounded-t draggable-source" :data-id="index"
-                 :class="month.type"
+            <div class="list-group-item px-2 !py-0.5 first-of-type:rounded-t draggable-source" :data-id="index"
+                 :class="{ 'bg-gray-100 dark:bg-white/5': month.type == 'intercalary'}"
                  x-data="{ collapsed: true }">
 
                 <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
