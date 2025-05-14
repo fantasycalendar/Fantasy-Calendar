@@ -56,7 +56,7 @@
         </div>
     </div>
 
-    <div class="flex mb-2" x-show="months.length > 1">
+    <div class="flex my-2" x-show="months.length > 1">
         <button class="full btn btn-secondary" @click="reordering = true" x-show="!reordering">
             <i class="fa fa-arrows-alt-v"></i> Change order
         </button>
