@@ -8,7 +8,7 @@
 
 <div class="{{ $wrapperClasses }}">
     <input
-        type="text"
+        type="{{ $attributes->get('type') ?? 'text' }}"
         {{ $inputAttributes }}
         :class="{
             'dark:border-red-600 focus:ring-red-500 focus:border-red-500 border-red-300': hasError({{ $attributes->get('path') }})

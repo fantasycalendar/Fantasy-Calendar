@@ -78,8 +78,8 @@
                 <div class='flex flex-col'>
                     <div class='w-full'>Add to month:</div>
 
-                    <select type='number'
-                        class='custom-select form-control w-full'
+                    {{-- TODO: Fix this input, if it's the problem --}}
+                    <select class='custom-select form-control w-full'
                         x-model='leap_day.timespan'>
                         <template x-for="(timespan, timespanIndex) in timespans">
                             <option :value="timespanIndex" :selected="timespanIndex === leap_day.timespan" x-text="timespan.name"></option>

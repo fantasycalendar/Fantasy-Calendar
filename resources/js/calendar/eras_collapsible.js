@@ -7,6 +7,8 @@ class ErasCollapsible extends CollapsibleComponent {
     era_name = "";
     deleting = -1;
 
+    reordering = false;
+
     eras = [];
     season_settings = {};
     dynamic_data = {};
@@ -74,7 +76,7 @@ class ErasCollapsible extends CollapsibleComponent {
     getDaysForMonth(year, month_index) {
         return this.$store.calendar
             .get_days_in_timespan_in_year(year, month_index)
-            .map((day, index) =>  `Day ${index + 1}` + (day.text ? ` - ${day.text}` : ""));
+            .map((day, index) => `Day ${index + 1}` + (day.text ? ` - ${day.text}` : ""));
     }
 
     updateEraEpoch(era) {
