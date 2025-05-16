@@ -184,7 +184,7 @@
                     </div>
                 </div>
 
-                <div class='flex' x-show="!hasError(`leap_days.${index}.interval`)">
+                <div class='flex flex-col' x-show="!hasError(`leap_days.${index}.interval`)">
                     <div class='italics-text' x-text="interval_main_texts?.[index]"></div>
 
                     <ul class='italics-text list-disc pl-4'>
