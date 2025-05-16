@@ -1,10 +1,10 @@
-@props(['deleteFunction' => null])
+@props(['deleteFunction' => null, 'highlightRowWhen' => null])
 
 <div class="list-group-item px-2 !py-0.5 first-of-type:rounded-t draggable-source" :data-id="index"
      @if($highlightRowWhen)
          :class="{ 'bg-gray-100 dark:bg-white/5': {{ $highlightRowWhen }}}"
      @endif
-     x-data="{ collapsed: true }">
+     x-data="{ collapsed: (typeof leap_day == 'undefined' || (leap_day.name != 'Test' && leap_day.name != 'Shieldsmeet')) }">
 
     <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
         <div x-show="reordering"

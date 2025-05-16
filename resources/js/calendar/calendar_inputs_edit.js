@@ -63,27 +63,27 @@ export function set_up_edit_inputs() {
     window.event_categories_same = JSON.stringify(window.event_categories) === JSON.stringify(window.prev_event_categories);
     window.advancement_same = JSON.stringify(window.advancement) === JSON.stringify(window.advancement);
 
-    window.onbeforeunload = function(e) {
+    // window.onbeforeunload = function(e) {
 
-        window.calendar_name_same = window.calendar_name == window.prev_calendar_name;
-        window.static_same = JSON.stringify(window.static_data) === JSON.stringify(window.prev_static_data);
-        window.dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(window.prev_dynamic_data);
-        window.events_same = JSON.stringify(window.events) === JSON.stringify(window.prev_events);
-        window.event_categories_same = JSON.stringify(window.event_categories) === JSON.stringify(window.prev_event_categories);
-        window.advancement_same = JSON.stringify(window.advancement) === JSON.stringify(window.prev_advancement);
+    //     window.calendar_name_same = window.calendar_name == window.prev_calendar_name;
+    //     window.static_same = JSON.stringify(window.static_data) === JSON.stringify(window.prev_static_data);
+    //     window.dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(window.prev_dynamic_data);
+    //     window.events_same = JSON.stringify(window.events) === JSON.stringify(window.prev_events);
+    //     window.event_categories_same = JSON.stringify(window.event_categories) === JSON.stringify(window.prev_event_categories);
+    //     window.advancement_same = JSON.stringify(window.advancement) === JSON.stringify(window.prev_advancement);
 
-        var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same && advancement_same;
+    //     var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same && advancement_same;
 
-        if (!not_changed) {
+    //     if (!not_changed) {
 
-            var confirmationMessage = "It looks like you have unsaved changes, are you sure you want to navigate away from this page?";
+    //         var confirmationMessage = "It looks like you have unsaved changes, are you sure you want to navigate away from this page?";
 
-            (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-            return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+    //         (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+    //         return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
 
-        }
+    //     }
 
-    };
+    // };
 
     set_up_view_inputs();
 
