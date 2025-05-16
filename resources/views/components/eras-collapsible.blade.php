@@ -49,44 +49,49 @@
                     <input type='text' class='name-input small-input form-control' x-model.lazy='era.name'/>
                 </x-slot:inputs>
 
-                <x-alpine.check-input id="index + '_use_custom_format'" x-model='era.settings.use_custom_format'>
-                    Custom year header formatting
-                </x-alpine.check-input>
+                <div class='flex flex-col space-y-2 py-2'>
+                    <x-alpine.check-input id="index + '_use_custom_format'" x-model='era.settings.use_custom_format'>
+                        Custom year header formatting
+                    </x-alpine.check-input>
 
-                <div class='flex flex-col'>
-                    Format:
-                    <input type='text' class='form-control small-input'
-                        x-model.lazy='era.formatting'
-                        :disabled='!era.settings.use_custom_format'
-                    />
+                    <div>
+                        Format:
+
+                        <input type='text' class='form-control small-input'
+                            x-model.lazy='era.formatting'
+                            :disabled='!era.settings.use_custom_format'
+                        />
+                    </div>
                 </div>
 
                 <div class='separator'></div>
 
-                <x-alpine.check-input id="index + '_show_as_event'" x-model='era.settings.show_as_event'>
-                    Show as event
-                </x-alpine.check-input>
+                <div class='flex flex-col space-y-2 py-2'>
+                    <x-alpine.check-input id="index + '_show_as_event'" x-model='era.settings.show_as_event'>
+                        Show as event
+                    </x-alpine.check-input>
 
-                {{-- TODO: Stop this from using jquery --}}
-                <div class='btn btn-outline-primary w-full era_description html_edit' x-show='era.settings.show_as_event'>
-                    Edit event description
-                </div>
+                    {{-- TODO: Stop this from using jquery --}}
+                    <div class='btn btn-outline-primary w-full era_description html_edit' x-show='era.settings.show_as_event'>
+                        Edit event description
+                    </div>
 
-                <div class='flex flex-col' x-show='era.settings.show_as_event'>
-                    Event category:
+                    <div x-show='era.settings.show_as_event'>
+                        Event category:
 
-                    <select x-model="era.settings.event_category_id" class='form-control protip mt-1' data-pt-position="right" data-pt-title="This sets the category to be selected by default when a new event is created" >
-                        <option value="-1">No default category</option>
+                        <select x-model="era.settings.event_category_id" class='form-control mt-0.5' >
+                            <option value="-1">No default category</option>
 
-                        <template x-for="category in event_categories">
-                            <option :value="category.id" x-text="category.name" :selected="category.id == era.settings.event_category_id"></option>
-                        </template>
-                    </select>
+                            <template x-for="category in event_categories">
+                                <option :value="category.id" x-text="category.name" :selected="category.id == era.settings.event_category_id"></option>
+                            </template>
+                        </select>
+                    </div>
                 </div>
 
                 <div class='separator'></div>
 
-                <div class='flex flex-col'>
+                <div class='flex flex-col py-2'>
                     <x-alpine.check-input
                         id="index + '_starting_era'"
                         x-model='era.settings.starting_era'
