@@ -145,38 +145,31 @@
     </template>
 </div>
 
-<div class='my-1 small-text container' x-show="settings.periodic_seasons && seasons.length">
-    <div class='row py-1'>
-        <i class="col-auto px-0 mr-1 fas"
-           :class="{ 'a-check-circle': show_equal_season_length, 'fa-exclamation-circle': !show_equal_season_length }"
-           style="line-height:1.5;"></i>
-        <div class='col px-0' x-text="season_length_text"></div>
+<div class='my-1 small-text flex flex-col space-y-2' x-show="settings.periodic_seasons && seasons.length">
+    <div>
+        <i class="mr-1 fas"
+            :class="{ 'fa-check-circle': show_equal_season_length, 'fa-exclamation-circle': !show_equal_season_length }"
+            style="line-height:1.5;"></i>
+        <span x-text="season_length_text"></span>
     </div>
-    <div class='row' x-text="season_subtext"></div>
+    <div class='flex' x-text="season_subtext"></div>
 </div>
 
-<div class='my-1 small-text container' :class="{ 'warning': show_location_season_warning }"
+<div class='my-1 small-text flex flex-col space-y-2'
+    :class="{ 'warning': show_location_season_warning }"
      x-show="show_location_season_warning">
-    <div class='row py-1'>
-        <i class="col-auto px-0 mr-2 fas fa-exclamation-circle" style="line-height:1.5;"></i>
-        <div class='col px-0'>
-            You are currently using a custom location with custom season sunrise and sunset times. Solstices and
-            equinoxes may behave unexpectedly.
-        </div>
-    </div>
+    <i class="mr-1 fas fa-exclamation-circle" style="line-height:1.5;"></i>
+    <span>
+        You are currently using a custom location with custom season sunrise and sunset times. Solstices and
+        equinoxes may behave unexpectedly.
+    </span>
 </div>
 
-<div class='container' x-show="settings.periodic_seasons">
-    <div class='row mt-2'>
-        Season offset (days):
-    </div>
-    <div class='row mb-2'>
-        <input class='form-control' type='number' x-model.lazy="settings.season_offset"/>
-    </div>
+<div class="my-1" x-show="settings.periodic_seasons">
+    <div>Season offset (days):</div>
+    <input class='form-control' type='number' x-model.lazy="settings.season_offset"/>
 </div>
 
-<div>
-    <button type='button' class='btn btn-secondary full' @click="createSeasonEvents">
-        Create solstice and equinox events
-    </button>
-</div>
+<button type='button' class='btn btn-secondary full mt-1' @click="createSeasonEvents">
+    Create solstice and equinox events
+</button>
