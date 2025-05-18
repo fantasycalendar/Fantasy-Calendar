@@ -19,15 +19,15 @@
         <!--
         TODO: make this select update current location in dynamic data - maybe this is a lil component by itself?
         -->
-        <select class='form-control' @change="locationChanged">
+        <select class='form-control' @change="locationChanged" x-model="location_selection_value">
             <optgroup label="Custom" x-show="locations.length">
                 <template x-for="(location, index) in locations">
-                    <option :value="index + '-custom'" :selected="current_location == index && using_custom_location" x-text="location.name"></option>
+                    <option :value="index + '-custom'" x-text="location.name"></option>
                 </template>
             </optgroup>
             <optgroup label="Preset" x-show="preset_locations.length">
                 <template x-for="(location, index) in preset_locations">
-                    <option :value="index + '-preset'" :selected="current_location == index && !using_custom_location" x-text="location.name" :disabled="!can_use_preset_locations"></option>
+                    <option :value="index + '-preset'" x-text="location.name" :disabled="!can_use_preset_locations"></option>
                 </template>
             </optgroup>
         </select>
@@ -67,7 +67,7 @@
                          :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
                          @click="collapsed = !collapsed"></div>
                     <input type='text' class='name-input small-input form-control location-name' x-model.lazy='location.name'/>
-                    <button class="btn btn-danger w-10" @click="deleting = index">
+                    <button class="btn btn-danger w-10" @click="deleting = index" :disabled="using_custom_location && current_location == index" :title="(using_custom_location && current_location == index) ? 'Cannot delete the current loation' : 'Delete this location'">
                         <i class="fa fa-trash text-lg"></i>
                     </button>
                 </div>
