@@ -13,7 +13,7 @@ class LocationsCollapsible extends CollapsibleComponent {
     collapsible_name = "LocationsCollapsible"
 
     deleting = -1;
-    name = "";
+    newLocation = "";
 
     seasons = [];
     locations = [];
@@ -48,18 +48,18 @@ class LocationsCollapsible extends CollapsibleComponent {
 
         this.can_use_preset_locations = (this.seasons.length === 2 || this.seasons.length === 4) && this.season_settings.enable_weather;
 
-        if(this.can_use_preset_locations) {
+        if (this.can_use_preset_locations) {
             let length = this.can_use_preset_locations ? this.seasons.length : 4;
             this.preset_locations = Object.values(preset_data.locations[length]);
-        }else{
+        } else {
             this.preset_locations = [];
         }
 
     }
 
-    addLocation(){
+    addLocation() {
         this.locations.push({
-            "name": this.name || "New location",
+            "name": this.newLocation || "New location",
             "seasons": this.seasons.map(season => {
                 return {
                     "time": season.time,
@@ -91,13 +91,13 @@ class LocationsCollapsible extends CollapsibleComponent {
             }
         });
 
-        this.name = "";
+        this.newLocation = "";
 
-        this.current_location = (this.locations.length-1).toString();
+        this.current_location = (this.locations.length - 1).toString();
         this.using_custom_location = true;
     }
 
-    removeLocation(index){
+    removeLocation(index) {
         this.locations.splice(index, 1);
     }
 
@@ -108,13 +108,16 @@ class LocationsCollapsible extends CollapsibleComponent {
     }
 
     copyCurrentLocation() {
-        const currentLocation = this.using_custom_location
-            ? this.locations[this.current_location]
-            : this.preset_locations[this.current_location];
+        let locationList = this.using_custom_location ? this.locations : this.preset_locations;
+        let currentLocation = isNaN(this.current_location)
+            ? locationList.find(location => location.name == this.current_location)
+            : locationList[this.current_location];
 
-        let newLocation = _.cloneDeep(currentLocation);
+        let locationCopy = _.cloneDeep(currentLocation);
 
-        if(!this.using_custom_location){
+        console.log(locationCopy);
+
+        if (!this.using_custom_location) {
 
             let copiedLocation = _.cloneDeep(currentLocation);
 
@@ -149,9 +152,9 @@ class LocationsCollapsible extends CollapsibleComponent {
 
             }
 
-            newLocation.settings = _.cloneDeep(preset_data.curves);
-            newLocation.settings.season_based_time = true;
-            newLocation.seasons = [];
+            locationCopy.settings = _.cloneDeep(preset_data.curves);
+            locationCopy.settings.season_based_time = true;
+            locationCopy.seasons = [];
 
             for (let seasonIndex = 0; seasonIndex < this.seasons.length; seasonIndex++) {
 
@@ -159,28 +162,28 @@ class LocationsCollapsible extends CollapsibleComponent {
                 if (preset_order !== undefined && preset_order.length === this.seasons.length) {
                     presetIndex = preset_order[seasonIndex];
                 }
-                newLocation.seasons.push(_.cloneDeep(copiedLocation.seasons[presetIndex]));
+                locationCopy.seasons.push(_.cloneDeep(copiedLocation.seasons[presetIndex]));
 
-                newLocation.seasons[seasonIndex].time = {}
-                newLocation.seasons[seasonIndex].time.sunset = this.seasons[seasonIndex].time.sunset;
-                newLocation.seasons[seasonIndex].time.sunrise = this.seasons[seasonIndex].time.sunrise;
+                locationCopy.seasons[seasonIndex].time = {}
+                locationCopy.seasons[seasonIndex].time.sunset = this.seasons[seasonIndex].time.sunset;
+                locationCopy.seasons[seasonIndex].time.sunrise = this.seasons[seasonIndex].time.sunrise;
 
                 if (this.season_settings.temp_sys === "metric" || this.season_settings.temp_sys === "both_m") {
-                    newLocation.seasons[seasonIndex].weather.temp_low = fahrenheit_to_celcius(newLocation.seasons[seasonIndex].weather.temp_low);
-                    newLocation.seasons[seasonIndex].weather.temp_high = fahrenheit_to_celcius(newLocation.seasons[seasonIndex].weather.temp_high);
+                    locationCopy.seasons[seasonIndex].weather.temp_low = fahrenheit_to_celcius(locationCopy.seasons[seasonIndex].weather.temp_low);
+                    locationCopy.seasons[seasonIndex].weather.temp_high = fahrenheit_to_celcius(locationCopy.seasons[seasonIndex].weather.temp_high);
                 }
 
             }
 
         }
 
-        this.locations.push(newLocation);
-        this.current_location = (this.locations.length-1).toString();
+        this.locations.push(locationCopy);
+        this.current_location = (this.locations.length - 1).toString();
         this.using_custom_location = true;
 
     }
 
-    interpolateSeasonTimes(location_index, season_index){
+    interpolateSeasonTimes(location_index, season_index) {
 
         let prev_id = (season_index - 1) % this.seasons.length
         if (prev_id < 0) prev_id += this.seasons.length
@@ -264,13 +267,13 @@ class LocationsCollapsible extends CollapsibleComponent {
         }
     }
 
-    seasonsChanged(){
-        for(let location_index in this.locations){
+    seasonsChanged() {
+        for (let location_index in this.locations) {
 
             const current_season_count = this.locations[location_index].seasons.length;
-            if(current_season_count > this.seasons.length){
+            if (current_season_count > this.seasons.length) {
                 this.locations[location_index].seasons.splice(this.seasons.length, current_season_count - this.seasons.length);
-            }else if(current_season_count < this.seasons.length){
+            } else if (current_season_count < this.seasons.length) {
 
                 this.locations[location_index].seasons = this.locations[location_index].seasons.concat(
                     this.seasons.slice(current_season_count, this.seasons.length).map(season => {
@@ -290,11 +293,11 @@ class LocationsCollapsible extends CollapsibleComponent {
         }
     }
 
-    updateSeasonBasedTime(location_index){
+    updateSeasonBasedTime(location_index) {
 
-        if(!this.locations[location_index].settings.season_based_time) return;
+        if (!this.locations[location_index].settings.season_based_time) return;
 
-        for(let [season_index, season] of this.seasons.entries()){
+        for (let [season_index, season] of this.seasons.entries()) {
             this.locations[location_index].seasons[season_index].time.sunrise.hour = season.time.sunrise.hour;
             this.locations[location_index].seasons[season_index].time.sunrise.minute = season.time.sunrise.minute;
             this.locations[location_index].seasons[season_index].time.sunset.hour = season.time.sunset.hour;
