@@ -68,11 +68,6 @@ select.invalid {
     min-height: initial;
 }
 
-.season_text {
-    font-style: italic;
-    font-weight: normal;
-}
-
 .active {
     font-style: normal !important;
     font-weight: bold !important;
@@ -367,11 +362,6 @@ input[type="number"]:not(.spinner) {
 
 .remove-container>.handle {
     cursor: move;
-}
-
-.add_inputs {
-    width: 100%;
-    margin: 5px 0 10px 0;
 }
 
 .moon_inputs .moon_color {

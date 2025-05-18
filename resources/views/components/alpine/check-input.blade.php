@@ -1,10 +1,13 @@
 @props(['disabledWhen' => null, 'disabledWrapperClasses' => null, 'enabledWrapperClasses' => null])
 
 @php
-    $inputAttributes = $attributes->whereDoesntStartWith('id')->whereDoesntStartWith('x-show')
+    $inputAttributes = $attributes
+        ->whereDoesntStartWith('id')
+        ->whereDoesntStartWith('x-show')
+        ->whereDoesntStartWith('wrapper');
 @endphp
 
-<div class='form-check py-2 border rounded' {{ $attributes->whereStartsWith('x-show') }}
+<div class='form-check py-2 border rounded {{ $attributes->get('wrapper-class') }}' {{ $attributes->whereStartsWith('x-show') }}
     @if($disabledWhen)
         :class="{
             'disabled {{ $disabledWrapperClasses }}': {{ $disabledWhen }},

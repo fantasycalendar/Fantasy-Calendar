@@ -4,7 +4,7 @@
      @if($highlightRowWhen)
          :class="{ 'bg-gray-100 dark:bg-white/5': {{ $highlightRowWhen }}}"
      @endif
-     x-data="{ collapsed: true }">
+     x-data="{ collapsed: (typeof season == 'undefined') }">
 
     <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
         <div x-show="reordering"
@@ -37,7 +37,7 @@
         </button>
     </div>
 
-    <div class="flex flex-col px-2.5 py-2.5 space-y-3" x-show="!collapsed && !reordering && deleting === -1">
+    <div class="flex flex-col px-2.5 py-2.5 space-y-2" x-show="!collapsed && !reordering && deleting === -1">
         {{ $slot }}
     </div>
 
