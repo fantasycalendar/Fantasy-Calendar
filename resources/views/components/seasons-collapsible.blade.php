@@ -57,7 +57,7 @@
                 <input type='text' class='name-input small-input form-control' x-model.lazy='season.name'></input>
             </x-slot:inputs>
 
-            <div class='flex flex-col my-1' x-show="seasons.length === 4 || seasons.length === 2">
+            <div class='flex flex-col' x-show="seasons.length === 4 || seasons.length === 2">
                 <div>Type:</div>
 
                 <select class='form-control preset-season-list' @change='ensureMutualTypeExclusivity($event.target.value, index)'>
@@ -68,7 +68,7 @@
                 </select>
             </div>
 
-            <div class='grid sm:gap-2 sm:grid-cols-2 mt-2' x-show="settings.periodic_seasons">
+            <div class='grid sm:gap-2 sm:grid-cols-2' x-show="settings.periodic_seasons">
                 <div>
                     Duration:
                     <input type='number'
@@ -107,64 +107,39 @@
             </div>
 
             <template x-if="settings.color_enabled && season.color?.length == 2">
-                <div class='grid grid-cols-2 gap-x-2 p-2 border rounded'>
+                <div class='grid grid-cols-2 gap-x-2'>
                     <div>Start color:</div>
                     <div>End color:</div>
 
-                    <input type='color' class='form-control w-full' :value="season.color[0]" @change="season.color[0] = $event.target.value;"/>
-                    <input type='color' class='form-control w-full' :value='season.color[1]' @change="season.color[1] = $event.target.value;"/>
+                    <input type='color' class="w-full" :value="season.color[0]" @change="season.color[0] = $event.target.value;"/>
+                    <input type='color' class="w-full" :value='season.color[1]' @change="season.color[1] = $event.target.value;"/>
                 </div>
             </template>
 
-            <div class='clock_inputs' x-show="clock.enabled">
-                <div class='flex mt-2'>
-                    <div class='col-12'>Sunrise:</div>
-                </div>
-                <div class='flex sortable-header'>
-                    <div class='col-6 pr-1'>
-                        Hour
-                    </div>
-                    <div class='col-6 pl-1'>
-                        Minute
+            <div class='flex flex-col space-y-2' x-show="clock.enabled">
+                <div class='grid grid-cols-2'>
+                    <div>Sunrise hour</div>
+                    <div>Sunrise minute</div>
+
+                    <div class="grid grid-cols-2 col-span-2 input-group">
+                        <input type='number' step="1.0" class='form-control !w-full' x-model.lazy='season.time.sunrise.hour'/>
+                        <input type='number' step="1.0" class='form-control !w-full' x-model.lazy='season.time.sunrise.minute'/>
                     </div>
                 </div>
-                <div class='flex mb-2' data-pt-position="right"
-                     data-pt-title="What time the sun rises at the peak of this season">
-                    <div class='col-6 pr-1 clock-input'>
-                        <input type='number' step="1.0" class='form-control full' x-model.lazy='season.time.sunrise.hour'/>
-                    </div>
-                    <div class='col-6 pl-1 clock-input'>
-                        <input type='number' step="1.0" class='form-control full' x-model.lazy='season.time.sunrise.minute'/>
-                    </div>
-                </div>
-                <div class='flex mt-2'>
-                    <div class='col-12 '>Sunset:</div>
-                </div>
-                <div class='flex sortable-header'>
-                    <div class='col-6 pr-1'>
-                        Hour
-                    </div>
-                    <div class='col-6 pl-1'>
-                        Minute
+
+                <div class='grid grid-cols-2'>
+                    <div>Sunset hour</div>
+                    <div>Sunset minute</div>
+
+                    <div class="grid grid-cols-2 input-group col-span-2">
+                        <input type='number' step="1.0" class='form-control !w-full' x-model.lazy='season.time.sunset.hour'/>
+                        <input type='number' step="1.0" class='form-control !w-full' x-model.lazy='season.time.sunset.minute'/>
                     </div>
                 </div>
-                <div class='flex mb-2' data-pt-position="right"
-                     data-pt-title="What time the sun sets at the peak of this season">
-                    <div class='col-6 pr-1 clock-input'>
-                        <input type='number' step="1.0" class='form-control full' x-model.lazy='season.time.sunset.hour'/>
-                    </div>
-                    <div class='col-6 pl-1 clock-input'>
-                        <input type='number' step="1.0" class='form-control full' x-model.lazy='season.time.sunset.minute'/>
-                    </div>
-                </div>
-                <div class='flex my-1'>
-                    <button type="button" class="btn btn-sm btn-info season_middle_btn full"
-                            data-pt-delay-in="100"
-                            data-pt-title="Use the median values from the previous and next seasons' time data. This season will act as a transition between the two, similar to Spring or Autumn"
-                            @click="interpolateSeasonTimes(index)">
-                        Interpolate sunrise & sunset from surrounding seasons
-                    </button>
-                </div>
+
+                <button type="button" class="btn btn-sm btn-info" @click="interpolateSeasonTimes(index)">
+                    Interpolate sunrise & sunset from surrounding seasons
+                </button>
             </div>
         </x-sortable-item>
     </template>
