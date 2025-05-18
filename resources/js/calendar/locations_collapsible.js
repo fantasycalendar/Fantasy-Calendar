@@ -122,7 +122,18 @@ class LocationsCollapsible extends CollapsibleComponent {
 
         console.log(locationCopy);
 
-        locationCopy.name = this.newLocation;
+        let new_name = this.newLocation
+            ? this.newLocation
+            : currentLocation.name + " copy";
+
+        let deduped_name = new_name;
+        let attempts = 1;
+        while (this.locations.findIndex(location => location.name == deduped_name) > 0) {
+            deduped_name = new_name + " " + attempts.toString();
+            attempts++;
+        }
+
+        locationCopy.name = deduped_name;
         this.newLocation = "";
 
         if (!this.using_custom_location) {
