@@ -92,14 +92,14 @@
                 <div class='col-span-1'>Day:</div>
             </div>
 
-            <div class="input-group grid grid-cols-3 w-full" x-show="!settings.periodic_seasons">
-                <select type='number' class='form-control col-span-2 w-full' x-model.number='season.timespan'>
+            <div class="input-group grid grid-cols-3" x-show="!settings.periodic_seasons">
+                <select class='form-control col-span-2 !w-full' x-model.number='season.timespan'>
                     <template x-for="(month, month_index) in months" :key="month_index">
                         <option :value="month_index" :selected="month_index === season.timespan" x-text="month.name"></option>
                     </template>
                 </select>
 
-                <select type='number' class='form-control col-span-1 w-full' x-model.number='season.day'>
+                <select class='form-control col-span-1 !w-full' x-model.number='season.day'>
                     <template x-for="(day, day_index) in _.range(1, months[season.timespan ?? 0].length + 1)" :key="day_index">
                         <option :value="day"  :selected="day === season.day" x-text="day"></option>
                     </template>
