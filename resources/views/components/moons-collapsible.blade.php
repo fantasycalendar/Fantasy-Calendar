@@ -50,7 +50,7 @@
                 </button>
             </div>
 
-            <div x-show="deleting !== index" class="flex flex-col space-y-3 mt-4">
+            <div x-show="deleting !== index" class="flex flex-col px-2.5 py-2.5 space-y-3">
                 <x-alpine.check-input id="`${index}_custom_phase_moon`"
                         ::checked="moon.custom_phase"
                         @change="customPhaseChanged(moon)"
@@ -72,11 +72,12 @@
                         <input type='number' class='form-control' x-model='moon.shift'/>
                     </div>
 
-                    <div class='flex mb-1 col-span-7'>
+                    <div class='flex flex-col mt-1 col-span-7'>
+                        Sprite rounding:
                         <select class='form-control' x-model='moon.cycle_rounding'>
-                            <option value='floor'>Floor (0.7 becomes 0.0)</option>
-                            <option value='round'>Round (< 0.49 becomes 0.0, 0.5 > becomes 1.0)</option>
-                            <option value='ceil'>Ceiling (0.3 becomes 1.0)</option>
+                            <option value='floor'>Always round down</option>
+                            <option value='round'>Round nearest</option>
+                            <option value='ceil'>Always round up</option>
                         </select>
                     </div>
                 </div>
@@ -118,7 +119,7 @@
                 </div>
 
                 <x-alpine.check-input id="`${index}_hidden_moon`" x-model='moon.hidden'>
-                    Restarts year count
+                    Hide from guest viewers
                 </x-alpine.check-input>
             </div>
         </div>
