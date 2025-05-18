@@ -35,7 +35,7 @@
 
     <div class='separator'></div>
 
-    <div>
+    <div class="mb-2">
         <div class='bold-text'>
             New location:
         </div>
@@ -59,9 +59,7 @@
 
     <div>
         <template x-for="(location, index) in locations">
-
             <div class="list-group-item p-2 first-of-type:rounded-t" x-data="{ collapsed: true }">
-
                 <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
                     <div class='cursor-pointer text-xl fa'
                          :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
