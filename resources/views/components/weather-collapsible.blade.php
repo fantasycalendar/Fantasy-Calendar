@@ -1,79 +1,68 @@
 @props(['calendar' => null])
 
-
-<div class='row no-gutters' x-show="!seasons.length">
+<div x-show="!seasons.length">
     You need at least one season for weather to function.
 </div>
 
-<div id='has_seasons_container' x-show="seasons.length">
+<div class="flex flex-col space-y-2" x-show="seasons.length">
+    <div class='flex justify-between'>
+        <div>Enable weather:</div>
 
-    <div class='row no-gutters'>
-        <div class='col-8'>Enable weather:</div>
-        <div class='col-4 text-right'>
+        <label class="custom-control custom-checkbox">
+            <input type="checkbox" class="custom-control-input" x-model='weather.enable_weather'>
+            <span class="custom-control-indicator"></span>
+        </label>
+    </div>
+
+    <div class="contents space-y-2" x-show="weather.enable_weather">
+        <div class='flex text-xs mt-2'>
+            <i class="fa fa-info-circle text-opacity-80 mr-1.5"></i>
+            Custom weather can be configured per location.
+        </div>
+
+        <div class='flex flex-col'>
+            <div>Weather offset (days):</div>
+            <input class='form-control'
+                :value='weather.weather_offset'
+                type='number'
+                @change='weather.weather_offset = Math.floor(Number($event.target.value))'/>
+        </div>
+
+        <div class='grid grid-cols-2 gap-x-2'>
+            <div>Temperature:</div>
+            <div>Wind:</div>
+
+            <select class='custom-select form-control' x-model='weather.temp_sys'>
+                <option selected value='metric'>Metric</option>
+                <option value='imperial'>Imperial</option>
+                <option value='both_m'>Both (inputs metric)</option>
+                <option value='both_i'>Both (inputs imperial)</option>
+            </select>
+
+            <select class='custom-select form-control' x-model='weather.wind_sys'>
+                <option selected value='metric'>Metric</option>
+                <option value='imperial'>Imperial</option>
+                <option value='both'>Both</option>
+            </select>
+        </div>
+
+        <div class='flex justify-between'>
+            <div>Cinematic temperature description:</div>
+
             <label class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" x-model='weather.enable_weather'>
+                <input type="checkbox" class="custom-control-input" x-model='weather.cinematic'/>
                 <span class="custom-control-indicator"></span>
             </label>
         </div>
-    </div>
-
-    <div x-show="weather.enable_weather">
-
-        <div class='row no-gutters my-2 small-text'>
-            Custom weather can be configured in locations.
-        </div>
 
 
-        <div class='row my-2'>
-            <div class='col'>
-                Weather offset (days):
-                <input class='form-control' :value='weather.weather_offset' type='number'
-                       @change='weather.weather_offset = Math.floor(Number($event.target.value))'/>
-            </div>
-        </div>
-
-        <div class="row no-gutters mt-2">
-            <div class="col-7">Temperature system:</div>
-            <div class="col-5">Wind system:</div>
-        </div>
-
-        <div class='row no-gutters my-1 input-group'>
-            <div class="col-7">
-                <select class='custom-select form-control' x-model='weather.temp_sys'>
-                    <option selected value='metric'>Metric</option>
-                    <option value='imperial'>Imperial</option>
-                    <option value='both_m'>Both (inputs metric)</option>
-                    <option value='both_i'>Both (inputs imperial)</option>
-                </select>
-            </div>
-            <div class="col-5">
-                <select class='custom-select form-control' x-model='weather.wind_sys'>
-                    <option selected value='metric'>Metric</option>
-                    <option value='imperial'>Imperial</option>
-                    <option value='both'>Both</option>
-                </select>
-            </div>
-        </div>
-
-        <div class='row no-gutters my-2 protip align-items-center' data-pt-position="right"
-             data-pt-title="In addition of the temperature being shown, you'll also see the description for the temperature of that particular day.">
-            <div class='col-8'>Cinematic temperature description:</div>
-            <div class='col-4 text-right'>
-                <label class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" x-model='weather.cinematic'/>
-                    <span class="custom-control-indicator"></span>
-                </label>
-            </div>
-        </div>
-
-
-        <div class='row no-gutters'>
-            <div class='col-auto'>Weather generation seed:</div>
-        </div>
-        <div class='row no-gutters input-group'>
-            <input type='number' id='seasons_seed' class='form-control' x-model='weather.seed'/>
-            <div class="input-group-append">
-                <div class='btn btn-primary' id='reseed_seasons'><i class="fa fa-redo"></i></div>
+        <div>
+            <div>Weather generation seed:</div>
+            <div class='flex input-group'>
+                <input type='number' id='seasons_seed' class='form-control' x-model='weather.seed'/>
+                <div class="input-group-append">
+                    <div class='btn btn-primary' id='reseed_seasons'><i class="fa fa-redo"></i></div>
+                </div>
             </div>
         </div>
     </div>

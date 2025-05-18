@@ -2,7 +2,7 @@
 
 <strong>Season type:</strong>
 
-<div class='border rounded mb-2 grid py-1 px-2 sm:grid-cols-12'>
+<div class='border rounded mb-2 grid py-2 px-2 sm:grid-cols-12'>
     <div class='sm:col-span-5 text-center'>
         Date Based
     </div>
@@ -148,14 +148,17 @@
 <div class='my-1 small-text flex flex-col space-y-2' x-show="settings.periodic_seasons && seasons.length">
     <div>
         <i class="mr-1 fas"
-            :class="{ 'fa-check-circle': show_equal_season_length, 'fa-exclamation-circle': !show_equal_season_length }"
+            :class="{
+                'fa-check-circle text-green-400 dark:text-green-500': show_equal_season_length,
+                'fa-exclamation-circle text-orange-400 dark:text-orange-500': !show_equal_season_length
+            }"
             style="line-height:1.5;"></i>
         <span x-text="season_length_text"></span>
     </div>
-    <div class='flex' x-text="season_subtext"></div>
+    <div class='flex pl-6' x-text="season_subtext"></div>
 </div>
 
-<div class='my-1 small-text flex flex-col space-y-2'
+<div class='my-1 small-text flex'
     :class="{ 'warning': show_location_season_warning }"
      x-show="show_location_season_warning">
     <i class="mr-1 fas fa-exclamation-circle" style="line-height:1.5;"></i>
