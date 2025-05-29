@@ -1,20 +1,22 @@
 import axios from "axios";
 import Swal from "sweetalert2";
+import CollapsibleComponent from "./collapsible_component";
 
-export default () => ({
-    reordering: false,
-    users: [],
-    invite_email: "",
-    invite_status: "",
-    invite_enabled: true,
+class UserManagementCollapsible extends CollapsibleComponent {
+    reordering = false;
+    users = [];
+    invite_email = "";
+    invite_status = "";
+    invite_enabled = true;
 
-    load: function(static_data) {
+    init() {
         this.loadUsers();
-    },
+    }
 
     loadUsers() {
         axios.get(this.$store.calendar.api_url("/calendar/:hash/users"))
             .then(function(response) {
+                console.log(response.data);
                 this.users = response.data;
             }.bind(this))
             .catch(function(error) {
@@ -25,7 +27,7 @@ export default () => ({
                     icon_color: 'text-red-500'
                 });
             });
-    },
+    }
 
     inviteUser() {
         this.invite_enabled = false;
@@ -47,7 +49,7 @@ export default () => ({
 
             this.loadUsers();
         });
-    },
+    }
 
     removeInvite(invited_email) {
         Swal.fire({
@@ -77,7 +79,7 @@ export default () => ({
                 });
             });
         });
-    },
+    }
 
     removeUser(user_id) {
         let user_name = this.users.find(user => user.id == user_id).username;
@@ -114,7 +116,7 @@ export default () => ({
             });
         });
 
-    },
+    }
 
     updateUserRole(user_id, user_role, output) {
         axios.post(
@@ -125,7 +127,7 @@ export default () => ({
         }).catch(function(error) {
             output(false, error.response.data.message);
         });
-    },
+    }
 
     resendCalendarInvite(email, output) {
         axios.post(
@@ -137,4 +139,6 @@ export default () => ({
             output(false, error.response.data.message);
         });
     }
-})
+}
+
+export default () => new UserManagementCollapsible();

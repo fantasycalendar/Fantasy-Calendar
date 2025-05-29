@@ -14,6 +14,7 @@ export default class Calendar {
             "static_data.year_data",
             "static_data.eras",
             "static_data.seasons",
+            "static_data.moons",
             "event_categories",
         ];
         let structureChanged = false;

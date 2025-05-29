@@ -9,12 +9,8 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
     selectedCalendarHash = null;
     disableInputs = false;
 
-    load() {
+    init() {
         this.retrieveOwnedCalendars();
-    }
-
-    retrieveChildren() {
-        this.owned
     }
 
     retrieveOwnedCalendars() {

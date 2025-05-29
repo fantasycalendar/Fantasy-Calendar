@@ -52,7 +52,7 @@
 
         <x-collapsible :calendar="$calendar" contains="Eras" icon="fa-infinity" polished></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Moons" icon="fa-moon" done></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Moons" icon="fa-moon" polished></x-collapsible>
 
         <x-collapsible :calendar="$calendar" contains="Seasons" icon="fa-snowflake" done></x-collapsible>
 

@@ -102,8 +102,8 @@ class MoonsCollapsible extends CollapsibleComponent {
         moon.custom_cycle = $event.target.value;
     }
 
+    // TODO: make this its own little Alpine component, for debouncing!
     shiftCustomCycle(moon, direction){
-
         let cycle = moon.custom_cycle.split(",");
 
         if (direction > 0) {
@@ -113,7 +113,6 @@ class MoonsCollapsible extends CollapsibleComponent {
         }
 
         moon.custom_cycle = cycle.join(",");
-
     }
 
 }
