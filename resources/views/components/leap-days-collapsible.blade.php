@@ -80,7 +80,7 @@
 
                     {{-- TODO: Fix this input, if it's the problem --}}
                     <select class='custom-select form-control w-full'
-                        x-model='leap_day.timespan'>
+                        x-model.number.lazy='leap_day.timespan'>
                         <template x-for="(timespan, timespanIndex) in timespans">
                             <option :value="timespanIndex" :selected="timespanIndex === leap_day.timespan" x-text="timespan.name"></option>
                         </template>
