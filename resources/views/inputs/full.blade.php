@@ -48,7 +48,7 @@
 
         <x-collapsible :calendar="$calendar" contains="Months" step="3" icon="fa-calendar-alt" polished></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Leap Days" icon="fa-calendar-day" done></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Leap Days" icon="fa-calendar-day" polished></x-collapsible>
 
         <x-collapsible :calendar="$calendar" contains="Eras" icon="fa-infinity" done></x-collapsible>
 

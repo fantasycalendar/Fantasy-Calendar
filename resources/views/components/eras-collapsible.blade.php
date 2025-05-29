@@ -71,8 +71,8 @@
                         Show as event
                     </x-alpine.check-input>
 
-                    {{-- TODO: Stop this from using jquery --}}
-                    <div class='btn btn-outline-primary w-full era_description html_edit' x-show='era.settings.show_as_event'>
+                    {{-- TODO: Make the HTML editor .~=^=~.pretty.~=^=~. --}}
+                    <div class='btn btn-outline-primary w-full' @click="$dispatch('html-editor-modal-edit-html', { era_id: index })" x-show='era.settings.show_as_event'>
                         Edit event description
                     </div>
 

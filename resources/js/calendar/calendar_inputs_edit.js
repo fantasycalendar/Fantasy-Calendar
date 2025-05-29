@@ -7,14 +7,9 @@ import {
     create_calendar,
 } from "./calendar_ajax_functions";
 import {
-    escapeHtml,
     unescapeHtml,
     debounce,
-    ordinal_suffix_of,
-    get_current_era,
     convert_year,
-    unconvert_year,
-    get_timespans_in_year,
     does_timespan_appear,
     clone,
     evaluate_calendar_start,
@@ -27,8 +22,6 @@ import {
     update_preview_calendar,
     update_current_day,
     evaluate_settings,
-    repopulate_timespan_select,
-    repopulate_day_select,
 } from "./calendar_inputs_visitor";
 import { set_up_view_values } from "./calendar_inputs_view";
 import { pre_rebuild_calendar, rebuild_calendar, rebuild_climate } from "./calendar_manager";
@@ -41,9 +34,6 @@ let log_in_button = null;
 let create_button = null;
 let calendar_container = null;
 let weather_container = null;
-
-let previous_view_type = 'owner';
-let view_type = 'owner';
 
 export function set_up_edit_inputs() {
 
@@ -138,7 +128,7 @@ export function set_up_edit_inputs() {
     weather_container = $('#weather_container');
 
     var previous_view_type = 'owner';
-    view_type = 'owner';
+    var view_type = 'owner';
 
     $('.view-tabs .btn').click(function() {
 
@@ -208,10 +198,6 @@ export function set_up_edit_inputs() {
 
         }
 
-        // if(isMobile() && deviceType() == "Mobile Phone") {
-        //     toggle_sidebar();
-        // }
-
     });
 
     /* ------------------- Dynamic and static callbacks ------------------- */
@@ -221,41 +207,11 @@ export function set_up_edit_inputs() {
         do_error_check();
     });
 
-    // $('#enable_clock').change(function() {
-	//
-    //     window.static_data.clock.enabled = $(this).is(':checked');
-    //     window.static_data.clock.render = $(this).is(':checked');
-    //     $('#render_clock').prop('checked', window.static_data.clock.render);
-	//
-    //     window.dynamic_data.hour = 0;
-    //     window.dynamic_data.minute = 0;
-	//
-    //     evaluate_clock_inputs();
-	//
-    //     eval_clock();
-	//
-    //     window.dispatchEvent(new CustomEvent("clock-changed", { detail: { enabled: window.static_data.clock.enabled } }));
-	//
-    // });
-
-    // $('#collapsible_clock').change(function() {
-    //     if ($(this).is(':checked')) {
-    //         $('#clock').appendTo($(this).parent().children('.collapsible-content'));
-    //     } else {
-    //         $('#clock').prependTo($('#collapsible_date').parent().children('.collapsible-content'));
-    //     }
-    // });
-
     /* ------------------- Layout callbacks ------------------- */
 
     $(document).on('click', '.location_toggle', function() {
         var checked = $(this).is(':checked');
         $(this).parent().find('.icon').toggleClass('fa-caret-square-up', checked).toggleClass('fa-caret-square-down', !checked);
-    });
-
-    $(document).on('click', '.html_edit', function() {
-        let era_id = $(this).closest('.sortable-container').attr('index') | 0;
-        window.dispatchEvent(new CustomEvent('html-editor-modal-edit-html', { detail: { era_id: era_id } }));
     });
 
     /* ------------------- Custom callbacks ------------------- */
