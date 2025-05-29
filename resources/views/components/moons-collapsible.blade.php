@@ -114,8 +114,8 @@
                     <div>Moon color:</div>
                     <div>Shadow color:</div>
 
-                    <input type='color' class="w-full" x-model.lazy='moon.color'/>
-                    <input type='color' class="w-full" x-model.lazy='moon.shadow_color'/>
+                    <input type='color' class="w-full rounded-sm bg-transparent h-[32px]" x-model.lazy='moon.color'/>
+                    <input type='color' class="w-full rounded-sm bg-transparent h-[32px]" x-model.lazy='moon.shadow_color'/>
                 </div>
 
                 <x-alpine.check-input id="`${index}_hidden_moon`" x-model='moon.hidden'>
