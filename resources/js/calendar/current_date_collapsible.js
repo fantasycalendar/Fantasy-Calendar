@@ -69,7 +69,6 @@ class CurrentDateCollapsible extends CollapsibleComponent {
     }
 
     get current_month_days() {
-        console.log(this.$store.calendar.get_days_in_timespan_in_year_as_select_options(this.current_year, this.current_month));
         return this.$store.calendar.get_days_in_timespan_in_year_as_select_options(this.current_year, this.current_month);
     }
 

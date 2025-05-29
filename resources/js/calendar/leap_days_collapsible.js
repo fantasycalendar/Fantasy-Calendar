@@ -42,6 +42,7 @@ class LeapDaysCollapsible extends CollapsibleComponent {
 
     loaded() {
         this.sanitizeLeapDayIntervals();
+        this.ensureWeekdayNamesHaveValues();
     }
 
     reorderSortable(start, end) {
@@ -50,13 +51,15 @@ class LeapDaysCollapsible extends CollapsibleComponent {
     }
 
     addLeapDay() {
+        let new_name = this.name || `New ${this.type ? this.type + " " : ''}leap day`;
+
         this.leap_days.push({
-            'name': this.name || `New ${this.type ? this.type + " " : ''}leap day`,
+            'name': new_name,
             'intercalary': this.type === 'intercalary',
             'timespan': 0,
             'adds_week_day': false,
             'day': 0,
-            'week_day': '',
+            'week_day': new_name + " week day",
             'interval': '1',
             'offset': 0,
             'not_numbered': false,
@@ -237,6 +240,12 @@ class LeapDaysCollapsible extends CollapsibleComponent {
         }
 
         return text;
+    }
+
+    ensureWeekdayNamesHaveValues() {
+        for (let [index, leapDay] of this.leap_days.entries()) {
+            leapDay.week_day = leapDay.week_day || leapDay.name + " week day";
+        }
     }
 }
 

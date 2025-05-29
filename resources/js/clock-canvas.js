@@ -133,15 +133,15 @@ class ClockCanvas {
 	}
 
 	get has_season_data() {
-		return this.current_epoch_data.season.time.sunrise;
+		return this.current_epoch_data?.season.time.sunrise;
 	}
 
 	get sunrise() {
-		return this.current_epoch_data.season.time.sunrise.data;
+		return this.current_epoch_data?.season.time.sunrise.data;
 	}
 
 	get sunset() {
-		return this.current_epoch_data.season.time.sunset.data;
+		return this.current_epoch_data?.season.time.sunset.data;
 	}
 
 	get sunrise_degree() {
