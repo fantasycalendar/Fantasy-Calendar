@@ -413,13 +413,15 @@ export function get_current_era(static_data, epoch) {
 
 export class date_manager {
 
-    constructor(year, timespan, day) {
+    constructor(static_data, year, timespan, day) {
 
-        if (typeof window.static_data.settings === 'undefined') {
-            console.log(window.static_data);
+        this.static_data = static_data;
+
+        if (typeof this.static_data.settings === 'undefined') {
+            console.log(this.static_data);
         }
 
-        this._year = convert_year(window.static_data, year);
+        this._year = convert_year(this.static_data, year);
 
         this._timespan = timespan;
         this._day = day;
@@ -428,35 +430,42 @@ export class date_manager {
         this._max_timespan = false;
         this._max_day = false;
 
-        this.timespans_in_year = get_timespans_in_year(window.static_data, this.year, true);
+        this.timespans_in_year = get_timespans_in_year(this.static_data, this.year, true);
 
     }
 
-    compare(data) {
+    readjust(static_data, data) {
 
-        var rebuild = data.year != this.adjusted_year || (window.static_data.settings.show_current_month && data.timespan != this.timespan);
+        this.static_data = static_data;
+
+        this._day = data.day;
+        this._timespan = data.timespan;
+        this._year = convert_year(this.static_data, data.year);
+
+        this.cap_day();
+        this.cap_timespan();
 
         return {
             year: this.adjusted_year,
             timespan: this.timespan,
             day: this.day,
             epoch: this.epoch,
-            rebuild: rebuild
+            rebuild: (data.year !== this.adjusted_year || (this.static_data.settings.show_current_month && data.timespan !== this.timespan))
         }
     }
 
     get epoch() {
-        return evaluate_calendar_start(window.static_data, this.year, this.timespan, this.day).epoch;
+        return evaluate_calendar_start(this.static_data, this.year, this.timespan, this.day).epoch;
     }
 
     get adjusted_year() {
 
-        return unconvert_year(window.static_data, this.year);
+        return unconvert_year(this.static_data, this.year);
 
     }
 
     set max_year(year) {
-        this._max_year = convert_year(window.static_data, year);
+        this._max_year = convert_year(this.static_data, year);
     }
 
     get max_year() {
@@ -517,7 +526,7 @@ export class date_manager {
     get last_valid_year() {
 
         if (this.max_year) {
-            return unconvert_year(window.static_data, this.max_year);
+            return unconvert_year(this.static_data, this.max_year);
         } else {
             return false;
         }
@@ -554,9 +563,9 @@ export class date_manager {
 
         if (this.year == year || !this.check_max_year(year)) return;
 
-        if (get_timespans_in_year(window.static_data, year, false).length != 0) {
+        if (get_timespans_in_year(this.static_data, year, false).length != 0) {
             this._year = year;
-            this.timespans_in_year = get_timespans_in_year(window.static_data, this.year, true);
+            this.timespans_in_year = get_timespans_in_year(this.static_data, this.year, true);
             this.cap_timespan();
         } else {
             if (year < this.year) {
@@ -646,7 +655,7 @@ export class date_manager {
     }
 
     get num_days() {
-        return get_days_in_timespan(window.static_data, this.year, this.timespan).length;
+        return get_days_in_timespan(this.static_data, this.year, this.timespan).length;
     }
 
     get day() {

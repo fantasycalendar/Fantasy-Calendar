@@ -149,14 +149,14 @@ export default (calendar_structure) => ({
 
     check_update(rebuild) {
 
-        let data = window.dynamic_date_manager.compare(window.dynamic_data);
+        let data = window.dynamic_date_manager.readjust(window.static_data, window.dynamic_data);
 
-        window.dynamic_date_manager = new date_manager(window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
+        window.dynamic_date_manager = new date_manager(window.static_data, window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
 
         if (window.preview_date.follow) {
             window.preview_date = _.cloneDeep(window.dynamic_data);
             window.preview_date.follow = true;
-            window.preview_date_manager = new date_manager(window.preview_date.year, window.preview_date.timespan, window.preview_date.day);
+            window.preview_date_manager = new date_manager(window.static_data, window.preview_date.year, window.preview_date.timespan, window.preview_date.day);
         }
 
         window.current_year.val(window.dynamic_data.year);

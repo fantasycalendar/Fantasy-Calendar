@@ -77,8 +77,8 @@
                 delete-function="removeMonth(index)"
                 >
                 <x-slot:inputs>
-                    <input x-model="month.name" type='text' class='flex-grow-1 w-auto form-control pr-0' placeholder='Month name'/>
-                    <input x-model="month.length" type='number' min='1' class='flex-shrink-1 form-control'/>
+                    <input x-model.lazy="month.name" type='text' class='flex-grow-1 w-auto form-control pr-0' placeholder='Month name'/>
+                    <input x-model.lazy.number="month.length" type='number' min='1' class='flex-shrink-1 form-control'/>
                 </x-slot:inputs>
 
                 <div x-text="'Intercalary: ' + (month.type === 'month' ? 'No' : 'Yes')"></div>

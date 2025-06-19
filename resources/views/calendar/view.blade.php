@@ -160,14 +160,14 @@
 
         function check_update(rebuild){
 
-            var data = window.dynamic_date_manager.compare(dynamic_data);
+            var data = window.dynamic_date_manager.readjust(window.static_data, dynamic_data);
 
-            window.dynamic_date_manager = new date_manager(dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
+            window.dynamic_date_manager = new date_manager(window.static_data, dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 
             if(preview_date.follow){
                 preview_date = clone(dynamic_data);
                 preview_date.follow = true;
-                window.preview_date_manager = new date_manager(preview_date.year, preview_date.timespan, preview_date.day);
+                window.preview_date_manager = new date_manager(window.static_data, preview_date.year, preview_date.timespan, preview_date.day);
             }
 
             window.current_year.val(dynamic_data.year);

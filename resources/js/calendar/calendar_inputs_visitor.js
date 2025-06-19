@@ -261,7 +261,7 @@ export function refresh_preview_inputs() {
 
 export function update_preview_calendar() {
 
-    window.preview_date_manager = new date_manager(target_year.val() | 0, target_timespan.val() | 0, target_day.val() | 0);
+    window.preview_date_manager = new date_manager(window.static_data, target_year.val() | 0, target_timespan.val() | 0, target_day.val() | 0);
 
     preview_date.year = window.preview_date_manager.adjusted_year;
     preview_date.timespan = window.preview_date_manager.timespan;
@@ -283,7 +283,7 @@ export function set_preview_date(year, timespan, day, epoch) {
 export function go_to_preview_date(rebuild) {
     preview_date.follow = false;
 
-    var data = window.preview_date_manager.compare(preview_date);
+    var data = window.preview_date_manager.readjust(window.static_data, preview_date);
 
     preview_date.year = data.year;
     preview_date.timespan = data.timespan;
@@ -367,7 +367,7 @@ export function go_to_dynamic_date(rebuild) {
 
     evaluate_preview_change();
 
-    var data = window.dynamic_date_manager.compare(preview_date)
+    var data = window.dynamic_date_manager.readjust(window.static_data, preview_date)
 
     preview_date.year = data.year;
     preview_date.timespan = data.timespan;
@@ -658,7 +658,7 @@ export function set_up_visitor_values() {
     $('.reset_preview_date_container.right .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
     $('.reset_preview_date_container.left .reset_preview_date').prop("disabled", preview_date.follow).toggleClass('hidden', preview_date.follow);
 
-    window.preview_date_manager = new date_manager(window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
+    window.preview_date_manager = new date_manager(window.static_data, window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
 
 
     target_year.val(window.preview_date_manager.adjusted_year);

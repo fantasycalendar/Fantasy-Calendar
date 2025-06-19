@@ -73,7 +73,7 @@ class CurrentDateCollapsible extends CollapsibleComponent {
     }
 
     decrement_current_day() {
-        this.$store.calendar.subtract_day();
+        this.$store.calendar.decrement_current_day();
     };
 
     decrement_current_month() {

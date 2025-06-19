@@ -27,7 +27,20 @@ export default class Calendar {
             structureChanged = structureChanged || rerenderKeys.some(structuralKey => key.startsWith(structuralKey));
         }
 
+        console.log(structureChanged)
+
+        if(structureChanged) {
+            // TODO: Consider cap to month
+            let data = window.dynamic_date_manager.readjust(this.static_data, this.dynamic_data);
+            this.dynamic_data.year = data.year;
+            this.dynamic_data.timespan = data.timespan;
+            this.dynamic_data.day = data.day;
+            this.dynamic_data.epoch = data.epoch;
+            this.dynamic_data.current_era = get_current_era(this.static_data, data.epoch);
+        }
+
         if(this.preview_date.follow) {
+            // TODO: preview date is an imperfect term
             this.set_preview_date(this.dynamic_data.year, this.dynamic_data.timespan, this.dynamic_data.day);
         }
 
@@ -119,16 +132,14 @@ export default class Calendar {
 
     handleDateChanged(){
 
-        let data = window.dynamic_date_manager.compare(this.dynamic_data);
-
         window.dispatchEvent(new CustomEvent('calendar-updating', {
             detail: {
                 calendar: {
-                    "dynamic_data.year": data.year,
-                    "dynamic_data.timespan": data.timespan,
-                    "dynamic_data.day": data.day,
-                    "dynamic_data.epoch": data.epoch,
-                    "dynamic_data.current_era": get_current_era(this.static_data, data.epoch),
+                    "dynamic_data.year": window.dynamic_date_manager.adjusted_year,
+                    "dynamic_data.timespan": window.dynamic_date_manager.timespan,
+                    "dynamic_data.day": window.dynamic_date_manager.day,
+                    "dynamic_data.epoch": window.dynamic_date_manager.epoch,
+                    "dynamic_data.current_era": get_current_era(this.static_data, window.dynamic_date_manager.epoch),
                 }
             }
         }))

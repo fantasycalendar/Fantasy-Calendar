@@ -68,7 +68,7 @@ export function evaluate_dynamic_change() {
 
 
 export function set_up_view_values() {
-    window.dynamic_date_manager = new date_manager(window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
+    window.dynamic_date_manager = new date_manager(window.static_data, window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
 
     // evaluate_clock_inputs();
 
