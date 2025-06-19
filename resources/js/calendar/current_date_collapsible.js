@@ -76,8 +76,8 @@ class CurrentDateCollapsible extends CollapsibleComponent {
         this.$store.calendar.subtract_day();
     };
 
-    decrement_current_timespan() {
-        this.$store.calendar.decrement_current_timespan();
+    decrement_current_month() {
+        this.$store.calendar.decrement_current_month();
     };
 
     decrement_current_year() {
@@ -88,8 +88,8 @@ class CurrentDateCollapsible extends CollapsibleComponent {
         this.$store.calendar.increment_current_day();
     };
 
-    increment_current_timespan() {
-        this.$store.calendar.increment_current_timespan();
+    increment_current_month() {
+        this.$store.calendar.increment_current_month();
     };
 
     increment_current_year() {

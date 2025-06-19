@@ -3,7 +3,7 @@ import {
     avg_month_length,
     avg_year_length, convert_year, does_day_appear,
     does_timespan_appear,
-    evaluate_calendar_start, get_days_in_timespan, get_timespans_in_year
+    evaluate_calendar_start, get_current_era, get_days_in_timespan, get_timespans_in_year
 } from "./calendar/calendar_functions.js";
 
 export default class Calendar {
@@ -16,6 +16,7 @@ export default class Calendar {
             "static_data.seasons",
             "static_data.moons",
             "event_categories",
+            "dynamic_data.year",
         ];
         let structureChanged = false;
 
@@ -24,6 +25,10 @@ export default class Calendar {
 
             console.log(key);
             structureChanged = structureChanged || rerenderKeys.some(structuralKey => key.startsWith(structuralKey));
+        }
+
+        if(this.preview_date.follow) {
+            this.set_preview_date(this.dynamic_data.year, this.dynamic_data.timespan, this.dynamic_data.day);
         }
 
         // First of many rules, I'm sure.
@@ -76,45 +81,59 @@ export default class Calendar {
         window.set_preview_date(year, timespan, day);
     }
 
-    decrement_current_timespan() {
-        if (window.preview_date_manager.timespan == window.dynamic_date_manager.timespan) {
-            window.preview_date_manager.subtract_timespan();
-        }
-
+    decrement_current_month() {
         window.dynamic_date_manager.subtract_timespan();
 
-        evaluate_dynamic_change();
+        this.handleDateChanged();
     };
 
     decrement_current_year() {
         window.dynamic_date_manager.subtract_year();
 
-        evaluate_dynamic_change();
+        this.handleDateChanged();
     };
 
     decrement_current_day() {
         window.dynamic_date_manager.subtract_day();
 
-        evaluate_dynamic_change();
+        this.handleDateChanged();
     }
 
     increment_current_day() {
         window.dynamic_date_manager.add_day();
 
-        evaluate_dynamic_change();
+        this.handleDateChanged();
     };
 
-    increment_current_timespan() {
+    increment_current_month() {
         window.dynamic_date_manager.add_timespan();
 
-        evaluate_dynamic_change();
+        this.handleDateChanged();
     };
 
     increment_current_year() {
         window.dynamic_date_manager.add_year();
 
-        evaluate_dynamic_change();
+        this.handleDateChanged();
     };
+
+    handleDateChanged(){
+
+        let data = window.dynamic_date_manager.compare(this.dynamic_data);
+
+        window.dispatchEvent(new CustomEvent('calendar-updating', {
+            detail: {
+                calendar: {
+                    "dynamic_data.year": data.year,
+                    "dynamic_data.timespan": data.timespan,
+                    "dynamic_data.day": data.day,
+                    "dynamic_data.epoch": data.epoch,
+                    "dynamic_data.current_era": get_current_era(this.static_data, data.epoch),
+                }
+            }
+        }))
+
+    }
 
     // Helpers
     api_url(urlstring = "") {

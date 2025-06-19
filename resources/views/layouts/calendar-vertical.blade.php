@@ -47,7 +47,8 @@
                                 window.dynamic_date_manager.day = epoch_data.day;
                                 window.dynamic_date_manager.epoch = epoch_data.epoch;
 
-                                window.evaluate_dynamic_change();
+                                // TODO: remove this and place into calendar
+                                // window.evaluate_dynamic_change();
                             },
                             disabled: function() {
                                 return day.epoch == window.dynamic_data.epoch || !Perms.player_at_least('co-owner');

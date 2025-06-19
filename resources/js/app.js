@@ -192,9 +192,8 @@ window.repopulate_day_select = repopulate_day_select;
 window.copy_link = copy_link;
 window.set_preview_date = set_preview_date;
 
-import { set_up_view_values, evaluate_dynamic_change } from './calendar/calendar_inputs_view.js';
+import { set_up_view_values } from './calendar/calendar_inputs_view.js';
 window.set_up_view_values = set_up_view_values;
-window.evaluate_dynamic_change = evaluate_dynamic_change;
 
 import {
     set_up_edit_inputs,

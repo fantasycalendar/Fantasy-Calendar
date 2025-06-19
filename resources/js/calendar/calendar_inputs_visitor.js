@@ -1,6 +1,4 @@
-// import CalendarClock from '../clock.js';
 import $ from 'jquery';
-import { submit_hide_show_event } from "./calendar_ajax_functions";
 import {
     get_calendar_data,
     debounce,
@@ -11,8 +9,7 @@ import {
     does_timespan_appear,
     evaluate_calendar_start,
 } from "./calendar_functions";
-import { day_data_tooltip } from "./calendar_day_data_layout";
-import { evaluate_dynamic_change, set_up_view_values } from "./calendar_inputs_view";
+import { set_up_view_values } from "./calendar_inputs_view";
 import { rebuild_calendar } from "./calendar_manager";
 
 export function copy_link(epoch_data) {
@@ -44,28 +41,8 @@ export function copy_link(epoch_data) {
 
 }
 
-function context_open_day_data(key, opt) {
-
-    var day_element = $(opt.$trigger[0]);
-    var epoch = day_element.attr('epoch') | 0;
-    var epoch_data = window.evaluated_static_data.epoch_data[epoch];
-    day_data_tooltip.show(day_element, epoch_data);
-
-}
 
 export function set_up_visitor_inputs() {
-
-    document.addEventListener('keydown', function(event) {
-        if (event.code === 'AltLeft') {
-            window.altPressed = true;
-        }
-    });
-
-    document.addEventListener('keyup', function(event) {
-        if (event.code === 'AltLeft') {
-            window.altPressed = false;
-        }
-    });
 
     $('#calendar_container').scroll(function(event) {
         if ($('#top_follower').height() < $(this).scrollTop()) {
@@ -75,77 +52,6 @@ export function set_up_visitor_inputs() {
         }
     });
 
-
-    var items = {};
-
-
-
-    // $.contextMenu({
-    //     selector: ".timespan_day:not(.empty_timespan_day)",
-    //     items: items,
-    //     zIndex: 1501,
-    //     events: {
-    //         preShow: function(event) {
-    //             return !window.altPressed;
-    //         }
-    //     },
-    //     build: function($trigger, e) {
-
-    //         if (static_data.settings.layout == "minimalistic") {
-
-    //             delete items.view_events['items'];
-
-    //             let epoch = $($trigger[0]).attr('epoch') | 0;
-    //             let found_events = CalendarRenderer.render_data.event_epochs[epoch].events;
-
-    //             items.view_events.visible = function() { return found_events.length > 0 };
-    //             items.view_events.disabled = found_events.length == 0;
-
-    //             if (found_events.length > 1) {
-
-    //                 items.view_events.name = "View events on this date";
-    //                 let sub_items = {};
-    //                 for (var i = 0; i < found_events.length; i++) {
-    //                     let event_id = found_events[i].index;
-    //                     let event_name = sanitizeHtml(found_events[i].name);
-    //                     let era_event = found_events[i].era;
-    //                     sub_items[event_id] = {
-    //                         name: event_name,
-    //                         id: event_id,
-    //                         callback: function(key, opt) {
-    //                             window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: event_id, era: era_event, epoch: epoch } }));
-    //                         }
-    //                     }
-    //                 }
-    //                 items.view_events['items'] = sub_items;
-
-    //             } else if (found_events.length == 1) {
-
-    //                 items.view_events.name = sanitizeHtml(`View event "${events[found_events[0].index].name}"`)
-
-    //             }
-
-    //         } else {
-    //             items.view_events.disabled = true;
-    //             items.view_events.visible = function() { return false };
-    //         }
-
-    //         let show_menu = false;
-    //         for (var i in items) {
-    //             if (items[i].visible()) {
-    //                 show_menu = true
-    //             }
-    //         }
-
-    //         if (!show_menu) {
-    //             return false;
-    //         }
-
-    //         return {
-    //             items: items
-    //         };
-    //     }
-    // });
 
     window.target_year = $('#target_year');
     window.target_timespan = $('#target_timespan');
