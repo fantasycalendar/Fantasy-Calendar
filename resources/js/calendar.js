@@ -99,6 +99,38 @@ export default class Calendar {
         window.set_preview_date(year, timespan, day);
     }
 
+    set_current_minute(minute) {
+        this.changeDate({
+            minute: Math.max(0, Math.min(minute, this.static_data.clock.minutes-1))
+        });
+    }
+
+    set_current_hour(hour) {
+        this.changeDate({
+            hour: Math.max(0, Math.min(hour, this.static_data.clock.hours-1))
+        });
+    }
+
+    set_current_month(month) {
+        this.changeDate({ month });
+    }
+
+    set_current_day(day) {
+        this.changeDate({ day });
+    }
+
+    set_current_year(year){
+        this.changeDate({ year });
+    }
+
+    decrement_current_minute(){
+        this.changeDate({ minute: this.dynamic_data.minute - 30 });
+    };
+
+    decrement_current_hour(){
+        this.changeDate({ hour: this.dynamic_data.hour - 1 });
+    };
+
     decrement_current_day() {
         this.changeDate({ day: this.dynamic_data.day - 1 });
     };
@@ -109,6 +141,14 @@ export default class Calendar {
 
     decrement_current_year() {
         this.changeDate({ year: this.dynamic_data.year - 1 });
+    };
+
+    increment_current_minute(){
+        this.changeDate({ minute: this.dynamic_data.minute + 30 });
+    };
+
+    increment_current_hour(){
+        this.changeDate({ hour: this.dynamic_data.hour + 1 });
     };
 
     increment_current_day() {
@@ -126,14 +166,35 @@ export default class Calendar {
     changeDate({
         year = this.dynamic_data.year,
         month = this.dynamic_data.timespan,
-        day = this.dynamic_data.day
+        day = this.dynamic_data.day,
+        hour = this.dynamic_data.hour,
+        minute = this.dynamic_data.minute,
     }={}){
+
+        if(minute >= this.static_data.clock.minutes){
+            hour += 1;
+            minute = minute - this.static_data.clock.minutes;
+        } else if (minute < 0) {
+            hour -= 1;
+            minute = this.static_data.clock.minutes + minute;
+        }
+
+        if(hour >= this.static_data.clock.hours){
+            day += 1;
+            hour = hour - this.static_data.clock.hours;
+        } else if (hour < 0) {
+            day -= 1;
+            hour = this.static_data.clock.hours + hour;
+        }
 
         const newDynamicData = date_manager.reconcileDateChange(
             this.static_data,
             this.dynamic_data,
             { year, timespan: month, day }
         )
+
+        newDynamicData.hour = hour;
+        newDynamicData.minute = minute;
 
         window.dispatchEvent(new CustomEvent('calendar-updating', {
             detail: {
