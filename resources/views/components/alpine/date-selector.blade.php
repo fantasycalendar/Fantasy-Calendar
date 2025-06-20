@@ -29,7 +29,7 @@
     <div>
         <div class='row my-2'>
             <div class='col'>
-                <input type='number' step="1.0" class='form-control small-input' x-model="year" {{ $attributes->whereStartsWith(':disabled') }}>
+                <input type='number' step="1.0" class='form-control small-input' x-model.lazy.number="year" {{ $attributes->whereStartsWith(':disabled') }}>
             </div>
         </div>
 
