@@ -87,7 +87,7 @@ export default class Calendar {
 
     does_day_appear(year, timespan, day) {
         // TODO: Replace this with something a bit more holistic?
-        return does_day_appear(this.static_data, convert_year(this.static_data, year), timespan);
+        return does_day_appear(this.static_data, convert_year(this.static_data, year), timespan, day);
     }
 
     set_preview_date(year, timespan, day) {
