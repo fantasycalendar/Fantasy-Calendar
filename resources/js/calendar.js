@@ -1,7 +1,7 @@
 // TODO: ABSOLUTELY rewrite this
 import {
     avg_month_length,
-    avg_year_length, convert_year, does_day_appear,
+    avg_year_length, convert_year, date_manager, does_day_appear,
     does_timespan_appear,
     evaluate_calendar_start, get_current_era, get_days_in_timespan, get_timespans_in_year
 } from "./calendar/calendar_functions.js";
@@ -16,27 +16,32 @@ export default class Calendar {
             "static_data.seasons",
             "static_data.moons",
             "event_categories",
-            "dynamic_data.year",
         ];
         let structureChanged = false;
+        let dateChanged = false;
 
         for (const [key, value] of Object.entries(incomingChanges)) {
             _.set(this, key, _.cloneDeep(value));
 
             console.log(key);
             structureChanged = structureChanged || rerenderKeys.some(structuralKey => key.startsWith(structuralKey));
+            dateChanged = dateChanged || key.startsWith("dynamic_data");
         }
 
-        console.log(structureChanged)
+        let data = window.dynamic_date_manager.reconcileCalendarChange(this.static_data, this.dynamic_data);
+        this.dynamic_data.year = data.year;
+        this.dynamic_data.timespan = data.timespan;
+        this.dynamic_data.day = data.day;
+        this.dynamic_data.epoch = data.epoch;
+        this.dynamic_data.current_era = get_current_era(this.static_data, data.epoch);
 
-        if(structureChanged) {
-            // TODO: Consider cap to month
-            let data = window.dynamic_date_manager.readjust(this.static_data, this.dynamic_data);
-            this.dynamic_data.year = data.year;
-            this.dynamic_data.timespan = data.timespan;
-            this.dynamic_data.day = data.day;
-            this.dynamic_data.epoch = data.epoch;
-            this.dynamic_data.current_era = get_current_era(this.static_data, data.epoch);
+        structureChanged = structureChanged || data.rebuild;
+
+        if(this.preview_date.follow) {
+            this.preview_date.year = data.year;
+            this.preview_date.timespan = data.timespan;
+            this.preview_date.day = data.day;
+            this.preview_date.epoch = data.epoch;
         }
 
         if(this.preview_date.follow) {
@@ -49,7 +54,7 @@ export default class Calendar {
             && !this.static_data.year_data.leap_days.some(leapDay => leapDay.adds_week_day)
             && !this.static_data.year_data.timespans.some(month => month?.week?.length);
 
-        return structureChanged;
+        return [structureChanged, dateChanged];
     }
 
     // "Broker" methods
@@ -94,56 +99,49 @@ export default class Calendar {
         window.set_preview_date(year, timespan, day);
     }
 
-    decrement_current_month() {
-        window.dynamic_date_manager.subtract_timespan();
+    decrement_current_day() {
+        this.changeDate({ day: this.dynamic_data.day - 1 });
+    };
 
-        this.handleDateChanged();
+    decrement_current_month() {
+        this.changeDate({ month: this.dynamic_data.timespan - 1 });
     };
 
     decrement_current_year() {
-        window.dynamic_date_manager.subtract_year();
-
-        this.handleDateChanged();
+        this.changeDate({ year: this.dynamic_data.year - 1 });
     };
 
-    decrement_current_day() {
-        window.dynamic_date_manager.subtract_day();
-
-        this.handleDateChanged();
-    }
-
     increment_current_day() {
-        window.dynamic_date_manager.add_day();
-
-        this.handleDateChanged();
+        this.changeDate({ day: this.dynamic_data.day + 1 });
     };
 
     increment_current_month() {
-        window.dynamic_date_manager.add_timespan();
-
-        this.handleDateChanged();
+        this.changeDate({ month: this.dynamic_data.timespan + 1 });
     };
 
     increment_current_year() {
-        window.dynamic_date_manager.add_year();
-
-        this.handleDateChanged();
+        this.changeDate({ year: this.dynamic_data.year + 1 });
     };
 
-    handleDateChanged(){
+    changeDate({
+        year = this.dynamic_data.year,
+        month = this.dynamic_data.timespan,
+        day = this.dynamic_data.day
+    }={}){
+
+        const newDynamicData = date_manager.reconcileDateChange(
+            this.static_data,
+            this.dynamic_data,
+            { year, timespan: month, day }
+        )
 
         window.dispatchEvent(new CustomEvent('calendar-updating', {
             detail: {
                 calendar: {
-                    "dynamic_data.year": window.dynamic_date_manager.adjusted_year,
-                    "dynamic_data.timespan": window.dynamic_date_manager.timespan,
-                    "dynamic_data.day": window.dynamic_date_manager.day,
-                    "dynamic_data.epoch": window.dynamic_date_manager.epoch,
-                    "dynamic_data.current_era": get_current_era(this.static_data, window.dynamic_date_manager.epoch),
+                    dynamic_data: newDynamicData
                 }
             }
         }))
-
     }
 
     // Helpers

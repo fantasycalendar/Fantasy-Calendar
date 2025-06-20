@@ -160,7 +160,7 @@
 
         function check_update(rebuild){
 
-            var data = window.dynamic_date_manager.readjust(window.static_data, dynamic_data);
+            var data = window.dynamic_date_manager.reconcileCalendarChange(window.static_data, dynamic_data);
 
             window.dynamic_date_manager = new date_manager(window.static_data, dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
 

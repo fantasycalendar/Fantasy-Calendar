@@ -30,6 +30,8 @@ class CurrentDateCollapsible extends CollapsibleComponent {
         'current_date': "dynamic_data",
     };
 
+    activeDateAdjustment = "current";
+
     // Commented for now.
     //  In short: We tell the calendar to update its values,
     //  and then let those waterfall back down.
@@ -40,25 +42,25 @@ class CurrentDateCollapsible extends CollapsibleComponent {
     //     'current_date': "dynamic_data",
     // }
 
-    set current_year(value) {
-        this.$store.calendar.set_current_year(value);
+    set_current_year(year){
+        this.$store.calendar.changeDate({ year });
+    }
+
+    set_current_month(month) {
+        this.$store.calendar.changeDate({ month });
     };
+
+    set_current_day(day) {
+        this.$store.calendar.changeDate({ day });
+    }
 
     get current_year() {
         return this.current_date.year;
     };
 
-    set current_month(value) {
-        this.$store.calendar.set_current_month(value);
-    };
-
     get current_month() {
         return this.current_date.timespan;
     };
-
-    set current_day(value) {
-        this.$store.calendar.set_current_day(value);
-    }
 
     get current_day() {
         return this.current_date.day;

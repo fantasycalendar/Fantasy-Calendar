@@ -149,7 +149,7 @@ export default (calendar_structure) => ({
 
     check_update(rebuild) {
 
-        let data = window.dynamic_date_manager.readjust(window.static_data, window.dynamic_data);
+        let data = window.dynamic_date_manager.reconcileCalendarChange(window.static_data, window.dynamic_data);
 
         window.dynamic_date_manager = new date_manager(window.static_data, window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
 
@@ -158,12 +158,6 @@ export default (calendar_structure) => ({
             window.preview_date.follow = true;
             window.preview_date_manager = new date_manager(window.static_data, window.preview_date.year, window.preview_date.timespan, window.preview_date.day);
         }
-
-        window.current_year.val(window.dynamic_data.year);
-
-        repopulate_timespan_select(window.current_timespan, window.dynamic_data.timespan, false);
-
-        repopulate_day_select(window.current_day, window.dynamic_data.day, false);
 
         display_preview_back_button();
 
@@ -180,13 +174,16 @@ export default (calendar_structure) => ({
 
     updateCalendar($event) {
         let structureChanged = false;
+        let dateChanged = false;
 
         if ($event.detail.calendar) {
-            structureChanged = this.$store.calendar.update($event.detail.calendar);
+            [structureChanged, dateChanged] = this.$store.calendar.update($event.detail.calendar);
         }
 
         if (structureChanged) {
             do_error_check("calendar", $event.detail.rerender);
+        }else if (dateChanged) {
+            update_current_day();
         }
 
         this.$dispatch('calendar-updated');

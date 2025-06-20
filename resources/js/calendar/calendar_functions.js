@@ -434,9 +434,23 @@ export class date_manager {
 
     }
 
-    readjust(static_data, data) {
+    static reconcileDateChange(static_data, current_date, target_date) {
+        const manager = new this(static_data, current_date.year, current_date.timespan, current_date.day);
+        manager.year = convert_year(static_data, target_date.year);
+        manager.timespan = target_date.timespan;
+        manager.day = target_date.day;
+        return {
+            year: manager.adjusted_year,
+            timespan: manager.timespan,
+            day: manager.day
+        }
+    }
+
+    reconcileCalendarChange(static_data, data) {
 
         this.static_data = static_data;
+
+        const rebuild = (data.year !== this.adjusted_year || (this.static_data.settings.show_current_month && data.timespan !== this.timespan));
 
         this._day = data.day;
         this._timespan = data.timespan;
@@ -450,7 +464,7 @@ export class date_manager {
             timespan: this.timespan,
             day: this.day,
             epoch: this.epoch,
-            rebuild: (data.year !== this.adjusted_year || (this.static_data.settings.show_current_month && data.timespan !== this.timespan))
+            rebuild
         }
     }
 

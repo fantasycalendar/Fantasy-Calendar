@@ -33,7 +33,7 @@
                     <button type='button' class='btn btn-danger' @click="decrement_current_year"><i class="fa fa-minus"></i></button>
                 </div>
 
-                <input class='form-control' type='number' x-model.lazy.number="current_year">
+                <input class='form-control' type='number' :value="current_year" @change="set_current_year(Number($event.target.value))">
 
                 <div class='input-group-append'>
                     <button type='button' class='btn btn-success' @click="increment_current_year"><i class="fa fa-plus"></i></button>
@@ -45,7 +45,7 @@
                     <button type='button' class='btn btn-danger' @click="decrement_current_month"><i class="fa fa-minus"></i></button>
                 </div>
 
-                <select class='form-control' x-model.lazy.number="current_month">
+                <select class='form-control' @change="set_current_month(Number($event.target.value))">
                     <template x-for="(month, index) in current_year_months">
                         <option :value="index" x-text="month.name"
                                 :selected="index === current_month"></option>
@@ -62,7 +62,7 @@
                     <button type='button' class='btn btn-danger' @click="decrement_current_day"><i class="fa fa-minus"></i></button>
                 </div>
 
-                <select class='form-control' x-model.lazy.number="current_day">
+                <select class='form-control' @change="set_current_day(Number($event.target.value))">
                     <template
                         x-for="(day, index) in current_month_days">
                         <option :value="index+1" x-text="day"

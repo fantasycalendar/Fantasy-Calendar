@@ -283,7 +283,7 @@ export function set_preview_date(year, timespan, day, epoch) {
 export function go_to_preview_date(rebuild) {
     preview_date.follow = false;
 
-    var data = window.preview_date_manager.readjust(window.static_data, preview_date);
+    var data = window.preview_date_manager.reconcileCalendarChange(window.static_data, preview_date);
 
     preview_date.year = data.year;
     preview_date.timespan = data.timespan;
@@ -367,7 +367,7 @@ export function go_to_dynamic_date(rebuild) {
 
     evaluate_preview_change();
 
-    var data = window.dynamic_date_manager.readjust(window.static_data, preview_date)
+    var data = window.dynamic_date_manager.reconcileCalendarChange(window.static_data, preview_date)
 
     preview_date.year = data.year;
     preview_date.timespan = data.timespan;
