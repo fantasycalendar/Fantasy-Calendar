@@ -44,11 +44,6 @@ export default class Calendar {
             this.preview_date.epoch = data.epoch;
         }
 
-        if(this.preview_date.follow) {
-            // TODO: preview date is an imperfect term
-            this.set_preview_date(this.dynamic_data.year, this.dynamic_data.timespan, this.dynamic_data.day);
-        }
-
         // First of many rules, I'm sure.
         this.static_data.year_data.overflow = this.static_data.year_data.overflow
             && !this.static_data.year_data.leap_days.some(leapDay => leapDay.adds_week_day)
@@ -96,7 +91,28 @@ export default class Calendar {
     }
 
     set_preview_date(year, timespan, day) {
-        window.set_preview_date(year, timespan, day);
+        const current_date = this.preview_date.follow
+            ? this.dynamic_data
+            : this.preview_date;
+
+        const newPreviewDate = date_manager.reconcileDateChange(
+            this.static_data,
+            current_date,
+            {  year, timespan, day }
+        )
+
+        // TODO: rip out all of the preview date input shenanigans and reimplement into proper place
+
+        window.dispatchEvent(new CustomEvent('calendar-updating', {
+            detail: {
+                calendar: {
+                    preview_date: {
+                        follow: false,
+                        ...newPreviewDate
+                    }
+                }
+            }
+        }))
     }
 
     set_current_minute(minute) {
