@@ -95,37 +95,57 @@
 
 
     <div class='date_control preview_date_controls mt-3' :class="{ 'd-flex flex-column': activeDateAdjustment === 'preview', 'd-none': activeDateAdjustment !== 'preview' }">
-        <div class='input-group mt-2' value='target' data-pt-position='right' data-pt-title="The preview year">
+
+
+        <div class='input-group mt-2'>
             <div class='input-group-prepend'>
-                <button type='button' class='btn btn-danger sub_year' id='sub_target_year'><i class="fa fa-minus"></i></button>
+                <button type='button' class='btn btn-danger' @click="decrement_viewed_year"><i class="fa fa-minus"></i></button>
             </div>
-            <input class='form-control year-input' id='target_year' type='number'>
+
+            <input class='form-control' type='number' :value="viewed_year" @change="set_viewed_year(Number($event.target.value))">
+
             <div class='input-group-append'>
-                <button type='button' class='btn btn-success add_year' id='add_target_year'><i class="fa fa-plus"></i></button>
+                <button type='button' class='btn btn-success' @click="increment_viewed_year"><i class="fa fa-plus"></i></button>
             </div>
         </div>
 
-        <div class='input-group mt-2' value='target' data-pt-position='right' data-pt-title="The preview month of the preview year">
+        <div class='input-group mt-2'>
             <div class='input-group-prepend'>
-                <button type='button' class='btn btn-danger sub_timespan' id='sub_target_timespan'><i class="fa fa-minus"></i></button>
+                <button type='button' class='btn btn-danger' @click="decrement_viewed_month"><i class="fa fa-minus"></i></button>
             </div>
-            <select class='form-control timespan-list inclusive date' id='target_timespan'></select>
+
+            <select class='form-control' @change="set_viewed_month(Number($event.target.value))">
+                <template x-for="(month, index) in viewed_year_months">
+                    <option :value="index" x-text="month.name"
+                            :selected="index === viewed_month"></option>
+                </template>
+            </select>
+
             <div class='input-group-append'>
-                <button type='button' class='btn btn-success add_timespan' id='add_target_timespan'><i class="fa fa-plus"></i></button>
+                <button type='button' class='btn btn-success' @click="increment_viewed_month"><i class="fa fa-plus"></i></button>
             </div>
         </div>
 
-        <div class='input-group mt-2' value='target' data-pt-position='right' data-pt-title="The current day of the preview month">
+        <div class='input-group mt-2'>
             <div class='input-group-prepend'>
-                <button type='button' class='btn btn-danger sub_day' id='sub_target_day'><i class="fa fa-minus"></i></button>
+                <button type='button' class='btn btn-danger' @click="decrement_viewed_day"><i class="fa fa-minus"></i></button>
             </div>
-            <select class='form-control timespan-day-list inclusive date' id='target_day'></select>
+
+            <select class='form-control' @change="set_viewed_day(Number($event.target.value))">
+                <template
+                    x-for="(day, index) in viewed_month_days">
+                    <option :value="index+1" x-text="day"
+                            :selected="index+1 === viewed_day"></option>
+                </template>
+            </select>
+
             <div class='input-group-append'>
-                <button type='button' class='btn btn-success add_day' id='add_target_day'><i class="fa fa-plus"></i></button>
+                <button type='button' class='btn btn-success' @click="increment_viewed_day"><i class="fa fa-plus"></i></button>
             </div>
         </div>
 
-        <div class='btn btn-success full mt-2' id='go_to_preview_date'>Jump to preview date</div>
+        <div class='btn btn-success full mt-2' x-show="viewed_date.follow" @click="set_viewed_date_active(true)">View date</div>
+        <div class='btn btn-warning full mt-2' x-show="!viewed_date.follow" @click="set_viewed_date_active(false)">Reset</div>
     </div>
 
     <div class="mt-3" :class="{ 'd-flex flex-column': activeDateAdjustment === 'relative', 'd-none': activeDateAdjustment !== 'relative' }">

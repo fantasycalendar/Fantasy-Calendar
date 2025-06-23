@@ -126,7 +126,6 @@ export default (calendar_structure) => ({
                         window.dynamic_data = _.cloneDeep(result.dynamic_data);
 
                         this.check_update(false);
-                        evaluate_settings();
                         this.poll_timer = setTimeout(this.check_dates.bind(this), 5000);
 
                     });

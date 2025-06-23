@@ -19,13 +19,17 @@ export default class Calendar {
         ];
         let structureChanged = false;
         let dateChanged = false;
+        let previewDateChanged = false;
+
+        debugger;
 
         for (const [key, value] of Object.entries(incomingChanges)) {
-            _.set(this, key, _.cloneDeep(value));
-
-            console.log(key);
             structureChanged = structureChanged || rerenderKeys.some(structuralKey => key.startsWith(structuralKey));
             dateChanged = dateChanged || key.startsWith("dynamic_data");
+            previewDateChanged = previewDateChanged || key.startsWith("preview_date");
+
+            console.log(key);
+            _.set(this, key, _.cloneDeep(value));
         }
 
         let data = window.dynamic_date_manager.reconcileCalendarChange(this.static_data, this.dynamic_data);
@@ -37,12 +41,27 @@ export default class Calendar {
 
         structureChanged = structureChanged || data.rebuild;
 
-        if(this.preview_date.follow) {
+        // TODO: Preview date follow is janky as hell. Probably best handled in some other way?
+        console.log(incomingChanges, this.preview_date.follow, dateChanged)
+
+        if(this.preview_date.follow && (dateChanged || previewDateChanged)) {
             this.preview_date.year = data.year;
             this.preview_date.timespan = data.timespan;
             this.preview_date.day = data.day;
             this.preview_date.epoch = data.epoch;
+        }else if (!this.preview_date.follow) {
+            let preview_data = window.preview_date_manager.reconcileCalendarChange(this.static_data, this.preview_date);
+            this.preview_date.year = preview_data.year;
+            this.preview_date.timespan = preview_data.timespan;
+            this.preview_date.day = preview_data.day;
+            this.preview_date.epoch = preview_data.epoch;
+            this.preview_date.current_era = get_current_era(this.static_data, preview_data.epoch);
+            structureChanged = structureChanged || preview_data.rebuild;
         }
+
+        dateChanged = dateChanged || previewDateChanged;
+
+        console.log(structureChanged)
 
         // First of many rules, I'm sure.
         this.static_data.year_data.overflow = this.static_data.year_data.overflow
@@ -107,12 +126,41 @@ export default class Calendar {
             detail: {
                 calendar: {
                     preview_date: {
-                        follow: false,
+                        ...this.preview_date,
                         ...newPreviewDate
                     }
                 }
             }
         }))
+    }
+
+    set_viewed_date_active(active){
+        let date = this.preview_date;
+        if(!active){
+            date = this.dynamic_data;
+        }
+        window.dispatchEvent(new CustomEvent('calendar-updating', {
+            detail: {
+                calendar: {
+                    preview_date: {
+                        ...date,
+                        follow: !active
+                    }
+                }
+            }
+        }))
+    }
+
+    set_viewed_day(day) {
+        this.set_preview_date(this.preview_date.year, this.preview_date.timespan, day);
+    }
+
+    set_viewed_month(month) {
+        this.set_preview_date(this.preview_date.year, month, this.preview_date.day);
+    }
+
+    set_viewed_year(year){
+        this.set_preview_date(year, this.preview_date.timespan, this.preview_date.day);
     }
 
     set_current_minute(minute) {
@@ -127,12 +175,12 @@ export default class Calendar {
         });
     }
 
-    set_current_month(month) {
-        this.changeDate({ month });
-    }
-
     set_current_day(day) {
         this.changeDate({ day });
+    }
+
+    set_current_month(month) {
+        this.changeDate({ month });
     }
 
     set_current_year(year){
@@ -245,6 +293,10 @@ export default class Calendar {
 
     set dynamic_data(value) {
         window.dynamic_data = value;
+    }
+
+    set preview_date(value) {
+        window.preview_date = value;
     }
 
     set event_categories(value) {

@@ -2,12 +2,7 @@ import { precisionRound, fract, get_current_era, date_manager, convert_year } fr
 import { preset_data } from "./calendar_variables";
 import {
     set_up_visitor_inputs,
-    preview_date_follow,
-    evaluate_preview_change,
-    go_to_preview_date,
     update_current_day,
-    repopulate_timespan_select,
-    repopulate_day_select,
 } from "./calendar_inputs_visitor";
 
 import {

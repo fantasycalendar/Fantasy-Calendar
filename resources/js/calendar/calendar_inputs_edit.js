@@ -18,10 +18,7 @@ import {
 import { climate_charts } from "./calendar_weather_layout";
 import {
     set_up_visitor_values,
-    preview_date_follow,
-    update_preview_calendar,
     update_current_day,
-    evaluate_settings,
 } from "./calendar_inputs_visitor";
 import { set_up_view_values } from "./calendar_inputs_view";
 import { pre_rebuild_calendar, rebuild_calendar, rebuild_climate } from "./calendar_manager";
@@ -148,13 +145,10 @@ export function set_up_edit_inputs() {
                 Perms.owner = true;
                 if (creation.is_done() && errors.length == 0) {
                     if (previous_view_type !== 'owner') {
-                        evaluate_settings();
                         if (!window.preview_date.follow) {
-                            update_preview_calendar();
                             pre_rebuild_calendar('preview', window.preview_date);
                         } else {
                             pre_rebuild_calendar('calendar', window.dynamic_data);
-                            preview_date_follow();
                         }
                     }
                 }
@@ -169,13 +163,10 @@ export function set_up_edit_inputs() {
                 Perms.owner = false;
                 if (creation.is_done() && errors.length == 0) {
                     if (previous_view_type !== 'player') {
-                        evaluate_settings();
                         if (!window.preview_date.follow) {
-                            update_preview_calendar();
                             pre_rebuild_calendar('preview', window.preview_date);
                         } else {
                             pre_rebuild_calendar('calendar', window.dynamic_data);
-                            preview_date_follow();
                         }
                     }
                 }
@@ -189,7 +180,6 @@ export function set_up_edit_inputs() {
             case "weather":
                 CalendarRenderer.last_scroll_height = $("#calendar_container").scrollTop();
                 if (creation.is_done() && errors.length == 0) {
-                    evaluate_settings();
                     climate_charts.active_view = true;
                 }
                 calendar_container.addClass('hidden');
@@ -232,8 +222,6 @@ export function set_up_edit_inputs() {
 
             if (!window.preview_date.follow) {
 
-                update_preview_calendar();
-
                 pre_rebuild_calendar('preview', window.preview_date);
 
             } else {
@@ -266,8 +254,6 @@ export function set_up_edit_inputs() {
             evaluate_save_button(true);
 
             if (!window.preview_date.follow) {
-
-                update_preview_calendar();
 
                 rebuild_calendar('preview', window.preview_date);
 
@@ -474,8 +460,6 @@ function error_check(parent, rebuild) {
     if (rebuild === undefined || rebuild) {
 
         if (!window.preview_date.follow) {
-
-            update_preview_calendar();
 
             pre_rebuild_calendar('preview', window.preview_date);
 

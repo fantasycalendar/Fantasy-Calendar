@@ -120,7 +120,6 @@
                             dynamic_data = clone(result.dynamic_data);
 
                             check_update(true);
-                            evaluate_settings();
                             poll_timer = setTimeout(check_dates, 5000);
 
                         });
@@ -137,7 +136,6 @@
                             dynamic_data = clone(result.dynamic_data);
 
                             check_update(false);
-                            evaluate_settings();
                             poll_timer = setTimeout(check_dates, 5000);
 
                         });
