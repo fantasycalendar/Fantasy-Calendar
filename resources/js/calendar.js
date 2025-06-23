@@ -21,8 +21,6 @@ export default class Calendar {
         let dateChanged = false;
         let previewDateChanged = false;
 
-        debugger;
-
         for (const [key, value] of Object.entries(incomingChanges)) {
             structureChanged = structureChanged || rerenderKeys.some(structuralKey => key.startsWith(structuralKey));
             dateChanged = dateChanged || key.startsWith("dynamic_data");
