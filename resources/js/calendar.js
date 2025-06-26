@@ -39,10 +39,7 @@ export default class Calendar {
 
         structureChanged = structureChanged || data.rebuild;
 
-        // TODO: Preview date follow is janky as hell. Probably best handled in some other way?
-        console.log(incomingChanges, this.preview_date.follow, dateChanged)
-
-        if(this.preview_date.follow && (dateChanged || previewDateChanged)) {
+        if(this.preview_date.follow && !previewDateChanged) {
             this.preview_date.year = data.year;
             this.preview_date.timespan = data.timespan;
             this.preview_date.day = data.day;
@@ -58,8 +55,6 @@ export default class Calendar {
         }
 
         dateChanged = dateChanged || previewDateChanged;
-
-        console.log(structureChanged)
 
         // First of many rules, I'm sure.
         this.static_data.year_data.overflow = this.static_data.year_data.overflow
@@ -107,18 +102,16 @@ export default class Calendar {
         return does_day_appear(this.static_data, convert_year(this.static_data, year), timespan, day);
     }
 
-    set_preview_date(year, timespan, day) {
-        const current_date = this.preview_date.follow
-            ? this.dynamic_data
-            : this.preview_date;
-
+    set_viewed_date({
+        year = this.preview_date.year,
+        month = this.preview_date.timespan,
+        day = this.preview_date.day,
+    }={}) {
         const newPreviewDate = date_manager.reconcileDateChange(
             this.static_data,
-            current_date,
-            {  year, timespan, day }
+            this.preview_date,
+            {  year, timespan: month, day }
         )
-
-        // TODO: rip out all of the preview date input shenanigans and reimplement into proper place
 
         window.dispatchEvent(new CustomEvent('calendar-updating', {
             detail: {
@@ -150,82 +143,106 @@ export default class Calendar {
     }
 
     set_viewed_day(day) {
-        this.set_preview_date(this.preview_date.year, this.preview_date.timespan, day);
+        this.set_viewed_date({ day });
     }
 
     set_viewed_month(month) {
-        this.set_preview_date(this.preview_date.year, month, this.preview_date.day);
+        this.set_viewed_date({ month });
     }
 
     set_viewed_year(year){
-        this.set_preview_date(year, this.preview_date.timespan, this.preview_date.day);
+        this.set_viewed_date({ year });
     }
 
+    decrement_viewed_day() {
+        this.set_viewed_date({ day: this.preview_date.day - 1 });
+    };
+
+    decrement_viewed_month() {
+        this.set_viewed_date({ month: this.preview_date.timespan - 1 });
+    };
+
+    decrement_viewed_year() {
+        this.set_viewed_date({ year: this.preview_date.year - 1 });
+    };
+
+    increment_viewed_day() {
+        this.set_viewed_date({ day: this.preview_date.day + 1 });
+    };
+
+    increment_viewed_month() {
+        this.set_viewed_date({ month: this.preview_date.timespan + 1 });
+    };
+
+    increment_viewed_year() {
+        this.set_viewed_date({ year: this.preview_date.year + 1 });
+    };
+
     set_current_minute(minute) {
-        this.changeDate({
+        this.set_current_date({
             minute: Math.max(0, Math.min(minute, this.static_data.clock.minutes-1))
         });
     }
 
     set_current_hour(hour) {
-        this.changeDate({
+        this.set_current_date({
             hour: Math.max(0, Math.min(hour, this.static_data.clock.hours-1))
         });
     }
 
     set_current_day(day) {
-        this.changeDate({ day });
+        this.set_current_date({ day });
     }
 
     set_current_month(month) {
-        this.changeDate({ month });
+        this.set_current_date({ month });
     }
 
     set_current_year(year){
-        this.changeDate({ year });
+        this.set_current_date({ year });
     }
 
     decrement_current_minute(){
-        this.changeDate({ minute: this.dynamic_data.minute - 30 });
+        this.set_current_date({ minute: this.dynamic_data.minute - 30 });
     };
 
     decrement_current_hour(){
-        this.changeDate({ hour: this.dynamic_data.hour - 1 });
+        this.set_current_date({ hour: this.dynamic_data.hour - 1 });
     };
 
     decrement_current_day() {
-        this.changeDate({ day: this.dynamic_data.day - 1 });
+        this.set_current_date({ day: this.dynamic_data.day - 1 });
     };
 
     decrement_current_month() {
-        this.changeDate({ month: this.dynamic_data.timespan - 1 });
+        this.set_current_date({ month: this.dynamic_data.timespan - 1 });
     };
 
     decrement_current_year() {
-        this.changeDate({ year: this.dynamic_data.year - 1 });
+        this.set_current_date({ year: this.dynamic_data.year - 1 });
     };
 
     increment_current_minute(){
-        this.changeDate({ minute: this.dynamic_data.minute + 30 });
+        this.set_current_date({ minute: this.dynamic_data.minute + 30 });
     };
 
     increment_current_hour(){
-        this.changeDate({ hour: this.dynamic_data.hour + 1 });
+        this.set_current_date({ hour: this.dynamic_data.hour + 1 });
     };
 
     increment_current_day() {
-        this.changeDate({ day: this.dynamic_data.day + 1 });
+        this.set_current_date({ day: this.dynamic_data.day + 1 });
     };
 
     increment_current_month() {
-        this.changeDate({ month: this.dynamic_data.timespan + 1 });
+        this.set_current_date({ month: this.dynamic_data.timespan + 1 });
     };
 
     increment_current_year() {
-        this.changeDate({ year: this.dynamic_data.year + 1 });
+        this.set_current_date({ year: this.dynamic_data.year + 1 });
     };
 
-    changeDate({
+    set_current_date({
         year = this.dynamic_data.year,
         month = this.dynamic_data.timespan,
         day = this.dynamic_data.day,
