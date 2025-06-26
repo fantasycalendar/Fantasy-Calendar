@@ -114,6 +114,7 @@ class ErasCollapsible extends CollapsibleComponent {
             year: era.date.year,
             month: era.date.timespan,
             day: era.date.day,
+            follow: false
         });
     }
 

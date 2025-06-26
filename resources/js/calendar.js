@@ -106,12 +106,15 @@ export default class Calendar {
         year = this.preview_date.year,
         month = this.preview_date.timespan,
         day = this.preview_date.day,
+        follow = this.preview_date.follow
     }={}) {
         const newPreviewDate = date_manager.reconcileDateChange(
             this.static_data,
             this.preview_date,
             {  year, timespan: month, day }
         )
+
+        newPreviewDate.follow = follow;
 
         window.dispatchEvent(new CustomEvent('calendar-updating', {
             detail: {
