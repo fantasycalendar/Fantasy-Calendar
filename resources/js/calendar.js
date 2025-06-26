@@ -19,42 +19,42 @@ export default class Calendar {
         ];
         let structureChanged = false;
         let dateChanged = false;
-        let previewDateChanged = false;
+        let selectedDateChanged = false;
 
         for (const [key, value] of Object.entries(incomingChanges)) {
             structureChanged = structureChanged || rerenderKeys.some(structuralKey => key.startsWith(structuralKey));
             dateChanged = dateChanged || key.startsWith("dynamic_data");
-            previewDateChanged = previewDateChanged || key.startsWith("preview_date");
+            selectedDateChanged = selectedDateChanged || key.startsWith("preview_date");
 
             console.log(key);
             _.set(this, key, _.cloneDeep(value));
         }
 
-        let data = window.dynamic_date_manager.reconcileCalendarChange(this.static_data, this.dynamic_data);
-        this.dynamic_data.year = data.year;
-        this.dynamic_data.timespan = data.timespan;
-        this.dynamic_data.day = data.day;
-        this.dynamic_data.epoch = data.epoch;
-        this.dynamic_data.current_era = get_current_era(this.static_data, data.epoch);
+        let reconciled_current_date = window.dynamic_date_manager.reconcileCalendarChange(this.static_data, this.dynamic_data);
+        this.dynamic_data.year = reconciled_current_date.year;
+        this.dynamic_data.timespan = reconciled_current_date.timespan;
+        this.dynamic_data.day = reconciled_current_date.day;
+        this.dynamic_data.epoch = reconciled_current_date.epoch;
+        this.dynamic_data.current_era = get_current_era(this.static_data, reconciled_current_date.epoch);
 
         structureChanged = structureChanged || data.rebuild;
 
-        if(this.preview_date.follow && !previewDateChanged) {
-            this.preview_date.year = data.year;
-            this.preview_date.timespan = data.timespan;
-            this.preview_date.day = data.day;
-            this.preview_date.epoch = data.epoch;
+        if(this.preview_date.follow && !selectedDateChanged) {
+            this.preview_date.year = reconciled_current_date.year;
+            this.preview_date.timespan = reconciled_current_date.timespan;
+            this.preview_date.day = reconciled_current_date.day;
+            this.preview_date.epoch = reconciled_current_date.epoch;
         }else if (!this.preview_date.follow) {
-            let preview_data = window.preview_date_manager.reconcileCalendarChange(this.static_data, this.preview_date);
-            this.preview_date.year = preview_data.year;
-            this.preview_date.timespan = preview_data.timespan;
-            this.preview_date.day = preview_data.day;
-            this.preview_date.epoch = preview_data.epoch;
-            this.preview_date.current_era = get_current_era(this.static_data, preview_data.epoch);
-            structureChanged = structureChanged || preview_data.rebuild;
+            let reconciled_selected_date = window.preview_date_manager.reconcileCalendarChange(this.static_data, this.preview_date);
+            this.preview_date.year = reconciled_selected_date.year;
+            this.preview_date.timespan = reconciled_selected_date.timespan;
+            this.preview_date.day = reconciled_selected_date.day;
+            this.preview_date.epoch = reconciled_selected_date.epoch;
+            this.preview_date.current_era = get_current_era(this.static_data, reconciled_selected_date.epoch);
+            structureChanged = structureChanged || reconciled_selected_date.rebuild;
         }
 
-        dateChanged = dateChanged || previewDateChanged;
+        dateChanged = dateChanged || selectedDateChanged;
 
         // First of many rules, I'm sure.
         this.static_data.year_data.overflow = this.static_data.year_data.overflow
@@ -102,7 +102,7 @@ export default class Calendar {
         return does_day_appear(this.static_data, convert_year(this.static_data, year), timespan, day);
     }
 
-    set_viewed_date({
+    set_selected_date({
         year = this.preview_date.year,
         month = this.preview_date.timespan,
         day = this.preview_date.day,
@@ -128,7 +128,7 @@ export default class Calendar {
         }))
     }
 
-    set_viewed_date_active(active){
+    set_selected_date_active(active){
         let date = this.preview_date;
         if(!active){
             date = this.dynamic_data;
@@ -145,40 +145,40 @@ export default class Calendar {
         }))
     }
 
-    set_viewed_day(day) {
-        this.set_viewed_date({ day });
+    set_selected_day(day) {
+        this.set_selected_date({ day });
     }
 
-    set_viewed_month(month) {
-        this.set_viewed_date({ month });
+    set_selected_month(month) {
+        this.set_selected_date({ month });
     }
 
-    set_viewed_year(year){
-        this.set_viewed_date({ year });
+    set_selected_year(year){
+        this.set_selected_date({ year });
     }
 
-    decrement_viewed_day() {
-        this.set_viewed_date({ day: this.preview_date.day - 1 });
+    decrement_selected_day() {
+        this.set_selected_date({ day: this.preview_date.day - 1 });
     };
 
-    decrement_viewed_month() {
-        this.set_viewed_date({ month: this.preview_date.timespan - 1 });
+    decrement_selected_month() {
+        this.set_selected_date({ month: this.preview_date.timespan - 1 });
     };
 
-    decrement_viewed_year() {
-        this.set_viewed_date({ year: this.preview_date.year - 1 });
+    decrement_selected_year() {
+        this.set_selected_date({ year: this.preview_date.year - 1 });
     };
 
-    increment_viewed_day() {
-        this.set_viewed_date({ day: this.preview_date.day + 1 });
+    increment_selected_day() {
+        this.set_selected_date({ day: this.preview_date.day + 1 });
     };
 
-    increment_viewed_month() {
-        this.set_viewed_date({ month: this.preview_date.timespan + 1 });
+    increment_selected_month() {
+        this.set_selected_date({ month: this.preview_date.timespan + 1 });
     };
 
-    increment_viewed_year() {
-        this.set_viewed_date({ year: this.preview_date.year + 1 });
+    increment_selected_year() {
+        this.set_selected_date({ year: this.preview_date.year + 1 });
     };
 
     set_current_minute(minute) {

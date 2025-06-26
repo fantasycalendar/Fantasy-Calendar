@@ -25,11 +25,18 @@ class CurrentDateCollapsible extends CollapsibleComponent {
     collapsible_name = "CurrentDateCollapsible";
 
     current_date = {}
-    viewed_date = {}
+    selected_date = {}
+    date_adjustment_units = {
+        years: null,
+        months: null,
+        days: null,
+        hours: null,
+        minutes: null
+    }
 
     inboundProperties = {
         'current_date': "dynamic_data",
-        'viewed_date': "preview_date",
+        'selected_date': "preview_date",
     }
 
     activeDateAdjustment = "current";
@@ -136,64 +143,64 @@ class CurrentDateCollapsible extends CollapsibleComponent {
 
     /** ------------------- VIEWED DATE ---------------------- **/
 
-    set_viewed_date_active(active){
-        this.$store.calendar.set_viewed_date_active(active);
+    set_selected_date_active(active){
+        this.$store.calendar.set_selected_date_active(active);
     }
 
-    set_viewed_month(month) {
-        this.$store.calendar.set_viewed_month(month);
+    set_selected_month(month) {
+        this.$store.calendar.set_selected_month(month);
     }
 
-    set_viewed_day(day) {
-        this.$store.calendar.set_viewed_day(day);
+    set_selected_day(day) {
+        this.$store.calendar.set_selected_day(day);
     }
 
-    set_viewed_year(year){
-        this.$store.calendar.set_viewed_year(year);
+    set_selected_year(year){
+        this.$store.calendar.set_selected_year(year);
     }
 
-    get viewed_day() {
-        return this.viewed_date.day;
+    get selected_day() {
+        return this.selected_date.day;
     }
 
-    get viewed_month() {
-        return this.viewed_date.timespan;
+    get selected_month() {
+        return this.selected_date.timespan;
     }
 
-    get viewed_year() {
-        return this.viewed_date.year;
+    get selected_year() {
+        return this.selected_date.year;
     }
 
-    get viewed_year_months() {
-        return this.$store.calendar.get_timespans_in_year_as_select_options(this.viewed_year);
+    get selected_year_months() {
+        return this.$store.calendar.get_timespans_in_year_as_select_options(this.selected_year);
     }
 
-    get viewed_month_days() {
-        return this.$store.calendar.get_days_in_timespan_in_year_as_select_options(this.viewed_year, this.viewed_month);
+    get selected_month_days() {
+        return this.$store.calendar.get_days_in_timespan_in_year_as_select_options(this.selected_year, this.selected_month);
     }
 
-    decrement_viewed_day() {
-        this.$store.calendar.decrement_viewed_day();
+    decrement_selected_day() {
+        this.$store.calendar.decrement_selected_day();
     }
 
-    decrement_viewed_month() {
-        this.$store.calendar.decrement_viewed_month();
+    decrement_selected_month() {
+        this.$store.calendar.decrement_selected_month();
     }
 
-    decrement_viewed_year() {
-        this.$store.calendar.decrement_viewed_year();
+    decrement_selected_year() {
+        this.$store.calendar.decrement_selected_year();
     }
 
-    increment_viewed_day() {
-        this.$store.calendar.increment_viewed_day();
+    increment_selected_day() {
+        this.$store.calendar.increment_selected_day();
     }
 
-    increment_viewed_month() {
-        this.$store.calendar.increment_viewed_month();
+    increment_selected_month() {
+        this.$store.calendar.increment_selected_month();
     }
 
-    increment_viewed_year() {
-        this.$store.calendar.increment_viewed_year();
+    increment_selected_year() {
+        this.$store.calendar.increment_selected_year();
     }
 }
 

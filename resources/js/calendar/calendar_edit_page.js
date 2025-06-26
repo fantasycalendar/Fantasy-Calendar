@@ -158,7 +158,7 @@ export default (calendar_structure) => ({
             window.preview_date_manager = new date_manager(window.static_data, window.preview_date.year, window.preview_date.timespan, window.preview_date.day);
         }
 
-        display_preview_back_button();
+        // display_preview_back_button();
 
         if (rebuild || ((data.rebuild || window.static_data.settings.only_reveal_today) && window.preview_date.follow)) {
             rebuild_calendar('calendar', window.dynamic_data);
