@@ -228,7 +228,6 @@ export function set_up_edit_inputs() {
 
                 pre_rebuild_calendar('calendar', window.dynamic_data);
 
-                preview_date_follow();
 
             }
 
@@ -261,7 +260,6 @@ export function set_up_edit_inputs() {
 
                 rebuild_calendar('calendar', window.dynamic_data);
 
-                preview_date_follow();
 
             }
 
@@ -467,7 +465,6 @@ function error_check(parent, rebuild) {
 
             pre_rebuild_calendar('calendar', window.dynamic_data);
 
-            preview_date_follow();
 
         }
 

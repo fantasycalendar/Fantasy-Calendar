@@ -39,7 +39,7 @@ class CurrentDateCollapsible extends CollapsibleComponent {
         'selected_date': "preview_date",
     }
 
-    activeDateAdjustment = "current";
+    activeDateAdjustment = "relative";
 
     // Commented for now.
     //  In short: We tell the calendar to update its values,
@@ -52,6 +52,10 @@ class CurrentDateCollapsible extends CollapsibleComponent {
     // }
 
     /** ------------------- CURRENT DATE ---------------------- **/
+
+    adjust_current_date() {
+        this.$store.calendar.adjust_current_date(this.date_adjustment_units);
+    }
 
     set_current_minute(minute) {
         this.$store.calendar.set_current_minute(minute);

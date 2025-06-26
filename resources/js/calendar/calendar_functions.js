@@ -434,6 +434,56 @@ export class date_manager {
 
     }
 
+    adjust_unit(unit, amount) {
+        console.log("Adjusting " + unit + " by " + amount);
+
+        while (amount > 0) {
+            console.log("Calling " + "add_" + unit);
+
+            this["add_" + unit]();
+
+            amount--;
+        }
+
+        while (amount < 0) {
+            console.log("Calling " + "subtract_" + unit);
+
+            this["subtract_" + unit]();
+
+            amount++;
+        }
+    }
+
+    adjust_years(years) {
+        this.year += years;
+
+        return this;
+    }
+
+    adjust_months(months) {
+        this.adjust_unit('month', months);
+
+        return this;
+    }
+
+    adjust_days(days) {
+        this.adjust_unit('day', days);
+
+        return this;
+    }
+
+    adjust_hours(hours) {
+        // this.adjust_unit('hour', hours);
+
+        return this;
+    }
+
+    adjust_minutes(minutes) {
+        // this.adjust_unit('minute', minutes);
+
+        return this;
+    }
+
     static reconcileDateChange(static_data, current_date, target_date) {
         const manager = new this(static_data, current_date.year, current_date.timespan, current_date.day);
         manager.year = convert_year(static_data, target_date.year);
@@ -473,9 +523,7 @@ export class date_manager {
     }
 
     get adjusted_year() {
-
         return unconvert_year(this.static_data, this.year);
-
     }
 
     set max_year(year) {

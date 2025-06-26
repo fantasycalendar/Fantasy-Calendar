@@ -37,14 +37,14 @@ export default class Calendar {
         this.dynamic_data.epoch = reconciled_current_date.epoch;
         this.dynamic_data.current_era = get_current_era(this.static_data, reconciled_current_date.epoch);
 
-        structureChanged = structureChanged || data.rebuild;
+        structureChanged = structureChanged || reconciled_current_date.rebuild;
 
-        if(this.preview_date.follow && !selectedDateChanged) {
+        if (this.preview_date.follow && !selectedDateChanged) {
             this.preview_date.year = reconciled_current_date.year;
             this.preview_date.timespan = reconciled_current_date.timespan;
             this.preview_date.day = reconciled_current_date.day;
             this.preview_date.epoch = reconciled_current_date.epoch;
-        }else if (!this.preview_date.follow) {
+        } else if (!this.preview_date.follow) {
             let reconciled_selected_date = window.preview_date_manager.reconcileCalendarChange(this.static_data, this.preview_date);
             this.preview_date.year = reconciled_selected_date.year;
             this.preview_date.timespan = reconciled_selected_date.timespan;
@@ -107,11 +107,11 @@ export default class Calendar {
         month = this.preview_date.timespan,
         day = this.preview_date.day,
         follow = this.preview_date.follow
-    }={}) {
+    } = {}) {
         const newPreviewDate = date_manager.reconcileDateChange(
             this.static_data,
             this.preview_date,
-            {  year, timespan: month, day }
+            { year, timespan: month, day }
         )
 
         newPreviewDate.follow = follow;
@@ -128,9 +128,9 @@ export default class Calendar {
         }))
     }
 
-    set_selected_date_active(active){
+    set_selected_date_active(active) {
         let date = this.preview_date;
-        if(!active){
+        if (!active) {
             date = this.dynamic_data;
         }
         window.dispatchEvent(new CustomEvent('calendar-updating', {
@@ -153,7 +153,7 @@ export default class Calendar {
         this.set_selected_date({ month });
     }
 
-    set_selected_year(year){
+    set_selected_year(year) {
         this.set_selected_date({ year });
     }
 
@@ -183,13 +183,13 @@ export default class Calendar {
 
     set_current_minute(minute) {
         this.set_current_date({
-            minute: Math.max(0, Math.min(minute, this.static_data.clock.minutes-1))
+            minute: Math.max(0, Math.min(minute, this.static_data.clock.minutes - 1))
         });
     }
 
     set_current_hour(hour) {
         this.set_current_date({
-            hour: Math.max(0, Math.min(hour, this.static_data.clock.hours-1))
+            hour: Math.max(0, Math.min(hour, this.static_data.clock.hours - 1))
         });
     }
 
@@ -201,15 +201,15 @@ export default class Calendar {
         this.set_current_date({ month });
     }
 
-    set_current_year(year){
+    set_current_year(year) {
         this.set_current_date({ year });
     }
 
-    decrement_current_minute(){
+    decrement_current_minute() {
         this.set_current_date({ minute: this.dynamic_data.minute - 30 });
     };
 
-    decrement_current_hour(){
+    decrement_current_hour() {
         this.set_current_date({ hour: this.dynamic_data.hour - 1 });
     };
 
@@ -225,11 +225,11 @@ export default class Calendar {
         this.set_current_date({ year: this.dynamic_data.year - 1 });
     };
 
-    increment_current_minute(){
+    increment_current_minute() {
         this.set_current_date({ minute: this.dynamic_data.minute + 30 });
     };
 
-    increment_current_hour(){
+    increment_current_hour() {
         this.set_current_date({ hour: this.dynamic_data.hour + 1 });
     };
 
@@ -245,15 +245,31 @@ export default class Calendar {
         this.set_current_date({ year: this.dynamic_data.year + 1 });
     };
 
+    adjust_current_date({ years = 0, months = 0, days = 0, hours = 0, minutes = 0 } = {}) {
+        let { year, timespan, day } = new date_manager(
+            this.static_data,
+            this.dynamic_data.year,
+            this.dynamic_data.timespan,
+            this.dynamic_data.day,
+        )
+            .adjust_years(years)
+            .adjust_months(months)
+            .adjust_days(days)
+            .adjust_hours(hours)
+            .adjust_minutes(minutes);
+
+        this.set_current_date({ year, month: timespan, day });
+    }
+
     set_current_date({
         year = this.dynamic_data.year,
         month = this.dynamic_data.timespan,
         day = this.dynamic_data.day,
         hour = this.dynamic_data.hour,
         minute = this.dynamic_data.minute,
-    }={}){
+    } = {}) {
 
-        if(minute >= this.static_data.clock.minutes){
+        if (minute >= this.static_data.clock.minutes) {
             hour += 1;
             minute = minute - this.static_data.clock.minutes;
         } else if (minute < 0) {
@@ -261,7 +277,7 @@ export default class Calendar {
             minute = this.static_data.clock.minutes + minute;
         }
 
-        if(hour >= this.static_data.clock.hours){
+        if (hour >= this.static_data.clock.hours) {
             day += 1;
             hour = hour - this.static_data.clock.hours;
         } else if (hour < 0) {

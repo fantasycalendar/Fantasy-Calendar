@@ -2,7 +2,7 @@
 
 <x-clock-canvas name="current_date"></x-clock-canvas>
 
-<div x-data="{ activeDateAdjustment: 'current' }">
+<div>
     <ul class="nav justify-content-center nav-tabs mt-3">
         <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'current' }" @click="activeDateAdjustment = 'current'">Current date</a></li>
         <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'selected' }" @click="activeDateAdjustment = 'selected'">Selected date</a></li>
@@ -150,15 +150,15 @@
 
     <div class="mt-3" :class="{ 'd-flex flex-column': activeDateAdjustment === 'relative', 'd-none': activeDateAdjustment !== 'relative' }">
         <div class="input-group">
-            <input type='number' class="form-control mt-2 px-2" x-model="date_adjustment_units.years" placeholder="Years (+/-)">
-            <input type='number' class="form-control mt-2 px-2" x-model="date_adjustment_units.months" placeholder="Months (+/-)">
-            <input type='number' class="form-control mt-2 px-2" x-model="date_adjustment_units.days" placeholder="Days (+/-)">
+            <input type='number' class="form-control mt-2 px-2" x-model.number="date_adjustment_units.years" placeholder="Years (+/-)">
+            <input type='number' class="form-control mt-2 px-2" x-model.number="date_adjustment_units.months" placeholder="Months (+/-)">
+            <input type='number' class="form-control mt-2 px-2" x-model.number="date_adjustment_units.days" placeholder="Days (+/-)">
         </div>
         <div class='my-2 row no-gutters'>
             <div class="input-group">
-                <input type='number' class="form-control px-2" placeholder="Hours (+/-)">
+                <input type='number' class="form-control px-2" x-model.number="date_adjustment_units.hours" placeholder="Hours (+/-)">
                 <div class="input-group-prepend input-group-append"><span class="input-group-text">:</span></div>
-                <input type='number' class="form-control px-2" placeholder="Minutes (+/-)">
+                <input type='number' class="form-control px-2" x-model.number="date_adjustment_units.minutes" placeholder="Minutes (+/-)">
             </div>
         </div>
 
@@ -166,13 +166,12 @@
             <span class="full text-center">Apply to</span>
         </div>
 
-        <div class="d-flex">
+        <div class="flex space-x-2">
             @if(request()->is('calendars/*/edit') && $calendar?->parent == null)
-                <button type="button" class="btn btn-primary btn-block mt-2 mr-1">Current date</button>
-                <button type="button" class="btn btn-secondary btn-block mt-2 ml-1">Selected date</button>
-            @else
-                <button type="button" class="btn btn-secondary btn-block mt-2">Selected date</button>
+                <button type="button" class="btn btn-primary btn-block mt-2" @click="adjust_current_date">Current date</button>
             @endif
+
+            <button type="button" class="btn btn-secondary btn-block mt-2" @click="adjust_selected_date">Selected date</button>
         </div>
     </div>
 </div>
