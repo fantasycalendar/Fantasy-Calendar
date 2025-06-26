@@ -39,7 +39,7 @@ class CurrentDateCollapsible extends CollapsibleComponent {
         'selected_date': "preview_date",
     }
 
-    activeDateAdjustment = "relative";
+    activeDateAdjustment = "current";
 
     // Commented for now.
     //  In short: We tell the calendar to update its values,
