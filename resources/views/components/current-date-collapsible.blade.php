@@ -95,8 +95,6 @@
 
 
     <div class='date_control selected_date_controls mt-3' :class="{ 'd-flex flex-column': activeDateAdjustment === 'selected', 'd-none': activeDateAdjustment !== 'selected' }">
-
-
         <div class='input-group mt-2'>
             <div class='input-group-prepend'>
                 <button type='button' class='btn btn-danger' @click="decrement_selected_year"><i class="fa fa-minus"></i></button>
@@ -148,30 +146,27 @@
         <div class='btn btn-warning full mt-2' x-show="!selected_date.follow" @click="set_selected_date_active(false)">Select current date</div>
     </div>
 
-    <div class="mt-3" :class="{ 'd-flex flex-column': activeDateAdjustment === 'relative', 'd-none': activeDateAdjustment !== 'relative' }">
+    <div class="flex flex-col mt-3" :class="{ 'd-flex flex-column': activeDateAdjustment === 'relative', 'd-none': activeDateAdjustment !== 'relative' }">
         <div class="input-group">
             <input type='number' class="form-control mt-2 px-2" x-model.number="date_adjustment_units.years" placeholder="Years (+/-)">
             <input type='number' class="form-control mt-2 px-2" x-model.number="date_adjustment_units.months" placeholder="Months (+/-)">
             <input type='number' class="form-control mt-2 px-2" x-model.number="date_adjustment_units.days" placeholder="Days (+/-)">
         </div>
-        <div class='my-2 row no-gutters'>
-            <div class="input-group">
-                <input type='number' class="form-control px-2" x-model.number="date_adjustment_units.hours" placeholder="Hours (+/-)">
-                <div class="input-group-prepend input-group-append"><span class="input-group-text">:</span></div>
-                <input type='number' class="form-control px-2" x-model.number="date_adjustment_units.minutes" placeholder="Minutes (+/-)">
-            </div>
+
+        <div class="input-group my-2">
+            <input type='number' class="form-control px-2" x-model.number="date_adjustment_units.hours" placeholder="Hours (+/-)">
+            <div class="input-group-prepend input-group-append"><span class="input-group-text">:</span></div>
+            <input type='number' class="form-control px-2" x-model.number="date_adjustment_units.minutes" placeholder="Minutes (+/-)">
         </div>
 
-        <div class="d-flex mt-3">
-            <span class="full text-center">Apply to</span>
-        </div>
+        <span class="full text-center">Apply to</span>
 
         <div class="flex space-x-2">
             @if(request()->is('calendars/*/edit') && $calendar?->parent == null)
-                <button type="button" class="btn btn-primary btn-block mt-2" @click="adjust_current_date">Current date</button>
+                <button type="button" class="btn btn-primary btn-block mt-2" @click="adjust_current_date" :disabled="dateAdjustmentEnabled">Current date</button>
             @endif
 
-            <button type="button" class="btn btn-secondary btn-block mt-2" @click="adjust_selected_date">Selected date</button>
+            <button type="button" class="btn btn-secondary btn-block mt-2" @click="adjust_selected_date" :disabled="dateAdjustmentEnabled">Selected date</button>
         </div>
     </div>
 </div>

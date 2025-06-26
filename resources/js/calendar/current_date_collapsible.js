@@ -73,7 +73,7 @@ class CurrentDateCollapsible extends CollapsibleComponent {
         this.$store.calendar.set_current_day(day);
     }
 
-    set_current_year(year){
+    set_current_year(year) {
         this.$store.calendar.set_current_year(year);
     }
 
@@ -105,11 +105,11 @@ class CurrentDateCollapsible extends CollapsibleComponent {
         return this.$store.calendar.get_days_in_timespan_in_year_as_select_options(this.current_year, this.current_month);
     }
 
-    decrement_current_minute(){
+    decrement_current_minute() {
         this.$store.calendar.decrement_current_minute();
     }
 
-    decrement_current_hour(){
+    decrement_current_hour() {
         this.$store.calendar.decrement_current_hour();
     }
 
@@ -125,11 +125,11 @@ class CurrentDateCollapsible extends CollapsibleComponent {
         this.$store.calendar.decrement_current_year();
     }
 
-    increment_current_minute(){
+    increment_current_minute() {
         this.$store.calendar.increment_current_minute();
     }
 
-    increment_current_hour(){
+    increment_current_hour() {
         this.$store.calendar.increment_current_hour();
     }
 
@@ -147,7 +147,7 @@ class CurrentDateCollapsible extends CollapsibleComponent {
 
     /** ------------------- VIEWED DATE ---------------------- **/
 
-    set_selected_date_active(active){
+    set_selected_date_active(active) {
         this.$store.calendar.set_selected_date_active(active);
     }
 
@@ -159,7 +159,7 @@ class CurrentDateCollapsible extends CollapsibleComponent {
         this.$store.calendar.set_selected_day(day);
     }
 
-    set_selected_year(year){
+    set_selected_year(year) {
         this.$store.calendar.set_selected_year(year);
     }
 
@@ -205,6 +205,12 @@ class CurrentDateCollapsible extends CollapsibleComponent {
 
     increment_selected_year() {
         this.$store.calendar.increment_selected_year();
+    }
+
+    get dateAdjustmentEnabled() {
+        return !Object
+            .values(this.date_adjustment_units)
+            .every(x => x === null || x === '');
     }
 }
 
