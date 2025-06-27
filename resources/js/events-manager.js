@@ -1,5 +1,5 @@
 import { clone } from "./calendar/calendar_functions";
-import { evaluate_save_button, get_category } from "./calendar/calendar_inputs_edit";
+import { get_category } from "./calendar/calendar_inputs_edit";
 
 export default () => ({
     open: false,
@@ -45,7 +45,6 @@ export default () => ({
         this.selected = {};
 
         $dispatch("events-changed");
-        evaluate_save_button();
     },
 
     hideSelected($dispatch) {
@@ -92,7 +91,6 @@ export default () => ({
         canonicalEvent.settings.print = !canonicalEvent.settings.print;
 
         $dispatch("events-changed");
-        evaluate_save_button();
     },
 
     toggleEventHidden(event, $dispatch) {
@@ -103,7 +101,6 @@ export default () => ({
         canonicalEvent.settings.hide = !canonicalEvent.settings.hide;
 
         $dispatch("events-changed");
-        evaluate_save_button();
     },
 
     get numberSelected() {
@@ -174,7 +171,6 @@ export default () => ({
         this.updateCategoryTo = null;
 
         $dispatch("events-changed");
-        evaluate_save_button();
     },
     refreshCategories() {
         this.categories = clone(this.$store.calendar.event_categories) ?? [];

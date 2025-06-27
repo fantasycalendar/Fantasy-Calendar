@@ -1,6 +1,4 @@
 import $ from 'jquery';
-import jQuery from 'jquery';
-import { evaluate_save_button } from './calendar/calendar_inputs_edit';
 
 export default () => ({
 
@@ -115,7 +113,6 @@ export default () => ({
         this.era_id = false;
         this.description = false;
         // this.html_input.trumbowyg("html", "");
-        evaluate_save_button();
 
     }
 

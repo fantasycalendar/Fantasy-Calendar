@@ -1,7 +1,5 @@
 import { clone } from "./calendar_functions";
-import { calendar_saved, calendar_save_failed, evaluate_save_button } from "./calendar_inputs_edit";
 import { rerender_calendar } from './calendar_manager.js';
-import { hide_loading_screen } from "./header.js";
 
 export function getUrlParameter(sParam) {
     var sPageURL = decodeURIComponent(window.location.search.substring(1)),
@@ -27,13 +25,11 @@ export function update_name() {
         success: function(result) {
             window.prev_calendar_name = window.calendar_name;
             document.title = window.calendar_name + " - Fantasy Calendar";
-            calendar_saved();
         },
         error: function(error) {
             $.notify(
                 error
             );
-            calendar_save_failed();
         }
     });
 }
@@ -67,12 +63,6 @@ export function update_dynamic(calendar_hash, callback) {
         data: { _method: 'PATCH', dynamic_data: JSON.stringify(window.dynamic_data) },
         success: function(result) {
 
-            if (!dynamic_same) {
-                window.prev_dynamic_data = clone(window.dynamic_data);
-            }
-
-            calendar_saved();
-
             window.last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
 
             if (callback) {
@@ -84,7 +74,6 @@ export function update_dynamic(calendar_hash, callback) {
             $.notify(
                 error
             );
-            calendar_save_failed();
         }
     });
 
@@ -127,35 +116,10 @@ export function do_update_all(calendar_hash, success_callback, failure_callback)
         },
         success: function(result) {
 
-            if (!calendar_name_same) {
-                window.prev_calendar_name = clone(window.calendar_name);
-                document.title = window.calendar_name + " - Fantasy Calendar";
-            }
-
-            if (!static_same) {
-                window.prev_static_data = clone(window.static_data);
-            }
-
-            if (!dynamic_same) {
-                window.prev_dynamic_data = clone(window.dynamic_data);
-            }
-
-            if (!events_same) {
-                window.prev_events = clone(window.events);
-            }
-
-            if (!event_categories_same) {
-                window.prev_event_categories = clone(window.event_categories);
-            }
-
-            if (!advancement_same) {
-                window.prev_advancement = clone(window.advancement);
-            }
+            document.title = window.calendar_name + " - Fantasy Calendar";
 
             window.last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
             window.last_static_change = new Date(result.last_changed.last_static_change)
-
-            calendar_saved();
 
             if (success_callback) success_callback();
 
@@ -163,8 +127,6 @@ export function do_update_all(calendar_hash, success_callback, failure_callback)
         error: function(error) {
             if (failure_callback !== undefined) {
                 failure_callback();
-            } else {
-                calendar_save_failed();
             }
         }
     });
@@ -251,7 +213,6 @@ export function submit_hide_show_event(event_id) {
             if (result.data.success) {
                 window.events[event_id].settings.hide = !window.events[event_id].settings.hide;
                 rerender_calendar();
-                evaluate_save_button();
             }
             $.notify(
                 result.data.message,
@@ -351,23 +312,6 @@ export function submit_delete_comment(comment_id, callback) {
 
 }
 
-
-export function get_owned_calendars(output) {
-    $.ajax({
-        url: window.apiurl + "/calendar/" + window.hash + "/owned",
-        type: "get",
-        dataType: 'json',
-        data: {},
-        success: function(result) {
-            output(result);
-        },
-        error: function(error) {
-            $.notify(
-                error
-            );
-        }
-    });
-}
 
 export function check_last_change(calendar_hash, output) {
     $.ajax({

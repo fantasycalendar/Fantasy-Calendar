@@ -180,7 +180,6 @@ window.copy_link = copy_link;
 import {
     set_up_edit_inputs,
     do_error_check,
-    evaluate_save_button,
     set_up_edit_values,
     query_autoload,
     autoload,
@@ -188,7 +187,6 @@ import {
 } from './calendar/calendar_inputs_edit.js';
 window.set_up_edit_inputs = set_up_edit_inputs;
 window.do_error_check = do_error_check;
-window.evaluate_save_button = evaluate_save_button;
 window.set_up_edit_values = set_up_edit_values;
 window.query_autoload = query_autoload;
 window.autoload = autoload;
@@ -236,7 +234,8 @@ Alpine.data('CalendarGridDay', CalendarGridDay);
 window.calendar_year_header = CalendarYearHeader();
 Alpine.data('CalendarYearHeader', window.calendar_year_header);
 
-import { precisionRound } from './calendar/calendar_functions.js';
+import SaveButton from './calendar/save_button.js';
+Alpine.data('SaveButton', SaveButton)
 
 Alpine.data('MainApp', () => ({
     init: function() {
@@ -351,6 +350,7 @@ import UserManagementCollapsible from './calendar/user_management_collapsible.js
 Alpine.data('user_management_collapsible', UserManagementCollapsible);
 
 import CalendarLinkingCollapsible from './calendar/calendar_linking_collapsible.js';
+import Save_button from "./calendar/save_button.js";
 Alpine.data('calendar_linking_collapsible', CalendarLinkingCollapsible);
 
 Alpine.start();

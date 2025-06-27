@@ -1,7 +1,7 @@
 import RandomCalendar from './random-calendar.js';
 import { get_preset_data } from './calendar/calendar_ajax_functions.js';
 import { convert_year, clone, evaluate_calendar_start } from './calendar/calendar_functions.js';
-import { do_error_check, evaluate_save_button, set_up_edit_values } from './calendar/calendar_inputs_edit.js';
+import { do_error_check, set_up_edit_values } from './calendar/calendar_inputs_edit.js';
 
 export default () => ({
     open: false,
@@ -286,7 +286,6 @@ export default () => ({
         }
 
         set_up_edit_values();
-        evaluate_save_button();
         do_error_check();
         $.notify(
             "Calendar preset loaded!",

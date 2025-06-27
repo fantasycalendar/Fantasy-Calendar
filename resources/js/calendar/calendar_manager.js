@@ -1,7 +1,6 @@
 import { execution_time } from "./calendar_functions";
 import { climate_charts } from "./calendar_weather_layout";
 import { Climate } from "./calendar_season_generator";
-import { evaluate_save_button } from "./calendar_inputs_edit";
 import { $ } from 'jquery';
 
 var utcDate1 = Date.now();
@@ -93,15 +92,12 @@ export function eval_apply_changes(output) {
         output();
     } else if (!apply_changes_immediately.is(':checked')) {
         if (!window.changes_applied) {
-            evaluate_save_button();
             $('#reload_background').removeClass('hidden').css('display', 'flex');
         } else {
             $('#reload_background').addClass('hidden').css('display', 'none');
-            evaluate_save_button(true);
             output();
         }
     } else {
-        evaluate_save_button();
         output();
     }
 }

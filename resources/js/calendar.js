@@ -406,6 +406,10 @@ export default class Calendar {
     }
 
     // Getters
+    get calendar_name() {
+        return window.calendar_name;
+    }
+
     get hash() {
         return window.hash;
     }

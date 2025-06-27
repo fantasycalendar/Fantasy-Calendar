@@ -1,5 +1,4 @@
 import { do_update_all } from "./calendar/calendar_ajax_functions";
-import { evaluate_save_button } from "./calendar/calendar_inputs_edit";
 import { show_loading_screen, hide_loading_screen } from "./calendar/header";
 
 export default () => ({
@@ -26,15 +25,15 @@ export default () => ({
     ],
 
     open_modal: function($event) {
-        if (evaluate_save_button()) {
+        // if (evaluate_save_button()) { // TODO: Fix calendar layouts requiring calendar to be saved
             this.open = true;
             this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() === window.static_data.settings.layout);
-        } else {
-            this.$dispatch('notify', {
-                content: "Applying a layout refreshes the page, please save your calendar first.",
-                type: "warning"
-            });
-        }
+        // } else {
+        //     this.$dispatch('notify', {
+        //         content: "Applying a layout refreshes the page, please save your calendar first.",
+        //         type: "warning"
+        //     });
+        // }
     },
 
     apply_layout: function(layout) {

@@ -89,7 +89,6 @@
 
     <div x-data="{
         errors: {},
-        hasErrors: false,
         addErrors($event) {
             this.errors[$event.detail.key] = $event.detail.errors;
         },

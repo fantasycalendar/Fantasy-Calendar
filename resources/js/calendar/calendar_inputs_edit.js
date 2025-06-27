@@ -24,7 +24,6 @@ import CalendarRenderer from "../calendar-renderer";
 
 export var changes_applied = true;
 
-let save_button = null;
 let log_in_button = null;
 let create_button = null;
 let calendar_container = null;
@@ -32,30 +31,9 @@ let weather_container = null;
 
 export function set_up_edit_inputs() {
 
-    window.prev_calendar_name = clone(window.calendar_name);
-    window.prev_dynamic_data = clone(window.dynamic_data);
-    window.prev_static_data = clone(window.static_data);
-    window.prev_events = clone(window.events);
-    window.prev_event_categories = clone(window.event_categories);
-    window.prev_advancement = clone(window.advancement);
-
     window.owned_calendars = {};
 
-    window.calendar_name_same = window.calendar_name == window.prev_calendar_name;
-    window.static_same = JSON.stringify(window.static_data) === JSON.stringify(window.prev_static_data);
-    window.dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(window.prev_dynamic_data);
-    window.events_same = JSON.stringify(window.events) === JSON.stringify(window.prev_events);
-    window.event_categories_same = JSON.stringify(window.event_categories) === JSON.stringify(window.prev_event_categories);
-    window.advancement_same = JSON.stringify(window.advancement) === JSON.stringify(window.advancement);
-
     // window.onbeforeunload = function(e) {
-
-    //     window.calendar_name_same = window.calendar_name == window.prev_calendar_name;
-    //     window.static_same = JSON.stringify(window.static_data) === JSON.stringify(window.prev_static_data);
-    //     window.dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(window.prev_dynamic_data);
-    //     window.events_same = JSON.stringify(window.events) === JSON.stringify(window.prev_events);
-    //     window.event_categories_same = JSON.stringify(window.event_categories) === JSON.stringify(window.prev_event_categories);
-    //     window.advancement_same = JSON.stringify(window.advancement) === JSON.stringify(window.prev_advancement);
 
     //     var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same && advancement_same;
 
@@ -69,24 +47,6 @@ export function set_up_edit_inputs() {
     //     }
 
     // };
-
-    save_button = $('#btn_save');
-
-    save_button.click(function() {
-
-        var text = "Saving..."
-
-        save_button.prop('disabled', true).toggleClass('btn-secondary', true).toggleClass('btn-primary', false).toggleClass('btn-success', false).toggleClass('btn-warning', false).text(text);
-
-        if (!events_same || !event_categories_same || !static_same || !advancement_same) {
-            update_all();
-        } else if (!dynamic_same) {
-            update_dynamic(window.hash);
-        } else if (!calendar_name_same) {
-            update_name();
-        }
-
-    });
 
     create_button = $('#btn_create');
 
@@ -110,7 +70,6 @@ export function set_up_edit_inputs() {
 
     });
 
-    save_button.prop('disabled', true);
     create_button.prop('disabled', true);
 
     $('#btn_delete').click(function() {
@@ -245,9 +204,6 @@ export function set_up_edit_inputs() {
 
             changes_applied = false;
 
-            $('#reload_background').addClass('hidden').css('display', 'none');
-            evaluate_save_button(true);
-
             if (!window.preview_date.follow) {
 
                 rebuild_calendar('preview', window.preview_date);
@@ -276,7 +232,6 @@ export function set_up_edit_inputs() {
 
     document.addEventListener("advancement-changed", function(event) {
         advancement = event.detail.data;
-        evaluate_save_button();
     });
 }
 
@@ -418,7 +373,6 @@ export const creation = {
 }
 
 export var do_error_check = debounce(function(type, rebuild) {
-    evaluate_save_button();
 
     if (!creation.is_done()) {
 
@@ -476,166 +430,12 @@ function error_check(parent, rebuild) {
 
 }
 
-
-export function calendar_saved() {
-    var text = "Saved!"
-
-    save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', true).toggleClass('btn-primary', false).toggleClass('btn-warning', false).toggleClass('btn-danger', false).text(text);
-
-    setTimeout(evaluate_save_button, 3000);
-}
-
-export function calendar_save_failed() {
-    var text = "Failed to save!"
-
-    save_button.prop('disabled', true).toggleClass(['btn-secondary', 'btn-primary', 'btn-danger'], false).toggleClass(['btn-success', 'btn-warning'], true).text(text);
-    setInterval(function() {
-        evaluate_save_button(true);
-    }, 10000);
-}
-
-export function evaluate_save_button(override) {
-    if (!creation.is_done()) {
-        return;
-    }
-
-    var errors = get_errors();
-
-    if ($('#btn_save').length) {
-
-        if (errors.length > 0 || $('.static_input.invalid').length > 0 || $('.dynamic_input.invalid').length > 0) {
-
-            var text = "Calendar has errors - can't save"
-
-            save_button.prop('disabled', true).toggleClass('btn-secondary', false).toggleClass('btn-success', false).toggleClass('btn-primary', false).toggleClass('btn-warning', false).toggleClass('btn-danger', true).text(text);
-
-        } else {
-
-            calendar_name_same = window.calendar_name == window.prev_calendar_name;
-            static_same = JSON.stringify(window.static_data) === JSON.stringify(window.prev_static_data);
-            dynamic_same = JSON.stringify(window.dynamic_data) === JSON.stringify(window.prev_dynamic_data);
-            events_same = JSON.stringify(window.events) === JSON.stringify(window.prev_events);
-            event_categories_same = JSON.stringify(window.event_categories) === JSON.stringify(window.prev_event_categories);
-            advancement_same = JSON.stringify(window.advancement) === JSON.stringify(window.prev_advancement);
-
-            var not_changed = static_same && dynamic_same && calendar_name_same && events_same && event_categories_same && advancement_same;
-
-            var text = not_changed ? "No changes to save" : "Save calendar";
-
-            var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
-
-            if (!apply_changes_immediately && !override) {
-
-                var text = not_changed ? "No changes to save" : "Apply changes to save";
-
-                save_button.prop('disabled', true);
-
-            } else {
-
-                save_button.prop('disabled', not_changed);
-
-            }
-
-            save_button.toggleClass('btn-secondary', false).toggleClass('btn-success', not_changed).toggleClass('btn-primary', !not_changed).toggleClass('btn-warning', false).toggleClass('btn-danger', false).text(text);
-
-            return not_changed;
-
-        }
-
-    } else if ($('#btn_create').length) {
-
-        var invalid = errors.length > 0;
-
-        var text = invalid ? "Cannot create yet" : "Save Calendar";
-
-        var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
-
-        if (!apply_changes_immediately && !override && !invalid) {
-
-            var text = "Apply changes to create";
-
-            create_button.prop('disabled', true);
-
-        } else {
-
-            create_button.prop('disabled', invalid);
-
-        }
-
-        autosave();
-
-        create_button.toggleClass('btn-danger', invalid).toggleClass('btn-success', !invalid).text(text);
-
-    } else if ($('.login-button').length) {
-
-        var invalid = errors.length > 0;
-
-        var apply_changes_immediately = $('#apply_changes_immediately').is(':checked');
-
-        if (!apply_changes_immediately && !override && !invalid) {
-
-            log_in_button.prop('disabled', true);
-
-        } else {
-
-            log_in_button.prop('disabled', invalid);
-
-        }
-
-        autosave();
-
-    }
-}
-
 var block_inputs = false;
 
 export function set_up_edit_values() {
     block_inputs = true;
 
     $('#calendar_name').val(window.calendar_name);
-
-    $('.static_input').each(function() {
-        var data = $(this).attr('data');
-        var key = $(this).attr('fc-index');
-
-        var current_calendar_data = get_calendar_data(data);
-
-        if (current_calendar_data[key] !== undefined) {
-
-            switch ($(this).attr('type')) {
-                case "checkbox":
-                    $(this).prop("checked", current_calendar_data[key]);
-                    break;
-
-                case "color":
-                    // $(this).spectrum("set", current_calendar_data[key]);
-                    break;
-
-                default:
-                    $(this).val(unescapeHtml(current_calendar_data[key]));
-                    break;
-            }
-        }
-
-    });
-
-    $('input[fc-index="only_backwards"]').prop('disabled', !window.static_data.settings.allow_view);
-    $('input[fc-index="only_backwards"]').closest('.setting').toggleClass('disabled', !window.static_data.settings.allow_view);
-
-    let custom_week = window.static_data.year_data.timespans.filter(t => t?.week?.length > 0).length > 0
-        || window.static_data.year_data.leap_days.filter(l => l.adds_week_day).length > 0;
-
-    if (custom_week) {
-        $('#month_overflow').prop('checked', !custom_week);
-        window.static_data.year_data.overflow = false;
-    }
-
-    $('#month_overflow').prop('disabled', custom_week);
-    $('.month_overflow_container').toggleClass("hidden", custom_week)
-    $('#overflow_explanation').toggleClass('hidden', !custom_week);
-
-    $('#first_week_day_container').toggleClass('hidden', !window.static_data.year_data.overflow || window.static_data.year_data.global_week.length == 0).find('select').prop('disabled', !window.static_data.year_data.overflow || window.static_data.year_data.global_week.length == 0);
-    // global_week_sortable.sortable('refresh');
 
     block_inputs = false;
 }

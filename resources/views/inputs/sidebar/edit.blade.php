@@ -28,10 +28,6 @@
     </div>
 
     <div class='wrap-collapsible content'>
-        <div class='col-12 my-2'>
-            <div class='row'>
-                <button type="button" disabled id='btn_save' class='btn btn-lg btn-success btn-block'>No changes to save</button>
-            </div>
-        </div>
+        <x-save-button></x-save-button>
     </div>
 @endsection
