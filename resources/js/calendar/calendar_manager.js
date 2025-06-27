@@ -85,28 +85,6 @@ export function bind_calendar_events() {
     });
 }
 
-export function eval_apply_changes(output) {
-    let apply_changes_immediately = $('#apply_changes_immediately');
-
-    if (apply_changes_immediately.length === 0) {
-        output();
-    } else if (!apply_changes_immediately.is(':checked')) {
-        if (!window.changes_applied) {
-            $('#reload_background').removeClass('hidden').css('display', 'flex');
-        } else {
-            $('#reload_background').addClass('hidden').css('display', 'none');
-            output();
-        }
-    } else {
-        output();
-    }
-}
-
-export function pre_rebuild_calendar(action, dynamic_data) {
-    eval_apply_changes(function() {
-        rebuild_calendar(action, dynamic_data);
-    });
-}
 
 async function testCalendarAccuracy(fromYear = -100, toYear = 100) {
     execution_time.start();

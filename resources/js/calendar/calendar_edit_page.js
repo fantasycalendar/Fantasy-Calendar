@@ -1,5 +1,5 @@
-import { do_error_check } from "./calendar_inputs_edit.js";
 import _ from "lodash";
+import { rebuild_calendar } from "./calendar_manager.js";
 
 export default (calendar_structure) => ({
 
@@ -141,9 +141,19 @@ export default (calendar_structure) => ({
         }
 
         if (structureChanged) {
-            do_error_check("calendar", $event.detail.rerender);
-        }else if (dateChanged) {
-            update_current_day();
+            let type = this.$store.calendar.preview_date.follow
+                ? "rerender"
+                : "preview";
+            let date = this.$store.calendar.preview_date.follow
+                ? this.$store.calendar.preview_date
+                : this.$store.calendar.dynamic_data;
+
+            rebuild_calendar(type, date);
+        } else if (dateChanged) {
+            this.$dispatch('update-epochs', {
+                current_epoch: window.dynamic_data.epoch,
+                preview_epoch: preview_date.follow ? window.dynamic_data.epoch : preview_date.epoch
+            });
         }
 
         this.$dispatch('calendar-updated');

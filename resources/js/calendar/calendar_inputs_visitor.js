@@ -37,22 +37,6 @@ export function copy_link(epoch_data) {
 }
 
 
-export function update_current_day(recalculate) {
-
-    if (recalculate) {
-        window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
-    }
-
-    window.dispatchEvent(new CustomEvent('update-epochs', {
-        detail: {
-            current_epoch: window.dynamic_data.epoch,
-            preview_epoch: preview_date.follow ? window.dynamic_data.epoch : preview_date.epoch
-        }
-    }));
-
-}
-
-
 export function repopulate_timespan_select(select, val, change, max) {
     if (window.static_data.year_data.timespans.length == 0 || window.static_data.year_data.global_week.length == 0) return;
 

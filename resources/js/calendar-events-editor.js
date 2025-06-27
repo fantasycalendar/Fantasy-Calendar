@@ -2,7 +2,7 @@ import { submit_new_event, submit_edit_event, submit_delete_event } from "./cale
 import { ordinal_suffix_of, precisionRound, clone } from "./calendar/calendar_functions";
 import { condition_mapping, moon_phases } from "./calendar/calendar_variables";
 import { repopulate_timespan_select, repopulate_day_select } from "./calendar/calendar_inputs_visitor";
-import { eval_apply_changes, rerender_calendar } from "./calendar/calendar_manager";
+import { rerender_calendar } from "./calendar/calendar_manager";
 import { hide_loading_screen } from "./calendar/header";
 
 export default () => ({
@@ -417,11 +417,7 @@ export default () => ({
     submit_event_callback(success) {
 
         if (success) {
-
-            eval_apply_changes(function() {
-                rerender_calendar();
-            });
-
+            rerender_calendar();
         }
 
     },

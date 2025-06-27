@@ -1,25 +1,13 @@
-import { evaluate_background_size } from "./header";
 import {
-    update_name,
-    update_dynamic,
-    update_all,
     delete_calendar,
     create_calendar,
 } from "./calendar_ajax_functions";
 import {
-    unescapeHtml,
-    debounce,
     convert_year,
-    does_timespan_appear,
-    clone,
     evaluate_calendar_start,
-    get_calendar_data,
 } from "./calendar_functions";
 import { climate_charts } from "./calendar_weather_layout";
-import {
-    update_current_day,
-} from "./calendar_inputs_visitor";
-import { pre_rebuild_calendar, rebuild_calendar, rebuild_climate } from "./calendar_manager";
+import { rebuild_calendar } from "./calendar_manager";
 import CalendarRenderer from "../calendar-renderer";
 
 export var changes_applied = true;
@@ -30,8 +18,6 @@ let calendar_container = null;
 let weather_container = null;
 
 export function set_up_edit_inputs() {
-
-    window.owned_calendars = {};
 
     // window.onbeforeunload = function(e) {
 
@@ -86,24 +72,19 @@ export function set_up_edit_inputs() {
 
         view_type = $(this).attr('data-view-type');
 
-
-        let owner = true;
-
         $('.view-tabs .btn-primary').removeClass('btn-primary').addClass('btn-secondary');
 
         $(this).removeClass('btn-secondary').addClass('btn-primary');
 
-        var errors = get_errors();
-
         switch (view_type) {
             case "owner":
                 Perms.owner = true;
-                if (creation.is_done() && errors.length == 0) {
+                if (creation.is_done()) {
                     if (previous_view_type !== 'owner') {
                         if (!window.preview_date.follow) {
-                            pre_rebuild_calendar('preview', window.preview_date);
+                            rebuild_calendar('preview', window.preview_date);
                         } else {
-                            pre_rebuild_calendar('calendar', window.dynamic_data);
+                            rebuild_calendar('calendar', window.dynamic_data);
                         }
                     }
                 }
@@ -116,12 +97,12 @@ export function set_up_edit_inputs() {
 
             case "player":
                 Perms.owner = false;
-                if (creation.is_done() && errors.length == 0) {
+                if (creation.is_done()) {
                     if (previous_view_type !== 'player') {
                         if (!window.preview_date.follow) {
-                            pre_rebuild_calendar('preview', window.preview_date);
+                            rebuild_calendar('preview', window.preview_date);
                         } else {
-                            pre_rebuild_calendar('calendar', window.dynamic_data);
+                            rebuild_calendar('calendar', window.dynamic_data);
                         }
                     }
                 }
@@ -134,7 +115,7 @@ export function set_up_edit_inputs() {
 
             case "weather":
                 CalendarRenderer.last_scroll_height = $("#calendar_container").scrollTop();
-                if (creation.is_done() && errors.length == 0) {
+                if (creation.is_done()) {
                     climate_charts.active_view = true;
                 }
                 calendar_container.addClass('hidden');
@@ -162,40 +143,9 @@ export function set_up_edit_inputs() {
 
     $('#apply_changes_btn').click(function() {
 
-        var errors = get_errors();
-
-        if (errors.length == 0 && $('.invalid').length == 0) {
+        if ($('.invalid').length == 0) {
 
             changes_applied = true;
-
-            if (!window.preview_date.follow) {
-
-                pre_rebuild_calendar('preview', window.preview_date);
-
-            } else {
-
-                pre_rebuild_calendar('calendar', window.dynamic_data);
-
-
-            }
-
-        }
-
-    });
-
-    $('#apply_changes_immediately').change(function() {
-
-        var checked = $(this).is(':checked');
-
-        var errors = get_errors();
-
-        if (errors.length > 0) {
-            return;
-        }
-
-        if (checked) {
-
-            changes_applied = false;
 
             if (!window.preview_date.follow) {
 
@@ -223,93 +173,8 @@ export function set_up_edit_inputs() {
         }
     });
 
-    document.addEventListener("advancement-changed", function(event) {
-        advancement = event.detail.data;
-    });
 }
 
-
-function get_errors() {
-
-    var errors = [];
-
-    if (window.calendar_name == "") {
-        errors.push("The calendar name cannot be empty.")
-    }
-
-    if (window.static_data.year_data.timespans.length != 0) {
-        for (var era_i = 0; era_i < window.static_data.eras.length; era_i++) {
-            var era = window.static_data.eras[era_i];
-            if (window.static_data.year_data.timespans[era.date.timespan]) {
-                var appears = does_timespan_appear(window.static_data, convert_year(window.static_data, era.date.year), era.date.timespan);
-                if (!appears.result) {
-                    if (appears.reason == 'era ended') {
-                        errors.push(`Era <i>${era.name}</i> is on a date that doesn't exist due to a previous era ending the year. Please move it to another year.`);
-                    } else {
-                        errors.push(`Era <i>${era.name}</i> is currently on a month that is leaping on that year. Please change its year or move it to another month.`);
-                    }
-                }
-            } else {
-                errors.push(`Era <i>${era.name}</i> doesn't have a valid month.`);
-            }
-        }
-
-        for (var era_i = 0; era_i < window.static_data.eras.length - 1; era_i++) {
-            var curr = window.static_data.eras[era_i];
-            var next = window.static_data.eras[era_i + 1];
-            if (!curr.settings.starting_era && !next.settings.starting_era) {
-                if (curr.year == next.date.year && curr.settings.ends_year && next.settings.ends_year) {
-                    errors.push(`Eras <i>${curr.name}</i> and <i>${next.name}</i> both end the same year. This is not possible.`);
-                }
-                if (curr.date.year == next.date.year && curr.date.timespan == next.date.timespan && curr.date.day == next.date.day) {
-                    errors.push(`Eras <i>${window.static_data.eras[era_i].name}</i> and <i>${window.static_data.eras[era_i + 1].name}</i> both share the same date. One has to come after another.`);
-                }
-            }
-        }
-    }
-
-    if (window.static_data.year_data.timespans.length != 0) {
-
-        if (window.static_data.seasons.global_settings.periodic_seasons) {
-            for (var season_i = 0; season_i < window.static_data.seasons.data.length; season_i++) {
-                var season = window.static_data.seasons.data[season_i];
-                if (window.static_data.seasons.global_settings.periodic_seasons) {
-                    if (season.transition_length == 0) {
-                        errors.push(`Season <i>${season.name}</i> can't have 0 transition length.`);
-                    }
-                } else {
-                    if (window.static_data.year_data.timespans[season.timespan].interval != 1) {
-                        errors.push(`Season <i>${season.name}</i> can't be on a leaping month.`);
-                    }
-                }
-            }
-        } else {
-
-            for (var season_i = 0; season_i < window.static_data.seasons.data.length - 1; season_i++) {
-                var curr_season = window.static_data.seasons.data[season_i];
-                var next_season = window.static_data.seasons.data[season_i + 1];
-                if (curr_season.timespan == next_season.timespan && curr_season.day == next_season.day) {
-                    errors.push(`Season <i>${curr_season.name}</i> and <i>${next_season.name}</i> cannot be on the same month and day.`);
-                }
-            }
-        }
-    }
-
-    if (window.static_data.clock.enabled) {
-
-        if (window.static_data.clock.hours === 0) {
-            errors.push(`If the clock is enabled, you need to have more than 0 hours per day.`);
-        }
-
-        if (window.static_data.clock.minutes === 0) {
-            errors.push(`If the clock is enabled, you need to have more than 0 minutes per hour.`);
-        }
-
-    }
-
-    return errors;
-
-}
 
 export const creation = {
 
@@ -365,63 +230,6 @@ export const creation = {
     }
 }
 
-export var do_error_check = debounce(function(type, rebuild) {
-
-    if (!creation.is_done()) {
-
-        evaluate_background_size();
-
-        $('#generator_container').removeClass();
-        $('#generator_container').addClass('step-' + (creation.current_step));
-
-    } else {
-
-        $('#generator_container').removeClass();
-
-        var errors = get_errors();
-
-        if (errors.length == 0 && $('.static_input.invalid').length == 0 && $('.dynamic_input.invalid').length == 0) {
-
-            error_check(type, rebuild);
-
-        }
-
-    }
-}, 150);
-
-function error_check(parent, rebuild) {
-
-    changes_applied = false;
-
-    if (parent === "eras") {
-        for (var i = 0; i < window.static_data.eras.length; i++) {
-            window.static_data.eras[i].date.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.static_data.eras[i].date.year), window.static_data.eras[i].date.timespan, window.static_data.eras[i].date.day).epoch;
-        }
-    }
-    if (rebuild === undefined || rebuild) {
-
-        if (!window.preview_date.follow) {
-
-            pre_rebuild_calendar('preview', window.preview_date);
-
-        } else {
-
-            pre_rebuild_calendar('calendar', window.dynamic_data);
-
-
-        }
-
-    } else {
-
-        if (parent !== undefined && (parent === "seasons")) {
-            rebuild_climate();
-        } else {
-            pre_rebuild_calendar('calendar', window.dynamic_data);
-            update_current_day(true);
-        }
-    }
-
-}
 
 export function get_category(search) {
     if (window.event_categories.length == 0) {
@@ -506,7 +314,7 @@ export function autoload(popup) {
         window.event_categories = data.event_categories;
         window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
 
-        do_error_check("calendar", true);
+        rebuild_calendar("calendar", window.dynamic_data);
 
         if (popup) {
             swal.fire({

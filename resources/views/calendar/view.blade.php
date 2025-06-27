@@ -174,8 +174,6 @@
 
             if(rebuild || ((data.rebuild || window.static_data.settings.only_reveal_today) && preview_date.follow)){
                 rebuild_calendar('calendar', dynamic_data);
-            }else{
-                update_current_day(false);
             }
 
         }

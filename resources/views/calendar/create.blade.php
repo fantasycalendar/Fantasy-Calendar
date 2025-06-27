@@ -108,7 +108,7 @@
                 query_autoload();
             }
 
-            do_error_check();
+            rebuild_calendar("calendar", window.dynamic_data);
 
             if(should_save(queryString)) {
                 window.onbeforeunload = function () {}
