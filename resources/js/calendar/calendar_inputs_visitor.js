@@ -1,16 +1,11 @@
 import $ from 'jquery';
 import {
     get_calendar_data,
-    debounce,
-    date_manager,
-    valid_preview_date,
     convert_year,
     get_days_in_timespan,
     does_timespan_appear,
     evaluate_calendar_start,
 } from "./calendar_functions";
-import { set_up_view_values } from "./calendar_inputs_view";
-import { rebuild_calendar } from "./calendar_manager";
 
 export function copy_link(epoch_data) {
 
@@ -223,9 +218,4 @@ export function repopulate_day_select(select, val, change, no_leaps, max, filter
         }
 
     });
-}
-
-export function set_up_visitor_values() {
-    preview_date.follow = true;
-    window.preview_date_manager = new date_manager(window.static_data, window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
 }

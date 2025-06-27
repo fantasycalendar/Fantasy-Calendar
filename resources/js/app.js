@@ -166,29 +166,20 @@ window.date_manager = date_manager;
 window.valid_preview_date = valid_preview_date;
 window.convert_year = convert_year;
 
-import { set_up_view_inputs } from './calendar/calendar_inputs_view.js';
-window.set_up_view_inputs = set_up_view_inputs;
-
 import {
-    set_up_visitor_values,
     update_current_day,
     repopulate_timespan_select,
     repopulate_day_select,
     copy_link,
 } from './calendar/calendar_inputs_visitor.js';
-window.set_up_visitor_values = set_up_visitor_values;
 window.update_current_day = update_current_day;
 window.repopulate_timespan_select = repopulate_timespan_select;
 window.repopulate_day_select = repopulate_day_select;
 window.copy_link = copy_link;
 
-import { set_up_view_values } from './calendar/calendar_inputs_view.js';
-window.set_up_view_values = set_up_view_values;
-
 import {
     set_up_edit_inputs,
     do_error_check,
-    adjustInput,
     evaluate_save_button,
     set_up_edit_values,
     query_autoload,
@@ -197,7 +188,6 @@ import {
 } from './calendar/calendar_inputs_edit.js';
 window.set_up_edit_inputs = set_up_edit_inputs;
 window.do_error_check = do_error_check;
-window.adjustInput = adjustInput;
 window.evaluate_save_button = evaluate_save_button;
 window.set_up_edit_values = set_up_edit_values;
 window.query_autoload = query_autoload;

@@ -10,10 +10,6 @@
                     window.preview_date = _.cloneDeep(dynamic_data);
                     window.preview_date.follow = true;
 
-                    set_up_view_inputs();
-                    set_up_view_values();
-                    set_up_visitor_values();
-
                     bind_calendar_events();
 
                     if(!evaluate_queryString(window.location.search)){
@@ -178,12 +174,9 @@
 
             if(rebuild || ((data.rebuild || window.static_data.settings.only_reveal_today) && preview_date.follow)){
                 rebuild_calendar('calendar', dynamic_data);
-                set_up_visitor_values();
             }else{
                 update_current_day(false);
             }
-
-            set_up_view_values();
 
         }
     </script>

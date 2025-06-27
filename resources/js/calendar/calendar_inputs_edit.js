@@ -17,10 +17,8 @@ import {
 } from "./calendar_functions";
 import { climate_charts } from "./calendar_weather_layout";
 import {
-    set_up_visitor_values,
     update_current_day,
 } from "./calendar_inputs_visitor";
-import { set_up_view_values } from "./calendar_inputs_view";
 import { pre_rebuild_calendar, rebuild_calendar, rebuild_climate } from "./calendar_manager";
 import CalendarRenderer from "../calendar-renderer";
 
@@ -71,8 +69,6 @@ export function set_up_edit_inputs() {
     //     }
 
     // };
-
-    set_up_view_inputs();
 
     save_button = $('#btn_save');
 
@@ -480,17 +476,6 @@ function error_check(parent, rebuild) {
 
 }
 
-function evaluate_remove_buttons() {
-    $('.month .btn_remove, .week_day .btn_remove').each(function() {
-        $(this).toggleClass('disabled', $(this).closest('.sortable').children().length == 1);
-    });
-}
-
-
-export function adjustInput(element, target, int) {
-    var target = $(target);
-    target.val((target.val() | 0) + int).change();
-}
 
 export function calendar_saved() {
     var text = "Saved!"
@@ -652,8 +637,6 @@ export function set_up_edit_values() {
     $('#first_week_day_container').toggleClass('hidden', !window.static_data.year_data.overflow || window.static_data.year_data.global_week.length == 0).find('select').prop('disabled', !window.static_data.year_data.overflow || window.static_data.year_data.global_week.length == 0);
     // global_week_sortable.sortable('refresh');
 
-    evaluate_remove_buttons();
-
     block_inputs = false;
 }
 
@@ -740,8 +723,6 @@ export function autoload(popup) {
         window.event_categories = data.event_categories;
         window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
         set_up_edit_values();
-        set_up_view_values();
-        set_up_visitor_values();
 
         do_error_check("calendar", true);
 

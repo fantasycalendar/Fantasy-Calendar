@@ -50,12 +50,12 @@ export default (calendar_structure) => ({
         window.preview_date = _.cloneDeep(calendar_structure.dynamic_data);
         window.preview_date.follow = true;
 
+        this.$store.calendar.setup();
+
         rebuild_calendar('calendar', dynamic_data);
 
         set_up_edit_inputs();
         set_up_edit_values();
-        set_up_view_values();
-        set_up_visitor_values();
 
         bind_calendar_events();
 
@@ -104,70 +104,32 @@ export default (calendar_structure) => ({
     },
 
     check_dates() {
-
         if ((document.hasFocus() && (Date.now() - this.last_mouse_move) < 10000) || window.advancement.advancement_enabled) {
-
             this.instapoll = false;
-
             check_last_change(window.hash, (result) => {
-
                 this.new_dynamic_change = new Date(result.last_dynamic_change)
-
                 if (this.new_dynamic_change > window.last_dynamic_change) {
-
                     window.last_dynamic_change = this.new_dynamic_change
-
                     get_dynamic_data(window.hash, (result) => {
-
                         if (result.error) {
                             throw result.message;
                         }
-
-                        window.dynamic_data = _.cloneDeep(result.dynamic_data);
-
-                        this.check_update(false);
+                        window.dispatchEvent(new CustomEvent("calendar-updated", {
+                            detail: {
+                                calendar: {
+                                    dynamic_data: result.dynamic_data
+                                }
+                            }
+                        }));
                         this.poll_timer = setTimeout(this.check_dates.bind(this), 5000);
-
                     });
-
                 } else {
-
                     this.poll_timer = setTimeout(this.check_dates.bind(this), 5000);
-
                 }
-
             });
-
         } else {
-
             this.instapoll = true;
-
         }
-
-    },
-
-    check_update(rebuild) {
-
-        let data = window.dynamic_date_manager.reconcileCalendarChange(window.static_data, window.dynamic_data);
-
-        window.dynamic_date_manager = new date_manager(window.static_data, window.dynamic_data.year, window.dynamic_data.timespan, window.dynamic_data.day);
-
-        if (window.preview_date.follow) {
-            window.preview_date = _.cloneDeep(window.dynamic_data);
-            window.preview_date.follow = true;
-            window.preview_date_manager = new date_manager(window.static_data, window.preview_date.year, window.preview_date.timespan, window.preview_date.day);
-        }
-
-        // display_preview_back_button();
-
-        if (rebuild || ((data.rebuild || window.static_data.settings.only_reveal_today) && window.preview_date.follow)) {
-            rebuild_calendar('calendar', window.dynamic_data);
-            set_up_visitor_values();
-        } else {
-            update_current_day(false);
-        }
-
-        set_up_view_values();
 
     },
 

@@ -8,6 +8,11 @@ import {
 
 export default class Calendar {
 
+    setup() {
+        window.dynamic_date_manager = new date_manager(this.static_data, this.dynamic_data.year, this.dynamic_data.timespan, this.dynamic_data.day);
+        window.preview_date_manager = new date_manager(this.static_data, this.preview_date.year, this.preview_date.timespan, this.preview_date.day);
+    }
+
     update(incomingChanges) {
         // TODO: Make recalculation more atomic
         let rerenderKeys = [
