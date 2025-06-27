@@ -1,7 +1,7 @@
 import RandomCalendar from './random-calendar.js';
 import { get_preset_data } from './calendar/calendar_ajax_functions.js';
 import { convert_year, clone, evaluate_calendar_start } from './calendar/calendar_functions.js';
-import { do_error_check, set_up_edit_values } from './calendar/calendar_inputs_edit.js';
+import { do_error_check } from './calendar/calendar_inputs_edit.js';
 
 export default () => ({
     open: false,
@@ -167,7 +167,6 @@ export default () => ({
                             window.event_categories = clone(calendar.event_categories);
                             window.events = clone(calendar.events);
                             window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
-                            set_up_edit_values();
                             do_error_check('calendar', true);
                             this.open = false;
                             this.preset_applied = true;
@@ -208,7 +207,6 @@ export default () => ({
                                 "custom_location": false,
                                 "location": "Equatorial"
                             };
-                            set_up_edit_values();
                             do_error_check('calendar', true);
                             this.open = false;
                             this.preset_applied = true;
@@ -285,7 +283,6 @@ export default () => ({
             delete category.deleted_at;
         }
 
-        set_up_edit_values();
         do_error_check();
         $.notify(
             "Calendar preset loaded!",

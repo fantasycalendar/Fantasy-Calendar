@@ -4,8 +4,23 @@
     <div class='wrap-collapsible content mt-3'>
         <div class='row no-gutters'>
             <div class='col-12 mb-2'>
-                <div class="input-group">
-                    <input type='text' class='form-control form-control-lg' id='calendar_name' placeholder='Calendar name' />
+                <div class="input-group" x-data>
+                    <input
+                        x-data="{
+                            name: '{{ $calendar->name }}',
+                            change() {
+                                this.$dispatch('calendar-updating', {
+                                    calendar: {
+                                        calendar_name: this.name
+                                    }
+                                });
+                            }
+                        }"
+                        x-model="name"
+                        @change="change"
+                        type='text' class='form-control form-control-lg'
+                        placeholder='Calendar name'
+                    />
                     <div class="dropdown input-group-append" x-data="{ open: false }">
                         <button class="btn btn-secondary dropdown-toggle" id="calendarMenuToggle" @click="open = !open">
                             <i class="fa fa-cog"></i>

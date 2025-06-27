@@ -55,7 +55,6 @@ export default (calendar_structure) => ({
         rebuild_calendar('calendar', dynamic_data);
 
         set_up_edit_inputs();
-        set_up_edit_values();
 
         bind_calendar_events();
 

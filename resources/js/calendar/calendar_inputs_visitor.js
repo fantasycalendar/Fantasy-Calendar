@@ -37,19 +37,6 @@ export function copy_link(epoch_data) {
 }
 
 
-export function set_up_visitor_inputs() {
-
-    $('#calendar_container').scroll(function(event) {
-        if ($('#top_follower').height() < $(this).scrollTop()) {
-            $('#top_follower').addClass('follower_shadow');
-        } else {
-            $('#top_follower').removeClass('follower_shadow');
-        }
-    });
-
-}
-
-
 export function update_current_day(recalculate) {
 
     if (recalculate) {

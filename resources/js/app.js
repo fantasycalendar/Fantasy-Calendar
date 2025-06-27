@@ -180,14 +180,12 @@ window.copy_link = copy_link;
 import {
     set_up_edit_inputs,
     do_error_check,
-    set_up_edit_values,
     query_autoload,
     autoload,
     linked_popup,
 } from './calendar/calendar_inputs_edit.js';
 window.set_up_edit_inputs = set_up_edit_inputs;
 window.do_error_check = do_error_check;
-window.set_up_edit_values = set_up_edit_values;
 window.query_autoload = query_autoload;
 window.autoload = autoload;
 window.linked_popup = linked_popup;

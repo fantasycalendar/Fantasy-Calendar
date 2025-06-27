@@ -145,13 +145,6 @@ export function set_up_edit_inputs() {
 
     });
 
-    /* ------------------- Dynamic and static callbacks ------------------- */
-
-    $('#calendar_name').change(function() {
-        window.calendar_name = $(this).val();
-        do_error_check();
-    });
-
     /* ------------------- Layout callbacks ------------------- */
 
     $(document).on('click', '.location_toggle', function() {
@@ -430,16 +423,6 @@ function error_check(parent, rebuild) {
 
 }
 
-var block_inputs = false;
-
-export function set_up_edit_values() {
-    block_inputs = true;
-
-    $('#calendar_name').val(window.calendar_name);
-
-    block_inputs = false;
-}
-
 export function get_category(search) {
     if (window.event_categories.length == 0) {
         return { id: -1 };
@@ -522,7 +505,6 @@ export function autoload(popup) {
         window.events = data.events;
         window.event_categories = data.event_categories;
         window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
-        set_up_edit_values();
 
         do_error_check("calendar", true);
 

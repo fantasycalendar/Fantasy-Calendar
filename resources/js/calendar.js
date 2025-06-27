@@ -66,6 +66,8 @@ export default class Calendar {
             && !this.static_data.year_data.leap_days.some(leapDay => leapDay.adds_week_day)
             && !this.static_data.year_data.timespans.some(month => month?.week?.length);
 
+        document.title = this.calendar_name + " - Fantasy Calendar";
+
         return [structureChanged, dateChanged];
     }
 
@@ -363,6 +365,10 @@ export default class Calendar {
     }
 
     // Setters
+    set calendar_name(value) {
+        window.calendar_name = value;
+    }
+
     set static_data(value) {
         window.static_data = value;
     }
