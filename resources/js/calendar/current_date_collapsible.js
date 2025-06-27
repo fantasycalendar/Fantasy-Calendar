@@ -147,6 +147,10 @@ class CurrentDateCollapsible extends CollapsibleComponent {
 
     /** ------------------- VIEWED DATE ---------------------- **/
 
+    adjust_selected_date() {
+        this.$store.calendar.adjust_selected_date(this.date_adjustment_units);
+    }
+
     set_selected_date_active(active) {
         this.$store.calendar.set_selected_date_active(active);
     }
@@ -207,8 +211,8 @@ class CurrentDateCollapsible extends CollapsibleComponent {
         this.$store.calendar.increment_selected_year();
     }
 
-    get dateAdjustmentEnabled() {
-        return !Object
+    get dateAdjustmentDisabled() {
+        return Object
             .values(this.date_adjustment_units)
             .every(x => x === null || x === '');
     }

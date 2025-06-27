@@ -163,10 +163,10 @@
 
         <div class="flex space-x-2">
             @if(request()->is('calendars/*/edit') && $calendar?->parent == null)
-                <button type="button" class="btn btn-primary btn-block mt-2" @click="adjust_current_date" :disabled="dateAdjustmentEnabled">Current date</button>
+                <button type="button" class="btn btn-primary btn-block mt-2" @click="adjust_current_date" :disabled="dateAdjustmentDisabled">Current date</button>
             @endif
 
-            <button type="button" class="btn btn-secondary btn-block mt-2" @click="adjust_selected_date" :disabled="dateAdjustmentEnabled">Selected date</button>
+            <button type="button" class="btn btn-secondary btn-block mt-2" @click="adjust_selected_date" :disabled="dateAdjustmentDisabled">Selected date</button>
         </div>
     </div>
 </div>

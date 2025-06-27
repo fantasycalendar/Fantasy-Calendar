@@ -435,52 +435,32 @@ export class date_manager {
     }
 
     adjust_unit(unit, amount) {
-        console.log("Adjusting " + unit + " by " + amount);
-
         while (amount > 0) {
-            console.log("Calling " + "add_" + unit);
-
             this["add_" + unit]();
-
             amount--;
         }
 
         while (amount < 0) {
-            console.log("Calling " + "subtract_" + unit);
-
             this["subtract_" + unit]();
-
             amount++;
         }
     }
 
     adjust_years(years) {
+        if(!years) return this;
         this.year += years;
-
         return this;
     }
 
     adjust_months(months) {
-        this.adjust_unit('month', months);
-
+        if(!months) return this;
+        this.adjust_unit('timespan', months);
         return this;
     }
 
     adjust_days(days) {
+        if(!days) return this;
         this.adjust_unit('day', days);
-
-        return this;
-    }
-
-    adjust_hours(hours) {
-        // this.adjust_unit('hour', hours);
-
-        return this;
-    }
-
-    adjust_minutes(minutes) {
-        // this.adjust_unit('minute', minutes);
-
         return this;
     }
 

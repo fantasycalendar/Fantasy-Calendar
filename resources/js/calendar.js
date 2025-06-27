@@ -3,7 +3,7 @@ import {
     avg_month_length,
     avg_year_length, convert_year, date_manager, does_day_appear,
     does_timespan_appear,
-    evaluate_calendar_start, get_current_era, get_days_in_timespan, get_timespans_in_year
+    evaluate_calendar_start, fract, get_current_era, get_days_in_timespan, get_timespans_in_year, precisionRound
 } from "./calendar/calendar_functions.js";
 
 export default class Calendar {
@@ -100,6 +100,28 @@ export default class Calendar {
     does_day_appear(year, timespan, day) {
         // TODO: Replace this with something a bit more holistic?
         return does_day_appear(this.static_data, convert_year(this.static_data, year), timespan, day);
+    }
+
+    adjust_selected_date({ years = 0, months = 0, days = 0, hours = 0, minutes = 0 } = {}) {
+        let extra_days = 0;
+        if(this.static_data.clock.enabled && (hours || minutes)) {
+            let extra_hours = (hours ?? 0) + ((this.preview_date.minute + (minutes ?? 0)) / this.static_data.clock.minutes);
+            extra_days = (extra_hours + this.preview_date.hour) / this.static_data.clock.hours;
+            extra_days = Math.floor(extra_days);
+            days += extra_days;
+        }
+
+        let { adjusted_year, timespan, day } = new date_manager(
+            this.static_data,
+            this.preview_date.year,
+            this.preview_date.timespan,
+            this.preview_date.day,
+        )
+            .adjust_years(years)
+            .adjust_months(months)
+            .adjust_days(days);
+
+        this.set_selected_date({ year: adjusted_year, month: timespan, day, follow: true });
     }
 
     set_selected_date({
@@ -246,7 +268,25 @@ export default class Calendar {
     };
 
     adjust_current_date({ years = 0, months = 0, days = 0, hours = 0, minutes = 0 } = {}) {
-        let { year, timespan, day } = new date_manager(
+
+        let extra_days = 0;
+        let hour = this.dynamic_data.hour;
+        let minute = this.dynamic_data.minute;
+
+        if(this.static_data.clock.enabled && (hours || minutes)) {
+            let extra_hours = (hours ?? 0) + ((this.dynamic_data.minute + (minutes ?? 0)) / this.static_data.clock.minutes);
+            extra_days = (extra_hours + this.dynamic_data.hour) / this.static_data.clock.hours;
+
+            hour = precisionRound(fract(extra_days) * this.static_data.clock.hours, 4);
+            minute = Math.floor(fract(hour) * this.static_data.clock.minutes);
+
+            extra_days = Math.floor(extra_days);
+            hour = Math.floor(hour);
+
+            days += extra_days;
+        }
+
+        let { adjusted_year, timespan, day } = new date_manager(
             this.static_data,
             this.dynamic_data.year,
             this.dynamic_data.timespan,
@@ -254,11 +294,9 @@ export default class Calendar {
         )
             .adjust_years(years)
             .adjust_months(months)
-            .adjust_days(days)
-            .adjust_hours(hours)
-            .adjust_minutes(minutes);
+            .adjust_days(days);
 
-        this.set_current_date({ year, month: timespan, day });
+        this.set_current_date({ year: adjusted_year, month: timespan, day, hour, minute });
     }
 
     set_current_date({
@@ -268,7 +306,6 @@ export default class Calendar {
         hour = this.dynamic_data.hour,
         minute = this.dynamic_data.minute,
     } = {}) {
-
         if (minute >= this.static_data.clock.minutes) {
             hour += 1;
             minute = minute - this.static_data.clock.minutes;
