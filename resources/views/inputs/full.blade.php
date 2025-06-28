@@ -124,73 +124,7 @@
         </div>
     </div>
 
-    <div id="top_follower" :class="{ 'single_month': apply == 'single_month' }"
-         x-data="{ apply: '', toggle() { window.toggle_sidebar(); } }"
-         @layout-change.window="apply = $event.detail.apply">
-
-
-        <div class='flex-shrink-1 is-active' id='input_collapse_btn'>
-            <button class="btn btn-secondary px-3">
-                <i class="fa fa-bars"></i>
-            </button>
-        </div>
-
-        <div class='parent_button_container hidden d-print-none'>
-            <div class='container d-flex h-100 p-0'>
-                <div class='col justify-content-center align-self-center full'>
-                    <button class='btn btn-danger full' disabled id='rebuild_calendar_btn'>Parent data changed -
-                        reload
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <div class='btn_container hidden'>
-            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none sub_year' disabled
-                    fc-index='year'
-                    value='-1'>&lt; Year
-            </button>
-            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none sub_month' disabled
-                    fc-index='timespan'
-                    value='-1'>
-                <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-left"></i></span>
-            </button>
-        </div>
-
-        <div class='reset_preview_date_container left hidden'>
-            <button type='button' class='btn btn-success reset_preview_date protip d-print-none'
-                    data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'>&lt;
-                Current
-            </button>
-        </div>
-
-        <div class="follower_center flex-grow-1">
-            <div id='top_follower_content'>
-                <div class='year'></div>
-                <div class='cycle'></div>
-            </div>
-        </div>
-
-        <div class='reset_preview_date_container right hidden'>
-            <button type='button' class='btn btn-success reset_preview_date protip d-print-none'
-                    data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'>
-                Current &gt;
-            </button>
-        </div>
-
-        <div class='btn_container hidden'>
-            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none add_year' disabled
-                    fc-index='year'
-                    value='1'>Year >
-            </button>
-            <button class='btn btn-outline-secondary btn_preview_date hidden d-print-none add_month' disabled
-                    fc-index='timespan'
-                    value='1'>
-                <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-right"></i></span>
-            </button>
-        </div>
-
-    </div>
+    <x-calendar-year-header></x-calendar-year-header>
 
     @include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
 

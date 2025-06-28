@@ -6,38 +6,24 @@ export default () => ({
     dynamic_data: undefined,
     preview_date: undefined,
     epoch_data: undefined,
-    year_element: undefined,
-    cycle_element: undefined,
+    parent_data_changed: false,
+    layout: "grid",
 
-    update: function(static_data, dynamic_data, preview_date, epoch_data) {
-
-        this.static_data = static_data;
+    update() {
+        this.static_data = this.$store.calendar.static_data;
         this.cycles = this.static_data.cycles;
         this.eras = this.static_data.eras;
-        this.dynamic_data = dynamic_data;
-        this.preview_date = preview_date;
-        this.epoch_data = epoch_data;
-
-        if (!this.year_element) {
-            this.year_element = $('#top_follower_content').find(".year");
-        }
-
-        if (!this.cycle_element) {
-            this.cycle_element = $('#top_follower_content').find(".cycle");
-        }
-
-        this.updateYearText();
-        this.updateCycleText();
-
+        this.dynamic_data = this.$store.calendar.dynamic_data;
+        this.preview_date = this.$store.calendar.preview_date;
+        this.epoch_data = this.$store.calendar.evaluated_static_data.epoch_data;
+        this.layout = this.static_data.settings.layout;
     },
 
-    updateYearText() {
-        this.year_element.text(this.getYearText());
-    },
+    get year_header_text() {
 
-    getYearText() {
+        if(!this.static_data) return "";
 
-        const currentEra = this.getCurrentEra();
+        const currentEra = this.get_epoch_data()?.era ?? -1;
 
         if (currentEra !== -1) {
 
@@ -53,19 +39,19 @@ export default () => ({
                     format = era.formatting.replace(/{{/g, '{{{').replace(/}}/g, '}}}');
                 }
 
-                return this.renderYearMustache(format, era.name)
+                return this.render_year_mustache(format, era.name)
 
             }
 
         }
 
-        return this.renderYearMustache(`Year {{year}}`);
+        return this.render_year_mustache(`Year {{year}}`);
 
     },
 
-    renderYearMustache(inFormat, eraName = false) {
+    render_year_mustache(inFormat, eraName = false) {
 
-        const epochData = this.getEpochData();
+        const epochData = this.get_epoch_data();
 
         // TODO: FIXIT
         let mustacheData = {
@@ -89,37 +75,18 @@ export default () => ({
 
     },
 
-    getCurrentEra() {
-        return this.getEpochData()?.era ?? -1;
-    },
+    get cycle_header_text() {
 
-    updateCycleText() {
-
-        const cycleText = this.getCycleText();
-
-        this.cycle_element
-            .html(sanitizeHtml(cycleText))
-            .removeClass('hidden')
-            .toggleClass('smaller', cycleText.includes("<br>"));
-
-    },
-
-    getCycleText() {
-
-        if (!this.cycles.data.length) return "";
+        if (!this.cycles?.data?.length) return "";
 
         return Mustache.render(
             this.cycles.format.replace(/{{/g, '{{{').replace(/}}/g, '}}}'),
-            this.getCycle()
+            get_cycle(this.static_data, this.get_epoch_data()).text
         );
 
     },
 
-    getCycle() {
-        return get_cycle(this.static_data, this.getEpochData()).text;
-    },
-
-    getEpochData() {
+    get_epoch_data() {
         return this.epoch_data?.[this.epoch];
     },
 
@@ -128,5 +95,29 @@ export default () => ({
             ? this.preview_date.epoch
             : this.dynamic_data.epoch;
     },
+
+    get is_selected_date_ahead(){
+        return !this.preview_date?.follow && this.preview_date?.epoch > this.dynamic_data?.epoch;
+    },
+
+    get is_selected_date_behind(){
+        return !this.preview_date?.follow && this.preview_date?.epoch < this.dynamic_data?.epoch;
+    },
+
+    select_next_year(){
+        this.$store.calendar.increment_selected_year(false);
+    },
+
+    select_previous_year(){
+        this.$store.calendar.decrement_selected_year(false);
+    },
+
+    select_next_month(){
+        this.$store.calendar.increment_selected_month(false);
+    },
+
+    select_previous_month(){
+        this.$store.calendar.decrement_selected_month(false);
+    }
 
 })

@@ -224,9 +224,7 @@ Alpine.data('EventsManager', EventsManager);
 Alpine.data('CalendarEventEditor', CalendarEventEditor);
 Alpine.data('CalendarEventViewer', CalendarEventViewer);
 Alpine.data('CalendarGridDay', CalendarGridDay);
-
-window.calendar_year_header = CalendarYearHeader();
-Alpine.data('CalendarYearHeader', window.calendar_year_header);
+Alpine.data('CalendarYearHeader', CalendarYearHeader);
 
 import SaveButton from './calendar/save_button.js';
 Alpine.data('SaveButton', SaveButton)

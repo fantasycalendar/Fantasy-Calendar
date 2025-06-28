@@ -14,6 +14,7 @@ export default class Calendar {
     }
 
     update(incomingChanges) {
+
         // TODO: Make recalculation more atomic
         let rerenderKeys = [
             "static_data.year_data",
@@ -188,28 +189,28 @@ export default class Calendar {
         this.set_selected_date({ year });
     }
 
-    decrement_selected_day() {
-        this.set_selected_date({ day: this.preview_date.day - 1 });
+    decrement_selected_day(follow) {
+        this.set_selected_date({ day: this.preview_date.day - 1, follow: follow ?? this.preview_date.follow });
     };
 
-    decrement_selected_month() {
-        this.set_selected_date({ month: this.preview_date.timespan - 1 });
+    decrement_selected_month(follow) {
+        this.set_selected_date({ month: this.preview_date.timespan - 1, follow: follow ?? this.preview_date.follow });
     };
 
-    decrement_selected_year() {
-        this.set_selected_date({ year: this.preview_date.year - 1 });
+    decrement_selected_year(follow) {
+        this.set_selected_date({ year: this.preview_date.year - 1, follow: follow ?? this.preview_date.follow });
     };
 
-    increment_selected_day() {
-        this.set_selected_date({ day: this.preview_date.day + 1 });
+    increment_selected_day(follow) {
+        this.set_selected_date({ day: this.preview_date.day + 1, follow: follow ?? this.preview_date.follow });
     };
 
-    increment_selected_month() {
-        this.set_selected_date({ month: this.preview_date.timespan + 1 });
+    increment_selected_month(follow) {
+        this.set_selected_date({ month: this.preview_date.timespan + 1, follow: follow ?? this.preview_date.follow });
     };
 
-    increment_selected_year() {
-        this.set_selected_date({ year: this.preview_date.year + 1 });
+    increment_selected_year(follow) {
+        this.set_selected_date({ year: this.preview_date.year + 1, follow: follow ?? this.preview_date.follow });
     };
 
     set_current_minute(minute) {

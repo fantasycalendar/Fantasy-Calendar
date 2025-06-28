@@ -145,8 +145,8 @@ export default (calendar_structure) => ({
                 ? "rerender"
                 : "preview";
             let date = this.$store.calendar.preview_date.follow
-                ? this.$store.calendar.preview_date
-                : this.$store.calendar.dynamic_data;
+                ? this.$store.calendar.dynamic_data
+                : this.$store.calendar.preview_date;
 
             rebuild_calendar(type, date);
         } else if (dateChanged) {

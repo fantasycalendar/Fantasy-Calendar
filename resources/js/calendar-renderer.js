@@ -93,12 +93,6 @@ export default () => ({
         this.loading_message = "Structuring days...";
         this.render_data.current_epoch = event.detail.current_epoch;
         this.render_data.preview_epoch = event.detail.preview_epoch;
-        window.calendar_year_header.update(
-            window.static_data,
-            window.dynamic_data,
-            window.preview_date,
-            window.evaluated_static_data.epoch_data
-        );
         this.scroll_to_epoch();
     },
 
@@ -116,13 +110,6 @@ export default () => ({
         if (!this.loaded || this.rerendering) {
             this.scroll_to_epoch();
         }
-
-        window.calendar_year_header.update(
-            window.static_data,
-            window.dynamic_data,
-            window.preview_date,
-            window.evaluated_static_data.epoch_data
-        );
 
         for (let index in this.render_callbacks) {
             let callback = this.render_callbacks[index];
