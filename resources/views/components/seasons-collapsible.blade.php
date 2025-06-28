@@ -19,13 +19,15 @@
     </div>
 </div>
 
-<x-alpine.check-input
-    wrapper-class="mb-4"
-    id="'season_color_enabled'"
-    x-model="settings.color_enabled"
-    @change="$nextTick(() => seasonColorChanged())">
-    Enable season day color
-</x-alpine.check-input>
+<div>
+    <x-alpine.check-input
+        wrapper-class="mb-4"
+        id="'season_color_enabled'"
+        x-model="settings.color_enabled"
+        @change="$nextTick(() => seasonColorChanged())">
+        Enable season day color
+    </x-alpine.check-input>
+</div>
 
 <div class="separator"></div>
 
