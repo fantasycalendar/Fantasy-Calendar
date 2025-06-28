@@ -66,7 +66,7 @@
 
         <x-collapsible :calendar="$calendar" contains="Events" icon="fa-calendar-check" done></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Settings" icon="fa-cog" done></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Settings" icon="fa-cog" polished></x-collapsible>
 
         @if(request()->is('calendars/*/edit'))
             <x-collapsible :calendar="$calendar" contains="User Management" icon="fa-user"
