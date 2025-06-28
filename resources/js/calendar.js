@@ -23,12 +23,13 @@ export default class Calendar {
             "event_categories",
         ];
         let structureChanged = false;
-        let dateChanged = false;
         let selectedDateChanged = false;
+
+        let prev_dynamic_data = _.cloneDeep(this.dynamic_data);
+        let prev_preview_date = _.cloneDeep(this.preview_date);
 
         for (const [key, value] of Object.entries(incomingChanges)) {
             structureChanged = structureChanged || rerenderKeys.some(structuralKey => key.startsWith(structuralKey));
-            dateChanged = dateChanged || key.startsWith("dynamic_data");
             selectedDateChanged = selectedDateChanged || key.startsWith("preview_date");
 
             console.log(key);
@@ -44,6 +45,8 @@ export default class Calendar {
 
         structureChanged = structureChanged || reconciled_current_date.rebuild;
 
+        let dateChanged = reconciled_current_date.year !== prev_dynamic_data.year || reconciled_current_date.timespan !== prev_dynamic_data.timespan || reconciled_current_date.day !== prev_dynamic_data.day;
+
         if (this.preview_date.follow && !selectedDateChanged) {
             this.preview_date.year = reconciled_current_date.year;
             this.preview_date.timespan = reconciled_current_date.timespan;
@@ -57,9 +60,8 @@ export default class Calendar {
             this.preview_date.epoch = reconciled_selected_date.epoch;
             this.preview_date.current_era = get_current_era(this.static_data, reconciled_selected_date.epoch);
             structureChanged = structureChanged || reconciled_selected_date.rebuild;
+            dateChanged = dateChanged || prev_preview_date.follow || reconciled_selected_date.year !== prev_preview_date.year || reconciled_selected_date.timespan !== prev_preview_date.timespan || reconciled_selected_date.day !== prev_preview_date.day;
         }
-
-        dateChanged = dateChanged || selectedDateChanged;
 
         // First of many rules, I'm sure.
         this.static_data.year_data.overflow = this.static_data.year_data.overflow

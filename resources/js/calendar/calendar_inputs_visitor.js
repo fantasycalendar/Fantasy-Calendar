@@ -4,7 +4,6 @@ import {
     convert_year,
     get_days_in_timespan,
     does_timespan_appear,
-    evaluate_calendar_start,
 } from "./calendar_functions";
 
 export function copy_link(epoch_data) {
