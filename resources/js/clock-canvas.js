@@ -68,6 +68,11 @@ class ClockCanvas {
 		}
 	}
 
+    get current_time_degrees() {
+        let time = this.hour + this.minute / this.minutes;
+        return this.degree_to_radians(this.degrees_from_time(time));
+    }
+
 	get clock_face_canvas() {
 		return this.$refs.clock_face;
 	}
