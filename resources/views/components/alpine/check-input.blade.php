@@ -5,9 +5,15 @@
         ->whereDoesntStartWith('id')
         ->whereDoesntStartWith('x-show')
         ->whereDoesntStartWith('wrapper');
+
+    $id = $attributes->get('id');
+
+    if (!str_starts_with($id, '`') && !str_ends_with($id, '`')) {
+        $id = '`' . $id . '`';
+    }
 @endphp
 
-<div class='form-check py-2 border rounded {{ $attributes->get('wrapper-class') }}' {{ $attributes->whereStartsWith('x-show') }}
+<div class='form-check py-2 border first:rounded-t last:rounded-b {{ $attributes->get('wrapper-class') }}' {{ $attributes->whereStartsWith('x-show') }}
     @if($disabledWhen)
         :class="{
             'disabled {{ $disabledWrapperClasses }}': {{ $disabledWhen }},
@@ -16,14 +22,14 @@
     @endif
     >
     <input type='checkbox'
-        :id='{{ $attributes->get('id') }}'
+        :id='{{ $id }}'
         class='form-check-input'
         {{ $inputAttributes }}
         @if($disabledWhen)
             :disabled="{{ $disabledWhen }}"
         @endif
     />
-    <label :for='{{ $attributes->get('id') }}' class='form-check-label ml-1'>
+    <label :for='{{ $id }}' class='form-check-label ml-1'>
         {{ $slot }}
     </label>
 </div>

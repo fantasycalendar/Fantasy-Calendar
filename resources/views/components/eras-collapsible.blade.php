@@ -50,9 +50,11 @@
                 </x-slot:inputs>
 
                 <div class='flex flex-col space-y-2 py-2'>
-                    <x-alpine.check-input id="index + '_use_custom_format'" x-model='era.settings.use_custom_format'>
-                        Custom year header formatting
-                    </x-alpine.check-input>
+                    <div>
+                        <x-alpine.check-input id="index + '_use_custom_format'" x-model='era.settings.use_custom_format'>
+                            Custom year header formatting
+                        </x-alpine.check-input>
+                    </div>
 
                     <div>
                         Format:
@@ -67,9 +69,11 @@
                 <div class='separator'></div>
 
                 <div class='flex flex-col space-y-2 py-2'>
-                    <x-alpine.check-input id="index + '_show_as_event'" x-model='era.settings.show_as_event'>
-                        Show as event
-                    </x-alpine.check-input>
+                    <div>
+                        <x-alpine.check-input id="index + '_show_as_event'" x-model='era.settings.show_as_event'>
+                            Show as event
+                        </x-alpine.check-input>
+                    </div>
 
                     {{-- TODO: Make the HTML editor .~=^=~.pretty.~=^=~. --}}
                     <div class='btn btn-outline-primary w-full' @click="$dispatch('html-editor-modal-edit-html', { era_id: index })" x-show='era.settings.show_as_event'>
@@ -92,15 +96,17 @@
                 <div class='separator'></div>
 
                 <div class='flex flex-col py-2'>
-                    <x-alpine.check-input
-                        id="index + '_starting_era'"
-                        x-model='era.settings.starting_era'
-                        disabled-when="!canBeStartingEra(index)"
-                        disabled-wrapper-classes="rounded-t"
-                        enabled-wrapper-classes="rounded"
+                    <div>
+                        <x-alpine.check-input
+                            id="index + '_starting_era'"
+                            x-model='era.settings.starting_era'
+                            disabled-when="!canBeStartingEra(index)"
+                            disabled-wrapper-classes="rounded-t"
+                            enabled-wrapper-classes="rounded"
                         >
-                        Is starting era (like B.C.)
-                    </x-alpine.check-input>
+                            Is starting era (like B.C.)
+                        </x-alpine.check-input>
+                    </div>
 
                     <div class='border rounded-b text-center' x-show="!canBeStartingEra(index)">
                         <div class="py-2">
@@ -152,22 +158,26 @@
                         <div class="flex flex-col space-y-1">
                             <strong class="mt-2">Date settings:</strong>
 
-                            <x-alpine.check-input id="index + '_restart_year'" x-model='era.settings.restart'>
-                                Restarts year count
-                            </x-alpine.check-input>
+                            <div>
+                                <x-alpine.check-input id="index + '_restart_year'" x-model='era.settings.restart'>
+                                    Restarts year count
+                                </x-alpine.check-input>
+                            </div>
 
-                            <x-alpine.check-input
-                                id="index + '_ends_year'"
-                                x-model='era.settings.starting_era'
-                                disabled-when="!season_settings.periodic_seasons"
+                            <div>
+                                <x-alpine.check-input
+                                    id="index + '_ends_year'"
+                                    x-model='era.settings.starting_era'
+                                    disabled-when="!season_settings.periodic_seasons"
                                 >
-                                Ends year prematurely
+                                    Ends year prematurely
 
-                                <p class='m-0 mt-2 ends_year_explaination font-italic small-text'
-                                    x-show="!season_settings.periodic_seasons">
-                                    This is disabled because you have seasons based on dates - that means that the
-                                    calendar cannot end its years early because some seasons could disappear.</p>
-                            </x-alpine.check-input>
+                                    <p class='m-0 mt-2 ends_year_explaination font-italic small-text'
+                                        x-show="!season_settings.periodic_seasons">
+                                        This is disabled because you have seasons based on dates - that means that the
+                                        calendar cannot end its years early because some seasons could disappear.</p>
+                                </x-alpine.check-input>
+                            </div>
                         </div>
                     </div>
                 </template>

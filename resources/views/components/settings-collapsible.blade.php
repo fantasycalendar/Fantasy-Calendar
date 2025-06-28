@@ -1,244 +1,130 @@
 @props(['calendar' => null])
 
-<div class='add_inputs'>
+<div class="space-y-3">
+    <div>
+        <strong class="mb-0.5">Layout Settings:</strong>
 
-	<div class='bold-text'>Layout Settings:</div>
+        <button type='button' class='btn btn-primary w-full my-2.5' @click="$dispatch('open-layouts-modal')">
+            Select Layout
+        </button>
 
-	@if(request()->is('calendars/*/edit'))
-		<label class="row no-gutters setting">
-			<button x-data type='button' id='btn_layouts' class='btn btn-primary full'
-							@click="$dispatch('open-layouts-modal')">Select Layout
-			</button>
-		</label>
-	@endif
+        <div class="flex flex-col">
+            <x-alpine.check-input id="settings_show_current_month" x-model="settings.show_current_month">
+                Show only current month
+            </x-alpine.check-input>
 
-	<div class="list-group mb-3">
-		<label class="row no-gutters setting my-0 list-group-item py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="Makes the calendar only show the current month. Enhances calendar loading performance, especially with many moons.">
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 fc-index='show_current_month'>
-				<span>
-                                    Show only current month
-                                </span>
-			</div>
-		</label>
+            <x-alpine.check-input id="settings_add_month_number" x-model="settings.add_month_number">
+                Add month number to months
+            </x-alpine.check-input>
 
-		<label class="row no-gutters setting my-0 list-group-item py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="This will add 'Month 1' and so on to each month in the calendar">
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 fc-index='add_month_number' refresh='false'>
-				<span>
-                                    Add month number to months
-                                </span>
-			</div>
-		</label>
+            <x-alpine.check-input id="settings_add_year_day_number" x-model="settings.add_year_day_number">
+                Add year day to each day
+            </x-alpine.check-input>
+        </div>
+    </div>
 
-		<label class="row no-gutters setting my-0 list-group-item py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="This adds a small number at the bottom left of the days in the calendar showing which year-day it is">
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 fc-index='add_year_day_number' refresh='false'>
-				<span>
-                                    Add year day to each day
-                                </span>
-			</div>
-		</label>
-	</div>
+    <!------------------------------------------------------->
 
-	<!------------------------------------------------------->
+    <div>
+        <strong class="mb-0.5">Guest View Settings:</strong>
 
-	<div class='bold-text'>Guest View Settings:</div>
+        <div class="flex flex-col">
+            <x-alpine.check-input id="settings_private" x-model="settings.private">
+                Make calendar private
+            </x-alpine.check-input>
 
-	<div class="list-group mb-3">
-		<label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="This makes it so that no one can view your calendar, unless you have added them as a user to the calendar">
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings' fc-index='private'
-							 refresh='false'>
-				<span>
-                                    Make calendar private
-                                </span>
-			</div>
-		</label>
+            <x-alpine.check-input id="settings_allow_view" x-model="settings.allow_view">
+                Enable previewing dates in calendar
+            </x-alpine.check-input>
 
-		<label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="Allows guests viewing your calendar to check past and future dates with the preview date">
-			<div class='col'>
-				<input type='checkbox' checked class='margin-right static_input' data='settings'
-							 fc-index='allow_view' refresh='false'>
-				<span>
-                                    Enable previewing dates in calendar
-                                </span>
-			</div>
-		</label>
 
-		<label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="Similar to the previous setting, but this limits the viewer to only preview backwards, not forwards. This setting needs Allowing advancing view in calendar to be enabled.">
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 fc-index='only_backwards' refresh='false'>
-				<span>
-                                    Limit previewing to only past dates
-                                </span>
-			</div>
-		</label>
+            <x-alpine.check-input id="settings_only_backwards" x-model="settings.only_backwards">
+                Limit previewing to only past dates
+            </x-alpine.check-input>
 
-		<label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="Guest viewers will not be able to see past the current date. Any future days will be grayed out.">
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 fc-index='only_reveal_today' refresh='false'>
-				<span>
-                                    Show only up to current day
-                                </span>
-			</div>
-		</label>
-	</div>
 
-	<!------------------------------------------------------->
+            <x-alpine.check-input id="settings_only_reveal_today" x-model="settings.only_reveal_today">
+                Show only up to current day
+            </x-alpine.check-input>
+        </div>
+    </div>
 
-	<div class='bold-text'>Hiding Settings:</div>
+    <!------------------------------------------------------->
 
-	<div class="list-group mb-3">
-		<label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="Hides all of the moons from guest viewers">
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 fc-index='hide_moons' refresh='false'>
-				<span>
-                                    Hide all moons from guest viewers
-                                </span>
-			</div>
-		</label>
+    <div>
+        <strong class="mb-0.5">Hiding Settings:</strong>
 
-		<label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="Hides the clock from guest viewers">
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 fc-index='hide_clock' refresh='false'>
-				<span>
-                                    Hide time from guest viewers
-                                </span>
-			</div>
-		</label>
+        <div class="flex flex-col">
+            <x-alpine.check-input id="settings_hide_moons" x-model="settings.hide_moons">
+                Hide all moons from guest viewers
+            </x-alpine.check-input>
 
-		<label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="Hides all events from guest viewers">
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 fc-index='hide_events' refresh='false'>
-				<span>
-                                    Hide all events from guest viewers
-                                </span>
-			</div>
-		</label>
 
-		<label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="Hides the era text at the top of the calendar and only shows the year instead to guest viewers">
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 fc-index='hide_eras' refresh='false'>
-				<span>
-                                    Hide era from guest viewers
-                                </span>
-			</div>
-		</label>
+            <x-alpine.check-input id="settings_hide_clock" x-model="settings.hide_clock">
+                Hide time from guest viewers
+            </x-alpine.check-input>
 
-		<label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="Prevents all weather from appearing on the calendar for guest viewers">
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 fc-index='hide_all_weather' refresh='false'>
-				<span>
-                                    Hide all weather from guest viewers
-                                </span>
-			</div>
-		</label>
 
-		<label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="Prevents any future weather from appearing on the calendar for guest viewers">
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 fc-index='hide_future_weather' refresh='false'>
-				<span>
-                                    Hide future weather from guest viewers
-                                </span>
-			</div>
-		</label>
+            <x-alpine.check-input id="settings_hide_events" x-model="settings.hide_events">
+                Hide all events from guest viewers
+            </x-alpine.check-input>
 
-		<label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title='This hides the exact temperature from guest viewers - this is really useful with the cinematic temperature setting as guests will only see "cold", "sweltering" and the like'>
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 fc-index='hide_weather_temp' refresh='false'>
-				<span>
-                                    Hide temperature from guest viewers
-                                </span>
-			</div>
-		</label>
 
-		<label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="This hides the exact wind velocity from guest viewers">
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 fc-index='hide_wind_velocity' refresh='false'>
-				<span>
-                                    Hide wind velocity from guest viewers
-                                </span>
-			</div>
-		</label>
+            <x-alpine.check-input id="settings_hide_eras" x-model="settings.hide_eras">
+                Hide era from guest viewers
+            </x-alpine.check-input>
 
-		<label class="row no-gutters setting list-group-item my-0 py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="This will hide the weekday bar at the top of each month">
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 fc-index='hide_weekdays' refresh='false'>
-				<span>
-                                    Hide weekdays in calendar
-                                </span>
-			</div>
-		</label>
-	</div>
 
-	@if(isset($calendar) && Auth::user()->can('add-users', $calendar))
+            <x-alpine.check-input id="settings_hide_all_weather" x-model="settings.hide_all_weather">
+                Hide all weather from guest viewers
+            </x-alpine.check-input>
 
-		<div class='bold-text'>Event Settings:</div>
 
-		<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-					 data-pt-title="This will change whether users can comment on the events of your calendar. When disabled, only the owner can comment on events.">
-			<div class='col'>
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 fc-index='comments' refresh='false'>
-				<span>
-								Allow user comments on events
-							</span>
-			</div>
-		</label>
+            <x-alpine.check-input id="settings_hide_future_weather" x-model="settings.hide_future_weather">
+                Hide future weather from guest viewers
+            </x-alpine.check-input>
 
-	@endif
 
-	<div class='bold-text'>Advanced Settings:</div>
+            <x-alpine.check-input id="settings_hide_weather_temp" x-model="settings.hide_weather_temp">
+                Hide temperature from guest viewers
+            </x-alpine.check-input>
 
-	<label class="row no-gutters setting border rounded py-1 px-2 protip" data-pt-position="right"
-				 data-pt-title="Normally, the year count is -2, -1, 1, 2, and so on. This makes it so that 0 exists, so -2, -1, 0, 1, 2.">
-		<div class='col'>
-			@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-				<input type='checkbox' class='margin-right'
-							 {{ Arr::get($calendar->static_data, 'settings.year_zero_exists') ? "checked" : "" }} disabled>
-			@else
-				<input type='checkbox' class='margin-right static_input' data='settings'
-							 id='year_zero_exists' fc-index='year_zero_exists'>
-			@endif
-			<span>
-								Year zero exists
-							</span>
-		</div>
-	</label>
 
-	@if(request()->is('calendars/*/edit') && $calendar->isLinked())
-		<p class=""><a onclick="linked_popup();" href='#'>Why are some settings disabled?</a></p>
-	@endif
+            <x-alpine.check-input id="settings_hide_wind_velocity" x-model="settings.hide_wind_velocity">
+                Hide wind velocity from guest viewers
+            </x-alpine.check-input>
+
+
+            <x-alpine.check-input id="settings_hide_weekdays" x-model="settings.hide_weekdays">
+                Hide weekdays in calendar
+            </x-alpine.check-input>
+        </div>
+    </div>
+
+    @if(isset($calendar) && Auth::user()->can('add-users', $calendar))
+        <div>
+        <strong class="mb-0.5">Event Settings:</strong>
+
+            <div>
+                <x-alpine.check-input id="settings_comments" x-model="settings.comments">
+                    Allow user comments on events
+                </x-alpine.check-input>
+            </div>
+        </div>
+    @endif
+
+    <div>
+        <strong class="mb-0.5">Advanced Settings:</strong>
+
+        <div>
+            <x-alpine.check-input id="settings_year_zero_exists" x-model="settings.year_zero_exists">
+                Year zero exists
+            </x-alpine.check-input>
+        </div>
+    </div>
+
+    @if(request()->is('calendars/*/edit') && $calendar->isLinked())
+        <p class=""><a onclick="linked_popup();" href='#'>Why are some settings disabled?</a></p>
+    @endif
 
 </div>

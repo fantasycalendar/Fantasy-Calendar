@@ -51,12 +51,14 @@
             </div>
 
             <div x-show="deleting !== index" class="flex flex-col px-2.5 py-2.5 space-y-3">
-                <x-alpine.check-input id="`${index}_custom_phase_moon`"
+                <div>
+                    <x-alpine.check-input id="`${index}_custom_phase_moon`"
                         ::checked="moon.custom_phase"
                         @change="customPhaseChanged(moon)"
                     >
-                    Custom phase count
-                </x-alpine.check-input>
+                        Custom phase count
+                    </x-alpine.check-input>
+                </div>
 
                 <div class="grid grid-cols-7" x-show="!moon.custom_phase">
                     <div class="flex flex-col col-span-4">
@@ -118,9 +120,11 @@
                     <input type='color' class="w-full rounded-sm bg-transparent h-[32px]" x-model.lazy='moon.shadow_color'/>
                 </div>
 
-                <x-alpine.check-input id="`${index}_hidden_moon`" x-model='moon.hidden'>
-                    Hide from guest viewers
-                </x-alpine.check-input>
+                <div>
+                    <x-alpine.check-input id="`${index}_hidden_moon`" x-model='moon.hidden'>
+                        Hide from guest viewers
+                    </x-alpine.check-input>
+                </div>
             </div>
         </div>
     </template>
