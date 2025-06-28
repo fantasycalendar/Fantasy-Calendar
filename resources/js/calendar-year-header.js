@@ -118,6 +118,10 @@ export default () => ({
 
     select_previous_month(){
         this.$store.calendar.decrement_selected_month(false);
+    },
+
+    go_to_current_date() {
+        this.$store.calendar.set_selected_date_active(false);
     }
 
 })

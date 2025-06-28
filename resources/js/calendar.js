@@ -48,11 +48,14 @@ export default class Calendar {
 
         let dateChanged = reconciled_current_date.year !== prev_dynamic_data.year || reconciled_current_date.timespan !== prev_dynamic_data.timespan || reconciled_current_date.day !== prev_dynamic_data.day;
 
-        if (this.preview_date.follow && !selectedDateChanged) {
+        if (this.preview_date.follow && (!selectedDateChanged || !prev_preview_date.follow)) {
             this.preview_date.year = reconciled_current_date.year;
             this.preview_date.timespan = reconciled_current_date.timespan;
             this.preview_date.day = reconciled_current_date.day;
             this.preview_date.epoch = reconciled_current_date.epoch;
+            let reconciled_selected_date = window.preview_date_manager.reconcileCalendarChange(this.static_data, this.preview_date);
+            structureChanged = structureChanged || reconciled_selected_date.rebuild;
+            dateChanged = dateChanged || !prev_preview_date.follow || reconciled_current_date.year !== prev_preview_date.year || reconciled_current_date.timespan !== prev_preview_date.timespan || reconciled_current_date.day !== prev_preview_date.day;
         } else if (!this.preview_date.follow) {
             let reconciled_selected_date = window.preview_date_manager.reconcileCalendarChange(this.static_data, this.preview_date);
             this.preview_date.year = reconciled_selected_date.year;
