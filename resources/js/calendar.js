@@ -5,6 +5,7 @@ import {
     does_timespan_appear,
     evaluate_calendar_start, fract, get_current_era, get_days_in_timespan, get_timespans_in_year, precisionRound
 } from "./calendar/calendar_functions.js";
+import _ from "lodash";
 
 export default class Calendar {
 
@@ -24,16 +25,14 @@ export default class Calendar {
             "static_data.settings",
             "event_categories",
         ];
-        let structureChanged = false;
-        let selectedDateChanged = false;
+
+        let structureChanged = rerenderKeys.some(key => _.hasIn(incomingChanges, key));
+        let selectedDateChanged = _.hasIn(incomingChanges, "preview_date");
 
         let prev_dynamic_data = _.cloneDeep(this.dynamic_data);
         let prev_preview_date = _.cloneDeep(this.preview_date);
 
         for (const [key, value] of Object.entries(incomingChanges)) {
-            structureChanged = structureChanged || rerenderKeys.some(structuralKey => key.startsWith(structuralKey));
-            selectedDateChanged = selectedDateChanged || key.startsWith("preview_date");
-
             console.log(key);
             _.set(this, key, _.cloneDeep(value));
         }
