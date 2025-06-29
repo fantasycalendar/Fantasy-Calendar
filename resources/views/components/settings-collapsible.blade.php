@@ -38,7 +38,8 @@
             </x-alpine.check-input>
 
 
-            <x-alpine.check-input id="settings_only_backwards" x-model="settings.only_backwards">
+            <x-alpine.check-input id="settings_only_backwards" x-model="settings.only_backwards"
+                                  disabledWhen="!settings.allow_view">
                 Limit previewing to only past dates
             </x-alpine.check-input>
 

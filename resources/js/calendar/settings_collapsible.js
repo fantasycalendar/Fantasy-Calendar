@@ -14,6 +14,16 @@ class SettingsCollapsible extends CollapsibleComponent {
         "settings": "static_data.settings"
     };
 
+    changeHandlers = {
+        "settings": this.changed
+    }
+
+    changed(settings) {
+        if(!settings.allow_view){
+            settings.only_backwards = false;
+        }
+    }
+
 }
 
 export default () => new SettingsCollapsible();
