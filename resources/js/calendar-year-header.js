@@ -6,8 +6,7 @@ export default () => ({
     dynamic_data: undefined,
     preview_date: undefined,
     epoch_data: undefined,
-    parent_data_changed: false,
-    layout: "grid",
+    show_current_month: false,
 
     update() {
         this.static_data = this.$store.calendar.static_data;
@@ -16,7 +15,7 @@ export default () => ({
         this.dynamic_data = this.$store.calendar.dynamic_data;
         this.preview_date = this.$store.calendar.preview_date;
         this.epoch_data = this.$store.calendar.evaluated_static_data.epoch_data;
-        this.layout = this.static_data.settings.layout;
+        this.show_current_month = window.static_data.settings.show_current_month;
     },
 
     get year_header_text() {

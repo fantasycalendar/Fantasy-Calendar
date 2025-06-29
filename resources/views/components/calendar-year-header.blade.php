@@ -10,22 +10,13 @@
         </button>
     </div>
 
-    <div class='parent_button_container d-print-none' x-cloak x-show="parent_data_changed">
-        <div class='container d-flex h-100 p-0'>
-            <div class='col justify-content-center align-self-center full'>
-                <button class='btn btn-danger full'>Parent data changed -
-                    reload
-                </button>
-            </div>
-        </div>
-    </div>
-
     <div class='btn_container'>
-        <button class='btn btn-outline-secondary btn_preview_date d-print-none' @click="select_previous_year">
+        <button class='btn btn-outline-secondary btn_preview_date d-print-none' @click="select_previous_year"
+                x-cloak x-show="!show_current_month">
             &lt; Year
         </button>
         <button class='btn btn-outline-secondary btn_preview_date d-print-none' @click="select_previous_month"
-                x-cloak x-show="layout === 'single_month'">
+                x-cloak x-show="show_current_month">
             <span><i class="fa fa-arrow-left"></i></span>
         </button>
     </div>
@@ -56,11 +47,12 @@
     </div>
 
     <div class='btn_container'>
-        <button class='btn btn-outline-secondary btn_preview_date d-print-none' @click="select_next_year">
+        <button class='btn btn-outline-secondary btn_preview_date d-print-none' @click="select_next_year"
+                x-cloak x-show="!show_current_month">
             Year >
         </button>
         <button class='btn btn-outline-secondary btn_preview_date d-print-none' @click="select_next_month"
-                x-cloak x-show="layout === 'single_month'">
+                x-cloak x-show="show_current_month">
             <span><i class="fa fa-arrow-right"></i></span>
         </button>
     </div>
