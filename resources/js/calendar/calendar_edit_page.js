@@ -109,19 +109,23 @@ export default (calendar_structure) => ({
                 this.new_dynamic_change = new Date(result.data.last_dynamic_change)
                 if (this.new_dynamic_change > window.last_dynamic_change) {
                     window.last_dynamic_change = this.new_dynamic_change
-                    get_dynamic_data(window.hash, (result) => {
-                        if (result.error) {
-                            throw result.message;
-                        }
-                        window.dispatchEvent(new CustomEvent("calendar-updated", {
-                            detail: {
-                                calendar: {
-                                    dynamic_data: result.dynamic_data
+                    get_dynamic_data(window.hash)
+                        .then((result) => {
+                            window.dispatchEvent(new CustomEvent("calendar-updated", {
+                                detail: {
+                                    calendar: {
+                                        dynamic_data: result.dynamic_data
+                                    }
                                 }
-                            }
-                        }));
-                        this.poll_timer = setTimeout(this.check_dates.bind(this), 5000);
-                    });
+                            }));
+                            this.poll_timer = setTimeout(this.check_dates.bind(this), 5000);
+                        })
+                        .catch(error => {
+                            this.$dispatch('notify', {
+                                content: error.response.data.message,
+                                type: "error"
+                            });
+                        });
                 } else {
                     this.poll_timer = setTimeout(this.check_dates.bind(this), 5000);
                 }

@@ -51,7 +51,7 @@ export default () => ({
                 window.static_data.settings.layout = previous_layout;
                 hide_loading_screen();
                 this.$dispatch('notify', {
-                    content: error,
+                    content: error.response.data.message,
                     type: "error"
                 });
             });

@@ -101,25 +101,8 @@ export function get_all_data(calendar_hash, output) {
     });
 }
 
-export function get_dynamic_data(calendar_hash, output) {
-
-    $.ajax({
-        url: window.apiurl + "/calendar/" + calendar_hash + "/dynamic_data",
-        type: "get",
-        dataType: 'json',
-        data: {},
-        success: function(result) {
-
-            output(result);
-
-        },
-        error: function(error) {
-            $.notify(
-                error
-            );
-        }
-    });
-
+export function get_dynamic_data(calendar_hash) {
+    return axios.get(window.apiurl + "/calendar/" + calendar_hash + "/dynamic_data");
 }
 
 export async function submit_new_event(event_id, callback) {

@@ -63,7 +63,7 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
                     })
                     .catch((error) => {
                         this.$dispatch('notify', {
-                            content: error,
+                            content: error.response.data.message,
                             type: "error"
                         })
                     })
@@ -98,7 +98,7 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
                         })
                         .catch((error) => {
                             this.$dispatch('notify', {
-                                content: error,
+                                content: error.response.data.message,
                                 type: "error"
                             })
                         })

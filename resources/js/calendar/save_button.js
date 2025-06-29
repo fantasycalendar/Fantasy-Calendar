@@ -95,17 +95,20 @@ export default () => ({
         updateMethod(...updateParams)
             .then(() => {
                 this.save_status = "success";
+                this.$dispatch('notify', {
+                    content: "Successfully saved calendar!",
+                    type: "success"
+                });
             })
             .catch(() => {
                 this.save_status = "error";
+                this.$dispatch('notify', {
+                    content: error.response.data.message,
+                    type: "error"
+                });
             })
             .finally(() => {
-                this.$dispatch('notify', {
-                    content: this.save_status === "success" ? "Successfully saved calendar!" : "Failed to save calendar",
-                    type: this.save_status
-                });
                 this.timeout = setTimeout(() => this.save_status = "", 4000);
-
                 this.has_changes = false;
                 this.prev_calendar_data = this.cloneCalendarData(this.$store.calendar);
             })
