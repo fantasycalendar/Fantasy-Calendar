@@ -81,13 +81,13 @@ export default () => ({
         let updateMethod;
         let updateParams = [];
 
-        if(!_.isEqual(this.prev_calendar_data.static_data, this.$store.calendar.static_data)){
-            updateMethod = update_all;
-        } else if (!_.isEqual(this.prev_calendar_data.dynamic_data, this.$store.calendar.dynamic_data)){
+        if (!_.isEqual(this.prev_calendar_data.dynamic_data, this.$store.calendar.dynamic_data)){
             updateMethod = update_dynamic
             updateParams = [this.$store.calendar.hash];
         } else if (this.prev_calendar_data.calendar_name !== this.$store.calendar.calendar_name){
             updateMethod = update_name;
+        } else {
+            updateMethod = update_all;
         }
 
         this.save_status = "saving";

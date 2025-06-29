@@ -227,42 +227,7 @@ export async function rebuild_calendar(action, rebuild_data) {
         climate_charts.evaluate_day_length_chart();
         climate_charts.evaluate_weather_charts();
 
-    }).catch(result => {
-        if (!result?.errors) {
-            console.error(result)
-            return;
-        }
-        let errors = result.errors.map(e => { return `<li>${e}</li>` });
-        // TODO: Replace with proper error handling
-        // error_message(`Errors:<ol>${errors.join()}</ol>`);
     });
-}
-
-export async function rebuild_climate() {
-    let climate_generator = new Climate(
-        window.evaluated_static_data.epoch_data,
-        window.static_data,
-        window.dynamic_data,
-        window.dynamic_data.year,
-        window.evaluated_static_data.year_data.start_epoch,
-        window.evaluated_static_data.year_data.end_epoch
-    );
-
-    let prev_seasons = window.evaluated_static_data.processed_seasons;
-    let prev_weather = window.evaluated_static_data.processed_weather;
-
-    climate_generator.generate().then((result) => {
-
-        window.evaluated_static_data.epoch_data = result;
-
-        climate_charts.evaluate_day_length_chart();
-        climate_charts.evaluate_weather_charts();
-
-        if (prev_seasons !== climate_generator.process_seasons || prev_weather !== climate_generator.process_weather) {
-            rerender_calendar();
-        }
-
-    })
 }
 
 export function rerender_calendar(processed_data) {

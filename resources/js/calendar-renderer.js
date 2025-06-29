@@ -6,6 +6,7 @@ export default () => ({
     loaded: false,
     loading_message: "Initializing...",
     rerendering: false,
+    visible: true,
 
     last_scroll_height: 0,
 
@@ -157,6 +158,13 @@ export default () => ({
             this.scroll_attempts = 0;
         }
 
+    },
+
+    set_calendar_visible(visible) {
+        this.visible = visible;
+        if (visible) {
+            this.scroll_to_last();
+        }
     },
 
     scroll_to_last: function () {

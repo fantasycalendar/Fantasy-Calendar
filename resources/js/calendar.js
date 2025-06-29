@@ -371,6 +371,10 @@ export default class Calendar {
     }
 
     // Setters
+    set perms(value) {
+        window.Perms = value;
+    }
+
     set calendar_name(value) {
         window.calendar_name = value;
     }
@@ -418,6 +422,10 @@ export default class Calendar {
     }
 
     // Getters
+    get perms() {
+        return window.Perms;
+    }
+
     get calendar_name() {
         return window.calendar_name;
     }

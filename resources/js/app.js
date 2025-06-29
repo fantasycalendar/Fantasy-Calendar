@@ -226,6 +226,9 @@ Alpine.data('CalendarEventViewer', CalendarEventViewer);
 Alpine.data('CalendarGridDay', CalendarGridDay);
 Alpine.data('CalendarYearHeader', CalendarYearHeader);
 
+import ViewOptions from "./calendar/view_options.js"
+Alpine.data('ViewOptions', ViewOptions);
+
 import SaveButton from './calendar/save_button.js';
 Alpine.data('SaveButton', SaveButton)
 

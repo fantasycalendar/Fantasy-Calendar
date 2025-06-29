@@ -3,20 +3,7 @@
 
     @yield('label')
 
-    <div class='wrap-collapsible step-hide'>
-        <div class="view-tabs btn-group d-flex mb-2 w-100">
-            <button type="button" data-pt-position='top' data-pt-title='What you, the owner, will always see'
-                    data-view-type='owner' class="protip owner w-100 btn btn-sm btn-primary">Owner View
-            </button>
-            <button type="button" data-pt-position='top'
-                    data-pt-title='A simulated view of what guests with the link to this calendar will see'
-                    data-view-type='player' class="protip player w-100 btn btn-sm btn-secondary">Guest View
-            </button>
-            <button type="button" data-pt-position='top' data-pt-title='Graphs showing the weather curves'
-                    data-view-type='weather' class="protip weather w-100 btn btn-sm btn-secondary">Climate view
-            </button>
-        </div>
-    </div>
+    <x-view-options></x-view-options>
 
     <div class='wrap-collapsible step-hide'>
         <div class="d-flex mb-2 w-100">
@@ -128,7 +115,13 @@
 
     @include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
 
-    <div id="weather_container" class="hidden">
+    <div id="weather_container" x-data='{
+        visible: false,
+        set_weather_graph_visible(visible) {
+            // TODO: make this an actual alpine component
+            this.visible = visible;
+        }
+    }' x-cloak x-show='visible' @set-weather-graph-visible.window='set_weather_graph_visible($event.detail)'>
 
         <div id='day_length' class='hidden'>
             <h3 class='text-center mt-3'>Sunrise and Sunset</h3>

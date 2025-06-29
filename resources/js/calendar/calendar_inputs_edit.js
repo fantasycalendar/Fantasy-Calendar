@@ -6,16 +6,12 @@ import {
     convert_year,
     evaluate_calendar_start,
 } from "./calendar_functions";
-import { climate_charts } from "./calendar_weather_layout";
 import { rebuild_calendar } from "./calendar_manager";
-import CalendarRenderer from "../calendar-renderer";
 
 export var changes_applied = true;
 
 let log_in_button = null;
 let create_button = null;
-let calendar_container = null;
-let weather_container = null;
 
 export function set_up_edit_inputs() {
 
@@ -62,83 +58,11 @@ export function set_up_edit_inputs() {
         delete_calendar(window.hash, window.calendar_name, function() { self.location = '/calendars' });
     });
 
-    calendar_container = $('#calendar');
-    weather_container = $('#weather_container');
-
-    var previous_view_type = 'owner';
-    var view_type = 'owner';
-
-    $('.view-tabs .btn').click(function() {
-
-        view_type = $(this).attr('data-view-type');
-
-        $('.view-tabs .btn-primary').removeClass('btn-primary').addClass('btn-secondary');
-
-        $(this).removeClass('btn-secondary').addClass('btn-primary');
-
-        switch (view_type) {
-            case "owner":
-                Perms.owner = true;
-                if (creation.is_done()) {
-                    if (previous_view_type !== 'owner') {
-                        if (!window.preview_date.follow) {
-                            rebuild_calendar('preview', window.preview_date);
-                        } else {
-                            rebuild_calendar('calendar', window.dynamic_data);
-                        }
-                    }
-                }
-                climate_charts.active_view = false;
-                calendar_container.removeClass('hidden');
-                weather_container.addClass('hidden');
-                $("#calendar_container").scrollTop(this.last_scroll_height);
-                previous_view_type = view_type;
-                break;
-
-            case "player":
-                Perms.owner = false;
-                if (creation.is_done()) {
-                    if (previous_view_type !== 'player') {
-                        if (!window.preview_date.follow) {
-                            rebuild_calendar('preview', window.preview_date);
-                        } else {
-                            rebuild_calendar('calendar', window.dynamic_data);
-                        }
-                    }
-                }
-                climate_charts.active_view = false;
-                calendar_container.removeClass('hidden');
-                weather_container.addClass('hidden');
-                $("#calendar_container").scrollTop(this.last_scroll_height);
-                previous_view_type = view_type;
-                break;
-
-            case "weather":
-                CalendarRenderer.last_scroll_height = $("#calendar_container").scrollTop();
-                if (creation.is_done()) {
-                    climate_charts.active_view = true;
-                }
-                calendar_container.addClass('hidden');
-                weather_container.removeClass('hidden');
-                break;
-
-        }
-
-    });
-
     /* ------------------- Layout callbacks ------------------- */
 
     $(document).on('click', '.location_toggle', function() {
         var checked = $(this).is(':checked');
         $(this).parent().find('.icon').toggleClass('fa-caret-square-up', checked).toggleClass('fa-caret-square-down', !checked);
-    });
-
-    /* ------------------- Custom callbacks ------------------- */
-
-    $(document).on('change', '.invalid', function() {
-        if ($(this).val() !== null) {
-            $(this).removeClass('invalid');
-        }
     });
 
     $('#apply_changes_btn').click(function() {
@@ -160,17 +84,6 @@ export function set_up_edit_inputs() {
 
         }
 
-    });
-
-    $('input[fc-index="allow_view"]').change(function() {
-        var checked = $(this).is(':checked');
-        var only_backwards = $('input[fc-index="only_backwards"]');
-        only_backwards.prop('disabled', !checked);
-        only_backwards.closest('.setting').toggleClass('disabled', !checked);
-        var only_backwards_checked = only_backwards.is(':checked');
-        if (!checked && only_backwards_checked) {
-            only_backwards.prop('checked', false).change();
-        }
     });
 
 }
