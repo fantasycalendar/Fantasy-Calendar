@@ -17,21 +17,9 @@ export function getUrlParameter(sParam) {
 };
 
 export function update_name() {
-    $.ajax({
-        url: window.baseurl + "calendars/" + window.hash,
-        type: "post",
-        dataType: 'json',
-        data: { _method: 'PATCH', name: window.calendar_name, hash: window.hash },
-        success: function(result) {
-            window.prev_calendar_name = window.calendar_name;
-            document.title = window.calendar_name + " - Fantasy Calendar";
-        },
-        error: function(error) {
-            $.notify(
-                error
-            );
-        }
-    });
+    return axios.post(window.baseurl + "calendars/" + window.hash, {
+        _method: 'PATCH', name: window.calendar_name, hash: window.hash
+    })
 }
 
 export function update_view_dynamic(calendar_hash) {
@@ -54,81 +42,44 @@ export function update_view_dynamic(calendar_hash) {
 }
 
 
-export function update_dynamic(calendar_hash, callback) {
-
-    $.ajax({
-        url: window.baseurl + "calendars/" + calendar_hash,
-        type: "post",
-        dataType: 'json',
-        data: { _method: 'PATCH', dynamic_data: JSON.stringify(window.dynamic_data) },
-        success: function(result) {
-
-            window.last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
-
-            if (callback) {
-                callback();
-            }
-
-        },
-        error: function(error) {
-            $.notify(
-                error
-            );
-        }
-    });
-
+export function update_dynamic(calendar_hash) {
+    return axios.post(window.baseurl + "calendars/" + calendar_hash, {
+        _method: 'PATCH',
+        dynamic_data: JSON.stringify(window.dynamic_data)
+    }).then(function(result) {
+        window.last_dynamic_change = new Date(result.data.last_changed.last_dynamic_change)
+    })
 }
 
-export function update_all() {
+export async function update_all() {
 
-    check_last_change(window.hash, function(output) {
+    let lastChange = await check_last_change(window.hash);
 
-        var new_static_change = new Date(output.last_static_change)
+    if(!lastChange) return;
 
-        if (window.last_static_change > new_static_change) {
+    let new_static_change = new Date(lastChange.last_static_change)
 
-            if (!confirm('The calendar was updated before you saved. Do you want to override your last changes?')) {
-                return;
-            }
-
-            window.last_static_change = new_static_change;
-
+    if (window.last_static_change > new_static_change) {
+        if (!confirm('The calendar was updated before you saved. Do you want to override your last changes?')) {
+            return;
         }
+        window.last_static_change = new_static_change;
+    }
 
-        do_update_all(window.hash);
-
-    });
+    return do_update_all(window.hash);
 }
 
-export function do_update_all(calendar_hash, success_callback, failure_callback) {
-
-    $.ajax({
-        url: window.baseurl + "calendars/" + calendar_hash,
-        type: "post",
-        dataType: 'json',
-        data: {
-            _method: 'PATCH',
-            dynamic_data: JSON.stringify(window.dynamic_data),
-            static_data: JSON.stringify(window.static_data),
-            events: JSON.stringify(window.events),
-            event_categories: JSON.stringify(window.event_categories),
-            advancement: JSON.stringify(window.advancement)
-        },
-        success: function(result) {
-
-            document.title = window.calendar_name + " - Fantasy Calendar";
-
-            window.last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
-            window.last_static_change = new Date(result.last_changed.last_static_change)
-
-            if (success_callback) success_callback();
-
-        },
-        error: function(error) {
-            if (failure_callback !== undefined) {
-                failure_callback();
-            }
-        }
+export async function do_update_all(calendar_hash) {
+    return axios.post(window.baseurl + "calendars/" + calendar_hash, {
+        _method: 'PATCH',
+        dynamic_data: JSON.stringify(window.dynamic_data),
+        static_data: JSON.stringify(window.static_data),
+        events: JSON.stringify(window.events),
+        event_categories: JSON.stringify(window.event_categories),
+        advancement: JSON.stringify(window.advancement)
+    }).then(function(result) {
+        window.last_dynamic_change = new Date(result.data.last_changed.last_dynamic_change)
+        window.last_static_change = new Date(result.data.last_changed.last_static_change)
     });
 }
 
@@ -312,22 +263,8 @@ export function submit_delete_comment(comment_id, callback) {
 
 }
 
-
-export function check_last_change(calendar_hash, output) {
-    $.ajax({
-        url: window.apiurl + "/calendar/" + calendar_hash + "/last_changed",
-        type: "post",
-        dataType: 'json',
-        data: {},
-        success: function(result) {
-            output(result);
-        },
-        error: function(error) {
-            $.notify(
-                error
-            );
-        }
-    });
+export async function check_last_change(calendar_hash) {
+    return axios.post(window.apiurl + "/calendar/" + calendar_hash + "/last_changed");
 }
 
 export function delete_calendar(calendar_hash, calendar_name, callback) {

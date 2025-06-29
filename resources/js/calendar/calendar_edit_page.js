@@ -105,8 +105,8 @@ export default (calendar_structure) => ({
     check_dates() {
         if ((document.hasFocus() && (Date.now() - this.last_mouse_move) < 10000) || window.advancement.advancement_enabled) {
             this.instapoll = false;
-            check_last_change(window.hash, (result) => {
-                this.new_dynamic_change = new Date(result.last_dynamic_change)
+            check_last_change(window.hash).then((result) => {
+                this.new_dynamic_change = new Date(result.data.last_dynamic_change)
                 if (this.new_dynamic_change > window.last_dynamic_change) {
                     window.last_dynamic_change = this.new_dynamic_change
                     get_dynamic_data(window.hash, (result) => {

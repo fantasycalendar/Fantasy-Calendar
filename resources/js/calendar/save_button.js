@@ -3,6 +3,9 @@ import _ from "lodash";
 
 export default () => ({
 
+    timeout: false,
+    saving: false,
+    save_status: "",
     has_changes: false,
     errors: {},
     prev_calendar_data: {},
@@ -43,12 +46,23 @@ export default () => ({
     },
 
     get text(){
-        if(!this.has_changes){
-            return "Nothing to save";
+        if(this.has_changes && !this.getErrors().length){
+            return "Save Calendar";
         }
-        return this.getErrors().length > 0
-            ? "Calendar has errors"
-            : "Save Calendar";
+        if(this.save_status){
+            switch(this.save_status){
+                case "saving":
+                    return "Saving...";
+                case "success":
+                    return "Saved!";
+                case "error":
+                    return "Failed to save!";
+            }
+        }
+        if(!this.has_changes && !this.getErrors().length){
+            return "No changes to save";
+        }
+        return "Calendar has errors";
     },
 
     get warning(){
@@ -59,21 +73,41 @@ export default () => ({
         return !this.has_changes || this.getErrors().length > 0;
     },
 
-    save() {
-
-        if(!_.isEqual(this.prev_calendar_data.static_data, this.$store.calendar.static_data)){
-            update_all();
-        } else if (!_.isEqual(this.prev_calendar_data.dynamic_data, this.$store.calendar.dynamic_data)){
-            update_dynamic(this.$store.calendar.hash)
-        } else if (this.prev_calendar_data.calendar_name !== this.$store.calendar.calendar_name){
-            update_name();
+    async save() {
+        if(this.timeout){
+            clearTimeout(this.timeout);
         }
 
-        this.has_changes = false;
-        this.prev_calendar_data = this.cloneCalendarData(this.$store.calendar);
-        this.$dispatch('notify', {
-            content: "Successfully saved calendar!",
-            type: "success"
-        });
+        let updateMethod;
+        let updateParams = [];
+
+        if(!_.isEqual(this.prev_calendar_data.static_data, this.$store.calendar.static_data)){
+            updateMethod = update_all;
+        } else if (!_.isEqual(this.prev_calendar_data.dynamic_data, this.$store.calendar.dynamic_data)){
+            updateMethod = update_dynamic
+            updateParams = [this.$store.calendar.hash];
+        } else if (this.prev_calendar_data.calendar_name !== this.$store.calendar.calendar_name){
+            updateMethod = update_name;
+        }
+
+        this.save_status = "saving";
+
+        updateMethod(...updateParams)
+            .then(() => {
+                this.save_status = "success";
+            })
+            .catch(() => {
+                this.save_status = "error";
+            })
+            .finally(() => {
+                this.$dispatch('notify', {
+                    content: this.save_status === "success" ? "Successfully saved calendar!" : "Failed to save calendar",
+                    type: this.save_status
+                });
+                this.timeout = setTimeout(() => this.save_status = "", 4000);
+
+                this.has_changes = false;
+                this.prev_calendar_data = this.cloneCalendarData(this.$store.calendar);
+            })
     }
 })

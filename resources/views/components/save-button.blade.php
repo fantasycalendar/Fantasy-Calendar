@@ -16,9 +16,11 @@
             @click="save"
             class='btn btn-lg btn-block'
             :class='{
-                "btn-secondary": disabled,
+                "btn-secondary": disabled && !save_status,
                 "btn-primary": !disabled && has_changes,
-                "btn-warning": !disabled && warning
+                "btn-warning": !disabled && warning && !save_status,
+                "btn-danger": save_status === "error",
+                "btn-success": save_status === "success",
             }'
         ></button>
     </div>

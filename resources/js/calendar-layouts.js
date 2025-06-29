@@ -42,13 +42,19 @@ export default () => ({
         let previous_layout = this.$store.calendar.static_data.settings.layout;
         this.$store.calendar.static_data.settings.layout = layout.name.toLowerCase();
 
-        do_update_all(window.hash, function() {
-            window.onbeforeunload = function() { }
-            window.location.reload(false);
-        }, function() {
-            window.static_data.settings.layout = previous_layout;
-            hide_loading_screen();
-        });
+        do_update_all(window.hash)
+            .then(() => {
+                window.onbeforeunload = function() { }
+                window.location.reload(false);
+            })
+            .catch((error) => {
+                window.static_data.settings.layout = previous_layout;
+                hide_loading_screen();
+                this.$dispatch('notify', {
+                    content: error,
+                    type: "error"
+                });
+            });
     }
 
 })

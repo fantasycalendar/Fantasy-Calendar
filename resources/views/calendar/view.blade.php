@@ -96,10 +96,10 @@
 
                 instapoll = false;
 
-                check_last_change(hash, function(result){
+                check_last_change(hash).then((result) => {
 
-                    new_dynamic_change = new Date(result.last_dynamic_change)
-                    new_static_change = new Date(result.last_static_change)
+                    new_dynamic_change = new Date(result.data.last_dynamic_change)
+                    new_static_change = new Date(result.data.last_static_change)
 
                     if(new_static_change > window.last_static_change){
 

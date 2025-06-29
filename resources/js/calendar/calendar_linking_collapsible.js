@@ -57,15 +57,17 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
                 parent_link_date: [inputDate.year, inputDate.timespan, inputDate.day],
                 parent_offset: evaluate_calendar_start(window.static_data, inputDate.year, inputDate.timespan, inputDate.day).epoch
             }).then(() => {
-                update_dynamic(this.$store.calendar.hash, () => {
-                    window.location.reload();
-                })
-            }).catch(error => {
-                this.$dispatch('notify', {
-                    type: "error",
-                    content: error.response.data.message
-                })
-            });
+                update_dynamic(this.$store.calendar.hash)
+                    .then(() => {
+                        window.location.reload();
+                    })
+                    .catch((error) => {
+                        this.$dispatch('notify', {
+                            content: error,
+                            type: "error"
+                        })
+                    })
+            })
         })
     }
 
@@ -90,15 +92,17 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
                     parent_link_date: null,
                     parent_offset: null,
                 }).then(() => {
-                    update_dynamic(this.$store.calendar.hash, () => {
-                        window.location.reload();
-                    })
-                }).catch(error => {
-                    this.$dispatch('notify', {
-                        type: "error",
-                        content: error.response.data.message
-                    })
-                });
+                    update_dynamic(this.$store.calendar.hash)
+                        .then(() => {
+                            window.location.reload();
+                        })
+                        .catch((error) => {
+                            this.$dispatch('notify', {
+                                content: error,
+                                type: "error"
+                            })
+                        })
+                })
             });
     }
 
