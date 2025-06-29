@@ -26,7 +26,7 @@
     <div class='flex mb-2 alert alert-success' x-cloak x-show="!!invite_status" x-transition x-text="invite_status"></div>
     <div class='flex mb-1 alert alert-danger' x-cloak x-show="!!invite_error" x-transition x-text="invite_error"></div>
 
-    <div class='sortable' x-ref="users-sortable">
+    <div class='sortable' x-ref="users-sortable" x-show="users.length">
         <template x-for="(user, index) in users" x-index='user.id' :key="user.id">
             <x-sortable-item deleteFunction="removeUser(user.id)"
                 x-data="{
