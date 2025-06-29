@@ -7,7 +7,10 @@ class UserManagementCollapsible extends CollapsibleComponent {
     users = [];
     invite_email = "";
     invite_status = "";
+    invite_error = "";
     invite_enabled = true;
+    inviting = false;
+    loadingUsers = false;
 
     deleting = -1;
 
@@ -16,6 +19,9 @@ class UserManagementCollapsible extends CollapsibleComponent {
     }
 
     loadUsers() {
+        this.loadingUsers = true;
+        this.deleting = -1;
+
         axios.get(this.$store.calendar.api_url("/calendar/:hash/users"))
             .then(function(response) {
                 console.log(response.data);
@@ -28,32 +34,47 @@ class UserManagementCollapsible extends CollapsibleComponent {
                     icon: 'fa-exclamation-triangle',
                     icon_color: 'text-red-500'
                 });
+            }).finally(() => {
+                this.loadingUsers = false;
             });
     }
 
     inviteUser() {
         this.invite_enabled = false;
+        this.inviting = true;
 
         axios.post(this.$store.calendar.api_url("/calendar/:hash/inviteUser"), {
             email: this.invite_email
         }).then(result => {
-            this.invite_status = `Sent email to ${this.invite_email}!`;
-            this.invite_email = "";
+            if (result.data.errors) {
+                console.log(result.data);
+                this.invite_error = result.data.errors.email[0];
+            } else {
+                this.invite_status = `Sent email to ${this.invite_email}!`;
+                this.invite_email = "";
+            }
         }).catch(error => {
             console.log(error);
-
-            this.invite_status = error.response.data.errors.email[0];
+            this.invite_status = '';
+            this.invite_error = error.response.data.errors.email[0];
         }).finally(() => {
             setTimeout(() => {
                 this.invite_status = "";
+                this.invite_error = "";
                 this.invite_enabled = true;
+                this.inviting = false;
             }, 2000);
 
             this.loadUsers();
         });
     }
 
-    removeInvite(invited_email) {
+    removeInvite(invited_id) {
+        let invite = this.users.find(user => user.id == invited_id);
+        let invited_email = invite.username;
+
+        invite.username = 'Canceling invite...';
+
         Swal.fire({
             title: "Removing User",
             html: `<p>Are you sure you want to cancel your invitation to <strong>${invited_email}</strong>?</p>`,
@@ -68,9 +89,12 @@ class UserManagementCollapsible extends CollapsibleComponent {
                 return;
             }
 
+            this.deleting = -1;
+
             axios.post(this.$store.calendar.api_url("/calendar/:hash/removeUser"), {
                 email: invited_email,
             }).then((response) => {
+                invite.username = 'Invite cancelled.';
                 this.loadUsers();
             }).catch(function(error) {
                 this.$dispatch('notify', {
@@ -84,6 +108,11 @@ class UserManagementCollapsible extends CollapsibleComponent {
     }
 
     removeUser(user_id) {
+        if (typeof user_id === "string") {
+            this.removeInvite(user_id);
+            return;
+        }
+
         let user_name = this.users.find(user => user.id == user_id).username;
 
         Swal.fire({
@@ -117,7 +146,6 @@ class UserManagementCollapsible extends CollapsibleComponent {
                 });
             });
         });
-
     }
 
     updateUserRole(user_id, user_role, output) {

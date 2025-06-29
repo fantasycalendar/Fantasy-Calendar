@@ -69,6 +69,8 @@ class CalendarController extends Controller
 
     public function users(GetCalendarUsersRequest $request, Calendar $calendar)
     {
+        $start = microtime(true);
+
         $users = $calendar->users;
 
         $usersResource = new Collection($users, new CalendarUserTransformer());
@@ -79,6 +81,10 @@ class CalendarController extends Controller
                 return $invite->transformForCalendar();
             })->toArray()
         );
+
+        $end = microtime(true);
+
+        logger()->info("Users call took " . ($end - $start) . " microseconds.");
 
         return $result;
     }

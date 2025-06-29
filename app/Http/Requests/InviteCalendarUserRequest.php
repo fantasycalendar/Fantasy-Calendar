@@ -42,7 +42,7 @@ class InviteCalendarUserRequest extends FormRequest
         return [
             'email' => [
                 'required',
-                'email:rfc,dns',
+                'email:rfc',
                 new UserNotAlreadyPresentOnCalendar($this->calendar),
                 new UserHasNoValidInvites($this->calendar)
             ]

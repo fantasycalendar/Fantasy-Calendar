@@ -6,18 +6,28 @@
     <p><small>Once they accept your invite, you'll be able to assign them a role.</small></p>
 
     <div class='flex input-group'>
-        <input type='text' class='form-control' id='email_input' x-model='invite_email' placeholder='Email'>
+        <input type='text'
+            class='form-control'
+            id='email_input'
+            x-model='invite_email'
+            placeholder='Email'
+            :disabled="inviting"
+            @keydown.enter="inviteUser"
+        >
         <div class="input-group-append">
-            <button type='button' class='btn full btn-primary' :disabled="!invite_email && invite_enabled" @click="inviteUser">Invite</button>
+            <button type='button'
+                class='btn full btn-primary'
+                :disabled="!invite_email || !invite_enabled || inviting"
+                @click="inviteUser"
+            ><span x-text="inviting ? 'Sending...' : 'Invite'" ></span></button>
         </div>
     </div>
 
-    <div class='flex mb-2' x-cloak x-show="!!invite_status" x-transition>
-        <p class='m-0 alert alert-success' x-text="invite_status"></p>
-    </div>
+    <div class='flex mb-2 alert alert-success' x-cloak x-show="!!invite_status" x-transition x-text="invite_status"></div>
+    <div class='flex mb-1 alert alert-danger' x-cloak x-show="!!invite_error" x-transition x-text="invite_error"></div>
 
     <div class='sortable' x-ref="users-sortable">
-        <template x-for="(user, index) in users" x-index='user.email' :key="user.email">
+        <template x-for="(user, index) in users" x-index='user.id' :key="user.id">
             <x-sortable-item deleteFunction="removeUser(user.id)"
                 x-data="{
                     role: user.user_role,
@@ -72,8 +82,11 @@
         </template>
     </div>
 
-    <button type='button' class='btn btn-sm btn-secondary full' @click="loadUsers">
-        Refresh
+    <button type='button'
+        class='btn btn-sm btn-secondary full'
+        @click="loadUsers"
+        :disabled="loadingUsers"
+         x-text="loadingUsers ? 'Loading...' : 'Refresh'">
     </button>
 </div>
 @else
