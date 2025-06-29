@@ -20,6 +20,11 @@
             <x-alpine.check-input id="settings_add_year_day_number" x-model="settings.add_year_day_number">
                 Add year day to each day
             </x-alpine.check-input>
+
+            {{-- TODO: Make this setting actually DO something --}}
+            <x-alpine.check-input id="settings_prompt_for_redraw" x-model="settings.prompt_for_redraw">
+                Prompt before redrawing calendar
+            </x-alpine.check-input>
         </div>
     </div>
 

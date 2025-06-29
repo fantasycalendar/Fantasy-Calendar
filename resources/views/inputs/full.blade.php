@@ -3,22 +3,6 @@
 
     @yield('label')
 
-    <x-view-options></x-view-options>
-
-    <div class='wrap-collapsible step-hide'>
-        <div class="d-flex mb-2 w-100">
-            <label class="row no-gutters setting border rounded py-2 px-3 protip w-100" data-pt-position="right"
-                   data-pt-title="If unchecked, you will be prompted to apply changes after making them, instead of loading the calendar every time.">
-                <div class='col'>
-                    <input type='checkbox' class='margin-right' data='settings' id='apply_changes_immediately' checked>
-                    <span>
-                        Apply changes immediately
-                    </span>
-                </div>
-            </label>
-        </div>
-    </div>
-
     <div class="accordion">
         <x-collapsible :calendar="$calendar" contains="Statistics" icon="fa-chart-pie" polished></x-collapsible>
 

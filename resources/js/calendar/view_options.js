@@ -3,6 +3,18 @@ import { climate_charts } from "./calendar_weather_layout.js";
 
 export default () => ({
     view_type: "owner",
+    open: false,
+
+    view_icon(type) {
+        switch (type) {
+            case "owner":
+                return "fa-eye";
+            case "guest":
+                return "fa-user";
+            case "climate":
+                return "fa-chart-line";
+        }
+    },
 
     switch_to_owner() {
         this.$store.calendar.perms.owner = true;
@@ -41,10 +53,10 @@ export default () => ({
     },
 
     switch_view(type) {
-        if(type === this.view_type) return;
+        if (type === this.view_type) return;
         this.view_type = type;
 
-        switch(type){
+        switch (type) {
             case "owner":
                 return this.switch_to_owner();
             case "guest":

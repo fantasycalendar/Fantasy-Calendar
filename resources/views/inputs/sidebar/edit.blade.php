@@ -42,7 +42,8 @@
         </div>
     </div>
 
-    <div class='wrap-collapsible content'>
+    <div class='wrap-collapsible content flex items-stretch space-x-2 mb-2'>
         <x-save-button></x-save-button>
+        <x-view-options></x-view-options>
     </div>
 @endsection
