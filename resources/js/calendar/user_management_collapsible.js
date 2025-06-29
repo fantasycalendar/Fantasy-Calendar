@@ -9,6 +9,8 @@ class UserManagementCollapsible extends CollapsibleComponent {
     invite_status = "";
     invite_enabled = true;
 
+    deleting = -1;
+
     init() {
         this.loadUsers();
     }

@@ -1,6 +1,6 @@
 @props(['deleteFunction' => null, 'highlightRowWhen' => null])
 
-<div class="list-group-item px-2 !py-0.5 first-of-type:rounded-t draggable-source" :data-id="index"
+<div class="dark:border-white/10 border-x border-t last-of-type:border-b px-2 !py-0.5 first-of-type:rounded-t last-of-type:rounded-b draggable-source" :data-id="index"
      @if($highlightRowWhen)
          :class="{ 'bg-gray-100 dark:bg-white/5': {{ $highlightRowWhen }}}"
      @endif
@@ -37,7 +37,7 @@
         </button>
     </div>
 
-    <div class="flex flex-col px-2.5 py-2.5 space-y-2" x-show="!collapsed && !reordering && deleting === -1">
+    <div class="flex flex-col px-2.5 py-2.5 space-y-2" x-show="!collapsed && !reordering && deleting === -1" {{ $attributes->whereDoesntStartWith('wrapper') }}>
         {{ $slot }}
     </div>
 

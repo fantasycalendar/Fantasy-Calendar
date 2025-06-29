@@ -13,7 +13,7 @@
     }
 @endphp
 
-<div class='form-check py-2 border first:rounded-t last:rounded-b {{ $attributes->get('wrapper-class') }}' {{ $attributes->whereStartsWith('x-show') }}
+<div class='form-check py-2 dark:border-white/10 border-x border-t last-of-type:border-b first:rounded-t last:rounded-b {{ $attributes->get('wrapper-class') }}' {{ $attributes->whereStartsWith('x-show') }}
     @if($disabledWhen)
         :class="{
             'disabled {{ $disabledWrapperClasses }}': {{ $disabledWhen }},
