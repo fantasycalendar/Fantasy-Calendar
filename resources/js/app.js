@@ -160,7 +160,13 @@ window.get_dynamic_data = get_dynamic_data;
 window.check_last_change = check_last_change;
 window.submit_hide_show_event = submit_hide_show_event;
 
-import { debounce, date_manager, valid_preview_date, convert_year } from './calendar/calendar_functions.js';
+import {
+    debounce,
+    date_manager,
+    valid_preview_date,
+    convert_year,
+    linked_popup
+} from './calendar/calendar_functions.js';
 window.debounce = debounce;
 window.date_manager = date_manager;
 window.valid_preview_date = valid_preview_date;
@@ -179,7 +185,6 @@ import {
     set_up_edit_inputs,
     query_autoload,
     autoload,
-    linked_popup,
 } from './calendar/calendar_inputs_edit.js';
 window.set_up_edit_inputs = set_up_edit_inputs;
 window.query_autoload = query_autoload;
@@ -230,6 +235,9 @@ Alpine.data('ViewOptions', ViewOptions);
 
 import SaveButton from './calendar/save_button.js';
 Alpine.data('SaveButton', SaveButton)
+
+import WeatherGraphs from './calendar/calendar_weather_graphs.js';
+Alpine.data('WeatherGraphs', WeatherGraphs);
 
 Alpine.data('MainApp', () => ({
     init: function() {

@@ -208,17 +208,3 @@ export function autoload(popup) {
         window.dispatchEvent(new CustomEvent("events-changed"));
     }
 }
-
-
-export function linked_popup() {
-    var html = [];
-    html.push("<p>As you've noticed, some options are missing. Nothing is broken! We promise. This calendar just has its date <strong>linked with another.</strong></p>");
-    html.push("<p>Things like month lengths, weekdays, leap days, hours, minutes, and eras are structural to a calendar, and changing them while two calendars are linked would be like changing the wheels on a moving car.</p>");
-    html.push("<p>To change this calendar's structure, simply unlink it from any other calendar(s).</p>");
-
-    swal.fire({
-        title: "Linked Calendar",
-        html: html.join(''),
-        icon: "info"
-    });
-}

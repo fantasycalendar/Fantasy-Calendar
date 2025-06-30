@@ -99,30 +99,9 @@
 
     @include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
 
-    <div id="weather_container" x-data='{
-        visible: false,
-        set_weather_graph_visible(visible) {
-            // TODO: make this an actual alpine component
-            this.visible = visible;
-        }
-    }' x-cloak x-show='visible' @set-weather-graph-visible.window='set_weather_graph_visible($event.detail)'>
-
-        <div id='day_length' class='hidden'>
-            <h3 class='text-center mt-3'>Sunrise and Sunset</h3>
-            <canvas class='chart'></canvas>
-        </div>
-
-        <div id='temperature' class='hidden'>
-            <h3 class='text-center mt-3'>Temperature</h3>
-            <canvas class='chart'></canvas>
-        </div>
-
-        <div id='precipitation' class='hidden'>
-            <h3 class='text-center mt-3'>Precipitation</h3>
-            <canvas class='chart'></canvas>
-        </div>
-
-    </div>
+    @if(request()->is('calendars/*/edit'))
+        <x-weather-graphs></x-weather-graphs>
+    @endif
 
 </div>
 <div id='html_edit'></div>

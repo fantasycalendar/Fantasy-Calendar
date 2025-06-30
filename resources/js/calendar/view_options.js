@@ -1,5 +1,3 @@
-import { climate_charts } from "./calendar_weather_layout.js";
-
 export default () => ({
     chosen_view: "owner",
     open: false,
@@ -23,12 +21,10 @@ export default () => ({
     },
 
     switch_to_owner() {
+        // TODO: Change this to an event to the calendar, instead?
         this.$store.calendar.perms.owner = true;
 
         this.$dispatch("rebuild-calendar");
-
-        // TODO: move this into an event-based approach once climate charts are refactored
-        climate_charts.active_view = false;
         this.$dispatch("set-calendar-visible", true);
         this.$dispatch("set-weather-graph-visible", false);
     },
@@ -37,8 +33,6 @@ export default () => ({
         this.$store.calendar.perms.owner = false;
 
         this.$dispatch("rebuild-calendar");
-
-        climate_charts.active_view = false;
         this.$dispatch("set-calendar-visible", true);
         this.$dispatch("set-weather-graph-visible", false);
     },
@@ -46,7 +40,6 @@ export default () => ({
     switch_to_climate() {
         this.$dispatch("set-calendar-visible", false);
         this.$dispatch("set-weather-graph-visible", true);
-        climate_charts.active_view = true;
     },
 
     switch_view(type) {

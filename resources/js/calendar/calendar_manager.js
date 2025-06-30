@@ -1,6 +1,4 @@
 import { execution_time } from "./calendar_functions";
-import { climate_charts } from "./calendar_weather_layout";
-import { Climate } from "./calendar_season_generator";
 import { $ } from 'jquery';
 
 var utcDate1 = Date.now();
@@ -223,9 +221,6 @@ export async function rebuild_calendar(action, rebuild_data) {
         window.evaluated_static_data = result;
 
         rerender_calendar(window.evaluated_static_data);
-
-        climate_charts.evaluate_day_length_chart();
-        climate_charts.evaluate_weather_charts();
 
     });
 }
