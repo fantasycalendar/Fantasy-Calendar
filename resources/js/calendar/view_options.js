@@ -1,10 +1,8 @@
-import { delete_calendar } from "./calendar_ajax_functions.js";
-import { rebuild_calendar } from "./calendar_manager.js";
 import { climate_charts } from "./calendar_weather_layout.js";
 
 export default () => ({
     chosen_view: "owner",
-    open: true,
+    open: false,
     view_modes: {
         owner: {
             icon: 'fa-user',
@@ -24,26 +22,10 @@ export default () => ({
         return this.view_modes[this.chosen_view];
     },
 
-    view_icon(type) {
-        switch (type) {
-            case "owner":
-                return "fa-eye";
-            case "guest":
-                return "fa-user";
-            case "climate":
-                return "fa-chart-line";
-        }
-    },
-
     switch_to_owner() {
         this.$store.calendar.perms.owner = true;
 
-        // TODO: make this a call to the calendar?
-        if (!window.preview_date.follow) {
-            rebuild_calendar('preview', window.preview_date);
-        } else {
-            rebuild_calendar('calendar', window.dynamic_data);
-        }
+        this.$dispatch("rebuild-calendar");
 
         // TODO: move this into an event-based approach once climate charts are refactored
         climate_charts.active_view = false;
@@ -54,11 +36,7 @@ export default () => ({
     switch_to_guest() {
         this.$store.calendar.perms.owner = false;
 
-        if (!window.preview_date.follow) {
-            rebuild_calendar('preview', window.preview_date);
-        } else {
-            rebuild_calendar('calendar', window.dynamic_data);
-        }
+        this.$dispatch("rebuild-calendar");
 
         climate_charts.active_view = false;
         this.$dispatch("set-calendar-visible", true);
@@ -85,12 +63,52 @@ export default () => ({
         }
     },
 
-    call_delete_calendar() {
-        delete_calendar(
-            this.$store.calendar.hash,
-            this.$store.calendar.name,
-            function() { self.location = '/calendars' },
-        );
+    delete_calendar() {
+
+        return swal.fire({
+                text: `If you're sure about deleting this calendar, please type "${this.$store.calendar.calendar_name}" below:`,
+                input: "text",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Delete',
+                dangerMode: true
+            })
+            .then(result => {
+
+                if (result.dismiss || !result.value) throw null;
+
+                if (result.value !== this.$store.calendar.calendar_name) {
+                    throw `"${result.value}" isn't the same as "${this.$store.calendar.calendar_name}"`;
+                }
+
+                return axios.delete(window.apiurl + '/calendar/' + this.$store.calendar.hash);
+
+            })
+            .then(results => {
+                if (results.data.error) {
+                    throw "Error: " + results.data.message;
+                }
+
+                swal.fire({
+                        icon: "success",
+                        title: "Deleted!",
+                        text: `The calendar ${this.$store.calendar.calendar_name} has been deleted.`,
+                        button: true
+                    })
+                    .then(() => {
+                        window.location = '/calendars';
+                    })
+            })
+            .catch(err => {
+                if (err) {
+                    swal.fire("Oh no!", err, "error");
+                } else {
+                    swal.hideLoading();
+                    swal.close();
+                }
+            });
     },
 
     print() {

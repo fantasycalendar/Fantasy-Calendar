@@ -250,53 +250,6 @@ export async function check_last_change(calendar_hash) {
     return axios.post(window.apiurl + "/calendar/" + calendar_hash + "/last_changed");
 }
 
-export function delete_calendar(calendar_hash, calendar_name, callback) {
-
-    swal.fire({
-        text: "If you're sure about deleting this calendar, please type '" + calendar_name + "' below:",
-        input: "text",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Delete',
-        dangerMode: true
-    })
-        .then(result => {
-
-            if (result.dismiss || !result.value) throw null;
-
-            if (result.value !== window.calendar_name) throw `Sorry! "${result.value}" isn't the same as "${calendar_name}"`;
-
-            return axios.delete(window.apiurl + '/calendar/' + calendar_hash);
-
-        })
-        .then(results => {
-            if (results.data.error) {
-                throw "Error: " + results.data.message;
-            }
-
-            swal.fire({
-                icon: "success",
-                title: "Deleted!",
-                text: "The calendar " + window.calendar_name + " has been deleted.",
-                button: true
-            })
-                .then(success => {
-                    callback();
-                })
-        })
-        .catch(err => {
-            if (err) {
-                swal.fire("Oh no!", err, "error");
-            } else {
-                swal.hideLoading();
-                swal.close();
-            }
-        });
-
-}
-
 export function create_calendar(callback) {
 
     $.ajax({

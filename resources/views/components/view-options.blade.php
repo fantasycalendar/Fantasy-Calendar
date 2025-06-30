@@ -33,7 +33,7 @@
             </div>
         </button>
 
-        <button type="button" @click="call_delete_calendar" class="dropdown-item btn-danger">
+        <button type="button" @click="delete_calendar" class="dropdown-item btn-danger">
             <div class="flex items-center space-x-2">
                 <i class="fa fa-trash w-6 text-center"></i>
                 <span>Delete</span>

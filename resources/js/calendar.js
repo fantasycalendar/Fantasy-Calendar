@@ -6,6 +6,7 @@ import {
     evaluate_calendar_start, fract, get_current_era, get_days_in_timespan, get_timespans_in_year, precisionRound
 } from "./calendar/calendar_functions.js";
 import _ from "lodash";
+import { rebuild_calendar } from "./calendar/calendar_manager.js";
 
 export default class Calendar {
 
@@ -74,7 +75,24 @@ export default class Calendar {
 
         document.title = this.calendar_name + " - Fantasy Calendar";
 
-        return [structureChanged, dateChanged];
+        if (structureChanged) {
+            this.rebuild_calendar()
+        } else if (dateChanged) {
+            this.$dispatch('update-epochs', {
+                current_epoch: this.dynamic_data.epoch,
+                preview_epoch: this.active_date.epoch
+            });
+        }
+
+        this.$dispatch('calendar-updated');
+    }
+
+    rebuild_calendar() {
+        let type = this.preview_date.follow
+            ? "calendar"
+            : "preview";
+
+        return rebuild_calendar(type, this.active_date);
     }
 
     // "Broker" methods
@@ -422,6 +440,10 @@ export default class Calendar {
     }
 
     // Getters
+    get active_date(){
+        return this.preview_date.follow ? this.dynamic_data : this.preview_date;
+    }
+
     get perms() {
         return window.Perms;
     }

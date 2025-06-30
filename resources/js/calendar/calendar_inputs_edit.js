@@ -1,5 +1,4 @@
 import {
-    delete_calendar,
     create_calendar,
 } from "./calendar_ajax_functions";
 import {
@@ -54,33 +53,6 @@ export function set_up_edit_inputs() {
 
     create_button.prop('disabled', true);
 
-    /* ------------------- Layout callbacks ------------------- */
-
-    $(document).on('click', '.location_toggle', function() {
-        var checked = $(this).is(':checked');
-        $(this).parent().find('.icon').toggleClass('fa-caret-square-up', checked).toggleClass('fa-caret-square-down', !checked);
-    });
-
-    $('#apply_changes_btn').click(function() {
-
-        if ($('.invalid').length == 0) {
-
-            changes_applied = true;
-
-            if (!window.preview_date.follow) {
-
-                rebuild_calendar('preview', window.preview_date);
-
-            } else {
-
-                rebuild_calendar('calendar', window.dynamic_data);
-
-
-            }
-
-        }
-
-    });
 
 }
 

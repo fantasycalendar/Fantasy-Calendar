@@ -1,5 +1,4 @@
 import _ from "lodash";
-import { rebuild_calendar } from "./calendar_manager.js";
 
 export default (calendar_structure) => ({
 
@@ -51,8 +50,7 @@ export default (calendar_structure) => ({
         window.preview_date.follow = true;
 
         this.$store.calendar.setup();
-
-        rebuild_calendar('calendar', dynamic_data);
+        this.$store.calendar.rebuild_calendar();
 
         set_up_edit_inputs();
 
@@ -136,30 +134,11 @@ export default (calendar_structure) => ({
 
     },
 
+    rebuildCalendar() {
+        this.$store.calendar.rebuild_calendar();
+    },
+
     updateCalendar($event) {
-        let structureChanged = false;
-        let dateChanged = false;
-
-        if ($event.detail.calendar) {
-            [structureChanged, dateChanged] = this.$store.calendar.update($event.detail.calendar);
-        }
-
-        if (structureChanged) {
-            let type = this.$store.calendar.preview_date.follow
-                ? "rerender"
-                : "preview";
-            let date = this.$store.calendar.preview_date.follow
-                ? this.$store.calendar.dynamic_data
-                : this.$store.calendar.preview_date;
-
-            rebuild_calendar(type, date);
-        } else if (dateChanged) {
-            this.$dispatch('update-epochs', {
-                current_epoch: window.dynamic_data.epoch,
-                preview_epoch: preview_date.follow ? window.dynamic_data.epoch : preview_date.epoch
-            });
-        }
-
-        this.$dispatch('calendar-updated');
+        this.$store.calendar.update($event.detail.calendar);
     }
 });
