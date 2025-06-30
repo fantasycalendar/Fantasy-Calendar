@@ -21,29 +21,13 @@
                         type='text' class='form-control form-control-lg'
                         placeholder='Calendar name'
                     />
-                    <div class="dropdown input-group-append" x-data="{ open: false }">
-                        <button class="btn btn-secondary dropdown-toggle" id="calendarMenuToggle" @click="open = !open">
-                            <i class="fa fa-cog"></i>
-                        </button>
-                        <div x-show="open" :class="{ 'show': open }" class="dropdown-menu !left-auto right-0" aria-labelleddby="calendarMenuToggle" @click.away="open = false" x-cloak>
-                            <a href="{{ route('calendars.show', ['calendar'=> $calendar->hash ]) }}" class="dropdown-item">
-                                View
-                            </a>
-                            <a href="#" onclick="print()" class="dropdown-item">
-                                Print
-                            </a>
-                            <a href="#" id='btn_delete' class="dropdown-item">
-                                Delete
-                            </a>
-                        </div>
-                    </div>
+                    <x-view-options></x-view-options>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class='wrap-collapsible content flex items-stretch space-x-2 mb-2'>
+    <div class='wrap-collapsible mt-2'>
         <x-save-button></x-save-button>
-        <x-view-options></x-view-options>
     </div>
 @endsection

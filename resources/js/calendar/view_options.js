@@ -1,9 +1,28 @@
+import { delete_calendar } from "./calendar_ajax_functions.js";
 import { rebuild_calendar } from "./calendar_manager.js";
 import { climate_charts } from "./calendar_weather_layout.js";
 
 export default () => ({
-    view_type: "owner",
-    open: false,
+    chosen_view: "owner",
+    open: true,
+    view_modes: {
+        owner: {
+            icon: 'fa-user',
+            label: 'Calendar as Owner',
+        },
+        guest: {
+            icon: 'fa-users',
+            label: 'Calendar as Guest',
+        },
+        climate: {
+            icon: 'fa-chart-line',
+            label: 'Climate graphs',
+        },
+    },
+
+    get view_mode() {
+        return this.view_modes[this.chosen_view];
+    },
 
     view_icon(type) {
         switch (type) {
@@ -53,8 +72,8 @@ export default () => ({
     },
 
     switch_view(type) {
-        if (type === this.view_type) return;
-        this.view_type = type;
+        if (type === this.chosen_view) return;
+        this.chosen_view = type;
 
         switch (type) {
             case "owner":
@@ -65,4 +84,16 @@ export default () => ({
                 return this.switch_to_climate();
         }
     },
+
+    call_delete_calendar() {
+        delete_calendar(
+            this.$store.calendar.hash,
+            this.$store.calendar.name,
+            function() { self.location = '/calendars' },
+        );
+    },
+
+    print() {
+        print();
+    }
 })

@@ -54,10 +54,6 @@ export function set_up_edit_inputs() {
 
     create_button.prop('disabled', true);
 
-    $('#btn_delete').click(function() {
-        delete_calendar(window.hash, window.calendar_name, function() { self.location = '/calendars' });
-    });
-
     /* ------------------- Layout callbacks ------------------- */
 
     $(document).on('click', '.location_toggle', function() {

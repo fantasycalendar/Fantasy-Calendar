@@ -3,7 +3,7 @@
 
     @yield('label')
 
-    <div class="accordion">
+    <div class="accordion mt-3">
         <x-collapsible :calendar="$calendar" contains="Statistics" icon="fa-chart-pie" polished></x-collapsible>
 
         <x-collapsible :calendar="$calendar" contains="Current Date" icon="fa-hourglass-half" done></x-collapsible>

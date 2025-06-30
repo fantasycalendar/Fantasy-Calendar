@@ -397,7 +397,8 @@ input[type="number"]:not(.spinner) {
 
 .wrap-collapsible {
     width: 94%;
-    margin: auto;
+    margin-left: auto;
+    margin-right: auto;
 
     &>label {
         position: relative;
