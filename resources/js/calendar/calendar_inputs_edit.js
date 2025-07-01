@@ -5,7 +5,6 @@ import {
     convert_year,
     evaluate_calendar_start,
 } from "./calendar_functions";
-import { rebuild_calendar } from "./calendar_manager";
 
 export var changes_applied = true;
 
@@ -195,7 +194,7 @@ export function autoload(popup) {
         window.event_categories = data.event_categories;
         window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
 
-        rebuild_calendar("calendar", window.dynamic_data);
+        window.dispatchEvent(new CustomEvent("rebuild-calendar"));
 
         if (popup) {
             swal.fire({

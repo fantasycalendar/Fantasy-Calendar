@@ -870,7 +870,13 @@ export const calendar_data_generator = {
      *
      * @returns Promise
      */
-    run: function() {
+    run: function({ static_data, dynamic_data, owner, events, event_categories }={}) {
+
+        this.static_data = static_data;
+        this.dynamic_data = dynamic_data;
+        this.owner = owner;
+        this.events = events;
+        this.event_categories = event_categories;
 
         return new Promise((resolve, reject) => {
 

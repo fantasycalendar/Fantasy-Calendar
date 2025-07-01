@@ -1,12 +1,19 @@
 // TODO: ABSOLUTELY rewrite this
 import {
     avg_month_length,
-    avg_year_length, convert_year, date_manager, does_day_appear,
+    avg_year_length,
+    convert_year,
+    date_manager,
+    does_day_appear,
     does_timespan_appear,
-    evaluate_calendar_start, fract, get_current_era, get_days_in_timespan, get_timespans_in_year, precisionRound
+    evaluate_calendar_start, execution_time,
+    fract,
+    get_current_era,
+    get_days_in_timespan,
+    get_timespans_in_year,
+    precisionRound
 } from "./calendar/calendar_functions.js";
 import _ from "lodash";
-import { rebuild_calendar } from "./calendar/calendar_manager.js";
 
 export default class Calendar {
 
@@ -27,8 +34,13 @@ export default class Calendar {
             "event_categories",
         ];
 
-        let structureChanged = rerenderKeys.some(key => _.hasIn(incomingChanges, key));
-        let selectedDateChanged = _.hasIn(incomingChanges, "preview_date");
+        let incomingKeys = Object.keys(incomingChanges);
+
+        let structureChanged = rerenderKeys.some(key => {
+            return incomingKeys.some(incomingKey => incomingKey.startsWith(key));
+        });
+
+        let selectedDateChanged = incomingKeys.some(incomingKey => incomingKey.startsWith("preview_date"));
 
         let prev_dynamic_data = _.cloneDeep(this.dynamic_data);
         let prev_preview_date = _.cloneDeep(this.preview_date);
@@ -78,21 +90,42 @@ export default class Calendar {
         if (structureChanged) {
             this.rebuild_calendar()
         } else if (dateChanged) {
-            this.$dispatch('update-epochs', {
-                current_epoch: this.dynamic_data.epoch,
-                preview_epoch: this.active_date.epoch
-            });
+            window.dispatchEvent(new CustomEvent('update-epochs', {
+                detail:{
+                    current_epoch: this.dynamic_data.epoch,
+                    preview_epoch: this.active_date.epoch
+                }
+            }));
         }
 
-        this.$dispatch('calendar-updated');
+        window.dispatchEvent(new CustomEvent('calendar-updated'));
     }
 
     rebuild_calendar() {
-        let type = this.preview_date.follow
-            ? "calendar"
-            : "preview";
+        execution_time.start()
+        return window.calendar_data_generator.run({
+            static_data: this.static_data,
+            dynamic_data: this.active_date,
+            owner: window.Perms.player_at_least('co-owner'),
+            events: this.events,
+            event_categories: this.event_categories
+        }).then(evaluated_static_data => {
+            window.evaluated_static_data = evaluated_static_data;
+            this.render_calendar();
+        });
+    }
 
-        return rebuild_calendar(type, this.active_date);
+    render_calendar() {
+        return window.render_data_generator.create_render_data(window.evaluated_static_data).then((result) => {
+            window.dispatchEvent(new CustomEvent('render-data-change', { detail: result }));
+        }).catch((err) => {
+            window.dispatchEvent(new CustomEvent("notify", {
+                detail: {
+                    message: err,
+                    type: "error"
+                }
+            }));
+        });
     }
 
     // "Broker" methods

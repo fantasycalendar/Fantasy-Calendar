@@ -12,16 +12,7 @@
 
                     bind_calendar_events();
 
-                    if(!evaluate_queryString(window.location.search)){
-                        rebuild_calendar('calendar', window.dynamic_data);
-                    }else{
-                        rebuild_calendar('calendar', window.preview_date);
-                    }
-
-                    $('#current_year, #current_timespan, #current_day, #current_hour, #current_minute, #location_select')
-                        .change(debounce(function(type){
-                            window.update_view_dynamic(window.hash);
-                        }, 500));
+                    window.dispatchEvent(new CustomEvent("rebuild-calendar"));
 
                     last_mouse_move = Date.now();
                     poll_timer = setTimeout(check_dates, 5000);
@@ -173,7 +164,7 @@
             display_preview_back_button();
 
             if(rebuild || ((data.rebuild || window.static_data.settings.only_reveal_today) && preview_date.follow)){
-                rebuild_calendar('calendar', dynamic_data);
+                window.dispatchEvent(new CustomEvent("rebuild-calendar"));
             }
 
         }

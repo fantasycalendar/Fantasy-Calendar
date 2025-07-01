@@ -1,5 +1,4 @@
 import { clone } from "./calendar_functions";
-import { rerender_calendar } from './calendar_manager.js';
 
 export function getUrlParameter(sParam) {
     var sPageURL = decodeURIComponent(window.location.search.substring(1)),
@@ -146,7 +145,7 @@ export function submit_hide_show_event(event_id) {
         .then(function(result) {
             if (result.data.success) {
                 window.events[event_id].settings.hide = !window.events[event_id].settings.hide;
-                rerender_calendar();
+                window.dispatchEvent(new CustomEvent("render-calendar"));
             }
             $.notify(
                 result.data.message,

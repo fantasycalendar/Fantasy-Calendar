@@ -191,9 +191,8 @@ window.query_autoload = query_autoload;
 window.autoload = autoload;
 window.linked_popup = linked_popup;
 
-import { bind_calendar_events, rerender_calendar } from './calendar/calendar_manager.js';
+import { bind_calendar_events } from './calendar/calendar_manager.js';
 window.bind_calendar_events = bind_calendar_events;
-window.rerender_calendar = rerender_calendar;
 
 import { calendar_data_generator } from './calendar/calendar_workers.js';
 window.calendar_data_generator = calendar_data_generator;

@@ -16,6 +16,8 @@ export default (calendar_structure) => ({
             calendar_structure.userRole
         );
 
+        window.evaluated_static_data = {};
+
         window.dark_theme = calendar_structure.dark_theme;
 
         window.hash = calendar_structure.hash;
@@ -51,8 +53,6 @@ export default (calendar_structure) => ({
 
         this.$store.calendar.setup();
         this.$store.calendar.rebuild_calendar();
-
-        set_up_edit_inputs();
 
         bind_calendar_events();
 
@@ -134,11 +134,15 @@ export default (calendar_structure) => ({
 
     },
 
-    rebuildCalendar() {
+    rebuild_calendar() {
         this.$store.calendar.rebuild_calendar();
     },
 
-    updateCalendar($event) {
+    render_calendar() {
+        this.$store.calendar.render_calendar();
+    },
+
+    update_calendar($event) {
         this.$store.calendar.update($event.detail.calendar);
     }
 });
