@@ -194,12 +194,6 @@ window.linked_popup = linked_popup;
 import { bind_calendar_events } from './calendar/calendar_manager.js';
 window.bind_calendar_events = bind_calendar_events;
 
-import { calendar_data_generator } from './calendar/calendar_workers.js';
-window.calendar_data_generator = calendar_data_generator;
-
-import { render_data_generator } from './render-data-generator.js';
-window.render_data_generator = render_data_generator;
-
 $(() => header_initialize());
 
 import Alpine from 'alpinejs'

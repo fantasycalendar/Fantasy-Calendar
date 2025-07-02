@@ -4,7 +4,6 @@ import {
     get_cycle,
     convert_year,
     unconvert_year,
-    get_timespans_in_year,
     is_leap_simple,
     get_timespan_occurrences,
     evaluate_calendar_start,

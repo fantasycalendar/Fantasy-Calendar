@@ -24,7 +24,6 @@ class UserManagementCollapsible extends CollapsibleComponent {
 
         axios.get(this.$store.calendar.api_url("/calendar/:hash/users"))
             .then(function(response) {
-                console.log(response.data);
                 this.users = response.data;
             }.bind(this))
             .catch(function(error) {
@@ -47,7 +46,6 @@ class UserManagementCollapsible extends CollapsibleComponent {
             email: this.invite_email
         }).then(result => {
             if (result.data.errors) {
-                console.log(result.data);
                 this.invite_error = result.data.errors.email[0];
             } else {
                 this.invite_status = `Sent email to ${this.invite_email}!`;

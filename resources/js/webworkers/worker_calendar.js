@@ -1,23 +1,17 @@
-import { precisionRound } from "../calendar/calendar_functions";
+import { execution_time, precisionRound } from "../calendar/calendar_functions";
+import { calendar_data_generator } from "../calendar/calendar_workers.js";
 
 /*--------------------------------------------------------*/
 /*---------------- CALCULATION FUNCTIONS  ----------------*/
 /*--------------------------------------------------------*/
 
-var version = new Date().getTime();
-
-importScripts('/js/calendar/calendar_functions.js?v='+version);
-importScripts('/js/calendar/calendar_variables.js?v='+version);
-importScripts('/js/calendar/calendar_season_generator.js?v='+version);
-importScripts('/js/calendar/calendar_workers.js?v='+version);
-
 onmessage = async (e) => {
 
-	window.calendar_data_generator.static_data = e.data.static_data;
-	window.calendar_data_generator.dynamic_data = e.data.dynamic_data;
-	window.calendar_data_generator.owner = e.data.owner;
-	window.calendar_data_generator.events = e.data.events;
-	window.calendar_data_generator.event_categories = e.data.event_categories;
+	calendar_data_generator.static_data = e.data.static_data;
+	calendar_data_generator.dynamic_data = e.data.dynamic_data;
+	calendar_data_generator.owner = e.data.owner;
+	calendar_data_generator.events = e.data.events;
+	calendar_data_generator.event_categories = e.data.event_categories;
 
 	let debug = true;
 	let data = {};
@@ -27,7 +21,7 @@ onmessage = async (e) => {
 		let from_year = -1000;
 		let to_year = 1000;
 
-		window.calendar_data_generator.dynamic_data.year = from_year;
+		calendar_data_generator.dynamic_data.year = from_year;
 
 		execution_time.start();
 
@@ -39,21 +33,21 @@ onmessage = async (e) => {
 
 			let start_time = performance.now();
 
-            data = await window.calendar_data_generator.run();
+            data = await calendar_data_generator.run();
 
             if(last_epoch){
                 if(last_epoch !==  data.year_data.start_epoch){
-                    console.log("WRONG!", window.calendar_data_generator.dynamic_data.year)
+                    console.log("WRONG!", calendar_data_generator.dynamic_data.year)
                 }else{
-                    console.log(window.calendar_data_generator.dynamic_data.year)
+                    console.log(calendar_data_generator.dynamic_data.year)
                 }
             }
 
             last_epoch = data.year_data.end_epoch+1;
 
-            window.calendar_data_generator.dynamic_data.year++;
-            if(window.calendar_data_generator.dynamic_data.year === 0 && !window.calendar_data_generator.static_data.settings.year_zero_exists) {
-                window.calendar_data_generator.dynamic_data.year++;
+            calendar_data_generator.dynamic_data.year++;
+            if(calendar_data_generator.dynamic_data.year === 0 && !calendar_data_generator.static_data.settings.year_zero_exists) {
+                calendar_data_generator.dynamic_data.year++;
             }
 
 			average_time += precisionRound(performance.now() - start_time, 7)
@@ -73,7 +67,7 @@ onmessage = async (e) => {
 
 	} else {
 
-	    data = window.calendar_data_generator.run();
+	    data = calendar_data_generator.run();
 
 	}
 

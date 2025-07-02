@@ -1,4 +1,6 @@
 // TODO: ABSOLUTELY rewrite this
+import _ from "lodash";
+
 import {
     avg_month_length,
     avg_year_length,
@@ -13,7 +15,9 @@ import {
     get_timespans_in_year,
     precisionRound
 } from "./calendar/calendar_functions.js";
-import _ from "lodash";
+
+import { render_data_generator } from './render-data-generator.js';
+import { calendar_data_generator } from './calendar/calendar_workers.js';
 
 export default class Calendar {
 
@@ -103,20 +107,21 @@ export default class Calendar {
 
     rebuild_calendar() {
         execution_time.start()
-        return window.calendar_data_generator.run({
+        return calendar_data_generator.run({
             static_data: this.static_data,
             dynamic_data: this.active_date,
-            owner: window.Perms.player_at_least('co-owner'),
+            owner: this.perms.player_at_least('co-owner'),
             events: this.events,
             event_categories: this.event_categories
-        }).then(evaluated_static_data => {
-            window.evaluated_static_data = evaluated_static_data;
-            this.render_calendar();
+        }).then(calendar_data => {
+            this.evaluated_static_data = calendar_data;
+            this.render_calendar(calendar_data);
         });
     }
 
-    render_calendar() {
-        return window.render_data_generator.create_render_data(window.evaluated_static_data).then((result) => {
+    render_calendar(calendar_data) {
+        if(!calendar_data) calendar_data = this.evaluated_static_data;
+        return render_data_generator.create_render_data(calendar_data).then((result) => {
             window.dispatchEvent(new CustomEvent('render-data-change', { detail: result }));
         }).catch((err) => {
             window.dispatchEvent(new CustomEvent("notify", {
@@ -422,6 +427,10 @@ export default class Calendar {
     }
 
     // Setters
+    set evaluated_static_data(value) {
+        window.evaluated_static_data = value;
+    }
+
     set perms(value) {
         window.Perms = value;
     }
