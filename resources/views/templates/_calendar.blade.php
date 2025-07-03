@@ -7,15 +7,7 @@
         <div id="protip_container" class='d-print-none'></div>
 
         <div id="content">
-            <div id="loading_background" class='basic-background hidden'>
-                <img class='loading_spinner' src='{{ asset("resources/icons/loader_white.png") }}'>
-                <div id='loading_information_text' class='hidden bold-text'>Informational Text</div>
-                <div id='loading_text' class='italics-text'>Random text</div>
-
-                <div class='loading_cancel_button_container'>
-                    <button type='button' class='btn btn-danger full loading_cancel_button hidden'>Cancel</button>
-                </div>
-            </div>
+            <x-loading-background></x-loading-background>
 
             @yield('content')
 

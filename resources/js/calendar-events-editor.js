@@ -2,7 +2,6 @@ import { submit_new_event, submit_edit_event, submit_delete_event } from "./cale
 import { ordinal_suffix_of, precisionRound, clone } from "./calendar/calendar_functions";
 import { condition_mapping, moon_phases } from "./calendar/calendar_variables";
 import { repopulate_timespan_select, repopulate_day_select } from "./calendar/calendar_inputs_visitor";
-import { hide_loading_screen } from "./calendar/header";
 
 export default () => ({
     open: false,
@@ -2370,13 +2369,15 @@ export default () => ({
             console.log(err)
         }
 
-        hide_loading_screen();
+        // TODO: reimplement loading screen into this UI properly
+        // hide_loading_screen();
 
     },
 
     run_test_event(years) {
 
-        show_loading_screen(true, this.cancel_event_test, this);
+        // TODO: reimplement loading screen into this UI properly
+        // show_loading_screen(true, this.cancel_event_test, this);
 
         if (this.new_event) {
 
@@ -2441,7 +2442,8 @@ export default () => ({
 
                 }
 
-                hide_loading_screen();
+                // TODO: reimplement loading screen into this UI properly
+                // hide_loading_screen();
 
             }
         }

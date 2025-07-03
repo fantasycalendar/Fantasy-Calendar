@@ -148,9 +148,8 @@ window.changes_applied = changes_applied;
 import IntervalsCollection from "./fantasycalendar/Collections/IntervalsCollection.js";
 window.IntervalsCollection = IntervalsCollection;
 
-import { header_initialize, toggle_sidebar } from './calendar/header.js';
+import { toggle_sidebar } from './calendar/header.js';
 window.toggle_sidebar = toggle_sidebar;
-window.header_initialize = header_initialize;
 
 import { update_dynamic, update_view_dynamic, get_all_data, get_dynamic_data, check_last_change, submit_hide_show_event } from './calendar/calendar_ajax_functions.js';
 window.update_dynamic = update_dynamic;
@@ -194,8 +193,6 @@ window.linked_popup = linked_popup;
 import { bind_calendar_events } from './calendar/calendar_manager.js';
 window.bind_calendar_events = bind_calendar_events;
 
-$(() => header_initialize());
-
 import Alpine from 'alpinejs'
 import sort from '@alpinejs/sort';
 Alpine.plugin(sort);
@@ -231,6 +228,9 @@ Alpine.data('SaveButton', SaveButton)
 
 import WeatherGraphs from './calendar/calendar_weather_graphs.js';
 Alpine.data('WeatherGraphs', WeatherGraphs);
+
+import LoadingBackground from './loading-background.js';
+Alpine.data('LoadingBackground', LoadingBackground);
 
 Alpine.data('MainApp', () => ({
     init: function() {

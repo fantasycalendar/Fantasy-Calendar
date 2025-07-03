@@ -10,6 +10,7 @@ export function bind_calendar_events() {
         }
     });
 
+    // TODO: Un-jQuery this stuff
     $('#input_collapse_btn').click(function() {
         toggle_sidebar();
     });

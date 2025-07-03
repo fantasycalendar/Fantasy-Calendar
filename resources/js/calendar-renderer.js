@@ -1,4 +1,3 @@
-import { show_loading_screen_buffered, hide_loading_screen } from "./calendar/header";
 import { execution_time } from "./calendar/calendar_functions";
 
 export default () => ({
@@ -98,13 +97,21 @@ export default () => ({
     },
 
     pre_render: function () {
-        show_loading_screen_buffered();
+        window.dispatchEvent(new CustomEvent("set-loading-screen-visible", {
+            detail: {
+                visible: true
+            }
+        }));
     },
 
     post_render: function ($dispatch) {
         this.loading_message = "Wrapping up rendering...";
 
-        hide_loading_screen();
+        window.dispatchEvent(new CustomEvent("set-loading-screen-visible", {
+            detail: {
+                visible: false
+            }
+        }));
 
         this.rerendering = this.prev_current_epoch !== this.render_data.current_epoch || this.prev_preview_epoch !== this.render_data.preview_epoch;
 

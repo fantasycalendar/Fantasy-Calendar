@@ -1,5 +1,4 @@
 import { do_update_all } from "./calendar/calendar_ajax_functions";
-import { show_loading_screen, hide_loading_screen } from "./calendar/header";
 
 export default () => ({
 
@@ -37,7 +36,12 @@ export default () => ({
     },
 
     apply_layout: function(layout) {
-        show_loading_screen();
+
+        window.dispatchEvent(new CustomEvent("set-loading-screen-visible", {
+            detail: {
+                visible: true
+            }
+        }));
 
         let previous_layout = this.$store.calendar.static_data.settings.layout;
         this.$store.calendar.static_data.settings.layout = layout.name.toLowerCase();
@@ -49,7 +53,11 @@ export default () => ({
             })
             .catch((error) => {
                 window.static_data.settings.layout = previous_layout;
-                hide_loading_screen();
+                window.dispatchEvent(new CustomEvent("set-loading-screen-visible", {
+                    detail: {
+                        visible: false
+                    }
+                }));
                 this.$dispatch('notify', {
                     content: error.response.data.message,
                     type: "error"

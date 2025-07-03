@@ -79,11 +79,9 @@
          x-cloak
          class='flexible_background blurred_background'>
         <div class="error">
-            <ol>
-                <template x-for="error in getErrors()">
-                    <li x-html="error"></li>
-                </template>
-            </ol>
+            <template x-for="error in getErrors()">
+                <div class="p-2" x-html="error"></div>
+            </template>
         </div>
     </div>
 
