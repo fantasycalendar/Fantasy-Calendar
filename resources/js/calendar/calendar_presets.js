@@ -1,4 +1,4 @@
-import { get_moon_granularity, convert_year, clone, evaluate_calendar_start } from "./calendar_functions";
+import { get_moon_granularity, convert_year, clone, evaluate_calendar_start, slugify } from "./calendar_functions";
 import { condition_mapping, preset_data } from "./calendar_variables";
 
 export function create_season_events(complex) {

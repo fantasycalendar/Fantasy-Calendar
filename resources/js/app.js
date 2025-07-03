@@ -148,9 +148,6 @@ window.changes_applied = changes_applied;
 import IntervalsCollection from "./fantasycalendar/Collections/IntervalsCollection.js";
 window.IntervalsCollection = IntervalsCollection;
 
-import { toggle_sidebar } from './calendar/header.js';
-window.toggle_sidebar = toggle_sidebar;
-
 import { update_dynamic, update_view_dynamic, get_all_data, get_dynamic_data, check_last_change, submit_hide_show_event } from './calendar/calendar_ajax_functions.js';
 window.update_dynamic = update_dynamic;
 window.update_view_dynamic = update_view_dynamic;
@@ -195,7 +192,9 @@ window.bind_calendar_events = bind_calendar_events;
 
 import Alpine from 'alpinejs'
 import sort from '@alpinejs/sort';
+import persist from '@alpinejs/persist';
 Alpine.plugin(sort);
+Alpine.plugin(persist);
 
 import Calendar from "./calendar.js";
 Alpine.store("calendar", new Calendar());
@@ -232,48 +231,59 @@ Alpine.data('WeatherGraphs', WeatherGraphs);
 import LoadingBackground from './loading-background.js';
 Alpine.data('LoadingBackground', LoadingBackground);
 
-Alpine.data('MainApp', () => ({
-    init: function() {
-        this.$nextTick(() => {
-            window.onerror = (error, url, line) => {
-                this.notify("Error:\n " + error + " \nin file " + url + " \non line " + line);
-            }
+Alpine.data('Viewport', function(){
+    return {
+        sidebar_open: this.$persist(true),
 
-            var cookiedomain = window.location.hostname.split(".")[window.location.hostname.split(".").length - 2] + "." + window.location.hostname.split(".")[window.location.hostname.split(".").length - 1];
-            document.cookie = "fantasycalendar_remember=; Max-Age=0; path=/; domain=" + cookiedomain;
+        open_sidebar() {
+            this.sidebar_open = true;
+        },
+        close_sidebar() {
+            this.sidebar_open = false;
+        },
 
-            if (window.localStorage.getItem("inputs_collapsed") != null) {
-                this.$dispatch('toggle_sidebar', {
-                    force: window.localStorage.getItem("inputs_collapsed") == "true"
-                });
-            } else {
-                if (deviceType() == "Mobile Phone") {
-                    this.$dispatch('toggle_sidebar');
+        init() {
+            this.$nextTick(() => {
+                window.onerror = (error, url, line) => {
+                    this.notify("Error:\n " + error + " \nin file " + url + " \non line " + line);
                 }
-            }
 
-            if (window.navigator.userAgent.includes("LM-G850")) {
-                $("#input_container").addClass("sidebar-mobile-half");
-            }
+                var cookiedomain = window.location.hostname.split(".")[window.location.hostname.split(".").length - 2] + "." + window.location.hostname.split(".")[window.location.hostname.split(".").length - 1];
+                document.cookie = "fantasycalendar_remember=; Max-Age=0; path=/; domain=" + cookiedomain;
 
-            if (window.navigator.userAgent.includes("Surface Duo") && !window.navigator.userAgent.includes("Surface Duo 2")) {
-                $("#input_container").addClass("sidebar-surface-duo");
-                $("#input_collapse_btn").addClass("sidebar-surface-duo");
-            }
+                if (window.localStorage.getItem("inputs_collapsed") != null) {
+                    this.$dispatch('toggle_sidebar', {
+                        force: window.localStorage.getItem("inputs_collapsed") == "true"
+                    });
+                } else {
+                    if (deviceType() == "Mobile Phone") {
+                        this.$dispatch('toggle_sidebar');
+                    }
+                }
 
-            if (window.navigator.userAgent.includes("Surface Duo 2")) {
-                $("#input_container").addClass("sidebar-surface-duo-2");
-                $("#input_collapse_btn").addClass("sidebar-surface-duo-2");
-            }
-        })
-    },
-    notify(content, type = "success") {
-        window.dispatchEvent(new CustomEvent("notify", {
-            bubbles: true,
-            detail: { content, type }
-        }));
+                if (window.navigator.userAgent.includes("LM-G850")) {
+                    $("#input_container").addClass("sidebar-mobile-half");
+                }
+
+                if (window.navigator.userAgent.includes("Surface Duo") && !window.navigator.userAgent.includes("Surface Duo 2")) {
+                    $("#input_container").addClass("sidebar-surface-duo");
+                    $("#input_collapse_btn").addClass("sidebar-surface-duo");
+                }
+
+                if (window.navigator.userAgent.includes("Surface Duo 2")) {
+                    $("#input_container").addClass("sidebar-surface-duo-2");
+                    $("#input_collapse_btn").addClass("sidebar-surface-duo-2");
+                }
+            })
+        },
+        notify(content, type = "success") {
+            window.dispatchEvent(new CustomEvent("notify", {
+                bubbles: true,
+                detail: { content, type }
+            }));
+        }
     }
-}));
+});
 
 import CalendarEditPage from "./calendar/calendar_edit_page.js";
 Alpine.data('calendar_edit_page', CalendarEditPage);

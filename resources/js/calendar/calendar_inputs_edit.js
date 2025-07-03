@@ -3,7 +3,7 @@ import {
 } from "./calendar_ajax_functions";
 import {
     convert_year,
-    evaluate_calendar_start,
+    evaluate_calendar_start, slugify,
 } from "./calendar_functions";
 
 export var changes_applied = true;

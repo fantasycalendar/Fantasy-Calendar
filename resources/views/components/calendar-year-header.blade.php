@@ -4,7 +4,7 @@
      @calendar-updated.window="update"
 >
 
-    <div class='flex-shrink-1 is-active' id='input_collapse_btn'>
+    <div class='flex-shrink-1' id='input_collapse_btn' x-show="!sidebar_open" x-cloak @click="$dispatch('open-sidebar')">
         <button class="btn btn-secondary px-3">
             <i class="fa fa-bars"></i>
         </button>

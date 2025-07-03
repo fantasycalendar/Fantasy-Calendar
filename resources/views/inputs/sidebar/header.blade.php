@@ -6,8 +6,8 @@
         <a class="text-white font-semibold" href="{{ route('home') }}"><i class="fa fa-arrow-left"></i> Back To Fantasy-Calendar</a>
     @endguest
 
-    <span x-data="{ toggle() { window.toggle_sidebar(); } }">
-        <button class="text-white font-semibold py-0.5 px-1.5 rounded-sm hover:bg-primary-900 transition ease-in-out" @click.prevent="toggle">
+    <span>
+        <button class="text-white font-semibold py-0.5 px-1.5 rounded-sm hover:bg-primary-900 transition ease-in-out" @click.prevent="$dispatch('close-sidebar')">
             <i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i>
         </button>
     </span>

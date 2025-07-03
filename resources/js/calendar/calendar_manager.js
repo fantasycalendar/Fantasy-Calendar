@@ -1,5 +1,3 @@
-import { $ } from 'jquery';
-
 window.registered_mousemove_callbacks = {}
 
 export function bind_calendar_events() {
@@ -10,8 +8,4 @@ export function bind_calendar_events() {
         }
     });
 
-    // TODO: Un-jQuery this stuff
-    $('#input_collapse_btn').click(function() {
-        toggle_sidebar();
-    });
 }

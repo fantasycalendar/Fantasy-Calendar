@@ -227,24 +227,6 @@ body.page-calendars-index {
     background-color: $calendar-bg-color;
 }
 
-@media (horizontal-viewport-segments: 2) {
-    #input_container:not(.inputs_collapsed) {
-        min-width: env(viewport-segment-right 0 0);
-        margin-right: calc(
-            env(viewport-segment-left 1 0) - env(viewport-segment-right 0 0)
-        );
-    }
-
-    #input_collapse_btn.is-active {
-        right: calc(100vw - env(viewport-segment-right 0 0));
-        left: auto;
-    }
-
-    #calendar_container {
-        flex-basis: env(viewport-segment-right 0 0);
-    }
-}
-
 @media screen and (min-width: 799px) {
     #input_container.sidebar-surface-duo:not(.inputs_collapsed) {
         min-width: calc(50% - 46px);

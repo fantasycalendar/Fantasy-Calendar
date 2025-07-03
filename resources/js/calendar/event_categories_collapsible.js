@@ -1,5 +1,5 @@
 import CollapsibleComponent from "./collapsible_component.js";
-import { slugify } from "./header.js";
+import { slugify } from "./calendar_functions.js";
 
 class EventCategoriesCollapsible extends CollapsibleComponent {
     collapsible_name = "EventCategoriesCollapsible";

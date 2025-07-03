@@ -1,4 +1,4 @@
-<div id="input_container" class='d-print-none' x-cloak x-data>
+<div id="input_container" class='d-print-none' x-cloak :class='{ "inputs_collapsed": !sidebar_open }'>
     @include('inputs.sidebar.header')
 
     @yield('label')
@@ -56,7 +56,7 @@
     </div>
 </div>
 
-<div id="calendar_container">
+<div id="calendar_container" :class='{ "inputs_collapsed": !sidebar_open }'>
 
     <div x-data="{
         errors: {},
