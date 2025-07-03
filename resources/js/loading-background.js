@@ -9,7 +9,7 @@ export default () => ({
     cancel_callback: null,
 
     show($event) {
-        this.info_text = $event.detail.info_text;
+        this.info_text = $event?.detail?.info_text ?? "";
 
         this.random_text = this.get_random_text();
         this.random_text_interval = this.random_text_interval || setInterval(() => {
@@ -23,8 +23,8 @@ export default () => ({
             }, 100);
         }
 
-        this.show_cancel_button = $event.detail.show_cancel_button;
-        this.cancel_callback = $event.detail.cancel_callback;
+        this.show_cancel_button = $event.detail?.show_cancel_button;
+        this.cancel_callback = $event.detail?.cancel_callback;
     },
 
     hide() {
