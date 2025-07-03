@@ -8,36 +8,35 @@ export default () => ({
     random_text_interval: null,
     cancel_callback: null,
 
-    set_loading_screen_visible($event) {
+    show($event) {
+        this.info_text = $event.detail.info_text;
 
-        if($event.detail.visible) {
-            this.info_text = $event.detail.info_text;
-
+        this.random_text = this.get_random_text();
+        this.random_text_interval = this.random_text_interval || setInterval(() => {
             this.random_text = this.get_random_text();
-            this.random_text_interval = this.random_text_interval || setInterval(() => {
-                this.random_text = this.get_random_text();
-            }, 6000);
+        }, 6000);
 
-            if(!this.timeout) {
-                this.timeout = setTimeout(() => {
-                    this.visible = true;
-                    this.timeout = null;
-                }, 100);
-            }
-
-            this.show_cancel_button = $event.detail.show_cancel_button;
-            this.cancel_callback = $event.detail.cancel_callback;
-        }else{
-            this.cancel_callback = null;
-            this.info_text = "";
-            this.random_text = "";
-            clearTimeout(this.timeout);
-            clearInterval(this.random_text_interval);
-            this.timeout = null;
-            this.random_text_interval = null;
-            this.visible = false;
-            this.show_cancel_button = false;
+        if(!this.timeout) {
+            this.timeout = setTimeout(() => {
+                this.visible = true;
+                this.timeout = null;
+            }, 100);
         }
+
+        this.show_cancel_button = $event.detail.show_cancel_button;
+        this.cancel_callback = $event.detail.cancel_callback;
+    },
+
+    hide() {
+        this.cancel_callback = null;
+        this.info_text = "";
+        this.random_text = "";
+        clearTimeout(this.timeout);
+        clearInterval(this.random_text_interval);
+        this.timeout = null;
+        this.random_text_interval = null;
+        this.visible = false;
+        this.show_cancel_button = false;
     },
 
     cancel() {

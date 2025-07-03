@@ -37,14 +37,18 @@ export default () => ({
 
     apply_layout: function(layout) {
 
-        window.dispatchEvent(new CustomEvent("set-loading-screen-visible", {
-            detail: {
-                visible: true
-            }
-        }));
+        this.$dispatch("app-busy-start");
 
         let previous_layout = this.$store.calendar.static_data.settings.layout;
-        this.$store.calendar.static_data.settings.layout = layout.name.toLowerCase();
+        this.$dispatch("calendar-updating", {
+            calendar: {
+                static_data: {
+                    settings: {
+                        layout: layout.name.toLowerCase()
+                    }
+                }
+            }
+        });
 
         do_update_all(window.hash)
             .then(() => {
@@ -52,12 +56,17 @@ export default () => ({
                 window.location.reload(false);
             })
             .catch((error) => {
-                window.static_data.settings.layout = previous_layout;
-                window.dispatchEvent(new CustomEvent("set-loading-screen-visible", {
-                    detail: {
-                        visible: false
+                this.$dispatch("calendar-updating", {
+                    calendar: {
+                        static_data: {
+                            settings: {
+                                layout: previous_layout
+                            }
+                        }
                     }
-                }));
+                });
+                window.static_data.settings.layout = previous_layout;
+                this.$dispatch("app-busy-end");
                 this.$dispatch('notify', {
                     content: error.response.data.message,
                     type: "error"

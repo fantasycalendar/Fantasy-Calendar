@@ -97,21 +97,13 @@ export default () => ({
     },
 
     pre_render: function () {
-        window.dispatchEvent(new CustomEvent("set-loading-screen-visible", {
-            detail: {
-                visible: true
-            }
-        }));
+        window.dispatchEvent(new CustomEvent("app-busy-start"));
     },
 
     post_render: function ($dispatch) {
         this.loading_message = "Wrapping up rendering...";
 
-        window.dispatchEvent(new CustomEvent("set-loading-screen-visible", {
-            detail: {
-                visible: false
-            }
-        }));
+        window.dispatchEvent(new CustomEvent("app-busy-end"));
 
         this.rerendering = this.prev_current_epoch !== this.render_data.current_epoch || this.prev_preview_epoch !== this.render_data.preview_epoch;
 

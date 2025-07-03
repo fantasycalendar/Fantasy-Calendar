@@ -50,8 +50,8 @@ export default class Calendar {
         let prev_preview_date = _.cloneDeep(this.preview_date);
 
         for (const [key, value] of Object.entries(incomingChanges)) {
-            console.log(key);
-            _.set(this, key, _.cloneDeep(value));
+            const original_value = _.cloneDeep(_.get(this, key));
+            _.set(this, key, _.merge(original_value, _.cloneDeep(value)));
         }
 
         let reconciled_current_date = window.dynamic_date_manager.reconcileCalendarChange(this.static_data, this.dynamic_data);
