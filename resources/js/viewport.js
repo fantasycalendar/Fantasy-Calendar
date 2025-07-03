@@ -1,5 +1,6 @@
 export default function () {
     return {
+        errors: {},
         sidebar_open: this.$persist(true),
 
         open_sidebar() {
@@ -22,6 +23,21 @@ export default function () {
                     this.sidebar_open = false;
                 }
             })
+        },
+
+        add_errors($event) {
+            this.errors[$event.detail.key] = $event.detail.errors;
+        },
+
+        remove_errors($event) {
+            if(this.errors[$event.detail.key]){
+                delete this.errors[$event.detail.key];
+            }
+        },
+
+        get flattened_errors(){
+            // Unpack array of arrays
+            return [].concat(...Object.values(this.errors));
         }
     }
 }

@@ -56,35 +56,15 @@
     </div>
 </div>
 
-<div id="calendar_container" :class='{ "inputs_collapsed": !sidebar_open }'>
-
-    <div x-data="{
-        errors: {},
-        addErrors($event) {
-            this.errors[$event.detail.key] = $event.detail.errors;
-        },
-        removeErrors($event) {
-            if(this.errors[$event.detail.key]){
-                delete this.errors[$event.detail.key];
-            }
-        },
-        getErrors(){
-            // Unpack array of arrays
-            return [].concat(...Object.values(this.errors));
-        }
-    }"
-         @calendar-validation-failed.window="addErrors"
-         @calendar-validation-succeeded.window="removeErrors"
-         x-show="getErrors().length"
-         x-cloak
-         class='flexible_background blurred_background'>
-        <div class="error">
-            <template x-for="error in getErrors()">
-                <div class="p-2" x-html="error"></div>
-            </template>
-        </div>
+<div x-show="flattened_errors.length" x-cloak class='order-3 h-full w-full bg-gray-900/50 flex flex-col justify-center items-center'>
+    <div class="bg-red-300 dark:bg-red-800 w-96 flex flex-col p-[1.25rem] rounded">
+        <template x-for="error in flattened_errors">
+            <strong class="text-center border-b-2 border-b-red-500 dark:border-b-red-900 last:border-none mb-[1rem] pb-[1rem] last:mb-0 last:pb-0" x-html="error"></strong>
+        </template>
     </div>
+</div>
 
+<div id="calendar_container" :class='{ "inputs_collapsed": !sidebar_open }' x-show="!flattened_errors.length">
     <div id="reload_background"
          class='flexible_background blurred_background d-flex flex-column justify-content-center hidden d-print-none'>
         <div class='p-2 text-white'>You have made changes to your calendar.</div>
