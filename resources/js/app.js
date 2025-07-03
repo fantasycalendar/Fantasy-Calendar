@@ -231,59 +231,8 @@ Alpine.data('WeatherGraphs', WeatherGraphs);
 import LoadingBackground from './loading-background.js';
 Alpine.data('LoadingBackground', LoadingBackground);
 
-Alpine.data('Viewport', function(){
-    return {
-        sidebar_open: this.$persist(true),
-
-        open_sidebar() {
-            this.sidebar_open = true;
-        },
-        close_sidebar() {
-            this.sidebar_open = false;
-        },
-
-        init() {
-            this.$nextTick(() => {
-                window.onerror = (error, url, line) => {
-                    this.notify("Error:\n " + error + " \nin file " + url + " \non line " + line);
-                }
-
-                var cookiedomain = window.location.hostname.split(".")[window.location.hostname.split(".").length - 2] + "." + window.location.hostname.split(".")[window.location.hostname.split(".").length - 1];
-                document.cookie = "fantasycalendar_remember=; Max-Age=0; path=/; domain=" + cookiedomain;
-
-                if (window.localStorage.getItem("inputs_collapsed") != null) {
-                    this.$dispatch('toggle_sidebar', {
-                        force: window.localStorage.getItem("inputs_collapsed") == "true"
-                    });
-                } else {
-                    if (deviceType() == "Mobile Phone") {
-                        this.$dispatch('toggle_sidebar');
-                    }
-                }
-
-                if (window.navigator.userAgent.includes("LM-G850")) {
-                    $("#input_container").addClass("sidebar-mobile-half");
-                }
-
-                if (window.navigator.userAgent.includes("Surface Duo") && !window.navigator.userAgent.includes("Surface Duo 2")) {
-                    $("#input_container").addClass("sidebar-surface-duo");
-                    $("#input_collapse_btn").addClass("sidebar-surface-duo");
-                }
-
-                if (window.navigator.userAgent.includes("Surface Duo 2")) {
-                    $("#input_container").addClass("sidebar-surface-duo-2");
-                    $("#input_collapse_btn").addClass("sidebar-surface-duo-2");
-                }
-            })
-        },
-        notify(content, type = "success") {
-            window.dispatchEvent(new CustomEvent("notify", {
-                bubbles: true,
-                detail: { content, type }
-            }));
-        }
-    }
-});
+import Viewport from './viewport.js';
+Alpine.data('Viewport', Viewport);
 
 import CalendarEditPage from "./calendar/calendar_edit_page.js";
 Alpine.data('calendar_edit_page', CalendarEditPage);
