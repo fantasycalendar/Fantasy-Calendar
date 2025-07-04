@@ -2371,7 +2371,6 @@ export default () => ({
 
         // TODO: reimplement loading screen into this UI properly
         // hide_loading_screen();
-
     },
 
     run_test_event(years) {

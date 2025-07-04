@@ -47,15 +47,15 @@
                             name: 'Set as Current Date',
                             icon: 'fas fa-hourglass-half',
                             callback: function() {
+                                console.log(day);
                                 var epoch_data = window.evaluated_static_data.epoch_data[day.epoch];
 
-                                window.dynamic_date_manager.year = convert_year(window.static_data, epoch_data.year);
-                                window.dynamic_date_manager.timespan = epoch_data.timespan_number;
-                                window.dynamic_date_manager.day = epoch_data.day;
-                                window.dynamic_date_manager.epoch = epoch_data.epoch;
-
-                                // TODO: remove this and place into calendar
-                                // window.evaluate_dynamic_change();
+                                $store.calendar.set_current_date({
+                                    year : convert_year(window.static_data, epoch_data.year),
+                                    timespan : epoch_data.timespan_number,
+                                    day : epoch_data.day,
+                                    epoch : epoch_data.epoch,
+                                });
                             },
                             disabled: function() {
                                 return day.epoch == window.dynamic_data.epoch || !Perms.player_at_least('co-owner');
