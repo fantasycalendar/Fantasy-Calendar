@@ -65,7 +65,7 @@
                          :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
                          @click="collapsed = !collapsed"></div>
                     <input type='text' class='name-input small-input form-control location-name' x-model.lazy='location.name'/>
-                    <button class="btn btn-danger w-10" @click="deleting = index" :disabled="using_custom_location && current_location == index" :title="(using_custom_location && current_location == index) ? 'Cannot delete the current loation' : 'Delete this location'">
+                    <button class="btn btn-danger w-10" @click="deleting = index" :disabled="using_custom_location && current_location == index" :title="(using_custom_location && current_location == index) ? 'Cannot delete the current location' : 'Delete this location'">
                         <i class="fa fa-trash text-lg"></i>
                     </button>
                 </div>
@@ -137,13 +137,12 @@
                                     <div class='separator'></div>
                                 </div>
                                 <div class='clock_inputs' x-show="clock.enabled">
-                                    <div>Sunrise:</div>
-                                    <div class='flex gap-[24px] justify-evenly sortable-header'>
+                                    <div class='flex gap-[24px] justify-evenly'>
                                         <div class="w-full">
-                                            Hour
+                                            Sunrise hour
                                         </div>
                                         <div class="w-full">
-                                            Minute
+                                            Sunrise minute
                                         </div>
                                     </div>
 
@@ -155,13 +154,12 @@
                                         <input type='number' step="1.0" class='form-control full' x-model.number.lazy="season.time.sunrise.minute" :disabled="location.settings.season_based_time ?? false"/>
                                     </div>
 
-                                    <div>Sunset:</div>
-                                    <div class='flex gap-[24px] justify-evenly sortable-header'>
+                                    <div class='flex gap-[24px] justify-evenly'>
                                         <div class="w-full">
-                                            Hour
+                                            Sunset hour
                                         </div>
                                         <div class="w-full">
-                                            Minute
+                                            Sunset minute
                                         </div>
                                     </div>
 
@@ -195,14 +193,12 @@
                             </x-alpine.check-input>
                         </div>
 
-
-                        <div>Timezone:</div>
-                        <div class='flex gap-[24px] justify-evenly sortable-header'>
+                        <div class='flex gap-[24px] justify-evenly'>
                             <div class="w-full">
-                                Hour
+                                Timezone hour
                             </div>
                             <div class="w-full">
-                                Minute
+                                Timezone minute
                             </div>
                         </div>
 
@@ -222,10 +218,10 @@
 
                         <div class='flex gap-2 mt-2'>
                             <div class='w-full'>
-                                Large frequency:
+                                Large frequency
                             </div>
                             <div class='w-full'>
-                                Large amplitude:
+                                Large amplitude
                             </div>
                         </div>
 
@@ -236,10 +232,10 @@
 
                         <div class='flex gap-2 mt-2'>
                             <div class='w-full'>
-                                Medium frequency:
+                                Medium frequency
                             </div>
                             <div class='w-full'>
-                                Medium amplitude:
+                                Medium amplitude
                             </div>
                         </div>
 
@@ -250,10 +246,10 @@
 
                         <div class='flex gap-2 mt-2'>
                             <div class='w-full'>
-                                Small frequency:
+                                Small frequency
                             </div>
                             <div class='w-full'>
-                                Small amplitude:
+                                Small amplitude
                             </div>
                         </div>
 
