@@ -528,24 +528,23 @@
     >
     <div class='modal-basic-container'>
         <div class='modal-basic-wrapper'>
-            <form id="html-form" class="modal-wrapper" action="post" @mousedown.outside="confirm_close($event)" x-transition x-show="open">
-
+            <div class="modal-wrapper" @mousedown.outside="confirm_close($event)" x-transition x-show="open">
                 <div class='close-ui-btn-bg'></div>
                 <i class="close_ui_btn fas fa-times-circle" @click='confirm_close'></i>
 
-                <div class='row no-gutters mb-1 modal-form-heading'>
+                <div class='flex mb-1 modal-form-heading'>
                     <h2 class='event_action_type'>
                         <span>Editing Era Description</span>
                         <i class="fas fa-eye event_header_action protip" data-pt-position='bottom' data-pt-title="Preview" @click='confirm_view'></i>
                     </h2>
                 </div>
 
-                <div class='row'>
-                    <textarea class='form-control' x-ref='html_input' autofocus=''></textarea>
+                <div class='border h-48 mb-3'>
+                    <x-wysiwyg.editor x-model="description" />
                 </div>
 
                 <div class='btn btn-lg btn-primary btn-block' @click="save_html">Save</div>
-            </form>
+            </div>
         </div>
     </div>
 </div>

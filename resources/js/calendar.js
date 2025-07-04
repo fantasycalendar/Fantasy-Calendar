@@ -50,8 +50,13 @@ export default class Calendar {
         let prev_preview_date = _.cloneDeep(this.preview_date);
 
         for (const [key, value] of Object.entries(incomingChanges)) {
-            const original_value = _.cloneDeep(_.get(this, key));
-            _.set(this, key, _.merge(original_value, _.cloneDeep(value)));
+            let original_value = _.cloneDeep(_.get(this, key));
+
+            let new_value = (typeof value === 'object')
+                ? _.merge(original_value, _.cloneDeep(value))
+                : value;
+
+            _.set(this, key, new_value);
         }
 
         let reconciled_current_date = window.dynamic_date_manager.reconcileCalendarChange(this.static_data, this.dynamic_data);
@@ -95,7 +100,7 @@ export default class Calendar {
             this.rebuild_calendar()
         } else if (dateChanged) {
             window.dispatchEvent(new CustomEvent('update-epochs', {
-                detail:{
+                detail: {
                     current_epoch: this.dynamic_data.epoch,
                     preview_epoch: this.active_date.epoch
                 }
@@ -120,7 +125,7 @@ export default class Calendar {
     }
 
     render_calendar(calendar_data) {
-        if(!calendar_data) calendar_data = this.evaluated_static_data;
+        if (!calendar_data) calendar_data = this.evaluated_static_data;
         return render_data_generator.create_render_data(calendar_data).then((result) => {
             window.dispatchEvent(new CustomEvent('render-data-change', { detail: result }));
         }).catch((err) => {
@@ -173,7 +178,7 @@ export default class Calendar {
 
     adjust_selected_date({ years = 0, months = 0, days = 0, hours = 0, minutes = 0 } = {}) {
         let extra_days = 0;
-        if(this.static_data.clock.enabled && (hours || minutes)) {
+        if (this.static_data.clock.enabled && (hours || minutes)) {
             let extra_hours = (hours ?? 0) + ((this.preview_date.minute + (minutes ?? 0)) / this.static_data.clock.minutes);
             extra_days = (extra_hours + this.preview_date.hour) / this.static_data.clock.hours;
             extra_days = Math.floor(extra_days);
@@ -342,7 +347,7 @@ export default class Calendar {
         let hour = this.dynamic_data.hour;
         let minute = this.dynamic_data.minute;
 
-        if(this.static_data.clock.enabled && (hours || minutes)) {
+        if (this.static_data.clock.enabled && (hours || minutes)) {
             let extra_hours = (hours ?? 0) + ((this.dynamic_data.minute + (minutes ?? 0)) / this.static_data.clock.minutes);
             extra_days = (extra_hours + this.dynamic_data.hour) / this.static_data.clock.hours;
 
@@ -482,7 +487,7 @@ export default class Calendar {
     }
 
     // Getters
-    get active_date(){
+    get active_date() {
         return this.preview_date.follow ? this.dynamic_data : this.preview_date;
     }
 
