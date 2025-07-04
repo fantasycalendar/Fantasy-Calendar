@@ -1,16 +1,20 @@
 class EventEditor {
-    open = false;
+    show = true;
     event = {};
     errors = [];
 
     init() {
         this.reset();
-        this.$nextTick(() => this.$dispatch('modal', { name: 'event_editor' }));
     }
 
     load_event(event) {
         this.event = event;
         this.open = true;
+    }
+
+    reset_and_close() {
+        this.reset();
+        this.close();
     }
 
     reset() {
@@ -39,6 +43,10 @@ class EventEditor {
             sort_by: this.$store.calendar_events.count,
             updated_at: null,
         };
+    }
+
+    close() {
+        this.show = false;
     }
 
     hasError(errorPath) {
