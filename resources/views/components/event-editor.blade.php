@@ -41,6 +41,10 @@
 
                     <x-alpine.text-input path="event.name" x-model="event.name"></x-alpine.text-input>
 
+                    <div class="border rounded p-0.5">
+                        <x-wysiwyg.editor x-modelable="value" x-model="event.description" />
+                    </div>
+
                     {{--  END EVENT FORM  --}}
                 </div>
 
