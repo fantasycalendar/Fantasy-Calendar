@@ -6,6 +6,7 @@
     x-cloak
     @context-menu.window="activate"
     @date-context-menu.window="activate_for_date"
+    @event-context-menu.window="activate_for_event"
     @click.outside="deactivate"
     :style="`left: ${x}px; top: ${y}px; opacity: ${opacity};`"
     >
