@@ -10,6 +10,20 @@ module.exports = {
         "./app/View/Components/**/*.php",
         './vendor/filament/**/*.blade.php',
     ],
+    safelist: [
+        // {
+        //     pattern: /bg-(.*)-(50|100|200|300|400|500|600|700|800|900)/,
+        //     variants: ['hover', 'dark', 'dark:hover'],
+        // },
+        // {
+        //     pattern: /text-(.*)-(50|100|200|300|400|500|600|700|800|900)/,
+        //     variants: ['hover', 'dark', 'dark:hover'],
+        // },
+        // {
+        //     pattern: /border-(.*)-(50|100|200|300|400|500|600|700|800|900)/,
+        //     variants: ['hover', 'dark', 'dark:hover'],
+        // },
+    ],
     theme: {
         extend: {
             colors: {

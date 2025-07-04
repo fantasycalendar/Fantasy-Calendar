@@ -1481,33 +1481,33 @@ ol.example li.placeholder:before {
     background-color: #fafafa;
 }
 
-// .flexible_background {
-//     width: 100%;
-//     height: 100%;
-//     background-color: rgba(0, 0, 0, 0.5);
-//     z-index: 11;
-//     position: fixed;
-//     align-items: center;
-//     text-align: center;
-//     overflow: hidden;
-//     display: flex;
-//     justify-content: center;
+.flexible_background {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 11;
+    position: fixed;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
 
-//     &.transparent {
-//         background-color: rgba(0, 0, 0, 0);
-//     }
+    &.transparent {
+        background-color: rgba(0, 0, 0, 0);
+    }
 
-//     .error {
-//         background-color: #d3352a;
-//         width: 100%;
+    .error {
+        background-color: #d3352a;
+        width: 100%;
 
-//         ol {
-//             list-style-type: none;
-//             padding-inline-start: 0;
-//             margin: 20px 0;
-//         }
-//     }
-// }
+        ol {
+            list-style-type: none;
+            padding-inline-start: 0;
+            margin: 20px 0;
+        }
+    }
+}
 
 .blurred_background {
     backdrop-filter: blur(3px);
