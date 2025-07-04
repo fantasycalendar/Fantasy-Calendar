@@ -1,5 +1,5 @@
 <div x-data="event_editor" @edit-event.window="load_event($event.detail.event)">
-    <div class="fixed z-50 inset-0 overflow-y-auto" x-show="open" x-cloak>
+    <div class="fixed z-50 inset-0 overflow-y-auto" x-show="show" x-cloak>
         <div class="flex items-start justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             <div class="fixed inset-0 bg-opacity-75 bg-gray-500 dark:bg-opacity-75 dark:bg-gray-900 transition-opacity"
                  x-show="show"
@@ -39,7 +39,10 @@
                     <div class="text-2xl" x-text="event.name"></div>
 
 
-                    <x-alpine.text-input path="event.name" x-model="event.name"></x-alpine.text-input>
+                    <div class="grid sm:grid-cols-2">
+                        <x-alpine.text-input path="event.name" x-model="event.name"></x-alpine.text-input>
+                        <x-alpine.event-category-select x-model="event.event_category_id"></x-alpine.event-category-select>
+                    </div>
 
                     <div class="border rounded p-0.5">
                         <x-wysiwyg.editor x-modelable="value" x-model="event.description" />
