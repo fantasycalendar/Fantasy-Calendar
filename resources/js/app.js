@@ -224,7 +224,7 @@ Alpine.store("event_categories", () => {
         },
 
         get categories() {
-            return window.categories ?? [];
+            return window.categories;
         },
 
         get(id) {
