@@ -13,11 +13,20 @@ class EventsCollapsible extends CollapsibleComponent {
         "events": "events"
     }
 
+    changeHandlers = {
+        "events": this.handleChangedEvents,
+    }
+
     events = [];
     dynamic_data = {};
     preview_date = {};
 
     draggableRef = "events-sortable";
+    deleting = -1;
+    reordering = true;
+    alwaysReordering = true;
+
+    new_event_name = "";
 
     get_current_epoch() {
         return (this.preview_date?.follow ?? true) ? this.dynamic_data.epoch : this.preview_date.epoch;
@@ -42,6 +51,11 @@ class EventsCollapsible extends CollapsibleComponent {
             const event = this.events[i];
             event.sort_by = i;
         }
+    }
+
+    handleChangedEvents() {
+        console.log("Events changed!", this.events.length);
+        this.deleting = -1;
     }
 }
 

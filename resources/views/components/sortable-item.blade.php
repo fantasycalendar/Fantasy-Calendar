@@ -21,7 +21,7 @@
         </div>
 
         <div>
-            <i class="fa fa-trash text-lg hover:text-red-400 hover:dark:text-red-600 cursor-pointer" @click="deleting = index" x-show="!reordering"></i>
+            <i class="fa fa-trash text-lg hover:text-red-400 hover:dark:text-red-600 cursor-pointer" @click="deleting = index" x-show="!reordering || (typeof alwaysReordering !== 'undefined' && alwaysReordering)"></i>
         </div>
     </div>
 
