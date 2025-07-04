@@ -34,7 +34,7 @@
         New Era:
     </div>
 
-    <div class="input-group">
+    <div class="input-group mb-2">
         <input type='text' class='form-control' placeholder='Era name' x-model="era_name">
 
         <div class="input-group-append">
