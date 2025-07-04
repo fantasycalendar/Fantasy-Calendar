@@ -22,7 +22,6 @@ class EventEditor {
             id: null,
             event_category_id: null,
             name: "New Event",
-            description: "This is an event!",
             data: {
                 has_duration: false,
                 duration: 0,
