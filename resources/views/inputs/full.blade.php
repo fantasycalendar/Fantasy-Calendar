@@ -29,7 +29,7 @@
 
         <x-collapsible :calendar="$calendar" contains="Weather" icon="fa-cloud-sun-rain" polished></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Locations" icon="fa-compass" done></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Locations" icon="fa-compass" polished></x-collapsible>
 
         <x-collapsible :calendar="$calendar" contains="Cycles" icon="fa-redo" done></x-collapsible>
 

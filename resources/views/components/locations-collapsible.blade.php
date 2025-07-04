@@ -94,12 +94,12 @@
                                 <div x-show="season_settings.enable_weather">
                                     <div class='flex gap-2 mb-2'>
                                         <div>
-                                            Temperature low:
+                                            Temperature low
                                             <input type='number' step="any" class='form-control full' x-model.number.lazy='season.weather.temp_low'>
                                         </div>
 
                                         <div>
-                                            Temperature high:
+                                            Temperature high
                                             <input type='number' step="any" class='form-control full' x-model.number.lazy='season.weather.temp_high'>
                                         </div>
                                     </div>
@@ -107,7 +107,7 @@
                                     <div class='separator'></div>
 
                                     <div class='flex mt-2'>
-                                        Precipitation chance: (%)
+                                        Precipitation chance (%)
                                     </div>
                                     <!-- TODO: Maybe make this into a component? -->
                                     <div class='flex gap-2 mb-2' x-data="{
@@ -121,7 +121,7 @@
                                     </div>
 
                                     <div class='flex mt-2'>
-                                        Precipitation intensity: (%)
+                                        Precipitation intensity (%)
                                     </div>
                                     <div class='flex gap-2 mb-2' x-data="{
                                         value: Math.round(season.weather.precipitation_intensity*100),
