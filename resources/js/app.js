@@ -125,7 +125,7 @@ window.tailwindColors = tailwindColors;
 // This is *only* here to stop sanitize-html from barfing a bunch of "Module x has been externalized for browser compatibility"
 // to the JS console _during the massive refactor we're doing to vite_.
 //
-// Either put back sanitize-html before merging in this rework or find a better alternative.
+// TODO: Either put back sanitize-html before merging in this rework or find a better alternative.
 window.sanitizeHtml = function(value) {
     return value;
 }
@@ -198,6 +198,40 @@ Alpine.plugin(persist);
 
 import Calendar from "./calendar.js";
 Alpine.store("calendar", new Calendar());
+
+Alpine.store("calendar_events", () => {
+    return {
+        // TODO: Init that stores these here
+        get count() {
+            return this.categories.length();
+        },
+
+        get events() {
+            return window.events;
+        },
+
+        get(id) {
+            return window.events.find(event => event.id === id) ?? {};
+        },
+    };
+});
+
+Alpine.store("event_categories", () => {
+    return {
+        // TODO: Init that stores these here
+        get count() {
+            return this.categories.length();
+        },
+
+        get categories() {
+            return window.categories;
+        },
+
+        get(id) {
+            return window.event_categories.find(category => category.id === id) ?? {};
+        }
+    };
+});
 
 import CalendarPresets from './calendar-presets.js';
 import CalendarRenderer from './calendar-renderer.js';
@@ -304,8 +338,10 @@ import UserManagementCollapsible from './calendar/user_management_collapsible.js
 Alpine.data('user_management_collapsible', UserManagementCollapsible);
 
 import CalendarLinkingCollapsible from './calendar/calendar_linking_collapsible.js';
-import Save_button from "./calendar/save_button.js";
 Alpine.data('calendar_linking_collapsible', CalendarLinkingCollapsible);
+
+import EventEditor from './calendar/event_editor.js';
+Alpine.data('event_editor', EventEditor);
 
 Alpine.start();
 
