@@ -203,7 +203,7 @@
 
                     <span class='hidden'></span>
 
-                    {{--<div class='event_occurrences' x-show='working_event.data.conditions != []'>
+                    <div class='event_occurrences' x-show='working_event.data.conditions != []'>
 
                         <div class='row no-gutters'>
                             <h5>Test event occurrences for the next:</h5>
@@ -211,16 +211,24 @@
 
                         <div class='row no-gutters'>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' @click="test_event(1)">This year</button>
+                                <button type='button' class='btn btn-info full test_event_btn' @click="test_event(1)">
+                                    This year
+                                </button>
                             </div>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' @click="test_event(10)">10 years</button>
+                                <button type='button' class='btn btn-info full test_event_btn' @click="test_event(10)">
+                                    10 years
+                                </button>
                             </div>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' @click="test_event(100)">100 years</button>
+                                <button type='button' class='btn btn-info full test_event_btn' @click="test_event(100)">
+                                    100 years
+                                </button>
                             </div>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' @click="test_event(1000)">1000 years</button>
+                                <button type='button' class='btn btn-info full test_event_btn'
+                                        @click="test_event(1000)">1000 years
+                                </button>
                             </div>
                         </div>
 
@@ -237,17 +245,22 @@
                                         <li class='event_occurance' x-html="occurence"></li>
                                     </template>
                                 </ul>
-                                <div class='full page_number' x-text="'Page '+event_testing.page+'/'+event_testing.max_page"></div>
+                                <div class='full page_number'
+                                     x-text="'Page '+event_testing.page+'/'+event_testing.max_page"></div>
                                 <div class='col half pr-1'>
-                                    <button type='button' class='btn btn-info full' @click='prev_page()' :disabled="event_testing.page == 1">Previous</button>
+                                    <button type='button' class='btn btn-info full' @click='prev_page()'
+                                            :disabled="event_testing.page == 1">Previous
+                                    </button>
                                 </div>
                                 <div class='col half pl-1'>
-                                    <button type='button' class='btn btn-info full' @click='next_page()' :disabled="event_testing.page == event_testing.max_page">Next</button>
+                                    <button type='button' class='btn btn-info full' @click='next_page()'
+                                            :disabled="event_testing.page == event_testing.max_page">Next
+                                    </button>
                                 </div>
                             </div>
-                        </div>--}}{{--
+                        </div>
 
-                        </div>--}}
+                    </div>
 
                         <div x-show="moons.length > 0">
 

@@ -422,6 +422,8 @@ export default () => ({
 
     close() {
 
+        if(this.worker_event_tester) return;
+
         this.open = false;
 
         this.event_id = -1;
@@ -432,10 +434,6 @@ export default () => ({
         this.nth = 1;
         this.show_nth = false;
         this.cloning_event = false;
-
-        if (this.description_input) {
-            // this.description_input.trumbowyg('html', '');
-        }
 
         this.working_event = {
             'name': '',
@@ -505,7 +503,6 @@ export default () => ({
                 let new_event = clone(this.working_event);
                 new_event.data = this.create_event_data();
                 new_event.name = sanitizeHtml(((new_event.name === "") ? "New Event" : new_event.name) + " (clone)");
-                new_event.description = "this.description_input.trumbowyg('html')";
                 this.close();
                 window.dispatchEvent(new CustomEvent('event-editor-modal-clone-event', { detail: { event_data: new_event, epoch: this.epoch } }));
             }
@@ -514,6 +511,9 @@ export default () => ({
     },
 
     confirm_close($event) {
+
+        if(this.worker_event_tester) return;
+
         const possibleTrumbowyg = [$event.target.id, $event.target.parentElement?.id].concat(
             Array.from($event.target?.classList),
             Array.from($event.target?.parentElement?.classList ?? []),
@@ -783,7 +783,7 @@ export default () => ({
 
             event_check.data = this.create_event_data();
 
-            event_check.description = "this.description_input.trumbowyg('html')";
+            event_check.description = this.event_description_content;
 
             event_check.settings = clone(this.working_event.settings)
 
@@ -2361,22 +2361,30 @@ export default () => ({
 
     },
 
-    cancel_event_test(self) {
+    cancel_event_test() {
 
         try {
-            self.worker_event_tester.terminate();
+            this.worker_event_tester.terminate();
         } catch (err) {
             console.log(err)
         }
 
-        // TODO: reimplement loading screen into this UI properly
-        // hide_loading_screen();
+        window.dispatchEvent(new CustomEvent("app-busy-end"));
+
+        this.worker_event_tester = null;
+
     },
 
     run_test_event(years) {
 
-        // TODO: reimplement loading screen into this UI properly
-        // show_loading_screen(true, this.cancel_event_test, this);
+        window.dispatchEvent(new CustomEvent("app-busy-start", {
+            detail: {
+                show_throbber: false,
+                show_percentage: true,
+                show_cancel_button: true,
+                cancel_callback: this.cancel_event_test.bind(this)
+            }
+        }));
 
         if (this.new_event) {
 
@@ -2404,45 +2412,39 @@ export default () => ({
             events: window.events,
             event_categories: window.event_categories,
             owner: Perms.player_at_least('co-owner'),
-            start_year: window.start_year,
-            end_year: window.end_year,
+            start_year: start_year,
+            end_year: end_year,
             callback: true,
             event_id: this.event_id,
             build_seasons: this.build_seasons
         })));
 
-        let event_editor_ui = this;
-
         this.worker_event_tester.onmessage = e => {
             if (e.data.callback) {
-                percentage = precisionRound(percentage, 3);
-
-                if (progress == percentage) {
-                    return;
-                }
-
-                progress = percentage;
-
-                if (message) {
-                    $('#loading_information_text').text(message).removeClass("hidden");
-                }
+                window.dispatchEvent(new CustomEvent("app-update-progress", {
+                    detail: {
+                        message: e.data.message ?? "",
+                        percentage: precisionRound(e.data.percentage * 100, 2),
+                    }
+                }));
             } else {
 
-                event_editor_ui.event_testing.occurrences = e.data.occurrences;
+                this.event_testing.occurrences = e.data.occurrences;
 
-                event_editor_ui.worker_event_tester.terminate()
+                this.worker_event_tester.terminate()
 
-                event_editor_ui.set_up_event_text(years);
+                this.set_up_event_text(years);
 
-                if (!event_editor_ui.new_event) {
+                if (!this.new_event) {
 
-                    window.events[event_editor_ui.event_id].data = clone(event_editor_ui.backup_event_data)
-                    event_editor_ui.backup_event_data = {}
+                    window.events[this.event_id].data = clone(this.backup_event_data)
+                    this.backup_event_data = {}
 
                 }
 
-                // TODO: reimplement loading screen into this UI properly
-                // hide_loading_screen();
+                window.dispatchEvent(new CustomEvent("app-busy-end"));
+
+                this.worker_event_tester = null;
 
             }
         }

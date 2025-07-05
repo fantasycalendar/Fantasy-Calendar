@@ -1,5 +1,9 @@
+import _ from "lodash";
+
 export default () => ({
 
+    show_throbber: true,
+    show_percentage: false,
     visible: false,
     show_cancel_button: false,
     info_text: "",
@@ -7,14 +11,15 @@ export default () => ({
     timeout: null,
     random_text_interval: null,
     cancel_callback: null,
+    percentage: 0,
 
     show($event) {
-        this.info_text = $event?.detail?.info_text ?? "";
+        this.info_text = $event.detail?.info_text ?? "";
 
         this.random_text = this.get_random_text();
         this.random_text_interval = this.random_text_interval || setInterval(() => {
             this.random_text = this.get_random_text();
-        }, 6000);
+        }, 3000);
 
         if(!this.timeout) {
             this.timeout = setTimeout(() => {
@@ -25,6 +30,8 @@ export default () => ({
 
         this.show_cancel_button = $event.detail?.show_cancel_button;
         this.cancel_callback = $event.detail?.cancel_callback;
+        this.show_throbber = $event.detail?.show_throbber ?? true;
+        this.show_percentage = $event.detail?.show_percentage ?? false;
     },
 
     hide() {
@@ -37,6 +44,9 @@ export default () => ({
         this.random_text_interval = null;
         this.visible = false;
         this.show_cancel_button = false;
+        this.show_throbber = true;
+        this.show_percentage = false;
+        this.percentage = 0;
     },
 
     cancel() {
@@ -46,6 +56,14 @@ export default () => ({
 
     get_random_text() {
         return this.texts[Math.floor(Math.random() * this.texts.length)];
+    },
+
+    update_progress($event) {
+        let percentage = _.clamp($event.detail.percentage, 0, 100)
+        let message = $event.detail?.message ?? "";
+        if(this.percentage === percentage && this.info_text !== message) return;
+        this.info_text = message;
+        this.percentage = percentage;
     },
 
     texts: [

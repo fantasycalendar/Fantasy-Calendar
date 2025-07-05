@@ -1334,11 +1334,11 @@ export var event_evaluator = {
 
                 if (event_evaluator.callback) {
 
-                    let percentage = event_evaluator.current_number_of_epochs / event_evaluator.total_number_of_epochs
+                    let percentage = event_evaluator.current_number_of_epochs / event_evaluator.total_number_of_epochs;
 
                     postMessage({
                         percentage: percentage,
-                        message: "Testing event conditions against future calendar data...",
+                        message: `Testing event conditions against calendar data in year ${event_evaluator.epoch_data[epoch].year}...`,
                         callback: true
                     })
 
