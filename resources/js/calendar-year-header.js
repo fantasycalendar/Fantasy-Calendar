@@ -15,17 +15,15 @@ export default () => ({
         this.dynamic_data = this.$store.calendar.dynamic_data;
         this.preview_date = this.$store.calendar.preview_date;
         this.epoch_data = this.$store.calendar.evaluated_static_data.epoch_data;
-        this.show_current_month = window.static_data.settings.show_current_month;
+        this.show_current_month = this.$store.calendar.setting('show_current_month');
     },
 
     get year_header_text() {
-
-        if(!this.static_data) return "";
+        if (!this.static_data) return "";
 
         const currentEra = this.get_epoch_data()?.era ?? -1;
 
         if (currentEra !== -1) {
-
             let era = this.eras[currentEra];
 
             if (!this.static_data.settings.hide_eras || Perms.player_at_least('co-owner')) {
@@ -41,15 +39,12 @@ export default () => ({
                 return this.render_year_mustache(format, era.name)
 
             }
-
         }
 
         return this.render_year_mustache(`Year {{year}}`);
-
     },
 
     render_year_mustache(inFormat, eraName = false) {
-
         const epochData = this.get_epoch_data();
 
         // TODO: FIXIT
@@ -71,18 +66,16 @@ export default () => ({
             inFormat,
             mustacheData
         );
-
     },
 
     get cycle_header_text() {
-
         if (!this.cycles?.data?.length) return "";
+        if (!this.get_epoch_data()) return "";
 
         return Mustache.render(
             this.cycles.format.replace(/{{/g, '{{{').replace(/}}/g, '}}}'),
             get_cycle(this.static_data, this.get_epoch_data()).text
         );
-
     },
 
     get_epoch_data() {
@@ -95,32 +88,31 @@ export default () => ({
             : this.dynamic_data.epoch;
     },
 
-    get is_selected_date_ahead(){
+    get is_selected_date_ahead() {
         return !this.preview_date?.follow && this.preview_date?.epoch > this.dynamic_data?.epoch;
     },
 
-    get is_selected_date_behind(){
+    get is_selected_date_behind() {
         return !this.preview_date?.follow && this.preview_date?.epoch < this.dynamic_data?.epoch;
     },
 
-    select_next_year(){
+    select_next_year() {
         this.$store.calendar.increment_selected_year(false);
     },
 
-    select_previous_year(){
+    select_previous_year() {
         this.$store.calendar.decrement_selected_year(false);
     },
 
-    select_next_month(){
+    select_next_month() {
         this.$store.calendar.increment_selected_month(false);
     },
 
-    select_previous_month(){
+    select_previous_month() {
         this.$store.calendar.decrement_selected_month(false);
     },
 
     go_to_current_date() {
         this.$store.calendar.set_selected_date_active(false);
     }
-
 })
