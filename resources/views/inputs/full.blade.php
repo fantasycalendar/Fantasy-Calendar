@@ -25,13 +25,13 @@
 
         <x-collapsible :calendar="$calendar" contains="Moons" icon="fa-moon" polished></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Seasons" icon="fa-snowflake" done></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Seasons" icon="fa-snowflake" polished></x-collapsible>
 
         <x-collapsible :calendar="$calendar" contains="Weather" icon="fa-cloud-sun-rain" polished></x-collapsible>
 
         <x-collapsible :calendar="$calendar" contains="Locations" icon="fa-compass" polished></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Cycles" icon="fa-redo" done></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Cycles" icon="fa-redo" polished></x-collapsible>
 
         <x-collapsible :calendar="$calendar" contains="Event Categories" icon="fa-th-list" polished></x-collapsible>
 
