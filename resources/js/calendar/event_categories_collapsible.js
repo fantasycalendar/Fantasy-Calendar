@@ -14,7 +14,7 @@ class EventCategoriesCollapsible extends CollapsibleComponent {
         "default_category": "static_data.settings.default_category",
     };
 
-    deleting = null;
+    deleting = -1;
     categories = [];
     new_category_name = "";
     default_category = -1;
@@ -50,12 +50,12 @@ class EventCategoriesCollapsible extends CollapsibleComponent {
 
     get categoryCreationIsDisabled() {
         return !this.new_category_name || this.categories.some(category => category.id === slugify(this.new_category_name));
-    };
+    }
 
     removeCategory(categoryId) {
         this.categories = this.categories.filter(category => category.id !== categoryId);
         this.deleting = null;
-    };
+    }
 
     reorderSortable(start, end) {
         const elem = this.categories.splice(start, 1)[0];

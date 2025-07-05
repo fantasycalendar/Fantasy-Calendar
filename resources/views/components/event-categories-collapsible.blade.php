@@ -8,7 +8,7 @@
     </div>
 </div>
 
-<div class="row no-gutters my-2">
+<div class="flex my-2">
     <button class="full btn btn-secondary" @click="reordering = true" x-show="!reordering">
         <i class="fa fa-arrows-alt-v"></i> Change order
     </button>
@@ -20,152 +20,91 @@
 
 <div class='sortable list-group my-2' x-ref="event-categories-sortable">
     <template x-for="(category, index) in categories" :key="index" x-ref="event-categories-sortable-template">
-        <div class='sortable-container list-group-item collapsible p-2 first-of-type:rounded-t draggable-source'
-            :data-id="index"
-            :class="{'collapsed': !collapsed}"
-            x-data='{ color: "${data.event_settings.color}", text_style: "${data.event_settings.text}", collapsed: false }'
-            >
-
-            <div class='flex items-center w-full gap-x-2' x-show="deleting !== category.id">
-                <div class='handle fa fa-bars' x-show="reordering"></div>
-                <div class='cursor-pointer text-xl fa'
-                     :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
-                     @click="collapsed = !collapsed"
-                     x-show="!reordering"
-                     ></div>
+        <x-sortable-item deleteFunction="removeCategory(category.id)">
+            <x-slot:inputs>
                 <input type='text' class='name-input small-input form-control' x-model.lazy='category.name'/>
-                <button class="btn btn-danger w-10" @click="deleting = category.id">
-                    <i class="fa fa-trash text-lg"></i>
-                </button>
+            </x-slot:inputs>
+
+            <div>
+                <strong> Settings: </strong>
+
+                <div class="flex flex-col">
+                    <x-alpine.check-input id="`category_${index}_settings_hide`" x-model='category.category_settings.hide'>
+                        Hide category from viewers
+                    </x-alpine.check-input>
+
+                    <x-alpine.check-input id="`category_${index}_settings_player_usable`" x-model='category.category_settings.player_usable'>
+                        Category usable by players
+                    </x-alpine.check-input>
+                </div>
             </div>
 
-            <div x-show="deleting === category.id" class="flex items-center w-full gap-x-2.5" x-cloak>
-                <button class="btn btn-success w-10 !px-0 text-center" @click="removeCategory(category.id)">
-                    <i class="fa fa-check text-lg"></i>
-                </button>
+            <div class='flex flex-col'>
+                <strong> Event overrides: </strong>
 
-                <div class="flex-grow">Are you sure?</div>
+                <div class="flex flex-col">
+                    <x-alpine.check-input id="`category_${index}_settings_hide_full`" x-model='category.event_settings.hide_full'>
+                        Fully hide event
+                    </x-alpine.check-input>
 
-                <button class="btn btn-danger w-10 !px-0 text-center" @click="deleting = -1">
-                    <i class="fa fa-times text-lg"></i>
-                </button>
+                    <x-alpine.check-input id="`category_${index}_settings_hide`" x-model='category.event_settings.hide'>
+                        Hide event
+                    </x-alpine.check-input>
+
+                    <x-alpine.check-input id="`category_${index}_settings_noprint`" x-model='category.event_settings.noprint'>
+                        Show event when printing
+                    </x-alpine.check-input>
+                </div>
             </div>
 
-
-            <div class='collapse-container container mb-2'>
-                <div class='row no-gutters my-1 bold-text'>
-                    <div class='col'>
-                        Settings:
-                    </div>
-                </div>
-
-                <div class='row no-gutters mt-1 mb-2'>
-                    <div class="list-group col-12">
-                        <div class='form-check list-group-item py-2'>
-                            <input type='checkbox' class='form-check-input' x-model='category.category_settings.hide' />
-
-                            <label class='form-check-label ml-1'>
-                                Hide category from viewers
-                            </label>
-                        </div>
-
-                        <div class='form-check list-group-item py-2'>
-                            <input type='checkbox' class='form-check-input' x-model='category.category_settings.player_usable' />
-
-                            <label class='form-check-label ml-1'>
-                                Category usable by players
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class='row no-gutters bold-text'>
-                    <div class='col'>
-                        Event overrides:
-                    </div>
-                </div>
-
-                <div class='row no-gutters mt-1 mb-2'>
-                    <div class="list-group col-12">
-                        <div class='form-check list-group-item py-2'>
-                            <input type='checkbox' class='form-check-input' x-model="category.event_settings.hide_full" />
-                            <label class='form-check-label ml-1'>
-                                Fully hide event
-                            </label>
-                        </div>
-
-                        <div class='form-check list-group-item py-2'>
-                            <input type='checkbox' class='form-check-input' x-model="category.event_settings.hide" />
-                            <label class='form-check-label ml-1'>
-                                Hide event
-                            </label>
-                        </div>
-
-                        <div class='form-check list-group-item py-2'>
-                            <input type='checkbox' class='form-check-input' x-model="category.event_settings.noprint" />
-                            <label class='form-check-label ml-1'>
-                                Show event when printing
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class='row no-gutters my-2'>
-                    <div class='col-md-6'>
+            <div class='flex flex-col my-2'>
+                <div class="flex">
+                    <div class='w-full'>
                         Color:
                     </div>
 
-                    <div class='col-md-6'>
+                    <div class='w-full'>
                         Display:
                     </div>
-
-                    <div class='input-group col-12 mt-1 mb-2' x-data="{ colorOptions: ['Dark-Solid', 'Red', 'Pink', 'Purple', 'Deep-Purple', 'Blue', 'Light-Blue', 'Cyan', 'Teal', 'Green', 'Light-Green', 'Lime', 'Yellow', 'Orange', 'Blue-Grey'] }">
-                        <select x-model='category.event_settings.color' class='custom-select form-control color_display'>
-                            <template x-for="colorOption in colorOptions">
-                                <option x-text="colorOption" :value="colorOption" :selected="colorOption == category.event_settings.color"></option>
-                            </template>
-                        </select>
-
-                        <select x-model='category.event_settings.text' class='custom-select form-control text_display'>
-                            <option value="text">Just text</option>
-                            <option value="dot">• Dot with text</option>
-                            <option value="background">Background</option>
-                        </select>
-                    </div>
                 </div>
 
-                <div class='row no-gutters mt-1'>
-                    <div class='col'>
-                        Event appearance:
-                    </div>
-                </div>
+                <div class='input-group mt-1 mb-2' x-data="{ colorOptions: ['Dark-Solid', 'Red', 'Pink', 'Purple', 'Deep-Purple', 'Blue', 'Light-Blue', 'Cyan', 'Teal', 'Green', 'Light-Green', 'Lime', 'Yellow', 'Orange', 'Blue-Grey'] }">
+                    <select x-model='category.event_settings.color' class='custom-select form-control color_display'>
+                        <template x-for="colorOption in colorOptions">
+                            <option x-text="colorOption" :value="colorOption" :selected="colorOption == category.event_settings.color"></option>
+                        </template>
+                    </select>
 
-                <div class='row no-gutters'>
-                    <div class='col-6'>
-                        <div class='event-text-output event' :class='`${category.event_settings.color} ${category.event_settings.text}`'>Event (visible)</div>
-                    </div>
-                    <div class='col-6 px-1'>
-                        <div class='event-text-output hidden_event event' :class='`${category.event_settings.color} ${category.event_settings.text}`'>Event (hidden)</div>
-                    </div>
+                    <select x-model='category.event_settings.text' class='custom-select form-control text_display'>
+                        <option value="text">Just text</option>
+                        <option value="dot">• Dot with text</option>
+                        <option value="background">Background</option>
+                    </select>
                 </div>
             </div>
-        </div>
+
+            <div class='flex mt-1'>
+                Event appearance:
+            </div>
+
+            <div class='flex'>
+                <div class='event' :class='`${category.event_settings.color} ${category.event_settings.text}`'>Event (visible)</div>
+                <div class='hidden_event event' :class='`${category.event_settings.color} ${category.event_settings.text}`'>Event (hidden)</div>
+            </div>
+        </x-sortable-item>
     </template>
 </div>
 
-<div class='row no-gutters py-2'>
-    <div class='separator'></div>
-</div>
+<div class='separator'></div>
 
-<div class='row no-gutters bold-text'>
-    <div class='col'>
-        Default category
-        <select x-model="default_category" class='form-control protip mt-1' data-pt-position="right" data-pt-title="This sets the category to be selected by default when a new event is created" >
-            <option value="-1">No default category</option>
+<div class='flex flex-col'>
+    <strong>Default category</strong>
 
-            <template x-for="category in categories">
-                <option :value="category.id" x-text="category.name" :selected="category.id === default_category"></option>
-            </template>
-        </select>
-    </div>
+    <select x-model="default_category" class='form-control'>
+        <option value="-1">No default category</option>
+
+        <template x-for="category in categories">
+            <option :value="category.id" x-text="category.name" :selected="category.id === default_category"></option>
+        </template>
+    </select>
 </div>
