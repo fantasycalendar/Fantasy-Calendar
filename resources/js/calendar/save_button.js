@@ -16,12 +16,12 @@ export default () => ({
     },
 
     removeErrors($event) {
-        if(this.errors[$event.detail.key]){
+        if (this.errors[$event.detail.key]) {
             delete this.errors[$event.detail.key];
         }
     },
 
-    getErrors(){
+    getErrors() {
         return [].concat(...Object.values(this.errors));
     },
 
@@ -45,12 +45,9 @@ export default () => ({
         this.has_changes = !_.isEqual(this.prev_calendar_data, newData);
     },
 
-    get text(){
-        if(this.has_changes && !this.getErrors().length){
-            return "Save Calendar";
-        }
-        if(this.save_status){
-            switch(this.save_status){
+    get text() {
+        if (this.save_status) {
+            switch (this.save_status) {
                 case "saving":
                     return "Saving...";
                 case "success":
@@ -59,32 +56,37 @@ export default () => ({
                     return "Failed to save!";
             }
         }
-        if(!this.has_changes && !this.getErrors().length){
+        if (this.has_changes && !this.getErrors().length) {
+            return "Save Calendar";
+        }
+        if (!this.has_changes && !this.getErrors().length) {
             return "No changes to save";
         }
         return "Calendar has errors";
     },
 
-    get warning(){
+    get warning() {
         return this.getErrors().length > 0;
     },
 
     get disabled() {
-        return !this.has_changes || this.getErrors().length > 0;
+        return this.save_status == "saving"
+            || !this.has_changes
+            || this.getErrors().length > 0;
     },
 
     async save() {
-        if(this.timeout){
+        if (this.timeout) {
             clearTimeout(this.timeout);
         }
 
         let updateMethod;
         let updateParams = [];
 
-        if (!_.isEqual(this.prev_calendar_data.dynamic_data, this.$store.calendar.dynamic_data)){
+        if (!_.isEqual(this.prev_calendar_data.dynamic_data, this.$store.calendar.dynamic_data)) {
             updateMethod = update_dynamic
             updateParams = [this.$store.calendar.hash];
-        } else if (this.prev_calendar_data.calendar_name !== this.$store.calendar.calendar_name){
+        } else if (this.prev_calendar_data.calendar_name !== this.$store.calendar.calendar_name) {
             updateMethod = update_name;
         } else {
             updateMethod = update_all;
