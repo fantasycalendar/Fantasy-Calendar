@@ -8,7 +8,7 @@
 
         <x-collapsible :calendar="$calendar" contains="Current Date" icon="fa-hourglass-half" done></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Clock" icon="fa-clock" done></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Clock" icon="fa-clock" polished></x-collapsible>
 
         @if(request()->is('calendars/*/edit'))
             <x-collapsible :calendar="$calendar" contains="Real-Time Advancement" icon="fa-history"
