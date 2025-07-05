@@ -219,7 +219,7 @@ export default class Calendar {
             .adjust_months(months)
             .adjust_days(days);
 
-        this.set_selected_date({ year: adjusted_year, month: timespan, day, follow: true });
+        this.set_selected_date({ year: adjusted_year, month: timespan, day, follow: false });
     }
 
     set_selected_date({
