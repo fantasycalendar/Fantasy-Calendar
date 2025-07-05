@@ -5,6 +5,7 @@ class CyclesCollapsible extends CollapsibleComponent {
     collapsible_name = "CyclesCollapsible"
 
     deleting = -1;
+    reordering = false;
 
     format = "";
     cycles = [];

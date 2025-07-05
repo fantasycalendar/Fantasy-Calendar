@@ -276,18 +276,12 @@ input[type="number"]:not(.spinner) {
     flex: 3.9 1 auto !important;
 }
 
-.internal-list-name,
-.internal-list-name {
-    width: 100% !important;
-}
-
 .event-category-list {
     flex: 1;
     order: 2;
 }
 
-.week_list,
-.cycle_list {
+.week_list {
     width: 100%;
     max-height: 350px;
     overflow-y: scroll;

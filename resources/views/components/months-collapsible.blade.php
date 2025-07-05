@@ -147,7 +147,7 @@
                                 <div class='week_list w-full p-1'>
                                     <template x-for='(day, index) in (month.week ?? [])' :key='index'>
                                         <input x-model.lazy='month.week[index]' type='text'
-                                        class='form-control internal-list-name'/>
+                                        class='form-control'/>
                                     </template>
                                 </div>
                             </div>
