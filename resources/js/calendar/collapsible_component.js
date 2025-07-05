@@ -95,7 +95,7 @@ export default class CollapsibleComponent {
                 this.changeHandlers[localKey].bind(this)(newValue, oldValue);
             }
 
-            if (this.outboundProperties[localKey]) {
+            if (this.outboundProperties[localKey] && !_.isEqual(newValue, oldValue)) {
                 this.rerender(this.outboundProperties[localKey], newValue);
             }
         });

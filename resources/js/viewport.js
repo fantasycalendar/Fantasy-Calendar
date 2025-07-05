@@ -2,12 +2,20 @@ export default function () {
     return {
         errors: {},
         sidebar_open: this.$persist(true),
+        show_redraw_warning: false,
 
         open_sidebar() {
             this.sidebar_open = true;
         },
         close_sidebar() {
             this.sidebar_open = false;
+        },
+
+        display_redraw_warning() {
+            this.show_redraw_warning = true;
+        },
+        hide_redraw_warning() {
+            this.show_redraw_warning = false;
         },
 
         init() {

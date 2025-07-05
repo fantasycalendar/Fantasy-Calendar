@@ -27,6 +27,8 @@ export default class Calendar {
     }
 
     update(incomingChanges) {
+        console.log("Updating calendar...")
+
         // TODO: Make recalculation more atomic
         let rerenderKeys = [
             "static_data.year_data",
@@ -105,18 +107,14 @@ export default class Calendar {
         if (structureChanged) {
             this.rebuild_calendar()
         } else if (dateChanged) {
-            window.dispatchEvent(new CustomEvent('update-epochs', {
-                detail: {
-                    current_epoch: this.dynamic_data.epoch,
-                    preview_epoch: this.active_date.epoch
-                }
-            }));
+            this.update_epochs()
         }
 
         window.dispatchEvent(new CustomEvent('calendar-updated'));
     }
 
     rebuild_calendar() {
+        console.log("Rebuilding calendar...")
         execution_time.start()
         return calendar_data_generator.run({
             static_data: this.static_data,
@@ -125,6 +123,7 @@ export default class Calendar {
             events: this.events,
             event_categories: this.event_categories
         }).then(calendar_data => {
+            execution_time.end("Rebuilding calendar took:")
             this.evaluated_static_data = calendar_data;
             this.render_calendar(calendar_data);
         });
@@ -132,6 +131,12 @@ export default class Calendar {
 
     render_calendar(calendar_data) {
         if (!calendar_data) calendar_data = this.evaluated_static_data;
+        if(this.setting('prompt_for_redraw', false)) {
+            return window.dispatchEvent(new CustomEvent('display-redraw-warning'));
+        }
+        window.dispatchEvent(new CustomEvent('hide-redraw-warning'));
+        console.log("Rendering calendar...")
+        execution_time.start()
         return render_data_generator.create_render_data(calendar_data).then((result) => {
             window.dispatchEvent(new CustomEvent('render-data-change', { detail: result }));
         }).catch((err) => {
@@ -142,6 +147,19 @@ export default class Calendar {
                 }
             }));
         });
+    }
+
+    update_epochs() {
+        if(this.setting('prompt_for_redraw', false)) {
+            return window.dispatchEvent(new CustomEvent('display-redraw-warning'));
+        }
+        window.dispatchEvent(new CustomEvent('hide-redraw-warning'));
+        window.dispatchEvent(new CustomEvent('update-epochs', {
+            detail: {
+                current_epoch: this.dynamic_data.epoch,
+                preview_epoch: this.active_date.epoch
+            }
+        }));
     }
 
     // "Broker" methods

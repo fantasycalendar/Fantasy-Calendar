@@ -64,14 +64,18 @@
     </div>
 </div>
 
-<div id="calendar_container" :class='{ "inputs_collapsed": !sidebar_open }' x-show="!flattened_errors.length">
-    <div id="reload_background"
-         class='flexible_background blurred_background d-flex flex-column justify-content-center hidden d-print-none'>
-        <div class='p-2 text-white'>You have made changes to your calendar.</div>
+@if(request()->is('calendars/*/edit'))
+    <div class='order-3 h-full w-full bg-gray-900/50 flex flex-col justify-center items-center' x-cloak x-show="show_redraw_warning && !flattened_errors.length">
+        <div class='p-2 text-white'>While the "Prompt before redrawing calendar" setting is active, the calendar will not re-render.</div>
         <div class='p-2'>
-            <button type='button' class='btn btn-primary' id='apply_changes_btn'>Update preview</button>
+            <button type='button' class='btn btn-primary' @click="$dispatch('calendar-updating', { calendar: { 'static_data.settings.prompt_for_redraw': false }})">
+                Update preview & disable setting
+            </button>
         </div>
     </div>
+@endif
+
+<div id="calendar_container" :class='{ "inputs_collapsed": !sidebar_open }' x-cloak x-show="!flattened_errors.length && !show_redraw_warning">
 
     <x-calendar-year-header></x-calendar-year-header>
 

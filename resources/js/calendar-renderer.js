@@ -125,7 +125,7 @@ export default () => ({
 
         $dispatch('layout-change', { apply: this.render_data.current_month_only ? 'single_month' : '' });
 
-        execution_time.end("Calculating and rendering calendar took:")
+        execution_time.end("Rendering calendar took:")
     },
 
     scroll_to_epoch: function () {
