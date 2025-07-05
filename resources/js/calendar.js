@@ -27,7 +27,6 @@ export default class Calendar {
     }
 
     update(incomingChanges) {
-
         // TODO: Make recalculation more atomic
         let rerenderKeys = [
             "static_data.year_data",
@@ -51,10 +50,17 @@ export default class Calendar {
 
         for (const [key, value] of Object.entries(incomingChanges)) {
             let original_value = _.cloneDeep(_.get(this, key));
+            // Using cloneDeep to avoid JS "everything is a reference" issues
+            let new_value = _.cloneDeep(value);
 
-            let new_value = (typeof value === 'object')
-                ? _.merge(original_value, _.cloneDeep(value))
-                : value;
+            // Note 1: Arrays are 'object'
+            // Note 2: _.merge([{id: 1}, {id: 2}], [{id:1}])
+            //      >> [{id: 1}, {id: 2}]
+            //
+            // Ergo: This check alows deleting items from arrays
+            if (!Array.isArray(value) && typeof value === 'object') {
+                new_value = _.merge(original_value, new_value);
+            }
 
             _.set(this, key, new_value);
         }
@@ -457,6 +463,8 @@ export default class Calendar {
     }
 
     set event_categories(value) {
+        console.log('Setting event categories');
+        console.log(JSON.parse(JSON.stringify(value)));
         window.event_categories = value;
 
         window.event_categories

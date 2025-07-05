@@ -95,7 +95,7 @@
     </template>
 </div>
 
-<div class='separator'></div>
+<div class='separator my-2'></div>
 
 <div class='flex flex-col'>
     <strong>Default category</strong>
