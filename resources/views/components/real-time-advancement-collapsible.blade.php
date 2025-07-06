@@ -9,7 +9,7 @@
         <div class="flex flex-col mt-[0.5rem]" x-data="{ discord_webhooks: @json($calendar->discord_webhooks()->count()) }" x-show="advancement.advancement_enabled">
             <x-separator></x-separator>
 
-            <strong>For every</strong>
+            <div>For every</div>
 
             <div class="input-group-sm input-group my-[0.5rem]">
                 <input type='number' class='form-control input-group-prepend'
@@ -25,7 +25,7 @@
                 </select>
             </div>
 
-            <strong> Advance this calendar by </strong>
+            <div> Advance this calendar by </div>
 
             <div class="input-group-sm input-group my-[0.5rem]">
                 <input type='number' class='form-control input-group-prepend'
@@ -49,7 +49,7 @@
 
             <x-separator></x-separator>
 
-            <strong> Notification webhooks </strong>
+            <div> Notification webhooks </div>
 
             <div class="input-group">
                 <select x-model="advancement.advancement_webhook_format" class='form-control form-control-sm'>

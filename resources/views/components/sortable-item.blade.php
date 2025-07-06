@@ -11,7 +11,7 @@
              class="handle w-[20px] grid place-items-center self-stretch flex-shrink-0 text-center cursor-move">
             <i class="fa fa-bars text-xl hover:text-black hover:dark:text-white"></i>
         </div>
-        <div class='cursor-pointer text-xl fa'
+        <div class='cursor-pointer text-xl fa text-gray-900/50 dark:text-white/50'
              :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
              @click="collapsed = !collapsed" x-show="!reordering">
         </div>
@@ -21,7 +21,7 @@
         </div>
 
         <div>
-            <i class="fa fa-trash text-lg hover:text-red-400 hover:dark:text-red-600 cursor-pointer" @click="deleting = index" x-show="!reordering || (typeof alwaysReordering !== 'undefined' && alwaysReordering)"></i>
+            <i class="fa fa-trash text-lg text-gray-900/50 dark:text-white/50 hover:text-red-500 hover:dark:text-red-600 cursor-pointer" @click="deleting = index" x-show="!reordering || (typeof alwaysReordering !== 'undefined' && alwaysReordering)"></i>
         </div>
     </div>
 

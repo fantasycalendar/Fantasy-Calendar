@@ -43,15 +43,15 @@
                 <strong> Event overrides: </strong>
 
                 <div class="flex flex-col">
-                    <x-alpine.check-input id="`category_${index}_settings_hide_full`" x-model='category.event_settings.hide_full'>
+                    <x-alpine.check-input id="`category_${index}_event_settings_hide_full`" x-model='category.event_settings.hide_full'>
                         Fully hide event
                     </x-alpine.check-input>
 
-                    <x-alpine.check-input id="`category_${index}_settings_hide`" x-model='category.event_settings.hide'>
+                    <x-alpine.check-input id="`category_${index}_event_settings_hide`" x-model='category.event_settings.hide'>
                         Hide event
                     </x-alpine.check-input>
 
-                    <x-alpine.check-input id="`category_${index}_settings_noprint`" x-model='category.event_settings.noprint'>
+                    <x-alpine.check-input id="`category_${index}_event_settings_noprint`" x-model='category.event_settings.noprint'>
                         Show event when printing
                     </x-alpine.check-input>
                 </div>

@@ -61,7 +61,7 @@
         <template x-for="(location, index) in locations">
             <div class="list-group-item p-2 first-of-type:rounded-t" x-data="{ collapsed: true }">
                 <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
-                    <div class='cursor-pointer text-xl fa'
+                    <div class='cursor-pointer text-xl fa text-gray-900/50 dark:text-white/50'
                          :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
                          @click="collapsed = !collapsed"></div>
                     <input type='text' class='name-input small-input form-control location-name' x-model.lazy='location.name'/>
@@ -86,7 +86,7 @@
                     <template x-for="(season, season_index) in location.seasons">
                         <div class='m-0 my-2 cycle-container' x-data="{ seasonCollapsed: true }">
                             <div class='lbl-toggle' @click="seasonCollapsed = !seasonCollapsed">
-                                <div class='cursor-pointer text-xl fa mr-2'
+                                <div class='cursor-pointer text-xl fa mr-2 text-gray-900/50 dark:text-white/50'
                                      :class="{ 'fa-caret-square-up': !seasonCollapsed, 'fa-caret-square-down': seasonCollapsed }"></div>
                                 <span x-text='(seasons?.[season_index]?.name ?? "Unknown") + " weather"'></span>
                             </div>
