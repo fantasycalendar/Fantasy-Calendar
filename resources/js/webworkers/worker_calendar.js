@@ -23,7 +23,7 @@ onmessage = async (e) => {
 
 		calendar_data_generator.dynamic_data.year = from_year;
 
-		execution_time.start();
+		execution_time.start("Generating calendar data...");
 
 		let average_time = 0;
 

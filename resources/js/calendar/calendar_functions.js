@@ -30,11 +30,12 @@ export class execution {
 }
 
 export var execution_time = {
-    start: function() {
+    start: function(message) {
+        console.log(message);
         this.starttime = performance.now();
     },
-    end: function(string) {
-        console.log(`${string !== undefined ? string + " " : ""}${precisionRound(performance.now() - this.starttime, 7)}ms`);
+    end: function(message) {
+        console.log(`${message !== undefined ? message + " " : ""}${precisionRound(performance.now() - this.starttime, 7)}ms`);
     }
 }
 

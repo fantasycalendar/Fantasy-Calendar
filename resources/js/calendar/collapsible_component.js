@@ -2,7 +2,6 @@ import _ from "lodash";
 
 export default class CollapsibleComponent {
     initialized = false;
-    processWatchers = false;
 
     inboundProperties = {};
     changeHandlers = {};
@@ -48,7 +47,7 @@ export default class CollapsibleComponent {
         this.calendar_settings = this.$store.calendar.static_data.settings;
 
         for (let [localKey, globalKey] of Object.entries(this.inboundProperties)) {
-            let incoming = _.get(this.$store.calendar, globalKey);
+            let incoming = _.cloneDeep(_.get(this.$store.calendar, globalKey));
             let current = this[localKey];
 
             if (!_.isEqual(incoming, current)) {
@@ -95,7 +94,7 @@ export default class CollapsibleComponent {
                 this.changeHandlers[localKey].bind(this)(newValue, oldValue);
             }
 
-            if (this.outboundProperties[localKey] && !_.isEqual(newValue, oldValue)) {
+            if (this.outboundProperties[localKey]) {
                 this.rerender(this.outboundProperties[localKey], newValue);
             }
         });

@@ -6,7 +6,6 @@ export default (calendar_structure) => ({
     poll_timer: false,
     instapoll: false,
     new_dynamic_change: false,
-    debounced_update_calendar: false,
 
     init() {
 
@@ -77,8 +76,6 @@ export default (calendar_structure) => ({
 
         }
 
-        this.debounced_update_calendar = _.debounce(this._update_calendar, 10);
-
         this.$nextTick(
             () => this.$dispatch(
                 'calendar-loaded', {
@@ -145,18 +142,7 @@ export default (calendar_structure) => ({
         this.$store.calendar.render_calendar();
     },
 
-    _changes: {},
-
     update_calendar($event) {
-        console.log("Update debounce")
-        this._changes = _.merge(this._changes, $event.detail.calendar);
-        this.debounced_update_calendar();
-    },
-
-    _update_calendar() {
-        console.log("Update called")
-        const changes = _.cloneDeep(this._changes);
-        this._changes = {};
-        this.$store.calendar.update(changes);
+        this.$store.calendar.debounceUpdate($event.detail.calendar);
     }
 });

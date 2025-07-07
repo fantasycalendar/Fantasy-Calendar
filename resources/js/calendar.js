@@ -22,13 +22,28 @@ import { preset_data } from "./calendar/calendar_variables.js";
 
 export default class Calendar {
 
+    debounced_update = false;
+    storedChanges = {};
+
+    current_date_manager = false;
+    selected_date_manager = false;
+
     setup() {
-        window.dynamic_date_manager = new date_manager(this.static_data, this.dynamic_data.year, this.dynamic_data.timespan, this.dynamic_data.day);
-        window.preview_date_manager = new date_manager(this.static_data, this.preview_date.year, this.preview_date.timespan, this.preview_date.day);
+        this.current_date_manager = new date_manager(this.static_data, this.dynamic_data.year, this.dynamic_data.timespan, this.dynamic_data.day);
+        this.selected_date_manager = new date_manager(this.static_data, this.preview_date.year, this.preview_date.timespan, this.preview_date.day);
+    }
+
+    debounceUpdate(incomingChanges) {
+        if(!this.debounced_update){
+            this.debounced_update = _.debounce(this.update.bind(this), 10);
+        }
+        this.debounced_update(_.merge(this.storedChanges, incomingChanges));
     }
 
     update(incomingChanges) {
-        console.log("Updating calendar...")
+        this.storedChanges = {};
+
+        console.log("Updating calendar...", incomingChanges)
 
         // TODO: Make recalculation more atomic
         let rerenderKeys = [
@@ -62,7 +77,7 @@ export default class Calendar {
             // Note 2: _.merge([{id: 1}, {id: 2}], [{id:1}])
             //      >> [{id: 1}, {id: 2}]
             //
-            // Ergo: This check alows deleting items from arrays
+            // Ergo: This check allows deleting items from arrays
             if (!Array.isArray(value) && typeof value === 'object') {
                 new_value = _.merge(original_value, new_value);
             }
@@ -87,7 +102,7 @@ export default class Calendar {
             }
         }
 
-        let reconciled_current_date = window.dynamic_date_manager.reconcileCalendarChange(this.static_data, this.dynamic_data);
+        let reconciled_current_date = this.current_date_manager.reconcileCalendarChange(this.static_data, this.dynamic_data);
         this.dynamic_data.year = reconciled_current_date.year;
         this.dynamic_data.timespan = reconciled_current_date.timespan;
         this.dynamic_data.day = reconciled_current_date.day;
@@ -103,11 +118,11 @@ export default class Calendar {
             this.preview_date.timespan = reconciled_current_date.timespan;
             this.preview_date.day = reconciled_current_date.day;
             this.preview_date.epoch = reconciled_current_date.epoch;
-            let reconciled_selected_date = window.preview_date_manager.reconcileCalendarChange(this.static_data, this.preview_date);
+            let reconciled_selected_date = this.selected_date_manager.reconcileCalendarChange(this.static_data, this.preview_date);
             structureChanged = structureChanged || reconciled_selected_date.rebuild;
             dateChanged = dateChanged || !prev_preview_date.follow || reconciled_current_date.year !== prev_preview_date.year || reconciled_current_date.timespan !== prev_preview_date.timespan || reconciled_current_date.day !== prev_preview_date.day;
         } else if (!this.preview_date.follow) {
-            let reconciled_selected_date = window.preview_date_manager.reconcileCalendarChange(this.static_data, this.preview_date);
+            let reconciled_selected_date = this.selected_date_manager.reconcileCalendarChange(this.static_data, this.preview_date);
             this.preview_date.year = reconciled_selected_date.year;
             this.preview_date.timespan = reconciled_selected_date.timespan;
             this.preview_date.day = reconciled_selected_date.day;
@@ -134,8 +149,7 @@ export default class Calendar {
     }
 
     rebuild_calendar() {
-        console.log("Rebuilding calendar...")
-        execution_time.start()
+        execution_time.start("Rebuilding calendar...")
         return calendar_data_generator.run({
             static_data: this.static_data,
             dynamic_data: this.active_date,
@@ -155,8 +169,7 @@ export default class Calendar {
             return window.dispatchEvent(new CustomEvent('display-redraw-warning'));
         }
         window.dispatchEvent(new CustomEvent('hide-redraw-warning'));
-        console.log("Rendering calendar...")
-        execution_time.start()
+        execution_time.start("Rendering calendar...")
         return render_data_generator.create_render_data(calendar_data).then((result) => {
             window.dispatchEvent(new CustomEvent('render-data-change', { detail: result }));
         }).catch((err) => {

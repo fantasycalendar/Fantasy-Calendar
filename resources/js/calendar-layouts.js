@@ -26,7 +26,7 @@ export default () => ({
     open_modal: function($event) {
         // if (evaluate_save_button()) { // TODO: Fix calendar layouts requiring calendar to be saved
             this.open = true;
-            this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() === window.static_data.settings.layout);
+            this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() === this.$store.calendar.static_data.settings.layout);
         // } else {
         //     this.$dispatch('notify', {
         //         content: "Applying a layout refreshes the page, please save your calendar first.",
@@ -50,6 +50,7 @@ export default () => ({
             }
         });
 
+        // TODO: this doesn't work?
         do_update_all(window.hash)
             .then(() => {
                 window.onbeforeunload = function() { }
@@ -65,7 +66,7 @@ export default () => ({
                         }
                     }
                 });
-                window.static_data.settings.layout = previous_layout;
+                this.$store.calendar.static_data.settings.layout = previous_layout;
                 this.$dispatch("app-busy-end");
                 this.$dispatch('notify', {
                     content: error.response.data.message,

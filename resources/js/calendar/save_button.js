@@ -84,7 +84,7 @@ export default () => ({
         let updateParams = [];
 
         if (!_.isEqual(this.prev_calendar_data.dynamic_data, this.$store.calendar.dynamic_data)) {
-            updateMethod = update_dynamic
+            updateMethod = update_dynamic;
             updateParams = [this.$store.calendar.hash];
         } else if (this.prev_calendar_data.calendar_name !== this.$store.calendar.calendar_name) {
             updateMethod = update_name;
