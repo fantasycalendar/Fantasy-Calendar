@@ -1,12 +1,7 @@
 import CollapsibleComponent from "./collapsible_component.js";
 import { preset_data } from "./calendar_variables.js";
 import _ from "lodash";
-import {
-    fahrenheit_to_celcius,
-    fract,
-    lerp,
-    precisionRound
-} from "./calendar_functions.js";
+import { fahrenheit_to_celcius, fract, lerp, precisionRound } from "./calendar_functions.js";
 
 class LocationsCollapsible extends CollapsibleComponent {
 
@@ -50,8 +45,7 @@ class LocationsCollapsible extends CollapsibleComponent {
         this.can_use_preset_locations = (this.seasons.length === 2 || this.seasons.length === 4) && this.season_settings.enable_weather;
 
         if (this.can_use_preset_locations) {
-            let length = this.can_use_preset_locations ? this.seasons.length : 4;
-            this.preset_locations = Object.values(preset_data.locations[length]);
+            this.preset_locations = Object.values(preset_data.locations[this.seasons.length]);
         } else {
             this.preset_locations = [];
         }
@@ -61,7 +55,9 @@ class LocationsCollapsible extends CollapsibleComponent {
             ? location_list.findIndex(location => location.name == this.current_location)
             : this.current_location;
 
-        this.location_selection_value = current_location_index + (this.using_custom_location ? "-custom" : "-preset");
+        this.location_selection_value = this.using_custom_location
+            ? current_location_index + "-custom"
+            : this.current_location + "-preset";
     }
 
     addLocation() {

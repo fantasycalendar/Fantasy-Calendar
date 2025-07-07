@@ -22,12 +22,12 @@
         <select class='form-control' @change="locationChanged" x-model="location_selection_value">
             <optgroup label="Custom" x-show="locations.length">
                 <template x-for="(location, index) in locations">
-                    <option :value="index + '-custom'" x-text="location.name"></option>
+                    <option :value="index + '-custom'" :selected="index + '-custom'" x-text="location.name"></option>
                 </template>
             </optgroup>
             <optgroup label="Preset" x-show="preset_locations.length">
                 <template x-for="(location, index) in preset_locations">
-                    <option :value="index + '-preset'" x-text="location.name" :disabled="!can_use_preset_locations"></option>
+                    <option :value="location.name + '-preset'" :selected="location_selection_value === location.name + '-preset'" x-text="location.name" :disabled="!can_use_preset_locations"></option>
                 </template>
             </optgroup>
         </select>

@@ -18,6 +18,7 @@ import {
 
 import { render_data_generator } from './render-data-generator.js';
 import { calendar_data_generator } from './calendar/calendar_workers.js';
+import { preset_data } from "./calendar/calendar_variables.js";
 
 export default class Calendar {
 
@@ -40,6 +41,8 @@ export default class Calendar {
         ];
 
         let incomingKeys = Object.keys(incomingChanges);
+
+        let previous_location = this.dynamic_data.location;
 
         let structureChanged = rerenderKeys.some(key => {
             return incomingKeys.some(incomingKey => incomingKey.startsWith(key));
@@ -65,6 +68,23 @@ export default class Calendar {
             }
 
             _.set(this, key, new_value);
+        }
+
+        let current_location = this.dynamic_data.location;
+        if(current_location !== previous_location && this.static_data.clock.enabled) {
+            const curr_timezone = this.get_location_data(current_location)?.settings?.timezone;
+            const prev_timezone = this.get_location_data(previous_location)?.settings?.timezone;
+            if(curr_timezone || prev_timezone) {
+                let adjusted_timezone_date = this.get_adjusted_date(this.dynamic_data, {
+                    hours: (curr_timezone?.hour ?? 0) - (prev_timezone?.hour ?? 0),
+                    minutes: (curr_timezone?.minute ?? 0) - (prev_timezone?.minute ?? 0),
+                })
+                this.dynamic_data.year = adjusted_timezone_date.year;
+                this.dynamic_data.timespan = adjusted_timezone_date.month;
+                this.dynamic_data.day = adjusted_timezone_date.day;
+                this.dynamic_data.hour = adjusted_timezone_date.hour;
+                this.dynamic_data.minute = adjusted_timezone_date.minute;
+            }
         }
 
         let reconciled_current_date = window.dynamic_date_manager.reconcileCalendarChange(this.static_data, this.dynamic_data);
@@ -200,26 +220,51 @@ export default class Calendar {
         return does_day_appear(this.static_data, convert_year(this.static_data, year), timespan, day);
     }
 
-    adjust_selected_date({ years = 0, months = 0, days = 0, hours = 0, minutes = 0 } = {}) {
+    get_location_data(location) {
+        let location_data =  this.static_data.seasons.locations[location];
+        if(!location_data) {
+            let preset_locations = Object.values(preset_data.locations[this.static_data.seasons.data.length]);
+            location_data = preset_locations.find(preset_location => preset_location.name === location);
+        }
+        return location_data;
+    }
+
+    get_adjusted_date(date, { years = 0, months = 0, days = 0, hours = 0, minutes = 0 } = {}) {
         let extra_days = 0;
+        let hour = date.hour;
+        let minute = date.minute;
+
         if (this.static_data.clock.enabled && (hours || minutes)) {
-            let extra_hours = (hours ?? 0) + ((this.preview_date.minute + (minutes ?? 0)) / this.static_data.clock.minutes);
-            extra_days = (extra_hours + this.preview_date.hour) / this.static_data.clock.hours;
+            let extra_hours = (hours ?? 0) + ((date.minute + (minutes ?? 0)) / this.static_data.clock.minutes);
+            extra_days = (extra_hours + date.hour) / this.static_data.clock.hours;
+
+            hour = precisionRound(fract(extra_days) * this.static_data.clock.hours, 4);
+            minute = Math.floor(fract(hour) * this.static_data.clock.minutes);
+
             extra_days = Math.floor(extra_days);
+            hour = Math.floor(hour);
+
             days += extra_days;
         }
 
         let { adjusted_year, timespan, day } = new date_manager(
             this.static_data,
-            this.preview_date.year,
-            this.preview_date.timespan,
-            this.preview_date.day,
+            date.year,
+            date.timespan,
+            date.day,
         )
             .adjust_years(years)
             .adjust_months(months)
             .adjust_days(days);
 
-        this.set_selected_date({ year: adjusted_year, month: timespan, day, follow: false });
+        return { year: adjusted_year, month: timespan, day, hour, minute };
+    }
+
+    adjust_selected_date({ years = 0, months = 0, days = 0, hours = 0, minutes = 0 } = {}) {
+        this.set_selected_date({
+            ...this.get_adjusted_date(this.preview_date, { years, months, days, hours, minutes }),
+            follow: false
+        });
     }
 
     set_selected_date({
@@ -366,35 +411,7 @@ export default class Calendar {
     };
 
     adjust_current_date({ years = 0, months = 0, days = 0, hours = 0, minutes = 0 } = {}) {
-
-        let extra_days = 0;
-        let hour = this.dynamic_data.hour;
-        let minute = this.dynamic_data.minute;
-
-        if (this.static_data.clock.enabled && (hours || minutes)) {
-            let extra_hours = (hours ?? 0) + ((this.dynamic_data.minute + (minutes ?? 0)) / this.static_data.clock.minutes);
-            extra_days = (extra_hours + this.dynamic_data.hour) / this.static_data.clock.hours;
-
-            hour = precisionRound(fract(extra_days) * this.static_data.clock.hours, 4);
-            minute = Math.floor(fract(hour) * this.static_data.clock.minutes);
-
-            extra_days = Math.floor(extra_days);
-            hour = Math.floor(hour);
-
-            days += extra_days;
-        }
-
-        let { adjusted_year, timespan, day } = new date_manager(
-            this.static_data,
-            this.dynamic_data.year,
-            this.dynamic_data.timespan,
-            this.dynamic_data.day,
-        )
-            .adjust_years(years)
-            .adjust_months(months)
-            .adjust_days(days);
-
-        this.set_current_date({ year: adjusted_year, month: timespan, day, hour, minute });
+        this.set_current_date(this.get_adjusted_date(this.dynamic_data, { years, months, days, hours, minutes }));
     }
 
     set_current_date({
