@@ -216,6 +216,24 @@ class CurrentDateCollapsible extends CollapsibleComponent {
             .values(this.date_adjustment_units)
             .every(x => x === null || x === '');
     }
+
+    get currentDateSelected() {
+        console.log(
+            this.current_year, this.selected_year,
+            this.current_month, this.selected_month,
+            this.current_day, this.selected_day
+        );
+
+        console.log(
+            this.current_year === this.selected_year
+            && this.current_month === this.selected_month
+            && this.current_day === this.selected_day
+        );
+
+        return this.current_year === this.selected_year
+            && this.current_month === this.selected_month
+            && this.current_day === this.selected_day;
+    }
 }
 
 export default () => new CurrentDateCollapsible();

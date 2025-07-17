@@ -142,7 +142,7 @@
             </div>
         </div>
 
-        <div class='btn btn-success full mt-2' x-show="selected_date.follow" @click="set_selected_date_active(true)">Select date</div>
+        <div class='btn btn-success full mt-2' :class="{ 'disabled': currentDateSelected }" x-show="selected_date.follow" @click="(!currentDateSelected) && set_selected_date_active(true)" :disabled="currentDateSelected">Select date</div>
         <div class='btn btn-warning full mt-2' x-show="!selected_date.follow" @click="set_selected_date_active(false)">Select current date</div>
     </div>
 
