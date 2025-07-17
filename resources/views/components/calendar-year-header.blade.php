@@ -1,7 +1,7 @@
 <div id="top_follower"
      x-data="CalendarYearHeader"
      @calendar-loaded.window="update"
-     @calendar-updated.window="update"
+     @render-data-change.window="update"
 >
 
     <div class='flex-shrink-1' id='input_collapse_btn' x-show="!sidebar_open" x-cloak @click="$dispatch('open-sidebar')">
