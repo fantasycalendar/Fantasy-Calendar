@@ -17,7 +17,7 @@
     </div>
 </div>
 
-<div class="sortable list-group border-gray-600 mt-2" x-ref="events-sortable">
+<div class="sortable list-group border-gray-600 mt-2" x-ref="events-sortable" @events-changed.window="reload_events">
     <template x-for="(event, index) in events" :key="index" x-ref="events-sortable-template">
         <x-sortable-item delete-function="$dispatch('event-editor-modal-delete-event', { event_id: index })">
             <x-slot:inputs>

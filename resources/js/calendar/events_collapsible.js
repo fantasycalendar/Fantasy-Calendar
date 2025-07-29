@@ -53,6 +53,10 @@ class EventsCollapsible extends CollapsibleComponent {
         }
     }
 
+    reload_events() {
+        this.events = this.$store.calendar.events;
+    }
+
     handleChangedEvents() {
         console.log("Events changed!", this.events.length);
         this.deleting = -1;
