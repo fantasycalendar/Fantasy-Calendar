@@ -2288,6 +2288,7 @@ export default () => ({
 
                     }
 
+                    this.$dispatch('events-updated');
                 }
 
             });
