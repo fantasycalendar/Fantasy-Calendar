@@ -6,7 +6,7 @@
     <div class="accordion mt-3">
         <x-collapsible :calendar="$calendar" contains="Statistics" icon="fa-chart-pie" polished></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Current Date" icon="fa-hourglass-half" done></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Current Date" icon="fa-hourglass-half" polished></x-collapsible>
 
         <x-collapsible :calendar="$calendar" contains="Clock" icon="fa-clock" polished></x-collapsible>
 
