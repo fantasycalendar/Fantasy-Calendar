@@ -28,6 +28,8 @@ export default () => ({
         this.$watch("multiselect", () => {
             this.selected = {};
         });
+
+        this.open_modal();
     },
 
     affectSelected($dispatch, callback) {
