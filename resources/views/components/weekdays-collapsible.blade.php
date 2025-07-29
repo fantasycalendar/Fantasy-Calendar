@@ -50,7 +50,7 @@
                         <i class="fa fa-bars text-xl hover:text-black hover:dark:text-white"></i>
                     </div>
 
-                    <input class="form-control" type="text" x-model="weekday">
+                    <input class="form-control" type="text" x-model="weekdays[index]">
 
                     <button class="btn btn-danger w-10" @click="deleting = index">
                         <i class="fa fa-trash text-lg"></i>
