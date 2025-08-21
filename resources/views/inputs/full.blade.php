@@ -4,47 +4,47 @@
     @yield('label')
 
     <div class="accordion mt-3">
-        <x-collapsible :calendar="$calendar" contains="Statistics" icon="fa-chart-pie" polished></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Statistics" icon="fa-chart-pie"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Current Date" icon="fa-hourglass-half" polished></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Current Date" icon="fa-hourglass-half"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Clock" icon="fa-clock" polished></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Clock" icon="fa-clock"></x-collapsible>
 
         @if(request()->is('calendars/*/edit'))
             <x-collapsible :calendar="$calendar" contains="Real-Time Advancement" icon="fa-history"
-                           premium_feature="true" polished></x-collapsible>
+                           premium_feature="true"></x-collapsible>
         @endif
 
-        <x-collapsible :calendar="$calendar" contains="Weekdays" step="2" icon="fa-calendar-week" polished></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Weekdays" step="2" icon="fa-calendar-week"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Months" step="3" icon="fa-calendar-alt" polished></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Months" step="3" icon="fa-calendar-alt"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Leap Days" icon="fa-calendar-day" polished></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Leap Days" icon="fa-calendar-day"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Eras" icon="fa-infinity" polished></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Eras" icon="fa-infinity"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Moons" icon="fa-moon" polished></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Moons" icon="fa-moon"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Seasons" icon="fa-snowflake" polished></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Seasons" icon="fa-snowflake"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Weather" icon="fa-cloud-sun-rain" polished></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Weather" icon="fa-cloud-sun-rain"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Locations" icon="fa-compass" polished></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Locations" icon="fa-compass"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Cycles" icon="fa-redo" polished></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Cycles" icon="fa-redo"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Event Categories" icon="fa-th-list" polished></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Event Categories" icon="fa-th-list"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Events" icon="fa-calendar-check" done></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Events" icon="fa-calendar-check"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Settings" icon="fa-cog" polished></x-collapsible>
+        <x-collapsible :calendar="$calendar" contains="Settings" icon="fa-cog"></x-collapsible>
 
         @if(request()->is('calendars/*/edit'))
             <x-collapsible :calendar="$calendar" contains="User Management" icon="fa-user"
-                           premium_feature="true" polished></x-collapsible>
+                           premium_feature="true"></x-collapsible>
 
             <x-collapsible :calendar="$calendar" contains="Calendar Linking" icon="fa-link"
-                           premium_feature="true" polished></x-collapsible>
+                           premium_feature="true"></x-collapsible>
         @endif
     </div>
 

@@ -2,50 +2,77 @@
 
 @php($contains_clean = Str::replace("-", " ", $contains))
 
-<div @class([
-    'wrap-collapsible card',
-    $step ? "step-{$step}-step" : null,
-    "settings-" . $contains
-    ])>
-    <input id="collapsible_{{ $contains }}" class="toggle" type="checkbox">
-    <label for="collapsible_{{ $contains }}" class="lbl-toggle py-2 pr-3 card-header">
-        <i class="mr-2 fas {{ $icon }}"></i> {{ $contains }}
+<div
+    x-data="{
+        open: false,
+        toggle() {
+            this.open = !this.open;
 
-        @if($premium_feature && isset($calendar) && !$calendar->isPremium())
-            <span style="color: rgb(56, 161, 105);" class="ml-2 protip" data-pt-position="right"
-                data-pt-title="Subscriber-only feature">
-                <x-app-logo class="hover-opacity" width="20" height="20"></x-app-logo>
-            </span>
-        @endif
+            $dispatch('{{ Str::slug($contains) }}-toggled', this.open);
+        }
+    }"
+    @class([
+        'wrap-collapsible card',
+        $step ? "step-{$step}-step" : null,
+        "settings-" . $contains
+    ])
+    >
+    <div class="flex justify-between items-center cursor-pointer px-2.5 py-1.5 hover:bg-gray-400 hover:dark:bg-gray-600"
+        @click="toggle"
+        :class="{
+            'bg-gray-300 dark:bg-gray-700': !open ,
+            'bg-gray-400/80 dark:bg-gray-600/80': open,
+        }"
+    >
+        <div class="flex items-center gap-2">
+            <i class="w-5 text-center fas {{ $icon }}"></i>
+            <span>{{ $contains }}</span>
 
-        @if($polished)
-            <!-- TODO: remove this and done property once we have converted all collapsibles -->
-            <i class="fa fa-check" style="right: 40px; top: 10px; position: absolute; color: lime;"></i>
-        @endif
+        </div>
 
-        @if($done)
-            <!-- TODO: remove this and done property once we have converted all collapsibles -->
-            <i class="fa fa-check" style="right: 40px; top: 10px; position: absolute; color: green;"></i>
-        @endif
+        <div class="grid place-items-center w-5 opacity-50 hover:opacity-100">
+            @if($premium_feature && isset($calendar) && !$calendar->isPremium())
+            <a href="{{ route('subscription.pricing') }}" target="_blank">
+                <span style="color: rgb(56, 161, 105);" title="Subscriber-only feature">
+                    <x-app-logo width="20" height="20"></x-app-logo>
+                </span>
+            </a>
+            @else
+                <a target="_blank"
+                    title='View helpdocs'
+                    href='{{ helplink(Str::slug($contains_clean)) }}'
+                    class="text-gray-700 dark:text-gray-300">
+                    <i class="fa fa-question-circle"></i>
+                </a>
+            @endif
+        </div>
+    </div>
 
-        @if($wip)
-            <!-- TODO: remove this and done property once we have converted all collapsibles -->
-            <i class="fa fa-question" style="right: 40px; top: 10px; position: absolute; color: yellow;"></i>
-        @endif
 
-        <!-- TODO: make sure the "contains" values match our helpdocs page links -->
-        <a target="_blank"
-            title='View helpdocs'
-            href='{{ helplink(Str::slug($contains_clean)) }}'
-            class="wiki">
-            <i class="fa fa-question-circle"></i>
-        </a>
-    </label>
+    <!-- <label for="collapsible_{{ $contains }}" class="lbl-toggle py-2 pr-3 card-header"> -->
+    <!--     <i class="mr-2 fas {{ $icon }}"></i> {{ $contains }} -->
 
-    <div class="collapsible-content card-body"
-        x-data="{{ Str::snake($contains_clean) }}_collapsible"
+    <!--     @if($premium_feature && isset($calendar) && !$calendar->isPremium()) -->
+    <!--         <span style="color: rgb(56, 161, 105);" class="ml-2" title="Subscriber-only feature"> -->
+    <!--             <x-app-logo class="hover-opacity" width="20" height="20"></x-app-logo> -->
+    <!--         </span> -->
+    <!--     @endif -->
+
+    <!--     <!-1- TODO: make sure the "contains" values match our helpdocs page links -1-> -->
+    <!--     <a target="_blank" -->
+    <!--         title='View helpdocs' -->
+    <!--         href='{{ helplink(Str::slug($contains_clean)) }}' -->
+    <!--         class="wiki"> -->
+    <!--         <i class="fa fa-question-circle"></i> -->
+    <!--     </a> -->
+    <!-- </label> -->
+
+    <div x-data="{{ Str::snake($contains_clean) }}_collapsible"
         @calendar-loaded.window="load"
-        @calendar-updated.window="load">
+        @calendar-updated.window="load"
+        x-show="open"
+        class="p-2.5"
+    >
         <x-dynamic-component :calendar="$calendar ?? null" :component="Str::kebab($contains_clean) . '-collapsible'"></x-dynamic-component>
     </div>
 </div>
