@@ -258,7 +258,11 @@ export default () => ({
     },
 
     highlight_match: function(string, offset = 0) {
-        let output = sanitizeHtml(string, { allowedTags: [] });
+        let element = document.createElement("div");
+        element.innerHTML = string;
+
+        let output = element.textContent;
+
         let index = 0;
         if (output.length < 1) return;
         let lengthLimit = 110 - offset;
@@ -287,6 +291,8 @@ export default () => ({
                         return `<mark>${str}</mark>`;
                     },
                 );
+        } else if (!this.search.length && ellipses) {
+            output = output.substring(0, lengthLimit);
         }
 
         if (ellipses) {

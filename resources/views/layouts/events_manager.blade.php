@@ -213,7 +213,7 @@
                                             <div class="managed_event_description text-left flex-grow-1">
                                                 <span class="pl-2 pl-md-3 inline" x-html="highlight_match(event.name)"></span>
                                                 <span class="px-2 sm:inline" style="opacity: 0.4;">&bull;</span>
-                                                <span class="sm:inline" :class="{'opacity-70': event.description, 'opacity-30': !event.description }" x-html="event.description ? highlight_match(event.description, event.name.length) : 'Event has no description'"></span>
+                                                <span class="truncate" :class="{'opacity-70': event.description, 'opacity-30': !event.description }" x-html="event.description ? highlight_match(event.description, event.name.length) : 'Event has no description'"></span>
                                             </div>
                                             <button class="managed_event_action_icon" :style="multiselect ? 'pointer-events: none;' : ''" @click.stop="toggleEventPrint(event, $dispatch)">
                                                 <i class="fa fa-print" :class="{ 'slashed opacity-60': !event.settings.print }"></i>
