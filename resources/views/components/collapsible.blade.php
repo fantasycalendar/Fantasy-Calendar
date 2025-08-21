@@ -48,25 +48,6 @@
         </div>
     </div>
 
-
-    <!-- <label for="collapsible_{{ $contains }}" class="lbl-toggle py-2 pr-3 card-header"> -->
-    <!--     <i class="mr-2 fas {{ $icon }}"></i> {{ $contains }} -->
-
-    <!--     @if($premium_feature && isset($calendar) && !$calendar->isPremium()) -->
-    <!--         <span style="color: rgb(56, 161, 105);" class="ml-2" title="Subscriber-only feature"> -->
-    <!--             <x-app-logo class="hover-opacity" width="20" height="20"></x-app-logo> -->
-    <!--         </span> -->
-    <!--     @endif -->
-
-    <!--     <!-1- TODO: make sure the "contains" values match our helpdocs page links -1-> -->
-    <!--     <a target="_blank" -->
-    <!--         title='View helpdocs' -->
-    <!--         href='{{ helplink(Str::slug($contains_clean)) }}' -->
-    <!--         class="wiki"> -->
-    <!--         <i class="fa fa-question-circle"></i> -->
-    <!--     </a> -->
-    <!-- </label> -->
-
     <div x-data="{{ Str::snake($contains_clean) }}_collapsible"
         @calendar-loaded.window="load"
         @calendar-updated.window="load"
