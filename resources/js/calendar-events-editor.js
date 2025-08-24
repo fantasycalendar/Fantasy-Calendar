@@ -52,12 +52,14 @@ export default () => ({
         this.epoch = $event.detail.epoch;
         this.epoch_data = window.evaluated_static_data.epoch_data[this.epoch];
 
+        return;
+
         /* Some scripts are loaded after Alpine, so we need to set everything up when the UI is first opened */
         if (!this.has_initialized) {
             let event_editor_ui = this;
 
-            this.event_conditions_container = $(this.$refs.event_conditions_container);
-            this.nth_input = $(this.$refs.nth_input);
+            // this.event_conditions_container = $(this.$refs.event_conditions_container);
+            // this.nth_input = $(this.$refs.nth_input);
 
             // this.event_conditions_container.nestedSortable({
             //     handle: ".handle",
@@ -85,7 +87,7 @@ export default () => ({
             //     tolerance: -5
             // });
 
-            this.evaluate_condition_selects(event_editor_ui.event_conditions_container);
+            // this.evaluate_condition_selects(event_editor_ui.event_conditions_container);
 
             $(document).on('change', '.moon_select', function() {
                 event_editor_ui.evaluate_inputs($(this).closest('.condition'));
@@ -258,9 +260,9 @@ export default () => ({
 
         this.event_id = Object.keys(window.events).length;
 
-        this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
+        // this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
 
-        this.evaluate_condition_selects(this.event_conditions_container);
+        // this.evaluate_condition_selects(this.event_conditions_container);
 
         this.inputs_changed = false;
 
@@ -369,9 +371,9 @@ export default () => ({
 
         this.event_description_content = this.working_event.description;
 
-        this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
+        // this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
 
-        this.evaluate_condition_selects(this.event_conditions_container);
+        // this.evaluate_condition_selects(this.event_conditions_container);
 
         this.inputs_changed = false;
 
@@ -1285,8 +1287,8 @@ export default () => ({
 
         }
 
-        this.create_conditions(result, this.event_conditions_container);
-        this.evaluate_condition_selects(this.event_conditions_container);
+        // this.create_conditions(result, this.event_conditions_container);
+        // this.evaluate_condition_selects(this.event_conditions_container);
 
         this.conditions_changed = false;
 

@@ -197,8 +197,12 @@
                         </div>
                     </div>
 
-                    <div class='mt-2'>
-                        <ol class='form-control group_list_root mb-0' id='event_conditions_container' x-ref='event_conditions_container'></ol>
+                    <div class='mt-2' style="height:1000px;" x-data="nested_sortable_component" x-modelable="elements" x-model="working_event.data.conditions">
+                        <ul class='form-control group_list_root mb-0' id='sortableContainer' x-ref='sortableContainer' data-id="root">
+                            <template x-for="(element, index) in _elements">
+                                <li class="list-none select-none" x-html="renderElement(element)" :data-id="element.id"></li>
+                            </template>
+                        </ul>
                     </div>
 
                     <span class='hidden'></span>
