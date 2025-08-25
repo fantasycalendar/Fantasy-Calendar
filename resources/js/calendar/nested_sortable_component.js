@@ -1,10 +1,11 @@
 import _ from "lodash";
 import { condition_mapping } from "./calendar_variables.js";
+import { ordinal_suffix_of } from "./calendar_functions.js";
 
 export default () => ({
 
     _elements: [],
-    _flatElements: {},
+    conditionMap: {},
     _orig_elements: [],
 
     sortableIndex: {},
@@ -14,8 +15,9 @@ export default () => ({
         this._elements = this.processElements(_.cloneDeep(value))
 
         this.$nextTick(() => {
-            this.initializeSortable(this.$refs.sortableContainer);
-            this.$refs.sortableContainer.querySelectorAll('ul').forEach(ul => this.initializeSortable(ul));
+            this.sortableContainer = this.$refs.sortableContainer;
+            this.initializeSortable(this.sortableContainer);
+            this.sortableContainer.querySelectorAll('ul').forEach(ul => this.initializeSortable(ul));
             this.processSortable('root');
         });
     },
@@ -35,7 +37,7 @@ export default () => ({
             }else{
                 processedElement = this.processCondition(element)
             }
-            this._flatElements[processedElement.id] = processedElement;
+            this.conditionMap[processedElement.id] = processedElement;
             stack.push(processedElement);
         }
         return stack;
@@ -84,58 +86,277 @@ export default () => ({
 
     },
 
-    renderInput(condition){
-        return `<input type="number" x-model="_flatElements['${condition.id}'].values[0]"/>`;
+    addInput(condition, input, value_index = 0){
+        if(input[0] === "hidden"){
+            return {
+                type: input[0],
+                value: "1"
+            }
+        }
+        return {
+            type: input[0],
+            placeholder: input[1] ?? "",
+            alt: input[2] ?? "",
+            value: condition.values[value_index],
+            min: input[4],
+            max: input[5]
+        }
+    },
+
+    addMonthSelect(condition, value_index){
+        return {
+            type: "select",
+            values: this.$store.calendar.static_data.year_data.timespans.map((month, month_index) => ({
+                label: sanitizeHtml(month.name),
+                value: month_index,
+                selected: Number(condition.values[value_index]) === month_index
+            }))
+        }
+    },
+
+    addDateInputs(condition, conditionInputs) {
+        let year = Number(condition.values[0]);
+        let month = Number(condition.values[1]);
+        let months = this.$store.calendar.get_timespans_in_year_as_select_options(year, true);
+        let days = this.$store.calendar.get_days_in_timespan_in_year_as_select_options(year, month);
+        return [
+            this.addInput(condition, conditionInputs[0]),
+            {
+                type: "select",
+                values: months.map((month, month_index) => ({
+                    label: month.name,
+                    value: month_index,
+                    selected: Number(condition.values[1]) === month_index
+                        || (month_index === months.length - 1 && month_index > months.length - 1)
+                }))
+            },
+            {
+                type: "select",
+                values: days.map((day, day_index) => ({
+                    label: day,
+                    value: day_index,
+                    selected: Number(condition.values[2]) === day_index
+                        || (day_index === days.length - 1 && day_index > days.length - 1)
+                        || (day_index === 0 && day_index < 0)
+                }))
+            }
+        ]
+    },
+
+    addMoonSelect(condition, value_index = 0){
+        return {
+            type: "select",
+            values: this.$store.calendar.static_data.moons.map((moon, index) => ({
+                label: sanitizeHtml(moon.name),
+                value: index,
+                selected: Number(condition.values[value_index]) === index
+            }))
+        }
+    },
+
+    addCycleSelect(condition, value_index = 0){
+        return {
+            type: "select-optgroup",
+            values: this.$store.calendar.static_data.cycles.map((cycle, cycle_index) => ({
+                label: `${ordinal_suffix_of(cycle_index + 1)} cycle group`,
+                value: cycle_index,
+                values: cycle.names.map((name, name_index) => ({
+                    label: sanitizeHtml(name),
+                    value: name_index,
+                    selected: Number(condition.values[value_index]) === cycle_index && Number(condition.values[value_index+1]) === name_index
+                }))
+            }))
+        }
+    },
+
+    addEraSelect(condition, value_index = 0){
+        return {
+            type: "select",
+            values: this.$store.calendar.static_data.eras.map((era, index) => ({
+                label: sanitizeHtml(era.name),
+                value: index,
+                selected: Number(condition.values[value_index]) === index
+            }))
+        }
+    },
+
+    addSeasonSelect(condition, value_index = 0){
+        return {
+            type: "select",
+            values: this.$store.calendar.static_data.seasons.data.map((season, index) => ({
+                label: sanitizeHtml(season.name),
+                value: index,
+                selected: Number(condition.values[value_index]) === index
+            }))
+        }
+    },
+
+    addLocationSelect(condition, value_index = 0){
+        return {
+            type: "select",
+            values: this.$store.calendar.static_data.seasons.locations.map((location, index) => ({
+                label: sanitizeHtml(location.name),
+                value: index,
+                selected: Number(condition.values[value_index]) === index
+            }))
+        }
+    },
+
+    addWeekdaySelect(condition, value_index = 0){
+        return {
+            type: "select",
+            values: this.$store.calendar.static_data.year_data.global_week.map((weekday_name, index) => ({
+                label: sanitizeHtml(weekday_name),
+                value: index,
+                selected: Number(condition.values[value_index]) === index
+            }))
+        }
     },
 
     renderConditionOptions(condition) {
+        let inputs = [];
+
+        let conditionInputs = condition_mapping[condition.type][condition.comparison].elements;
+
         switch (condition.type) {
             case "Month":
-                let type = condition_mapping[condition.type][condition.comparison][2][0][0];
-                if(type === "select"){
-                    let months = this.$store.calendar.static_data.year_data.timespans.map((month, index) => {
-                        let selected = Number(condition.values[0]) === index ? "selected" : "";
-                        return `<option ${selected} value="${index}">${sanitizeHtml(month.name)}</option>>`
-                    }).join("");
-                    return `<select class="form-control order-3"
-                      @change="handleConditionChanged('${condition.id}')"
-                      x-model="_flatElements['${condition.id}'].values[0]">
-                        ${months}
-                      </select>`;
+                for(const [index, input] of conditionInputs.entries()){
+                    if(input[0] === "select") {
+                        inputs.push(this.addMonthSelect(condition, index));
+                    } else {
+                        inputs.push(this.addInput(condition, input, index));
+                    }
                 }
-                return this.renderInput(condition);
+                break;
 
-            // TODO: All of the condition types here, see calendar-events-editor.js line 1700 and onwards
+            case "Date":
+                inputs = inputs.concat(this.addDateInputs(condition, conditionInputs));
+                break;
+
+            case "Moons":
+                for(const [index, input] of conditionInputs.entries()){
+                    if(input[0] === "select") {
+                        inputs.push(this.addMoonSelect(condition));
+                    } else {
+                        inputs.push(this.addInput(condition, input, index));
+                    }
+                }
+                break;
+
+            case "Season":
+                for(const [index, input] of conditionInputs.entries()){
+                    if(input[0] === "select") {
+                        inputs.push(this.addSeasonSelect(condition));
+                    } else {
+                        inputs.push(this.addInput(condition, input, index));
+                    }
+                }
+                break;
+
+            case "Weekday":
+                for(const [index, input] of conditionInputs.entries()){
+                    if(input[0] === "select") {
+                        inputs.push(this.addWeekdaySelect(condition));
+                    } else {
+                        inputs.push(this.addInput(condition, input, index));
+                    }
+                }
+                break;
+
+            case "Cycle":
+                inputs.push(this.addCycleSelect(condition));
+                break;
+
+            case "Era":
+                inputs.push(this.addEraSelect(condition));
+                break;
+
+            case "Location":
+                inputs.push(this.addLocationSelect(condition));
+                break;
+
+            case "Era Year":
+            case "Random":
+            case "Week":
+            case "Year":
+            case "Day":
+            default:
+                for(const [index, input] of conditionInputs.entries()){
+                    if(input !== "select") {
+                        inputs.push(this.addInput(condition, input, index));
+                    }
+                }
+                break;
         }
 
-        return ``;
+        return inputs.reduce((html, input, index) => {
+            if(input.type === "select-optgroup"){
+                html += `<select class='form-control order-${index+3}' data-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}].value">`;
+                for(const optgroup of input.values){
+                    html += `<optgroup label="${optgroup.label}">`;
+                    for(const option of optgroup.values){
+                        html += `<option ${option.selected ? "selected" : ""} value="${option.value}">${option.label}</option>`;
+                    }
+                    html += `</optgroup>`;
+                }
+                html += `</select>`;
+            } else if(input.type === "select"){
+                html += `<select class='form-control order-${index+3}' data-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}]">`;
+                input.values.forEach(option => {
+                    html += `<option ${option.selected ? "selected" : ""} value="${option.value}">${option.label}</option>`;
+                });
+                html += `</select>`;
+            } else {
+                html += `<input type="${input.type}" class='form-control order-${index + 3}' data-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}]" placeholder="${input.placeholder}"`;
+                if (input.alt !== undefined) {
+                    html += ` alt="${input.alt}"`;
+                }
+                if (input.min !== undefined) {
+                    html += ` min="${input.min}"`;
+                }
+                if (input.max !== undefined) {
+                    html += ` max="${input.max}"`;
+                }
+                html += `/>`;
+            }
+            return html;
+        }, "");
+    },
+
+    keepFocus(id){
+        this.$nextTick(() => {
+            let elem = this.sortableContainer.querySelectorAll(`[data-id="${id}"]`)[0];
+            if(elem){
+                elem.focus();
+            }
+        });
     },
 
     renderCondition(condition){
 
-        const moon_options = this.$store.calendar.static_data.moons.map((moon, index) => {
+        const moon_options = this.$store.calendar.static_data.moons.reduce((html, moon, index) => {
             let selected = condition.type === "Moons" && condition.values[0] === index ? "selected" : "";
-            return `<option ${selected} value='${index}'>${sanitizeHtml(moon.name)}</option>`;
-        }).join("");
+            return html + `<option ${selected} value='${index}'>${sanitizeHtml(moon.name)}</option>`;
+        }, "");
 
-        const condition_options = Object.entries(condition_mapping).map(([group, options]) => {
-            let html = `<optgroup label="${group}">`;
+        const condition_options = Object.entries(condition_mapping).reduce((html, [group, options]) => {
+            html += `<optgroup label="${group}">`;
 
-            html += options.map((option, index) => {
+            options.forEach((option, index) => {
                 let selected = condition.type === group && condition.comparison === index ? "selected" : "";
-                return `<option ${selected} value="${index}">${option[0]}</option>`
-            }).join("");
+                html += `<option ${selected} value="${index}">${option.label}</option>`
+            });
 
             html += `</optgroup>`;
 
             return html;
-        })
+        }, "");
 
         return `
         <li class="condition" data-id="${condition.id}">
         <div class="condition_container ${condition.type}">
         <div class='handle fa fa-bars' data-move></div>
-        <select class="form-control moon_select order-1" :class="{ 'hidden': _flatElements['${condition.id}'].type !== 'Moons' }">
+        <select class="form-control moon_select order-1" :class="{ 'hidden': conditionMap['${condition.id}'].type !== 'Moons' }">
           ${moon_options}
         </select>
         <select class='form-control condition_type order-2'>
@@ -145,10 +366,11 @@ export default () => ({
         </div>
         </li>
         `;
+        // TODO: Hook up condition_options select to actually change structure of condition itself, see method below
     },
 
     handleConditionChanged(id){
-        //console.log(this._flatElements[id]);
+        //console.log(this.conditionMap[id]);
     },
 
     renderOperator(element){
@@ -164,9 +386,9 @@ export default () => ({
 
     renderGroup(element){
 
-        let children = element.children.map(child => {
-            return this.renderElement(child);
-        }).join("");
+        let children = element.children.reduce((html, child) => {
+            return html + this.renderElement(child);
+        }, "");
 
         return `
         <li data-id="${element.id}" class="group">
@@ -211,8 +433,8 @@ export default () => ({
 
 
     findLayerById(id) {
-        if(this._flatElements[id]){
-            return Object.assign({}, this._flatElements[id]);
+        if(this.conditionMap[id]){
+            return Object.assign({}, this.conditionMap[id]);
         }
         return null;
     },

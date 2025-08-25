@@ -1030,9 +1030,9 @@ export var event_evaluator = {
 
         var result = true;
 
-        for (var i = 0; i < condition_mapping[category][type][1].length; i++) {
+        for (var i = 0; i < condition_mapping[category][type].conditions.length; i++) {
 
-            var subcon = condition_mapping[category][type][1][i];
+            var subcon = condition_mapping[category][type].conditions[i];
             var selector = subcon[0];
             var operator = subcon[1];
 
