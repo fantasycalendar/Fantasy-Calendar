@@ -200,10 +200,12 @@
                     <div class='mt-2' x-data="nested_sortable_component" x-modelable="sortableData" x-model="working_event.data.conditions">
                         <ul class='h-auto form-control group_list_root mb-0' id='sortableContainer' x-ref='sortableContainer' data-id="root">
                             <template x-for="(element, index) in sortable_data">
-                                <li class="list-none select-none" x-html="renderSortableElement(element)" :data-id="element.id"></li>
+                                <li class="list-none select-none" x-html="renderSortableElement(element, sortable_data, index)" :data-id="element.id"></li>
                             </template>
                         </ul>
+                        <textarea class="w-full resize-none" style="height:5000px;" placeholder="json code here" x-text="JSON.stringify(sortable_data, null, 2)"></textarea>
                     </div>
+
 
                     <span class='hidden'></span>
 

@@ -5,18 +5,18 @@ import { ordinal_suffix_of } from "./calendar_functions.js";
 export default () => ({
 
     sortable_data: [],
-    conditionMap: {},
     original_data: [],
 
-    sortableElements: {},
+    conditionMap: {},
+    sortableMap: {},
 
     set sortableData(value) {
-
+        this.conditionMap = {};
+        this.sortableMap = {};
         this.original_data = value;
         this.sortable_data = this.processConditionsData(_.cloneDeep(value))
 
         this.$nextTick(() => {
-            this.sortableElements = {};
             this.sortableContainer = this.$refs.sortableContainer;
             this.initializeSortable(this.sortableContainer);
             this.sortableContainer.querySelectorAll('ul').forEach(ul => this.initializeSortable(ul));
@@ -28,17 +28,42 @@ export default () => ({
         return this.original_data
     },
 
+    addCondition() {
+        this.sortable_data.push(
+            this.processOperator(["&&"]),
+            this.processCondition(["Year", "0", [0]])
+        );
+    },
+
+    addGroup() {
+        this.sortable_data.push(
+            this.processOperator(["&&"]),
+            this.processGroup(["", []])
+        );
+        this.sortableContainer.querySelectorAll('ul').forEach(ul => this.initializeSortable(ul));
+    },
+
     processConditionsData(elements) {
         let stack = [];
-        for(const element of elements) {
+        for (let [index, element] of elements.entries()) {
             let processedElement;
-            if(Array.isArray(element[1])){
+
+            let isGroup = Array.isArray(element[1]);
+            let isCondition = element.length > 1;
+            let isOperator = element.length === 1;
+
+            if (isGroup) {
                 processedElement = this.processGroup(element)
-            }else if (element.length === 1) {
-                processedElement = this.processOperator(element)
-            }else{
+            } else if (isCondition) {
                 processedElement = this.processCondition(element)
+            } else if (isOperator) {
+                processedElement = this.processOperator(element)
             }
+
+            if (!processedElement) {
+                continue;
+            }
+
             this.conditionMap[processedElement.id] = processedElement;
             stack.push(processedElement);
         }
@@ -56,23 +81,13 @@ export default () => ({
     },
 
     processCondition(data) {
-        if(data[0] === "Moons"){
-            return {
-                id: _.uniqueId("elem"),
-                data_type: "condition",
-                type: data[0],
-                comparison: Number(data[1]),
-                moon_index: Number(data[2][0]),
-                values: data[2].slice(1)
-            };
-        }
         return {
             id: _.uniqueId("elem"),
             data_type: "condition",
             type: data[0],
             comparison: Number(data[1]),
-            moon_index: 0,
-            values: data[2]
+            moon_index: data[0] === "Moons" ? Number(data[2][0]) : 0,
+            values: data[0] === "Moons" ? data[2].slice(1) : data[2]
         };
     },
 
@@ -85,22 +100,8 @@ export default () => ({
         };
     },
 
-    renderSortableElement(element){
-
-        if(element.data_type === "condition"){
-            return this.renderCondition(element);
-        }
-
-        if(element.data_type === "operator"){
-            return this.renderOperator(element);
-        }
-
-        return this.renderGroup(element);
-
-    },
-
-    addInput(condition, input, value_index = 0){
-        if(input[0] === "hidden"){
+    addInput(condition, input, value_index = 0) {
+        if (input[0] === "hidden") {
             return {
                 type: input[0],
                 value: "1"
@@ -116,7 +117,7 @@ export default () => ({
         }
     },
 
-    addMonthSelect(condition, value_index){
+    addMonthSelect(condition, value_index) {
         return {
             type: "select",
             values: this.$store.calendar.static_data.year_data.timespans.map((month, month_index) => ({
@@ -156,7 +157,7 @@ export default () => ({
         ]
     },
 
-    addMoonPhaseSelect(condition, value_index = 0){
+    addMoonPhaseSelect(condition, value_index = 0) {
         let selected_moon = this.$store.calendar.static_data.moons[condition.moon_index];
         let phases = Object.keys(moon_phases[selected_moon.granularity]);
         return {
@@ -169,7 +170,7 @@ export default () => ({
         }
     },
 
-    addCycleSelect(condition, value_index = 0){
+    addCycleSelect(condition, value_index = 0) {
         return {
             type: "select-optgroup",
             values: this.$store.calendar.static_data.cycles.map((cycle, cycle_index) => ({
@@ -178,13 +179,13 @@ export default () => ({
                 values: cycle.names.map((name, name_index) => ({
                     label: name,
                     value: name_index,
-                    selected: Number(condition.values[value_index]) === cycle_index && Number(condition.values[value_index+1]) === name_index
+                    selected: Number(condition.values[value_index]) === cycle_index && Number(condition.values[value_index + 1]) === name_index
                 }))
             }))
         }
     },
 
-    addEraSelect(condition, value_index = 0){
+    addEraSelect(condition, value_index = 0) {
         return {
             type: "select",
             values: this.$store.calendar.static_data.eras.map((era, index) => ({
@@ -195,7 +196,7 @@ export default () => ({
         }
     },
 
-    addSeasonSelect(condition, value_index = 0){
+    addSeasonSelect(condition, value_index = 0) {
         return {
             type: "select",
             values: this.$store.calendar.static_data.seasons.data.map((season, index) => ({
@@ -206,7 +207,7 @@ export default () => ({
         }
     },
 
-    addLocationSelect(condition, value_index = 0){
+    addLocationSelect(condition, value_index = 0) {
         return {
             type: "select",
             values: this.$store.calendar.static_data.seasons.locations.map((location, index) => ({
@@ -217,7 +218,7 @@ export default () => ({
         }
     },
 
-    addWeekdaySelect(condition, value_index = 0){
+    addWeekdaySelect(condition, value_index = 0) {
         return {
             type: "select",
             values: this.$store.calendar.static_data.year_data.global_week.map((weekday_name, index) => ({
@@ -235,8 +236,8 @@ export default () => ({
 
         switch (condition.type) {
             case "Month":
-                for(const [index, input] of conditionInputs.entries()){
-                    if(input[0] === "select") {
+                for (let [index, input] of conditionInputs.entries()) {
+                    if (input[0] === "select") {
                         inputs.push(this.addMonthSelect(condition, index));
                     } else {
                         inputs.push(this.addInput(condition, input, index));
@@ -249,8 +250,8 @@ export default () => ({
                 break;
 
             case "Moons":
-                for(const [index, input] of conditionInputs.entries()){
-                    if(input[0] === "select") {
+                for (let [index, input] of conditionInputs.entries()) {
+                    if (input[0] === "select") {
                         inputs.push(this.addMoonPhaseSelect(condition));
                     } else {
                         inputs.push(this.addInput(condition, input, index));
@@ -259,8 +260,8 @@ export default () => ({
                 break;
 
             case "Season":
-                for(const [index, input] of conditionInputs.entries()){
-                    if(input[0] === "select") {
+                for (let [index, input] of conditionInputs.entries()) {
+                    if (input[0] === "select") {
                         inputs.push(this.addSeasonSelect(condition));
                     } else {
                         inputs.push(this.addInput(condition, input, index));
@@ -269,8 +270,8 @@ export default () => ({
                 break;
 
             case "Weekday":
-                for(const [index, input] of conditionInputs.entries()){
-                    if(input[0] === "select") {
+                for (let [index, input] of conditionInputs.entries()) {
+                    if (input[0] === "select") {
                         inputs.push(this.addWeekdaySelect(condition));
                     } else {
                         inputs.push(this.addInput(condition, input, index));
@@ -296,8 +297,8 @@ export default () => ({
             case "Year":
             case "Day":
             default:
-                for(const [index, input] of conditionInputs.entries()){
-                    if(input !== "select") {
+                for (let [index, input] of conditionInputs.entries()) {
+                    if (input !== "select") {
                         inputs.push(this.addInput(condition, input, index));
                     }
                 }
@@ -305,18 +306,18 @@ export default () => ({
         }
 
         return inputs.reduce((html, input, index) => {
-            if(input.type === "select-optgroup"){
-                html += `<select class='form-control order-${index+3}' data-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}].value">`;
-                for(const optgroup of input.values){
+            if (input.type === "select-optgroup") {
+                html += `<select class='form-control order-${index + 3}' data-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}].value">`;
+                for (let optgroup of input.values) {
                     html += `<optgroup label="${optgroup.label}">`;
-                    for(const option of optgroup.values){
+                    for (let option of optgroup.values) {
                         html += `<option ${option.selected ? "selected" : ""} value="${option.value}">${option.label}</option>`;
                     }
                     html += `</optgroup>`;
                 }
                 html += `</select>`;
-            } else if(input.type === "select"){
-                html += `<select class='form-control order-${index+3}' data-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}]">`;
+            } else if (input.type === "select") {
+                html += `<select class='form-control order-${index + 3}' data-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}]">`;
                 input.values.forEach(option => {
                     html += `<option ${option.selected ? "selected" : ""} value="${option.value}">${option.label}</option>`;
                 });
@@ -338,11 +339,11 @@ export default () => ({
         }, "");
     },
 
-    handleConditionTypeChanged(event, id){
+    handleConditionTypeChanged(event, id) {
         let select = event.target;
         let value = Number(select.value);
         let optGroupValue = select.options[select.selectedIndex].parentElement.label;
-        if(this.conditionMap[id].comparison !== value){
+        if (this.conditionMap[id].comparison !== value) {
             this.conditionMap[id].values = []
         }
         this.conditionMap[id].comparison = value;
@@ -350,38 +351,46 @@ export default () => ({
         this.keepFocus(event.target.dataset.id);
     },
 
-    keepFocus(id){
+    keepFocus(id) {
         this.$nextTick(() => {
             let elem = this.sortableContainer.querySelectorAll(`[data-id="${id}"]`)[0];
-            if(elem){
+            if (elem) {
                 elem.focus();
             }
         });
     },
 
-    renderCondition(condition){
+    renderSortableElement(element) {
+        if (element.data_type === "condition") {
+            return this.renderCondition(element);
+        } else if (element.data_type === "group") {
+            return this.renderGroup(element);
+        }
 
-        const moon_options = this.$store.calendar.static_data.moons.reduce((html, moon, index) => {
-            let selected = condition.type === "Moons" && condition.values[0] === index ? "selected" : "";
-            return html + `<option ${selected} value='${index}'>${moon.name}</option>`;
-        }, "");
+        return ``;
+    },
 
-        let moon_select = `
-        <select class="form-control moon_select order-1" x-model.lazy.number="conditionMap['${condition.id}'].moon_index" data-id="condition-moon-${condition.id}" @change="keepFocus('condition-moon-${condition.id}')" :class="{ 'hidden': conditionMap['${condition.id}'].type !== 'Moons' }">
-          ${moon_options}
-        </select>
-        `
+    renderCondition(condition) {
+        let moon_select = ""
+        if(condition.type === "Moons") {
+            let moon_options = this.$store.calendar.static_data.moons.reduce((html, moon, index) => {
+                let selected = condition.type === "Moons" && condition.moon_index === index ? "selected" : "";
+                return html + `<option ${selected} value='${index}'>${moon.name}</option>`;
+            }, "");
 
-        const condition_types = Object.entries(condition_mapping).reduce((html, [group, options]) => {
+            moon_select = `
+                <select class="form-control moon_select order-1" x-model.lazy.number="conditionMap['${condition.id}'].moon_index" data-id="condition-moon-${condition.id}" @change="keepFocus('condition-moon-${condition.id}')" :class="{ 'hidden': conditionMap['${condition.id}'].type !== 'Moons' }">
+                  ${moon_options}
+                </select>`;
+        }
+
+        let condition_types = Object.entries(condition_mapping).reduce((html, [group, options]) => {
             html += `<optgroup label="${group}">`;
-
             options.forEach((option, index) => {
                 let selected = condition.type === group && condition.comparison === index ? "selected" : "";
                 html += `<option ${selected} value="${index}">${option.label}</option>`
             });
-
             html += `</optgroup>`;
-
             return html;
         }, "");
 
@@ -398,18 +407,16 @@ export default () => ({
         </li>`;
     },
 
-    renderOperator(operator){
-        return `<li data-id="${operator.id}" :key="${operator.id}" class='mb-1.5'>
-          <select class="form-control">
+    renderOperator(operator) {
+        return `<select class="form-control" data-id="${operator.id}" @change="keepFocus('${operator.id}')" x-model.lazy="operatorMap['${operator.id}'].value" >
             <option ${operator.type === '&&' ? 'selected' : ''} value='&&'>AND - both must be true</option>
             <option ${operator.type === 'NAND' ? 'selected' : ''} value='NAND'>NAND - neither can be true</option>
             <option ${operator.type === 'OR' ? 'selected' : ''} value='||'>OR - at least one is true</option>
             <option ${operator.type === 'XOR' ? 'selected' : ''} value='XOR'>XOR - only one must be true</option>
-          </select>
-        </li>`;
+          </select>`;
     },
 
-    renderGroup(group){
+    renderGroup(group) {
 
         let children = group.children.reduce((html, child) => {
             return html + this.renderSortableElement(child);
@@ -441,7 +448,7 @@ export default () => ({
 
     initializeSortable(element) {
         // Initialize SortableJS on the element with ID 'sortableContainer'
-        this.sortableElements[element.dataset.id] = new Sortable(element, {
+        this.sortableMap[element.dataset.id] ??= new Sortable(element, {
             group: 'shared', // Enable moving items between containers
             handle: '[data-move]',
             animation: 150,
@@ -449,10 +456,13 @@ export default () => ({
             swapThreshold: 0.65,
             onEnd: evt => {
                 this.processSortable('root');
+                this.$nextTick(() => {
+                    console.log(this.sortable_data)
+                })
             }
         });
 
-        return this.sortableElements[element.dataset.id];
+        return this.sortableMap[element.dataset.id];
 
     },
 
@@ -466,18 +476,18 @@ export default () => ({
             sortable_data = Object.assign({}, this.conditionMap[id]);
         }
 
-        if (this.sortableElements[id]) {
+        if (this.sortableMap[id]) {
 
-            let sortable_sub_elements = this.sortableElements[id].toArray();
+            let sortable_sub_elements = this.sortableMap[id].toArray();
 
             let sortable_children = [];
-            for(let sortable_id of sortable_sub_elements){
+            for (let sortable_id of sortable_sub_elements) {
                 sortable_children.push(this.processSortable(sortable_id));
             }
 
-            if(id === "root"){
+            if (id === "root") {
                 sortable_data = sortable_children;
-            }else {
+            } else {
                 sortable_data['children'] = sortable_children;
             }
         }
