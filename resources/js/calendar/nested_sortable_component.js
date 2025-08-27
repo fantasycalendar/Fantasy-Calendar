@@ -10,9 +10,23 @@ export default () => ({
     conditionMap: {},
     sortableMap: {},
 
+    addCondition() {
+        this.sortable_data[this.sortable_data.length-1].operator = "&&"
+        let condition = this.processCondition(["Year", "0", [0]]);
+        this.conditionMap[condition.id] = condition;
+        this.sortable_data.push(condition);
+        // TODO: Figure out why this breaks sortables
+    },
+
+    addGroup() {
+        this.sortable_data[this.sortable_data.length-1].operator = "&&"
+        let group = this.processGroup(["", []]);
+        this.conditionMap[group.id] = group;
+        this.sortable_data.push(group);
+    },
+
     set sortableData(value) {
         this.conditionMap = {};
-        this.sortableMap = {};
         this.original_data = value;
         this.sortable_data = this.processConditionsData(_.cloneDeep(value))
 
@@ -20,7 +34,6 @@ export default () => ({
             this.sortableContainer = this.$refs.sortableContainer;
             this.initializeSortable(this.sortableContainer);
             this.sortableContainer.querySelectorAll('ul').forEach(ul => this.initializeSortable(ul));
-            this.processSortable('root');
         });
     },
 
@@ -28,24 +41,9 @@ export default () => ({
         return this.original_data
     },
 
-    addCondition() {
-        this.sortable_data.push(
-            this.processOperator(["&&"]),
-            this.processCondition(["Year", "0", [0]])
-        );
-    },
-
-    addGroup() {
-        this.sortable_data.push(
-            this.processOperator(["&&"]),
-            this.processGroup(["", []])
-        );
-        this.sortableContainer.querySelectorAll('ul').forEach(ul => this.initializeSortable(ul));
-    },
-
     processConditionsData(elements) {
         let stack = [];
-        for (let [index, element] of elements.entries()) {
+        for (let element of elements) {
             let processedElement;
 
             let isGroup = Array.isArray(element[1]);
@@ -57,10 +55,7 @@ export default () => ({
             } else if (isCondition) {
                 processedElement = this.processCondition(element)
             } else if (isOperator) {
-                processedElement = this.processOperator(element)
-            }
-
-            if (!processedElement) {
+                stack[stack.length-1].operator = element[0];
                 continue;
             }
 
@@ -76,7 +71,8 @@ export default () => ({
             data_type: "group",
             type: typeof data[0] === "number" ? "num" : (data[0] === "!" ? "not" : "normal"),
             value: data[0],
-            children: this.processConditionsData(data[1])
+            children: this.processConditionsData(data[1]),
+            operator: false
         }
     },
 
@@ -87,16 +83,8 @@ export default () => ({
             type: data[0],
             comparison: Number(data[1]),
             moon_index: data[0] === "Moons" ? Number(data[2][0]) : 0,
-            values: data[0] === "Moons" ? data[2].slice(1) : data[2]
-        };
-    },
-
-
-    processOperator(data) {
-        return {
-            id: _.uniqueId("elem"),
-            data_type: "operator",
-            type: data[0]
+            values: data[0] === "Moons" ? data[2].slice(1) : data[2],
+            operator: false
         };
     },
 
@@ -360,17 +348,17 @@ export default () => ({
         });
     },
 
-    renderSortableElement(element) {
+    renderSortableElement(element, parent=false) {
         if (element.data_type === "condition") {
-            return this.renderCondition(element);
+            return this.renderCondition(element, parent);
         } else if (element.data_type === "group") {
-            return this.renderGroup(element);
+            return this.renderGroup(element, parent);
         }
 
         return ``;
     },
 
-    renderCondition(condition) {
+    renderCondition(condition, parent) {
         let moon_select = ""
         if(condition.type === "Moons") {
             let moon_options = this.$store.calendar.static_data.moons.reduce((html, moon, index) => {
@@ -395,7 +383,7 @@ export default () => ({
         }, "");
 
         return `
-        <li class="condition" data-id="${condition.id}" :key="${condition.id}">
+        <li class="condition" data-id="${condition.id}" :key="conditionMap['${condition.id}'].id">
         <div class="condition_container items-center ${condition.type}">
         <div class='handle fa fa-bars' data-move></div>
         ${moon_select}
@@ -404,26 +392,18 @@ export default () => ({
         </select>
         ${this.renderConditionOptions(condition)}
         </div>
+        ${condition.operator && (!parent || parent.type !== "num") ? this.renderOperator(condition) : ""}
         </li>`;
-    },
-
-    renderOperator(operator) {
-        return `<select class="form-control" data-id="${operator.id}" @change="keepFocus('${operator.id}')" x-model.lazy="operatorMap['${operator.id}'].value" >
-            <option ${operator.type === '&&' ? 'selected' : ''} value='&&'>AND - both must be true</option>
-            <option ${operator.type === 'NAND' ? 'selected' : ''} value='NAND'>NAND - neither can be true</option>
-            <option ${operator.type === 'OR' ? 'selected' : ''} value='||'>OR - at least one is true</option>
-            <option ${operator.type === 'XOR' ? 'selected' : ''} value='XOR'>XOR - only one must be true</option>
-          </select>`;
     },
 
     renderGroup(group) {
 
         let children = group.children.reduce((html, child) => {
-            return html + this.renderSortableElement(child);
+            return html + this.renderSortableElement(child, group);
         }, "");
 
         return `
-        <li data-id="${group.id}" :key="${group.id}" class="group">
+        <li data-id="${group.id}" :key="conditionMap['${group.id}'].id" class="group">
             <div class="group_type" type="${group.type}">
                 <div class='normal'>
                   <label><input type='radio' ${(group.type === "normal" ? "checked" : "")} name=''>NORMAL</label>
@@ -442,23 +422,39 @@ export default () => ({
             <ul class='group_list' x-ref="${group.id}" data-id="${group.id}">
               ${children}
             </ul>
+            ${group.operator ? this.renderOperator(group) : ""}
         </li>`;
 
     },
 
+    renderOperator(element) {
+        return `<select class="form-control order-6" data-id="operator-${element.id}" @change="keepFocus('operator-${element.id}')" x-model.lazy="conditionMap['${element.id}'].operator" >
+            <option ${element.operator === '&&' ? 'selected' : ''} value='&&'>AND - both must be true</option>
+            <option ${element.operator === 'NAND' ? 'selected' : ''} value='NAND'>NAND - neither can be true</option>
+            <option ${element.operator === 'OR' ? 'selected' : ''} value='||'>OR - at least one is true</option>
+            <option ${element.operator === 'XOR' ? 'selected' : ''} value='XOR'>XOR - only one must be true</option>
+          </select>`;
+    },
+
     initializeSortable(element) {
-        // Initialize SortableJS on the element with ID 'sortableContainer'
-        this.sortableMap[element.dataset.id] ??= new Sortable(element, {
+
+        this.sortableMap[element.dataset.id] = new Sortable(element, {
             group: 'shared', // Enable moving items between containers
             handle: '[data-move]',
             animation: 150,
             fallbackOnBody: true,
             swapThreshold: 0.65,
             onEnd: evt => {
-                this.processSortable('root');
+                this.sortable_data = this.processSortable('root');
+
+                // This is stupid but apparently we need to reinitialize the sortables because the above assignment
+                // causes a re-render, which makes the sortables lose their reference, probably because alpine hates us
+                // TODO: This doesn't work if you add new data though, which sucks
                 this.$nextTick(() => {
-                    console.log(this.sortable_data)
-                })
+                    this.sortableContainer = this.$refs.sortableContainer;
+                    this.initializeSortable(this.sortableContainer);
+                    this.sortableContainer.querySelectorAll('ul').forEach(ul => this.initializeSortable(ul));
+                });
             }
         });
 
@@ -473,7 +469,7 @@ export default () => ({
         };
 
         if (id !== 'root' && this.conditionMap[id]) {
-            sortable_data = Object.assign({}, this.conditionMap[id]);
+            sortable_data = _.cloneDeep(this.conditionMap[id]);
         }
 
         if (this.sortableMap[id]) {
@@ -485,6 +481,19 @@ export default () => ({
                 sortable_children.push(this.processSortable(sortable_id));
             }
 
+            if (sortable_children.length) {
+                sortable_children.sort((a, b) => {
+                    return sortable_sub_elements.indexOf(a.id) - sortable_sub_elements.indexOf(b.id);
+                });
+                sortable_children.forEach((element, index, array) => {
+                    if ((sortable_data.data_type === "group" && sortable_data.type === "num") || index === array.length - 1) {
+                        element.operator = false;
+                    } else if (!element.operator) {
+                        element.operator = "&&";
+                    }
+                })
+            }
+
             if (id === "root") {
                 sortable_data = sortable_children;
             } else {
@@ -492,7 +501,7 @@ export default () => ({
             }
         }
 
-        return Object.assign({}, sortable_data);
+        return _.cloneDeep(sortable_data);
     },
 
 });

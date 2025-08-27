@@ -185,10 +185,10 @@
                         <div class='col-11 pr-1'>
                             <div class='row p-0'>
                                 <div class='col-6 pr-1'>
-                                    <button type='button' @click='add_condition_clicked' class='btn btn-primary full'>Add condition</button>
+                                    <button type='button' @click="$dispatch('add-event-condition')" class='btn btn-primary full'>Add condition</button>
                                 </div>
                                 <div class='col-6 pl-1'>
-                                    <button type='button' @click='add_group_clicked' class='btn btn-secondary full'>Add group</button>
+                                    <button type='button' @click="$dispatch('add-event-group')" class='btn btn-secondary full'>Add group</button>
                                 </div>
                             </div>
                         </div>
@@ -197,13 +197,19 @@
                         </div>
                     </div>
 
-                    <div class='mt-2' x-data="nested_sortable_component" x-modelable="sortableData" x-model="working_event.data.conditions">
+                    <div class='mt-2'
+                         x-data="nested_sortable_component"
+                         x-modelable="sortableData"
+                         x-model="working_event.data.conditions"
+                         @add-event-condition.window="addCondition"
+                         @add-event-group.window="addGroup"
+                    >
                         <ul class='h-auto form-control group_list_root mb-0' id='sortableContainer' x-ref='sortableContainer' data-id="root">
-                            <template x-for="(element, index) in sortable_data">
+                            <template x-for="(element, index) in sortable_data" :key="element.id">
                                 <li class="list-none select-none" x-html="renderSortableElement(element, sortable_data, index)" :data-id="element.id"></li>
                             </template>
                         </ul>
-                        <textarea class="w-full resize-none" style="height:5000px;" placeholder="json code here" x-text="JSON.stringify(sortable_data, null, 2)"></textarea>
+                        <textarea class="w-full resize-none bg-gray-900 text-white" style="height:5000px;" placeholder="json code here" x-text="JSON.stringify(sortable_data, null, 2)"></textarea>
                     </div>
 
 
