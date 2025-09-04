@@ -29,12 +29,6 @@ export default () => ({
         this.conditionMap = {};
         this.original_data = value;
         this.sortable_data = this.processConditionsData(_.cloneDeep(value))
-
-        this.$nextTick(() => {
-            this.sortableContainer = this.$refs.sortableContainer;
-            this.initializeSortable(this.sortableContainer);
-            this.sortableContainer.querySelectorAll('ul').forEach(ul => this.initializeSortable(ul));
-        });
     },
 
     get sortableData() {
@@ -217,6 +211,17 @@ export default () => ({
         }
     },
 
+    addEventsSelect(condition, value_index = 0) {
+        return {
+            type: "select",
+            values: this.$store.calendar.events.map((event, index) => ({
+                label: event.name,
+                value: index,
+                selected: Number(condition.values[value_index]) === index
+            }))
+        }
+    },
+
     renderConditionOptions(condition) {
         let inputs = [];
 
@@ -277,6 +282,16 @@ export default () => ({
 
             case "Location":
                 inputs.push(this.addLocationSelect(condition));
+                break;
+
+            case "Events":
+                for (let [index, input] of conditionInputs.entries()) {
+                    if (input[0] === "select") {
+                        inputs.push(this.addEventsSelect(condition));
+                    } else {
+                        inputs.push(this.addInput(condition, input, index));
+                    }
+                }
                 break;
 
             case "Era Year":
@@ -341,7 +356,7 @@ export default () => ({
 
     keepFocus(id) {
         this.$nextTick(() => {
-            let elem = this.sortableContainer.querySelectorAll(`[data-id="${id}"]`)[0];
+            let elem = this.$refs.sortableContainer.querySelectorAll(`[data-id="${id}"]`)[0];
             if (elem) {
                 elem.focus();
             }
@@ -434,74 +449,6 @@ export default () => ({
             <option ${element.operator === 'OR' ? 'selected' : ''} value='||'>OR - at least one is true</option>
             <option ${element.operator === 'XOR' ? 'selected' : ''} value='XOR'>XOR - only one must be true</option>
           </select>`;
-    },
-
-    initializeSortable(element) {
-
-        this.sortableMap[element.dataset.id] = new Sortable(element, {
-            group: 'shared', // Enable moving items between containers
-            handle: '[data-move]',
-            animation: 150,
-            fallbackOnBody: true,
-            swapThreshold: 0.65,
-            onEnd: evt => {
-                this.sortable_data = this.processSortable('root');
-
-                // This is stupid but apparently we need to reinitialize the sortables because the above assignment
-                // causes a re-render, which makes the sortables lose their reference, probably because alpine hates us
-                // TODO: This doesn't work if you add new data though, which sucks
-                this.$nextTick(() => {
-                    this.sortableContainer = this.$refs.sortableContainer;
-                    this.initializeSortable(this.sortableContainer);
-                    this.sortableContainer.querySelectorAll('ul').forEach(ul => this.initializeSortable(ul));
-                });
-            }
-        });
-
-        return this.sortableMap[element.dataset.id];
-
-    },
-
-    processSortable(id) {
-
-        let sortable_data = {
-            children: []
-        };
-
-        if (id !== 'root' && this.conditionMap[id]) {
-            sortable_data = _.cloneDeep(this.conditionMap[id]);
-        }
-
-        if (this.sortableMap[id]) {
-
-            let sortable_sub_elements = this.sortableMap[id].toArray();
-
-            let sortable_children = [];
-            for (let sortable_id of sortable_sub_elements) {
-                sortable_children.push(this.processSortable(sortable_id));
-            }
-
-            if (sortable_children.length) {
-                sortable_children.sort((a, b) => {
-                    return sortable_sub_elements.indexOf(a.id) - sortable_sub_elements.indexOf(b.id);
-                });
-                sortable_children.forEach((element, index, array) => {
-                    if ((sortable_data.data_type === "group" && sortable_data.type === "num") || index === array.length - 1) {
-                        element.operator = false;
-                    } else if (!element.operator) {
-                        element.operator = "&&";
-                    }
-                })
-            }
-
-            if (id === "root") {
-                sortable_data = sortable_children;
-            } else {
-                sortable_data['children'] = sortable_children;
-            }
-        }
-
-        return _.cloneDeep(sortable_data);
-    },
+    }
 
 });

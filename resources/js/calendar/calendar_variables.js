@@ -1690,7 +1690,8 @@ export var condition_mapping = {
                 ["event", "in_past_inc", 0, 1]
             ],
             elements: [
-                ["select"], ["number", "Number", "Enter number of days", "1", "1"]
+                ["select"],
+                ["number", "Number", "Enter number of days", "1", "1"]
             ]
         },
         {
