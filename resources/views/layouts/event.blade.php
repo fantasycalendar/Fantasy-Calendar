@@ -113,6 +113,7 @@
     @event-editor-modal-clone-event.window="clone_event"
     @event-editor-modal-delete-event.window="confirm_delete_event"
     @keydown.escape.window="esc_clicked($event)"
+    @calendar-loaded.window="edit_event({ detail: { event_id: 5, epoch: 739260 } })"
     x-show.immediate='open'
     x-cloak
     >

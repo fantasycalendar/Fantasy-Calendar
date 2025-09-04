@@ -11,7 +11,7 @@ export default () => ({
     sortableMap: {},
 
     addCondition() {
-        this.sortable_data[this.sortable_data.length-1].operator = "&&"
+        this.sortable_data[this.sortable_data.length - 1].operator = "&&"
         let condition = this.processCondition(["Year", "0", [0]]);
         this.conditionMap[condition.id] = condition;
         this.sortable_data.push(condition);
@@ -19,7 +19,7 @@ export default () => ({
     },
 
     addGroup() {
-        this.sortable_data[this.sortable_data.length-1].operator = "&&"
+        this.sortable_data[this.sortable_data.length - 1].operator = "&&"
         let group = this.processGroup(["", []]);
         this.conditionMap[group.id] = group;
         this.sortable_data.push(group);
@@ -35,8 +35,9 @@ export default () => ({
         return this.original_data
     },
 
-    processConditionsData(elements) {
+    processConditionsData(elements, parentId = null) {
         let stack = [];
+        let parent_index = 0;
         for (let element of elements) {
             let processedElement;
 
@@ -45,34 +46,42 @@ export default () => ({
             let isOperator = element.length === 1;
 
             if (isGroup) {
-                processedElement = this.processGroup(element)
+                processedElement = this.processGroup(element, parentId, parent_index)
+                parent_index++;
             } else if (isCondition) {
-                processedElement = this.processCondition(element)
+                processedElement = this.processCondition(element, parentId)
+                parent_index++;
             } else if (isOperator) {
-                stack[stack.length-1].operator = element[0];
+                stack[stack.length - 1].operator = element[0];
                 continue;
             }
 
             this.conditionMap[processedElement.id] = processedElement;
             stack.push(processedElement);
         }
+
         return stack;
     },
 
-    processGroup(data) {
+    processGroup(data, parent_id, parent_index) {
+        let id = _.uniqueId("elem");
+
         return {
-            id: _.uniqueId("elem"),
+            id,
+            parent_id,
+            parent_index,
             data_type: "group",
             type: typeof data[0] === "number" ? "num" : (data[0] === "!" ? "not" : "normal"),
             value: data[0],
-            children: this.processConditionsData(data[1]),
+            children: this.processConditionsData(data[1], id),
             operator: false
         }
     },
 
-    processCondition(data) {
+    processCondition(data, parent_id) {
         return {
             id: _.uniqueId("elem"),
+            parent_id,
             data_type: "condition",
             type: data[0],
             comparison: Number(data[1]),
@@ -363,7 +372,7 @@ export default () => ({
         });
     },
 
-    renderSortableElement(element, parent=false) {
+    renderSortableElement(element, parent = false) {
         if (element.data_type === "condition") {
             return this.renderCondition(element, parent);
         } else if (element.data_type === "group") {
@@ -373,9 +382,55 @@ export default () => ({
         return ``;
     },
 
+    moveElementUp(element_id) {
+        let element = this.conditionMap[element_id];
+        let parent_id = element.parent_id;
+        let siblings = this.conditionMap[parent_id].children;
+        let element_index = siblings.indexOf(element);
+
+        if (element_index === 0) {
+            return;
+        }
+
+        let neighbor = siblings[element_index - 1];
+        let neighbor_operator = neighbor.operator;
+        neighbor.operator = element.operator;
+        element.operator = neighbor_operator;
+
+        siblings.splice(element_index, 1);
+        siblings.splice(element_index - 1, 0, element);
+    },
+
+    moveElementDown(element_id) {
+        let element = this.conditionMap[element_id];
+        let parent_id = element.parent_id;
+        let siblings = this.conditionMap[parent_id].children;
+        let element_index = siblings.indexOf(element);
+
+        if (element_index === siblings.length - 1) {
+            return;
+        }
+
+        let neighbor = siblings[element_index + 1];
+        let neighbor_operator = neighbor.operator;
+        neighbor.operator = element.operator;
+        element.operator = neighbor_operator;
+
+        siblings.splice(element_index, 1);
+        siblings.splice(element_index + 1, 0, element);
+    },
+
+    moveElementOut(element_id) {
+
+    },
+
+    moveElementIn(element_id) {
+
+    },
+
     renderCondition(condition, parent) {
         let moon_select = ""
-        if(condition.type === "Moons") {
+        if (condition.type === "Moons") {
             let moon_options = this.$store.calendar.static_data.moons.reduce((html, moon, index) => {
                 let selected = condition.type === "Moons" && condition.moon_index === index ? "selected" : "";
                 return html + `<option ${selected} value='${index}'>${moon.name}</option>`;
@@ -400,7 +455,12 @@ export default () => ({
         return `
         <li class="condition" data-id="${condition.id}" :key="conditionMap['${condition.id}'].id">
         <div class="condition_container items-center ${condition.type}">
-        <div class='handle fa fa-bars' data-move></div>
+        <div class='movement_buttons'>
+            <div @click="moveElementUp('${condition.id}')"><i class="fa fa-arrow-up"></i></div>
+            <div @click="moveElementDown('${condition.id}')"><i class="fa fa-arrow-down"></i></div>
+            <div @click="moveElementOut('${condition.id}')"><i class="fa fa-arrow-left"></i></div>
+            <div @click="moveElementIn('${condition.id}')"><i class="fa fa-arrow-right"></i></div>
+        </div>
         ${moon_select}
         <select class='form-control condition_type order-2' data-id="condition-type-${condition.id}" @change="handleConditionTypeChanged(event, '${condition.id}')">
           ${condition_types}
