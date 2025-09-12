@@ -382,6 +382,15 @@ export default () => ({
         return ``;
     },
 
+    canMoveElementUp(element_id) {
+        let element = this.conditionMap[element_id];
+        let parent_id = element.parent_id;
+        let siblings = this.conditionMap[parent_id].children;
+        let element_index = siblings.indexOf(element);
+
+        return element_index !== 0;
+    },
+
     moveElementUp(element_id) {
         let element = this.conditionMap[element_id];
         let parent_id = element.parent_id;
@@ -399,6 +408,15 @@ export default () => ({
 
         siblings.splice(element_index, 1);
         siblings.splice(element_index - 1, 0, element);
+    },
+
+    canMoveElementDown(element_id) {
+        let element = this.conditionMap[element_id];
+        let parent_id = element.parent_id;
+        let siblings = this.conditionMap[parent_id].children;
+        let element_index = siblings.indexOf(element);
+
+        return element_index <= siblings.length - 1;
     },
 
     moveElementDown(element_id) {
@@ -421,11 +439,40 @@ export default () => ({
     },
 
     moveElementOut(element_id) {
+        let element = this.conditionMap[element_id];
+        let parent_id = element.parent_id;
+        let parent = this.conditionMap[parent_id];
+        let element_index = parent.children.indexOf(element);
 
+        if (!parent.parent_id) {
+            parent.children.splice(element_index, 1);
+            element.parent_id = null;
+            return;
+        }
+
+        let grandparent = this.conditionMap[parent.parent_id];
+        let parent_index = grandparent.children.indexOf(parent);
+
+        parent.children.splice(element_index, 1);
+        grandparent.children.splice(parent_index, 0, element);
+        element.parent_id = parent.parent_id;
     },
 
     moveElementIn(element_id) {
+        // let element = this.conditionMap[element_id];
+        // let parent_id = element.parent_id;
+        // let parent = this.conditionMap[parent_id];
+        // let element_index = parent.children.indexOf(element);
 
+        // if (!parent.parent_id) {
+        //     return;
+        // }
+
+        // let grandparent = this.conditionMap[parent.parent_id];
+        // let parent_index = grandparent.children.indexOf(parent);
+
+        // parent.children.splice(element_index, 1);
+        // grandparent.children.splice(parent_index + 1, 0, element);
     },
 
     renderCondition(condition, parent) {
@@ -456,10 +503,10 @@ export default () => ({
         <li class="condition" data-id="${condition.id}" :key="conditionMap['${condition.id}'].id">
         <div class="condition_container items-center ${condition.type}">
         <div class='movement_buttons'>
-            <div @click="moveElementUp('${condition.id}')"><i class="fa fa-arrow-up"></i></div>
-            <div @click="moveElementDown('${condition.id}')"><i class="fa fa-arrow-down"></i></div>
-            <div @click="moveElementOut('${condition.id}')"><i class="fa fa-arrow-left"></i></div>
-            <div @click="moveElementIn('${condition.id}')"><i class="fa fa-arrow-right"></i></div>
+            <div :disabled="canMoveElementUp('${condition.id}')" @click="moveElementUp('${condition.id}')"><i class="fa fa-arrow-up"></i></div>
+            <div :disabled="canMoveElementDown('${condition.id}')" @click="moveElementDown('${condition.id}')"><i class="fa fa-arrow-down"></i></div>
+            <div :disabled="canMoveElementOut('${condition.id}')" @click="moveElementOut('${condition.id}')"><i class="fa fa-arrow-left"></i></div>
+            <div :disabled="canMoveElementIn('${condition.id}')" @click="moveElementIn('${condition.id}')"><i class="fa fa-arrow-right"></i></div>
         </div>
         ${moon_select}
         <select class='form-control condition_type order-2' data-id="condition-type-${condition.id}" @change="handleConditionTypeChanged(event, '${condition.id}')">
