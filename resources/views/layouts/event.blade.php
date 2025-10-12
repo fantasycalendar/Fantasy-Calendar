@@ -215,7 +215,6 @@
                                 <button type='button' @click="addGroup()" class='btn btn-outline-secondary full'>Add group</button>
                             </div>
                         </ul>
-                        <textarea class="w-full resize-none bg-gray-900 text-white" style="height:5000px;" placeholder="json code here" x-text="JSON.stringify(sortable_data, null, 2)"></textarea>
                     </div>
 
 
