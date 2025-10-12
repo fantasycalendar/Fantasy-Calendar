@@ -209,6 +209,11 @@
                             <template x-for="(element, index) in sortable_data" :key="element.id">
                                 <li class="list-none select-none" x-html="renderSortableElement(element, sortable_data, index)" :data-id="element.id"></li>
                             </template>
+
+                            <div class='flex mb-1'>
+                                <button type='button' @click="addCondition()" class='btn btn-outline-secondary full'>Add condition</button>
+                                <button type='button' @click="addGroup()" class='btn btn-outline-secondary full'>Add group</button>
+                            </div>
                         </ul>
                         <textarea class="w-full resize-none bg-gray-900 text-white" style="height:5000px;" placeholder="json code here" x-text="JSON.stringify(sortable_data, null, 2)"></textarea>
                     </div>

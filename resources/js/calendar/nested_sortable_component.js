@@ -14,9 +14,9 @@ export default () => ({
         let condition = this.processCondition(["Year", "0", [0]], add_to_id);
         this.conditionMap[condition.id] = condition;
 
-        let parentGroup = this.conditionMap[add_to_id];
+        if (add_to_id) {
+            let parentGroup = this.conditionMap[add_to_id];
 
-        if (parentGroup) {
             if (parentGroup.children.length) {
                 parentGroup.children[parentGroup.children.length - 1].operator = "&&"
             }
@@ -30,13 +30,31 @@ export default () => ({
         }
     },
 
-    addGroup(add_to_id) {
+    deleteElement(element_id) {
+        let element = this.conditionMap[element_id];
+        let siblings = this.conditionMap[element.parent_id]?.children
+            ?? this.sortable_data;
+
+        let element_index = siblings.indexOf(element);
+
+        if (siblings.length > 1 && element_index === siblings.length - 1) {
+            siblings[element_index - 1].operator = false
+        }
+
+        siblings.splice(element_index, 1);
+
+        if (element.parent_id && siblings.length == 0) {
+            this.deleteElement(element.parent_id);
+        }
+    },
+
+    addGroup(add_to_id = null) {
         let group = this.processGroup(["", []], add_to_id, 0);
         this.conditionMap[group.id] = group;
 
-        let parentGroup = this.conditionMap[add_to_id];
+        if (add_to_id) {
+            let parentGroup = this.conditionMap[add_to_id];
 
-        if (parentGroup) {
             if (parentGroup.children.length) {
                 parentGroup.children[parentGroup.children.length - 1].operator = "&&"
             }
@@ -48,6 +66,8 @@ export default () => ({
 
             this.sortable_data.push(group);
         }
+
+        this.addCondition(group.id);
     },
 
     set sortableData(value) {
@@ -544,7 +564,7 @@ export default () => ({
                   ${condition_types}
                 </select>
                 ${this.renderConditionOptions(condition)}
-                <div @click="delete(${condition.id})" class="cursor-pointer order-last ml-2 mr-1.5"><i class="fa fa-trash"></i></div>
+                <div @click="deleteElement('${condition.id}')" class="cursor-pointer order-last ml-2 mr-1.5"><i class="fa fa-trash"></i></div>
             </div>
                 ${condition.operator && (!parent || parent.type !== "num") ? this.renderOperator(condition) : ""}
         </li>`;
