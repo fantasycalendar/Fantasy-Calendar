@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _, { isNaN } from "lodash";
 import { condition_mapping, moon_phases } from "./calendar_variables.js";
 import { ordinal_suffix_of } from "./calendar_functions.js";
 
@@ -535,14 +535,14 @@ export default () => ({
         <li data-id="${group.id}" :key="conditionMap['${group.id}'].id" class="group relative">
             <div class="group_type" type="${group.type}">
                 <div class='normal'>
-                  <label><input @click="conditionMap['${group.id}'].type = 'normal'" type='radio' ${(group.type === "normal" ? "checked" : "")} name=''>NORMAL</label>
+                  <label><input @click="setGroupType('${group.id}', 'normal')" type='radio' ${(group.type === "normal" ? "checked" : "")} name=''>NORMAL</label>
                 </div>
                 <div class='not'>
-                  <label><input @click="conditionMap['${group.id}'].type = 'not'" type='radio' ${(group.type === "not" ? "checked" : "")} name=''>NOT</label>
+                  <label><input @click="setGroupType('${group.id}', 'not')" type='radio' ${(group.type === "not" ? "checked" : "")} name=''>NOT</label>
                 </div>
                 <div class='num'>
                   <label>
-                    <input type='radio' @click="conditionMap['${group.id}'].type = 'num'" ${(group.type === "num" ? "checked" : "")} name=''>AT LEAST
+                    <input type='radio' @click="setGroupType('${group.id}', 'num')" ${(group.type === "num" ? "checked" : "")} name=''>AT LEAST
                   </label>
                     <input type='number' x-model="conditionMap['${group.id}'].minimum" class='form-control num_group_con' :disabled="conditionMap['${group.id}'].type !== 'num'">
                 </div>
@@ -557,6 +557,14 @@ export default () => ({
             ${group.operator ? this.renderOperator(group) : ""}
         </li>`;
 
+    },
+
+    setGroupType(groupId, type) {
+        this.conditionMap[groupId].type = type;
+
+        if (type === 'num') {
+            this.conditionMap[groupId].minimum ||= 1;
+        }
     },
 
     renderOperator(element) {
