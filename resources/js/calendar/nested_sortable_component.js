@@ -501,20 +501,15 @@ export default () => ({
 
         return `
         <li class="condition" data-id="${condition.id}" :key="conditionMap['${condition.id}'].id">
-        <div class="condition_container items-center ${condition.type}">
-        <div class='movement_buttons'>
-            <div :disabled="canMoveElementUp('${condition.id}')" @click="moveElementUp('${condition.id}')"><i class="fa fa-arrow-up"></i></div>
-            <div :disabled="canMoveElementDown('${condition.id}')" @click="moveElementDown('${condition.id}')"><i class="fa fa-arrow-down"></i></div>
-            <div :disabled="canMoveElementOut('${condition.id}')" @click="moveElementOut('${condition.id}')"><i class="fa fa-arrow-left"></i></div>
-            <div :disabled="canMoveElementIn('${condition.id}')" @click="moveElementIn('${condition.id}')"><i class="fa fa-arrow-right"></i></div>
-        </div>
-        ${moon_select}
-        <select class='form-control condition_type order-2' data-id="condition-type-${condition.id}" @change="handleConditionTypeChanged(event, '${condition.id}')">
-          ${condition_types}
-        </select>
-        ${this.renderConditionOptions(condition)}
-        </div>
-        ${condition.operator && (!parent || parent.type !== "num") ? this.renderOperator(condition) : ""}
+            <div class="condition_container items-center ${condition.type}">
+                ${moon_select}
+                <select class='form-control condition_type order-2' data-id="condition-type-${condition.id}" @change="handleConditionTypeChanged(event, '${condition.id}')">
+                  ${condition_types}
+                </select>
+                ${this.renderConditionOptions(condition)}
+                <div @click="delete(${condition.id})" class="cursor-pointer order-last ml-2 mr-1.5"><i class="fa fa-trash"></i></div>
+            </div>
+                ${condition.operator && (!parent || parent.type !== "num") ? this.renderOperator(condition) : ""}
         </li>`;
     },
 
@@ -525,7 +520,7 @@ export default () => ({
         }, "");
 
         return `
-        <li data-id="${group.id}" :key="conditionMap['${group.id}'].id" class="group">
+        <li data-id="${group.id}" :key="conditionMap['${group.id}'].id" class="group relative">
             <div class="group_type" type="${group.type}">
                 <div class='normal'>
                   <label><input type='radio' ${(group.type === "normal" ? "checked" : "")} name=''>NORMAL</label>
@@ -540,9 +535,12 @@ export default () => ({
                   <input type='number' class='form-control num_group_con' disabled>
                 </div>
             </div>
-            <div class='handle fa fa-bars' data-move></div>
             <ul class='group_list' x-ref="${group.id}" data-id="${group.id}">
               ${children}
+              <div class='flex mb-1'>
+                  <button type='button' @click="$dispatch('add-event-condition')" class='btn btn-outline-secondary full'>Add condition</button>
+                  <button type='button' @click="$dispatch('add-event-group')" class='btn btn-outline-secondary full'>Add group</button>
+              </div>
             </ul>
             ${group.operator ? this.renderOperator(group) : ""}
         </li>`;

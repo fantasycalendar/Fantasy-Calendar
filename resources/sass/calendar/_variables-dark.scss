@@ -88,3 +88,7 @@ $warning-crosshatch: url("data:image/svg+xml,%3Csvg width='40' height='40' viewB
     --editor-placeholder-colour: rgb(107 114 128);
     --border-color: rgb(31 41 55);
 }
+
+$group-list-bg-color: $card-bg-color;
+$not-group-list-bg-color: rgba($bg-red-600, 0.2);
+$num-group-list-bg-color: rgba($bg-sky-700, 0.4);

@@ -182,21 +182,21 @@
 
                     <h5 class='mt-3 mb-1 modal-form-heading'>Conditions</h5>
 
-                    <div class='row no-gutters mb-2' id='non_preset_buttons'>
-                        <div class='col-11 pr-1'>
-                            <div class='row p-0'>
-                                <div class='col-6 pr-1'>
-                                    <button type='button' @click="$dispatch('add-event-condition')" class='btn btn-primary full'>Add condition</button>
-                                </div>
-                                <div class='col-6 pl-1'>
-                                    <button type='button' @click="$dispatch('add-event-group')" class='btn btn-secondary full'>Add group</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class='col-1 pl-1'>
-                            <button type='button' @click='remove_clicked' @mouseenter='remove_mouseover' @mouseleave='remove_mouseout' id='condition_remove_button' class='btn btn-danger full'><i class="icon fas fa-trash-alt"></i></button>
-                        </div>
-                    </div>
+                    <!-- <div class='row no-gutters mb-2' id='non_preset_buttons'> -->
+                    <!--     <div class='col-11 pr-1'> -->
+                    <!--         <div class='row p-0'> -->
+                    <!--             <div class='col-6 pr-1'> -->
+                    <!--                 <button type='button' @click="$dispatch('add-event-condition')" class='btn btn-primary full'>Add condition</button> -->
+                    <!--             </div> -->
+                    <!--             <div class='col-6 pl-1'> -->
+                    <!--                 <button type='button' @click="$dispatch('add-event-group')" class='btn btn-secondary full'>Add group</button> -->
+                    <!--             </div> -->
+                    <!--         </div> -->
+                    <!--     </div> -->
+                    <!--     <div class='col-1 pl-1'> -->
+                    <!--         <button type='button' @click='remove_clicked' @mouseenter='remove_mouseover' @mouseleave='remove_mouseout' id='condition_remove_button' class='btn btn-danger full'><i class="icon fas fa-trash-alt"></i></button> -->
+                    <!--     </div> -->
+                    <!-- </div> -->
 
                     <div class='mt-2'
                          x-data="nested_sortable_component"

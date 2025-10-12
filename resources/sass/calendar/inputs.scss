@@ -1060,7 +1060,8 @@ ol.example li.placeholder:before {
 }
 
 .group {
-    display: inline-flex;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-self: center;
     flex-wrap: wrap;
@@ -1068,14 +1069,8 @@ ol.example li.placeholder:before {
     width: 100%;
 }
 
-.group .handle {
-    flex: 1;
-    flex-grow: 0;
-}
-
 .group>.group_list {
     flex: 1;
-    order: 2;
     min-height: 34px;
     border: 1px solid black;
     border-radius: 5px;
@@ -1122,33 +1117,33 @@ ol.example li.placeholder:before {
 }
 
 .group_type[type="normal"]~.group_list {
-    background-color: rgb(200, 200, 200);
+    background-color: $group-list-bg-color;
 }
 
 .group_type[type="normal"] div.normal {
-    background-color: rgb(200, 200, 200);
+    background-color: $group-list-bg-color;
     border: 1px solid black;
     border-radius: 10px;
     margin: -1px 14px -1px -1px;
 }
 
 .group_type[type="not"]~.group_list {
-    background-color: rgb(200, 150, 150);
+    background-color: $not-group-list-bg-color;
 }
 
 .group_type[type="not"] div.not {
-    background-color: rgb(200, 150, 150);
+    background-color: $not-group-list-bg-color;
     border: 1px solid black;
     border-radius: 10px;
     margin: -1px 14px -1px -1px;
 }
 
 .group_type[type="num"]~.group_list {
-    background-color: rgb(150, 150, 220);
+    background-color: $num-group-list-bg-color;
 }
 
 .group_type[type="num"] div.num {
-    background-color: rgb(150, 150, 220);
+    background-color: $num-group-list-bg-color;
     border: 1px solid black;
     border-radius: 10px;
     margin: -1px 14px -1px -1px;

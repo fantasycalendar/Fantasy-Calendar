@@ -80,3 +80,7 @@ $warning-crosshatch: url("data:image/svg+xml;charset=utf-8,%3Csvg width='40' hei
     --editor-placeholder-colour: $modal-content-border-color;
     --border-color: rgb(31 41 55);
 }
+
+$group-list-bg-color: rgba($bg-gray-800, 0.07);
+$not-group-list-bg-color: $bg-red-100;
+$num-group-list-bg-color: $bg-sky-100;
