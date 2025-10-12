@@ -65,13 +65,25 @@ export default () => ({
 
     processGroup(data, parent_id, parent_index) {
         let id = _.uniqueId("elem");
+        let type;
+        let minimum = null;
+
+        if (data[0] === "") {
+            type = "normal";
+        } else if (data[0] === "!") {
+            type = "not";
+        } else {
+            type = "num";
+            minimum = Number(data[0]);
+        }
 
         return {
             id,
             parent_id,
             parent_index,
             data_type: "group",
-            type: typeof data[0] === "number" ? "num" : (data[0] === "!" ? "not" : "normal"),
+            type,
+            minimum,
             value: data[0],
             children: this.processConditionsData(data[1], id),
             operator: false
@@ -523,16 +535,16 @@ export default () => ({
         <li data-id="${group.id}" :key="conditionMap['${group.id}'].id" class="group relative">
             <div class="group_type" type="${group.type}">
                 <div class='normal'>
-                  <label><input type='radio' ${(group.type === "normal" ? "checked" : "")} name=''>NORMAL</label>
+                  <label><input @click="conditionMap['${group.id}'].type = 'normal'" type='radio' ${(group.type === "normal" ? "checked" : "")} name=''>NORMAL</label>
                 </div>
                 <div class='not'>
-                  <label><input type='radio' ${(group.type === "not" ? "checked" : "")} name=''>NOT</label>
+                  <label><input @click="conditionMap['${group.id}'].type = 'not'" type='radio' ${(group.type === "not" ? "checked" : "")} name=''>NOT</label>
                 </div>
                 <div class='num'>
                   <label>
-                    <input type='radio' ${(group.type === "num" ? "checked" : "")} name=''>AT LEAST
+                    <input type='radio' @click="conditionMap['${group.id}'].type = 'num'" ${(group.type === "num" ? "checked" : "")} name=''>AT LEAST
                   </label>
-                  <input type='number' class='form-control num_group_con' disabled>
+                    <input type='number' x-model="conditionMap['${group.id}'].minimum" class='form-control num_group_con' :disabled="conditionMap['${group.id}'].type !== 'num'">
                 </div>
             </div>
             <ul class='group_list' x-ref="${group.id}" data-id="${group.id}">
