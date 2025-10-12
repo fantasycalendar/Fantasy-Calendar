@@ -10,19 +10,44 @@ export default () => ({
     conditionMap: {},
     sortableMap: {},
 
-    addCondition() {
-        this.sortable_data[this.sortable_data.length - 1].operator = "&&"
-        let condition = this.processCondition(["Year", "0", [0]]);
+    addCondition(add_to_id) {
+        let condition = this.processCondition(["Year", "0", [0]], add_to_id);
         this.conditionMap[condition.id] = condition;
-        this.sortable_data.push(condition);
-        // TODO: Figure out why this breaks sortables
+
+        let parentGroup = this.conditionMap[add_to_id];
+
+        if (parentGroup) {
+            if (parentGroup.children.length) {
+                parentGroup.children[parentGroup.children.length - 1].operator = "&&"
+            }
+            parentGroup.children.push(condition);
+        } else {
+            if (this.sortable_data.length) {
+                this.sortable_data[this.sortable_data.length - 1].operator = "&&"
+            }
+
+            this.sortable_data.push(condition);
+        }
     },
 
-    addGroup() {
-        this.sortable_data[this.sortable_data.length - 1].operator = "&&"
-        let group = this.processGroup(["", []]);
+    addGroup(add_to_id) {
+        let group = this.processGroup(["", []], add_to_id, 0);
         this.conditionMap[group.id] = group;
-        this.sortable_data.push(group);
+
+        let parentGroup = this.conditionMap[add_to_id];
+
+        if (parentGroup) {
+            if (parentGroup.children.length) {
+                parentGroup.children[parentGroup.children.length - 1].operator = "&&"
+            }
+            parentGroup.children.push(group);
+        } else {
+            if (this.sortable_data.length) {
+                this.sortable_data[this.sortable_data.length - 1].operator = "&&"
+            }
+
+            this.sortable_data.push(group);
+        }
     },
 
     set sortableData(value) {
@@ -331,7 +356,7 @@ export default () => ({
 
         return inputs.reduce((html, input, index) => {
             if (input.type === "select-optgroup") {
-                html += `<select class='form-control order-${index + 3}' data-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}].value">`;
+                html += `<select class='form-control order-${index + 3}' data-event-conditions-manager-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}].value">`;
                 for (let optgroup of input.values) {
                     html += `<optgroup label="${optgroup.label}">`;
                     for (let option of optgroup.values) {
@@ -341,13 +366,13 @@ export default () => ({
                 }
                 html += `</select>`;
             } else if (input.type === "select") {
-                html += `<select class='form-control order-${index + 3}' data-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}]">`;
+                html += `<select class='form-control order-${index + 3}' data-event-conditions-manager-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}]">`;
                 input.values.forEach(option => {
                     html += `<option ${option.selected ? "selected" : ""} value="${option.value}">${option.label}</option>`;
                 });
                 html += `</select>`;
             } else {
-                html += `<input type="${input.type}" class='form-control order-${index + 3}' data-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}]" placeholder="${input.placeholder}"`;
+                html += `<input type="${input.type}" class='form-control order-${index + 3}' data-event-conditions-manager-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}]" placeholder="${input.placeholder}"`;
                 if (input.alt !== undefined) {
                     html += ` alt="${input.alt}"`;
                 }
@@ -377,7 +402,7 @@ export default () => ({
 
     keepFocus(id) {
         this.$nextTick(() => {
-            let elem = this.$refs.sortableContainer.querySelectorAll(`[data-id="${id}"]`)[0];
+            let elem = document.querySelectorAll(`[data-event-conditions-manager-id="${id}"]`)[0];
             if (elem) {
                 elem.focus();
             }
@@ -496,7 +521,7 @@ export default () => ({
             }, "");
 
             moon_select = `
-                <select class="form-control moon_select order-1" x-model.lazy.number="conditionMap['${condition.id}'].moon_index" data-id="condition-moon-${condition.id}" @change="keepFocus('condition-moon-${condition.id}')" :class="{ 'hidden': conditionMap['${condition.id}'].type !== 'Moons' }">
+                <select class="form-control moon_select order-1" x-model.lazy.number="conditionMap['${condition.id}'].moon_index" data-event-conditions-manager-id="condition-moon-${condition.id}" @change="keepFocus('condition-moon-${condition.id}')" :class="{ 'hidden': conditionMap['${condition.id}'].type !== 'Moons' }">
                   ${moon_options}
                 </select>`;
         }
@@ -512,10 +537,10 @@ export default () => ({
         }, "");
 
         return `
-        <li class="condition" data-id="${condition.id}" :key="conditionMap['${condition.id}'].id">
+        <li class="condition" data-event-conditions-manager-id="${condition.id}" :key="conditionMap['${condition.id}'].id">
             <div class="condition_container items-center ${condition.type}">
                 ${moon_select}
-                <select class='form-control condition_type order-2' data-id="condition-type-${condition.id}" @change="handleConditionTypeChanged(event, '${condition.id}')">
+                <select class='form-control condition_type order-2' data-event-conditions-manager-id="condition-type-${condition.id}" @change="handleConditionTypeChanged(event, '${condition.id}')">
                   ${condition_types}
                 </select>
                 ${this.renderConditionOptions(condition)}
@@ -532,7 +557,7 @@ export default () => ({
         }, "");
 
         return `
-        <li data-id="${group.id}" :key="conditionMap['${group.id}'].id" class="group relative">
+        <li data-event-conditions-manager-id="${group.id}" :key="conditionMap['${group.id}'].id" class="group relative">
             <div class="group_type" type="${group.type}">
                 <div class='normal'>
                   <label><input @click="setGroupType('${group.id}', 'normal')" type='radio' ${(group.type === "normal" ? "checked" : "")} name=''>NORMAL</label>
@@ -547,11 +572,11 @@ export default () => ({
                     <input type='number' x-model="conditionMap['${group.id}'].minimum" class='form-control num_group_con' :disabled="conditionMap['${group.id}'].type !== 'num'">
                 </div>
             </div>
-            <ul class='group_list' x-ref="${group.id}" data-id="${group.id}">
+            <ul class='group_list' x-ref="${group.id}" data-event-conditions-manager-id="${group.id}">
               ${children}
               <div class='flex mb-1'>
-                  <button type='button' @click="$dispatch('add-event-condition')" class='btn btn-outline-secondary full'>Add condition</button>
-                  <button type='button' @click="$dispatch('add-event-group')" class='btn btn-outline-secondary full'>Add group</button>
+                  <button type='button' @click="addCondition('${group.id}')" class='btn btn-outline-secondary full'>Add condition</button>
+                  <button type='button' @click="addGroup('${group.id}')" class='btn btn-outline-secondary full'>Add group</button>
               </div>
             </ul>
             ${group.operator ? this.renderOperator(group) : ""}
@@ -568,7 +593,7 @@ export default () => ({
     },
 
     renderOperator(element) {
-        return `<select class="form-control order-6" data-id="operator-${element.id}" @change="keepFocus('operator-${element.id}')" x-model.lazy="conditionMap['${element.id}'].operator" >
+        return `<select class="form-control order-6" data-event-conditions-manager-id="operator-${element.id}" @change="keepFocus('operator-${element.id}')" x-model.lazy="conditionMap['${element.id}'].operator" >
             <option ${element.operator === '&&' ? 'selected' : ''} value='&&'>AND - both must be true</option>
             <option ${element.operator === 'NAND' ? 'selected' : ''} value='NAND'>NAND - neither can be true</option>
             <option ${element.operator === 'OR' ? 'selected' : ''} value='||'>OR - at least one is true</option>
