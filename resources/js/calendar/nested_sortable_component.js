@@ -1,4 +1,4 @@
-import _, { isNaN } from "lodash";
+import _ from "lodash";
 import { condition_mapping, moon_phases } from "./calendar_variables.js";
 import { ordinal_suffix_of } from "./calendar_functions.js";
 
@@ -41,7 +41,7 @@ export default () => ({
 
         siblings.splice(element_index, 1);
 
-        if (element.parent_id && siblings.length == 0) {
+        if (element.parent_id && siblings.length === 0) {
             this.deleteElement(element.parent_id);
         }
     },
@@ -66,12 +66,6 @@ export default () => ({
         }
 
         this.addCondition(group.id);
-    },
-
-    cleanup() {
-        this.$nextTick(() => {
-            this.conditionsHashmap = {};
-        });
     },
 
     set source(value) {
@@ -111,6 +105,7 @@ export default () => ({
                     break;
             }
         }
+
         return stack;
     },
 
@@ -223,17 +218,16 @@ export default () => ({
                     label: month.name,
                     value: month_index,
                     selected: Number(condition.values[1]) === month_index
-                        || (month_index === months.length - 1 && month_index > months.length - 1)
+                        || (month_index >= months.length - 1)
                 }))
             },
             {
                 type: "select",
                 values: days.map((day, day_index) => ({
                     label: day,
-                    value: day_index,
-                    selected: Number(condition.values[2]) === day_index
-                        || (day_index === days.length - 1 && day_index > days.length - 1)
-                        || (day_index === 0 && day_index < 0)
+                    value: day_index+1,
+                    selected: Number(condition.values[2]) === day_index+1
+                        || (day_index >= days.length - 1)
                 }))
             }
         ]

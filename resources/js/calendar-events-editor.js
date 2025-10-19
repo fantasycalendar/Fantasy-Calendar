@@ -383,13 +383,15 @@ export default () => ({
 
     save_event() {
 
-        this.working_event.data = this.create_event_data();
+        let working_event = _.cloneDeep(this.working_event);
 
-        this.working_event.name = sanitizeHtml((this.working_event.name === "") ? "New Event" : this.working_event.name);
+        working_event.data = this.create_event_data();
 
-        this.working_event.description = this.event_description_content;
+        working_event.name = sanitizeHtml((working_event.name === "") ? "New Event" : working_event.name);
 
-        window.events[this.event_id] = clone(this.working_event);
+        working_event.description = this.event_description_content;
+
+        window.events[this.event_id] = working_event;
 
         let not_view_page = window.location.pathname.indexOf('/edit') > -1 || window.location.pathname.indexOf('/calendars/create') > -1;
 
@@ -576,9 +578,7 @@ export default () => ({
     create_event_data() {
 
         this.working_event.data.connected_events = [];
-        let conditions = Perms.player_at_least("co-owner")
-            ? this.create_condition_array(this.event_conditions_container)
-            : [['Date', '0', [this.epoch_data.year, this.epoch_data.timespan_index, this.epoch_data.day]]];
+        let conditions = _.cloneDeep(this.working_event.data.conditions);
 
         let search_distance = this.get_search_distance(conditions);
 

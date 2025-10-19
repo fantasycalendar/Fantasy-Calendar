@@ -198,13 +198,13 @@
                     <!--     </div> -->
                     <!-- </div> -->
 
+                    {{-- TODO: Hide this or change visuals for players and non-co-owners --}}
                     <div class='mt-2'
                          x-data="nested_sortable_component"
                          x-modelable="source"
                          x-model="working_event.data.conditions"
                          @add-event-condition.window="addCondition"
                          @add-event-group.window="addGroup"
-                         @event-editor-modal-close.window="cleanup"
                     >
                         <ul class='h-auto form-control group_list_root mb-0' id='sortableContainer' x-ref='sortableContainer' data-id="root">
                             <template x-for="(element, index) in condition_tree" :key="element.id">
