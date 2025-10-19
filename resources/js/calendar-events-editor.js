@@ -471,6 +471,8 @@ export default () => ({
             this.event_conditions_container.empty();
         }
 
+        this.$dispatch("event-editor-modal-close");
+
     },
 
     esc_clicked($event) {

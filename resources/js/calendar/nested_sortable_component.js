@@ -4,36 +4,34 @@ import { ordinal_suffix_of } from "./calendar_functions.js";
 
 export default () => ({
 
-    sortable_data: [],
-    original_data: [],
-
-    conditionMap: {},
+    condition_tree: [],
+    conditionsHashmap: {},
     sortableMap: {},
 
     addCondition(add_to_id) {
         let condition = this.processCondition(["Year", "0", [0]], add_to_id);
-        this.conditionMap[condition.id] = condition;
+        this.conditionsHashmap[condition.id] = condition;
 
         if (add_to_id) {
-            let parentGroup = this.conditionMap[add_to_id];
+            let parentGroup = this.conditionsHashmap[add_to_id];
 
             if (parentGroup.children.length) {
                 parentGroup.children[parentGroup.children.length - 1].operator = "&&"
             }
             parentGroup.children.push(condition);
         } else {
-            if (this.sortable_data.length) {
-                this.sortable_data[this.sortable_data.length - 1].operator = "&&"
+            if (this.condition_tree.length) {
+                this.condition_tree[this.condition_tree.length - 1].operator = "&&"
             }
 
-            this.sortable_data.push(condition);
+            this.condition_tree.push(condition);
         }
     },
 
     deleteElement(element_id) {
-        let element = this.conditionMap[element_id];
-        let siblings = this.conditionMap[element.parent_id]?.children
-            ?? this.sortable_data;
+        let element = this.conditionsHashmap[element_id];
+        let siblings = this.conditionsHashmap[element.parent_id]?.children
+            ?? this.condition_tree;
 
         let element_index = siblings.indexOf(element);
 
@@ -50,37 +48,73 @@ export default () => ({
 
     addGroup(add_to_id = null) {
         let group = this.processGroup(["", []], add_to_id, 0);
-        this.conditionMap[group.id] = group;
+        this.conditionsHashmap[group.id] = group;
 
         if (add_to_id) {
-            let parentGroup = this.conditionMap[add_to_id];
+            let parentGroup = this.conditionsHashmap[add_to_id];
 
             if (parentGroup.children.length) {
                 parentGroup.children[parentGroup.children.length - 1].operator = "&&"
             }
             parentGroup.children.push(group);
         } else {
-            if (this.sortable_data.length) {
-                this.sortable_data[this.sortable_data.length - 1].operator = "&&"
+            if (this.condition_tree.length) {
+                this.condition_tree[this.condition_tree.length - 1].operator = "&&"
             }
 
-            this.sortable_data.push(group);
+            this.condition_tree.push(group);
         }
 
         this.addCondition(group.id);
     },
 
-    set sortableData(value) {
-        this.conditionMap = {};
-        this.original_data = value;
-        this.sortable_data = this.processConditionsData(_.cloneDeep(value))
+    cleanup() {
+        this.$nextTick(() => {
+            this.conditionsHashmap = {};
+        });
     },
 
-    get sortableData() {
-        return this.original_data
+    set source(value) {
+        this.condition_tree = this.deserializeConditionsData(_.cloneDeep(value));
     },
 
-    processConditionsData(elements, parentId = null) {
+    get source() {
+        return this.serializeConditionsData(this.condition_tree);
+    },
+
+    serializeConditionsData(elements){
+        let stack = [];
+        for (let element of elements) {
+            switch (element.data_type) {
+                case 'group':
+                    let group = [element.value, []];
+                    stack.push(group);
+                    if (element.children.length > 0) {
+                        group[1] = this.serializeConditionsData(element.children);
+                    }
+                    if (element.operator) {
+                        stack.push([element.operator]);
+                    }
+                    break;
+                case 'condition':
+                    let condition = [
+                        element.type,
+                        element.comparison.toString(),
+                        element.type === 'Moons'
+                            ? [element.moon_index.toString(), ...element.values]
+                            : element.values
+                    ];
+                    stack.push(condition);
+                    if (element.operator) {
+                        stack.push([element.operator]);
+                    }
+                    break;
+            }
+        }
+        return stack;
+    },
+
+    deserializeConditionsData(elements, parentId = null) {
         let stack = [];
         let parent_index = 0;
         for (let element of elements) {
@@ -101,7 +135,7 @@ export default () => ({
                 continue;
             }
 
-            this.conditionMap[processedElement.id] = processedElement;
+            this.conditionsHashmap[processedElement.id] = processedElement;
             stack.push(processedElement);
         }
 
@@ -130,7 +164,7 @@ export default () => ({
             type,
             minimum,
             value: data[0],
-            children: this.processConditionsData(data[1], id),
+            children: this.deserializeConditionsData(data[1], id),
             operator: false
         }
     },
@@ -376,7 +410,7 @@ export default () => ({
 
         return inputs.reduce((html, input, index) => {
             if (input.type === "select-optgroup") {
-                html += `<select class='form-control order-${index + 3}' data-event-conditions-manager-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}].value">`;
+                html += `<select class='form-control order-${index + 3}' data-event-conditions-manager-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionsHashmap['${condition.id}'].values[${index}].value">`;
                 for (let optgroup of input.values) {
                     html += `<optgroup label="${optgroup.label}">`;
                     for (let option of optgroup.values) {
@@ -386,13 +420,13 @@ export default () => ({
                 }
                 html += `</select>`;
             } else if (input.type === "select") {
-                html += `<select class='form-control order-${index + 3}' data-event-conditions-manager-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}]">`;
+                html += `<select class='form-control order-${index + 3}' data-event-conditions-manager-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionsHashmap['${condition.id}'].values[${index}]">`;
                 input.values.forEach(option => {
                     html += `<option ${option.selected ? "selected" : ""} value="${option.value}">${option.label}</option>`;
                 });
                 html += `</select>`;
             } else {
-                html += `<input type="${input.type}" class='form-control order-${index + 3}' data-event-conditions-manager-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionMap['${condition.id}'].values[${index}]" placeholder="${input.placeholder}"`;
+                html += `<input type="${input.type}" class='form-control order-${index + 3}' data-event-conditions-manager-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionsHashmap['${condition.id}'].values[${index}]" placeholder="${input.placeholder}"`;
                 if (input.alt !== undefined) {
                     html += ` alt="${input.alt}"`;
                 }
@@ -412,11 +446,11 @@ export default () => ({
         let select = event.target;
         let value = Number(select.value);
         let optGroupValue = select.options[select.selectedIndex].parentElement.label;
-        if (this.conditionMap[id].comparison !== value) {
-            this.conditionMap[id].values = []
+        if (this.conditionsHashmap[id].comparison !== value) {
+            this.conditionsHashmap[id].values = []
         }
-        this.conditionMap[id].comparison = value;
-        this.conditionMap[id].type = optGroupValue;
+        this.conditionsHashmap[id].comparison = value;
+        this.conditionsHashmap[id].type = optGroupValue;
         this.keepFocus(event.target.dataset.id);
     },
 
@@ -448,7 +482,7 @@ export default () => ({
             }, "");
 
             moon_select = `
-                <select class="form-control moon_select order-1" x-model.lazy.number="conditionMap['${condition.id}'].moon_index" data-event-conditions-manager-id="condition-moon-${condition.id}" @change="keepFocus('condition-moon-${condition.id}')" :class="{ 'hidden': conditionMap['${condition.id}'].type !== 'Moons' }">
+                <select class="form-control moon_select order-1" x-model.lazy.number="conditionsHashmap['${condition.id}'].moon_index" data-event-conditions-manager-id="condition-moon-${condition.id}" @change="keepFocus('condition-moon-${condition.id}')" :class="{ 'hidden': conditionsHashmap['${condition.id}'].type !== 'Moons' }">
                   ${moon_options}
                 </select>`;
         }
@@ -464,7 +498,7 @@ export default () => ({
         }, "");
 
         return `
-        <li class="condition" data-event-conditions-manager-id="${condition.id}" :key="conditionMap['${condition.id}'].id">
+        <li class="condition" data-event-conditions-manager-id="${condition.id}" :key="conditionsHashmap['${condition.id}'].id">
             <div class="condition_container items-center ${condition.type}">
                 ${moon_select}
                 <select class='form-control condition_type order-2' data-event-conditions-manager-id="condition-type-${condition.id}" @change="handleConditionTypeChanged(event, '${condition.id}')">
@@ -484,7 +518,7 @@ export default () => ({
         }, "");
 
         return `
-        <li data-event-conditions-manager-id="${group.id}" :key="conditionMap['${group.id}'].id" class="group relative">
+        <li data-event-conditions-manager-id="${group.id}" :key="conditionsHashmap['${group.id}'].id" class="group relative">
             <div class="group_type" type="${group.type}">
                 <div class='normal'>
                   <label><input @click="setGroupType('${group.id}', 'normal')" type='radio' ${(group.type === "normal" ? "checked" : "")} name=''>NORMAL</label>
@@ -496,7 +530,7 @@ export default () => ({
                   <label>
                     <input type='radio' @click="setGroupType('${group.id}', 'num')" ${(group.type === "num" ? "checked" : "")} name=''>AT LEAST
                   </label>
-                    <input type='number' x-model="conditionMap['${group.id}'].minimum" class='form-control num_group_con' :disabled="conditionMap['${group.id}'].type !== 'num'">
+                    <input type='number' x-model="conditionsHashmap['${group.id}'].minimum" class='form-control num_group_con' :disabled="conditionsHashmap['${group.id}'].type !== 'num'">
                 </div>
             </div>
             <ul class='group_list' x-ref="${group.id}" data-event-conditions-manager-id="${group.id}">
@@ -512,15 +546,15 @@ export default () => ({
     },
 
     setGroupType(groupId, type) {
-        this.conditionMap[groupId].type = type;
+        this.conditionsHashmap[groupId].type = type;
 
         if (type === 'num') {
-            this.conditionMap[groupId].minimum ||= 1;
+            this.conditionsHashmap[groupId].minimum ||= 1;
         }
     },
 
     renderOperator(element) {
-        return `<select class="form-control order-6" data-event-conditions-manager-id="operator-${element.id}" @change="keepFocus('operator-${element.id}')" x-model.lazy="conditionMap['${element.id}'].operator" >
+        return `<select class="form-control order-6" data-event-conditions-manager-id="operator-${element.id}" @change="keepFocus('operator-${element.id}')" x-model.lazy="conditionsHashmap['${element.id}'].operator" >
             <option ${element.operator === '&&' ? 'selected' : ''} value='&&'>AND - both must be true</option>
             <option ${element.operator === 'NAND' ? 'selected' : ''} value='NAND'>NAND - neither can be true</option>
             <option ${element.operator === 'OR' ? 'selected' : ''} value='||'>OR - at least one is true</option>

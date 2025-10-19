@@ -113,7 +113,7 @@
     @event-editor-modal-clone-event.window="clone_event"
     @event-editor-modal-delete-event.window="confirm_delete_event"
     @keydown.escape.window="esc_clicked($event)"
-    @calendar-loaded.window="edit_event({ detail: { event_id: 5, epoch: 739260 } })"
+    @calendar-loaded.window="edit_event({ detail: { event_db_id: 93, epoch: 738232 } })" {{-- TODO: Remove --}}
     x-show.immediate='open'
     x-cloak
     >
@@ -200,14 +200,15 @@
 
                     <div class='mt-2'
                          x-data="nested_sortable_component"
-                         x-modelable="sortableData"
+                         x-modelable="source"
                          x-model="working_event.data.conditions"
                          @add-event-condition.window="addCondition"
                          @add-event-group.window="addGroup"
+                         @event-editor-modal-close.window="cleanup"
                     >
                         <ul class='h-auto form-control group_list_root mb-0' id='sortableContainer' x-ref='sortableContainer' data-id="root">
-                            <template x-for="(element, index) in sortable_data" :key="element.id">
-                                <li class="list-none select-none" x-html="renderSortableElement(element, sortable_data, index)" :data-id="element.id"></li>
+                            <template x-for="(element, index) in condition_tree" :key="element.id">
+                                <li class="list-none select-none" x-html="renderSortableElement(element, condition_tree, index)" :data-id="element.id"></li>
                             </template>
 
                             <div class='flex mb-1'>
