@@ -113,7 +113,6 @@
     @event-editor-modal-clone-event.window="clone_event"
     @event-editor-modal-delete-event.window="confirm_delete_event"
     @keydown.escape.window="esc_clicked($event)"
-    @calendar-loaded.window="edit_event({ detail: { event_db_id: 93, epoch: 738232 } })" {{-- TODO: Remove --}}
     x-show.immediate='open'
     x-cloak
     >
@@ -134,7 +133,7 @@
                 <input maxlength="255" type='text' x-ref="event_name" class='form-control event_editor_name' x-model='working_event.name' placeholder='Event name' autofocus='' @keydown.enter="save_event" @keydown.esc.stop />
 
                 <div class="border">
-                    <x-wysiwyg.editor x-modelable="value" x-model="event_description_content" />
+                    <x-wysiwyg.editor x-modelable="value" x-model="working_event.description" />
                 </div>
 
                 @if(!isset($calendar) || count($calendar->event_categories) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))

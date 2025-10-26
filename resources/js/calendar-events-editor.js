@@ -13,7 +13,6 @@ export default () => ({
     event_id: undefined,
     epoch_data: undefined,
     event_conditions_container: undefined,
-    event_description_content: '',
     inputs_changed: false,
     delete_hover_element: undefined,
     isDeletingDroppable: false,
@@ -303,10 +302,6 @@ export default () => ({
             },
         };
 
-        if (this.description_input) {
-            // this.description_input.trumbowyg('html', this.working_event.description);
-        }
-
         let default_category = this.$store.calendar.default_event_category;
 
         if (default_category) {
@@ -369,8 +364,6 @@ export default () => ({
 
         this.set_up_moon_data();
 
-        this.event_description_content = this.working_event.description;
-
         // this.create_conditions(this.working_event.data.conditions, this.event_conditions_container);
 
         // this.evaluate_condition_selects(this.event_conditions_container);
@@ -388,8 +381,6 @@ export default () => ({
         working_event.data = this.create_event_data();
 
         working_event.name = sanitizeHtml((working_event.name === "") ? "New Event" : working_event.name);
-
-        working_event.description = this.event_description_content;
 
         window.events[this.event_id] = working_event;
 
@@ -787,7 +778,7 @@ export default () => ({
 
             event_check.data = this.create_event_data();
 
-            event_check.description = this.event_description_content;
+            event_check.description = this.working_event.description;
 
             event_check.settings = clone(this.working_event.settings)
 
