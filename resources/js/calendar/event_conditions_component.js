@@ -81,7 +81,21 @@ export default () => ({
         for (let element of elements) {
             switch (element.data_type) {
                 case 'group':
-                    let group = [element.value, []];
+                    let groupType;
+
+                    switch (element.type) {
+                        case "normal":
+                            groupType = "";
+                            break;
+                        case "not":
+                            groupType = "!";
+                            break;
+                        case "num":
+                            groupType = element.minimum.toString();
+                            break;
+                    }
+
+                    let group = [groupType, []];
                     stack.push(group);
                     if (element.children.length > 0) {
                         group[1] = this.serializeConditionsData(element.children);
@@ -515,14 +529,14 @@ export default () => ({
         <li data-event-conditions-manager-id="${group.id}" :key="conditionsHashmap['${group.id}'].id" class="group relative">
             <div class="group_type" type="${group.type}">
                 <div class='normal'>
-                  <label><input @click="setGroupType('${group.id}', 'normal')" type='radio' ${(group.type === "normal" ? "checked" : "")} name=''>NORMAL</label>
+                  <label><input @change="setGroupType('${group.id}', 'normal')" type='radio' ${(group.type === "normal" ? "checked" : "")} name=''>NORMAL</label>
                 </div>
                 <div class='not'>
-                  <label><input @click="setGroupType('${group.id}', 'not')" type='radio' ${(group.type === "not" ? "checked" : "")} name=''>NOT</label>
+                  <label><input @change="setGroupType('${group.id}', 'not')" type='radio' ${(group.type === "not" ? "checked" : "")} name=''>NOT</label>
                 </div>
                 <div class='num'>
                   <label>
-                    <input type='radio' @click="setGroupType('${group.id}', 'num')" ${(group.type === "num" ? "checked" : "")} name=''>AT LEAST
+                    <input type='radio' @change="setGroupType('${group.id}', 'num')" ${(group.type === "num" ? "checked" : "")} name=''>AT LEAST
                   </label>
                     <input type='number' x-model="conditionsHashmap['${group.id}'].minimum" class='form-control num_group_con' :disabled="conditionsHashmap['${group.id}'].type !== 'num'">
                 </div>

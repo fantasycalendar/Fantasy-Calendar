@@ -199,7 +199,7 @@
 
                     {{-- TODO: Hide this or change visuals for players and non-co-owners --}}
                     <div class='mt-2'
-                         x-data="nested_sortable_component"
+                         x-data="event_conditions_component"
                          x-modelable="source"
                          x-model="working_event.data.conditions"
                          @add-event-condition.window="addCondition"

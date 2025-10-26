@@ -307,8 +307,8 @@ import CalendarLinkingCollapsible from './calendar/calendar_linking_collapsible.
 import Save_button from "./calendar/save_button.js";
 Alpine.data('calendar_linking_collapsible', CalendarLinkingCollapsible);
 
-import NestedSortableComponent from './calendar/nested_sortable_component.js';
-Alpine.data('nested_sortable_component', NestedSortableComponent);
+import EventConditionsComponent from './calendar/event_conditions_component.js';
+Alpine.data('event_conditions_component', EventConditionsComponent);
 
 Alpine.start();
 
