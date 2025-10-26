@@ -125,7 +125,7 @@
                 <i class="close_ui_btn fas fa-times" @click='confirm_close'></i>
 
                 <h3 class='event_action_type d-flex align-items-center modal-form-heading'>
-                    <span x-text="creation_type"></span>
+                    <span x-text="modal_heading"></span>
                     <i class="fas fa-eye event_header_action protip" data-pt-position='bottom' data-pt-title="Preview event" @click='confirm_view' x-show="!new_event"></i>
                     <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone' x-show="!new_event"></i>
                 </h3>

@@ -1,22 +1,16 @@
 import { submit_new_event, submit_edit_event, submit_delete_event } from "./calendar/calendar_ajax_functions";
 import { ordinal_suffix_of, precisionRound, clone } from "./calendar/calendar_functions";
-import { condition_mapping, moon_phases } from "./calendar/calendar_variables";
-import { repopulate_timespan_select, repopulate_day_select } from "./calendar/calendar_inputs_visitor";
+import { moon_phases } from "./calendar/calendar_variables";
 
 export default () => ({
     open: false,
     new_event: true,
     cloning_event: false,
-    creation_type: "Creating Event",
+    modal_heading: "Creating Event",
     moon_overrides_open: false,
     settings_open: false,
     event_id: undefined,
     epoch_data: undefined,
-    event_conditions_container: undefined,
-    inputs_changed: false,
-    delete_hover_element: undefined,
-    isDeletingDroppable: false,
-    isDeletingConditions: false,
     moons: [],
 
     working_event: {
@@ -44,29 +38,9 @@ export default () => ({
         },
     },
 
-    has_initialized: false,
-
     initialize($event) {
         this.epoch = $event.detail.epoch;
         this.epoch_data = window.evaluated_static_data.epoch_data[this.epoch];
-
-        return;
-    },
-
-    set_delete_element(element) {
-        if (this.delete_hover_element !== undefined) {
-            this.delete_hover_element.removeClass('hover').removeClass('cursor-pointer');
-            this.delete_hover_element.find('select').not('.condition_operator').prop('disabled', false);
-            this.delete_hover_element.find('input').prop('disabled', false);
-            this.delete_hover_element.find('.fa-bars').addClass('handle');
-        }
-        this.delete_hover_element = element;
-        if (this.delete_hover_element !== undefined) {
-            this.delete_hover_element.addClass('hover').addClass('cursor-pointer');
-            this.delete_hover_element.find('select').not('.condition_operator').prop('disabled', true);
-            this.delete_hover_element.find('input').prop('disabled', true);
-            this.delete_hover_element.find('.fa-bars').removeClass('handle');
-        }
     },
 
     show() {
@@ -76,7 +50,6 @@ export default () => ({
     },
 
     clone_event($event) {
-
         this.initialize($event);
 
         if ($event.detail.event_data === undefined && $event.detail.event_id) {
@@ -90,13 +63,11 @@ export default () => ({
         this.working_event = $event.detail.event_data;
         delete this.working_event['id'];
 
-        this.creation_type = "Cloning Event"
+        this.modal_heading = "Cloning Event"
 
         this.set_up_moon_data();
 
         this.event_id = Object.keys(window.events).length;
-
-        this.inputs_changed = false;
 
         this.show();
     },
@@ -107,7 +78,7 @@ export default () => ({
 
         this.new_event = true;
         let name = sanitizeHtml($event.detail.name ?? "");
-        this.creation_type = "Creating Event"
+        this.modal_heading = "Creating Event"
 
         this.working_event = {
             'name': name,
@@ -183,7 +154,7 @@ export default () => ({
 
         this.new_event = false;
 
-        this.creation_type = "Editing Event"
+        this.modal_heading = "Editing Event"
 
         let event_index = $event.detail.event_id;
 
@@ -196,8 +167,6 @@ export default () => ({
         this.working_event = clone(window.events[this.event_id]);
 
         this.set_up_moon_data();
-
-        this.inputs_changed = false;
 
         this.show();
 
@@ -284,30 +253,19 @@ export default () => ({
         this.event_testing.visible_occurrences_2 = [];
         this.event_testing.text = "";
 
-        if (this.event_conditions_container) {
-            this.event_conditions_container.empty();
-        }
-
         this.$dispatch("event-editor-modal-close");
 
     },
 
     esc_pressed($event) {
-
-        if (this.isDeletingConditions) {
-            this.remove_clicked();
-            return;
-        }
-
         if (this.open) {
             this.confirm_close($event);
         }
-
     },
 
     confirm_clone() {
         // Don't do anything if a swal is open or the user is deleting conditions
-        if (swal.isVisible() || this.isDeletingConditions) {
+        if (swal.isVisible()) {
             this.remove_clicked();
             return false;
         }
@@ -335,16 +293,8 @@ export default () => ({
 
         if (this.worker_event_tester) return;
 
-        const possibleTrumbowyg = [$event.target.id, $event.target.parentElement?.id].concat(
-            Array.from($event.target?.classList),
-            Array.from($event.target?.parentElement?.classList ?? []),
-            Array.from($event.target?.parentElement?.parentElement?.classList ?? []),
-        );
-
-        if (possibleTrumbowyg.some(entry => entry.startsWith('trumbowyg-'))) return false;
-
         // Don't do anything if a swal is open or the user is deleting conditions
-        if (swal.isVisible() || this.isDeletingConditions) {
+        if (swal.isVisible()) {
             return false;
         }
 
@@ -368,7 +318,6 @@ export default () => ({
     },
 
     confirm_view() {
-
         if (this.event_has_changed()) {
             swal.fire({
                 title: "Close event without saving?",
@@ -387,11 +336,9 @@ export default () => ({
             window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.event_id, era: false, epoch: this.epoch } }));
             this.close();
         }
-
     },
 
     create_event_data() {
-
         this.working_event.data.connected_events = [];
         let conditions = _.cloneDeep(this.working_event.data.conditions);
 
@@ -582,7 +529,7 @@ export default () => ({
 
     event_has_changed() {
 
-        if (window.events[this.event_id] && this.inputs_changed) {
+        if (window.events[this.event_id]) {
 
             let event_check = clone(window.events[this.event_id])
 
@@ -864,8 +811,6 @@ export default () => ({
     },
 
     apply_preset_conditions(preset, repeats) {
-
-        this.inputs_changed = true;
 
         let result;
         let moon_id;
