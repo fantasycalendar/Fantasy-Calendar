@@ -318,9 +318,9 @@ export default () => ({
         this.event_id = Object.keys(window.events).length;
 
         this.populate_condition_presets();
-        this.update_every_nth_presets();
 
-        this.add_preset_conditions(this.preset, this.nth);
+        this.update_every_nth_preset_labels();
+        this.apply_preset_conditions(this.preset, this.nth);
 
         this.show();
 
@@ -417,7 +417,7 @@ export default () => ({
 
     close() {
 
-        if(this.worker_event_tester) return;
+        if (this.worker_event_tester) return;
 
         this.open = false;
 
@@ -509,7 +509,7 @@ export default () => ({
 
     confirm_close($event) {
 
-        if(this.worker_event_tester) return;
+        if (this.worker_event_tester) return;
 
         const possibleTrumbowyg = [$event.target.id, $event.target.parentElement?.id].concat(
             Array.from($event.target?.classList),
@@ -866,15 +866,13 @@ export default () => ({
     },
 
     condition_preset_changed($event) {
-
         if (this.preset === this.previous_preset) {
             return;
         }
 
-        this.update_every_nth_presets();
+        this.update_every_nth_preset_labels();
 
         if (this.conditions_changed) {
-
             swal.fire({
                 title: "Warning!",
                 text: "This will override all of your conditions, are you sure you want to do that?",
@@ -884,37 +882,26 @@ export default () => ({
                 confirmButtonText: 'OK',
                 icon: "warning",
             }).then((result) => {
-
                 if (result.dismiss) {
-
-                    this.update_every_nth_presets();
-
-                    this.event_conditions_container.empty();
-                    this.add_preset_conditions(this.preset, this.nth);
-
+                    this.update_every_nth_preset_labels();
+                    this.apply_preset_conditions(this.preset, this.nth);
                     this.previous_preset = this.preset;
-
                 }
-
             });
 
             return;
-
         }
 
-        this.update_every_nth_presets();
-
-        this.event_conditions_container.empty();
-        this.add_preset_conditions(this.preset, this.nth);
+        this.update_every_nth_preset_labels();
+        this.apply_preset_conditions(this.preset, this.nth);
 
         this.previous_preset = this.preset;
 
         if (this.selected_preset.nth) {
             setTimeout(() => {
-                $(this.$refs.nth_input).focus();
+                this.$refs.nth_input.focus();
             }, 100);
         }
-
     },
 
     populate_condition_presets() {
@@ -1011,12 +998,11 @@ export default () => ({
     },
 
     nth_input_changed() {
-        this.update_every_nth_presets();
-        this.event_conditions_container.empty();
-        this.add_preset_conditions(this.preset, this.nth);
+        this.update_every_nth_preset_labels();
+        this.apply_preset_conditions(this.preset, this.nth);
     },
 
-    update_every_nth_presets() {
+    update_every_nth_preset_labels() {
 
         let repeat_string = !isNaN(this.nth) && this.nth > 1 ? `Every ${ordinal_suffix_of(this.nth)} ` : (this.nth === "" ? "Every nth" : "Every");
 
@@ -1061,7 +1047,7 @@ export default () => ({
 
     },
 
-    add_preset_conditions(preset, repeats) {
+    apply_preset_conditions(preset, repeats) {
 
         this.inputs_changed = true;
 
@@ -1280,11 +1266,8 @@ export default () => ({
 
         }
 
-        // this.create_conditions(result, this.event_conditions_container);
-        // this.evaluate_condition_selects(this.event_conditions_container);
-
+        this.working_event.data.conditions = result;
         this.conditions_changed = false;
-
     },
 
     // This function creates an array for the conditions so that it may be stored
@@ -1555,7 +1538,6 @@ export default () => ({
 
         this.isDeletingConditions = !this.isDeletingConditions;
         $('#condition_remove_button .icon').toggleClass('wiggle', this.isDeletingConditions).removeClass('faster', false);
-        $('#event_conditions_container').toggleClass('deleting', this.isDeletingConditions);
         $('#add_event_condition').prop('disabled', this.isDeletingConditions);
         $('#add_event_condition_group').prop('disabled', this.isDeletingConditions);
         $('#condition_presets').prop('disabled', this.isDeletingConditions);
