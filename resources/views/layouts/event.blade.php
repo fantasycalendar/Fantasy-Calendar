@@ -112,7 +112,7 @@
     @event-editor-modal-edit-event.window="edit_event"
     @event-editor-modal-clone-event.window="clone_event"
     @event-editor-modal-delete-event.window="confirm_delete_event"
-    @keydown.escape.window="esc_clicked($event)"
+    @keyup.escape.window="esc_pressed($event)"
     x-show.immediate='open'
     x-cloak
     >
@@ -228,23 +228,23 @@
 
                         <div class='row no-gutters'>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' @click="test_event(1)">
+                                <button type='button' class='btn btn-info full test_event_btn' @click="confirm_test_event(1)">
                                     This year
                                 </button>
                             </div>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' @click="test_event(10)">
+                                <button type='button' class='btn btn-info full test_event_btn' @click="confirm_test_event(10)">
                                     10 years
                                 </button>
                             </div>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' @click="test_event(100)">
+                                <button type='button' class='btn btn-info full test_event_btn' @click="confirm_test_event(100)">
                                     100 years
                                 </button>
                             </div>
                             <div class='col-md-3 px-1'>
                                 <button type='button' class='btn btn-info full test_event_btn'
-                                        @click="test_event(1000)">1000 years
+                                        @click="confirm_test_event(1000)">1000 years
                                 </button>
                             </div>
                         </div>
