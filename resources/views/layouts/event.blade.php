@@ -139,7 +139,7 @@
                 @if(!isset($calendar) || count($calendar->event_categories) || (Auth::user() != Null && Auth::user()->can('update', $calendar)))
                     <h5 class='modal-form-heading mt-3 mb-1'>Category</h5>
 
-                    <select class="form-control" x-model='working_event.event_category_id' @change="event_category_changed" placeholder='Event Category'>
+                    <select class="form-control" x-model.number='working_event.event_category_id' @change="event_category_changed" placeholder='Event Category'>
                         <option :value="-1" :selected="working_event.event_category_id == -1">No category</option>
 
                         <template x-for="category in $store.calendar.event_categories">
