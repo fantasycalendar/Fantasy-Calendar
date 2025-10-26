@@ -709,22 +709,16 @@ export default () => ({
     },
 
     event_is_one_time() {
-
         let date = []
 
         this.working_event.data.connected_events = [];
-        this.working_event.data.conditions = this.create_condition_array(this.event_conditions_container);
 
         if (this.working_event.data.conditions.length === 1 || this.working_event.data.conditions.length === 5) {
-
             if (this.working_event.data.conditions.length === 1) {
-
                 if (this.working_event.data.conditions[0][0] === "Date" && this.working_event.data.conditions[0][1] === 0) {
                     return true
                 }
-
             } else {
-
                 let year = false;
                 let month = false;
                 let day = false
@@ -756,12 +750,10 @@ export default () => ({
                 if (!(year && month && day && ands === 2)) {
                     date = [];
                 }
-
             }
         }
 
         return date.length > 0 || this.working_event.data.conditions.length === 0;
-
     },
 
     event_has_changed() {
@@ -2300,22 +2292,18 @@ export default () => ({
 
     build_seasons: false,
 
-    test_event(years) {
-
+    confirm_test_event(years) {
         if (this.event_is_one_time()) {
-
             swal.fire({
                 title: "Uh...",
                 text: "This event is a one time event (year, month, day), I'm pretty sure you know the answer to this test.",
                 icon: "warning"
             });
-
         } else {
-
             this.build_seasons = this.evaluation_has_season_event();
 
             if (!this.build_seasons) {
-                this.run_test_event(years);
+                this.test_event(years);
             } else {
                 swal.fire({
                     title: "Warning!",
@@ -2326,17 +2314,12 @@ export default () => ({
                     confirmButtonText: 'OK',
                     icon: "warning",
                 }).then((result) => {
-
                     if (!result.dismiss) {
-                        this.run_test_event(years);
+                        this.test_event(years);
                     }
-
                 });
-
             }
-
         }
-
     },
 
     cancel_event_test() {
@@ -2353,8 +2336,7 @@ export default () => ({
 
     },
 
-    run_test_event(years) {
-
+    test_event(years) {
         window.dispatchEvent(new CustomEvent("app-busy-start", {
             detail: {
                 show_throbber: false,
