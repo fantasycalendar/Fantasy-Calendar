@@ -2,51 +2,6 @@
 
 @push('head')
     <script>
-        function evaluate_queryString(queryString){
-
-            const urlParams = new URLSearchParams(queryString);
-
-            if(urlParams.has("year") && urlParams.has("month") && urlParams.has("day")){
-                let year = Number(urlParams.get('year'));
-                let timespan = Number(urlParams.get('month'));
-                let day = Number(urlParams.get('day'));
-
-                if(isNaN(year) || isNaN(timespan) || isNaN(day)) {
-                    return false;
-                }
-
-                if(valid_preview_date(year, timespan, day) || window.Perms.player_at_least('co-owner')){
-
-                    if(year === 0 && !window.static_data.settings.year_zero_exists){
-                        return false;
-                    }
-                    window.preview_date_manager.year = convert_year(window.static_data, year);
-
-                    if(timespan < 0 || timespan > window.preview_date_manager.last_timespan){
-                        return false;
-                    }
-                    window.preview_date_manager.timespan = timespan;
-
-                    if(day < 0 || day > window.preview_date_manager.num_days){
-                        return false;
-                    }
-                    window.preview_date_manager.day = day;
-
-                    go_to_preview_date(true);
-                    refresh_preview_inputs();
-
-                    return true;
-                }
-
-                return false;
-            }
-
-            if(urlParams.has('print')){
-                window.dispatchEvent(new CustomEvent('register-render-callback', {detail: print()}));
-                return true;
-            }
-
-        }
 
         function getCalendarStructure() {
             return {
@@ -81,7 +36,12 @@
 @endpush
 
 @section('content')
-    <div id="generator_container" x-data="calendar_view_page(getCalendarStructure())">
+    <div id="generator_container"
+        x-data="calendar_view_page(getCalendarStructure())"
+        @calendar-updating.window="update_calendar"
+        @rebuild-calendar.window="rebuild_calendar"
+        @render-calendar.window="render_calendar"
+    >
         @include('layouts.weather_tooltip')
         @include('layouts.day_data_tooltip')
         @include('layouts.moon_tooltip')

@@ -1,7 +1,6 @@
 import _ from "lodash";
 
 export default (calendar_structure) => ({
-
     last_mouse_move: false,
     poll_timer: false,
     instapoll: false,
@@ -75,25 +74,27 @@ export default (calendar_structure) => ({
 
         }
 
+        this.evaluate_queryString();
+
         this.$nextTick(
-            () => this.$dispatch(
-                'calendar-loaded', {
-                hash: window.hash,
-                calendar_name: window.calendar_name,
-                calendar_id: window.calendar_id,
-                static_data: window.static_data,
-                dynamic_data: window.dynamic_data,
-                is_linked: window.is_linked,
-                has_parent: window.has_parent,
-                parent_hash: window.parent_hash,
-                parent_offset: window.parent_offset,
-                events: window.events,
-                event_categories: window.event_categories,
-                last_static_change: window.last_static_change,
-                last_dynamic_change: window.last_dynamic_change,
-                advancement: window.advancement
+            () => {
+                this.$dispatch('calendar-loaded', {
+                    hash: window.hash,
+                    calendar_name: window.calendar_name,
+                    calendar_id: window.calendar_id,
+                    static_data: window.static_data,
+                    dynamic_data: window.dynamic_data,
+                    is_linked: window.is_linked,
+                    has_parent: window.has_parent,
+                    parent_hash: window.parent_hash,
+                    parent_offset: window.parent_offset,
+                    events: window.events,
+                    event_categories: window.event_categories,
+                    last_static_change: window.last_static_change,
+                    last_dynamic_change: window.last_dynamic_change,
+                    advancement: window.advancement
+                })
             }
-            )
         );
 
         window.dispatchEvent(new CustomEvent("events-changed"));
@@ -143,5 +144,49 @@ export default (calendar_structure) => ({
 
     update_calendar($event) {
         this.$store.calendar.debounceUpdate($event.detail.calendar);
+    },
+
+    evaluate_queryString(queryString) {
+
+        const urlParams = new URLSearchParams(queryString);
+
+        if (urlParams.has("year") && urlParams.has("month") && urlParams.has("day")) {
+            let year = Number(urlParams.get('year'));
+            let timespan = Number(urlParams.get('month'));
+            let day = Number(urlParams.get('day'));
+
+            if (isNaN(year) || isNaN(timespan) || isNaN(day)) {
+                return false;
+            }
+
+            if (valid_preview_date(year, timespan, day) || window.Perms.player_at_least('co-owner')) {
+                if (year === 0 && !window.static_data.settings.year_zero_exists) {
+                    return false;
+                }
+                window.preview_date_manager.year = convert_year(window.static_data, year);
+
+                if (timespan < 0 || timespan > window.preview_date_manager.last_timespan) {
+                    return false;
+                }
+                window.preview_date_manager.timespan = timespan;
+
+                if (day < 0 || day > window.preview_date_manager.num_days) {
+                    return false;
+                }
+                window.preview_date_manager.day = day;
+
+                // TODO: Replace this with the new approach
+                go_to_preview_date(true);
+                refresh_preview_inputs();
+
+                return true;
+            }
+
+            return false;
+        }
+
+        if (urlParams.has('print')) {
+            this.$dispatch('register-render-callback', { detail: print() });
+        }
     }
 });

@@ -416,6 +416,7 @@ export default class Calendar {
     };
 
     increment_current_month() {
+        console.log("increment_current_month called");
         this.set_current_date({ month: this.dynamic_data.timespan + 1 });
     };
 

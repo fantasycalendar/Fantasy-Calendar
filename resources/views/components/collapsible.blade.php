@@ -1,10 +1,10 @@
-@props(['calendar' => null, 'contains' => null, 'step' => null, 'icon' => null, 'premium_feature' => false, 'polished' => false, 'done' => false, 'wip' => false])
+@props(['calendar' => null, 'contains' => null, 'step' => null, 'icon' => null, 'premium_feature' => false, 'polished' => false, 'done' => false, 'wip' => false, 'open' => false])
 
 @php($contains_clean = Str::replace("-", " ", $contains))
 
 <div
     x-data="{
-        open: false,
+        open: {{ $open ? 'true' : 'false' }},
         toggle() {
             this.open = !this.open;
 
