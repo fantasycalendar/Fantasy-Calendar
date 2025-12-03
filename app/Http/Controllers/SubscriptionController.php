@@ -5,11 +5,14 @@ namespace App\Http\Controllers;
 use App\Events\UserSubscribedEvent;
 use Stripe;
 use Illuminate\Http\Request;
+use Laravel\Cashier\Coupon;
 use Laravel\Cashier\Exceptions\IncompletePayment;
+use Laravel\Cashier\Subscription;
 
 class SubscriptionController extends Controller
 {
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth')->except(['pricing']);
     }
 
@@ -17,7 +20,8 @@ class SubscriptionController extends Controller
      * @param Request $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function pricing(Request $request) {
+    public function pricing(Request $request)
+    {
         return view('subscription.pricing', [
             'subscribed' => $request->user()?->subscriptions()->active()->count(),
             'earlySupporter' => $request->user()?->isEarlySupporter(),
@@ -30,7 +34,8 @@ class SubscriptionController extends Controller
      * @param $interval
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function subscribe(Request $request, $level, $interval) {
+    public function subscribe(Request $request, $level, $interval)
+    {
         $stripeCustomer = auth()->user()->createOrGetStripeCustomer();
         $stripe = new Stripe\StripeClient(config('cashier.secret'));
 
@@ -38,14 +43,21 @@ class SubscriptionController extends Controller
             redirect()->route('profile.billing'); // They're subscribed already, send 'em to the subscriptions list;
         }
 
-        return $request->user()
+        $subscription = $request->user()
             ->newSubscription(
                 $level,
                 strtolower($level . "_" . $interval)
-            )->checkout([
-                'success_url' => route('profile.billing'),
-                'cancel_url' => route('profile.billing')
-            ]);
+            );
+
+        if ($request->user()->is_early_supporter) {
+            $coupon = $request->user()->findPromotionCode('EarlySupporter')->coupon();
+            $subscription = $subscription->withCoupon($coupon->asStripeCoupon()->id);
+        }
+
+        return $subscription->checkout([
+            'success_url' => route('profile.billing'),
+            'cancel_url' => route('profile.billing')
+        ]);
     }
 
     /**
@@ -55,7 +67,8 @@ class SubscriptionController extends Controller
      * @return array|\Illuminate\Http\RedirectResponse
      * @throws Stripe\Exception\ApiErrorException
      */
-    public function update(Request $request, $level, $plan) {
+    public function update(Request $request, $level, $plan)
+    {
         try {
             $request->user()->startSubscription($level, $plan, $request->input('token'));
         } catch (IncompletePayment $exception) {
@@ -73,10 +86,11 @@ class SubscriptionController extends Controller
     /**
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function cancel(Request $request) {
+    public function cancel(Request $request)
+    {
         $subscription = $request->user()->subscription('Timekeeper');
 
-        if($subscription->onGracePeriod()) {
+        if ($subscription->onGracePeriod()) {
             $subscription->cancelNow();
         } else {
             $subscription->cancel();
@@ -88,8 +102,9 @@ class SubscriptionController extends Controller
     /**
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function resume(Request $request) {
-        if($request->user()->subscription('Timekeeper')->onGracePeriod()) {
+    public function resume(Request $request)
+    {
+        if ($request->user()->subscription('Timekeeper')->onGracePeriod()) {
             $request->user()->subscription('Timekeeper')->resume();
         }
 

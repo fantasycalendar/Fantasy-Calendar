@@ -59,7 +59,9 @@ class UserResource extends Resource
                         ])
                         ->disabled(),
                     Forms\Components\Checkbox::make('beta_authorised'),
-                    Forms\Components\Checkbox::make('is_early_supporter')->disabled(),
+                    Forms\Components\Checkbox::make('is_early_supporter')
+                        ->formatStateUsing(fn (User $record) => $record->is_early_supporter)
+                        ->disabled(),
                 ])
             ]);
     }
