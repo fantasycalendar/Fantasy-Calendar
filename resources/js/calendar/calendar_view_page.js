@@ -60,7 +60,6 @@ export default (calendar_structure) => ({
         bind_calendar_events();
 
         if (window.has_parent) {
-
             this.last_mouse_move = Date.now();
             this.poll_timer = setTimeout(this.check_dates.bind(this), 5000);
             this.instapoll = false;
@@ -76,7 +75,6 @@ export default (calendar_structure) => ({
                     this.check_dates();
                 }
             }
-
         }
 
         this.evaluate_queryString();
@@ -151,40 +149,27 @@ export default (calendar_structure) => ({
         this.$store.calendar.debounceUpdate($event.detail.calendar);
     },
 
-    evaluate_queryString(queryString) {
-
-        const urlParams = new URLSearchParams(queryString);
+    evaluate_queryString() {
+        const urlParams = new URLSearchParams(window.location.search);
 
         if (urlParams.has("year") && urlParams.has("month") && urlParams.has("day")) {
             let year = Number(urlParams.get('year'));
-            let timespan = Number(urlParams.get('month'));
+            let month = Number(urlParams.get('month'));
             let day = Number(urlParams.get('day'));
 
-            if (isNaN(year) || isNaN(timespan) || isNaN(day)) {
+            console.log(year, month, day);
+
+            if (isNaN(year) || isNaN(month) || isNaN(day)) {
                 return false;
             }
 
-            if (valid_preview_date(year, timespan, day) || window.Perms.player_at_least('co-owner')) {
-                if (year === 0 && !window.static_data.settings.year_zero_exists) {
-                    return false;
-                }
-                window.preview_date_manager.year = convert_year(window.static_data, year);
-
-                if (timespan < 0 || timespan > window.preview_date_manager.last_timespan) {
-                    return false;
-                }
-                window.preview_date_manager.timespan = timespan;
-
-                if (day < 0 || day > window.preview_date_manager.num_days) {
-                    return false;
-                }
-                window.preview_date_manager.day = day;
-
-                // TODO: Replace this with the new approach
-                go_to_preview_date(true);
-                refresh_preview_inputs();
-
-                return true;
+            if (valid_preview_date(year, month, day) || window.Perms.player_at_least('co-owner')) {
+                console.log(year, month, day);
+                this.$nextTick(() => {
+                    this.$store.calendar.set_selected_date({
+                        year, month, day
+                    });
+                });
             }
 
             return false;

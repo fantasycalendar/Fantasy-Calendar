@@ -1,4 +1,4 @@
-<div id="input_container" class="d-print-none">
+<div id="input_container" class="d-print-none" :class='{ "inputs_collapsed": !sidebar_open }'>
     @include('inputs.sidebar.header')
 
     <div class='title-text center-text mt-0 mb-0'>{{ $calendar->name }}</div>
@@ -45,10 +45,22 @@
         <!---------------------------------------------->
 
         <div class="mx-3 mt-3">
-            <h5>
-                Current location:
-            </h5>
-            <select class='form-control protip' id='location_select' data-pt-position="right" data-pt-title="The presets work with four seasons (winter, spring, summer, autumn) or two seasons (winter, summer). If you call your seasons the same, the system matches them with the presets' seasons, no matter which order."></select>
+            Current location:
+            <!--
+            TODO: make this select update current location in dynamic data - maybe this is a lil component by itself?
+            -->
+            <select class='form-control' @change="locationChanged" x-model="location_selection_value">
+                <optgroup label="Custom" x-show="locations.length">
+                    <template x-for="(location, index) in locations">
+                        <option :value="index + '-custom'" :selected="index + '-custom'" x-text="location.name"></option>
+                    </template>
+                </optgroup>
+                <optgroup label="Preset" x-show="preset_locations.length">
+                    <template x-for="(location, index) in preset_locations">
+                        <option :value="location.name + '-preset'" :selected="location_selection_value === location.name + '-preset'" x-text="location.name" :disabled="!can_use_preset_locations"></option>
+                    </template>
+                </optgroup>
+            </select>
         </div>
         @endcan
 
@@ -86,41 +98,7 @@
 
 
 <div id="calendar_container">
-	<div id="top_follower" :class="{ 'single_month': apply == 'single_month' }" x-data="{ apply: '', toggle() { window.toggle_sidebar(); } }" @layout-change.window="apply = $event.detail.apply">
-
-        <div class='flex-shrink-1 is-active' id='input_collapse_btn'>
-            <button class="btn btn-secondary">
-                <i class="fa fa-bars"></i>
-            </button>
-        </div>
-
-		<div class='btn_container hidden'>
-			<button class='btn btn-secondary btn_preview_date hidden d-print-none sub_year' disabled fc-index='year' value='-1'>< Year</button>
-			<button class='btn btn-secondary btn_preview_date hidden d-print-none sub_month' disabled fc-index='timespan' value='-1'>
-                <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-left"></i></span>
-            </button>
-		</div>
-
-        <div class='reset_preview_date_container btn_container left hidden'>
-            <button type='button' class='btn btn-success reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >< Current</button>
-        </div>
-
-        <div class="follower_center flex-grow-1">
-            <div id='top_follower_content'><div class='year'></div><div class='cycle'></div></div>
-        </div>
-
-        <div class='reset_preview_date_container btn_container right hidden'>
-            <button type='button' class='btn btn-success reset_preview_date protip d-print-none' data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar' >Current ></button>
-        </div>
-
-		<div class='btn_container hidden'>
-			<button class='btn btn-secondary btn_preview_date hidden d-print-none add_year' disabled fc-index='year' value='1'>Year ></button>
-			<button class='btn btn-secondary btn_preview_date hidden d-print-none add_month' disabled fc-index='timespan' value='1'>
-                <span x-cloak x-show="apply == 'single_month'"><i class="fa fa-arrow-right"></i></span>
-            </button>
-		</div>
-
-	</div>
+    <x-calendar-year-header></x-calendar-year-header>
 
     @include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
 </div>
