@@ -2,39 +2,6 @@
 
 @push('head')
     <script>
-        function generatorData() {
-            return {
-                init() {
-                    @include('calendar._loadcalendar')
-
-                    window.preview_date = _.cloneDeep(dynamic_data);
-                    window.preview_date.follow = true;
-
-                    bind_calendar_events();
-
-                    window.dispatchEvent(new CustomEvent("rebuild-calendar"));
-
-                    last_mouse_move = Date.now();
-                    poll_timer = setTimeout(check_dates, 5000);
-                    instapoll = false;
-
-                    window.addEventListener('focus', function(){
-                        check_dates();
-                    });
-
-                    window.registered_mousemove_callbacks['view_update'] = function () {
-                        last_mouse_move = Date.now();
-                        if (instapoll) {
-                            instapoll = false;
-                            check_dates();
-                        }
-                    }
-
-                    window.dispatchEvent(new CustomEvent("events-changed"));
-                },
-            }
-        }
-
         function evaluate_queryString(queryString){
 
             const urlParams = new URLSearchParams(queryString);
@@ -81,98 +48,40 @@
 
         }
 
-        function check_dates(){
-
-            if((document.hasFocus() && (Date.now() - last_mouse_move) < 10000) || advancement.advancement_enabled){
-
-                instapoll = false;
-
-                check_last_change(hash).then((result) => {
-
-                    new_dynamic_change = new Date(result.data.last_dynamic_change)
-                    new_static_change = new Date(result.data.last_static_change)
-
-                    if(new_static_change > window.last_static_change){
-
-                        window.last_dynamic_change = new_dynamic_change
-                        window.last_static_change = new_static_change
-
-                        get_all_data(hash, function(result){
-
-                            if(result.error){
-                                throw result.message;
-                            }
-
-                            window.static_data = clone(result.static_data);
-                            dynamic_data = clone(result.dynamic_data);
-
-                            check_update(true);
-                            poll_timer = setTimeout(check_dates, 5000);
-
-                        });
-
-                    }else if(new_dynamic_change > window.last_dynamic_change){
-
-                        window.last_dynamic_change = new_dynamic_change
-
-                        get_dynamic_data(hash, function(result){
-
-                            if(result.error){
-                                throw result.message;
-                            }
-                            dynamic_data = clone(result.dynamic_data);
-
-                            check_update(false);
-                            poll_timer = setTimeout(check_dates, 5000);
-
-                        });
-
-                    }else{
-
-                        poll_timer = setTimeout(check_dates, 5000);
-
-                    }
-
-                });
-
-            }else{
-
-                instapoll = true;
-
+        function getCalendarStructure() {
+            return {
+                userId: @js(Auth::user()?->id),
+                owned: @js(!$calendar || $calendar->owned),
+                paymentLevel: @js(strtolower(Auth::user()->paymentLevel() ?? "free")),
+                userRole: @js($calendar->users->find(Auth::user())?->pivot?->user_role ?? "guest"),
+                darkTheme: @js(auth()->user()?->setting("dark_theme") ?? true),
+                hash: @js($calendar->hash),
+                calendar_name: @js($calendar->name),
+                calendar_id: @js($calendar->id),
+                static_data: @js($calendar->static_data),
+                dynamic_data: @js($calendar->dynamic_data),
+                is_linked: @js($calendar->isLinked()),
+                has_parent: @js($calendar->parent),
+                parent_hash: @js($calendar->parent?->hash),
+                parent_offset: @js($calendar->parent_offset),
+                events: @js($calendar->events),
+                event_categories: @js($calendar->event_categories),
+                last_static_change: @js($calendar->last_static_change),
+                last_dynamic_change: @js($calendar->last_dynamic_change),
+                advancement_enabled: @js($calendar->advancement_enabled),
+                advancement_real_rate: @js($calendar->advancement_real_rate ?? 1),
+                advancement_real_rate_unit: @js($calendar->advancement_real_rate_unit ?? "minutes"),
+                advancement_rate: @js($calendar->advancement_rate ?? 1),
+                advancement_rate_unit: @js($calendar->advancement_rate_unit ?? "minutes"),
+                advancement_webhook_url: @js($calendar->advancement_webhook_url),
+                advancement_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
             }
-
-        }
-
-        function check_update(rebuild){
-
-            var data = window.dynamic_date_manager.reconcileCalendarChange(window.static_data, dynamic_data);
-
-            window.dynamic_date_manager = new date_manager(window.static_data, dynamic_data.year, dynamic_data.timespan, dynamic_data.day);
-
-            if(preview_date.follow){
-                preview_date = clone(dynamic_data);
-                preview_date.follow = true;
-                window.preview_date_manager = new date_manager(window.static_data, preview_date.year, preview_date.timespan, preview_date.day);
-            }
-
-            window.current_year.val(dynamic_data.year);
-
-            repopulate_timespan_select(current_timespan, dynamic_data.timespan, false);
-
-            repopulate_day_select(current_day, dynamic_data.day, false);
-
-            display_preview_back_button();
-
-            if(rebuild || ((data.rebuild || window.static_data.settings.only_reveal_today) && preview_date.follow)){
-                window.dispatchEvent(new CustomEvent("rebuild-calendar"));
-            }
-
         }
     </script>
 @endpush
 
 @section('content')
-    <div id="generator_container" x-data="generatorData()">
+    <div id="generator_container" x-data="calendar_view_page(getCalendarStructure())">
         @include('layouts.weather_tooltip')
         @include('layouts.day_data_tooltip')
         @include('layouts.moon_tooltip')

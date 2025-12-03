@@ -237,6 +237,9 @@ Alpine.data('Viewport', Viewport);
 import CalendarEditPage from "./calendar/calendar_edit_page.js";
 Alpine.data('calendar_edit_page', CalendarEditPage);
 
+import CalendarViewPage from "./calendar/calendar_view_page.js";
+Alpine.data('calendar_view_page', CalendarViewPage);
+
 import ContextMenu from './context-menu.js';
 Alpine.data('context_menu', ContextMenu);
 
