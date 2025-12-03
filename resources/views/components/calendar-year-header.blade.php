@@ -5,7 +5,9 @@
 >
 
     <div class='flex-shrink-1' id='input_collapse_btn' x-show="!sidebar_open" x-cloak @click="$dispatch('open-sidebar')">
-        <button class="btn btn-secondary px-3">
+        <button class="btn btn-secondary px-3"
+            title="Open sidebar (ctrl+/)"
+        >
             <i class="fa fa-bars"></i>
         </button>
     </div>

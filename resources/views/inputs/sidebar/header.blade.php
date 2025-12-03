@@ -10,6 +10,7 @@
         <button class="text-white font-semibold py-0.5 px-1.5 rounded-sm hover:bg-primary-900 transition ease-in-out"
             @click.prevent="$dispatch('close-sidebar')"
             x-show="!flattened_errors.length"
+            title="Collapse sidebar (ctrl+/)"
         >
             <i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i>
         </button>

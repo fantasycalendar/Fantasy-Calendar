@@ -4,6 +4,10 @@ export default function () {
         sidebar_open: this.$persist(true),
         show_redraw_warning: false,
 
+        toggle_sidebar() {
+            this.sidebar_open = !this.sidebar_open;
+        },
+
         open_sidebar() {
             this.sidebar_open = true;
         },

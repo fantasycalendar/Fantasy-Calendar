@@ -11,6 +11,7 @@
         @calendar-validation-succeeded.window="remove_errors"
         @display-redraw-warning.window='display_redraw_warning'
         @hide-redraw-warning.window='hide_redraw_warning'
+        @keydown.ctrl.slash.window='toggle_sidebar'
         >
 
         <div id="content">
