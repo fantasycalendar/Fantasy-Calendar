@@ -6,6 +6,11 @@ export default (calendar_structure) => ({
     instapoll: false,
     new_dynamic_change: false,
 
+    // NOTE: Placeholders until we get this actually working
+    location_selection_value: null,
+    locations: [],
+    preset_locations: [],
+
     init() {
         window.Perms = new Perms(
             calendar_structure.userId,
