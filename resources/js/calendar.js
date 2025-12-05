@@ -34,7 +34,7 @@ export default class Calendar {
     }
 
     debounceUpdate(incomingChanges) {
-        if(!this.debounced_update){
+        if (!this.debounced_update) {
             this.debounced_update = _.debounce(this.update.bind(this), 10);
         }
         this.debounced_update(_.merge(this.storedChanges, incomingChanges));
@@ -86,10 +86,10 @@ export default class Calendar {
         }
 
         let current_location = this.dynamic_data.location;
-        if(current_location !== previous_location && this.static_data.clock.enabled) {
+        if (current_location !== previous_location && this.static_data.clock.enabled) {
             const curr_timezone = this.get_location_data(current_location)?.settings?.timezone;
             const prev_timezone = this.get_location_data(previous_location)?.settings?.timezone;
-            if(curr_timezone || prev_timezone) {
+            if (curr_timezone || prev_timezone) {
                 let adjusted_timezone_date = this.get_adjusted_date(this.dynamic_data, {
                     hours: (curr_timezone?.hour ?? 0) - (prev_timezone?.hour ?? 0),
                     minutes: (curr_timezone?.minute ?? 0) - (prev_timezone?.minute ?? 0),
@@ -165,7 +165,7 @@ export default class Calendar {
 
     render_calendar(calendar_data) {
         if (!calendar_data) calendar_data = this.evaluated_static_data;
-        if(this.setting('prompt_for_redraw', false)) {
+        if (this.setting('prompt_for_redraw', false)) {
             return window.dispatchEvent(new CustomEvent('display-redraw-warning'));
         }
         window.dispatchEvent(new CustomEvent('hide-redraw-warning'));
@@ -183,7 +183,7 @@ export default class Calendar {
     }
 
     update_epochs() {
-        if(this.setting('prompt_for_redraw', false)) {
+        if (this.setting('prompt_for_redraw', false)) {
             return window.dispatchEvent(new CustomEvent('display-redraw-warning'));
         }
         window.dispatchEvent(new CustomEvent('hide-redraw-warning'));
@@ -234,12 +234,59 @@ export default class Calendar {
     }
 
     get_location_data(location) {
-        let location_data =  this.static_data.seasons.locations[location];
-        if(!location_data) {
+        let location_data = this.static_data.seasons.locations[location];
+        if (!location_data) {
             let preset_locations = Object.values(preset_data.locations[this.static_data.seasons.data.length]);
             location_data = preset_locations.find(preset_location => preset_location.name === location);
         }
         return location_data;
+    }
+
+    // Transforms locations and presets into this format, for use in a drop-down:
+    // {
+    //  "Custom": [
+    //      {
+    //          "key": "0-custom",
+    //          "name": "Custom location 1"
+    //      }
+    //  ],
+    //  "Preset": [
+    //      {
+    //          "key": "0-preset",
+    //          "name": "Cool and Rainy"
+    //      }
+    //  ]
+    // }
+    get_location_select_options() {
+        let options = {};
+
+        if (this.location_count) {
+            options.Custom = (this.static_data.seasons.locations)
+                .map((location, index) => Object.assign({}, location, { key: index + "-custom" }));
+        }
+
+        if (this.can_use_preset_locations) {
+            options.Presets = preset_data.locations.valuesForSeasonCount(this.season_count)
+                .map((location, index) => Object.assign({}, location, { key: index + "-preset" }));
+        }
+
+        return options;
+    }
+
+    get_location_select_value() {
+        let location_list = this.dynamic_data.custom_location
+            ? this.static_data.seasons.locations
+            : preset_data.locations.valuesForSeasonCount(this.season_count);
+
+        let current_location_index = isNaN(this.dynamic_data.location)
+            ? location_list.findIndex(location => location.name == this.dynamic_data.location)
+            : this.dynamic_data.location;
+
+        let result = this.dynamic_data.custom_location
+            ? current_location_index + "-custom"
+            : current_location_index + "-preset";
+
+        return result;
     }
 
     get_adjusted_date(date, { years = 0, months = 0, days = 0, hours = 0, minutes = 0 } = {}) {
@@ -604,4 +651,17 @@ export default class Calendar {
         return this.find_event_category(this.setting('default_category', -1));
     }
 
+    get season_count() {
+        return this.static_data.seasons.data.length;
+    }
+
+    get location_count() {
+        return this.static_data.seasons.locations.length;
+    }
+
+    get can_use_preset_locations() {
+        return (this.static_data.seasons.data.length === 2 || this.static_data.seasons.data.length === 4)
+            && this.static_data.seasons.global_settings.enable_weather;
+
+    }
 }

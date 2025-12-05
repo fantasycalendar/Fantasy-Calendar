@@ -2137,6 +2137,18 @@ export var preset_data = {
     },
 
     locations: {
+        valuesForSeasonCount(season_count) {
+            return Object.values(this.forSeasonCount(season_count));
+        },
+        forSeasonCount(season_count) {
+            switch (season_count) {
+                case 2:
+                case 4:
+                    return this[season_count];
+                default:
+                    return {};
+            }
+        },
         "2": {
             'Cool and Rainy': {
                 'name': 'Cool and Rainy',

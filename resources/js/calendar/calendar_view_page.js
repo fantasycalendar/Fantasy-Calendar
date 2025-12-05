@@ -7,9 +7,8 @@ export default (calendar_structure) => ({
     new_dynamic_change: false,
 
     // NOTE: Placeholders until we get this actually working
-    location_selection_value: null,
-    locations: [],
-    preset_locations: [],
+    location_select_value: null,
+    location_select_options: {},
 
     init() {
         window.Perms = new Perms(
@@ -81,6 +80,9 @@ export default (calendar_structure) => ({
 
         this.$nextTick(
             () => {
+                this.location_select_options = this.$store.calendar.get_location_select_options();
+                this.location_select_value = this.$store.calendar.get_location_select_value();
+
                 this.$dispatch('calendar-loaded', {
                     hash: window.hash,
                     calendar_name: window.calendar_name,
@@ -147,6 +149,8 @@ export default (calendar_structure) => ({
 
     update_calendar($event) {
         this.$store.calendar.debounceUpdate($event.detail.calendar);
+
+        this.location_selection_options = this.$store.calendar.get_location_selection_options();
     },
 
     evaluate_queryString() {
@@ -178,5 +182,9 @@ export default (calendar_structure) => ({
         if (urlParams.has('print')) {
             this.$dispatch('register-render-callback', { detail: print() });
         }
+    },
+
+    locationChanged() {
+        //
     }
 });
