@@ -44,7 +44,9 @@
         <!------------------ LOCATIONS ----------------->
         <!---------------------------------------------->
 
-        <x-current-location-select />
+            <div class="d-flex flex-column mx-3 mt-3">
+                <x-current-location-select />
+            </div>
         @endcan
 
         @if(Auth::check() && $calendar->isLinked())
