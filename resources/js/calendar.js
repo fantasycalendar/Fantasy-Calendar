@@ -662,6 +662,11 @@ export default class Calendar {
     get can_use_preset_locations() {
         return (this.static_data.seasons.data.length === 2 || this.static_data.seasons.data.length === 4)
             && this.static_data.seasons.global_settings.enable_weather;
+    }
 
+    get preset_locations() {
+        return this.can_use_preset_locations
+            ? preset_data.locations.valuesForSeasonCount(this.season_count)
+            : [];
     }
 }

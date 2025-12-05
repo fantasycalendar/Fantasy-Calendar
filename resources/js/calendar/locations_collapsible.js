@@ -29,6 +29,8 @@ class LocationsCollapsible extends CollapsibleComponent {
         "clock": "static_data.clock",
         "using_custom_location": "dynamic_data.custom_location",
         "current_location": "dynamic_data.location",
+        "can_use_preset_locations": "can_use_preset_locations",
+        "preset_locations": "preset_locations",
     }
 
     outboundProperties = {
@@ -42,14 +44,6 @@ class LocationsCollapsible extends CollapsibleComponent {
     }
 
     loaded() {
-        this.can_use_preset_locations = (this.seasons.length === 2 || this.seasons.length === 4) && this.season_settings.enable_weather;
-
-        if (this.can_use_preset_locations) {
-            this.preset_locations = Object.values(preset_data.locations[this.seasons.length]);
-        } else {
-            this.preset_locations = [];
-        }
-
         let location_list = this.using_custom_location ? this.locations : this.preset_locations;
         let current_location_index = isNaN(this.current_location)
             ? location_list.findIndex(location => location.name == this.current_location)
