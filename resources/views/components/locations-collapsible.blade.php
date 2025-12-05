@@ -14,24 +14,7 @@
 </div>
 
 <div x-show="season_settings.enable_weather || clock.enabled">
-    <div class='mb-2'>
-        Current location:
-        <!--
-        TODO: make this select update current location in dynamic data - maybe this is a lil component by itself?
-        -->
-        <select class='form-control' @change="locationChanged" x-model="location_selection_value">
-            <optgroup label="Custom" x-show="locations.length">
-                <template x-for="(location, index) in locations">
-                    <option :value="index + '-custom'" :selected="index + '-custom'" x-text="location.name"></option>
-                </template>
-            </optgroup>
-            <optgroup label="Preset" x-show="preset_locations.length">
-                <template x-for="(location, index) in preset_locations">
-                    <option :value="location.name + '-preset'" :selected="location_selection_value === location.name + '-preset'" x-text="location.name" :disabled="!can_use_preset_locations"></option>
-                </template>
-            </optgroup>
-        </select>
-    </div>
+    <x-current-location-select></x-current-location-select>
 
     <div class='separator'></div>
 

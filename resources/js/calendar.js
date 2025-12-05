@@ -289,6 +289,16 @@ export default class Calendar {
         return result;
     }
 
+    // Given strings like '2-preset' or '4-custom'
+    set_current_location(location_string) {
+        let [location, type] = location_string.split("-");
+
+        this.update({
+            ['dynamic_data.location']: location,
+            ['dynamic_data.custom_location']: type === "custom"
+        });
+    }
+
     get_adjusted_date(date, { years = 0, months = 0, days = 0, hours = 0, minutes = 0 } = {}) {
         let extra_days = 0;
         let hour = date.hour;

@@ -17,7 +17,8 @@ class LocationsCollapsible extends CollapsibleComponent {
     current_location = "0";
     using_custom_location = false;
 
-    location_selection_value = null;
+    location_select_value = null;
+    location_select_options = {};
 
     preset_locations = [];
     can_use_preset_locations = false;
@@ -44,14 +45,8 @@ class LocationsCollapsible extends CollapsibleComponent {
     }
 
     loaded() {
-        let location_list = this.using_custom_location ? this.locations : this.preset_locations;
-        let current_location_index = isNaN(this.current_location)
-            ? location_list.findIndex(location => location.name == this.current_location)
-            : this.current_location;
-
-        this.location_selection_value = this.using_custom_location
-            ? current_location_index + "-custom"
-            : this.current_location + "-preset";
+        this.location_select_options = this.$store.calendar.get_location_select_options();
+        this.location_select_value = this.$store.calendar.get_location_select_value();
     }
 
     addLocation() {
@@ -102,7 +97,7 @@ class LocationsCollapsible extends CollapsibleComponent {
         let [location, type] = $event.target.value.split("-");
         this.current_location = location;
         this.using_custom_location = type === "custom";
-        this.location_selection_value = $event.target.value;
+        this.location_select_value = $event.target.value;
     }
 
     copyCurrentLocation() {

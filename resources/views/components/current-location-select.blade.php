@@ -1,7 +1,7 @@
 <div class='mb-2'>
     Current location:
 
-    <select class='form-control' @change="locationChanged" x-model="location_select_value">
+    <select class='form-control' @change="locationChanged">
         <template x-for="(options, label) of location_select_options">
             <optgroup :label="label">
                 <template x-for="(location, _) of options">

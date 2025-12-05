@@ -151,6 +151,7 @@ export default (calendar_structure) => ({
         this.$store.calendar.debounceUpdate($event.detail.calendar);
 
         this.location_selection_options = this.$store.calendar.get_location_selection_options();
+        this.location_select_value = this.$store.calendar.get_location_select_value();
     },
 
     evaluate_queryString() {
@@ -184,7 +185,7 @@ export default (calendar_structure) => ({
         }
     },
 
-    locationChanged() {
-        //
+    locationChanged($event) {
+        this.$store.calendar.set_current_location($event.target.value);
     }
 });
