@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { update_dynamic } from "./calendar_ajax_functions.js";
 
 export default (calendar_structure) => ({
     last_mouse_move: false,
@@ -148,10 +149,14 @@ export default (calendar_structure) => ({
     },
 
     update_calendar($event) {
-        this.$store.calendar.debounceUpdate($event.detail.calendar);
+        this.$store.calendar.debounceUpdate($event.detail.calendar)
 
-        this.location_selection_options = this.$store.calendar.get_location_selection_options();
+        this.location_selection_options = this.$store.calendar.get_location_select_options();
         this.location_select_value = this.$store.calendar.get_location_select_value();
+    },
+
+    calendar_updated(){
+        update_dynamic(this.$store.calendar.hash);
     },
 
     evaluate_queryString() {

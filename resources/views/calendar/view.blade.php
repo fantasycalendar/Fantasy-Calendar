@@ -41,6 +41,7 @@
         @calendar-updating.window="update_calendar"
         @rebuild-calendar.window="rebuild_calendar"
         @render-calendar.window="render_calendar"
+        @calendar-updated.window="calendar_updated"
     >
         @include('layouts.weather_tooltip')
         @include('layouts.day_data_tooltip')

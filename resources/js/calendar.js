@@ -8,7 +8,8 @@ import {
     date_manager,
     does_day_appear,
     does_timespan_appear,
-    evaluate_calendar_start, execution_time,
+    evaluate_calendar_start,
+    execution_time,
     fract,
     get_current_era,
     get_days_in_timespan,
@@ -279,14 +280,12 @@ export default class Calendar {
             : preset_data.locations.valuesForSeasonCount(this.season_count);
 
         let current_location_index = isNaN(this.dynamic_data.location)
-            ? location_list.findIndex(location => location.name == this.dynamic_data.location)
+            ? location_list.findIndex(location => location.name === this.dynamic_data.location)
             : this.dynamic_data.location;
 
-        let result = this.dynamic_data.custom_location
+        return this.dynamic_data.custom_location
             ? current_location_index + "-custom"
             : current_location_index + "-preset";
-
-        return result;
     }
 
     // Given strings like '2-preset' or '4-custom'
@@ -294,8 +293,8 @@ export default class Calendar {
         let [location, type] = location_string.split("-");
 
         this.update({
-            ['dynamic_data.location']: location,
-            ['dynamic_data.custom_location']: type === "custom"
+            'dynamic_data.location': location,
+            'dynamic_data.custom_location': type === "custom",
         });
     }
 

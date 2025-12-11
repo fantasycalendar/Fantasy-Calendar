@@ -1,4 +1,5 @@
 import { clone } from "./calendar_functions";
+import _ from "lodash";
 
 export function getUrlParameter(sParam) {
     var sPageURL = decodeURIComponent(window.location.search.substring(1)),
@@ -41,7 +42,7 @@ export function update_view_dynamic(calendar_hash) {
 }
 
 
-export function update_dynamic(calendar_hash) {
+export function _update_dynamic(calendar_hash) {
     return axios.post(window.baseurl + "calendars/" + calendar_hash, {
         _method: 'PATCH',
         dynamic_data: JSON.stringify(window.dynamic_data)
@@ -49,6 +50,8 @@ export function update_dynamic(calendar_hash) {
         window.last_dynamic_change = new Date(result.data.last_changed.last_dynamic_change)
     })
 }
+
+export const update_dynamic = _.debounce(_update_dynamic, 300);
 
 export async function update_all() {
 
