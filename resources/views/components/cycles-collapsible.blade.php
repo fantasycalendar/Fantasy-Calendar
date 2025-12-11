@@ -41,8 +41,8 @@
                     <div class="w-full">Offset:</div>
                 </div>
                 <div class='flex gap-2'>
-                    <input type='number' step="1.0" class='form-control w-full' min='1' x-model.lazy='cycle.length'/>
-                    <input type='number' step="1.0" class='form-control w-full' min='0' x-model.lazy='cycle.offset'/>
+                    <input type='number' step="1.0" class='form-control w-full' min='1' x-model.debounce.500='cycle.length'/>
+                    <input type='number' step="1.0" class='form-control w-full' min='0' x-model.debounce.500='cycle.offset'/>
                 </div>
 
                 <div class='flex mt-3'>
@@ -61,7 +61,7 @@
 
                 <div class='w-full max-h-[350px] overflow-y-scroll mt-2 p-2.5 border rounded'>
                     <template x-for="name in cycle.names">
-                        <input type='text' class='form-control rounded-none first-of-type:rounded-t last-of-type:rounded-b mb-0.5' x-model.lazy='name'/>
+                        <input type='text' class='form-control rounded-none first-of-type:rounded-t last-of-type:rounded-b mb-0.5' x-model.debounce.1000='name'/>
                     </template>
                 </div>
             </div>

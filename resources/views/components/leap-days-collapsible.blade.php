@@ -80,7 +80,7 @@
 
                     {{-- TODO: Fix this input, if it's the problem --}}
                     <select class='custom-select form-control w-full'
-                        x-model.number.lazy='leap_day.timespan'>
+                        x-model.number.debounce.500='leap_day.timespan'>
                         <template x-for="(timespan, timespanIndex) in timespans">
                             <option :value="timespanIndex" :selected="timespanIndex === leap_day.timespan" x-text="timespan.name"></option>
                         </template>
@@ -128,7 +128,7 @@
                     <div class='flex flex-col'>
                         <div>Week day name:</div>
 
-                        <input type='text' class='form-control' x-model.lazy='leap_day.week_day'/>
+                        <input type='text' class='form-control' x-model.debounce.1000='leap_day.week_day'/>
                     </div>
 
                     <div class='flex flex-col'>
@@ -165,7 +165,7 @@
 
                     <div class='grid grid-cols-12'>
                         <x-alpine.text-input
-                            x-model.lazy="leap_day.interval"
+                            x-model.debounce.500="leap_day.interval"
                             wrapper-class="col-span-8"
                             class="rounded-r-none"
                             path="`leap_days.${index}.interval`"

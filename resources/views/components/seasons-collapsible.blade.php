@@ -76,7 +76,7 @@
                     <input type='number'
                         step='any'
                         class='form-control'
-                        x-model.lazy='season.transition_length'
+                        x-model.debounce.500='season.transition_length'
                         min='1' />
                 </div>
                 <div>
@@ -84,7 +84,7 @@
                     <input type='number'
                         step='any'
                         class='form-control'
-                        x-model.lazy='season.duration'
+                        x-model.debounce.500='season.duration'
                         min='0' />
                 </div>
             </div>
@@ -124,8 +124,8 @@
                     <div>Sunrise minute</div>
 
                     <div class="grid grid-cols-2 col-span-2 input-group">
-                        <input type='number' step="1.0" class='form-control !w-full' x-model.lazy='season.time.sunrise.hour'/>
-                        <input type='number' step="1.0" class='form-control !w-full' x-model.lazy='season.time.sunrise.minute'/>
+                        <input type='number' step="1.0" class='form-control !w-full' x-model.debounce.500='season.time.sunrise.hour'/>
+                        <input type='number' step="1.0" class='form-control !w-full' x-model.debounce.500='season.time.sunrise.minute'/>
                     </div>
                 </div>
 
@@ -134,8 +134,8 @@
                     <div>Sunset minute</div>
 
                     <div class="grid grid-cols-2 input-group col-span-2">
-                        <input type='number' step="1.0" class='form-control !w-full' x-model.lazy='season.time.sunset.hour'/>
-                        <input type='number' step="1.0" class='form-control !w-full' x-model.lazy='season.time.sunset.minute'/>
+                        <input type='number' step="1.0" class='form-control !w-full' x-model.debounce.500='season.time.sunset.hour'/>
+                        <input type='number' step="1.0" class='form-control !w-full' x-model.debounce.500='season.time.sunset.minute'/>
                     </div>
                 </div>
 
@@ -172,7 +172,7 @@
 
 <div class="my-1" x-show="settings.periodic_seasons">
     <div>Season offset (days):</div>
-    <input class='form-control' type='number' x-model.lazy="settings.season_offset"/>
+    <input class='form-control' type='number' x-model.debounce.500="settings.season_offset"/>
 </div>
 
 <button type='button' class='btn btn-secondary full mt-1' @click="createSeasonEvents">

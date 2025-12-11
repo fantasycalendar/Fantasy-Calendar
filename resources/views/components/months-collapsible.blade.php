@@ -77,8 +77,8 @@
                 delete-function="removeMonth(index)"
                 >
                 <x-slot:inputs>
-                    <input x-model.lazy="month.name" type='text' class='flex-grow-1 w-auto form-control pr-0' placeholder='Month name'/>
-                    <input x-model.lazy.number="month.length" type='number' min='1' class='flex-shrink-1 form-control'/>
+                    <input x-model.debounce.1000="month.name" type='text' class='flex-grow-1 w-auto form-control pr-0' placeholder='Month name'/>
+                    <input x-model.debounce.500.number="month.length" type='number' min='1' class='flex-shrink-1 form-control'/>
                 </x-slot:inputs>
 
                 <div x-text="'Intercalary: ' + (month.type === 'month' ? 'No' : 'Yes')"></div>
@@ -91,9 +91,9 @@
 
                     <div class='input-group w-full'>
                         <input type='number' step="1" min='1' class='form-control small-input'
-                        x-model.lazy.number="month.interval"/>
+                        x-model.debounce.500.number="month.interval"/>
                         <input type='number' step="1" min='0' class='form-control small-input'
-                        x-model.lazy.number="month.offset" :disabled="month.interval === 1"/>
+                        x-model.debounce.500.number="month.offset" :disabled="month.interval === 1"/>
                     </div>
 
                 </div>
@@ -146,7 +146,7 @@
                             <div class='flex border'>
                                 <div class='week_list w-full p-1'>
                                     <template x-for='(day, index) in (month.week ?? [])' :key='index'>
-                                        <input x-model.lazy='month.week[index]' type='text'
+                                        <input x-model.debounce.500='month.week[index]' type='text'
                                         class='form-control'/>
                                     </template>
                                 </div>

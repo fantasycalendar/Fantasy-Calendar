@@ -22,7 +22,7 @@
     <template x-for="(category, index) in categories" :key="index" x-ref="event-categories-sortable-template">
         <x-sortable-item deleteFunction="removeCategory(category.id)">
             <x-slot:inputs>
-                <input type='text' class='name-input small-input form-control' x-model.lazy='category.name'/>
+                <input type='text' class='name-input small-input form-control' x-model.debounce.1000='category.name'/>
             </x-slot:inputs>
 
             <div>

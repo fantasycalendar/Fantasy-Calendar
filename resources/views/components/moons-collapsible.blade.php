@@ -31,7 +31,7 @@
     <template x-for="(moon, index) in moons">
         <div class="list-group-item p-2 first-of-type:rounded-t">
             <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
-                <input type='text' class='form-control' x-model.lazy="moon.name"/>
+                <input type='text' class='form-control' x-model.debounce.1000="moon.name"/>
 
                 <div class="cursor-pointer w-6 text-center">
                     <i class="fa fa-trash text-lg hover:text-red-400 hover:dark:text-red-600" @click="deleting = index"></i>
@@ -63,7 +63,7 @@
                 <div class="grid grid-cols-7" x-show="!moon.custom_phase">
                     <div class="flex flex-col col-span-4">
                         <div>Cycle:</div>
-                    </div>
+                </div>
 
                     <div class="flex flex-col col-span-3">
                         <div>Shift:</div>

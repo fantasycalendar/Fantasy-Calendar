@@ -46,7 +46,7 @@
         <template x-for="(era, index) in eras">
             <x-sortable-item deleteFunction="removeEra(index)">
                 <x-slot:inputs>
-                    <input type='text' class='name-input small-input form-control' x-model.lazy='era.name'/>
+                    <input type='text' class='name-input small-input form-control' x-model.debounce.1000='era.name'/>
                 </x-slot:inputs>
 
                 <div class='flex flex-col space-y-2 py-2'>
@@ -124,12 +124,12 @@
                             <input type='number'
                                 step="1.0"
                                 class='date form-control small-input'
-                                x-model.lazy.number='era.date.year'
+                                x-model.debounce.500.number='era.date.year'
                                 @change="updateEraEpoch(era)" />
 
                             <select type='number'
                                 class='date custom-select form-control'
-                                x-model.lazy.number='era.date.timespan'
+                                x-model.debounce.500.number='era.date.timespan'
                                 @change="updateEraEpoch(era)"
                                 >
                                 <template x-for="(month, month_index) in getMonthsInYear(era.date.year)">
@@ -141,7 +141,7 @@
 
                             <select type='number'
                                 class='date custom-select form-control'
-                                x-model.lazy.number='era.date.day'
+                                x-model.debounce.500.number='era.date.day'
                                 @change="updateEraEpoch(era)">
                                 <template
                                     x-for="(day, day_index) in getDaysForMonth(era.date.year, era.date.timespan)">

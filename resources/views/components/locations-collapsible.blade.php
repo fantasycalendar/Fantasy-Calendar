@@ -78,12 +78,12 @@
                                     <div class='flex gap-2 mb-2'>
                                         <div>
                                             Temperature low
-                                            <input type='number' step="any" class='form-control full' x-model.number.lazy='season.weather.temp_low'>
+                                            <input type='number' step="any" class='form-control full' x-model.number.debounce.500='season.weather.temp_low'>
                                         </div>
 
                                         <div>
                                             Temperature high
-                                            <input type='number' step="any" class='form-control full' x-model.number.lazy='season.weather.temp_high'>
+                                            <input type='number' step="any" class='form-control full' x-model.number.debounce.500='season.weather.temp_high'>
                                         </div>
                                     </div>
 
@@ -130,11 +130,11 @@
                                     </div>
 
                                     <div class='flex mb-2 gap-[8px]'>
-                                        <input type='number' step="1.0" class='form-control text-right full' x-model.number.lazy="season.time.sunrise.hour" :disabled="location.settings.season_based_time ?? false"/>
+                                        <input type='number' step="1.0" class='form-control text-right full' x-model.number.debounce.500="season.time.sunrise.hour" :disabled="location.settings.season_based_time ?? false"/>
 
                                         <div class="basis-[20px] text-center grid items-center">:</div>
 
-                                        <input type='number' step="1.0" class='form-control full' x-model.number.lazy="season.time.sunrise.minute" :disabled="location.settings.season_based_time ?? false"/>
+                                        <input type='number' step="1.0" class='form-control full' x-model.number.debounce.500="season.time.sunrise.minute" :disabled="location.settings.season_based_time ?? false"/>
                                     </div>
 
                                     <div class='flex gap-[24px] justify-evenly'>
@@ -147,11 +147,11 @@
                                     </div>
 
                                     <div class='flex mb-2 gap-[8px]'>
-                                        <input type='number' step="1.0" class='form-control text-right full' x-model.number.lazy="season.time.sunset.hour" :disabled="location.settings.season_based_time ?? false"/>
+                                        <input type='number' step="1.0" class='form-control text-right full' x-model.number.debounce.500="season.time.sunset.hour" :disabled="location.settings.season_based_time ?? false"/>
 
                                         <div class="basis-[20px] text-center grid items-center">:</div>
 
-                                        <input type='number' step="1.0" class='form-control full' x-model.number.lazy="season.time.sunset.minute" :disabled="location.settings.season_based_time ?? false"/>
+                                        <input type='number' step="1.0" class='form-control full' x-model.number.debounce.500="season.time.sunset.minute" :disabled="location.settings.season_based_time ?? false"/>
                                     </div>
                                 </div>
 
@@ -186,11 +186,11 @@
                         </div>
 
                         <div class='flex mb-2 gap-[8px]'>
-                            <input type='number' step="1.0" class='form-control text-right full' x-model.number.lazy="location.settings.timezone.hour" />
+                            <input type='number' step="1.0" class='form-control text-right full' x-model.number.debounce.500="location.settings.timezone.hour" />
 
                             <div class="basis-[20px] text-center grid items-center">:</div>
 
-                            <input type='number' step="1.0" class='form-control full' x-model.number.lazy="location.settings.timezone.minute" />
+                            <input type='number' step="1.0" class='form-control full' x-model.number.debounce.500="location.settings.timezone.minute" />
                         </div>
                     </div>
 
@@ -209,8 +209,8 @@
                         </div>
 
                         <div class='flex gap-2'>
-                            <input type='number' class='form-control' x-model.number.lazy='location.settings.large_noise_frequency'/>
-                            <input type='number' class='form-control' x-model.number.lazy='location.settings.large_noise_amplitude'/>
+                            <input type='number' class='form-control' x-model.number.debounce.500='location.settings.large_noise_frequency'/>
+                            <input type='number' class='form-control' x-model.number.debounce.500='location.settings.large_noise_amplitude'/>
                         </div>
 
                         <div class='flex gap-2 mt-2'>
@@ -223,8 +223,8 @@
                         </div>
 
                         <div class='flex gap-2'>
-                            <input type='number' class='form-control' x-model.number.lazy='location.settings.medium_noise_frequency'/>
-                            <input type='number' class='form-control' x-model.number.lazy='location.settings.medium_noise_amplitude'/>
+                            <input type='number' class='form-control' x-model.number.debounce.500='location.settings.medium_noise_frequency'/>
+                            <input type='number' class='form-control' x-model.number.debounce.500='location.settings.medium_noise_amplitude'/>
                         </div>
 
                         <div class='flex gap-2 mt-2'>
@@ -237,8 +237,8 @@
                         </div>
 
                         <div class='flex gap-2'>
-                            <input type='number' class='form-control' x-model.number.lazy='location.settings.small_noise_frequency'/>
-                            <input type='number' class='form-control' x-model.number.lazy='location.settings.small_noise_amplitude'/>
+                            <input type='number' class='form-control' x-model.number.debounce.500='location.settings.small_noise_frequency'/>
+                            <input type='number' class='form-control' x-model.number.debounce.500='location.settings.small_noise_amplitude'/>
                         </div>
                     </div>
                 </div>
