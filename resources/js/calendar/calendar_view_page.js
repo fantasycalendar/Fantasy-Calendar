@@ -151,7 +151,7 @@ export default (calendar_structure) => ({
     update_calendar($event) {
         this.$store.calendar.debounceUpdate($event.detail.calendar)
 
-        this.location_selection_options = this.$store.calendar.get_location_select_options();
+        this.location_select_options = this.$store.calendar.get_location_select_options();
         this.location_select_value = this.$store.calendar.get_location_select_value();
     },
 
@@ -167,14 +167,11 @@ export default (calendar_structure) => ({
             let month = Number(urlParams.get('month'));
             let day = Number(urlParams.get('day'));
 
-            console.log(year, month, day);
-
             if (isNaN(year) || isNaN(month) || isNaN(day)) {
                 return false;
             }
 
             if (valid_preview_date(year, month, day) || window.Perms.player_at_least('co-owner')) {
-                console.log(year, month, day);
                 this.$nextTick(() => {
                     this.$store.calendar.set_selected_date({
                         year, month, day
