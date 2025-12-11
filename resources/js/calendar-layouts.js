@@ -24,15 +24,8 @@ export default () => ({
     ],
 
     open_modal: function($event) {
-        // if (evaluate_save_button()) { // TODO: Fix calendar layouts requiring calendar to be saved
-            this.open = true;
-            this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() === this.$store.calendar.static_data.settings.layout);
-        // } else {
-        //     this.$dispatch('notify', {
-        //         content: "Applying a layout refreshes the page, please save your calendar first.",
-        //         type: "warning"
-        //     });
-        // }
+        this.open = true;
+        this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() === this.$store.calendar.static_data.settings.layout);
     },
 
     apply_layout: function(layout) {
@@ -40,31 +33,18 @@ export default () => ({
         this.$dispatch("app-busy-start");
 
         let previous_layout = this.$store.calendar.static_data.settings.layout;
-        this.$dispatch("calendar-updating", {
-            calendar: {
-                static_data: {
-                    settings: {
-                        layout: layout.name.toLowerCase()
-                    }
-                }
-            }
+        this.$store.calendar.update({
+            "static_data.settings.layout": layout.name.toLowerCase(),
         });
 
-        // TODO: this doesn't work?
         do_update_all(window.hash)
             .then(() => {
                 window.onbeforeunload = function() { }
                 window.location.reload(false);
             })
             .catch((error) => {
-                this.$dispatch("calendar-updating", {
-                    calendar: {
-                        static_data: {
-                            settings: {
-                                layout: previous_layout
-                            }
-                        }
-                    }
+                this.$store.calendar.update({
+                    "static_data.settings.layout": previous_layout
                 });
                 this.$store.calendar.static_data.settings.layout = previous_layout;
                 this.$dispatch("app-busy-end");
