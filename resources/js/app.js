@@ -313,5 +313,44 @@ Alpine.data('calendar_linking_collapsible', CalendarLinkingCollapsible);
 import EventConditionsComponent from './calendar/event_conditions_component.js';
 Alpine.data('event_conditions_component', EventConditionsComponent);
 
+
+Alpine.data('moon_custom_cycle_input', () => {
+    return {
+        custom_cycle: "",
+        _custom_cycle: "",
+
+        init() {
+            this.$watch('custom_cycle', (value) => {
+              this._custom_cycle = value;
+            })
+            let debouncedValueChanged = _.debounce((value) => {
+                this.custom_cycle = value;
+            }, 500);
+            this.$watch('_custom_cycle', (value) => {
+                if(value !== this.custom_cycle) {
+                    value = value.replace(this.validCustomCycleRegex, '').replace(/,{2,}/g, ",");
+                    debouncedValueChanged(value)
+                }
+            })
+        },
+
+        validCustomCycleRegex: /[`!+~@#$%^&*()_|\-=?;:'".<>{}\[\]\\\/A-Za-z ]/g,
+
+        shiftCustomCycle(direction){
+            let cycle = this._custom_cycle.split(",");
+
+            if (direction > 0) {
+                cycle = [...cycle.slice(cycle.length - 1), ...cycle.slice(0, cycle.length - 1)];
+            } else {
+                cycle = [...cycle.slice(1, cycle.length), ...cycle.slice(0, 1)];
+            }
+
+            this._custom_cycle = cycle.join(",");
+        }
+    }
+});
+
+
+
 Alpine.start();
 

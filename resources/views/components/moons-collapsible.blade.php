@@ -70,13 +70,13 @@
                     </div>
 
                     <div class="input-group col-span-7">
-                        <input type='number' min='1' class='form-control' x-model="moon.cycle"/>
-                        <input type='number' class='form-control' x-model='moon.shift'/>
+                        <input type='number' min='1' class='form-control' x-model.debounce.500.number="moon.cycle"/>
+                        <input type='number' class='form-control' x-model.debounce.500.number='moon.shift'/>
                     </div>
 
                     <div class='flex flex-col mt-1 col-span-7'>
                         Sprite rounding:
-                        <select class='form-control' x-model='moon.cycle_rounding'>
+                        <select class='form-control' x-model.debounce.500='moon.cycle_rounding'>
                             <option value='floor'>Always round down</option>
                             <option value='round'>Round nearest</option>
                             <option value='ceil'>Always round up</option>
@@ -87,17 +87,18 @@
                 <div class='flex flex-col' x-show="moon.custom_phase">
                     <div>Custom phase:</div>
 
-                    <div class='input-group'>
+                    <div class='input-group'
+                         x-data="moon_custom_cycle_input" x-modelable="custom_cycle" x-model="moon.custom_cycle">
                         <div class='input-group-prepend'>
-                            <button type='button' class='btn btn-sm btn-secondary' @click="shiftCustomCycle(moon, -1)">
+                            <button type='button' class='btn btn-sm btn-secondary' @click="shiftCustomCycle(-1)">
                                 <i class="fa fa-angle-double-left"></i>
                             </button>
                         </div>
 
-                        <input type='text' class='form-control form-control-sm' :value='moon.custom_cycle' @change="customCycleChanged(moon, $event)"/>
+                        <input type='text' class='form-control form-control-sm' x-model='_custom_cycle'/>
 
                         <div class='input-group-append'>
-                            <button type='button' class='btn btn-sm btn-secondary' @click="shiftCustomCycle(moon, 1)">
+                            <button type='button' class='btn btn-sm btn-secondary' @click="shiftCustomCycle(1)">
                                 <i class="fa fa-angle-double-right"></i>
                             </button>
                         </div>
@@ -116,8 +117,8 @@
                     <div>Moon color:</div>
                     <div>Shadow color:</div>
 
-                    <input type='color' class="w-full rounded-sm bg-transparent h-[32px]" x-model.lazy='moon.color'/>
-                    <input type='color' class="w-full rounded-sm bg-transparent h-[32px]" x-model.lazy='moon.shadow_color'/>
+                    <input type='color' class="w-full rounded-sm bg-transparent h-[32px]" x-model.debounce.500='moon.color'/>
+                    <input type='color' class="w-full rounded-sm bg-transparent h-[32px]" x-model.debounce.500='moon.shadow_color'/>
                 </div>
 
                 <div>

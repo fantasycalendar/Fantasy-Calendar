@@ -25,7 +25,30 @@ class MoonsCollapsible extends CollapsibleComponent {
         "moons": "static_data.moons"
     }
 
-    validCustomCycleRegex = /[`!+~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z ]/g;
+    changeHandlers = {
+        "moons": this.moonChanged
+    }
+
+    moonChanged(newMoons) {
+        for(let moon of newMoons){
+            if(moon.custom_phase) {
+                let cycle = Math.max.apply(null, moon.custom_cycle.split(",")) + 1;
+                if (cycle <= 4) {
+                    moon.granularity = 4;
+                } else if (cycle <= 8) {
+                    moon.granularity = 8;
+                } else if (cycle <= 16) {
+                    moon.granularity = 16;
+                } else if (cycle <= 24) {
+                    moon.granularity = 24;
+                } else {
+                    moon.granularity = 40;
+                }
+            }else {
+                moon.granularity = get_moon_granularity(moon.cycle);
+            }
+        }
+    }
 
     addMoon(){
         let cycle = this.cycle || avg_month_length(this.months, this.leap_days) || 32;
@@ -38,7 +61,8 @@ class MoonsCollapsible extends CollapsibleComponent {
             'color': '#ffffff',
             'shadow_color': '#292b4a',
             'hidden': false,
-            'custom_phase': false
+            'custom_phase': false,
+            'custom_cycle': ""
         });
         this.name = "";
         this.cycle = null;
@@ -76,42 +100,6 @@ class MoonsCollapsible extends CollapsibleComponent {
         let cycle = Math.max.apply(null, moon.custom_cycle.split(',')) + 1;
         let invalid = cycle > 40;
         return invalid ? `${moon.name} has an invalid custom cycle. 39 is the highest possible number.` : '';
-    }
-
-    customCycleChanged(moon, $event) {
-
-        $event.target.value = $event.target.value
-            .replace(this.validCustomCycleRegex, '')
-            .replace(/,{2,}/g, ",");
-
-        let cycle = Math.max.apply(null, $event.target.value.split(',')) + 1;
-
-        if (cycle <= 4) {
-            moon.granularity = 4;
-        } else if (cycle <= 8) {
-            moon.granularity = 8;
-        } else if (cycle <= 16) {
-            moon.granularity = 16;
-        } else if (cycle <= 24) {
-            moon.granularity = 24;
-        } else {
-            moon.granularity = 40;
-        }
-
-        moon.custom_cycle = $event.target.value;
-    }
-
-    // TODO: make this its own little Alpine component, for debouncing!
-    shiftCustomCycle(moon, direction){
-        let cycle = moon.custom_cycle.split(",");
-
-        if (direction > 0) {
-            cycle = [...cycle.slice(cycle.length - 1), ...cycle.slice(0, cycle.length - 1)];
-        } else {
-            cycle = [...cycle.slice(1, cycle.length), ...cycle.slice(0, 1)];
-        }
-
-        moon.custom_cycle = cycle.join(",");
     }
 
 }
