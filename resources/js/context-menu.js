@@ -86,8 +86,8 @@ export default () => ({
                         month: epoch_data.timespan_number,
                         day: epoch_data.day,
                         epoch: epoch_data.epoch,
+                        follow: false
                     });
-                    $store.calendar.set_selected_date_active(true);
                 },
                 disabled: function() {
                     return day.epoch == preview_date.epoch || !$store.calendar.static_data.settings.allow_view && !Perms.player_at_least('co-owner');
