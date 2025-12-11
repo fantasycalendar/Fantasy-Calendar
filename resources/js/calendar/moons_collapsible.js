@@ -75,7 +75,6 @@ class MoonsCollapsible extends CollapsibleComponent {
         if(!moon.custom_phase) return '';
         let cycle = Math.max.apply(null, moon.custom_cycle.split(',')) + 1;
         let invalid = cycle > 40;
-        // TODO: Figure out a way to block the calendar rendering if collapsible contains an error
         return invalid ? `${moon.name} has an invalid custom cycle. 39 is the highest possible number.` : '';
     }
 

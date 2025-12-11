@@ -47,7 +47,6 @@ export default () => ({
     render_year_mustache(inFormat, eraName = false) {
         const epochData = this.get_epoch_data();
 
-        // TODO: FIXIT
         let mustacheData = {
             "year": epochData?.year ?? "{PLACEHOLDER year}",
             "nth_year": ordinal_suffix_of(epochData?.year ?? "{PLACEHOLDER year}"),

@@ -65,7 +65,6 @@ class ErasCollapsible extends CollapsibleComponent {
     }
 
     getMonthsInYear(year) {
-        // TODO: make this refresh when the month intervals are changed - change listener?
         return this.$store.calendar.get_timespans_in_year(year)
             .map(({ result, reason }, index) => ({
                 name: this.months[index].name + (!result ? ` (${reason})` : ""),
