@@ -60,12 +60,14 @@ export default () => ({
 	},
 
     weather_click: function (day, event) {
+        if(day.epoch === undefined) return;
 	    window.dispatchEvent(new CustomEvent('weather-mouse-click', {
 		    detail: this.get_weather_data(day, event)
 	    }));
     },
 
     weather_mouse_enter: function (day, event) {
+        if(day.epoch === undefined) return;
 	    window.dispatchEvent(new CustomEvent('weather-mouse-enter', {
 		    detail: this.get_weather_data(day, event)
 	    }));
