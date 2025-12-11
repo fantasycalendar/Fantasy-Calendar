@@ -91,6 +91,7 @@ class LocationsCollapsible extends CollapsibleComponent {
 
     removeLocation(index) {
         this.locations.splice(index, 1);
+        this.deleting = -1;
     }
 
     locationChanged($event) {

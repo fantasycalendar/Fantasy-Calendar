@@ -1,4 +1,4 @@
-import { update_all, update_dynamic, update_name } from "./calendar_ajax_functions.js";
+import { _update_dynamic, update_all, update_dynamic, update_name } from "./calendar_ajax_functions.js";
 import _ from "lodash";
 
 export default () => ({
@@ -83,10 +83,14 @@ export default () => ({
         let updateMethod;
         let updateParams = [];
 
-        if (!_.isEqual(this.prev_calendar_data.dynamic_data, this.$store.calendar.dynamic_data)) {
-            updateMethod = update_dynamic;
+        let staticChanged = !_.isEqual(this.prev_calendar_data.static_data, this.$store.calendar.static_data);
+        let dynamicDataChanged = !_.isEqual(this.prev_calendar_data.dynamic_data, this.$store.calendar.dynamic_data);
+        let nameChanged = this.prev_calendar_data.calendar_name !== this.$store.calendar.calendar_name;
+
+        if (dynamicDataChanged && !staticChanged && !nameChanged) {
+            updateMethod = _update_dynamic;
             updateParams = [this.$store.calendar.hash];
-        } else if (this.prev_calendar_data.calendar_name !== this.$store.calendar.calendar_name) {
+        } else if (nameChanged && !staticChanged && !dynamicDataChanged) {
             updateMethod = update_name;
         } else {
             updateMethod = update_all;
