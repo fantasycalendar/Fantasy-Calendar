@@ -39,7 +39,6 @@ export default () => ({
     },
 
     set_weather_graphs_visible(visible) {
-        // TODO: make this an actual alpine component
         this.visible = visible;
         this.update_graphs();
     },
