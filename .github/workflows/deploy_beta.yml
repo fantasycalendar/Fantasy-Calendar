@@ -65,7 +65,7 @@ jobs:
         if: steps.cache-composer.outputs.cache-hit != 'true'
       - name: Install NPM dependencies
         if: steps.cache-npm.outputs.cache-hit != 'true'
-        run: npm install --legacy-peer-deps --loglevel verbose
+        run: npm install --legacy-peer-deps
       - name: Build production assets
         if: steps.cache-assets.outputs.cache-hit != 'true'
         run: npm run build

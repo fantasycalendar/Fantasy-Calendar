@@ -33,7 +33,7 @@
         "bootswatch": "^4.6.2",
         "chart.js": "^2.9.3",
         "collect.js": "^4.34.3",
-        "jquery": "^4.0.0-beta",
+        "jquery": "^4.0.0-rc.1",
         "jquery-contextmenu": "^2.9.2",
         "jquery-ui": "^1.13.3",
         "mustache": "^3.2.1",
@@ -50,7 +50,6 @@
         "sortablejs": "^1.15.0",
         "sweetalert2": "^9.17.4",
         "tailwindcss": "^3.2.4",
-        "trumbowyg": "^2.26.0",
         "weather-icons": "git+https://github.com/fantasycalendar/weather-icons.git"
     },
     "name": "app"
