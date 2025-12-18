@@ -4,6 +4,8 @@
     x-show="visible"
     @calendar-loaded.window="load"
     @calendar-updated.window="load"
+    @clock-toggled.window="load"
+    @current-date-toggled.window="load"
     x-transition
 >
     <canvas style="z-index: 2;" x-ref="clock_face"></canvas>
