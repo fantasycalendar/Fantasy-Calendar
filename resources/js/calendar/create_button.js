@@ -84,9 +84,6 @@ export default () => ({
             clearTimeout(this.timeout);
         }
 
-        let updateMethod;
-        let updateParams = [];
-
         this.save_status = "saving";
 
         create_calendar()

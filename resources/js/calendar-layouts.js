@@ -37,22 +37,30 @@ export default () => ({
             "static_data.settings.layout": layout.name.toLowerCase(),
         });
 
-        do_update_all(window.hash)
-            .then(() => {
-                window.onbeforeunload = function() { }
-                window.location.reload(false);
-            })
-            .catch((error) => {
-                this.$store.calendar.update({
-                    "static_data.settings.layout": previous_layout
+        if(window.location.href.endsWith("/edit")) {
+            do_update_all(window.hash)
+                .then(() => {
+                    window.onbeforeunload = function () {
+                    }
+                    window.location.reload(false);
+                })
+                .catch((error) => {
+                    this.$store.calendar.update({
+                        "static_data.settings.layout": previous_layout
+                    });
+                    this.$store.calendar.static_data.settings.layout = previous_layout;
+                    this.$dispatch("app-busy-end");
+                    this.$dispatch('notify', {
+                        content: error.response.data.message,
+                        type: "error"
+                    });
                 });
-                this.$store.calendar.static_data.settings.layout = previous_layout;
-                this.$dispatch("app-busy-end");
-                this.$dispatch('notify', {
-                    content: error.response.data.message,
-                    type: "error"
-                });
-            });
+        }else{
+            window.location = window.location.href.split("/create")[0] + "/create?resume=1";
+            // window.onbeforeunload = function () {
+            // }
+            // window.location.reload(false);
+        }
     }
 
 })

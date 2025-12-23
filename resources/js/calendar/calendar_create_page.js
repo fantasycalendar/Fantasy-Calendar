@@ -157,54 +157,22 @@ export default (calendar_structure) => ({
         bind_calendar_events();
 
         document.addEventListener("DOMContentLoaded", () => {
-
-            const queryString = window.location.search;
-            if (should_resume(queryString)) {
-                this.autoload();
+            if (this.should_resume(window.location.search)) {
+                this.autoload(false);
             } else {
                 this.queryAutoload();
             }
 
-            window.dispatchEvent(new CustomEvent("rebuild-calendar"));
-
-        });
-
-        function should_resume(queryString) {
-            const urlParams = new URLSearchParams(queryString);
-            return urlParams.has("resume");
-        }
-
-        window.dispatchEvent(new CustomEvent("events-changed"));
-
-        this.$nextTick(async () => {
-
-            let autoload = await this.queryAutoload();
-            if(autoload) return;
-
-            this.$dispatch('calendar-loaded', {
-                hash: window.hash,
-                calendar_name: window.calendar_name,
-                calendar_id: window.calendar_id,
-                static_data: window.static_data,
-                dynamic_data: window.dynamic_data,
-                is_linked: window.is_linked,
-                has_parent: window.has_parent,
-                parent_hash: window.parent_hash,
-                parent_offset: window.parent_offset,
-                events: window.events,
-                event_categories: window.event_categories,
-                last_static_change: window.last_static_change,
-                last_dynamic_change: window.last_dynamic_change,
-                advancement: window.advancement
-            });
-
             this.evaluate_current_step();
-
         });
 
         window.dispatchEvent(new CustomEvent("events-changed"));
     },
 
+    should_resume(queryString) {
+        const urlParams = new URLSearchParams(queryString);
+        return urlParams.has("resume");
+    },
 
     autosave() {
         let saved_data = JSON.stringify({
@@ -262,14 +230,25 @@ export default (calendar_structure) => ({
 
             this.evaluate_current_step();
 
-            this.$dispatch(
-                'calendar-loaded', {
-                    calendar_name: data.calendar_name,
-                    static_data: data.static_data,
-                    dynamic_data: data.dynamic_data,
-                    events: data.events
-                }
-            )
+            this.$dispatch('calendar-loaded', {
+                hash: window.hash,
+                calendar_name: window.calendar_name,
+                calendar_id: window.calendar_id,
+                static_data: window.static_data,
+                dynamic_data: window.dynamic_data,
+                is_linked: window.is_linked,
+                has_parent: window.has_parent,
+                parent_hash: window.parent_hash,
+                parent_offset: window.parent_offset,
+                events: window.events,
+                event_categories: window.event_categories,
+                last_static_change: window.last_static_change,
+                last_dynamic_change: window.last_dynamic_change,
+                advancement: window.advancement
+            });
+
+            window.dispatchEvent(new CustomEvent("rebuild-calendar"));
+            window.dispatchEvent(new CustomEvent("events-changed"));
 
             if (popup) {
                 swal.fire({

@@ -13,7 +13,7 @@
     x-data="{
         open: {{ $open ? 'true' : 'false' }},
         show: true,
-        step: @js($step),
+        step: Number(@js($step)),
         toggle() {
             this.open = !this.open;
 
@@ -21,8 +21,8 @@
             $dispatch('{{ Str::slug($contains) }}-toggled', this.open);
         },
         evaluate_calendar_step($event) {
-            this.show = $event.detail.done || (this.step !== null && $event.detail.step >= this.step);
-            if(this.step !== null && $event.detail.step === this.step){
+            this.show = $event.detail.done || (this.step && $event.detail.step >= this.step);
+            if(this.step && $event.detail.step === this.step){
                 this.open = true;
             }
         }

@@ -73,7 +73,7 @@
     </div>
 @endif
 
-<div class="flex flex-col" x-show='overflow_weekdays'>
+<div class="flex flex-col" x-show='overflow_weekdays && weekdays.length'>
     <x-separator class="mt-[1rem]"></x-separator>
 
     <strong>Start the first year on:</strong>
