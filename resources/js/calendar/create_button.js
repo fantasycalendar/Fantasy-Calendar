@@ -88,7 +88,8 @@ export default () => ({
         this.save_status = "saving";
 
         create_calendar()
-            .catch(() => {
+            .catch((error) => {
+                // TODO: Handle page not knowing that the user had logged on a separate page
                 this.save_status = "error";
                 this.$dispatch('notify', {
                     content: error.response.data.message,
