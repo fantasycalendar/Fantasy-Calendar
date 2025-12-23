@@ -1,6 +1,6 @@
 @props(['calendar' => null])
 
-@if($calendar->isLinked())
+@if(isset($calendar) && $calendar->isLinked())
     <ul class="list-group">
         @php
             $leap_days = Arr::get($calendar->static_data, 'year_data.leap_days');

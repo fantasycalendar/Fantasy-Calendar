@@ -1569,3 +1569,27 @@ export function slugify(string) {
         .replace(/^-+/, '') // Trim - from start of text
         .replace(/-+$/, '') // Trim - from end of text
 }
+
+export function get_category(search) {
+    if (window.event_categories.length === 0) {
+        return { id: -1 };
+    }
+
+    let results = [];
+
+    if (isNaN(search)) {
+        results = window.event_categories.filter(function(element) {
+            return slugify(element.name) === search;
+        });
+    } else {
+        results = window.event_categories.filter(function(element) {
+            return element.id === search;
+        });
+    }
+
+    if (results.length < 1) {
+        return { id: -1 };
+    }
+
+    return results[0];
+}

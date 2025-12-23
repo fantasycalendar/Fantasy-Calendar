@@ -1,5 +1,4 @@
-import { clone } from "./calendar/calendar_functions";
-import { get_category } from "./calendar/calendar_inputs_edit";
+import { clone, get_category } from "./calendar/calendar_functions";
 
 export default () => ({
     open: false,

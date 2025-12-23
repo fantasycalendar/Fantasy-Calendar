@@ -252,30 +252,17 @@ export async function check_last_change(calendar_hash) {
     return axios.post(window.apiurl + "/calendar/" + calendar_hash + "/last_changed");
 }
 
-export function create_calendar(callback) {
-
-    $.ajax({
-        url: window.baseurl + "calendars",
-        type: "post",
-        dataType: 'json',
-        data: {
-            name: window.calendar_name,
-            dynamic_data: JSON.stringify(window.dynamic_data),
-            static_data: JSON.stringify(window.static_data),
-            events: JSON.stringify(window.events),
-            event_categories: JSON.stringify(window.event_categories)
-        },
-        success: function(result) {
-            localStorage.clear();
-            window.location.href = window.baseurl + 'calendars/' + result.hash + '/edit';
-        },
-        error: function(error) {
-            $.notify(
-                error
-            );
-        }
-    });
-
+export function create_calendar() {
+    return axios.post(window.baseurl + "calendars", {
+        name: window.calendar_name,
+        dynamic_data: JSON.stringify(window.dynamic_data),
+        static_data: JSON.stringify(window.static_data),
+        events: JSON.stringify(window.events),
+        event_categories: JSON.stringify(window.event_categories)
+    }).then((result) => {
+        localStorage.clear();
+        window.location.href = window.baseurl + 'calendars/' + result.data.hash + '/edit';
+    })
 }
 
 

@@ -1,17 +1,35 @@
-@props(['calendar' => null, 'contains' => null, 'step' => null, 'icon' => null, 'premium_feature' => false, 'polished' => false, 'done' => false, 'wip' => false, 'open' => false])
+@props([
+	'calendar' => null,
+	'contains' => null,
+	'step' => null,
+	'icon' => null,
+	'premium_feature' => false,
+	'open' => false
+])
 
 @php($contains_clean = Str::replace("-", " ", $contains))
 
 <div
     x-data="{
         open: {{ $open ? 'true' : 'false' }},
+        show: true,
+        step: @js($step),
         toggle() {
             this.open = !this.open;
 
             // TODO: Use this within any components (clock?) that need it
             $dispatch('{{ Str::slug($contains) }}-toggled', this.open);
+        },
+        evaluate_calendar_step($event) {
+            this.show = $event.detail.done || (this.step !== null && $event.detail.step >= this.step);
+            if(this.step !== null && $event.detail.step === this.step){
+                this.open = true;
+            }
         }
     }"
+    @calendar-step-changed.window="evaluate_calendar_step"
+    x-show="show"
+    x-cloak
     @class([
         'wrap-collapsible card',
         $step ? "step-{$step}-step" : null,

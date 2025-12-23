@@ -14,6 +14,8 @@
         </div>
     </div>
 
+    <x-calendar-creation-steps></x-calendar-creation-steps>
+
     <template
         @render-data-change.window="
             pre_render();

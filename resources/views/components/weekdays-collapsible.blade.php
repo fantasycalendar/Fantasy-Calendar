@@ -11,7 +11,7 @@
     <p>However, this calendar either has a custom week set on one or more months, or a leap day that adds a weekday to its month.</p>
 </x-alert>
 
-@if ($calendar->isLinked())
+@if (isset($calendar) && $calendar->isLinked())
     <div class='flex justify-between mt-[1rem]' data-pt-position="right">
         <div class='pr-1 bold-text'>
             Overflow weekdays:
@@ -25,7 +25,7 @@
 
 <x-separator></x-separator>
 
-@if ($calendar->isLinked())
+@if (isset($calendar) && $calendar->isLinked())
     <ul class="list-group">
         @foreach (Arr::get($calendar->static_data, 'year_data.global_week') as $weekday)
             <li class="list-group-item">{{ $weekday }}</li>
@@ -78,7 +78,7 @@
 
     <strong>Start the first year on:</strong>
 
-    @if ($calendar->isLinked())
+    @if (isset($calendar) && $calendar->isLinked())
         <ul class="list-group mt-[0.25rem]">
             <li class="list-group-item">
                 {{ Arr::get($calendar->static_data, 'year_data.global_week')[
@@ -98,7 +98,7 @@
     @endif
 </div>
 
-@if ($calendar->isLinked())
+@if (isset($calendar) && $calendar->isLinked())
     <p class="mb-0 mt-[1.25rem]"><a @click="linked_popup();" href='#'>Why can't I edit the weekdays?</a></p>
 @endif
 

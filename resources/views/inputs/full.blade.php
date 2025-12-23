@@ -4,46 +4,46 @@
     @yield('label')
 
     <div class="accordion mt-3">
-        <x-collapsible :calendar="$calendar" contains="Statistics" icon="fa-chart-pie"></x-collapsible>
+        <x-collapsible :calendar="$calendar ?? null" contains="Statistics" icon="fa-chart-pie"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Current Date" icon="fa-hourglass-half"></x-collapsible>
+        <x-collapsible :calendar="$calendar ?? null" contains="Current Date" icon="fa-hourglass-half"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Clock" icon="fa-clock"></x-collapsible>
+        <x-collapsible :calendar="$calendar ?? null" contains="Clock" icon="fa-clock"></x-collapsible>
 
         @if(request()->is('calendars/*/edit'))
-            <x-collapsible :calendar="$calendar" contains="Real-Time Advancement" icon="fa-history"
+            <x-collapsible :calendar="$calendar ?? null" contains="Real-Time Advancement" icon="fa-history"
                            premium_feature="true"></x-collapsible>
         @endif
 
-        <x-collapsible :calendar="$calendar" contains="Weekdays" step="2" icon="fa-calendar-week"></x-collapsible>
+        <x-collapsible :calendar="$calendar ?? null" contains="Weekdays" step="2" icon="fa-calendar-week"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Months" step="3" icon="fa-calendar-alt"></x-collapsible>
+        <x-collapsible :calendar="$calendar ?? null" contains="Months" step="3" icon="fa-calendar-alt"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Leap Days" icon="fa-calendar-day"></x-collapsible>
+        <x-collapsible :calendar="$calendar ?? null" contains="Leap Days" icon="fa-calendar-day"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Eras" icon="fa-infinity"></x-collapsible>
+        <x-collapsible :calendar="$calendar ?? null" contains="Eras" icon="fa-infinity"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Moons" icon="fa-moon"></x-collapsible>
+        <x-collapsible :calendar="$calendar ?? null" contains="Moons" icon="fa-moon"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Seasons" icon="fa-snowflake"></x-collapsible>
+        <x-collapsible :calendar="$calendar ?? null" contains="Seasons" icon="fa-snowflake"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Weather" icon="fa-cloud-sun-rain"></x-collapsible>
+        <x-collapsible :calendar="$calendar ?? null" contains="Weather" icon="fa-cloud-sun-rain"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Locations" icon="fa-compass"></x-collapsible>
+        <x-collapsible :calendar="$calendar ?? null" contains="Locations" icon="fa-compass"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Cycles" icon="fa-redo"></x-collapsible>
+        <x-collapsible :calendar="$calendar ?? null" contains="Cycles" icon="fa-redo"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Event Categories" icon="fa-th-list"></x-collapsible>
+        <x-collapsible :calendar="$calendar ?? null" contains="Event Categories" icon="fa-th-list"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Events" icon="fa-calendar-check"></x-collapsible>
+        <x-collapsible :calendar="$calendar ?? null" contains="Events" icon="fa-calendar-check"></x-collapsible>
 
-        <x-collapsible :calendar="$calendar" contains="Settings" icon="fa-cog"></x-collapsible>
+        <x-collapsible :calendar="$calendar ?? null" contains="Settings" icon="fa-cog"></x-collapsible>
 
         @if(request()->is('calendars/*/edit'))
-            <x-collapsible :calendar="$calendar" contains="User Management" icon="fa-user"
+            <x-collapsible :calendar="$calendar ?? null" contains="User Management" icon="fa-user"
                            premium_feature="true"></x-collapsible>
 
-            <x-collapsible :calendar="$calendar" contains="Calendar Linking" icon="fa-link"
+            <x-collapsible :calendar="$calendar ?? null" contains="Calendar Linking" icon="fa-link"
                            premium_feature="true"></x-collapsible>
         @endif
     </div>

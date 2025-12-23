@@ -141,9 +141,6 @@ window.collect = collectJS.collect;
 import Perms from './perms.js';
 window.Perms = Perms;
 
-import { changes_applied } from './calendar/calendar_inputs_edit.js';
-window.changes_applied = changes_applied;
-
 // Calendar specific modules
 import IntervalsCollection from "./fantasycalendar/Collections/IntervalsCollection.js";
 window.IntervalsCollection = IntervalsCollection;
@@ -168,23 +165,9 @@ window.date_manager = date_manager;
 window.valid_preview_date = valid_preview_date;
 window.convert_year = convert_year;
 
-import {
-    repopulate_timespan_select,
-    repopulate_day_select,
-    copy_link,
-} from './calendar/calendar_inputs_visitor.js';
-window.repopulate_timespan_select = repopulate_timespan_select;
-window.repopulate_day_select = repopulate_day_select;
+import { copy_link } from './calendar/calendar_inputs_visitor.js';
 window.copy_link = copy_link;
 
-import {
-    set_up_edit_inputs,
-    query_autoload,
-    autoload,
-} from './calendar/calendar_inputs_edit.js';
-window.set_up_edit_inputs = set_up_edit_inputs;
-window.query_autoload = query_autoload;
-window.autoload = autoload;
 window.linked_popup = linked_popup;
 
 import { bind_calendar_events } from './calendar/calendar_manager.js';
@@ -225,6 +208,9 @@ Alpine.data('ViewOptions', ViewOptions);
 import SaveButton from './calendar/save_button.js';
 Alpine.data('SaveButton', SaveButton)
 
+import CreateButton from './calendar/create_button.js';
+Alpine.data('CreateButton', CreateButton)
+
 import WeatherGraphs from './calendar/calendar_weather_graphs.js';
 Alpine.data('WeatherGraphs', WeatherGraphs);
 
@@ -239,6 +225,9 @@ Alpine.data('calendar_edit_page', CalendarEditPage);
 
 import CalendarViewPage from "./calendar/calendar_view_page.js";
 Alpine.data('calendar_view_page', CalendarViewPage);
+
+import CalendarCreatePage from "./calendar/calendar_create_page.js";
+Alpine.data('calendar_create_page', CalendarCreatePage);
 
 import ContextMenu from './context-menu.js';
 Alpine.data('context_menu', ContextMenu);

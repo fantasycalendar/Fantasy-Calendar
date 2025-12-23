@@ -42,6 +42,7 @@ export default class Calendar {
     }
 
     update(incomingChanges) {
+
         this.storedChanges = {};
 
         console.log("Updating calendar...", incomingChanges)
@@ -84,6 +85,15 @@ export default class Calendar {
             }
 
             _.set(this, key, new_value);
+        }
+
+        if(!this.is_calendar_valid){
+            window.dispatchEvent(new CustomEvent('calendar-updated'));
+            return;
+        }
+
+        if(!this.current_date_manager || !this.selected_date_manager){
+            this.setup();
         }
 
         let current_location = this.dynamic_data.location;
@@ -140,6 +150,7 @@ export default class Calendar {
 
         document.title = this.calendar_name + " - Fantasy Calendar";
 
+
         if (structureChanged) {
             this.rebuild_calendar()
         } else if (dateChanged) {
@@ -147,6 +158,10 @@ export default class Calendar {
         }
 
         window.dispatchEvent(new CustomEvent('calendar-updated'));
+    }
+
+    get is_calendar_valid(){
+        return this.static_data.year_data.global_week.length && this.static_data.year_data.timespans.length;
     }
 
     rebuild_calendar() {

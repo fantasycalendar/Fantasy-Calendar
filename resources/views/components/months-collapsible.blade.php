@@ -1,6 +1,6 @@
 @props(['calendar' => null])
 
-@if($calendar->isLinked())
+@if(isset($calendar) && $calendar->isLinked())
 
     <ul class="list-group">
 

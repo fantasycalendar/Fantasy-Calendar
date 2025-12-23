@@ -1,6 +1,5 @@
-import { ordinal_suffix_of } from "./calendar/calendar_functions";
+import { ordinal_suffix_of, get_category } from "./calendar/calendar_functions";
 import { moon_phases } from "./calendar/calendar_variables";
-import { get_category } from "./calendar/calendar_inputs_edit";
 import { event_evaluator } from "./calendar/calendar_workers";
 
 export var render_data_generator = {

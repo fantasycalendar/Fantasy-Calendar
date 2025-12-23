@@ -1,39 +1,37 @@
 @extends('inputs.full')
 
 @section('label')
-    <div class='wrap-collapsible'>
-        <div class='title-text center-text'>Create Calendar</div>
-    </div>
-
-    <div class='wrap-collapsible mb-1'>
-        <div class='col-12'>
-            <div class='row'>
-                <input type='text' class='form-control form-control-lg full' id='calendar_name' placeholder='Calendar name' />
+    <div class='wrap-collapsible content mt-3'>
+        <div class='row no-gutters'>
+            <div class='col-12 mb-2'>
+                <div class="input-group" x-data>
+                    <input
+                        x-data="{
+                            name: '',
+                            change() {
+                                this.$dispatch('calendar-updating', {
+                                    calendar: {
+                                        calendar_name: this.name
+                                    }
+                                });
+                            },
+                            calendar_loaded($event) {
+                                this.name = $event.detail.calendar_name;
+                            }
+                        }"
+                        x-model="name"
+                        @change="change"
+                        @calendar-loaded.window="calendar_loaded"
+                        type='text' class='form-control form-control-lg'
+                        placeholder='Calendar name'
+                    />
+                    <x-view-options></x-view-options>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class='wrap-collapsible mb-1'>
-        <div class='col-12'>
-            <div class='row'>
-                @if(Auth::check())
-                    <button type='button' disabled id='btn_create' class='btn btn-lg btn-danger btn-block'>Cannot create yet</button>
-                @else
-                    <button type='button' disabled class='login-button btn btn-lg btn-info btn-block'>
-                        <p class='m-0'>Log in to save calendar</p>
-                        <small class='m-0'>Don't worry, your progress is stored</small>
-                    </button>
-                @endif
-            </div>
-        </div>
+    <div class='wrap-collapsible mt-2'>
+        <x-create-button></x-create-button>
     </div>
-
-    <div class='wrap-collapsible mb-1'>
-        <div class='col-12'>
-            <div class='row'>
-                <button id='open_presets' type='button' class='btn btn-primary full m-0' @click="load">Choose a calendar preset</button>
-            </div>
-        </div>
-    </div>
-
 @endsection
