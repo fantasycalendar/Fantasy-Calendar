@@ -13,10 +13,10 @@ export default () => ({
     saving: false,
     show: false,
     save_status: "",
-    has_changes: false,
     errors: {},
     prev_calendar_data: {},
     ready_to_save: false,
+    user_logged_in: false,
     calendar_step: 0,
 
     // Technically duplicated from the calendar error modal, but both do need to know about this
@@ -47,21 +47,20 @@ export default () => ({
 
     calendarLoaded($event) {
         this.prev_calendar_data = this.cloneCalendarData($event.detail);
-    },
-
-    calendarUpdated() {
-        let newData = this.cloneCalendarData(this.$store.calendar);
-        this.has_changes = !_.isEqual(this.prev_calendar_data, newData);
+        this.user_logged_in = $event.detail.userId !== null;
     },
 
     get text() {
         if(!this.ready_to_save){
-            return "Cannot create yet"
+            return "Cannot create yet";
         }
-        if (this.has_changes && !this.getErrors().length) {
+        if(!this.user_logged_in){
+            return "Log in to save";
+        }
+        if (!this.getErrors().length) {
             return "Create Calendar";
         }
-        if (!this.has_changes && !this.getErrors().length) {
+        if (!this.getErrors().length) {
             return "No changes to save";
         }
         return "Calendar has errors";
@@ -72,16 +71,18 @@ export default () => ({
     },
 
     get disabled() {
-        return !this.ready_to_save || (
-            this.save_status === "saving"
-               || !this.has_changes
-                || this.getErrors().length > 0
-        );
+        return !this.ready_to_save || this.getErrors().length > 0;
     },
 
     async save() {
         if (this.timeout) {
             clearTimeout(this.timeout);
+        }
+
+        if(!this.user_logged_in){
+            window.onbeforeunload = function () {}
+            window.location = '/login?postlogin=/calendars/create?resume=1';
+            return;
         }
 
         this.save_status = "saving";
@@ -96,7 +97,6 @@ export default () => ({
             })
             .finally(() => {
                 this.timeout = setTimeout(() => this.save_status = "", 4000);
-                this.has_changes = false;
                 this.prev_calendar_data = this.cloneCalendarData(this.$store.calendar);
             })
     },

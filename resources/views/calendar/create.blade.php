@@ -4,8 +4,8 @@
     <script>
         function getCalendarStructure(){
             return {
-                userId: @js(Auth::check() ? Auth::user()->id : "null"),
-                owned: @js(!isset($calendar) || $calendar->owned),
+                userId: @js(Auth::check() ? Auth::user()->id : Null),
+                owned: true,
                 paymentLevel: "free",
                 userRole: "guest",
                 darkTheme: @js(auth()->user()?->setting("dark_theme") ?? true),

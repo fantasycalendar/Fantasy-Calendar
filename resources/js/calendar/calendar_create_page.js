@@ -216,6 +216,7 @@ export default (calendar_structure) => ({
         let saved_data = localStorage.getItem('autosave');
 
         if (saved_data) {
+            // TODO: Change these from window to some unified store
             let data = JSON.parse(saved_data);
             window.prev_calendar_name = "";
             window.prev_dynamic_data = {};
@@ -232,6 +233,7 @@ export default (calendar_structure) => ({
 
             this.$dispatch('calendar-loaded', {
                 hash: window.hash,
+                userId: calendar_structure.userId,
                 calendar_name: window.calendar_name,
                 calendar_id: window.calendar_id,
                 static_data: window.static_data,

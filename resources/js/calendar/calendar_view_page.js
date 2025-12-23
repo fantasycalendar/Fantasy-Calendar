@@ -86,6 +86,7 @@ export default (calendar_structure) => ({
 
                 this.$dispatch('calendar-loaded', {
                     hash: window.hash,
+                    userId: calendar_structure.userId,
                     calendar_name: window.calendar_name,
                     calendar_id: window.calendar_id,
                     static_data: window.static_data,
