@@ -13,20 +13,11 @@
         <!-- TODO: Revisit childed calendar -->
         @if(isset($calendar) && $calendar?->isChild())
             <div class='mb-3 center-text calendar_link_explanation'>
-                <p class='m-0'>This calendar follows the date of a <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">parent calendar</a>.</p>
+                <p class='m-0'>This calendar follows the date of a parent calendar, <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">{{ $calendar->parent->name }}</a>.</p>
             </div>
 
-            <div class="input-group">
-                <select class='form-control'></select>
-                <select class='form-control'></select>
-                <input class='form-control' type='number'>
-            </div>
-
-            <div class="input-group mt-2">
-                <input class='form-control text-right protip' type='number' id='current_hour' data-pt-position='top' data-pt-title="The current hour of day">
-                <div class="input-group-prepend input-group-append"><span class="input-group-text">:</span></div>
-                <input class='form-control protip' type='number' id='current_minute' data-pt-position='top' data-pt-title="The current minute of the hour">
-            </div>
+            <div class="text-center w-100 text-2xl mb-2" x-text="current_date_string"></div>
+            <div class="text-center w-100 text-xl" x-show="current_time_string" x-text="current_time_string"></div>
         @else
             <div class='input-group mt-2'>
                 <div class='input-group-prepend'>

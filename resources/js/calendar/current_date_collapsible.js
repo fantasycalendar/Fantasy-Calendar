@@ -1,4 +1,5 @@
 import CollapsibleComponent from "./collapsible_component";
+import { ordinal_suffix_of } from "./calendar_functions.js";
 
 /*
 * 1. Just try and hook up the minimum possible to make the current UI work
@@ -75,6 +76,22 @@ class CurrentDateCollapsible extends CollapsibleComponent {
 
     set_current_year(year) {
         this.$store.calendar.set_current_year(year);
+    }
+
+    get current_date_string(){
+        let month_name = this.$store.calendar.static_data.year_data.timespans[this.current_month]?.name;
+        return `${ordinal_suffix_of(this.current_day)} of ${month_name}, year ${this.current_year}`;
+    }
+
+    get current_time_string(){
+        if(!this.$store.calendar.static_data.clock.enabled) return "";
+        let currentHour = this.current_hour ?? 0;
+        let currentMinute = this.current_minute ?? 0;
+        let hours = (this.$store.calendar.static_data.clock.hours ?? 24).toString().length;
+        let minutes = (this.$store.calendar.static_data.clock.minutes ?? 60).toString().length;
+        let hourString = currentHour.toString().padStart(hours, "0");
+        let minuteString = currentMinute.toString().padStart(minutes, "0");
+        return `${hourString}:${minuteString}`;
     }
 
     get current_minute() {
