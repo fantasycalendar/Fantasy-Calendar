@@ -1,6 +1,6 @@
 import axios from "axios";
 import CollapsibleComponent from "./collapsible_component";
-import { update_dynamic } from "./calendar_ajax_functions";
+import { _update_dynamic } from "./calendar_ajax_functions";
 import { evaluate_calendar_start } from "./calendar_functions";
 
 class CalendarLinkingCollapsible extends CollapsibleComponent {
@@ -57,7 +57,7 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
                 parent_link_date: [inputDate.year, inputDate.timespan, inputDate.day],
                 parent_offset: evaluate_calendar_start(window.static_data, inputDate.year, inputDate.timespan, inputDate.day).epoch
             }).then(() => {
-                update_dynamic(this.$store.calendar.hash)
+                _update_dynamic(this.$store.calendar.hash)
                     .then(() => {
                         window.location.reload();
                     })
@@ -92,7 +92,7 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
                     parent_link_date: null,
                     parent_offset: null,
                 }).then(() => {
-                    update_dynamic(this.$store.calendar.hash)
+                    _update_dynamic(this.$store.calendar.hash)
                         .then(() => {
                             window.location.reload();
                         })
@@ -107,11 +107,9 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
     }
 
     isLinkable(calendar) {
-        let returnval = calendar.hash !== this.$store.calendar.hash
+        return calendar.hash !== this.$store.calendar.hash
             && !calendar.parent_hash
             && !calendar.advancement_enabled;
-
-        return returnval;
     }
 
     getRelativeStartDate(calendar) {
@@ -139,7 +137,7 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
     }
 
     get selectedCalendar() {
-        return this.owned.find(calendar => calendar.hash == this.selectedCalendarHash) ?? null;
+        return this.owned.find(calendar => calendar.hash === this.selectedCalendarHash) ?? null;
     }
 }
 
