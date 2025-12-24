@@ -2,6 +2,8 @@
      x-data="CalendarYearHeader"
      @calendar-loaded.window="update"
      @render-data-change.window="update"
+     x-show="show"
+     x-cloak
 >
 
     <div class='flex-shrink-1' id='input_collapse_btn' x-show="!sidebar_open" x-cloak @click="$dispatch('open-sidebar')">

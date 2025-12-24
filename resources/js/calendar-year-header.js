@@ -7,6 +7,7 @@ export default () => ({
     preview_date: undefined,
     epoch_data: undefined,
     show_current_month: false,
+    show: false,
 
     update() {
         this.static_data = this.$store.calendar.static_data;
@@ -16,6 +17,7 @@ export default () => ({
         this.preview_date = this.$store.calendar.preview_date;
         this.epoch_data = this.$store.calendar.evaluated_static_data.epoch_data;
         this.show_current_month = this.$store.calendar.setting('show_current_month');
+        this.show = this.$store.calendar.is_calendar_valid;
     },
 
     get year_header_text() {

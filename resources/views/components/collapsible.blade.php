@@ -16,8 +16,6 @@
         step: Number(@js($step)),
         toggle() {
             this.open = !this.open;
-
-            // TODO: Use this within any components (clock?) that need it
             $dispatch('{{ Str::slug($contains) }}-toggled', this.open);
         },
         evaluate_calendar_step($event) {
