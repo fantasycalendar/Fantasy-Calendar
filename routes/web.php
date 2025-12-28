@@ -74,10 +74,6 @@ Route::prefix('invite')->group(function(){
 });
 
 
-Route::middleware(['account.banned'])->group(function(){
-    Route::get('/banned', [ErrorsController::class, 'userIsBanned'])->name('banned');
-});
-
 // Calendar management
 Route::middleware(['account.deletion', 'agreement', 'account.banned'])->group(function () {
     Route::group(['as' => 'calendars.', 'prefix' => 'calendars'], function(){
