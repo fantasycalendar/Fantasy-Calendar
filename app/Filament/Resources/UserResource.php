@@ -51,6 +51,10 @@ class UserResource extends Resource
                     Forms\Components\DateTimePicker::make('date_register')->label('Created at')->disabled(),
                     Forms\Components\DateTimePicker::make('last_visit')->disabled(),
                 ])->columns(),
+                Forms\Components\Section::make('User Management')->schema([
+                    Forms\Components\DateTimePicker::make('banned_at')->label('Banned At'),
+                    Forms\Components\TextInput::make('banned_reason')->label('Banned Reason')
+                ])->columns(),
                 Forms\Components\Section::make('Access Info')->schema([
                     Forms\Components\Select::make('permissions')
                         ->options([

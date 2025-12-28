@@ -51,6 +51,8 @@ Route::middleware('auth')->group(function(){
 
     Route::get('/cancel-account-deletion', [AccountDeletionController::class, 'cancel'])->name('cancel-account-deletion')->middleware();
     Route::get('/account-deletion-warning', [AccountDeletionController::class, 'warning'])->name('account-deletion-warning')->middleware();
+
+    Route::view('/account-banned', 'pages.account-banned')->middleware(['account.banned', 'agreement'])->name('account-banned');
 });
 
 
@@ -72,8 +74,12 @@ Route::prefix('invite')->group(function(){
 });
 
 
+Route::middleware(['account.banned'])->group(function(){
+    Route::get('/banned', [ErrorsController::class, 'userIsBanned'])->name('banned');
+});
+
 // Calendar management
-Route::middleware(['account.deletion', 'agreement'])->group(function(){
+Route::middleware(['account.deletion', 'agreement', 'account.banned'])->group(function () {
     Route::group(['as' => 'calendars.', 'prefix' => 'calendars'], function(){
         Route::get('/{calendar}/guided_embed', [CalendarController::class, 'guidedEmbed'])->name('guided_embed')->middleware('can:embedAny,App\Models\Calendar');
         Route::get('/{calendar}/export', [CalendarController::class, 'export'])->name('export');
