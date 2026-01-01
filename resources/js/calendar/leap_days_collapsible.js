@@ -167,7 +167,7 @@ class LeapDaysCollapsible extends CollapsibleComponent {
             sorted.push(Number(values[i].match(numbers_regex)[0]));
         }
 
-        let text = ["This leap day will appear every"];
+        let text = ["This leap day will "];
 
         let timespan_interval = this.timespans[leapDay.timespan].interval;
         let timespan_offset = timespan_interval === 1 ? 0 : this.timespans[leapDay.timespan].offset;
@@ -188,18 +188,30 @@ class LeapDaysCollapsible extends CollapsibleComponent {
 
             if (i === 0 && sorted[i] === 1) {
 
+                if(values[i].startsWith('!')){
+                    text[i] += "not ";
+                }
+
+                text[i] += "appear every ";
+
                 if (timespan_interval === 1) {
-                    text[i] += " year"
+                    text[i] += "year"
                 } else {
-                    text[i] += ` ${ordinal_suffix_of(timespan_interval * sorted[i])} year (leaping month)`;
+                    text[i] += `${ordinal_suffix_of(timespan_interval * sorted[i])} year`;
                 }
 
             } else if (i === 0) {
 
-                if (this.timespans[leapDay.timespan].interval === 1) {
-                    text[i] += ` ${ordinal_suffix_of(sorted[i])} year`;
+                if(values[i].startsWith('!')){
+                    text[i] += "not ";
+                }
+
+                text[i] += "appear every ";
+
+                if (timespan_interval === 1) {
+                    text[i] += `${ordinal_suffix_of(sorted[i])} year`;
                 } else {
-                    text[i] += ` ${ordinal_suffix_of(timespan_interval * sorted[i])} ${this.timespans[leapDay.timespan].name}`;
+                    text[i] += `${ordinal_suffix_of(timespan_interval * sorted[i])} ${this.timespans[leapDay.timespan].name}`;
                 }
 
                 if (values[i].indexOf('+') === -1 || year_offset !== 0) {
