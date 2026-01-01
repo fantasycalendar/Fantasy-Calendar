@@ -47,7 +47,6 @@ export default () => ({
 
     calendarLoaded($event) {
         this.prev_calendar_data = this.cloneCalendarData($event.detail);
-        this.user_logged_in = $event.detail.userId !== null;
     },
 
     get text() {
@@ -104,5 +103,6 @@ export default () => ({
 
     evaluateCalendarStep($event) {
         this.ready_to_save = !!$event.detail.done;
+        this.user_logged_in = this.$store.calendar.perms.user_id !== null;
     }
 })
