@@ -80,7 +80,7 @@ export default class IntervalsCollection extends Collection{
 
         intervals = intervals.clone();
 
-        if (intervals.count() === 1) {
+        if (intervals.count() <= 1) {
             return intervals;
         }
 
