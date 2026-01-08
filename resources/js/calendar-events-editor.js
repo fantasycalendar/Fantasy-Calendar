@@ -194,7 +194,7 @@ export default () => ({
             }
         }
 
-        window.dispatchEvent(new CustomEvent("events-changed"));
+        this.$dispatch("events-changed");
 
         this.close();
 
@@ -203,7 +203,7 @@ export default () => ({
     submit_event_callback(success) {
 
         if (success) {
-            window.dispatchEvent(new CustomEvent("render-calendar"));
+            this.$dispatch("render-calendar");
         }
 
     },
@@ -283,7 +283,7 @@ export default () => ({
                 new_event.data = this.create_event_data();
                 new_event.name = sanitizeHtml(((new_event.name === "") ? "New Event" : new_event.name) + " (clone)");
                 this.close();
-                window.dispatchEvent(new CustomEvent('event-editor-modal-clone-event', { detail: { event_data: new_event, epoch: this.epoch } }));
+                this.$dispatch('event-editor-modal-clone-event', { event_data: new_event, epoch: this.epoch });
             }
         });
 
@@ -328,12 +328,12 @@ export default () => ({
                 icon: "warning",
             }).then((result) => {
                 if (!result.dismiss) {
-                    window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.event_id, era: false, epoch: this.epoch } }));
+                    this.$dispatch('event-viewer-modal-view-event', { event_id: this.event_id, era: false, epoch: this.epoch });
                     this.close();
                 }
             });
         } else {
-            window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.event_id, era: false, epoch: this.epoch } }));
+            this.$dispatch('event-viewer-modal-view-event', { event_id: this.event_id, era: false, epoch: this.epoch });
             this.close();
         }
     },
@@ -1133,9 +1133,9 @@ export default () => ({
 
         this.close();
 
-        window.dispatchEvent(new CustomEvent("render-calendar"));
+        this.$dispatch("render-calendar");
 
-        window.dispatchEvent(new CustomEvent("events-changed"));
+        this.$dispatch("events-changed");
 
     },
 
@@ -1179,21 +1179,19 @@ export default () => ({
             console.log(err)
         }
 
-        window.dispatchEvent(new CustomEvent("app-busy-end"));
+        this.$dispatch("app-busy-end");
 
         this.worker_event_tester = null;
 
     },
 
     test_event(years) {
-        window.dispatchEvent(new CustomEvent("app-busy-start", {
-            detail: {
+        this.$dispatch("app-busy-start", {
                 show_throbber: false,
                 show_percentage: true,
                 show_cancel_button: true,
                 cancel_callback: this.cancel_event_test.bind(this)
-            }
-        }));
+        });
 
         if (this.new_event) {
 
@@ -1230,12 +1228,11 @@ export default () => ({
 
         this.worker_event_tester.onmessage = e => {
             if (e.data.callback) {
-                window.dispatchEvent(new CustomEvent("app-update-progress", {
-                    detail: {
+                this.$dispatch("app-update-progress", {
                         message: e.data.message ?? "",
                         percentage: precisionRound(e.data.percentage * 100, 2),
-                    }
-                }));
+
+                });
             } else {
 
                 this.event_testing.occurrences = e.data.occurrences;
@@ -1251,7 +1248,7 @@ export default () => ({
 
                 }
 
-                window.dispatchEvent(new CustomEvent("app-busy-end"));
+                this.$dispatch("app-busy-end");
 
                 this.worker_event_tester = null;
 

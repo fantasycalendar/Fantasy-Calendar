@@ -166,7 +166,7 @@ export default () => ({
                             window.event_categories = clone(calendar.event_categories);
                             window.events = clone(calendar.events);
                             window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
-                            window.dispatchEvent(new CustomEvent("rebuild-calendar"));
+                            this.$dispatch("rebuild-calendar");
                             this.open = false;
                             this.preset_applied = true;
                         } else {
@@ -206,7 +206,7 @@ export default () => ({
                                 "custom_location": false,
                                 "location": "Equatorial"
                             };
-                            window.dispatchEvent(new CustomEvent("rebuild-calendar"));
+                            this.$dispatch("rebuild-calendar");
                             this.open = false;
                             this.preset_applied = true;
 
@@ -282,7 +282,7 @@ export default () => ({
             delete category.deleted_at;
         }
 
-        window.dispatchEvent(new CustomEvent("rebuild-calendar"));
+        this.$dispatch("rebuild-calendar");
         $.notify(
             "Calendar preset loaded!",
             "success"
