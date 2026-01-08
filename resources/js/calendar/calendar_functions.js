@@ -1593,3 +1593,48 @@ export function get_category(search) {
 
     return results[0];
 }
+
+function updateClipboard(newClip) {
+    navigator.clipboard.writeText(newClip).then(
+        () => {
+            /* clipboard successfully set */
+        },
+        () => {
+            /* clipboard write failed */
+        },
+    );
+}
+
+
+export function copy_link(epoch_data) {
+
+    let year = epoch_data.year;
+    let timespan = epoch_data.timespan_number;
+    let day = epoch_data.day;
+
+    let link = `${window.location.origin}/calendars/${window.hash}?year=${year}&month=${timespan}&day=${day}`;
+
+    navigator.permissions.query({ name: "clipboard-write" })
+        .then((result) => {
+            if (result.state === "granted" || result.state === "prompt") {
+                updateClipboard(link);
+                if (window.hide_copy_warning) {
+                    $.notify(
+                        "Quick reminder: The copied date will not be visible to\nguests or players due to your calendar's settings.",
+                        "warn"
+                    );
+                } else {
+                    $.notify(
+                        "Copied to clipboard!",
+                        "success"
+                    );
+                }
+            } else {
+                $.notify(
+                    "Failed to copy to clipboard. Please allow the browser to access your clipboard.",
+                    "error"
+                );
+            }
+        });
+
+}

@@ -103,6 +103,6 @@ export default () => ({
 
     evaluateCalendarStep($event) {
         this.ready_to_save = !!$event.detail.done;
-        this.user_logged_in = this.$store.calendar.perms.user_id !== null;
+        this.user_logged_in = this.$store.calendar.perms.userid !== null;
     }
 })

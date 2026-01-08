@@ -165,9 +165,6 @@ window.date_manager = date_manager;
 window.valid_preview_date = valid_preview_date;
 window.convert_year = convert_year;
 
-import { copy_link } from './calendar/calendar_inputs_visitor.js';
-window.copy_link = copy_link;
-
 window.linked_popup = linked_popup;
 
 import { bind_calendar_events } from './calendar/calendar_manager.js';

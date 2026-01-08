@@ -1,4 +1,4 @@
-import { computePosition, flip, shift } from "@floating-ui/dom";
+import { copy_link } from "./calendar/calendar_functions.js";
 
 export default () => ({
     show: true,
@@ -130,7 +130,7 @@ export default () => ({
                         })
                             .then((result) => {
                                 if (!result.dismiss) {
-                                    window.copy_link(epoch_data);
+                                    copy_link(epoch_data);
 
                                     if (result.value) {
                                         window.hide_copy_warning = true;
@@ -138,7 +138,7 @@ export default () => ({
                                 }
                             });
                     } else {
-                        window.copy_link(epoch_data);
+                        copy_link(epoch_data);
                     }
                 },
                 disabled: function() {
