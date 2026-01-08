@@ -445,19 +445,19 @@ export class date_manager {
     }
 
     adjust_years(years) {
-        if(!years) return this;
+        if (!years) return this;
         this.year += years;
         return this;
     }
 
     adjust_months(months) {
-        if(!months) return this;
+        if (!months) return this;
         this.adjust_unit('timespan', months);
         return this;
     }
 
     adjust_days(days) {
-        if(!days) return this;
+        if (!days) return this;
         this.adjust_unit('day', days);
         return this;
     }
@@ -1607,7 +1607,6 @@ function updateClipboard(newClip) {
 
 
 export function copy_link(epoch_data) {
-
     let year = epoch_data.year;
     let timespan = epoch_data.timespan_number;
     let day = epoch_data.day;
@@ -1619,22 +1618,27 @@ export function copy_link(epoch_data) {
             if (result.state === "granted" || result.state === "prompt") {
                 updateClipboard(link);
                 if (window.hide_copy_warning) {
-                    $.notify(
+                    notify(
                         "Quick reminder: The copied date will not be visible to\nguests or players due to your calendar's settings.",
                         "warn"
                     );
                 } else {
-                    $.notify(
+                    notify(
                         "Copied to clipboard!",
                         "success"
                     );
                 }
             } else {
-                $.notify(
-                    "Failed to copy to clipboard. Please allow the browser to access your clipboard.",
-                    "error"
-                );
+                notify("Failed to copy to clipboard. Please allow the browser to access your clipboard.", "error");
             }
         });
+}
 
+export function notify(name, type) {
+    window.dispatchEvent(new CustomEvent('notify', {
+        detail: {
+            content: name,
+            type,
+        }
+    }));
 }

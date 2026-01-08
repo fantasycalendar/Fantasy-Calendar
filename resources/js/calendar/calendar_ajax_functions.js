@@ -1,4 +1,4 @@
-import { clone } from "./calendar_functions";
+import { clone, notify } from "./calendar_functions";
 import _ from "lodash";
 
 export function getUrlParameter(sParam) {
@@ -32,11 +32,7 @@ export function update_view_dynamic(calendar_hash) {
         success: function(result) {
             window.last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
         },
-        error: function(error) {
-            $.notify(
-                error
-            );
-        }
+        error: (error) => { notify(error) }
     });
 
 }
@@ -57,7 +53,7 @@ export async function update_all() {
 
     let lastChange = await check_last_change(window.hash);
 
-    if(!lastChange) return;
+    if (!lastChange) return;
 
     let new_static_change = new Date(lastChange.last_static_change)
 
@@ -95,11 +91,7 @@ export function get_all_data(calendar_hash, output) {
         success: function(result) {
             output(result);
         },
-        error: function(error) {
-            $.notify(
-                error
-            );
-        }
+        error: (error) => { notify(error) }
     });
 }
 
@@ -117,24 +109,17 @@ export async function submit_new_event(event_id, callback) {
         .then(function(result) {
             if (result.data.data !== undefined) {
                 window.events[event_id] = result.data.data;
-                $.notify(
-                    "Event created.",
-                    "success"
-                );
+                notify("Event created.", "success");
                 callback(true);
             } else {
                 window.events.pop(); // Discard most recent event
                 callback(false);
-                $.notify(
-                    result.data.message
-                );
+                notify(result.data.message);
             }
         }).catch(function(error) {
             window.events.pop(); // Discard most recent event
             callback(false);
-            $.notify(
-                error
-            );
+            notify(error);
         });
 }
 
@@ -150,15 +135,13 @@ export function submit_hide_show_event(event_id) {
                 window.events[event_id].settings.hide = !window.events[event_id].settings.hide;
                 this.$dispatch("render-calendar");
             }
-            $.notify(
+            notify(
                 result.data.message,
                 result.data.success !== undefined ? "success" : false
             );
 
         }).catch(function(error) {
-            $.notify(
-                error
-            );
+            notify(error);
         });
 }
 
@@ -169,16 +152,11 @@ export function submit_edit_event(event_id, callback) {
 
     axios.patch(window.apiurl + '/event/' + edit_event.id, edit_event)
         .then(function(result) {
-            $.notify(
-                result.data.message,
-                result.data.success !== undefined ? "success" : false
-            );
+            notify(result.data.message, result.data.success !== undefined ? "success" : false);
             callback(result.data.success !== undefined);
         }).catch(function(error) {
             callback(false);
-            $.notify(
-                error
-            );
+            notify(error);
         });
 }
 
@@ -193,15 +171,10 @@ export function submit_delete_event(event_id, callback) {
             if (result.success) {
                 callback();
             }
-            $.notify(
-                result.message,
-                result.success ? "success" : false
-            );
+            notify(result.message, result.success ? "success" : false);
         },
         error: function(error) {
-            $.notify(
-                error
-            );
+            notify(error);
         }
     });
 
@@ -218,13 +191,9 @@ export function submit_new_comment(content, event_id, callback) {
             if (!result.data.error && result.data != "") {
                 callback(result.data.data);
             } else if (result.data == "") {
-                $.notify(
-                    "Error adding comment."
-                );
+                notify( "Error adding comment.");
             } else {
-                $.notify(
-                    result.data.message
-                );
+                notify( result.data.message);
             }
         });
 }
@@ -236,13 +205,9 @@ export function submit_delete_comment(comment_id, callback) {
             if (!result.data.error && result.data != "") {
                 callback(result.data.message);
             } else if (result.data == "") {
-                $.notify(
-                    "Error adding comment."
-                );
+                notify( "Error adding comment.");
             } else {
-                $.notify(
-                    result.data.message
-                );
+                notify( result.data.message);
             }
         });
 
@@ -289,13 +254,9 @@ export function get_preset_data(preset_id, callback) {
             if (!result.data.error && result.data != "") {
                 callback(result.data);
             } else if (result.data == "") {
-                $.notify(
-                    "Error: Failed to load calendar preset - this one doesn't exist"
-                );
+                notify( "Error: Failed to load calendar preset - this one doesn't exist");
             } else {
-                $.notify(
-                    result.data.message
-                );
+                notify( result.data.message);
             }
         });
 

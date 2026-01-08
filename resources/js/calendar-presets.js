@@ -1,6 +1,6 @@
 import RandomCalendar from './random-calendar.js';
 import { get_preset_data } from './calendar/calendar_ajax_functions.js';
-import { convert_year, clone, evaluate_calendar_start } from './calendar/calendar_functions.js';
+import { convert_year, clone, evaluate_calendar_start, notify } from './calendar/calendar_functions.js';
 
 export default () => ({
     open: false,
@@ -95,9 +95,7 @@ export default () => ({
                 } else if (result.data == "") {
                     callback(loader, []);
                 } else {
-                    $.notify(
-                        "Error loading presets: " + result.data.message
-                    );
+                    notify( "Error loading presets: " + result.data.message);
                     throw result.data.message;
                 }
             });
@@ -283,9 +281,6 @@ export default () => ({
         }
 
         this.$dispatch("rebuild-calendar");
-        $.notify(
-            "Calendar preset loaded!",
-            "success"
-        );
+        notify( "Calendar preset loaded!", "success");
     }
 });

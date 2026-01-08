@@ -1,6 +1,6 @@
 import Quill from "quill";
 import { submit_new_comment, submit_delete_comment, get_event_comments } from "./calendar/calendar_ajax_functions";
-import { clone } from "./calendar/calendar_functions";
+import { clone, notify } from "./calendar/calendar_functions";
 
 export default () => ({
     open: false,
@@ -157,16 +157,16 @@ export default () => ({
         })
             .then(function(result) {
                 if (result.data.success && result.data != "") {
-                    $.notify(
+                    notify(
                         "Comment edited.",
                         "success"
                     );
                 } else if (result.data === "") {
-                    $.notify(
+                    notify(
                         "Error editing comment."
                     );
                 } else {
-                    $.notify(
+                    notify(
                         result.data.message
                     );
                 }
@@ -201,7 +201,7 @@ export default () => ({
         }).then((result) => {
             if (!result.dismiss) {
                 submit_delete_comment(comment.id, function() {
-                    $.notify(
+                    notify(
                         "Removed comment.",
                         "success"
                     );

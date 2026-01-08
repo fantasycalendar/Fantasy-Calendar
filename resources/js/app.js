@@ -13,15 +13,6 @@ window.jQuery = jQuery;
 
 import 'chart.js';
 
-window.$.notify = (name, type) => {
-    window.dispatchEvent(new CustomEvent('notify', {
-        detail: {
-            content: name,
-            type,
-        }
-    }));
-}
-
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
