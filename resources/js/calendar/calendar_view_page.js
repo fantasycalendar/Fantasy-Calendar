@@ -104,7 +104,7 @@ export default (calendar_structure) => ({
             }
         );
 
-        window.dispatchEvent(new CustomEvent("events-changed"));
+        this.$dispatch("events-changed");
     },
 
     check_dates() {
@@ -116,13 +116,11 @@ export default (calendar_structure) => ({
                     window.last_dynamic_change = this.new_dynamic_change
                     get_dynamic_data(window.hash)
                         .then((result) => {
-                            window.dispatchEvent(new CustomEvent("calendar-updated", {
-                                detail: {
-                                    calendar: {
-                                        dynamic_data: result.dynamic_data
-                                    }
+                            this.$dispatch("calendar-updated", {
+                                calendar: {
+                                    dynamic_data: result.dynamic_data
                                 }
-                            }));
+                            });
                             this.poll_timer = setTimeout(this.check_dates.bind(this), 5000);
                         })
                         .catch(error => {
@@ -156,7 +154,7 @@ export default (calendar_structure) => ({
         this.location_select_value = this.$store.calendar.get_location_select_value();
     },
 
-    calendar_updated(){
+    calendar_updated() {
         update_dynamic(this.$store.calendar.hash);
     },
 

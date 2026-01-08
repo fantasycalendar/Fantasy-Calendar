@@ -87,12 +87,12 @@ export default class Calendar {
             _.set(this, key, new_value);
         }
 
-        if(!this.is_calendar_valid){
-            window.dispatchEvent(new CustomEvent('calendar-updated'));
+        if (!this.is_calendar_valid) {
+            this.dispatch('calendar-updated');
             return;
         }
 
-        if(!this.current_date_manager || !this.selected_date_manager){
+        if (!this.current_date_manager || !this.selected_date_manager) {
             this.setup();
         }
 
@@ -157,10 +157,10 @@ export default class Calendar {
             this.update_epochs()
         }
 
-        window.dispatchEvent(new CustomEvent('calendar-updated'));
+        this.dispatch('calendar-updated');
     }
 
-    get is_calendar_valid(){
+    get is_calendar_valid() {
         return this.static_data.year_data.global_week.length && this.static_data.year_data.timespans.length;
     }
 
@@ -182,33 +182,29 @@ export default class Calendar {
     render_calendar(calendar_data) {
         if (!calendar_data) calendar_data = this.evaluated_static_data;
         if (this.setting('prompt_for_redraw', false)) {
-            return window.dispatchEvent(new CustomEvent('display-redraw-warning'));
+            return this.dispatch('display-redraw-warning');
         }
-        window.dispatchEvent(new CustomEvent('hide-redraw-warning'));
+        this.dispatch('hide-redraw-warning');
         execution_time.start("Rendering calendar...")
         return render_data_generator.create_render_data(calendar_data).then((result) => {
-            window.dispatchEvent(new CustomEvent('render-data-change', { detail: result }));
+            this.dispatch('render-data-change', result);
         }).catch((err) => {
-            window.dispatchEvent(new CustomEvent("notify", {
-                detail: {
-                    message: err,
-                    type: "error"
-                }
-            }));
+            this.dispatch("notify", {
+                message: err,
+                type: "error"
+            });
         });
     }
 
     update_epochs() {
         if (this.setting('prompt_for_redraw', false)) {
-            return window.dispatchEvent(new CustomEvent('display-redraw-warning'));
+            return this.dispatch('display-redraw-warning');
         }
-        window.dispatchEvent(new CustomEvent('hide-redraw-warning'));
-        window.dispatchEvent(new CustomEvent('update-epochs', {
-            detail: {
-                current_epoch: this.dynamic_data.epoch,
-                preview_epoch: this.active_date.epoch
-            }
-        }));
+        this.dispatch('hide-redraw-warning');
+        this.dispatch('update-epochs', {
+            current_epoch: this.dynamic_data.epoch,
+            preview_epoch: this.active_date.epoch
+        });
     }
 
     // "Broker" methods
@@ -365,16 +361,14 @@ export default class Calendar {
 
         newPreviewDate.follow = follow;
 
-        window.dispatchEvent(new CustomEvent('calendar-updating', {
-            detail: {
-                calendar: {
-                    preview_date: {
-                        ...this.preview_date,
-                        ...newPreviewDate
-                    }
+        this.dispatch('calendar-updating', {
+            calendar: {
+                preview_date: {
+                    ...this.preview_date,
+                    ...newPreviewDate
                 }
             }
-        }))
+        })
     }
 
     set_selected_date_active(active) {
@@ -382,16 +376,14 @@ export default class Calendar {
         if (!active) {
             date = this.dynamic_data;
         }
-        window.dispatchEvent(new CustomEvent('calendar-updating', {
-            detail: {
-                calendar: {
-                    preview_date: {
-                        ...date,
-                        follow: !active
-                    }
+        this.dispatch('calendar-updating', {
+            calendar: {
+                preview_date: {
+                    ...date,
+                    follow: !active
                 }
             }
-        }))
+        })
     }
 
     set_selected_day(day) {
@@ -531,13 +523,11 @@ export default class Calendar {
         newDynamicData.hour = hour;
         newDynamicData.minute = minute;
 
-        window.dispatchEvent(new CustomEvent('calendar-updating', {
-            detail: {
-                calendar: {
-                    dynamic_data: newDynamicData
-                }
+        this.dispatch('calendar-updating', {
+            calendar: {
+                dynamic_data: newDynamicData
             }
-        }))
+        })
     }
 
     // Helpers
@@ -692,5 +682,9 @@ export default class Calendar {
         return this.can_use_preset_locations
             ? preset_data.locations.valuesForSeasonCount(this.season_count)
             : [];
+    }
+
+    dispatch(name, detail) {
+        window.dispatchEvent(new CustomEvent(name, { detail }));
     }
 }

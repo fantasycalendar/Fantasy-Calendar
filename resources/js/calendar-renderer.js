@@ -37,75 +37,69 @@ export default () => ({
         this.render_callbacks.push(callback)
     },
 
-    load_calendar: function (event) {
+    load_calendar: function(event) {
         this.loading_message = "Building calendar...";
         this.render_data = event.detail;
     },
 
-    view_event: function (event) {
+    view_event: function(event) {
         show_event_ui.clicked_event($(event.target));
     },
 
-	get_weather_data(day, event) {
-		let epoch_details = window.evaluated_static_data.epoch_data[day.epoch];
-		let has_weather = window.evaluated_static_data.processed_weather;
-		return {
-			element: event.target,
-			static_data: window.static_data,
-			show_moons: window.static_data.settings.layout === "minimalistic",
-			epoch_details,
-			has_weather,
-			day
-		}
-	},
-
-    weather_click: function (day, event) {
-        if(day.epoch === undefined) return;
-	    window.dispatchEvent(new CustomEvent('weather-mouse-click', {
-		    detail: this.get_weather_data(day, event)
-	    }));
+    get_weather_data(day, event) {
+        let epoch_details = window.evaluated_static_data.epoch_data[day.epoch];
+        let has_weather = window.evaluated_static_data.processed_weather;
+        return {
+            element: event.target,
+            static_data: window.static_data,
+            show_moons: window.static_data.settings.layout === "minimalistic",
+            epoch_details,
+            has_weather,
+            day
+        }
     },
 
-    weather_mouse_enter: function (day, event) {
-        if(day.epoch === undefined) return;
-	    window.dispatchEvent(new CustomEvent('weather-mouse-enter', {
-		    detail: this.get_weather_data(day, event)
-	    }));
+    weather_click: function(day, event) {
+        if (day.epoch === undefined) return;
+        this.$dispatch('weather-mouse-click', this.get_weather_data(day, event));
     },
 
-    weather_mouse_leave: function () {
-	    window.dispatchEvent(new CustomEvent('weather-mouse-leave'));
+    weather_mouse_enter: function(day, event) {
+        if (day.epoch === undefined) return;
+        this.$dispatch('weather-mouse-enter', this.get_weather_data(day, event));
     },
 
-    moon_mouse_enter: function (moon, event) {
+    weather_mouse_leave: function() {
+        this.$dispatch('weather-mouse-leave');
+    },
+
+    moon_mouse_enter: function(moon, event) {
         let title = moon.name + ', ' + moon.phase;
-        window.dispatchEvent(new CustomEvent('moon-mouse-enter', {
-            detail: {
-                element: event.target,
-                title: title
-            }
-        }));
+        this.$dispatch('moon-mouse-enter', {
+            element: event.target,
+            title: title
+        });
     },
 
-    moon_mouse_leave: function () {
-        window.dispatchEvent(new CustomEvent('moon-mouse-leave'));
+    moon_mouse_leave: function() {
+        this.$dispatch('moon-mouse-leave');
     },
 
-    update_epochs: function (event) {
+    update_epochs: function(event) {
         this.loading_message = "Structuring days...";
         this.render_data.current_epoch = event.detail.current_epoch;
         this.render_data.preview_epoch = event.detail.preview_epoch;
         this.scroll_to_epoch();
     },
 
-    pre_render: function () {
-        window.dispatchEvent(new CustomEvent("app-busy-start"));
+    pre_render: function() {
+        this.$dispatch("app-busy-start");
     },
 
-    post_render: function ($dispatch) {
+    post_render: function() {
         this.loading_message = "Wrapping up rendering...";
 
-        window.dispatchEvent(new CustomEvent("app-busy-end"));
+        this.$dispatch("app-busy-end");
 
         this.rerendering = this.prev_current_epoch !== this.render_data.current_epoch || this.prev_preview_epoch !== this.render_data.preview_epoch;
 
@@ -125,12 +119,12 @@ export default () => ({
         this.prev_current_epoch = this.render_data.current_epoch;
         this.prev_preview_epoch = this.render_data.preview_epoch;
 
-        $dispatch('layout-change', { apply: this.render_data.current_month_only ? 'single_month' : '' });
+        this.$dispatch('layout-change', { apply: this.render_data.current_month_only ? 'single_month' : '' });
 
         execution_time.end("Rendering calendar took:")
     },
 
-    scroll_to_epoch: function () {
+    scroll_to_epoch: function() {
 
         const previewEpochElement = $(`[epoch=${this.render_data.preview_epoch}]`);
         const currentEpochElement = $(`[epoch=${this.render_data.current_epoch}]`);
@@ -168,7 +162,7 @@ export default () => ({
         }
     },
 
-    scroll_to_last: function () {
+    scroll_to_last: function() {
         $("#calendar_container").scrollTop(this.last_scroll_height);
     }
 

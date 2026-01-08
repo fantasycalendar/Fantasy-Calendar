@@ -65,12 +65,12 @@ export default () => ({
                 icon: "warning",
             }).then((result) => {
                 if (!result.dismiss) {
-                    window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.era_id, era: true } }));
+                    this.$dispatch('event-viewer-modal-view-event', { event_id: this.era_id, era: true });
                     this.close_and_reset();
                 }
             });
         } else {
-            window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.era_id, era: true } }));
+            this.$dispatch('event-viewer-modal-view-event', { event_id: this.era_id, era: true });
             this.close_and_reset();
         }
     },

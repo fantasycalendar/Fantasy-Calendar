@@ -166,7 +166,7 @@ export default (calendar_structure) => ({
             this.evaluate_current_step();
         });
 
-        window.dispatchEvent(new CustomEvent("events-changed"));
+        this.$dispatch("events-changed");
     },
 
     should_resume(queryString) {
@@ -249,8 +249,8 @@ export default (calendar_structure) => ({
                 advancement: window.advancement
             });
 
-            window.dispatchEvent(new CustomEvent("rebuild-calendar"));
-            window.dispatchEvent(new CustomEvent("events-changed"));
+            this.$dispatch("rebuild-calendar");
+            this.$dispatch("events-changed");
 
             if (popup) {
                 swal.fire({
@@ -260,7 +260,7 @@ export default (calendar_structure) => ({
                 });
             }
 
-            window.dispatchEvent(new CustomEvent("events-changed"));
+            this.$dispatch("events-changed");
         }
     },
 
