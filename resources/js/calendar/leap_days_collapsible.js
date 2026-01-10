@@ -122,6 +122,11 @@ class LeapDaysCollapsible extends CollapsibleComponent {
         for (let [index, leapDay] of this.leap_days.entries()) {
             let { interval } = leapDay;
 
+            if(interval.trim() === ''){
+                errors.push({ path: `leap_days.${index}.interval`, message: `${leapDay.name} has no interval formula.` });
+                continue;
+            }
+
             interval = interval.trim().replace(/,\s*$/, "");
 
             if (interval === "0") {
