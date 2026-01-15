@@ -4,6 +4,10 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+import.meta.glob([
+    '../images/**',
+])
+
 import _ from 'lodash';
 window._ = _;
 

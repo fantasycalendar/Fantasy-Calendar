@@ -29,6 +29,6 @@
             </template>
         </ol>
 
-        <img class="w-100" src='/resources/calendar_create.svg'>
+        <img class="w-100" src="{{ Vite::asset('resources/images/calendar_create.svg') }}">
     </div>
 </div>
