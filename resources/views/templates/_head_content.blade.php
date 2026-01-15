@@ -26,8 +26,6 @@
     <link rel="shortcut icon" href="{{ asset('/resources/favicon.ico') }}">
     <meta name="apple-mobile-web-app-title" content="Fantasy Calendar">
     <meta name="application-name" content="Fantasy Calendar">
-    <meta name="msapplication-TileColor" content="#2f855a">
-    <meta name="msapplication-config" content="{{ asset("/resources/browserconfig.xml") }}">
     <meta name="theme-color" content="#2f855a">
 
     @vite('resources/js/app.js')
