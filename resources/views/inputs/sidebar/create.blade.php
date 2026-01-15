@@ -25,7 +25,7 @@
                         type='text' class='form-control form-control-lg'
                         placeholder='Calendar name'
                     />
-                    <x-view-options></x-view-options>
+                    <x-view-options create></x-view-options>
                 </div>
             </div>
         </div>

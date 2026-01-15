@@ -1,5 +1,18 @@
-<div class='dropdown input-group-append' x-data="ViewOptions" @click.away="open = false">
-    <button class="btn btn-secondary dropdown-toggle w-full h-full" @click="open = !open">
+@props([
+    'create' => false
+])
+
+<div class='dropdown input-group-append'
+    x-data="ViewOptions"
+    @click.away="open = false"
+    @calendar-step-changed.window="step_changed"
+>
+    <button
+        class="btn btn-secondary dropdown-toggle w-full h-full"
+        @click="open = !open"
+        :disabled="!enabled"
+        :title="title"
+    >
         <i class="fa" :class="view_mode.icon"></i>
     </button>
 
@@ -19,25 +32,29 @@
 
         <h6 class="dropdown-header">Actions</h6>
 
-        <a :href="`/calendars/${$store.calendar.hash}`" class="dropdown-item">
-            <div class="flex items-center space-x-2">
-                <i class="fa fa-eye w-6 text-center"></i>
-                <span>View</span>
-            </div>
-        </a>
+        @unless($create)
+            <a :href="`/calendars/${$store.calendar.hash}`" class="dropdown-item">
+                <div class="flex items-center space-x-2">
+                    <i class="fa fa-eye w-6 text-center"></i>
+                    <span>View</span>
+                </div>
+            </a>
+        @endunless
 
-        <button type="button" @click="print" class="dropdown-item">
+        <button type="button" @click="print()" class="dropdown-item">
             <div class="flex items-center space-x-2">
                 <i class="fa fa-print w-6 text-center"></i>
                 <span>Print</span>
             </div>
         </button>
 
-        <button type="button" @click="delete_calendar" class="dropdown-item btn-danger">
-            <div class="flex items-center space-x-2">
-                <i class="fa fa-trash w-6 text-center"></i>
-                <span>Delete</span>
-            </div>
-        </button>
+        @unless($create)
+            <button type="button" @click="delete_calendar" class="dropdown-item btn-danger">
+                <div class="flex items-center space-x-2">
+                    <i class="fa fa-trash w-6 text-center"></i>
+                    <span>Delete</span>
+                </div>
+            </button>
+        @endunless
     </div>
 </div>

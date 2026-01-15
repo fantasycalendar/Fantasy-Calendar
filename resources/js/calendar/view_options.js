@@ -1,6 +1,7 @@
 export default () => ({
     chosen_view: "owner",
     open: false,
+    enabled: true,
     view_modes: {
         owner: {
             icon: 'fa-user',
@@ -59,15 +60,15 @@ export default () => ({
     delete_calendar() {
 
         return swal.fire({
-                text: `If you're sure about deleting this calendar, please type "${this.$store.calendar.calendar_name}" below:`,
-                input: "text",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Delete',
-                dangerMode: true
-            })
+            text: `If you're sure about deleting this calendar, please type "${this.$store.calendar.calendar_name}" below:`,
+            input: "text",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Delete',
+            dangerMode: true
+        })
             .then(result => {
 
                 if (result.dismiss || !result.value) throw null;
@@ -85,11 +86,11 @@ export default () => ({
                 }
 
                 swal.fire({
-                        icon: "success",
-                        title: "Deleted!",
-                        text: `The calendar ${this.$store.calendar.calendar_name} has been deleted.`,
-                        button: true
-                    })
+                    icon: "success",
+                    title: "Deleted!",
+                    text: `The calendar ${this.$store.calendar.calendar_name} has been deleted.`,
+                    button: true
+                })
                     .then(() => {
                         window.location = '/calendars';
                     })
@@ -104,7 +105,13 @@ export default () => ({
             });
     },
 
-    print() {
-        print();
+    step_changed(event) {
+        this.enabled = !!event.detail.done;
+    },
+
+    get title() {
+        return this.enabled
+            ? 'Actions'
+            : 'Actions are disabled through step 3';
     }
 })
