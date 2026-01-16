@@ -7,7 +7,7 @@
     <meta property="og:title" content="{{ $calendar->name ?? $title ?? "Fantasy Calendar" }}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ url()->full() }}">
-    <meta property="og:image" content="{{ url('/resources/logo_discord.jpg') }}">
+    <meta property="og:image" content="{{ Vite::asset('resources/images/logo_discord.jpg') }}">
     <meta property="og:description" content="All-in-One Fantasy Calendar Generator - Creation of calendars and time-tracking in your homebrew or pre-made campaign worlds has never been easier!">
 
     @if(Auth::check())
@@ -18,12 +18,12 @@
         {!! ($title ?? $calendar->name ?? "Fantasy Calendar") . ' -' !!} Fantasy Calendar
     </title>
 
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/resources/apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('/resources/favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/resources/favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ asset('/resources/site.webmanifest') }}">
-    <link rel="mask-icon" href="{{ asset('/resources/safari-pinned-tab.svg') }}" color="#2f855a">
-    <link rel="shortcut icon" href="{{ asset('/resources/favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ Vite::asset('resources/images/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ Vite::asset('resources/images/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ Vite::asset('resources/images/favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ Vite::asset('resources/images/site.webmanifest') }}">
+    <link rel="mask-icon" href="{{ Vite::asset('resources/images/safari-pinned-tab.svg') }}" color="#2f855a">
+    <link rel="shortcut icon" href="{{ Vite::asset('resources/images/favicon.ico') }}">
     <meta name="apple-mobile-web-app-title" content="Fantasy Calendar">
     <meta name="application-name" content="Fantasy Calendar">
     <meta name="theme-color" content="#2f855a">

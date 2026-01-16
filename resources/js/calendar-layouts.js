@@ -9,17 +9,17 @@ export default () => ({
         {
             "name": "Grid",
             "description": "A familiar detailed view that resembles a traditional wall-hung calendar.",
-            "image": "/resources/layouts/light-grid.png"
+            "image": "/images/layouts/light-grid.png"
         },
         {
             "name": "Vertical",
             "description": "A single column view for focusing on each day or for use on mobile devices.",
-            "image": "/resources/layouts/light-vertical.png"
+            "image": "/images/layouts/light-vertical.png"
         },
         {
             "name": "Minimalistic",
             "description": "Beautiful minimalism that zooms out a bit to fit the whole calendar on one page.",
-            "image": "/resources/layouts/light-minimal.png"
+            "image": "/images/layouts/light-minimal.png"
         }
     ],
 

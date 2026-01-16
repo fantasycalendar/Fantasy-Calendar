@@ -4,7 +4,7 @@
     <div class="flex flex-col justify-center items-center gap-4 select-none w-[500px]">
 
 
-        <img class='loading_spinner' x-show="show_throbber" src='{{ asset("resources/icons/loader_white.png") }}'>
+        <img class='loading_spinner' x-show="show_throbber" src='{{ Vite::asset("resources/icons/loader_white.png") }}'>
 
         <div id='loading_information_text' class='bold-text' x-show="info_text" x-text="info_text"></div>
 
