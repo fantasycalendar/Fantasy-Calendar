@@ -4,9 +4,9 @@
         size: auto;
     }
 
-    * {
-        border-color: rgba(0,0,0,0.1) !important;
-        color:black !important;
+    *:not(.number) {
+        border-color: rgba(0, 0, 0, 0.1) !important;
+        color: black !important;
     }
 
     body,
@@ -15,8 +15,9 @@
     #top_follower,
     .timespan_container,
     .timespan_day,
-    .event
-    {
+    .timespan_row_names,
+    .timespan_container .week_day_name,
+    .event {
         background-color: white !important;
     }
 
@@ -34,19 +35,19 @@
 
     .event {
         border: 0 !important;
-        color:black !important;
+        color: black !important;
     }
 
-    #top_follower{
-        position:relative !important;
+    #top_follower {
+        position: relative !important;
     }
 
-    #calendar_container{
+    #calendar_container {
         display: block !important;
         position: relative !important;
         border: 0 !important;
         max-height: initial !important;
-        padding:0 !important;
+        padding: 0 !important;
         overflow-y: visible;
     }
 
@@ -59,24 +60,32 @@
         display: block !important;
         position: relative !important;
         page-break-inside: avoid !important;
-        border:1px rgba(0,0,0,0.1) solid !important;
+        border: 1px rgba(0, 0, 0, 0.1) solid !important;
         box-shadow: none !important;
     }
 
-    .current_day{
+    .current_day {
         background-image: none !important;
     }
 
-    .current_day:after{
+    .current_day .number:not(.year_day) {
+        background-color: white !important;
+        border: none;
+        color: black !important;
+        line-height: initial !important;
+    }
+
+    .current_day:after {
         height: 0px !important;
     }
 
-    #top_follower{
-        border:1px rgba(0,0,0,0.1) solid !important;
+    #top_follower {
+        border: 1px rgba(0, 0, 0, 0.1) solid !important;
         border-top: 0 !important;
     }
 
+    .timespan_row_container,
     .timespan_overflow {
-        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 0H20L0 20m40 20V20L20 40' fill='%23f9f9fa' fill-rule='evenodd'/%3E%3C/svg%3E");
+        background-image: linear-gradient(to right, white, white);
     }
 }
