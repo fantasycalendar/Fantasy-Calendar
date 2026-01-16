@@ -11,6 +11,7 @@ class LeapDaysCollapsible extends CollapsibleComponent {
     interval_wide_regex = /[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g;
     interval_internal_regex = /^\+*\!*[1-9]+[0-9]{0,}$/;
     interval_numbers_regex = /([1-9]+[0-9]{0,})/;
+    interval_zero_regex = /\+*!*0/;
 
     leap_days = [];
     weekdays = [];
@@ -86,12 +87,20 @@ class LeapDaysCollapsible extends CollapsibleComponent {
         for (let [index, leapDay] of this.leap_days.entries()) {
             let { interval } = leapDay;
 
+            let invalid = this.interval_wide_regex.test(interval);
+            if (invalid || interval.endsWith(",")) {
+                continue;
+            }
+
             let values = interval.split(',');
 
             let unsorted = [];
 
             for (let value of values) {
-                unsorted.push(Number(value.match(this.interval_numbers_regex)[0]));
+                let match = value.match(this.interval_numbers_regex);
+                if(match) {
+                    unsorted.push(Number(match[0]));
+                }
             }
 
             let sorted = unsorted.slice(0).sort((a, b) => {
@@ -122,6 +131,11 @@ class LeapDaysCollapsible extends CollapsibleComponent {
         for (let [index, leapDay] of this.leap_days.entries()) {
             let { interval } = leapDay;
 
+            if(interval.endsWith(',')){
+                errors.push({ path: `leap_days.${index}.interval`, message: `${leapDay.name} has an invalid interval formula, with a trailing comma.` });
+                continue;
+            }
+
             if(interval.trim() === ''){
                 errors.push({ path: `leap_days.${index}.interval`, message: `${leapDay.name} has no interval formula.` });
                 continue;
@@ -151,7 +165,14 @@ class LeapDaysCollapsible extends CollapsibleComponent {
             }
 
             if (invalid) {
-                errors.push({ path: `leap_days.${index}.interval`, message: `${leapDay.name} has an invalid interval formula. The plus goes before the exclamation point.` });
+                if(this.interval_zero_regex.test(values[values.length-1])){
+                    errors.push({ path: `leap_days.${index}.interval`, message: `One of ${leapDay.name}'s intervals is 0, please enter a positive number.` });
+                }else {
+                    errors.push({
+                        path: `leap_days.${index}.interval`,
+                        message: `${leapDay.name} has an invalid interval formula. The plus goes before the exclamation point.`
+                    });
+                }
             }
         }
 
