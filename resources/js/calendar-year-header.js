@@ -31,8 +31,8 @@ export default () => ({
             if (!this.static_data.settings.hide_eras || Perms.player_at_least('co-owner')) {
 
                 let format = era.settings.restart
-                    ? `Era year {{era_year}} (year {{year}}) - {{era_name}}`
-                    : `Year {{year}} - {{era_name}}`;
+                    ? `Era year {{era_year}} (year {{year}}) - {{{era_name}}}`
+                    : `Year {{year}} - {{{era_name}}}`;
 
                 if (era.settings.use_custom_format && era.formatting) {
                     format = era.formatting.replace(/{{/g, '{{{').replace(/}}/g, '}}}');
