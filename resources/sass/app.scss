@@ -45,32 +45,8 @@ body {
     font-size: $font-size-base;
 }
 
-// override stupid preset color
-.context-menu-icon.context-menu-icon--fa5 i {
-    color: inherit;
-}
-
-.context-menu-item.context-menu-hover {
-    background-color: $accent-color;
-}
-
 .btn-outline-secondary {
     border-color: rgb(108, 117, 125, 0.3);
-}
-
-.badge-accent {
-    color: #fff;
-    background-color: #6c757d;
-}
-
-#go_to_preview_date,
-#preview_date_btn {
-    background-color: $bg-amber-600;
-    border-color: $bg-amber-600;
-
-    &:hover {
-        background-color: $bg-amber-500;
-    }
 }
 
 mark {
