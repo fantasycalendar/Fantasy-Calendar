@@ -1,4 +1,8 @@
-<div id="input_container" class="d-print-none" :class='{ "inputs_collapsed": !sidebar_open }'>
+<div id="input_container"
+    :class='{
+        "w-0 overflow-hidden p-0 min-w-0 max-w-0 m-0": !sidebar_open,
+        "d-print-none relative overflow-y-auto order-1 max-h-full w-screen md:max-w-[400px] md:min-w-[400px] flex-grow": sidebar_open,
+    }'>
     @include('inputs.sidebar.header')
 
     <div class='title-text text-center mt-0 mb-0'>{{ $calendar->name }}</div>

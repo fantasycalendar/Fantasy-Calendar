@@ -1,4 +1,10 @@
-<div id="input_container" class='d-print-none' x-cloak :class='{ "inputs_collapsed": !sidebar_open }'>
+<div id="input_container"
+    x-cloak
+    :class='{
+        "w-0 overflow-hidden p-0 min-w-0 max-w-0 m-0": !sidebar_open,
+        "d-print-none relative overflow-y-auto order-1 max-h-full w-screen md:max-w-[400px] md:min-w-[400px] flex-grow": sidebar_open,
+    }'
+>
     @include('inputs.sidebar.header')
 
     @yield('label')
@@ -48,7 +54,7 @@
         @endif
     </div>
 
-    <div class="copyright text-center">
+    <div class="mt-2.5 mb-24 text-center">
         <small class="copyright d-inline-block mb-2">Copyright © {{ date('Y') }} Fantasy Computerworks Ltd <br>
             <a href="{{ route('terms-and-conditions') }}">Terms and Conditions</a> -
             <a href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</a>

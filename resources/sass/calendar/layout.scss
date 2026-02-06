@@ -2,26 +2,6 @@
 /** Big containers - Body, header, content **/
 /********************************************/
 
-.bg-accent {
-    background-color: $accent-color;
-}
-
-.accent-bg-color {
-    background-color: $accent-color !important;
-}
-
-.btn.btn-accent {
-    background-color: $accent-color;
-    border-color: $accent-color;
-    color: white;
-
-    &:hover {
-        background-color: $accent-color-darker;
-        border-color: $accent-color;
-        color: white;
-    }
-}
-
 .btn.btn-outline-accent {
     background-color: transparent;
     border-color: $accent-color;
@@ -33,12 +13,7 @@
 }
 
 body {
-    min-height: 100%;
     font-family: "Inter", sans-serif;
-
-    a {
-        color: $accent-color-light;
-    }
 }
 
 ::-webkit-scrollbar {
@@ -55,163 +30,9 @@ body {
     background: rgba(0, 0, 0, 0.3);
 }
 
-#loading_background {
-    display: flex;
-    flex-direction: column;
-    z-index: 2000;
-
-    img,
-    div {
-        display: inline-flex;
-        align-self: center;
-        position: relative;
-        top: 45vh;
-        padding-top: 10px;
-        color: white;
-    }
-
-    .loading_cancel_button_container {
-        display: inline-flex;
-        align-self: center;
-        position: relative;
-        padding-top: 10px;
-        width: 20vw;
-    }
-}
-
-/************/
-/** Header **/
-/************/
-
-.navbar-logo {
-    max-height: 2rem;
-}
-
-.navbar {
-    @media (min-width: 768px) and (hover: none) {
-        min-height: 3.6rem;
-    }
-
-    .new-nav-item {
-        position: relative;
-
-        & a:after {
-            content: "New!";
-            display: inline;
-            color: $text-green-400;
-            background-color: $bg-green-800;
-            font-size: 0.8rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: 999px;
-            margin-left: 0.4rem;
-        }
-    }
-}
-
-.page-calendars-create {
-    .navbar-expand.sticky-top {
-        z-index: 10;
-    }
-}
-
-.page-calendars-edit {
-    .navbar {
-        &-expand.sticky-top {
-            z-index: 10;
-        }
-
-        &-brand {
-            padding: 0 0.5rem;
-            margin-right: 0.75rem;
-        }
-
-        .nav-link {
-            padding: 0 0.5rem;
-        }
-    }
-
-    #content {
-        max-height: 100vh;
-    }
-}
-
-body.page-calendars-index {
-    .navbar .nav-item.my-calendars {
-        font-weight: bold;
-        color: white;
-
-        a {
-            color: white;
-        }
-    }
-}
-
 /*************/
 /** General **/
 /*************/
-
-#generator_container {
-    display: flex;
-    width: 100%;
-    margin: 0;
-    height: 100vh;
-}
-
-#input_container {
-    position: relative;
-    overflow-y: auto;
-    order: 1;
-    max-height: 100%;
-    max-width: $sidebar-width;
-    flex-grow: 1;
-
-    @media (screen and min-width: 768px) {
-        min-width: $sidebar-width;
-    }
-}
-
-#input_container.sidebar-mobile-half:not(.inputs_collapsed) {
-    width: 50vw;
-    max-width: 50vw;
-    min-width: 50vw;
-}
-
-#input_container.inputs_collapsed {
-    width: 0;
-    overflow: hidden;
-    padding: 0;
-    min-width: 0;
-    max-width: 0;
-    margin-right: 0;
-}
-
-#input_container .copyright {
-    margin-top: 10px;
-    margin-bottom: 9rem;
-}
-
-#input_collapse_btn:focus {
-    outline: 0 !important;
-}
-
-#input_collapse_btn {
-    display: grid;
-    place-items: center;
-    text-align: center;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: 0.5s all ease;
-    width: auto !important;
-    padding: 0.3rem;
-
-    &.is-active {
-        display: none !important;
-    }
-
-    .btn {
-        border-radius: 0;
-    }
-}
 
 #calendar_container {
     display: flex;

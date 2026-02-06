@@ -413,22 +413,6 @@ input[type="number"]:not(.spinner) {
     font-size: 1.2rem;
 }
 
-@media screen and (max-width: 768px) {
-
-    #input_container,
-    #input_container.sidebar-mobile-half:not(.inputs_collapsed) {
-        width: 100vw;
-        max-width: initial;
-        min-width: initial;
-    }
-
-    #calendar_container:not(.inputs_collapsed) {
-        width: 0;
-        flex-grow: 0;
-        padding: 0;
-    }
-}
-
 .wrap-collapsible>input[type="checkbox"] {
     display: none;
 }

@@ -36,6 +36,7 @@
 
 @section('content')
     <div id="generator_container"
+        class="flex w-full m-0 h-screen"
         x-data='calendar_edit_page(getCalendarStructure())'
         @calendar-updating.window="update_calendar"
         @rebuild-calendar.window="rebuild_calendar"
