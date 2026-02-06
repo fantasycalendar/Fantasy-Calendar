@@ -1,4 +1,7 @@
-function create_season_events(complex) {
+import { get_moon_granularity, convert_year, clone, evaluate_calendar_start, slugify } from "./calendar_functions";
+import { condition_mapping, preset_data } from "./calendar_variables";
+
+export function create_season_events(complex) {
 
     if (complex) {
 
@@ -104,11 +107,11 @@ function create_season_events(complex) {
 
         var events = [];
 
-        if (static_data.seasons.data.length == 4) {
+        if (window.static_data.seasons.data.length == 4) {
 
-            for (var i = 0; i < static_data.seasons.data.length; i++) {
+            for (var i = 0; i < window.static_data.seasons.data.length; i++) {
 
-                var season = static_data.seasons.data[i];
+                var season = window.static_data.seasons.data[i];
 
                 var season_name = season.name;
 
@@ -160,9 +163,9 @@ function create_season_events(complex) {
 
         } else {
 
-            for (var i = 0; i < static_data.seasons.data.length; i++) {
+            for (var i = 0; i < window.static_data.seasons.data.length; i++) {
 
-                var season = static_data.seasons.data[i];
+                var season = window.static_data.seasons.data[i];
 
                 var season_name = season.name;
 
@@ -227,7 +230,7 @@ function create_season_events(complex) {
                     }
                 });
 
-                if (static_data.seasons.global_settings.periodic_seasons) {
+                if (window.static_data.seasons.global_settings.periodic_seasons) {
 
                     events.push({
                         "name": equinox_name,
@@ -318,7 +321,6 @@ function parse_json(json) {
             "eras": [],
             "settings": {
                 "layout": "grid",
-                "comments": "none",
                 "show_current_month": false,
                 "add_month_number": false,
                 "add_year_day_number": false,
@@ -1666,7 +1668,7 @@ function event_condition_check(conditions) {
                 || isNaN(Number(condition[1]))
                 || !Array.isArray(condition[2])
                 || condition[2].length === 0
-                || condition[2].length !== (condition_mapping[condition[0]][condition[1]][2].length + (condition[0] === "Moons" || condition[0] === "Cycle" ? 1 : 0))) {
+                || condition[2].length !== (condition_mapping[condition[0]][condition[1]].elements.length + (condition[0] === "Moons" || condition[0] === "Cycle" ? 1 : 0))) {
                 return false;
             }
         }

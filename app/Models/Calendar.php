@@ -29,7 +29,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
- * 
+ *
  *
  * @property mixed static_data Calendar static data
  * @property mixed dynamic_data Calendar dynamic data
@@ -197,7 +197,8 @@ class Calendar extends Model
     protected $casts = [
         'dynamic_data' => 'array',
         'static_data' => 'array',
-        'advancement_next_due' => 'datetime'
+        'advancement_next_due' => 'datetime',
+        'parent_link_date' => 'array',
     ];
 
     public $timestamps = false;
@@ -467,9 +468,9 @@ class Calendar extends Model
      */
     public function getCurrentEraValidAttribute(): bool
     {
-        return (count($this->static_data['eras'] ?? []) > 0
-
-            && ($this->dynamic_data['current_era'] ?? -1) > -1
+        return Arr::has(
+            Arr::get($this->static_data, 'eras', []),
+            Arr::get($this->dynamic_data, 'current_era')
         );
     }
 

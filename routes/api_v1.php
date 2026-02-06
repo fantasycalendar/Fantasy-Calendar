@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\V1\EventCommentController;
 use App\Http\Controllers\Api\V1\PresetController;
 use App\Http\Controllers\Api\V1\UserController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,7 +46,7 @@ Route::middleware(['auth:sanctum'])->group(function(){
     Route::any('/calendar/{calendar}/users', [CalendarController::class, 'users']);
     Route::any('/calendar/{calendar}/inviteUser', [CalendarController::class, 'inviteUser']);
     Route::any('/calendar/{calendar}/removeUser', [CalendarController::class, 'removeUser']);
-    Route::any('/calendar/{calendar}/resend_invite', [CalendarController::class, 'resend_invite']);
+    Route::any('/calendar/{calendar}/resendInvite', [CalendarController::class, 'resendInvite']);
     Route::any('/calendar/{calendar}/changeUserRole', [CalendarController::class, 'changeUserRole']);
     Route::any('/calendar/{calendar}/changeDate', [CalendarController::class, 'changeDate']);
     Route::any('/calendar/{calendar}/getCurrentDate', [CalendarController::class, 'getCurrentDate']);

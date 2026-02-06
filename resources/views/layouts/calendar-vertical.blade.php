@@ -1,4 +1,11 @@
-<div id='calendar' x-data="CalendarRenderer" :class="{ 'single_month': render_data.current_month_only }" x-ref="calendar_renderer" x-init="$nextTick(() => $dispatch('layout-change', {apply: render_data.current_month_only ? 'single_month' : ''}))">
+<div id='calendar'
+     x-data="CalendarRenderer"
+     :class="{ 'single_month': render_data.current_month_only }"
+     x-ref="calendar_renderer"
+     x-init="$nextTick(() => $dispatch('layout-change', {apply: render_data.current_month_only ? 'single_month' : ''}))"
+     @set-calendar-visible.window="set_calendar_visible($event.detail)"
+     x-show="visible"
+>
 
     <div class="modal_background w-100" x-show="!loaded && render_data.timespans.length">
         <div id="modal" class="creation mt-5 py-5 d-flex flex-column align-items-center justify-content-center">
@@ -6,6 +13,8 @@
             <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </div>
     </div>
+
+    <x-calendar-creation-steps></x-calendar-creation-steps>
 
     <template
         @render-data-change.window="
@@ -31,7 +40,9 @@
                     'season_color_enabled': day.season_color,
                     'preview_day': day.epoch == render_data.preview_epoch && render_data.preview_epoch != render_data.current_epoch,
                     [day.extra_class]: day.extra_class
-                }" :epoch="day.epoch">
+                }" :epoch="day.epoch"
+                    @contextmenu.prevent="$dispatch('date-context-menu', { click: $event, element: $el, day })"
+                >
                     <div class="day_row text" x-show="day.text" x-text="day.text"></div>
                     <div class="day_row d-flex justify-content-between">
 
@@ -75,6 +86,7 @@
                                 x-text="calendar_event.name"
                                 :event_id="calendar_event.index"
                                 @click="$dispatch('event-viewer-modal-view-event', { event_id: calendar_event.index, era: calendar_event.era, epoch: day.epoch })"
+                                @contextmenu.prevent.stop="$dispatch('event-context-menu', { click: $event, element: $el, calendar_event, day })"
                             ></div>
                         </template>
                     </div>

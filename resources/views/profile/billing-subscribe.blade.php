@@ -221,7 +221,7 @@
                 </div>
 
                 <div class="px-10">
-                    <div class="border-t border-gray-100 dark:border-gray-700 w-full sm:hidden mt-8 w-full"></div>
+                    <div class="border-t border-gray-100 dark:border-gray-700 w-full sm:hidden mt-8"></div>
                 </div>
             </aside>
 

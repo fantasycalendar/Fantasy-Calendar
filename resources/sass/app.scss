@@ -1,20 +1,30 @@
+@tailwind base;
+@tailwind variants;
+@tailwind utilities;
+@tailwind components;
+
 // Fonts
-@import url('https://rsms.me/inter/inter.css');
-html { font-family: 'Inter', sans-serif; }
-@supports (font-variation-settings: normal) {
-    html { font-family: 'Inter var', sans-serif; }
+// @import url('https://rsms.me/inter/inter.css');
+
+html {
+    font-family: 'Inter', sans-serif;
 }
 
-@import '~bootstrap/scss/bootstrap';
+@supports (font-variation-settings: normal) {
+    html {
+        font-family: 'Inter var', sans-serif;
+    }
+}
 
-@import '~@fortawesome/fontawesome-free/scss/fontawesome';
-@import '~@fortawesome/fontawesome-free/scss/solid';
-@import '~@fortawesome/fontawesome-free/scss/regular';
-@import '~@fortawesome/fontawesome-free/scss/brands';
+@import 'quill/dist/quill.core';
+@import 'quill/dist/quill.snow';
 
-@import '~trumbowyg/dist/ui/sass/trumbowyg';
+@import 'bootstrap/scss/bootstrap';
 
-@import '~protip/css/protip';
+@import '@fortawesome/fontawesome-free/css/fontawesome';
+@import '@fortawesome/fontawesome-free/css/solid';
+@import '@fortawesome/fontawesome-free/css/regular';
+@import '@fortawesome/fontawesome-free/css/brands';
 
 // Variables
 @import 'calendar/colors';
@@ -28,38 +38,21 @@ html { font-family: 'Inter', sans-serif; }
 
 @import 'calendar/event_colors';
 
-// select2
-@import '~select2';
-@import '~select2-bootstrap-theme/dist/select2-bootstrap';
-
 // contextmenu
-@import '~jquery-contextmenu/dist/jquery.contextMenu';
-// override stupid preset color
-.context-menu-icon.context-menu-icon--fa5 i{
-    color: inherit;
-}
-.context-menu-item.context-menu-hover{
-    background-color:$accent-color;
+@import 'jquery-contextmenu/dist/jquery.contextMenu';
+
+body {
+    font-size: $font-size-base;
 }
 
 .btn-outline-secondary {
     border-color: rgb(108, 117, 125, 0.3);
 }
 
-.badge-accent{
-    color: #fff;
-    background-color: #6c757d;
-}
-
-#go_to_preview_date, #preview_date_btn {
-    background-color: $bg-amber-600;
-    border-color: $bg-amber-600;
-
-    &:hover {
-        background-color: $bg-amber-500;
-    }
-}
-
 mark {
     background-color: $bg-emerald-200
+}
+
+[x-cloak] {
+    display: none;
 }

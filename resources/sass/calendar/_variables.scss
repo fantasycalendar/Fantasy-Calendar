@@ -41,7 +41,7 @@ $input-border-color: #e9ecef;
 $handle-color: $gray-800;
 
 $input-group-text-bg: $gray-secondary;
-$input-group-text-color: white;
+$input-group-text-color: $bg-gray-500;
 
 $btn-create-event-bg-color: $bg-gray-300;
 $btn-create-event-hover-bg-color: $bg-gray-400;
@@ -72,3 +72,15 @@ $m-current-day: #fdb44d;
 // SVG image data
 $disabled-crosshatch: url("data:image/svg+xml;charset=utf-8,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 0H20L0 20m40 20V20L20 40' fill='%23f9f9fa' fill-rule='evenodd'/%3E%3C/svg%3E");
 $warning-crosshatch: url("data:image/svg+xml;charset=utf-8,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 0H20L0 20m40 20V20L20 40' fill-opacity='0.3' fill='%23e3342f' fill-rule='evenodd'/%3E%3C/svg%3E");
+
+:root {
+    --stroke-colour: $modal-content-border-color;
+    --fill-colour: $modal-content-border-color;
+    --picker-label-colour: $modal-content-border-color;
+    --editor-placeholder-colour: $modal-content-border-color;
+    --border-color: rgb(31 41 55);
+}
+
+$group-list-bg-color: rgba($bg-gray-800, 0.07);
+$not-group-list-bg-color: $bg-red-100;
+$num-group-list-bg-color: $bg-sky-100;

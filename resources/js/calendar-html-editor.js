@@ -1,121 +1,84 @@
-const calendar_html_editor = {
+import $ from 'jquery';
 
-	open: false,
-	era_id: false,
-	description: false,
-	has_initialized: false,
+export default () => ({
 
-	init: function() {
+    open: false,
+    era_id: false,
+    description: "",
+    original_description: "",
+    has_initialized: false,
 
-		if (!this.has_initialized) {
+    edit_html: function($event) {
+        this.era_id = $event.detail.era_id;
 
-			this.html_input = $(this.$refs.html_input);
+        this.description = this.$store.calendar.static_data.eras[this.era_id].description ?? "";
+        this.original_description = this.$store.calendar.static_data.eras[this.era_id].description ?? "";
 
-			this.html_input.trumbowyg();
+        this.open = true;
+    },
 
-			this.has_initialized = true;
+    save_html: function() {
+        this.$dispatch('calendar-updating', {
+            calendar: {
+                ['static_data.eras.' + this.era_id + '.description']: this.description,
+            }
+        });
 
-		}
+        this.close_and_reset()
+    },
 
-	},
-
-	edit_html: function($event){
-
-		this.init()
-
-		this.era_id = $event.detail.era_id;
-
-		this.description = static_data.eras[this.era_id].description ? static_data.eras[this.era_id].description : "";
-
-		this.html_input.trumbowyg("html", this.description);
-
-		this.open = true;
-
-	},
-
-	save_html: function(){
-
-		static_data.eras[this.era_id].description = this.html_input.trumbowyg("html");
-
-		this.close()
-
-	},
-
-	confirm_close($event) {
-
-        const possibleTrumbowyg = [$event.target.id, $event.target.parentElement.id].concat(
-            Array.from($event.target.classList),
-            Array.from($event.target.parentElement.classList),
-            Array.from($event.target.parentElement.parentElement.classList),
-        );
-        if(possibleTrumbowyg.some(entry => entry.startsWith('trumbowyg-'))) return false;
-
-        // Don't do anything if a swal is open.
-        if(swal.isVisible()) {
-            return false;
+    confirm_close($event) {
+        if (swal.isVisible()) {
+            return;
         }
 
-        let description = this.html_input.trumbowyg("html");
+        if (this.original_description !== this.description) {
+            swal.fire({
+                title: "Are you sure?",
+                text: 'Your changes will not be saved! Are you sure you want to close?',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                icon: "warning",
+            }).then((result) => {
+                if (!result.dismiss) {
+                    this.close_and_reset();
+                }
+            });
+        } else {
+            this.close_and_reset();
+        }
+    },
 
-		if (description != this.description) {
-			swal.fire({
-				title: "Are you sure?",
-				text: 'Your changes will not be saved! Are you sure you want to close?',
-				showCancelButton: true,
-				confirmButtonColor: '#d33',
-				cancelButtonColor: '#3085d6',
-				icon: "warning",
-			}).then((result) => {
-				if (!result.dismiss) {
-					this.close();
-				}
-			});
-		} else {
-			this.close();
-		}
-
-	},
-
-	confirm_view() {
-        // Don't do anything if a swal is open.
-        if(swal.isVisible()) {
-            return false;
+    confirm_view() {
+        if (swal.isVisible()) {
+            return;
         }
 
-        let description = this.html_input.trumbowyg("html");
+        if (this.original_description !== this.description) {
+            swal.fire({
+                title: "Are you sure?",
+                text: 'Your changes to this event will not be saved! Are you sure you want to continue?',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                icon: "warning",
+            }).then((result) => {
+                if (!result.dismiss) {
+                    this.$dispatch('event-viewer-modal-view-event', { event_id: this.era_id, era: true });
+                    this.close_and_reset();
+                }
+            });
+        } else {
+            this.$dispatch('event-viewer-modal-view-event', { event_id: this.era_id, era: true });
+            this.close_and_reset();
+        }
+    },
 
-		if (description != this.description) {
-			swal.fire({
-				title: "Are you sure?",
-				text: 'Your changes to this event will not be saved! Are you sure you want to continue?',
-				showCancelButton: true,
-				confirmButtonColor: '#d33',
-				cancelButtonColor: '#3085d6',
-				icon: "warning",
-			}).then((result) => {
-				if (!result.dismiss) {
-					window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.era_id, era: true } }));
-					this.close();
-				}
-			});
-		} else {
-			window.dispatchEvent(new CustomEvent('event-viewer-modal-view-event', { detail: { event_id: this.era_id, era: true } }));
-			this.close();
-		}
-
-	},
-
-	close: function() {
-
-		this.open = false;
-		this.era_id = false;
-		this.description = false;
-		this.html_input.trumbowyg("html", "");
-		evaluate_save_button();
-
-	}
-
-}
-
-
-module.exports = calendar_html_editor;
+    close_and_reset() {
+        this.open = false;
+        this.era_id = false;
+        this.description = "";
+        this.original_description = "";
+    }
+})

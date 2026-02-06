@@ -1,9 +1,11 @@
+import { lerp, fract } from "./calendar/calendar_functions";
+
 /**
  * This class is used to generate a pseudo-random number based on a seed
  *
  * @param  {int}    seed    An int that initializes the pseudo-random generator
  */
-class random {
+export default class random {
 
 	constructor(seed){
 		this.seed = seed;
@@ -113,4 +115,21 @@ class random {
 	}
 }
 
-module.exports = random;
+export function bezierQuadratic(p0, p1, p2, t) {
+    // mix is linear interpolation, aka. linear bezier
+    return lerp(
+        lerp(p0, p1, t),
+        lerp(p1, p2, t),
+        t
+    );
+}
+
+export function bezierCubic(p0, p1, p2, p3, t) {
+    return lerp(
+        bezierQuadratic(p0, p1, p2, t),
+        bezierQuadratic(p1, p2, p3, t),
+        t
+    );
+}
+
+

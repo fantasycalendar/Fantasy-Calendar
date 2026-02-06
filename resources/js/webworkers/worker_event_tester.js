@@ -1,9 +1,4 @@
-var version = new Date().getTime();
-
-importScripts('/js/calendar/calendar_functions.js?v='+version);
-importScripts('/js/calendar/calendar_variables.js?v='+version);
-importScripts('/js/calendar/calendar_season_generator.js?v='+version);
-importScripts('/js/calendar/calendar_workers.js?v='+version);
+import { calendar_data_generator, event_evaluator } from "../calendar/calendar_workers";
 
 onmessage = async (e) => {
 

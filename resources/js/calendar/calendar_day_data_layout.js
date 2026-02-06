@@ -1,4 +1,6 @@
-day_data_tooltip = {
+import { moon_phases } from "./calendar_variables";
+
+export var day_data_tooltip = {
 
     elements: {},
 
@@ -57,11 +59,11 @@ day_data_tooltip = {
 
                 if(key == "era"){
                     if(data > -1){
-                        html.push(sanitizeHtml(static_data.eras[data].name));
+                        html.push(sanitizeHtml(window.static_data.eras[data].name));
                     }
                 }else if(key.indexOf('moon') > -1){
                     for(var moon_index in data){
-                        var moon = static_data.moons[moon_index];
+                        var moon = window.static_data.moons[moon_index];
                         if(key == "moon_phase"){
                             var name_array = Object.keys(moon_phases[moon.granularity]);
                             var moon_data = `${sanitizeHtml(moon.name)}: ${name_array[data[moon_index]]}<br>`;
@@ -98,7 +100,7 @@ day_data_tooltip = {
 
                         var cycle_key = data[cycle_index]
 
-                        html.push(`${sanitizeHtml(static_data.cycles.data[cycle_index].names[cycle_key])}<br>`);
+                        html.push(`${sanitizeHtml(window.static_data.cycles.data[cycle_index].names[cycle_key])}<br>`);
 
                     }
 

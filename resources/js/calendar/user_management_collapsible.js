@@ -1,0 +1,172 @@
+import axios from "axios";
+import Swal from "sweetalert2";
+import CollapsibleComponent from "./collapsible_component";
+
+class UserManagementCollapsible extends CollapsibleComponent {
+    reordering = false;
+    users = [];
+    invite_email = "";
+    invite_status = "";
+    invite_error = "";
+    invite_enabled = true;
+    inviting = false;
+    loadingUsers = false;
+
+    deleting = -1;
+
+    init() {
+        this.loadUsers();
+    }
+
+    loadUsers() {
+        this.loadingUsers = true;
+        this.deleting = -1;
+
+        axios.get(this.$store.calendar.api_url("/calendar/:hash/users"))
+            .then(function(response) {
+                this.users = response.data;
+            }.bind(this))
+            .catch(function(error) {
+                this.$dispatch('notify', {
+                    title: 'Oops!',
+                    body: 'An error occurred, please try again later.',
+                    icon: 'fa-exclamation-triangle',
+                    icon_color: 'text-red-500'
+                });
+            }).finally(() => {
+                this.loadingUsers = false;
+            });
+    }
+
+    inviteUser() {
+        this.invite_enabled = false;
+        this.inviting = true;
+
+        axios.post(this.$store.calendar.api_url("/calendar/:hash/inviteUser"), {
+            email: this.invite_email
+        }).then(result => {
+            if (result.data.errors) {
+                this.invite_error = result.data.errors.email[0];
+            } else {
+                this.invite_status = `Sent email to ${this.invite_email}!`;
+                this.invite_email = "";
+            }
+        }).catch(error => {
+            console.log(error);
+            this.invite_status = '';
+            this.invite_error = error.response.data.errors.email[0];
+        }).finally(() => {
+            setTimeout(() => {
+                this.invite_status = "";
+                this.invite_error = "";
+                this.invite_enabled = true;
+                this.inviting = false;
+            }, 2000);
+
+            this.loadUsers();
+        });
+    }
+
+    removeInvite(invited_id) {
+        let invite = this.users.find(user => user.id == invited_id);
+        let invited_email = invite.username;
+
+        invite.username = 'Canceling invite...';
+
+        Swal.fire({
+            title: "Removing User",
+            html: `<p>Are you sure you want to cancel your invitation to <strong>${invited_email}</strong>?</p>`,
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, remove',
+            cancelButtonText: 'Cancel',
+            icon: "warning"
+        }).then((result) => {
+            if (result.dismiss) {
+                return;
+            }
+
+            this.deleting = -1;
+
+            axios.post(this.$store.calendar.api_url("/calendar/:hash/removeUser"), {
+                email: invited_email,
+            }).then((response) => {
+                invite.username = 'Invite cancelled.';
+                this.loadUsers();
+            }).catch(function(error) {
+                this.$dispatch('notify', {
+                    title: 'Oops!',
+                    body: 'An error occurred, please try again later.',
+                    icon: 'fa-exclamation-triangle',
+                    icon_color: 'text-red-500'
+                });
+            });
+        });
+    }
+
+    removeUser(user_id) {
+        if (typeof user_id === "string") {
+            this.removeInvite(user_id);
+            return;
+        }
+
+        let user_name = this.users.find(user => user.id == user_id).username;
+
+        Swal.fire({
+            title: "Removing User",
+            html: `<p>Are you sure you want to remove <strong>${user_name}</strong> from this calendar?</p>`,
+            input: 'checkbox',
+            inputPlaceholder: 'Remove all of their contributions as well',
+            inputClass: "form-control",
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, remove',
+            cancelButtonText: 'Cancel',
+            icon: "warning"
+        }).then((result) => {
+            if (result.dismiss) {
+                return;
+            }
+
+            axios.post(this.$store.calendar.api_url("/calendar/:hash/removeUser"), {
+                user_id,
+                remove_all: result.value == 1,
+            }).then((response) => {
+                this.loadUsers();
+            }).catch(function(error) {
+                this.$dispatch('notify', {
+                    title: 'Oops!',
+                    body: 'An error occurred, please try again later.',
+                    icon: 'fa-exclamation-triangle',
+                    icon_color: 'text-red-500'
+                });
+            });
+        });
+    }
+
+    updateUserRole(user_id, user_role, output) {
+        axios.post(
+            this.$store.calendar.api_url("/calendar/:hash/changeUserRole"),
+            { user_role, user_id },
+        ).then(function(result) {
+            output(true, 'Updated permissions!');
+        }).catch(function(error) {
+            output(false, error.response.data.message);
+        });
+    }
+
+    resendCalendarInvite(email, output) {
+        axios.post(
+            this.$store.calendar.api_url("/calendar/:hash/resendInvite"),
+            { email },
+        ).then(function(result) {
+            output(true, 'Resent invitation');
+        }).catch(function(error) {
+            output(false, error.response.data.message);
+        });
+    }
+}
+
+export default () => new UserManagementCollapsible();

@@ -1,5 +1,8 @@
-const preset_loader = {
+import RandomCalendar from './random-calendar.js';
+import { get_preset_data } from './calendar/calendar_ajax_functions.js';
+import { convert_year, clone, evaluate_calendar_start, notify } from './calendar/calendar_functions.js';
 
+export default () => ({
     open: false,
     loaded: false,
     preset_applied: false,
@@ -40,17 +43,17 @@ const preset_loader = {
 
     },
 
-    get pages(){
+    get pages() {
         return Array.from({
             length: Math.ceil(this.total / this.size),
         });
     },
 
-    next_page: function(){
+    next_page: function() {
         this.page_number++;
     },
 
-    prev_page: function(){
+    prev_page: function() {
         this.page_number--;
     },
 
@@ -59,12 +62,12 @@ const preset_loader = {
     },
 
     //Return the start range of the paginated results
-    get start_results(){
-       return this.page_number * this.size + 1;
+    get start_results() {
+        return this.page_number * this.size + 1;
     },
 
     //Return the end range of the paginated results
-    get end_results(){
+    get end_results() {
         let resultsOnPage = (this.page_number + 1) * this.size;
 
         if (resultsOnPage <= this.total) {
@@ -74,38 +77,36 @@ const preset_loader = {
         return this.total;
     },
 
-    view_page: function(index){
+    view_page: function(index) {
         this.page_number = index;
     },
 
-    load: function(){
+    load: function() {
         this.open = true;
-        if(this.loaded){
+        if (this.loaded) {
             return;
         }
         let loader = this;
         let callback = this.populate_presets;
-        axios.get(window.apiurl+'/presets')
-            .then(function (result){
-                if(!result.data.error && result.data != "") {
+        axios.get(window.apiurl + '/presets')
+            .then(function(result) {
+                if (!result.data.error && result.data != "") {
                     callback(loader, result.data);
-                } else if(result.data == ""){
+                } else if (result.data == "") {
                     callback(loader, []);
                 } else {
-                    $.notify(
-                        "Error loading presets: " + result.data.message
-                    );
+                    notify( "Error loading presets: " + result.data.message);
                     throw result.data.message;
                 }
             });
     },
 
-    populate_presets: function(loader, presets){
+    populate_presets: function(loader, presets) {
 
-        for(let index in presets){
+        for (let index in presets) {
             presets[index]['author'] = `Author: ${presets[index]['author']}`;
 
-            if(presets[index]['featured']) {
+            if (presets[index]['featured']) {
                 presets[index].icon = "star";
                 loader.featured.push(presets[index]);
             }
@@ -133,11 +134,11 @@ const preset_loader = {
 
     },
 
-    fetch_preset: function(id, name){
+    fetch_preset: function(id, name) {
 
-        if(id <= 0){
+        if (id <= 0) {
 
-            if(name == "Load custom JSON"){
+            if (name == "Load custom JSON") {
 
                 swal.fire({
                     text: "Input your JSON data below:",
@@ -149,41 +150,37 @@ const preset_loader = {
                     confirmButtonText: 'Load',
                     dangerMode: true
                 })
-                .then(result => {
+                    .then(result => {
 
-                    if(result.dismiss || !result.value) return;
+                        if (result.dismiss || !result.value) return;
 
-                    var calendar = parse_json(result.value);
-                    if(calendar.success){
-                        prev_dynamic_data = {}
-                        prev_static_data = {}
-                        calendar_name = clone(calendar.name);
-                        static_data = clone(calendar.static_data);
-                        dynamic_data = clone(calendar.dynamic_data);
-                        event_categories = clone(calendar.event_categories);
-                        events = clone(calendar.events);
-                        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
-                        empty_edit_values();
-                        set_up_edit_values();
-                        set_up_view_values();
-                        set_up_visitor_values();
-                        do_error_check('calendar', true);
-                        this.open = false;
-                        this.preset_applied = true;
-                    }else{
-                        swal.fire({
-                            title: "Error!",
-                            text: calendar.message,
-                            icon: "warning",
-                        })
-                        .then(result => {
-                            this.fetch_preset(id, name);
-                        });
-                    }
+                        var calendar = parse_json(result.value);
+                        if (calendar.success) {
+                            window.prev_dynamic_data = {}
+                            window.prev_static_data = {}
+                            window.calendar_name = clone(calendar.name);
+                            window.static_data = clone(calendar.static_data);
+                            window.dynamic_data = clone(calendar.dynamic_data);
+                            window.event_categories = clone(calendar.event_categories);
+                            window.events = clone(calendar.events);
+                            window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
+                            this.$dispatch("rebuild-calendar");
+                            this.open = false;
+                            this.preset_applied = true;
+                        } else {
+                            swal.fire({
+                                title: "Error!",
+                                text: calendar.message,
+                                icon: "warning",
+                            })
+                                .then(result => {
+                                    this.fetch_preset(id, name);
+                                });
+                        }
 
-                });
+                    });
 
-            }else{
+            } else {
 
                 swal.fire({
                     title: "Are you sure?",
@@ -194,35 +191,31 @@ const preset_loader = {
                     confirmButtonText: 'Generate',
                     icon: "warning",
                 })
-                .then((result) => {
-                    if(result.value) {
+                    .then((result) => {
+                        if (result.value) {
 
-                        calendar_name = "Random Calendar";
-                        static_data = randomizer.randomize(static_data);
-                        dynamic_data = {
-                            "year": 1,
-                            "timespan": 0,
-                            "day": 1,
-                            "epoch": 0,
-                            "custom_location": false,
-                            "location": "Equatorial"
-                        };
-                        empty_edit_values();
-                        set_up_edit_values();
-                        set_up_view_values();
-                        set_up_visitor_values();
-                        do_error_check('calendar', true);
-                        this.open = false;
-                        this.preset_applied = true;
+                            window.calendar_name = "Random Calendar";
+                            window.static_data = RandomCalendar.randomize(static_data);
+                            window.dynamic_data = {
+                                "year": 1,
+                                "timespan": 0,
+                                "day": 1,
+                                "epoch": 0,
+                                "custom_location": false,
+                                "location": "Equatorial"
+                            };
+                            this.$dispatch("rebuild-calendar");
+                            this.open = false;
+                            this.preset_applied = true;
 
-                    }
-                });
+                        }
+                    });
 
             }
 
-        }else{
+        } else {
 
-            if(this.preset_applied){
+            if (this.preset_applied) {
                 swal.fire({
                     title: "Are you sure?",
                     text: `Applying this preset will overwrite all of your current progress.`,
@@ -232,14 +225,14 @@ const preset_loader = {
                     confirmButtonText: 'Yes',
                     icon: "warning",
                 })
-                .then((result) => {
-                    if(result.value) {
-                        get_preset_data(id, this.apply_preset);
-                        this.open = false;
-                        this.preset_applied = true;
-                    }
-                });
-            }else{
+                    .then((result) => {
+                        if (result.value) {
+                            get_preset_data(id, this.apply_preset);
+                            this.open = false;
+                            this.preset_applied = true;
+                        }
+                    });
+            } else {
                 get_preset_data(id, this.apply_preset);
                 this.open = false;
                 this.preset_applied = true;
@@ -247,29 +240,29 @@ const preset_loader = {
         }
     },
 
-    apply_preset: function(data){
+    apply_preset: function(data) {
 
-        calendar_name = data.name;
-        static_data = data.static_data;
-        dynamic_data = data.dynamic_data;
-        events = data.events;
-        event_categories = data.categories;
+        window.calendar_name = data.name;
+        window.static_data = data.static_data;
+        window.dynamic_data = data.dynamic_data;
+        window.events = data.events;
+        window.event_categories = data.categories;
 
-        if(calendar_name.indexOf("Gregorian Calendar") > -1){
+        if (window.calendar_name.indexOf("Gregorian Calendar") > -1) {
             let current_date = new Date();
-            dynamic_data.year = current_date.getFullYear();
-            dynamic_data.timespan = current_date.getMonth();
-            dynamic_data.day = current_date.getDate();
-            dynamic_data.hour = current_date.getHours();
-            dynamic_data.minute = current_date.getMinutes();
+            window.dynamic_data.year = current_date.getFullYear();
+            window.dynamic_data.timespan = current_date.getMonth();
+            window.dynamic_data.day = current_date.getDate();
+            window.dynamic_data.hour = current_date.getHours();
+            window.dynamic_data.minute = current_date.getMinutes();
         }
 
-        dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+        window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
 
-        preview_date = clone(dynamic_data);
+        window.preview_date = clone(window.dynamic_data);
 
-        for(var index in events){
-            var event = events[index];
+        for (var index in window.events) {
+            var event = window.events[index];
             delete event.preset_event_category_id;
             delete event.preset_id;
             delete event.created_at;
@@ -277,8 +270,8 @@ const preset_loader = {
             delete event.deleted_at;
         }
 
-        for(var index in event_categories){
-            var category = event_categories[index];
+        for (var index in window.event_categories) {
+            var category = window.event_categories[index];
             category.id = category.label;
             delete category.label;
             delete category.preset_id;
@@ -287,17 +280,7 @@ const preset_loader = {
             delete category.deleted_at;
         }
 
-        empty_edit_values();
-        set_up_edit_values();
-        set_up_view_values();
-        set_up_visitor_values();
-        evaluate_save_button();
-        do_error_check();
-        $.notify(
-            "Calendar preset loaded!",
-            "success"
-        );
+        this.$dispatch("rebuild-calendar");
+        notify( "Calendar preset loaded!", "success");
     }
-}
-
-module.exports = preset_loader;
+});

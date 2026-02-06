@@ -1,13 +1,9 @@
+import { execution_time, precisionRound } from "../calendar/calendar_functions";
+import { calendar_data_generator } from "../calendar/calendar_workers.js";
+
 /*--------------------------------------------------------*/
 /*---------------- CALCULATION FUNCTIONS  ----------------*/
 /*--------------------------------------------------------*/
-
-var version = new Date().getTime();
-
-importScripts('/js/calendar/calendar_functions.js?v='+version);
-importScripts('/js/calendar/calendar_variables.js?v='+version);
-importScripts('/js/calendar/calendar_season_generator.js?v='+version);
-importScripts('/js/calendar/calendar_workers.js?v='+version);
 
 onmessage = async (e) => {
 
@@ -27,7 +23,7 @@ onmessage = async (e) => {
 
 		calendar_data_generator.dynamic_data.year = from_year;
 
-		execution_time.start();
+		execution_time.start("Generating calendar data...");
 
 		let average_time = 0;
 

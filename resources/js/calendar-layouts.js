@@ -1,4 +1,6 @@
-const calendar_layouts = {
+import { do_update_all } from "./calendar/calendar_ajax_functions";
+
+export default () => ({
 
     open: false,
     current_layout: undefined,
@@ -7,46 +9,58 @@ const calendar_layouts = {
         {
             "name": "Grid",
             "description": "A familiar detailed view that resembles a traditional wall-hung calendar.",
-            "image": "/resources/layouts/light-grid.png"
+            "image": "/images/layouts/light-grid.png"
         },
         {
             "name": "Vertical",
             "description": "A single column view for focusing on each day or for use on mobile devices.",
-            "image": "/resources/layouts/light-vertical.png"
+            "image": "/images/layouts/light-vertical.png"
         },
         {
             "name": "Minimalistic",
             "description": "Beautiful minimalism that zooms out a bit to fit the whole calendar on one page.",
-            "image": "/resources/layouts/light-minimal.png"
+            "image": "/images/layouts/light-minimal.png"
         }
     ],
 
-    open_modal: function($event){
-
-        if(evaluate_save_button()){
-            this.open = true;
-            this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() === static_data.settings.layout);
-        }else{
-            $('#btn_layouts').notify(
-                "Please save your calendar before applying a preset.",
-                { position: "top-center" }
-            )
-        }
+    open_modal: function($event) {
+        this.open = true;
+        this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() === this.$store.calendar.static_data.settings.layout);
     },
 
-    apply_layout: function(layout){
-        show_loading_screen();
-        let previous_layout = static_data.settings.layout;
-        static_data.settings.layout = layout.name.toLowerCase();
-        do_update_all(hash, function(){
-            window.onbeforeunload = function () {}
-            window.location.reload(false);
-        }, function(){
-            static_data.settings.layout = previous_layout;
-            hide_loading_screen();
+    apply_layout: function(layout) {
+
+        this.$dispatch("app-busy-start");
+
+        let previous_layout = this.$store.calendar.static_data.settings.layout;
+        this.$store.calendar.update({
+            "static_data.settings.layout": layout.name.toLowerCase(),
         });
+
+        if(window.location.href.endsWith("/edit")) {
+            do_update_all(window.hash)
+                .then(() => {
+                    window.onbeforeunload = function () {
+                    }
+                    window.location.reload(false);
+                })
+                .catch((error) => {
+                    this.$store.calendar.update({
+                        "static_data.settings.layout": previous_layout
+                    });
+                    this.$store.calendar.static_data.settings.layout = previous_layout;
+                    this.$dispatch("app-busy-end");
+                    this.$dispatch('notify', {
+                        content: error.response.data.message,
+                        type: "error"
+                    });
+                });
+        }else{
+            window.location = window.location.href.split("/create")[0] + "/create?resume=1";
+            // window.onbeforeunload = function () {
+            // }
+            // window.location.reload(false);
+        }
     }
 
-}
-
-module.exports = calendar_layouts;
+})

@@ -62,12 +62,11 @@ services:
     user: "${FC_USER_ID:-1000}:${FC_GROUP_ID:-1000}"
     mem_limit: 2048m
     ports:
-      - ${FC_BROWSERSYNC_PORT:-9987}:9980
-      - "9988:3001"
+      - ${FORWARD_VITE_PORT:-5173}:5173
     working_dir: "/fantasy-calendar"
     volumes:
       - ./:/fantasy-calendar
-    command: ["npm", "run", "watch"]
+    command: ["npm", "run", "dev"]
     environment:
       - BROWSERSYNC=${FC_BROWSERSYNC:-false}
       - "MIXVERSION=true"

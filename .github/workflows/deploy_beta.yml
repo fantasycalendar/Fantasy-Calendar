@@ -68,7 +68,7 @@ jobs:
         run: npm install --legacy-peer-deps
       - name: Build production assets
         if: steps.cache-assets.outputs.cache-hit != 'true'
-        run: npm run production
+        run: npm run build
       - name: Create env file
         if: steps.cache-env.outputs.cache-hit != 'true'
         run: |

@@ -1,4 +1,6 @@
-const events_manager = {
+import { clone, get_category } from "./calendar/calendar_functions";
+
+export default () => ({
     open: false,
 
     event_categories: [],
@@ -42,7 +44,6 @@ const events_manager = {
         this.selected = {};
 
         $dispatch("events-changed");
-        evaluate_save_button();
     },
 
     hideSelected($dispatch) {
@@ -89,7 +90,6 @@ const events_manager = {
         canonicalEvent.settings.print = !canonicalEvent.settings.print;
 
         $dispatch("events-changed");
-        evaluate_save_button();
     },
 
     toggleEventHidden(event, $dispatch) {
@@ -100,7 +100,6 @@ const events_manager = {
         canonicalEvent.settings.hide = !canonicalEvent.settings.hide;
 
         $dispatch("events-changed");
-        evaluate_save_button();
     },
 
     get numberSelected() {
@@ -171,14 +170,13 @@ const events_manager = {
         this.updateCategoryTo = null;
 
         $dispatch("events-changed");
-        evaluate_save_button();
     },
     refreshCategories() {
-        this.categories = clone(window.event_categories) ?? [];
+        this.categories = clone(this.$store.calendar.event_categories) ?? [];
     },
     refreshEvents() {
         this.refreshCategories();
-        this.categorizedEvents = (clone(window.events) ?? []).reduce(
+        this.categorizedEvents = (clone(this.$store.calendar.events) ?? []).reduce(
             (categorized, event) => {
                 if (
                     (this.search.length && !this.inSearch(event)) ||
@@ -257,7 +255,11 @@ const events_manager = {
     },
 
     highlight_match: function(string, offset = 0) {
-        let output = sanitizeHtml(string, { allowedTags: [] });
+        let element = document.createElement("div");
+        element.innerHTML = string;
+
+        let output = element.textContent;
+
         let index = 0;
         if (output.length < 1) return;
         let lengthLimit = 110 - offset;
@@ -281,11 +283,13 @@ const events_manager = {
             output = output
                 .substring(index, index + lengthLimit)
                 .replace(
-                new RegExp(this.search, "gi"),
-                function(str) {
-                    return `<mark>${str}</mark>`;
-                },
-            );
+                    new RegExp(this.search, "gi"),
+                    function(str) {
+                        return `<mark class='p-0'>${str}</mark>`;
+                    },
+                );
+        } else if (!this.search.length && ellipses) {
+            output = output.substring(0, lengthLimit);
         }
 
         if (ellipses) {
@@ -300,6 +304,7 @@ const events_manager = {
     },
 
     open_modal: function($event) {
+        this.refreshEvents()
         this.open = true;
         setTimeout(() => {
             document.getElementById("eventManagerSearch")?.focus();
@@ -309,6 +314,4 @@ const events_manager = {
     close_modal: function($event) {
         this.open = false;
     },
-};
-
-module.exports = events_manager;
+});

@@ -1,27 +1,19 @@
 {
     "private": true,
+    "type": "module",
     "scripts": {
-        "development": "mix",
-        "watch": "mix watch",
-        "watch-poll": "mix watch -- --watch-options-poll=1000",
-        "hot": "mix watch --hot",
-        "production": "mix --production",
-        "dev-install-watch": "npm install && npm run watch"
+        "dev": "vite",
+        "build": "vite build"
     },
     "devDependencies": {
         "axios": "^1.6.0",
         "bootstrap": "^4.6.2",
-        "browser-sync": "^3.0.2",
-        "browser-sync-v3-webpack-plugin": "^0.1.0",
-        "browser-sync-webpack-plugin": "^2.3.0",
-        "jquery": "^3.6.3",
-        "laravel-mix": "^6.0.49",
+        "laravel-vite-plugin": "^1.0.4",
         "lodash": "^4.17.21",
-        "mix-tailwindcss": "^1.3.0",
-        "popper.js": "^1.16.1",
         "resolve-url-loader": "^5.0.0",
         "sass": "^1.57.1",
         "sass-loader": "^12.4.0",
+        "vite": "^5.3.2",
         "webpack": "^5.76.0"
     },
     "optionalDependencies": {
@@ -29,6 +21,9 @@
     },
     "dependencies": {
         "@alpinejs/intersect": "^3.10.5",
+        "@alpinejs/persist": "^3.14.9",
+        "@alpinejs/sort": "^3.14.1",
+        "@floating-ui/dom": "^1.6.7",
         "@fortawesome/fontawesome-free": "^5.15.4",
         "@tailwindcss/aspect-ratio": "^0.4.2",
         "@tailwindcss/forms": "^0.5.0",
@@ -38,21 +33,19 @@
         "bootswatch": "^4.6.2",
         "chart.js": "^2.9.3",
         "collect.js": "^4.34.3",
+        "jquery": "^4.0.0-rc.1",
         "jquery-contextmenu": "^2.9.2",
+        "jquery-ui": "^1.13.3",
         "mustache": "^3.2.1",
-        "notifyjs": "^3.0.0",
+        "popper.js": "^1.16.1",
         "postcss": "^8.4.21",
         "progressbar.js": "^1.1.1",
-        "protip": "^1.4.21",
-        "sanitize-html": "^2.12.1",
-        "select2": "^4.0.13",
-        "select2-bootstrap-theme": "0.1.0-beta.10",
+        "quill": "^2.0.2",
         "serverless-s3-sync": "^1.14.4",
         "sortable": "^2.0.0",
         "sortablejs": "^1.15.0",
         "sweetalert2": "^9.17.4",
         "tailwindcss": "^3.2.4",
-        "trumbowyg": "^2.26.0",
         "weather-icons": "git+https://github.com/fantasycalendar/weather-icons.git"
     },
     "name": "app"

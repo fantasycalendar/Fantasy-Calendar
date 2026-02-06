@@ -1,31 +1,61 @@
-<div id='weather_tooltip_box'>
-	<div class='bold-text day_title hidden'>Day Title:</div>
-	<div class='day_container hidden'></div>
-	<div class='bold-text moon_title hidden'>Moons:</div>
-	<div class='moon_container hidden flex justify-content-center flex-wrap'></div>
-	<div class='weather_title bold-text'>Weather:</div>
-	<div><span class='bold-text'>Description:</span> <span class='weather_temp_desc'></span></div>
-	<div><span class='bold-text'>Temperature:</span> <span class='weather_temp'></span></div>
-	<div><span class='bold-text'>Wind:</span> <span class='weather_wind'></span></div>
-	<div><span class='bold-text'>Precipitation:</span> <span class='weather_precip'></span></div>
-	<div><span class='bold-text'>Clouds:</span> <span class='weather_clouds'></span></div>
-	<div><span class='bold-text'>Feature:</span> <span class='weather_feature'></span></div>
-</div>
+<div
+    x-data="weather_tooltip"
+    @weather-mouse-enter.window="activate"
+    @weather-mouse-leave.window="deactivate"
+    @scroll.window="deactivate"
+    id='weather_tooltip_box'
+    x-ref='weather_tooltip_box'
+    x-show="show"
+    x-cloak
+    :class="{'pointer-events-none' : !show}"
+    :style="`left: ${x}px; top: ${y}px; opacity: ${opacity};`"
+>
+    <div x-show='day.text'>Day Title:</div>
+    <div x-show='day.text' x-text='day.text'></div>
 
-<div id="weather_background" class='basic-background'>
-	<div class='basic-container'>
-		<div class='basic-wrapper'>
-			<div class='basic-form weather-basic-form'>
-				<h3 id='display_weather_name'>Weather</h3>
-				<div><span class='italics-text weather_date'></span></div>
-				<div><span class='bold-text'>Temperature description:</span> <span class='weather_temp_desc'></span></div>
-				<div><span class='bold-text'>Temperature:</span> <span class='weather_temp'></span></div>
-				<div><span class='bold-text'>Wind:</span> <span class='weather_wind'></span><span class='weather_wind_velocity'></span></div>
-				<div><span class='weather_wind_description'></span></div>
-				<div><span class='bold-text'>Precipitation:</span> <span class='weather_precip'></span></div>
-				<div><span class='bold-text'>Clouds:</span> <span class='weather_clouds'></span></div>
-				<div><span class='bold-text'>Feature:</span> <span class='weather_feature'></span></div>
-			</div>
-		</div>
-	</div>
+    <div x-show='show_moons && day.moons?.length' class='moon_title'>Moons:</div>
+    <div x-show='show_moons && day.moons?.length' class='flex justify-content-center flex-wrap'>
+        <template x-for="moon in day.moons">
+            <svg class="moon"
+                :moon_id="moon.index"
+                preserveAspectRatio="xMidYMid"
+                width="28"
+                height="28"
+                viewBox="0 0 32 32"
+            >
+                <circle cx="16" cy="16" r="10" class="lunar_background" :style="`fill: ${moon.color};`" />
+                <path class="lunar_shadow" :style="`fill: ${moon.shadow_color};`" x-show="moon.path" :d="moon.path"/>
+                <circle cx="16" cy="16" r="10" class="lunar_border"/>
+            </svg>
+        </template>
+    </div>
+
+    <div x-show="has_weather" class='font-bold'>Weather:</div>
+    <div x-show='has_weather && epoch_details.weather?.temperature?.cinematic'>
+        <span class='font-bold'>Description:</span> <span x-text='epoch_details.weather?.temperature?.cinematic'></span>
+    </div>
+    <div x-show='has_weather && temperature_ranges.length'>
+        <span class='font-bold'>Temperature:</span>
+    </div>
+    <template x-for="temperature_range in temperature_ranges">
+        <div>
+            <span x-text="temperature_range"></span>
+        </div>
+    </template>
+    <div x-show='has_weather && wind_direction'>
+        <span class='font-bold'>Wind:</span>
+        <span x-text='wind_direction'></span>
+    </div>
+    <div x-show='has_weather && wind_speeds.length'>
+        <span x-text='"(" + wind_speeds.join(" | ") + ")"'></span>
+    </div>
+    <div x-show='has_weather && epoch_details.weather?.precipitation?.key'>
+        <span class='font-bold'>Precipitation:</span> <span x-text='epoch_details.weather?.precipitation?.key'></span>
+    </div>
+    <div x-show='has_weather && epoch_details.weather?.clouds'>
+        <span class='font-bold'>Clouds:</span> <span x-text='epoch_details.weather?.clouds'></span>
+    </div>
+    <div x-show='has_weather && epoch_details.weather?.feature'>
+        <span class='font-bold'>Feature:</span> <span x-text='epoch_details.weather?.feature'></span>
+    </div>
 </div>

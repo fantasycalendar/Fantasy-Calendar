@@ -1,17 +1,30 @@
+@tailwind base;
+@tailwind variants;
+@tailwind utilities;
+@tailwind components;
+
 // Fonts
-@import url('https://rsms.me/inter/inter.css');
-html { font-family: 'Inter', sans-serif; }
-@supports (font-variation-settings: normal) {
-    html { font-family: 'Inter var', sans-serif; }
+// @import url('https://rsms.me/inter/inter.css');
+
+html {
+    font-family: 'Inter', sans-serif;
 }
+
+@supports (font-variation-settings: normal) {
+    html {
+        font-family: 'Inter var', sans-serif;
+    }
+}
+
+// @import 'quill/dist/quill.core';
+@import 'quill.smoke.css';
 
 @import 'calendar/colors';
 @import 'darkly-twishvars';
-@import '~bootstrap/scss/bootstrap';
-@import '~bootswatch/dist/darkly/bootswatch';
+@import 'bootstrap/scss/bootstrap';
+@import 'bootswatch/dist/darkly/bootswatch';
 
-
-@import '~sweetalert2/src/variables';
+@import 'sweetalert2/src/variables';
 
 $swal2-dark-theme-black: $gray-800;
 $swal2-dark-theme-white: $gray-100;
@@ -49,16 +62,12 @@ $swal2-button-focus-box-shadow: 0 0 0 1px $swal2-background, 0 0 0 3px $swal2-ou
 $swal2-toast-background: $swal2-dark-theme-black;
 $swal2-toast-button-focus-box-shadow: 0 0 0 1px $swal2-background, 0 0 0 3px $swal2-outline-color;
 
-@import '~sweetalert2/src/sweetalert2';
+@import 'sweetalert2/src/sweetalert2';
 
-@import '~@fortawesome/fontawesome-free/scss/fontawesome';
-@import '~@fortawesome/fontawesome-free/scss/solid';
-@import '~@fortawesome/fontawesome-free/scss/regular';
-@import '~@fortawesome/fontawesome-free/scss/brands';
-
-@import '~trumbowyg/dist/ui/sass/trumbowyg';
-
-@import '~protip/css/protip';
+@import '@fortawesome/fontawesome-free/css/fontawesome';
+@import '@fortawesome/fontawesome-free/css/solid';
+@import '@fortawesome/fontawesome-free/css/regular';
+@import '@fortawesome/fontawesome-free/css/brands';
 
 // Variables
 // @import 'calendar/colors';
@@ -72,52 +81,14 @@ $swal2-toast-button-focus-box-shadow: 0 0 0 1px $swal2-background, 0 0 0 3px $sw
 
 @import 'calendar/event_colors-dark';
 
-// select2
-@import '~select2';
-@import '~select2-bootstrap-theme/dist/select2-bootstrap';
-
 body {
     color: $text-gray-200;
 }
-.select2-container--default .select2-selection--single,
-.select2-container--bootstrap .select2-selection,
-.select2-container--bootstrap .select2-search--dropdown .select2-search__field,
-.select2-container--default .select2-selection--single .select2-selection__rendered,
-.condition_container .select2 .select2-selection,
-.select2-container--default .select2-search--dropdown .select2-search__field,
-.select2-dropdown {
-    background-color: $gray-700;
-    color: $gray-300;
-    border: 1px solid $gray-600;
-}
 
-.form-control:disabled, .form-control[readonly] {
+.form-control:disabled,
+.form-control[readonly] {
     background-color: $gray-600 !important;
     color: $gray-800 !important;
-}
-
-.select2-container--default .select2-results__option[aria-selected=true] {
-    background-color: darken($accent-color, 10%);
-}
-
-.select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background-color: $accent-color;
-}
-
-
-// contextmenu
-@import '~jquery-contextmenu/dist/jquery.contextMenu';
-// override stupid preset color
-.context-menu-icon.context-menu-icon--fa5 i{
-    color: inherit;
-}
-.context-menu-item.context-menu-hover{
-    background-color:$accent-color;
-}
-.context-menu-list, .context-menu-item {
-    background-color: $card-bg-color;
-    color: $main-text-color;
-    border: $gray-600;
 }
 
 // Overrides
@@ -138,7 +109,7 @@ body {
         color: rgba($gray-400, 0.9);
     }
 
-    & > option {
+    &>option {
         color: $gray-300;
     }
 }
@@ -147,56 +118,13 @@ body {
     border: 1px solid $gray-700;
 }
 
-.form-control:disabled, .form-control[readonly]{
+.form-control:disabled,
+.form-control[readonly] {
     color: white;
     background-color: $input-disabled-color;
 }
 
-.weather_icon {
-    filter: invert(100%);
-}
-
-.protip-skin-default--scheme-leaf[data-pt-position=top-left] .protip-arrow,
-.protip-skin-default--scheme-leaf[data-pt-position=top] .protip-arrow,
-.protip-skin-default--scheme-leaf[data-pt-position=top-right] .protip-arrow {
-    border-top-color: $accent-color !important;
-}
-
-.protip-skin-default--scheme-leaf[data-pt-position=bottom-left] .protip-arrow,
-.protip-skin-default--scheme-leaf[data-pt-position=bottom] .protip-arrow,
-.protip-skin-default--scheme-leaf[data-pt-position=bottom-right] .protip-arrow {
-    border-bottom-color: $accent-color !important;
-}
-
-.protip-skin-default--scheme-leaf[data-pt-position=left-top] .protip-arrow,
-.protip-skin-default--scheme-leaf[data-pt-position=left] .protip-arrow,
-.protip-skin-default--scheme-leaf[data-pt-position=left-bottom] .protip-arrow {
-    border-left-color: $accent-color !important;
-}
-
-.protip-skin-default--scheme-leaf[data-pt-position=right-top] .protip-arrow,
-.protip-skin-default--scheme-leaf[data-pt-position=right] .protip-arrow,
-.protip-skin-default--scheme-leaf[data-pt-position=right-bottom] .protip-arrow {
-    border-right-color: $accent-color !important;
-}
-
-.protip-skin-default--scheme-leaf[data-pt-position=top-left-corner] .protip-arrow {
-    border-right-color: $accent-color !important;
-}
-
-.protip-skin-default--scheme-leaf[data-pt-position=top-right-corner] .protip-arrow {
-    border-top-color: $accent-color !important;
-}
-
-.protip-skin-default--scheme-leaf[data-pt-position=bottom-left-corner] .protip-arrow {
-    border-bottom-color: $accent-color !important;
-}
-
-.protip-skin-default--scheme-leaf[data-pt-position=bottom-right-corner] .protip-arrow {
-    border-left-color: $accent-color !important;
-}
-
-.border{
+.border {
     border: 1px solid rgb(51, 65, 85) !important;
 }
 
@@ -204,7 +132,8 @@ body {
     border-right: 1px solid rgb(51, 65, 85) !important;
 }
 
-input.form-control, textarea.form-control {
+input.form-control,
+textarea.form-control {
     background-color: $gray-700;
     border-color: $gray-600;
     color: white;
@@ -224,16 +153,7 @@ input.form-control, textarea.form-control {
     }
 }
 
-#go_to_preview_date, #preview_date_btn {
-    background-color: $bg-amber-800;
-    border-color: $bg-amber-800;
-
-    &:hover {
-        background-color: $bg-amber-900;
-    }
-}
-
-.current_day{
+.current_day {
     background-image: linear-gradient(to right, rgba($current-day-color, 0.2), rgba($current-day-color, 0.2));
 }
 
@@ -268,49 +188,36 @@ input.form-control, textarea.form-control {
     color: white !important;
 }
 
-.page-calendars-index .border-top {
-    border-top: 1px solid $gray-700 !important;
+.condition_container.Year {
+    background-color: darken(#FFEBEE, 90%);
 }
 
-.badge-accent{
-    color: #222;
-    background-color: #adb5bd;
+.condition_container.Month {
+    background-color: darken(#E0F2F1, 80%);
 }
 
-.calendar-entry .calendar_action .dropdown-item:hover {
-    background-color: $gray-800;
+.condition_container.Day {
+    background-color: darken(#F1F8E9, 80%);
 }
 
-.condition_container.Year{
-    background-color:darken(#FFEBEE, 90%);
+.condition_container.Epoch {
+    background-color: darken(#ECEFF1, 80%);
 }
 
-.condition_container.Month{
-    background-color:darken(#E0F2F1, 80%);
+.condition_container.Weekday {
+    background-color: darken(#FFFDE7, 80%);
 }
 
-.condition_container.Day{
-    background-color:darken(#F1F8E9, 80%);
+.condition_container.Week {
+    background-color: darken(#FFF3E0, 80%);
 }
 
-.condition_container.Epoch{
-    background-color:darken(#ECEFF1, 80%);
+.condition_container.Moons {
+    background-color: darken(#E3F2FD, 80%);
 }
 
-.condition_container.Weekday{
-    background-color:darken(#FFFDE7, 80%);
-}
-
-.condition_container.Week{
-    background-color:darken(#FFF3E0, 80%);
-}
-
-.condition_container.Moons{
-    background-color:darken(#E3F2FD, 80%);
-}
-
-.condition_container.Cycle{
-    background-color:darken(#FAFAFA, 80%);
+.condition_container.Cycle {
+    background-color: darken(#FAFAFA, 80%);
 }
 
 .disabled {
@@ -318,11 +225,20 @@ input.form-control, textarea.form-control {
     color: $gray-800;
 }
 
-.form-check-input[disabled] ~ .form-check-label, .form-check-input:disabled ~ .form-check-label {
+.form-check-input[disabled]~.form-check-label,
+.form-check-input:disabled~.form-check-label {
     color: inherit;
 }
 
 mark {
     background-color: $bg-emerald-800;
     color: white;
+}
+
+[x-cloak] {
+    display: none;
+}
+
+.dropdown-header {
+    color: $gray-500;
 }

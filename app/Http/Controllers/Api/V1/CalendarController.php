@@ -64,11 +64,13 @@ class CalendarController extends Controller
     {
         CalendarCollection::withoutWrapping();
 
-        return new CalendarCollection($calendar->user->calendars->keyBy('hash'));
+        return new CalendarCollection($calendar->user->calendars);
     }
 
     public function users(GetCalendarUsersRequest $request, Calendar $calendar)
     {
+        $start = microtime(true);
+
         $users = $calendar->users;
 
         $usersResource = new Collection($users, new CalendarUserTransformer());
@@ -79,6 +81,10 @@ class CalendarController extends Controller
                 return $invite->transformForCalendar();
             })->toArray()
         );
+
+        $end = microtime(true);
+
+        logger()->info("Users call took " . ($end - $start) . " microseconds.");
 
         return $result;
     }
@@ -92,7 +98,7 @@ class CalendarController extends Controller
         return response()->json(['message' => 'Invite sent.']);
     }
 
-    public function resend_invite(ResendCalendarInvitationRequest $request)
+    public function resendInvite(ResendCalendarInvitationRequest $request)
     {
         if (!$request->invitation->canBeResent()) {
             return response()->json(['error' => true, 'message' => "You're doing that too much. Try again later."], 422);

@@ -1,4 +1,11 @@
-<div id='calendar' class="minimalistic" x-data="CalendarRenderer" :class="{ 'single_month': render_data.current_month_only }" x-ref="calendar_renderer" x-init="$nextTick(() => $dispatch('layout-change', {apply: render_data.current_month_only ? 'single_month' : ''}))">
+<div id='calendar' class="minimalistic"
+     x-data="CalendarRenderer"
+     :class="{ 'single_month': render_data.current_month_only }"
+     x-ref="calendar_renderer"
+     x-init="$nextTick(() => $dispatch('layout-change', {apply: render_data.current_month_only ? 'singlemonth' : ''}))"
+     @set-calendar-visible.window="set_calendar_visible($event.detail)"
+     x-show="visible"
+>
 
     <div class="modal_background w-100" x-show="!loaded && render_data.timespans.length">
         <div id="modal" class="creation mt-5 py-5 d-flex flex-column align-items-center justify-content-center">
@@ -6,6 +13,8 @@
             <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </div>
     </div>
+
+    <x-calendar-creation-steps></x-calendar-creation-steps>
 
     <template
         @render-data-change.window="

@@ -1,4 +1,6 @@
-class RandomCalendar{
+import { fract, get_moon_granularity } from "./calendar/calendar_functions";
+
+export default class RandomCalendar{
 
 	get rndUNorm(){
 		this.idx++;
@@ -180,5 +182,3 @@ class RandomCalendar{
 	}
 
 }
-
-module.exports = RandomCalendar;
