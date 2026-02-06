@@ -88,7 +88,7 @@
         </ul>
     @else
         <select type='number'
-            class='form-control protip'
+            class='form-control'
             title='This sets the first weekday of the first year.'
             x-model="first_day">
             <template x-for="(weekday, index) in weekdays" :key="index">

@@ -23,8 +23,8 @@
                 <div class='row no-gutters modal-form-heading'>
                     <h3 class="d-flex align-items-center">
                         <span class='event_name' x-text='data.name'>Editing Event</span>
-                        <i class="fas fa-pencil-alt event_header_action protip" data-pt-position='bottom' data-pt-title="Edit event" @click='confirm_edit' x-show='can_edit'></i>
-                        <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone' x-show='can_edit && !era'></i></h3>
+                        <i class="fas fa-pencil-alt event_header_action" title="Edit event" @click='confirm_edit' x-show='can_edit'></i>
+                        <i class="fas fa-clone event_header_action" title="Clone event" @click='confirm_clone' x-show='can_edit && !era'></i></h3>
                 </div>
 
                 <div class='row'>
@@ -126,8 +126,8 @@
 
                 <h3 class='event_action_type d-flex align-items-center modal-form-heading'>
                     <span x-text="modal_heading"></span>
-                    <i class="fas fa-eye event_header_action protip" data-pt-position='bottom' data-pt-title="Preview event" @click='confirm_view' x-show="!new_event"></i>
-                    <i class="fas fa-clone event_header_action protip" data-pt-position='bottom' data-pt-title="Clone event" @click='confirm_clone' x-show="!new_event"></i>
+                    <i class="fas fa-eye event_header_action" title="Preview event" @click='confirm_view' x-show="!new_event"></i>
+                    <i class="fas fa-clone event_header_action" title="Clone event" @click='confirm_clone' x-show="!new_event"></i>
                 </h3>
 
                 <input maxlength="255" type='text' x-ref="event_name" class='form-control event_editor_name' x-model='working_event.name' placeholder='Event name' autofocus='' @keydown.enter="save_event" @keydown.esc.stop />
@@ -565,7 +565,7 @@
                 <div class='flex mb-1 modal-form-heading'>
                     <h2 class='event_action_type'>
                         <span>Editing Era Description</span>
-                        <i class="fas fa-eye event_header_action protip" data-pt-position='bottom' data-pt-title="Preview" @click='confirm_view'></i>
+                        <i class="fas fa-eye event_header_action" title="Preview" @click='confirm_view'></i>
                     </h2>
                 </div>
 

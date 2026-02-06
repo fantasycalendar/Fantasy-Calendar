@@ -72,9 +72,9 @@
                     <button type='button' class='btn border-left btn-danger' @click="decrement_current_minute">30m</button>
                 </div>
 
-                <input class='form-control text-right protip' type='number' :value="current_hour" @change="set_current_hour(Number($event.target.value))">
+                <input class='form-control text-right' type='number' :value="current_hour" @change="set_current_hour(Number($event.target.value))">
                 <div class="input-group-prepend input-group-append"><span class="input-group-text">:</span></div>
-                <input class='form-control protip' type='number' :value="current_minute" @change="set_current_minute(Number($event.target.value))">
+                <input class='form-control' type='number' :value="current_minute" @change="set_current_minute(Number($event.target.value))">
 
                 <div class='input-group-append'>
                     <button type='button' class='btn small-text btn-success' @click="increment_current_minute">30m</button>

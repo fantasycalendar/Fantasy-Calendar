@@ -26,8 +26,8 @@
     </div>
 
     <div class='reset_preview_date_container left' x-show="is_selected_date_ahead" x-cloak>
-        <button type='button' class='btn btn-success reset_preview_date protip d-print-none'
-                data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'
+        <button type='button' class='btn btn-success reset_preview_date d-print-none'
+                title='Takes you back to the current date of this calendar'
                 @click="go_to_current_date"
         >
             &lt; Current
@@ -42,8 +42,8 @@
     </div>
 
     <div class='reset_preview_date_container right' x-show="is_selected_date_behind" x-cloak>
-        <button type='button' class='btn btn-success reset_preview_date protip d-print-none'
-                data-pt-position="bottom" data-pt-title='Takes you back to the current date of this calendar'
+        <button type='button' class='btn btn-success reset_preview_date d-print-none'
+                title='Takes you back to the current date of this calendar'
                 @click="go_to_current_date"
         >
             Current &gt;

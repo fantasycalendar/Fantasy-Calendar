@@ -6,7 +6,7 @@
 
 <input type='text'
     id='cycle_format'
-    class='form-control name protip'
+    class='form-control name'
     x-model.lazy="format"
     placeholder='Cycle &lcub;&lcub;1&rcub;&rcub;'
 />

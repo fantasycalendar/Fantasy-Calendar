@@ -26,8 +26,6 @@ html {
 @import '@fortawesome/fontawesome-free/css/regular';
 @import '@fortawesome/fontawesome-free/css/brands';
 
-@import 'protip/css/protip';
-
 // Variables
 @import 'calendar/colors';
 @import 'calendar/variables';
@@ -39,10 +37,6 @@ html {
 @import 'calendar';
 
 @import 'calendar/event_colors';
-
-// select2
-@import 'select2';
-@import 'select2-bootstrap-theme/dist/select2-bootstrap';
 
 // contextmenu
 @import 'jquery-contextmenu/dist/jquery.contextMenu';

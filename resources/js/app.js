@@ -62,13 +62,6 @@ import swal from 'sweetalert2';
 window.swal = swal;
 
 /**
- * Select2 is a jQuery-based replacement for select boxes. It supports searching,
- * remote data sets, and pagination of results.
- */
-
-import 'select2';
-
-/**
  * With ProgressBar.js, it's easy to create responsive and stylish progress
  * bars for the web. Animations perform well even on mobile devices. It provides
  * a few built‑in shapes like Line, Circle and SemiCircle but you can also create

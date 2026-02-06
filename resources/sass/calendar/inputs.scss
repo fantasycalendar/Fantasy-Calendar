@@ -19,11 +19,6 @@ button:focus,
     border-color: $input-border-color !important;
 }
 
-#protip_container {
-    z-index: 1100;
-    position: absolute !important;
-}
-
 input.invalid {
     border: 2px solid red !important;
 }
@@ -1174,50 +1169,6 @@ ol.example li.placeholder:before {
     margin-bottom: 5px;
     min-height: 34px;
     background-color: $action-bg-color;
-
-    .select2 {
-        order: 3;
-        min-width: 50%;
-
-        .select2-selection {
-            height: 100%;
-            border-radius: 0.2rem;
-            border: 1px solid #ced4da;
-
-            .select2-selection__rendered {
-                line-height: 1.5;
-                padding: 0.375rem 2rem 0.375rem 0.75rem;
-                height: 100%;
-            }
-
-            .select2-selection__arrow {
-                line-height: 1.5;
-                padding: 0.375rem 0.75rem;
-                height: 100%;
-            }
-        }
-    }
-}
-
-.select2-dropdown {
-    background-color: $card-bg-color !important;
-}
-
-.select2-container--default .select2-results__option[aria-selected="true"] {
-    background-color: $action-bg-color !important;
-}
-
-.select2-container--default .select2-results__option--highlighted[aria-selected] {
-    background-color: $accent-color;
-}
-
-.select2-results {
-    font-size: 0.875rem;
-    max-height: 400px;
-}
-
-.select2-container--default .select2-results>.select2-results__options {
-    max-height: 400px !important;
 }
 
 .placeholder {
