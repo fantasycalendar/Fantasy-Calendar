@@ -94,7 +94,7 @@
                 <div class='col-span-1'>Day:</div>
             </div>
 
-            <div class="input-group grid grid-cols-3" x-show="!settings.periodic_seasons">
+            <div class="input-group !grid grid-cols-3" x-show="!settings.periodic_seasons">
                 <select class='form-control col-span-2 !w-full' x-model.number='season.timespan'>
                     <template x-for="(month, month_index) in months" :key="month_index">
                         <option :value="month_index" :selected="month_index === season.timespan" x-text="month.name"></option>
@@ -123,7 +123,7 @@
                     <div>Sunrise hour</div>
                     <div>Sunrise minute</div>
 
-                    <div class="grid grid-cols-2 col-span-2 input-group">
+                    <div class="!grid grid-cols-2 col-span-2 input-group">
                         <input type='number' step="1.0" class='form-control !w-full' x-model.debounce.500='season.time.sunrise.hour'/>
                         <input type='number' step="1.0" class='form-control !w-full' x-model.debounce.500='season.time.sunrise.minute'/>
                     </div>
@@ -133,7 +133,7 @@
                     <div>Sunset hour</div>
                     <div>Sunset minute</div>
 
-                    <div class="grid grid-cols-2 input-group col-span-2">
+                    <div class="!grid grid-cols-2 input-group col-span-2">
                         <input type='number' step="1.0" class='form-control !w-full' x-model.debounce.500='season.time.sunset.hour'/>
                         <input type='number' step="1.0" class='form-control !w-full' x-model.debounce.500='season.time.sunset.minute'/>
                     </div>
