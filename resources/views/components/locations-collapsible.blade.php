@@ -19,7 +19,7 @@
     <div class='separator'></div>
 
     <div class="mb-2">
-        <div class='bold-text'>
+        <div class='font-bold'>
             New location:
         </div>
 
@@ -78,12 +78,12 @@
                                     <div class='flex gap-2 mb-2'>
                                         <div>
                                             Temperature low
-                                            <input type='number' step="any" class='form-control full' x-model.number.debounce.500='season.weather.temp_low'>
+                                            <input type='number' step="any" class='form-control w-full' x-model.number.debounce.500='season.weather.temp_low'>
                                         </div>
 
                                         <div>
                                             Temperature high
-                                            <input type='number' step="any" class='form-control full' x-model.number.debounce.500='season.weather.temp_high'>
+                                            <input type='number' step="any" class='form-control w-full' x-model.number.debounce.500='season.weather.temp_high'>
                                         </div>
                                     </div>
 
@@ -130,11 +130,11 @@
                                     </div>
 
                                     <div class='flex mb-2 gap-[8px]'>
-                                        <input type='number' step="1.0" class='form-control text-right full' x-model.number.debounce.500="season.time.sunrise.hour" :disabled="location.settings.season_based_time ?? false"/>
+                                        <input type='number' step="1.0" class='form-control text-right w-full' x-model.number.debounce.500="season.time.sunrise.hour" :disabled="location.settings.season_based_time ?? false"/>
 
                                         <div class="basis-[20px] text-center grid items-center">:</div>
 
-                                        <input type='number' step="1.0" class='form-control full' x-model.number.debounce.500="season.time.sunrise.minute" :disabled="location.settings.season_based_time ?? false"/>
+                                        <input type='number' step="1.0" class='form-control w-full' x-model.number.debounce.500="season.time.sunrise.minute" :disabled="location.settings.season_based_time ?? false"/>
                                     </div>
 
                                     <div class='flex gap-[24px] justify-evenly'>
@@ -147,16 +147,16 @@
                                     </div>
 
                                     <div class='flex mb-2 gap-[8px]'>
-                                        <input type='number' step="1.0" class='form-control text-right full' x-model.number.debounce.500="season.time.sunset.hour" :disabled="location.settings.season_based_time ?? false"/>
+                                        <input type='number' step="1.0" class='form-control text-right w-full' x-model.number.debounce.500="season.time.sunset.hour" :disabled="location.settings.season_based_time ?? false"/>
 
                                         <div class="basis-[20px] text-center grid items-center">:</div>
 
-                                        <input type='number' step="1.0" class='form-control full' x-model.number.debounce.500="season.time.sunset.minute" :disabled="location.settings.season_based_time ?? false"/>
+                                        <input type='number' step="1.0" class='form-control w-full' x-model.number.debounce.500="season.time.sunset.minute" :disabled="location.settings.season_based_time ?? false"/>
                                     </div>
                                 </div>
 
                                 <div class='flex my-2' x-show="(clock.enabled || season_settings.enable_weather) && location.seasons.length >= 3">
-                                    <button type="button" class="btn btn-sm btn-info full" @click="interpolateSeasonTimes(index, season_index)">
+                                    <button type="button" class="btn btn-sm btn-info w-full" @click="interpolateSeasonTimes(index, season_index)">
                                         Interpolate data from surrounding seasons
                                     </button>
                                 </div>
@@ -186,11 +186,11 @@
                         </div>
 
                         <div class='flex mb-2 gap-[8px]'>
-                            <input type='number' step="1.0" class='form-control text-right full' x-model.number.debounce.500="location.settings.timezone.hour" />
+                            <input type='number' step="1.0" class='form-control text-right w-full' x-model.number.debounce.500="location.settings.timezone.hour" />
 
                             <div class="basis-[20px] text-center grid items-center">:</div>
 
-                            <input type='number' step="1.0" class='form-control full' x-model.number.debounce.500="location.settings.timezone.minute" />
+                            <input type='number' step="1.0" class='form-control w-full' x-model.number.debounce.500="location.settings.timezone.minute" />
                         </div>
                     </div>
 

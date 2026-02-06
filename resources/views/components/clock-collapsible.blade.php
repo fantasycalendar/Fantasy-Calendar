@@ -10,7 +10,7 @@
             @if(request()->is('calendars/*/edit') && $calendar->isLinked())
                 <span>{{ Arr::get($calendar->static_data, 'clock.enabled') ? "Yes" : "No" }}</span>
             @else
-            <label class="custom-control custom-checkbox center-text">
+            <label class="custom-control custom-checkbox text-center">
                 <input type="checkbox" class="custom-control-input" x-model="clock.enabled"/>
                 <span class="custom-control-indicator"></span>
             </label>
@@ -22,7 +22,7 @@
         <div>Render:</div>
 
         <div class='text-right'>
-            <label class="custom-control custom-checkbox center-text">
+            <label class="custom-control custom-checkbox text-center">
                 <input type="checkbox" class="custom-control-input" x-model="clock.render"/>
                 <span class="custom-control-indicator"></span>
             </label>

@@ -13,7 +13,7 @@
 
 @if (isset($calendar) && $calendar->isLinked())
     <div class='flex justify-between mt-[1rem]' data-pt-position="right">
-        <div class='pr-1 bold-text'>
+        <div class='pr-1 font-bold'>
             Overflow weekdays:
         </div>
 

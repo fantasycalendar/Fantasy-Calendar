@@ -18,7 +18,7 @@
 @elseif($calendar->isLinkable())
     <div id='calendar_link_hide'>
         @if($calendar->parent != null)
-            <div class='row no-gutters my-1 center-text hidden calendar_link_explanation'>
+            <div class='row no-gutters my-1 text-center hidden calendar_link_explanation'>
                 <p class='m-0'>This calendar is a child of
                     <a href='/calendars/{{ $calendar->parent->hash }}/edit'
                         target="_blank">{{ $calendar->parent->name }}</a>.
@@ -37,7 +37,7 @@
                 </select>
 
                 <div class="input-group-append">
-                    <button type='button' class='btn btn-sm btn-secondary full' @click.prevent="load">Refresh</button>
+                    <button type='button' class='btn btn-sm btn-secondary w-full' @click.prevent="load">Refresh</button>
                 </div>
             </div>
 
@@ -63,13 +63,13 @@
                         </div>
 
                         <div class='collapse-container container mb-2'>
-                            <div class='row my-1 bold-text'>
+                            <div class='row my-1 font-bold'>
                                 <x-alpine.date-selector x-model="date" title="Relative Start Date:" ::disabled="child.locked"></x-alpine.date-selector>
                             </div>
 
                             <div class='row no-gutters my-1'>
-                                <button type='button' class='btn btn-danger full' @click="unlinkChildCalendar(child.hash)" x-show="child.locked">Unlink</button>
-                                <button type='button' class='btn btn-primary full' @click="linkChildCalendar(child.hash, date)" x-show="!child.locked">Link</button>
+                                <button type='button' class='btn btn-danger w-full' @click="unlinkChildCalendar(child.hash)" x-show="child.locked">Unlink</button>
+                                <button type='button' class='btn btn-primary w-full' @click="linkChildCalendar(child.hash, date)" x-show="!child.locked">Link</button>
                             </div>
                         </div>
                     </div>

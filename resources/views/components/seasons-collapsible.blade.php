@@ -44,10 +44,10 @@
 </div>
 
 <div class="flex my-2" x-show="settings.periodic_seasons">
-    <button class="full btn btn-secondary" @click="reordering = true; expandedSeasons = []; deleting = -1;" x-show="!reordering">
+    <button class="w-full btn btn-secondary" @click="reordering = true; expandedSeasons = []; deleting = -1;" x-show="!reordering">
         <i class="fa fa-arrows-alt-v"></i> Change order
     </button>
-    <button class="full btn btn-secondary" @click="reordering = false" x-show="reordering">
+    <button class="w-full btn btn-secondary" @click="reordering = false" x-show="reordering">
         <i class="fa fa-check"></i> Done
     </button>
 </div>
@@ -147,7 +147,7 @@
     </template>
 </div>
 
-<div class='my-1 small-text flex flex-col space-y-2' x-show="settings.periodic_seasons && seasons.length">
+<div class='my-1 text-xs flex flex-col space-y-2' x-show="settings.periodic_seasons && seasons.length">
     <div>
         <i class="mr-1 fas"
             :class="{
@@ -160,7 +160,7 @@
     <div class='flex pl-6' x-text="season_subtext"></div>
 </div>
 
-<div class='my-1 small-text flex'
+<div class='my-1 text-xs flex'
     :class="{ 'warning': show_location_season_warning }"
      x-show="show_location_season_warning">
     <i class="mr-1 fas fa-exclamation-circle" style="line-height:1.5;"></i>
@@ -175,6 +175,6 @@
     <input class='form-control' type='number' x-model.debounce.500="settings.season_offset"/>
 </div>
 
-<button type='button' class='btn btn-secondary full mt-1' @click="createSeasonEvents">
+<button type='button' class='btn btn-secondary w-full mt-1' @click="createSeasonEvents">
     Create solstice and equinox events
 </button>

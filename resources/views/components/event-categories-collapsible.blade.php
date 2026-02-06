@@ -9,10 +9,10 @@
 </div>
 
 <div class="flex my-2">
-    <button class="full btn btn-secondary" @click="reordering = true" x-show="!reordering">
+    <button class="w-full btn btn-secondary" @click="reordering = true" x-show="!reordering">
         <i class="fa fa-arrows-alt-v"></i> Change order
     </button>
-    <button class="full btn btn-secondary" @click="reordering = false" x-show="reordering">
+    <button class="w-full btn btn-secondary" @click="reordering = false" x-show="reordering">
         <i class="fa fa-check"></i> Done
     </button>
 </div>

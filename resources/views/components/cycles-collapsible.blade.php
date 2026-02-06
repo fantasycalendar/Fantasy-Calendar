@@ -1,6 +1,6 @@
 @props(['calendar' => null])
 
-<div class='row no-gutters bold-text'>
+<div class='row no-gutters font-bold'>
     Cycle format:
 </div>
 

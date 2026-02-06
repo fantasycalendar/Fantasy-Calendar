@@ -52,15 +52,15 @@
         </select>
 
         <div class="input-group-append">
-            <button type='button' class='btn btn-primary add full' @click="addMonth"><i class="fa fa-plus"></i></button>
+            <button type='button' class='btn btn-primary add w-full' @click="addMonth"><i class="fa fa-plus"></i></button>
         </div>
     </div>
 
     <div class="flex my-2" x-show="months.length > 1">
-        <button class="full btn btn-secondary" @click="reordering = true" x-show="!reordering">
+        <button class="w-full btn btn-secondary" @click="reordering = true" x-show="!reordering">
             <i class="fa fa-arrows-alt-v"></i> Change order
         </button>
-        <button class="full btn btn-secondary" @click="reordering = false" x-show="reordering">
+        <button class="w-full btn btn-secondary" @click="reordering = false" x-show="reordering">
             <i class="fa fa-check"></i> Done
         </button>
     </div>
@@ -99,7 +99,7 @@
                 </div>
 
                 <div class='flex'>
-                    <div class='col-12 italics-text' x-text="getMonthIntervalText(month)"></div>
+                    <div class='col-12 italic' x-text="getMonthIntervalText(month)"></div>
                 </div>
 
                 <div x-show="type === 'month'">
@@ -135,7 +135,7 @@
                                     :disabled="!month.week?.length"
                                     :value='(month.week?.length ?? 0)'/>
                                     <div class="input-group-append">
-                                        <button type='button' class='full btn btn-primary'
+                                        <button type='button' class='w-full btn btn-primary'
                                             @click="quickAddCustomWeekdays(month)"
                                             :disabled="!month.week?.length">Quick add
                                         </button>

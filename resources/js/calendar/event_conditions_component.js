@@ -544,8 +544,8 @@ export default () => ({
             <ul class='group_list' x-ref="${group.id}" data-event-conditions-manager-id="${group.id}">
               ${children}
               <div class='flex mb-1'>
-                  <button type='button' @click="addCondition('${group.id}')" class='btn btn-outline-secondary full'>Add condition</button>
-                  <button type='button' @click="addGroup('${group.id}')" class='btn btn-outline-secondary full'>Add group</button>
+                  <button type='button' @click="addCondition('${group.id}')" class='btn btn-outline-secondary w-full'>Add condition</button>
+                  <button type='button' @click="addGroup('${group.id}')" class='btn btn-outline-secondary w-full'>Add group</button>
               </div>
             </ul>
             ${group.operator ? this.renderOperator(group) : ""}

@@ -12,7 +12,7 @@
     <div class='date_control mt-3' id='date_inputs' :class="{ 'd-flex flex-column': activeDateAdjustment === 'current', 'd-none': activeDateAdjustment !== 'current' }">
         <!-- TODO: Revisit childed calendar -->
         @if(isset($calendar) && $calendar?->isChild())
-            <div class='mb-3 center-text calendar_link_explanation'>
+            <div class='mb-3 text-center calendar_link_explanation'>
                 <p class='m-0'>This calendar follows the date of a parent calendar, <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">{{ $calendar->parent->name }}</a>.</p>
             </div>
 
@@ -77,8 +77,8 @@
                 <input class='form-control' type='number' :value="current_minute" @change="set_current_minute(Number($event.target.value))">
 
                 <div class='input-group-append'>
-                    <button type='button' class='btn small-text btn-success' @click="increment_current_minute">30m</button>
-                    <button type='button' class='btn small-text border-left btn-success'@click="increment_current_hour">1h</button>
+                    <button type='button' class='btn text-xs btn-success' @click="increment_current_minute">30m</button>
+                    <button type='button' class='btn text-xs border-left btn-success'@click="increment_current_hour">1h</button>
                 </div>
             </div>
         @endif
@@ -133,8 +133,8 @@
             </div>
         </div>
 
-        <div class='btn btn-success full mt-2' :class="{ 'disabled': currentDateSelected }" x-show="selected_date.follow" @click="(!currentDateSelected) && set_selected_date_active(true)" :disabled="currentDateSelected">Select date</div>
-        <div class='btn btn-warning full mt-2' x-show="!selected_date.follow" @click="set_selected_date_active(false)">Select current date</div>
+        <div class='btn btn-success w-full mt-2' :class="{ 'disabled': currentDateSelected }" x-show="selected_date.follow" @click="(!currentDateSelected) && set_selected_date_active(true)" :disabled="currentDateSelected">Select date</div>
+        <div class='btn btn-warning w-full mt-2' x-show="!selected_date.follow" @click="set_selected_date_active(false)">Select current date</div>
     </div>
 
     <div class="flex flex-col mt-3" :class="{ 'd-flex flex-column': activeDateAdjustment === 'relative', 'd-none': activeDateAdjustment !== 'relative' }">
@@ -150,7 +150,7 @@
             <input type='number' class="form-control px-2" x-model.number="date_adjustment_units.minutes" placeholder="Minutes (+/-)">
         </div>
 
-        <span class="full text-center">Apply to</span>
+        <span class="w-full text-center">Apply to</span>
 
         <div class="flex space-x-2">
             @if(request()->is('calendars/*/edit') && $calendar?->parent == null)

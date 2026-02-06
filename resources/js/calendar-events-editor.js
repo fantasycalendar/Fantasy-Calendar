@@ -1276,7 +1276,7 @@ export default () => ({
         let num_occurrences = this.event_testing.occurrences.length;
 
         let text = years > 1 ? `the next ${years} years.` : "this year.";
-        text = `This event will appear <span class='bold-text'>${num_occurrences}</span> time${num_occurrences > 1 ? "s" : ""} in ${text}`;
+        text = `This event will appear <span class='font-bold'>${num_occurrences}</span> time${num_occurrences > 1 ? "s" : ""} in ${text}`;
 
         this.event_testing.text = text;
 

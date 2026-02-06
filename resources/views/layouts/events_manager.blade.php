@@ -200,7 +200,7 @@
 
                                 <hr>
 
-                                <div class="rounded overflow-hidden flex flex-col drop-shadow">
+                                <div class="rounded overflow-hidden flex flex-col shadow">
                                     <template x-for="event in shownEvents" :key="event.id">
                                         <div class="managed_event" @click="selectEvent(event, $dispatch)">
                                             <div class="flex align-items-center justify-content-start justify-self-start text-left" style="white-space: nowrap;" >

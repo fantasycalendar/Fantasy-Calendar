@@ -48,17 +48,17 @@
         </select>
 
         <div class='input-group-append'>
-            <button type='button' class='btn btn-primary full' @click="addLeapDay">
+            <button type='button' class='btn btn-primary w-full' @click="addLeapDay">
                 <i class="fa fa-plus"></i>
             </button>
         </div>
     </div>
 
     <div class="my-2">
-        <button class="full btn btn-secondary" @click="reordering = true" x-show="!reordering && (leap_days.length > 1)">
+        <button class="w-full btn btn-secondary" @click="reordering = true" x-show="!reordering && (leap_days.length > 1)">
             <i class="fa fa-arrows-alt-v"></i> Change order
         </button>
-        <button class="full btn btn-secondary" @click="reordering = false" x-show="reordering">
+        <button class="w-full btn btn-secondary" @click="reordering = false" x-show="reordering">
             <i class="fa fa-check"></i> Done
         </button>
     </div>
@@ -146,7 +146,7 @@
                 <div class='flex flex-col' x-show="leap_day.intercalary">
                     <div>Appears after:</div>
 
-                    <select type='number' class='custom-select form-control full'
+                    <select type='number' class='custom-select form-control w-full'
                         x-model.number='leap_day.day'>
                         <option value='0'>Before day 0</option>
                         <template x-for="dayIndex in getLeapdayValidDays(leap_day)">
@@ -185,9 +185,9 @@
                 </div>
 
                 <div class='flex flex-col' x-show="!hasError(`leap_days.${index}.interval`)">
-                    <div class='italics-text' x-text="interval_main_texts?.[index]"></div>
+                    <div class='italic' x-text="interval_main_texts?.[index]"></div>
 
-                    <ul class='italics-text list-disc pl-4'>
+                    <ul class='italic list-disc pl-4'>
                         <template x-for="text in interval_subtexts?.[index]">
                             <li x-text="text"></li>
                         </template>

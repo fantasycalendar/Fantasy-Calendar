@@ -16,7 +16,7 @@
         >
         <div class="input-group-append">
             <button type='button'
-                class='btn full btn-primary'
+                class='btn w-full btn-primary'
                 :disabled="!invite_email || !invite_enabled || inviting"
                 @click="inviteUser"
             ><span x-text="inviting ? 'Sending...' : 'Invite'" ></span></button>
@@ -83,7 +83,7 @@
     </div>
 
     <button type='button'
-        class='btn btn-sm btn-secondary full'
+        class='btn btn-sm btn-secondary w-full'
         @click="loadUsers"
         :disabled="loadingUsers"
          x-text="loadingUsers ? 'Loading...' : 'Refresh'">

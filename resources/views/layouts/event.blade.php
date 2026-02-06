@@ -181,22 +181,6 @@
 
                     <h5 class='mt-3 mb-1 modal-form-heading'>Conditions</h5>
 
-                    <!-- <div class='row no-gutters mb-2' id='non_preset_buttons'> -->
-                    <!--     <div class='col-11 pr-1'> -->
-                    <!--         <div class='row p-0'> -->
-                    <!--             <div class='col-6 pr-1'> -->
-                    <!--                 <button type='button' @click="$dispatch('add-event-condition')" class='btn btn-primary full'>Add condition</button> -->
-                    <!--             </div> -->
-                    <!--             <div class='col-6 pl-1'> -->
-                    <!--                 <button type='button' @click="$dispatch('add-event-group')" class='btn btn-secondary full'>Add group</button> -->
-                    <!--             </div> -->
-                    <!--         </div> -->
-                    <!--     </div> -->
-                    <!--     <div class='col-1 pl-1'> -->
-                    <!--         <button type='button' @click='remove_clicked' @mouseenter='remove_mouseover' @mouseleave='remove_mouseout' id='condition_remove_button' class='btn btn-danger full'><i class="icon fas fa-trash-alt"></i></button> -->
-                    <!--     </div> -->
-                    <!-- </div> -->
-
                     {{-- TODO: Hide this or change visuals for players and non-co-owners --}}
                     <div class='mt-2'
                          x-data="event_conditions_component"
@@ -211,8 +195,8 @@
                             </template>
 
                             <div class='flex mb-1'>
-                                <button type='button' @click="addCondition()" class='btn btn-outline-secondary full'>Add condition</button>
-                                <button type='button' @click="addGroup()" class='btn btn-outline-secondary full'>Add group</button>
+                                <button type='button' @click="addCondition()" class='btn btn-outline-secondary w-full'>Add condition</button>
+                                <button type='button' @click="addGroup()" class='btn btn-outline-secondary w-full'>Add group</button>
                             </div>
                         </ul>
                     </div>
@@ -228,22 +212,22 @@
 
                         <div class='row no-gutters'>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' @click="confirm_test_event(1)">
+                                <button type='button' class='btn btn-info w-full test_event_btn' @click="confirm_test_event(1)">
                                     This year
                                 </button>
                             </div>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' @click="confirm_test_event(10)">
+                                <button type='button' class='btn btn-info w-full test_event_btn' @click="confirm_test_event(10)">
                                     10 years
                                 </button>
                             </div>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn' @click="confirm_test_event(100)">
+                                <button type='button' class='btn btn-info w-full test_event_btn' @click="confirm_test_event(100)">
                                     100 years
                                 </button>
                             </div>
                             <div class='col-md-3 px-1'>
-                                <button type='button' class='btn btn-info full test_event_btn'
+                                <button type='button' class='btn btn-info w-full test_event_btn'
                                         @click="confirm_test_event(1000)">1000 years
                                 </button>
                             </div>
@@ -262,15 +246,15 @@
                                         <li class='event_occurance' x-html="occurence"></li>
                                     </template>
                                 </ul>
-                                <div class='full page_number'
+                                <div class='w-full page_number'
                                      x-text="'Page '+event_testing.page+'/'+event_testing.max_page"></div>
                                 <div class='col half pr-1'>
-                                    <button type='button' class='btn btn-info full' @click='prev_page()'
+                                    <button type='button' class='btn btn-info w-full' @click='prev_page()'
                                             :disabled="event_testing.page == 1">Previous
                                     </button>
                                 </div>
                                 <div class='col half pl-1'>
-                                    <button type='button' class='btn btn-info full' @click='next_page()'
+                                    <button type='button' class='btn btn-info w-full' @click='next_page()'
                                             :disabled="event_testing.page == event_testing.max_page">Next
                                     </button>
                                 </div>
@@ -321,7 +305,7 @@
                                                 </label>
                                             </div>
                                             <div class='col-md-8 px-1'>
-                                                <input type='text' class='form-control full' x-model='moon.phase_name' placeholder='Custom phase name' :disabled='moon.hidden'>
+                                                <input type='text' class='form-control w-full' x-model='moon.phase_name' placeholder='Custom phase name' :disabled='moon.hidden'>
                                             </div>
                                         </div>
                                         <div class='row my-1 no-gutters'>
@@ -345,7 +329,7 @@
                                                     <div class="input-group-append">
                                                         <button
                                                             type="button"
-                                                            class="btn btn-sm small-text"
+                                                            class="btn btn-sm text-xs"
                                                             @click="reset_moon_color(moon.index, true)"
                                                             :disabled="moon.shadow_color === moon.original_shadow_color"
                                                             :class='{
@@ -363,7 +347,7 @@
                                                     <div class="input-group-append">
                                                         <button
                                                             type="button"
-                                                            class="btn btn-sm small-text"
+                                                            class="btn btn-sm text-xs"
                                                             @click="reset_moon_color(moon.index, false)"
                                                             :disabled="moon.color === moon.original_color"
                                                             :class='{

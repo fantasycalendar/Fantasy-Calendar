@@ -30,7 +30,7 @@
 
     <p class='mb-0 mt-1'><a onclick="linked_popup();" href='#'>Why can't I edit the eras?</a></p>
 @else
-    <div class='flex bold-text'>
+    <div class='flex font-bold'>
         New Era:
     </div>
 
@@ -172,7 +172,7 @@
                                 >
                                     Ends year prematurely
 
-                                    <p class='m-0 mt-2 ends_year_explaination font-italic small-text'
+                                    <p class='m-0 mt-2 ends_year_explaination font-italic text-xs'
                                         x-show="!season_settings.periodic_seasons">
                                         This is disabled because you have seasons based on dates - that means that the
                                         calendar cannot end its years early because some seasons could disappear.</p>

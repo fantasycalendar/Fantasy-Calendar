@@ -30,12 +30,12 @@
         </template>
     </div>
 
-    <div x-show="has_weather" class='bold-text'>Weather:</div>
+    <div x-show="has_weather" class='font-bold'>Weather:</div>
     <div x-show='has_weather && epoch_details.weather?.temperature?.cinematic'>
-        <span class='bold-text'>Description:</span> <span x-text='epoch_details.weather?.temperature?.cinematic'></span>
+        <span class='font-bold'>Description:</span> <span x-text='epoch_details.weather?.temperature?.cinematic'></span>
     </div>
     <div x-show='has_weather && temperature_ranges.length'>
-        <span class='bold-text'>Temperature:</span>
+        <span class='font-bold'>Temperature:</span>
     </div>
     <template x-for="temperature_range in temperature_ranges">
         <div>
@@ -43,19 +43,19 @@
         </div>
     </template>
     <div x-show='has_weather && wind_direction'>
-        <span class='bold-text'>Wind:</span>
+        <span class='font-bold'>Wind:</span>
         <span x-text='wind_direction'></span>
     </div>
     <div x-show='has_weather && wind_speeds.length'>
         <span x-text='"(" + wind_speeds.join(" | ") + ")"'></span>
     </div>
     <div x-show='has_weather && epoch_details.weather?.precipitation?.key'>
-        <span class='bold-text'>Precipitation:</span> <span x-text='epoch_details.weather?.precipitation?.key'></span>
+        <span class='font-bold'>Precipitation:</span> <span x-text='epoch_details.weather?.precipitation?.key'></span>
     </div>
     <div x-show='has_weather && epoch_details.weather?.clouds'>
-        <span class='bold-text'>Clouds:</span> <span x-text='epoch_details.weather?.clouds'></span>
+        <span class='font-bold'>Clouds:</span> <span x-text='epoch_details.weather?.clouds'></span>
     </div>
     <div x-show='has_weather && epoch_details.weather?.feature'>
-        <span class='bold-text'>Feature:</span> <span x-text='epoch_details.weather?.feature'></span>
+        <span class='font-bold'>Feature:</span> <span x-text='epoch_details.weather?.feature'></span>
     </div>
 </div>

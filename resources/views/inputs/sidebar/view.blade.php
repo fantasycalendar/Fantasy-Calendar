@@ -1,8 +1,8 @@
 <div id="input_container" class="d-print-none" :class='{ "inputs_collapsed": !sidebar_open }'>
     @include('inputs.sidebar.header')
 
-    <div class='title-text center-text mt-0 mb-0'>{{ $calendar->name }}</div>
-    <div class="center-text mt-0 mb-3">By {{ $calendar->user->username }}</div>
+    <div class='title-text text-center mt-0 mb-0'>{{ $calendar->name }}</div>
+    <div class="text-center mt-0 mb-3">By {{ $calendar->user->username }}</div>
 
     <div class="accordion mt-3">
         <div class='d-flex flex-column mx-3 my-2'>
@@ -55,7 +55,7 @@
         <!---------------------------------------------->
 
         <div class="d-flex flex-column mx-3 mt-3">
-            <div class="separator full mb-3"></div>
+            <div class="separator w-full mb-3"></div>
 
             @if($calendar->isParent())
             <h5>
@@ -76,7 +76,7 @@
         @endif
     </div>
 
-    <div class="text-center full mt-5" style="justify-self: end;">
+    <div class="text-center w-full mt-5" style="justify-self: end;">
         <small class="copyright d-inline-block mb-2">Copyright © {{ date('Y') }} Fantasy Computerworks Ltd <br> <a href="{{ route('terms-and-conditions') }}">Terms and Conditions</a> - <a href="{{ route('privacy-policy') }}">Privacy and Cookies Policy</a></small>
     </div>
 </div>

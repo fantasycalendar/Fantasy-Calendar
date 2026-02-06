@@ -104,7 +104,7 @@
                         </div>
                     </div>
 
-                    <div class='italics-text small-text my-1'
+                    <div class='italic text-xs my-1'
                         :class="{ 'invalid': !!getCustomCycleErrorMsg(moon) }"
                         :error_msg="getCustomCycleErrorMsg(moon)"
                         x-text="getCustomCycleMessage(moon)">
