@@ -161,7 +161,7 @@
 </div>
 
 <div class='my-1 text-xs flex'
-    :class="{ 'warning': show_location_season_warning }"
+    :class="{ 'text-amber-400 dark:text-amber-600': show_location_season_warning }"
      x-show="show_location_season_warning">
     <i class="mr-1 fas fa-exclamation-circle" style="line-height:1.5;"></i>
     <span>

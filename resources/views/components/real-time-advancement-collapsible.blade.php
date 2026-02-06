@@ -40,7 +40,7 @@
                 </select>
             </div>
 
-            <div class="warning" x-show="!clock_enabled">
+            <div class="text-amber-400 dark:text-amber-600" x-show="!clock_enabled">
                 <small>
                     <i class="fas fa-info-circle"></i> The clock is not enabled, so minutes and hours are not available for real
                     time advancement.

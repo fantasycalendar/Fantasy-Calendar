@@ -285,7 +285,7 @@ export default () => ({
                 .replace(
                     new RegExp(this.search, "gi"),
                     function(str) {
-                        return `<mark>${str}</mark>`;
+                        return `<mark class='p-0'>${str}</mark>`;
                     },
                 );
         } else if (!this.search.length && ellipses) {
