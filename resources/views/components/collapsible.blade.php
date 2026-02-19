@@ -34,11 +34,11 @@
         "settings-" . $contains
     ])
     >
-    <div class="flex justify-between items-center cursor-pointer px-2.5 py-1.5 hover:bg-gray-400 hover:dark:bg-gray-600"
+    <div class="flex justify-between items-center cursor-pointer px-2.5 py-1.5 hover:bg-gray-200/75 hover:dark:bg-gray-600"
         @click="toggle"
         :class="{
-            'bg-gray-300 dark:bg-gray-700': !open ,
-            'bg-gray-400/80 dark:bg-gray-600/80': open,
+            'bg-gray-50 dark:bg-gray-700': !open ,
+            'bg-gray-100 dark:bg-gray-600/80': open,
         }"
     >
         <div class="flex items-center gap-2">
