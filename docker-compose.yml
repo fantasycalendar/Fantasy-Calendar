@@ -54,8 +54,6 @@ services:
     container_name: fcredis
     ports:
       - "6378:6379"
-    depends_on:
-      - php
 
   npm:
     image: node:20
