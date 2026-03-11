@@ -112,5 +112,6 @@
         @include('layouts.moon_tooltip')
         @include('layouts.event')
         @include('inputs.sidebar.create')
+        @include('layouts.presets')
     </div>
 @endsection

@@ -2,6 +2,27 @@ import RandomCalendar from './random-calendar.js';
 import { get_preset_data } from './calendar/calendar_ajax_functions.js';
 import { convert_year, clone, evaluate_calendar_start, notify } from './calendar/calendar_functions.js';
 
+/**
+ * Build a calendar-updating payload from calendar data, using dot-path
+ * sub-keys for static_data so the store's rerender detection triggers correctly.
+ */
+function buildCalendarUpdate(name, static_data, dynamic_data, events, event_categories) {
+    return {
+        calendar_name: name,
+        'static_data.year_data': static_data.year_data,
+        'static_data.moons': static_data.moons,
+        'static_data.clock': static_data.clock,
+        'static_data.seasons': static_data.seasons,
+        'static_data.eras': static_data.eras,
+        'static_data.settings': static_data.settings,
+        'static_data.cycles': static_data.cycles,
+        dynamic_data: dynamic_data,
+        events: events,
+        event_categories: event_categories,
+        preview_date: { ...dynamic_data, follow: true },
+    };
+}
+
 export default () => ({
     open: false,
     loaded: false,
@@ -156,15 +177,19 @@ export default () => ({
 
                         var calendar = parse_json(result.value);
                         if (calendar.success) {
-                            window.prev_dynamic_data = {}
-                            window.prev_static_data = {}
-                            window.calendar_name = clone(calendar.name);
-                            window.static_data = clone(calendar.static_data);
-                            window.dynamic_data = clone(calendar.dynamic_data);
-                            window.event_categories = clone(calendar.event_categories);
-                            window.events = clone(calendar.events);
-                            window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
-                            this.$dispatch("rebuild-calendar");
+                            let static_data = clone(calendar.static_data);
+                            let dynamic_data = clone(calendar.dynamic_data);
+                            dynamic_data.epoch = evaluate_calendar_start(static_data, convert_year(static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
+
+                            this.$dispatch('calendar-updating', {
+                                calendar: buildCalendarUpdate(
+                                    clone(calendar.name),
+                                    static_data,
+                                    dynamic_data,
+                                    clone(calendar.events),
+                                    clone(calendar.event_categories)
+                                )
+                            });
                             this.open = false;
                             this.preset_applied = true;
                         } else {
@@ -193,21 +218,24 @@ export default () => ({
                 })
                     .then((result) => {
                         if (result.value) {
-
-                            window.calendar_name = "Random Calendar";
-                            window.static_data = RandomCalendar.randomize(static_data);
-                            window.dynamic_data = {
-                                "year": 1,
-                                "timespan": 0,
-                                "day": 1,
-                                "epoch": 0,
-                                "custom_location": false,
-                                "location": "Equatorial"
-                            };
-                            this.$dispatch("rebuild-calendar");
+                            this.$dispatch('calendar-updating', {
+                                calendar: buildCalendarUpdate(
+                                    "Random Calendar",
+                                    RandomCalendar.randomize(this.$store.calendar.static_data),
+                                    {
+                                        "year": 1,
+                                        "timespan": 0,
+                                        "day": 1,
+                                        "epoch": 0,
+                                        "custom_location": false,
+                                        "location": "Equatorial"
+                                    },
+                                    [],
+                                    []
+                                )
+                            });
                             this.open = false;
                             this.preset_applied = true;
-
                         }
                     });
 
@@ -227,42 +255,37 @@ export default () => ({
                 })
                     .then((result) => {
                         if (result.value) {
-                            get_preset_data(id, this.apply_preset);
+                            get_preset_data(id, (preset) => this.apply_preset(preset));
                             this.open = false;
                             this.preset_applied = true;
                         }
                     });
             } else {
-                get_preset_data(id, this.apply_preset);
+                get_preset_data(id, (preset) => this.apply_preset(preset));
                 this.open = false;
                 this.preset_applied = true;
             }
         }
     },
 
-    apply_preset: function(data) {
+    apply_preset: function(preset) {
 
-        window.calendar_name = data.name;
-        window.static_data = data.static_data;
-        window.dynamic_data = data.dynamic_data;
-        window.events = data.events;
-        window.event_categories = data.categories;
+        let dynamic_data = preset.dynamic_data;
 
-        if (window.calendar_name.indexOf("Gregorian Calendar") > -1) {
+        if (preset.name.indexOf("Gregorian Calendar") > -1) {
             let current_date = new Date();
-            window.dynamic_data.year = current_date.getFullYear();
-            window.dynamic_data.timespan = current_date.getMonth();
-            window.dynamic_data.day = current_date.getDate();
-            window.dynamic_data.hour = current_date.getHours();
-            window.dynamic_data.minute = current_date.getMinutes();
+            dynamic_data.year = current_date.getFullYear();
+            dynamic_data.timespan = current_date.getMonth();
+            dynamic_data.day = current_date.getDate();
+            dynamic_data.hour = current_date.getHours();
+            dynamic_data.minute = current_date.getMinutes();
         }
 
-        window.dynamic_data.epoch = evaluate_calendar_start(window.static_data, convert_year(window.static_data, window.dynamic_data.year), window.dynamic_data.timespan, window.dynamic_data.day).epoch;
+        dynamic_data.epoch = evaluate_calendar_start(preset.static_data, convert_year(preset.static_data, dynamic_data.year), dynamic_data.timespan, dynamic_data.day).epoch;
 
-        window.preview_date = clone(window.dynamic_data);
-
-        for (var index in window.events) {
-            var event = window.events[index];
+        let events = preset.events;
+        for (var index in events) {
+            var event = events[index];
             delete event.preset_event_category_id;
             delete event.preset_id;
             delete event.created_at;
@@ -270,8 +293,9 @@ export default () => ({
             delete event.deleted_at;
         }
 
-        for (var index in window.event_categories) {
-            var category = window.event_categories[index];
+        let categories = preset.categories;
+        for (var index in categories) {
+            var category = categories[index];
             category.id = category.label;
             delete category.label;
             delete category.preset_id;
@@ -280,7 +304,15 @@ export default () => ({
             delete category.deleted_at;
         }
 
-        this.$dispatch("rebuild-calendar");
+        this.$dispatch('calendar-updating', {
+            calendar: buildCalendarUpdate(
+                preset.name,
+                preset.static_data,
+                dynamic_data,
+                events,
+                categories
+            )
+        });
         notify( "Calendar preset loaded!", "success");
     }
 });

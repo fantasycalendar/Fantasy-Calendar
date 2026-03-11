@@ -15,13 +15,14 @@
                                     }
                                 });
                             },
-                            calendar_loaded($event) {
-                                this.name = $event.detail.calendar_name;
+                            load() {
+                                this.name = this.$store.calendar.calendar_name;
                             }
                         }"
                         x-model="name"
                         @change="change"
-                        @calendar-loaded.window="calendar_loaded"
+                        @calendar-loaded.window="load"
+                        @calendar-updated.window="load"
                         type='text' class='form-control form-control-lg'
                         placeholder='Calendar name'
                     />
@@ -33,5 +34,9 @@
 
     <div class='wrap-collapsible mt-2'>
         <x-create-button></x-create-button>
+    </div>
+
+    <div class='wrap-collapsible mt-2'>
+        <button type='button' class='btn btn-primary btn-block' @click="$dispatch('open-presets')">Choose a calendar preset</button>
     </div>
 @endsection
