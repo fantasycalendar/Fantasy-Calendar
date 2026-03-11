@@ -1,7 +1,277 @@
 import CollapsibleComponent from "./collapsible_component.js";
-import { create_season_events } from "./calendar_presets.js";
 import _ from "lodash";
 import { fract, get_colors_for_season, lerp } from "./calendar_functions.js";
+
+function create_season_events(complex) {
+
+    if (complex) {
+
+        return [
+            {
+                "name": "Summer Solstice",
+                "description": "At the summer solstice, the Sun travels the longest path through the sky, and that day therefore has the most daylight.",
+                "data": {
+                    'has_duration': false,
+                    'duration': 0,
+                    'show_first_last': false,
+                    'limited_repeat': false,
+                    'limited_repeat_num': 0,
+                    'connected_events': [],
+                    'date': [],
+                    "conditions": [
+                        ["Season", "15", ['1']]
+                    ]
+                },
+                "event_category_id": "-1",
+                "settings": {
+                    "color": "Green",
+                    "text": "text",
+                    "hide": false,
+                    "hide_full": false,
+                    "print": false
+                }
+            },
+            {
+                "name": "Winter Solstice",
+                "description": "The winter solstice marks the shortest day and longest night of the year, when the sun is at its lowest arc in the sky.",
+                "data": {
+                    'has_duration': false,
+                    'duration': 0,
+                    'show_first_last': false,
+                    'limited_repeat': false,
+                    'limited_repeat_num': 0,
+                    'connected_events': [],
+                    'date': [],
+                    "conditions": [
+                        ["Season", "16", ['1']]
+                    ]
+                },
+                "event_category_id": "-1",
+                "settings": {
+                    "color": "Green",
+                    "text": "text",
+                    "hide": false,
+                    "hide_full": false,
+                    "print": false
+                }
+            },
+            {
+                "name": "Spring Equinox",
+                "description": "The spring equinox is when the day and the night are equally as long, and are getting longer.",
+                "data": {
+                    'has_duration': false,
+                    'duration': 0,
+                    'show_first_last': false,
+                    'limited_repeat': true,
+                    'limited_repeat_num': 2,
+                    'connected_events': [],
+                    'date': [],
+                    "conditions": [
+                        ["Season", "17", ['1']]
+                    ]
+                },
+                "event_category_id": "-1",
+                "settings": {
+                    "color": "Green",
+                    "text": "text",
+                    "hide": false,
+                    "hide_full": false,
+                    "print": false
+                }
+            },
+            {
+                "name": "Autumn Equinox",
+                "description": "The autumn equinox is when the day and the night are equally as long, and are getting shorter.",
+                "data": {
+                    'has_duration': false,
+                    'duration': 0,
+                    'show_first_last': false,
+                    'limited_repeat': true,
+                    'limited_repeat_num': 2,
+                    'connected_events': [],
+                    'date': [],
+                    "conditions": [
+                        ["Season", "18", ['1']]
+                    ]
+                },
+                "event_category_id": "-1",
+                "settings": {
+                    "color": "Green",
+                    "text": "text",
+                    "hide": false,
+                    "hide_full": false,
+                    "print": false
+                }
+            }
+        ]
+    } else {
+
+        var events = [];
+
+        if (window.static_data.seasons.data.length == 4) {
+
+            for (var i = 0; i < window.static_data.seasons.data.length; i++) {
+
+                var season = window.static_data.seasons.data[i];
+
+                var season_name = season.name;
+
+                if (season_name.toLowerCase().includes('winter')) {
+                    var name = "Winter Solstice";
+                    var description = "The winter solstice marks the shortest day and longest night of the year, when the sun is at its lowest arc in the sky.";
+                } else if (season_name.toLowerCase().includes('summer')) {
+                    var name = "Summer Solstice";
+                    var description = "	At the summer solstice, the Sun travels the longest path through the sky, and that day therefore has the most daylight.";
+                } else if (season_name.toLowerCase().includes('autumn')) {
+                    var name = "Autumn Equinox";
+                    var description = "The autumn equinox is when the day and the night are equally as long, and are getting shorter.";
+                } else if (season_name.toLowerCase().includes('spring')) {
+                    var name = "Spring Equinox";
+                    var description = "The spring equinox is when the day and the night are equally as long, and are getting longer.";
+                } else {
+                    var name = `${season_name}`;
+                    var description = ""
+                }
+
+                events.push({
+                    "name": name,
+                    "description": description,
+                    "data": {
+                        'has_duration': false,
+                        'duration': 0,
+                        'show_first_last': false,
+                        'limited_repeat': false,
+                        'limited_repeat_num': 0,
+                        'connected_events': [],
+                        'date': [],
+                        "conditions": [
+                            ["Season", "0", [i]],
+                            ["&&"],
+                            ["Season", "8", [1]],
+                        ]
+                    },
+                    "event_category_id": "-1",
+                    "settings": {
+                        "color": "Green",
+                        "text": "text",
+                        "hide": false,
+                        "hide_full": false,
+                        "print": false
+                    }
+                });
+
+            }
+
+        } else {
+
+            for (var i = 0; i < window.static_data.seasons.data.length; i++) {
+
+                var season = window.static_data.seasons.data[i];
+
+                var season_name = season.name;
+
+                if (season_name.toLowerCase().includes('winter')) {
+
+                    var name = "Winter Solstice";
+                    var description = "The winter solstice marks the shortest day and longest night of the year, when the sun is at its lowest arc in the sky.";
+                    var equinox_name = "Spring Equinox";
+                    var equinox_description = "The spring equinox is when the day and the night are equally as long, and are getting longer.";
+
+                } else if (season_name.toLowerCase().includes('summer')) {
+
+                    var name = "Summer Solstice";
+                    var description = "At the summer solstice, the Sun travels the longest path through the sky, and that day therefore has the most daylight.";
+                    var equinox_name = "Autumn Equinox";
+                    var equinox_description = "The autumn equinox is when the day and the night are equally as long, and are getting shorter.";
+
+                } else if (season_name.toLowerCase().includes('autumn')) {
+
+                    var name = "Autumn Equinox";
+                    var description = "The autumn equinox is when the day and the night are equally as long, and are getting shorter.";
+
+                } else if (season_name.toLowerCase().includes('spring')) {
+
+                    var name = "Spring Equinox";
+                    var description = "The spring equinox is when the day and the night are equally as long, and are getting longer.";
+
+                } else {
+
+                    var name = `${season_name} Solstice`;
+                    var description = ""
+
+                    var equinox_name = `${season_name} Equinox`;
+                    var equinox_description = ""
+
+                }
+
+                events.push({
+                    "name": name,
+                    "description": description,
+                    "data": {
+                        'has_duration': false,
+                        'duration': 0,
+                        'show_first_last': false,
+                        'limited_repeat': false,
+                        'limited_repeat_num': 0,
+                        'connected_events': [],
+                        'date': [],
+                        "conditions": [
+                            ["Season", "0", [i]],
+                            ["&&"],
+                            ["Season", "8", [1]],
+                        ]
+                    },
+                    "event_category_id": "-1",
+                    "settings": {
+                        "color": "Green",
+                        "text": "text",
+                        "hide": false,
+                        "hide_full": false,
+                        "print": false
+                    }
+                });
+
+                if (window.static_data.seasons.global_settings.periodic_seasons) {
+
+                    events.push({
+                        "name": equinox_name,
+                        "description": equinox_description,
+                        "data": {
+                            'has_duration': false,
+                            'duration': 0,
+                            'show_first_last': false,
+                            'limited_repeat': false,
+                            'limited_repeat_num': 0,
+                            'connected_events': [],
+                            'date': [],
+                            "conditions": [
+                                ["Season", "0", [i]],
+                                ["&&"],
+                                ["Season", "8", [Math.floor(season.transition_length / 2)]],
+                            ]
+                        },
+                        "event_category_id": "-1",
+                        "settings": {
+                            "color": "Green",
+                            "text": "text",
+                            "hide": false,
+                            "hide_full": false,
+                            "print": false
+                        }
+
+                    });
+
+                }
+
+            }
+
+        }
+
+        return events;
+
+    }
+
+}
 
 class SeasonsCollapsible extends CollapsibleComponent {
 
