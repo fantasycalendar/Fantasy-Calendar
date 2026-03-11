@@ -6,11 +6,11 @@ export var day_data_tooltip = {
 
     set_up: function(){
         if(Object.keys(this.elements).length === 0){
-            this.tooltip_box = $('#day_data_tooltip_box');
-            this.tooltip_box.find('.hidden').each(function(){
-                day_data_tooltip.elements[$(this).attr('data_key')] = {
-                    self: $(this),
-                    container: $(this).find('.data_container')
+            this.tooltip_box = document.getElementById('day_data_tooltip_box');
+            this.tooltip_box.querySelectorAll('.hidden').forEach(function(el){
+                day_data_tooltip.elements[el.getAttribute('data_key')] = {
+                    self: el,
+                    container: el.querySelector('.data_container')
                 };
             })
         }
@@ -25,14 +25,14 @@ export var day_data_tooltip = {
 
 
 
-        if($(event.target).closest(day_data_tooltip.tooltip_box[0]).length){
+        if(event.target.closest('#day_data_tooltip_box')){
             return;
         }
 
         document.removeEventListener('click', day_data_tooltip.hide);
 
-        day_data_tooltip.tooltip_box.hide();
-        day_data_tooltip.tooltip_box.children().first().children().addClass('hidden');
+        day_data_tooltip.tooltip_box.style.display = 'none';
+        Array.from(day_data_tooltip.tooltip_box.children[0].children).forEach(function(child){ child.classList.add('hidden'); });
 
     },
 
@@ -86,11 +86,11 @@ export var day_data_tooltip = {
                             continue;
                         }
 
-                        element.self.removeClass("hidden");
+                        element.self.classList.remove("hidden");
 
                         html.push(season_data);
 
-                        element.container.html(html.join(''));
+                        element.container.innerHTML = html.join('');
 
                     }
 
@@ -111,8 +111,8 @@ export var day_data_tooltip = {
 
                 if(key != "season" && html.length > 0){
                     var element = this.elements[key];
-                    element.self.removeClass("hidden");
-                    element.container.html(html.join(''));
+                    element.self.classList.remove("hidden");
+                    element.container.innerHTML = html.join('');
                 }
 
             }
@@ -123,7 +123,7 @@ export var day_data_tooltip = {
             placement: 'right',
             modifiers: {
                 preventOverflow: {
-                    boundariesElement: $('#calendar')[0],
+                    boundariesElement: document.getElementById('calendar'),
                 },
                 offset: {
                     enabled: true,
@@ -132,7 +132,7 @@ export var day_data_tooltip = {
             }
         });
 
-        this.tooltip_box.show()
+        this.tooltip_box.style.display = ''
 
         document.addEventListener('click', this.hide)
 

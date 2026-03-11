@@ -24,15 +24,13 @@ export function update_name() {
 
 export function update_view_dynamic(calendar_hash) {
 
-    $.ajax({
-        url: window.baseurl + "calendars/" + calendar_hash,
-        type: "post",
-        dataType: 'json',
-        data: { _method: 'PATCH', dynamic_data: JSON.stringify(window.dynamic_data) },
-        success: function(result) {
-            window.last_dynamic_change = new Date(result.last_changed.last_dynamic_change)
-        },
-        error: (error) => { notify(error) }
+    axios.post(window.baseurl + "calendars/" + calendar_hash, {
+        _method: 'PATCH',
+        dynamic_data: JSON.stringify(window.dynamic_data)
+    }).then(function(result) {
+        window.last_dynamic_change = new Date(result.data.last_changed.last_dynamic_change)
+    }).catch(function(error) {
+        notify(error);
     });
 
 }
@@ -83,16 +81,12 @@ export async function do_update_all(calendar_hash) {
 
 export function get_all_data(calendar_hash, output) {
 
-    $.ajax({
-        url: window.apiurl + "/calendar/" + calendar_hash,
-        type: "get",
-        dataType: 'json',
-        data: {},
-        success: function(result) {
-            output(result);
-        },
-        error: (error) => { notify(error) }
-    });
+    axios.get(window.apiurl + "/calendar/" + calendar_hash)
+        .then(function(result) {
+            output(result.data);
+        }).catch(function(error) {
+            notify(error);
+        });
 }
 
 export function get_dynamic_data(calendar_hash) {
@@ -133,7 +127,7 @@ export function submit_hide_show_event(event_id) {
         .then(function(result) {
             if (result.data.success) {
                 window.events[event_id].settings.hide = !window.events[event_id].settings.hide;
-                this.$dispatch("render-calendar");
+                document.dispatchEvent(new CustomEvent("render-calendar"));
             }
             notify(
                 result.data.message,
@@ -162,21 +156,15 @@ export function submit_edit_event(event_id, callback) {
 
 export function submit_delete_event(event_id, callback) {
 
-    $.ajax({
-        url: window.apiurl + "/event/" + event_id,
-        type: "post",
-        dataType: 'json',
-        data: { _method: 'DELETE' },
-        success: function(result) {
-            if (result.success) {
+    axios.delete(window.apiurl + "/event/" + event_id)
+        .then(function(result) {
+            if (result.data.success) {
                 callback();
             }
-            notify(result.message, result.success ? "success" : false);
-        },
-        error: function(error) {
+            notify(result.data.message, result.data.success ? "success" : false);
+        }).catch(function(error) {
             notify(error);
-        }
-    });
+        });
 
 }
 
@@ -233,17 +221,12 @@ export function create_calendar() {
 
 export function get_event_comments(event_id, callback) {
 
-    $.ajax({
-        url: window.apiurl + "/eventcomment/event/" + event_id,
-        type: "get",
-        dataType: "json",
-        success: function(result) {
-            callback(result['data']);
-        },
-        error: function(result) {
+    axios.get(window.apiurl + "/eventcomment/event/" + event_id)
+        .then(function(result) {
+            callback(result.data['data']);
+        }).catch(function(error) {
             callback(false);
-        }
-    });
+        });
 
 }
 

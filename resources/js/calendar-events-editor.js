@@ -188,9 +188,9 @@ export default () => ({
             this.submit_event_callback(true);
         } else {
             if (this.new_event) {
-                submit_new_event(this.event_id, this.submit_event_callback);
+                submit_new_event(this.event_id, (success) => this.submit_event_callback(success));
             } else {
-                submit_edit_event(this.event_id, this.submit_event_callback);
+                submit_edit_event(this.event_id, (success) => this.submit_event_callback(success));
             }
         }
 

@@ -92,7 +92,7 @@ export function pick_from_table(chance, array, grow) {
 export function matcher(params, data) {
 
     // If there are no search terms, return all of the data
-    if ($.trim(params.term) === '') {
+    if (params.term.trim() === '') {
         return data;
     }
 
@@ -131,7 +131,7 @@ export function matcher(params, data) {
 
     if (children.length > 0) {
 
-        var modifiedData = $.extend({}, data, true);
+        var modifiedData = { ...data };
 
         modifiedData.children = children;
 

@@ -43,7 +43,7 @@ export default () => ({
     },
 
     view_event: function(event) {
-        show_event_ui.clicked_event($(event.target));
+        show_event_ui.clicked_event(event.target);
     },
 
     get_weather_data(day, event) {
@@ -126,21 +126,21 @@ export default () => ({
 
     scroll_to_epoch: function() {
 
-        const previewEpochElement = $(`[epoch=${this.render_data.preview_epoch}]`);
-        const currentEpochElement = $(`[epoch=${this.render_data.current_epoch}]`);
+        const previewEpochElements = document.querySelectorAll(`[epoch="${this.render_data.preview_epoch}"]`);
+        const currentEpochElements = document.querySelectorAll(`[epoch="${this.render_data.current_epoch}"]`);
 
-        if (previewEpochElement.length && this.render_data.preview_epoch !== this.render_data.current_epoch) {
+        if (previewEpochElements.length && this.render_data.preview_epoch !== this.render_data.current_epoch) {
 
             this.scroll_attempts = 0;
             return setTimeout(() => {
-                previewEpochElement[0].scrollIntoView({ block: "center", inline: "nearest" });
+                previewEpochElements[0].scrollIntoView({ block: "center", inline: "nearest" });
             }, 350)
 
-        } else if (currentEpochElement.length) {
+        } else if (currentEpochElements.length) {
 
             this.scroll_attempts = 0;
             return setTimeout(() => {
-                currentEpochElement[0].scrollIntoView({ block: "center", inline: "nearest" });
+                currentEpochElements[0].scrollIntoView({ block: "center", inline: "nearest" });
             }, 350)
 
         }
@@ -163,7 +163,7 @@ export default () => ({
     },
 
     scroll_to_last: function() {
-        $("#calendar_container").scrollTop(this.last_scroll_height);
+        document.getElementById("calendar_container").scrollTop = this.last_scroll_height;
     }
 
 })

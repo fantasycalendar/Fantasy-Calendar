@@ -11,10 +11,6 @@ import.meta.glob([
 import _ from 'lodash';
 window._ = _;
 
-import $default, { jQuery, $ } from "jquery";
-window.$ = $;
-window.jQuery = jQuery;
-
 import 'chart.js';
 
 /**

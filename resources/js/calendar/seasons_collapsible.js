@@ -551,7 +551,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
                 cancelButtonText: 'Complex',
                 icon: "question",
                 onOpen: function() {
-                    $(swal.getCancelButton()).prop("disabled", !clockEnabled);
+                    swal.getCancelButton().disabled = !clockEnabled;
                 }
             })
                 .then((result) => {
