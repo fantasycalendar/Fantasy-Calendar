@@ -11,6 +11,7 @@ import {
 } from "./calendar_functions";
 import { Climate } from "./calendar_season_generator";
 import { condition_mapping } from "./calendar_variables";
+import IntervalsCollection from "../fantasycalendar/Collections/IntervalsCollection";
 
 export const calendar_data_generator = {
     dynamic_data: {},
@@ -235,7 +236,7 @@ export const calendar_data_generator = {
             })
             .filter(leap_day => {
                 return leap_day.timespan === timespan_index
-                    && IntervalsCollection.make(leap_day).intersectsYear(timespan_occurrences, static_data.settings.year_zero_exists)
+                    && IntervalsCollection.make(leap_day).intersectsYear(timespan_occurrences, this.static_data.settings.year_zero_exists)
             });
 
         const normal_leap_days = leap_days.filter(leap_day => !leap_day.adds_week_day && !leap_day.intercalary)
@@ -869,7 +870,7 @@ export const calendar_data_generator = {
      *
      * @returns Promise
      */
-    run: function({ static_data, dynamic_data, owner, events, event_categories }={}) {
+    run: function({ static_data, dynamic_data, owner, events, event_categories } = {}) {
 
         this.static_data = static_data;
         this.dynamic_data = dynamic_data;
@@ -1311,8 +1312,12 @@ export var event_evaluator = {
 
             let search_distance = this.current_event.data.search_distance ? this.current_event.data.search_distance : 0;
 
-            let begin_epoch = this.current_event.lookback ? event_evaluator.start_epoch - this.current_event.lookback - 1 : event_evaluator.start_epoch - search_distance - 1;
-            let last_epoch = this.current_event.lookahead ? event_evaluator.end_epoch + this.current_event.lookahead : event_evaluator.end_epoch + search_distance;
+            let begin_epoch = this.current_event.lookback
+                ? event_evaluator.start_epoch - this.current_event.lookback
+                : event_evaluator.start_epoch - search_distance;
+            let last_epoch = this.current_event.lookahead
+                ? event_evaluator.end_epoch + this.current_event.lookahead
+                : event_evaluator.end_epoch + search_distance;
 
             if (this.current_event.data.limited_repeat) {
 

@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => {
         server: {
             host: '0.0.0.0',
             cors: true,
+            allowedHosts: ['npm'],
             hmr: {
                 host: hmrHost,
                 clientPort: hmrPort,

@@ -1,6 +1,16 @@
 import { submit_new_event, submit_edit_event, submit_delete_event } from "./calendar/calendar_ajax_functions";
 import { ordinal_suffix_of, precisionRound, clone } from "./calendar/calendar_functions";
 import { moon_phases } from "./calendar/calendar_variables";
+function createEventTesterWorker() {
+    // In dev, the Vite dev server runs on a different port than the app, which
+    // violates the browser's same-origin policy for Worker scripts. We load the
+    // worker through a same-origin Laravel proxy route (/__vite_worker/) that
+    // forwards requests to the Vite dev server.
+    if (import.meta.env.DEV) {
+        return new Worker('/__vite_worker/resources/js/webworkers/worker_event_tester.js', { type: 'module' });
+    }
+    return new Worker(new URL('./webworkers/worker_event_tester.js', import.meta.url), { type: 'module' });
+}
 
 export default () => ({
     open: false,
@@ -1210,7 +1220,7 @@ export default () => ({
         let start_year = preview_date.year;
         let end_year = preview_date.year + years;
 
-        this.worker_event_tester = new Worker('/js/webworkers/worker_event_tester.js')
+        this.worker_event_tester = createEventTesterWorker()
 
         this.worker_event_tester.postMessage(JSON.parse(JSON.stringify({
             calendar_name: window.calendar_name,

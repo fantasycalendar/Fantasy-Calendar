@@ -1,3 +1,5 @@
+import IntervalsCollection from "../fantasycalendar/Collections/IntervalsCollection";
+
 export function escapeHtml(unsafe) {
     return unsafe
         .replace(/&/g, "&amp;")
