@@ -846,14 +846,24 @@ export const calendar_data_generator = {
             start_year = unconvert_year(this.static_data, start_year)
             end_year = unconvert_year(this.static_data, end_year)
             this.timespans = this.get_timespans_in_year_range(start_year, end_year);
+
+            // Capture the core year keys before pre/post padding extends them
+            const coreYears = Object.keys(this.timespans).map(Number).sort((a, b) => a - b);
+
             this.evaluate_pre_calculation(start_year);
             this.evaluate_post_calculation(end_year);
 
             this.evaluate_years();
 
-            const epochs = Object.keys(this.epochs);
-            const calendar_start_epoch = Number(epochs[0]);
-            const calendar_end_epoch = Number(epochs[epochs.length - 1]);
+            // Derive start/end epoch from the core requested range, not the
+            // padded range — the event evaluator extends by search_distance
+            // on its own, and the padding data in this.epochs covers that.
+            const firstCoreTimespans = this.timespans[coreYears[0]];
+            const lastCoreTimespans = this.timespans[coreYears[coreYears.length - 1]];
+            const startEpochs = Object.keys(firstCoreTimespans[0].epochs);
+            const endEpochs = Object.keys(lastCoreTimespans[lastCoreTimespans.length - 1].epochs);
+            const calendar_start_epoch = Number(startEpochs[0]);
+            const calendar_end_epoch = Number(endEpochs[endEpochs.length - 1]);
 
             resolve({
                 success: true,
