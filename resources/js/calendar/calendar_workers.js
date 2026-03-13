@@ -843,6 +843,14 @@ export const calendar_data_generator = {
             this.callback = true;
             this.build_seasons = build_seasons;
 
+            // evaluate_pre_post (called by __init__) sets every event's
+            // search_distance to max(pre_search, post_search). The event
+            // evaluator extends its loop by that distance in both
+            // directions, so epoch data padding must cover it on both sides.
+            const effectiveSearch = Math.max(this.pre_search, this.post_search);
+            this.pre_search = effectiveSearch;
+            this.post_search = effectiveSearch;
+
             start_year = unconvert_year(this.static_data, start_year)
             end_year = unconvert_year(this.static_data, end_year)
             this.timespans = this.get_timespans_in_year_range(start_year, end_year);
