@@ -262,6 +262,54 @@ describe('Easter occurrence evaluation (seeder Gregorian)', () => {
     });
 });
 
+describe('Easter via run() + evaluate-all path (replicates calendar UI)', () => {
+
+    it('Easter is found when evaluating all events against run() output', async () => {
+
+        // This replicates the exact flow used by the calendar UI:
+        // 1. calendar_data_generator.run() produces epoch data for the display year
+        // 2. event_evaluator.init() with event_id=undefined evaluates ALL events
+        // 3. The render_data_generator reads valid[event_index] for each event
+        const calendarData = await calendar_data_generator.run({
+            static_data: structuredClone(gregorian.static_data),
+            dynamic_data: structuredClone(gregorian.dynamic_data),
+            owner: true,
+            events: structuredClone(gregorianEvents),
+            event_categories: [],
+        });
+
+        // Evaluate ALL events (event_id=undefined), just like the UI does
+        const eventData = event_evaluator.init(
+            structuredClone(gregorian.static_data),
+            structuredClone(gregorian.dynamic_data),
+            structuredClone(gregorianEvents),
+            [],
+            calendarData.epoch_data,
+            undefined,  // evaluate all events
+            calendarData.year_data.start_epoch,
+            calendarData.year_data.end_epoch,
+            true,
+            false
+        );
+
+        // Check all events for valid epochs
+        const eventNames = gregorianEvents.map(e => e.name);
+        const results = {};
+        for (let i = 0; i < gregorianEvents.length; i++) {
+            const epochs = eventData.valid[i] || [];
+            results[`${i}: ${eventNames[i]}`] = epochs.length;
+        }
+
+        // Paschal Full Moon (9) should have at least 1 occurrence in 2020
+        const pfmEpochs = eventData.valid[9] || [];
+        expect(pfmEpochs.length, `PFM found ${pfmEpochs.length} epochs. All results: ${JSON.stringify(results)}`).toBeGreaterThan(0);
+
+        // Easter (10) should have at least 1 occurrence in 2020
+        const easterEpochs = eventData.valid[10] || [];
+        expect(easterEpochs.length, `Easter found ${easterEpochs.length} epochs. All results: ${JSON.stringify(results)}`).toBeGreaterThan(0);
+    });
+});
+
 // Extra tests using the submodule preset data (has search_distance > 0 events)
 const describeSubmodule = submoduleGregorian ? describe : describe.skip;
 
