@@ -1,6 +1,67 @@
 import { ordinal_suffix_of, precisionRound, time_data_to_string } from "./calendar_functions.js";
 import _ from "lodash";
 
+function alpha(hex, opacity) {
+    return hex + Math.round(opacity * 255).toString(16).padStart(2, '0');
+}
+
+let _lightColors, _darkColors;
+
+function buildPalettes() {
+    if (_lightColors) return;
+    const tc = window.tailwindColors;
+
+    _lightColors = {
+        // Day length
+        sunrise:         tc.amber[400],
+        sunset:          tc.indigo[400],
+        daylightFill:    alpha(tc.amber[200], 0.2),
+
+        // Temperature
+        tempHigh:        tc.orange[400],
+        tempLow:         tc.sky[500],
+        tempFill:        alpha(tc.orange[300], 0.15),
+        seasonHigh:      tc.red[400],
+        seasonLow:       tc.blue[400],
+
+        // Precipitation
+        precipIntensity: tc.cyan[500],
+        precipChance:    tc.violet[500],
+        precipActual:    tc.emerald[500],
+        precipFill:      alpha(tc.emerald[400], 0.15),
+
+        // Chart chrome
+        gridLine:        'rgba(0, 0, 0, 0.1)',
+        tickText:        tc.gray[600],
+        legendText:      tc.gray[700],
+    };
+
+    _darkColors = {
+        // Day length
+        sunrise:         tc.amber[300],
+        sunset:          tc.indigo[400],
+        daylightFill:    alpha(tc.amber[400], 0.15),
+
+        // Temperature
+        tempHigh:        tc.orange[400],
+        tempLow:         tc.sky[400],
+        tempFill:        alpha(tc.orange[400], 0.1),
+        seasonHigh:      tc.red[400],
+        seasonLow:       tc.blue[400],
+
+        // Precipitation
+        precipIntensity: tc.cyan[400],
+        precipChance:    tc.violet[400],
+        precipActual:    tc.emerald[400],
+        precipFill:      alpha(tc.emerald[400], 0.1),
+
+        // Chart chrome
+        gridLine:        'rgba(255, 255, 255, 0.1)',
+        tickText:        tc.gray[400],
+        legendText:      tc.gray[300],
+    };
+}
+
 export default () => ({
     visible: false,
 
@@ -11,31 +72,52 @@ export default () => ({
     day_length_graph_data: [],
     temperature_graph_data: [],
     precipitation_graph_data: [],
-    
-    default_graph_options: {
-        scales: {
-            xAxes: [{
-                display: false,
-                ticks: {
-                    callback: (value) => {
-                        return value[1];
+
+    color(name) {
+        buildPalettes();
+        const isDark = document.body.classList.contains('dark');
+        return (isDark ? _darkColors : _lightColors)[name];
+    },
+
+    get_default_graph_options() {
+        return {
+            scales: {
+                xAxes: [{
+                    display: false,
+                    ticks: {
+                        callback: (value) => {
+                            return value[1];
+                        }
                     }
+                }],
+                yAxes: [{
+                    gridLines: {
+                        color: this.color('gridLine'),
+                    },
+                    ticks: {
+                        fontColor: this.color('tickText'),
+                    }
+                }],
+            },
+            legend: {
+                labels: {
+                    fontColor: this.color('legendText'),
                 }
-            }],
-        },
-        tooltips: {
-            mode: 'index',
-            intersect: false,
-        },
-        hover: {
-            mode: 'index',
-            intersect: false
-        },
-        elements: {
-            point:{
-                radius: 0
+            },
+            tooltips: {
+                mode: 'index',
+                intersect: false,
+            },
+            hover: {
+                mode: 'index',
+                intersect: false
+            },
+            elements: {
+                point: {
+                    radius: 0
+                }
             }
-        }
+        };
     },
 
     set_weather_graphs_visible(visible) {
@@ -67,7 +149,7 @@ export default () => ({
                 labels,
                 datasets
             },
-            options: _.merge(_.cloneDeep(this.default_graph_options), options)
+            options: _.merge(_.cloneDeep(this.get_default_graph_options()), options)
         });
     },
 
@@ -120,14 +202,14 @@ export default () => ({
                 label: 'Sunrise',
                 fill: '+1',
                 data: sunrise_dataset,
-                borderColor: 'rgba(0, 0, 255, 0.5)',
-                backgroundColor: 'rgba(0, 0, 175, 0.1)'
+                borderColor: this.color('sunrise'),
+                backgroundColor: this.color('daylightFill'),
             },
             {
                 label: 'Sunset',
                 data: sunset_dataset,
                 fill: false,
-                borderColor: 'rgba(0, 0, 255, 0.5)'
+                borderColor: this.color('sunset'),
             }
         ];
 
@@ -149,9 +231,13 @@ export default () => ({
                 yAxes: [{
                     ticks: {
                         suggestedMax: this.$store.calendar.static_data.clock.hours - 1,
+                        fontColor: this.color('tickText'),
                         callback: function (value, index, values) {
-                            return value + ":00";//time_data_to_string(static_data, dataPoint);
+                            return value + ":00";
                         }
+                    },
+                    gridLines: {
+                        color: this.color('gridLine'),
                     }
                 }]
             }
@@ -239,29 +325,28 @@ export default () => ({
                 label: `Temperature High (${temp_sys})`,
                 fill: "+1",
                 data: temperature_high_dataset,
-                borderColor: 'rgba(0, 255, 0, 0.5)',
-                fillBetweenSet: 0,
-                backgroundColor: 'rgba(0, 175, 0, 0.1)',
+                borderColor: this.color('tempHigh'),
+                backgroundColor: this.color('tempFill'),
             },
             {
                 label: `Temperature Low (${temp_sys})`,
                 fill: false,
                 data: temperature_low_dataset,
-                borderColor: 'rgba(0, 255, 0, 0.5)',
-                fillBetweenSet: 0,
-                fillBetweenColor: "rgba(5,5,255, 0.2)"
+                borderColor: this.color('tempLow'),
             },
             {
                 label: 'Season High',
                 fill: false,
                 data: temperature_season_high_dataset,
-                borderColor: 'rgba(255, 0, 0, 0.5)'
+                borderColor: this.color('seasonHigh'),
+                borderDash: [5, 5],
             },
             {
                 label: 'Season Low',
                 fill: false,
                 data: temperature_season_low_dataset,
-                borderColor: 'rgba(0, 0, 255, 0.5)'
+                borderColor: this.color('seasonLow'),
+                borderDash: [5, 5],
             }
         ];
 
@@ -276,19 +361,19 @@ export default () => ({
                 label: 'Intensity of precipitation',
                 fill: false,
                 data: precipitation_intensity_dataset,
-                borderColor: 'rgba(0, 0, 255, 0.5)'
+                borderColor: this.color('precipIntensity'),
             },
             {
                 label: 'Chance of precipitation',
                 fill: false,
                 data: precipitation_chance_dataset,
-                borderColor: 'rgba(255, 0, 0, 0.5)'
+                borderColor: this.color('precipChance'),
             },
             {
                 label: 'Actual precipitation',
                 data: precipitation_actual_dataset,
-                borderColor: 'rgba(0, 255, 0, 0.5)',
-                backgroundColor: 'rgba(0, 175, 0, 0.1)',
+                borderColor: this.color('precipActual'),
+                backgroundColor: this.color('precipFill'),
             }
         ];
 
