@@ -1,5 +1,5 @@
 @php
-    $mainAttributes = $attributes->except(['label', 'description', 'name'])
+    $mainAttributes = $attributes->except(['label', 'description', 'name', 'value'])
        ->class([
            'col-span-4 flex items-center justify-between',
            'flex-row-reverse space-x-reverse' => $attributes->has('flip'),
@@ -7,7 +7,7 @@
        ]);
 @endphp
 
-<div {{ $mainAttributes }} x-data="{ value: false }" x-modelable="value">
+<div {{ $mainAttributes }} x-data="{ value: {{ $attributes->get('value', 'false') }} }" x-modelable="value">
     <input type="checkbox"  class="hidden" x-model="value" {{ $attributes->whereStartsWith('name') }}>
 
     <div class="flex-grow flex flex-col">
