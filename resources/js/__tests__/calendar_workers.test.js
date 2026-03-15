@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
 import { calendar_data_generator, event_evaluator } from '../calendar/calendar_workers';
@@ -9,6 +9,18 @@ import { calendar_data_generator, event_evaluator } from '../calendar/calendar_w
 function loadJSON(filepath) {
     if (!existsSync(filepath)) return null;
     return JSON.parse(readFileSync(filepath, 'utf-8'));
+}
+
+/**
+ * Find the index of an event by name in an events array.
+ * Throws if the event is not found, so tests fail clearly.
+ */
+function findEventIndex(events, name) {
+    const index = events.findIndex(e => e.name === name);
+    if (index === -1) {
+        throw new Error(`Event "${name}" not found in events array. Available: ${events.map(e => e.name).join(', ')}`);
+    }
+    return index;
 }
 
 const seederDir = resolve(__dirname, '../../../database/seeders/presets');
@@ -24,16 +36,20 @@ const submoduleGregorianEvents = loadJSON(resolve(submoduleDir, '106-gregorian_c
 
 describe('calendar_data_generator.run_future', () => {
 
-    it('returns start/end epochs within the epoch_data range', async () => {
+    let startYear, endYear;
 
+    beforeEach(() => {
         calendar_data_generator.static_data = structuredClone(gregorian.static_data);
         calendar_data_generator.dynamic_data = structuredClone(gregorian.dynamic_data);
         calendar_data_generator.owner = true;
         calendar_data_generator.events = structuredClone(gregorianEvents);
         calendar_data_generator.event_categories = [];
 
-        const startYear = gregorian.dynamic_data.year;
-        const endYear = startYear + 10;
+        startYear = gregorian.dynamic_data.year;
+        endYear = startYear + 10;
+    });
+
+    it('returns start/end epochs within the epoch_data range', async () => {
 
         const result = await calendar_data_generator.run_future(startYear, endYear, false);
 
@@ -50,15 +66,6 @@ describe('calendar_data_generator.run_future', () => {
 
     it('epoch_data extends beyond start_epoch by at least pre_search', async () => {
 
-        calendar_data_generator.static_data = structuredClone(gregorian.static_data);
-        calendar_data_generator.dynamic_data = structuredClone(gregorian.dynamic_data);
-        calendar_data_generator.owner = true;
-        calendar_data_generator.events = structuredClone(gregorianEvents);
-        calendar_data_generator.event_categories = [];
-
-        const startYear = gregorian.dynamic_data.year;
-        const endYear = startYear + 10;
-
         const result = await calendar_data_generator.run_future(startYear, endYear, false);
 
         const allEpochs = Object.keys(result.epoch_data).map(Number).sort((a, b) => a - b);
@@ -72,20 +79,13 @@ describe('calendar_data_generator.run_future', () => {
 
     it('does not crash event_evaluator with seeder Gregorian events', async () => {
 
-        calendar_data_generator.static_data = structuredClone(gregorian.static_data);
-        calendar_data_generator.dynamic_data = structuredClone(gregorian.dynamic_data);
-        calendar_data_generator.owner = true;
-        calendar_data_generator.events = structuredClone(gregorianEvents);
-        calendar_data_generator.event_categories = [];
-
-        const startYear = gregorian.dynamic_data.year;
-        const endYear = startYear + 10;
-
         const calendarData = await calendar_data_generator.run_future(startYear, endYear, false);
 
-        // Easter (event 10) depends on Paschal Full Moon (event 9) via
-        // connected_events.  The chain assigns lookback/lookahead that
-        // extend the loop range.  Before the fix, this would throw:
+        const easterIndex = findEventIndex(gregorianEvents, 'Easter');
+
+        // Easter depends on Paschal Full Moon via connected_events.
+        // The chain assigns lookback/lookahead that extend the loop range.
+        // Before the fix, this would throw:
         //   "can't access property 'year', event_evaluator.epoch_data[epoch] is undefined"
         expect(() => {
             event_evaluator.init(
@@ -94,7 +94,7 @@ describe('calendar_data_generator.run_future', () => {
                 structuredClone(gregorianEvents),
                 [],
                 calendarData.epoch_data,
-                10,  // Easter
+                easterIndex,
                 calendarData.start_epoch,
                 calendarData.end_epoch,
                 true,
@@ -106,35 +106,41 @@ describe('calendar_data_generator.run_future', () => {
 
 describe('Easter occurrence evaluation (seeder Gregorian)', () => {
 
-    it('Paschal Full Moon finds valid epochs in the evaluated range', async () => {
+    let startYear, endYear;
 
+    beforeEach(() => {
         calendar_data_generator.static_data = structuredClone(gregorian.static_data);
         calendar_data_generator.dynamic_data = structuredClone(gregorian.dynamic_data);
         calendar_data_generator.owner = true;
         calendar_data_generator.events = structuredClone(gregorianEvents);
         calendar_data_generator.event_categories = [];
 
-        const startYear = gregorian.dynamic_data.year;  // 2020
-        const endYear = startYear + 10;
+        startYear = gregorian.dynamic_data.year;  // 2020
+        endYear = startYear + 10;
+    });
+
+    it('Paschal Full Moon finds valid epochs in the evaluated range', async () => {
 
         const calendarData = await calendar_data_generator.run_future(startYear, endYear, false);
 
-        // Evaluate Paschal Full Moon (event 9) first — it's Easter's dependency
+        const pfmIndex = findEventIndex(gregorianEvents, 'Paschal Full Moon');
+
+        // Evaluate Paschal Full Moon first — it's Easter's dependency
         const eventData = event_evaluator.init(
             structuredClone(gregorian.static_data),
             structuredClone(gregorian.dynamic_data),
             structuredClone(gregorianEvents),
             [],
             calendarData.epoch_data,
-            9,  // Paschal Full Moon
+            pfmIndex,
             calendarData.start_epoch,
             calendarData.end_epoch,
             true,
             false
         );
 
-        const pfmEpochs = eventData.valid[9] || [];
-        expect(pfmEpochs.length).toBeGreaterThan(0);
+        const pfmEpochs = eventData.valid[pfmIndex] || [];
+        expect(pfmEpochs.length).toBe(10);
 
         // Each valid epoch should have data in epoch_data
         for (const epoch of pfmEpochs) {
@@ -144,61 +150,44 @@ describe('Easter occurrence evaluation (seeder Gregorian)', () => {
 
     it('Easter finds valid epochs when evaluated via event chain', async () => {
 
-        calendar_data_generator.static_data = structuredClone(gregorian.static_data);
-        calendar_data_generator.dynamic_data = structuredClone(gregorian.dynamic_data);
-        calendar_data_generator.owner = true;
-        calendar_data_generator.events = structuredClone(gregorianEvents);
-        calendar_data_generator.event_categories = [];
-
-        const startYear = gregorian.dynamic_data.year;
-        const endYear = startYear + 10;
-
         const calendarData = await calendar_data_generator.run_future(startYear, endYear, false);
 
-        // Evaluate Easter (event 10) — this triggers the connected event
-        // chain which first evaluates Paschal Full Moon (event 9)
+        const easterIndex = findEventIndex(gregorianEvents, 'Easter');
+        const pfmIndex = findEventIndex(gregorianEvents, 'Paschal Full Moon');
+
+        // Evaluate Easter — this triggers the connected event
+        // chain which first evaluates Paschal Full Moon
         const eventData = event_evaluator.init(
             structuredClone(gregorian.static_data),
             structuredClone(gregorian.dynamic_data),
             structuredClone(gregorianEvents),
             [],
             calendarData.epoch_data,
-            10,  // Easter
+            easterIndex,
             calendarData.start_epoch,
             calendarData.end_epoch,
             true,
             false
         );
 
-        const easterEpochs = eventData.valid[10] || [];
+        const easterEpochs = eventData.valid[easterIndex] || [];
+        const pfmEpochs = eventData.valid[pfmIndex] || [];
 
-        // Diagnostic: also check what Paschal Full Moon found
-        const pfmEpochs = eventData.valid[9] || [];
-
-        // Easter should occur ~once per year across 10 years
-        expect(easterEpochs.length, `Easter found ${easterEpochs.length} epochs (PFM found ${pfmEpochs.length})`).toBeGreaterThan(0);
+        // Easter should occur exactly once per year across 10 years
+        expect(easterEpochs.length, `Easter found ${easterEpochs.length} epochs (PFM found ${pfmEpochs.length})`).toBe(10);
     });
 
     it('all epochs in the event evaluator loop range have epoch_data entries', async () => {
 
         // This verifies that the callback=true path (which accesses
         // epoch_data[epoch].year for progress messages) won't crash.
-        calendar_data_generator.static_data = structuredClone(gregorian.static_data);
-        calendar_data_generator.dynamic_data = structuredClone(gregorian.dynamic_data);
-        calendar_data_generator.owner = true;
-        calendar_data_generator.events = structuredClone(gregorianEvents);
-        calendar_data_generator.event_categories = [];
-
-        const startYear = gregorian.dynamic_data.year;
-        const endYear = startYear + 10;
-
         const calendarData = await calendar_data_generator.run_future(startYear, endYear, false);
 
-        // Compute the event evaluator's full loop range for Easter (event 10)
+        // Compute the event evaluator's full loop range for Easter
         // by checking what begin_epoch/last_epoch would be.
-        // Easter has connected_events=[9], and evaluate_pre_post gives
-        // search_distance=200 to all events. check_event_chain propagates
-        // lookback/lookahead through the chain.
+        // Easter has connected_events pointing to Paschal Full Moon,
+        // and evaluate_pre_post gives search_distance=200 to all events.
+        // check_event_chain propagates lookback/lookahead through the chain.
         //
         // Rather than replicating the logic, we can just verify that every
         // epoch from (start_epoch - 200) to (end_epoch + 200) has data.
@@ -219,16 +208,9 @@ describe('Easter occurrence evaluation (seeder Gregorian)', () => {
     it('Easter occurrences survive the year-range filter', async () => {
 
         // This replicates the full worker_event_tester.js flow
-        calendar_data_generator.static_data = structuredClone(gregorian.static_data);
-        calendar_data_generator.dynamic_data = structuredClone(gregorian.dynamic_data);
-        calendar_data_generator.owner = true;
-        calendar_data_generator.events = structuredClone(gregorianEvents);
-        calendar_data_generator.event_categories = [];
-
-        const startYear = gregorian.dynamic_data.year;
-        const endYear = startYear + 10;
-
         const calendarData = await calendar_data_generator.run_future(startYear, endYear, false);
+
+        const easterIndex = findEventIndex(gregorianEvents, 'Easter');
 
         const eventData = event_evaluator.init(
             structuredClone(gregorian.static_data),
@@ -236,7 +218,7 @@ describe('Easter occurrence evaluation (seeder Gregorian)', () => {
             structuredClone(gregorianEvents),
             [],
             calendarData.epoch_data,
-            10,
+            easterIndex,
             calendarData.start_epoch,
             calendarData.end_epoch,
             true,
@@ -244,7 +226,7 @@ describe('Easter occurrence evaluation (seeder Gregorian)', () => {
         );
 
         // Replicate worker_event_tester.js lines 27-45
-        const occurrences = eventData.valid[10] || [];
+        const occurrences = eventData.valid[easterIndex] || [];
         const validOccurrences = [];
 
         for (const epoch of occurrences) {
@@ -258,11 +240,23 @@ describe('Easter occurrence evaluation (seeder Gregorian)', () => {
             }
         }
 
-        expect(validOccurrences.length, `Expected ~10 Easter occurrences in years ${startYear}-${endYear}, got ${validOccurrences.length}. Raw epochs: ${occurrences.length}`).toBeGreaterThan(0);
+        // The calendar's current date is Sep 20, 2020 — after Easter 2020.
+        // run_future generates from that point forward, so we get Easters
+        // for 2021-2030 (10 raw), but the year < endYear filter excludes
+        // 2030, leaving 9.
+        expect(validOccurrences.length, `Expected 9 Easter occurrences in years ${startYear}-${endYear}, got ${validOccurrences.length}. Raw epochs: ${occurrences.length}`).toBe(9);
     });
 });
 
 describe('Easter via run() + evaluate-all path (replicates calendar UI)', () => {
+
+    beforeEach(() => {
+        calendar_data_generator.static_data = structuredClone(gregorian.static_data);
+        calendar_data_generator.dynamic_data = structuredClone(gregorian.dynamic_data);
+        calendar_data_generator.owner = true;
+        calendar_data_generator.events = structuredClone(gregorianEvents);
+        calendar_data_generator.event_categories = [];
+    });
 
     it('Easter is found when evaluating all events against run() output', async () => {
 
@@ -292,21 +286,26 @@ describe('Easter via run() + evaluate-all path (replicates calendar UI)', () => 
             false
         );
 
-        // Check all events for valid epochs
-        const eventNames = gregorianEvents.map(e => e.name);
-        const results = {};
-        for (let i = 0; i < gregorianEvents.length; i++) {
-            const epochs = eventData.valid[i] || [];
-            results[`${i}: ${eventNames[i]}`] = epochs.length;
-        }
+        const pfmIndex = findEventIndex(gregorianEvents, 'Paschal Full Moon');
+        const easterIndex = findEventIndex(gregorianEvents, 'Easter');
 
-        // Paschal Full Moon (9) should have at least 1 occurrence in 2020
-        const pfmEpochs = eventData.valid[9] || [];
-        expect(pfmEpochs.length, `PFM found ${pfmEpochs.length} epochs. All results: ${JSON.stringify(results)}`).toBeGreaterThan(0);
+        // Build diagnostic summary lazily for error messages
+        const diagnosticSummary = () => {
+            const results = {};
+            for (let i = 0; i < gregorianEvents.length; i++) {
+                const epochs = eventData.valid[i] || [];
+                results[`${i}: ${gregorianEvents[i].name}`] = epochs.length;
+            }
+            return JSON.stringify(results);
+        };
 
-        // Easter (10) should have at least 1 occurrence in 2020
-        const easterEpochs = eventData.valid[10] || [];
-        expect(easterEpochs.length, `Easter found ${easterEpochs.length} epochs. All results: ${JSON.stringify(results)}`).toBeGreaterThan(0);
+        // Paschal Full Moon should have exactly 1 occurrence in a single year
+        const pfmEpochs = eventData.valid[pfmIndex] || [];
+        expect(pfmEpochs.length, `PFM found ${pfmEpochs.length} epochs. All results: ${diagnosticSummary()}`).toBe(1);
+
+        // Easter should have exactly 1 occurrence in a single year
+        const easterEpochs = eventData.valid[easterIndex] || [];
+        expect(easterEpochs.length, `Easter found ${easterEpochs.length} epochs. All results: ${diagnosticSummary()}`).toBe(1);
     });
 });
 
@@ -315,16 +314,20 @@ const describeSubmodule = submoduleGregorian ? describe : describe.skip;
 
 describeSubmodule('calendar_data_generator.run_future (submodule Gregorian)', () => {
 
-    it('epoch_data extends beyond start and end by at least search_distance', async () => {
+    let startYear, endYear;
 
+    beforeEach(() => {
         calendar_data_generator.static_data = structuredClone(submoduleGregorian.static_data);
         calendar_data_generator.dynamic_data = structuredClone(submoduleGregorian.dynamic_data);
         calendar_data_generator.owner = true;
         calendar_data_generator.events = structuredClone(submoduleGregorianEvents);
         calendar_data_generator.event_categories = [];
 
-        const startYear = submoduleGregorian.dynamic_data.year;
-        const endYear = startYear + 10;
+        startYear = submoduleGregorian.dynamic_data.year;
+        endYear = startYear + 10;
+    });
+
+    it('epoch_data extends beyond start and end by at least search_distance', async () => {
 
         const result = await calendar_data_generator.run_future(startYear, endYear, false);
 
@@ -340,20 +343,12 @@ describeSubmodule('calendar_data_generator.run_future (submodule Gregorian)', ()
 
     it('does not crash event_evaluator on events with search_distance', async () => {
 
-        calendar_data_generator.static_data = structuredClone(submoduleGregorian.static_data);
-        calendar_data_generator.dynamic_data = structuredClone(submoduleGregorian.dynamic_data);
-        calendar_data_generator.owner = true;
-        calendar_data_generator.events = structuredClone(submoduleGregorianEvents);
-        calendar_data_generator.event_categories = [];
-
-        const startYear = submoduleGregorian.dynamic_data.year;
-        const endYear = startYear + 10;
-
         const calendarData = await calendar_data_generator.run_future(startYear, endYear, false);
 
-        // Test the events that originally crashed: Spring Equinox (2),
-        // Christmas (4), Paschal Full Moon (5), Easter (6)
-        for (const eventId of [2, 4, 5, 6]) {
+        // Test the events that originally crashed
+        const crashEvents = ['Spring Equinox', 'Christmas', 'Paschal Full Moon', 'Easter'];
+        for (const eventName of crashEvents) {
+            const eventIndex = findEventIndex(submoduleGregorianEvents, eventName);
             expect(() => {
                 event_evaluator.init(
                     structuredClone(submoduleGregorian.static_data),
@@ -361,7 +356,7 @@ describeSubmodule('calendar_data_generator.run_future (submodule Gregorian)', ()
                     structuredClone(submoduleGregorianEvents),
                     [],
                     calendarData.epoch_data,
-                    eventId,
+                    eventIndex,
                     calendarData.start_epoch,
                     calendarData.end_epoch,
                     true,
