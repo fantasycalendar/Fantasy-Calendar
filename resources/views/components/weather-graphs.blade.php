@@ -1,6 +1,8 @@
 <div x-data="WeatherGraphs" x-cloak x-show='visible'
      @set-weather-graph-visible.window='set_weather_graphs_visible($event.detail)'
      @calendar-updated.window='update_graphs'
+     @open-sidebar.window='resize_graphs()'
+     @close-sidebar.window='resize_graphs()'
      class="space-y-12 px-4 py-6"
 >
 

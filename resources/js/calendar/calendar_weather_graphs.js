@@ -62,6 +62,33 @@ function buildPalettes() {
     };
 }
 
+const seasonBoundaryPlugin = {
+    afterDraw(chart) {
+        const boundaries = chart.config.seasonBoundaries;
+        if (!boundaries || !boundaries.length) return;
+
+        const ctx = chart.ctx;
+        const xScale = chart.scales['x-axis-0'];
+        const chartArea = chart.chartArea;
+        if (!xScale || !chartArea) return;
+
+        ctx.save();
+        for (const { dataIndex, color } of boundaries) {
+            const x = xScale.getPixelForValue(undefined, dataIndex);
+            if (x < chartArea.left || x > chartArea.right) continue;
+
+            ctx.beginPath();
+            ctx.setLineDash([4, 4]);
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = color;
+            ctx.moveTo(x, chartArea.top);
+            ctx.lineTo(x, chartArea.bottom);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+};
+
 export default () => ({
     visible: false,
 
@@ -77,6 +104,16 @@ export default () => ({
         buildPalettes();
         const isDark = document.body.classList.contains('dark');
         return (isDark ? _darkColors : _lightColors)[name];
+    },
+
+    get_season_boundary_color(season_index) {
+        const seasons = this.$store.calendar.static_data.seasons;
+        const season = seasons.data[season_index];
+        if (seasons.global_settings.color_enabled && season?.color?.[0]) {
+            return alpha(season.color[0], 0.45);
+        }
+        const isDark = document.body.classList.contains('dark');
+        return isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.12)';
     },
 
     get_default_graph_options() {
@@ -125,6 +162,15 @@ export default () => ({
         this.update_graphs();
     },
 
+    resize_graphs() {
+        if (!this.visible) return;
+        setTimeout(() => {
+            this.day_length_graph?.resize();
+            this.temperature_graph?.resize();
+            this.precipitation_graph?.resize();
+        }, 300);
+    },
+
     update_graphs() {
         if (!this.visible) {
             return;
@@ -141,16 +187,19 @@ export default () => ({
         graph.update(0);
     },
 
-    create_graph(graph, datasets, labels, options = {}) {
+    create_graph(graph, datasets, labels, options = {}, seasonBoundaries = []) {
         let ctx = graph.getContext('2d');
-        return new Chart(ctx, {
+        let config = {
             type: 'line',
             data: {
                 labels,
                 datasets
             },
-            options: _.merge(_.cloneDeep(this.get_default_graph_options()), options)
-        });
+            options: _.merge(_.cloneDeep(this.get_default_graph_options()), options),
+            plugins: [seasonBoundaryPlugin],
+            seasonBoundaries,
+        };
+        return new Chart(ctx, config);
     },
 
     update_day_length_graph() {
@@ -178,9 +227,20 @@ export default () => ({
         let sunrise_dataset = [];
         let sunset_dataset = [];
         let labels = [];
+        let day_length_boundaries = [];
+        let prev_season_index = null;
 
         for (let epoch = start_epoch, i = 0; epoch < end_epoch; epoch++, i++) {
             let epoch_data = all_epoch_data[epoch];
+
+            let season_index = epoch_data.season.season_index;
+            if (prev_season_index !== null && season_index !== prev_season_index) {
+                day_length_boundaries.push({
+                    dataIndex: i,
+                    color: this.get_season_boundary_color(season_index),
+                });
+            }
+            prev_season_index = season_index;
 
             let day = ordinal_suffix_of(epoch_data.day)
             let month_name = epoch_data.timespan_name;
@@ -214,6 +274,7 @@ export default () => ({
         ];
 
         if (this.day_length_graph) {
+            this.day_length_graph.config.seasonBoundaries = day_length_boundaries;
             return this.update_graph(this.day_length_graph, this.day_length_graph_data, labels);
         }
 
@@ -241,7 +302,7 @@ export default () => ({
                     }
                 }]
             }
-        });
+        }, day_length_boundaries);
 
     },
 
@@ -270,6 +331,8 @@ export default () => ({
         let precipitation_actual_dataset = [];
 
         let labels = [];
+        let climate_boundaries = [];
+        let prev_season_index = null;
 
         let temp_sys = this.$store.calendar.static_data.seasons.global_settings.temp_sys;
         if (temp_sys === "both_i") {
@@ -282,6 +345,17 @@ export default () => ({
             let epoch_data = all_epoch_data[epoch];
 
             if (epoch_data.weather) {
+                let season_index = epoch_data.season?.season_index;
+                if (prev_season_index !== null && season_index !== undefined && season_index !== prev_season_index) {
+                    climate_boundaries.push({
+                        dataIndex: labels.length,
+                        color: this.get_season_boundary_color(season_index),
+                    });
+                }
+                if (season_index !== undefined) {
+                    prev_season_index = season_index;
+                }
+
                 let day = ordinal_suffix_of(epoch_data.day)
                 let month_name = epoch_data.timespan_name;
                 let year = epoch_data.year != epoch_data.era_year ? `era year ${epoch_data.era_year} (absolute year ${epoch_data.year})` : `year ${epoch_data.year}`;
@@ -351,9 +425,10 @@ export default () => ({
         ];
 
         if (this.temperature_graph) {
+            this.temperature_graph.config.seasonBoundaries = climate_boundaries;
             return this.update_graph(this.temperature_graph, this.temperature_graph_data, labels);
         } else {
-            this.temperature_graph = this.create_graph(this.$refs.temperature_canvas, this.temperature_graph_data, labels);
+            this.temperature_graph = this.create_graph(this.$refs.temperature_canvas, this.temperature_graph_data, labels, {}, climate_boundaries);
         }
 
         this.precipitation_graph_data = [
@@ -378,6 +453,7 @@ export default () => ({
         ];
 
         if (this.precipitation_graph) {
+            this.precipitation_graph.config.seasonBoundaries = climate_boundaries;
             return this.update_graph(this.precipitation_graph, this.precipitation_graph_data, labels);
         } else {
             this.precipitation_graph = this.create_graph(this.$refs.precipitation_canvas, this.precipitation_graph_data, labels, {
@@ -389,7 +465,7 @@ export default () => ({
                         }
                     }]
                 }
-            });
+            }, climate_boundaries);
         }
     },
 });
