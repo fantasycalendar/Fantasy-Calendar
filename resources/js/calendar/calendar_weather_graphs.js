@@ -63,18 +63,19 @@ function buildPalettes() {
 }
 
 const seasonBoundaryPlugin = {
-    afterDraw(chart) {
-        const boundaries = chart.config.seasonBoundaries;
+    id: 'seasonBoundary',
+    afterDraw(chart, args, options) {
+        const boundaries = options.boundaries;
         if (!boundaries || !boundaries.length) return;
 
         const ctx = chart.ctx;
-        const xScale = chart.scales['x-axis-0'];
+        const xScale = chart.scales.x;
         const chartArea = chart.chartArea;
         if (!xScale || !chartArea) return;
 
         ctx.save();
         for (const { dataIndex, color } of boundaries) {
-            const x = xScale.getPixelForValue(undefined, dataIndex);
+            const x = xScale.getPixelForValue(dataIndex);
             if (x < chartArea.left || x > chartArea.right) continue;
 
             ctx.beginPath();
@@ -119,31 +120,28 @@ export default () => ({
     get_default_graph_options() {
         return {
             scales: {
-                xAxes: [{
+                x: {
                     display: false,
-                    ticks: {
-                        callback: (value) => {
-                            return value[1];
-                        }
-                    }
-                }],
-                yAxes: [{
-                    gridLines: {
+                },
+                y: {
+                    grid: {
                         color: this.color('gridLine'),
                     },
                     ticks: {
-                        fontColor: this.color('tickText'),
+                        color: this.color('tickText'),
                     }
-                }],
+                },
             },
-            legend: {
-                labels: {
-                    fontColor: this.color('legendText'),
-                }
-            },
-            tooltips: {
-                mode: 'index',
-                intersect: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: this.color('legendText'),
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                },
             },
             hover: {
                 mode: 'index',
@@ -180,24 +178,25 @@ export default () => ({
     },
 
     update_graph(graph, datasets, labels) {
-        graph.data.labels.pop();
-        graph.data.datasets = {};
-        graph.data.labels.push(labels);
+        graph.data.labels = labels;
         graph.data.datasets = datasets;
-        graph.update(0);
+        graph.update('none');
     },
 
     create_graph(graph, datasets, labels, options = {}, seasonBoundaries = []) {
         let ctx = graph.getContext('2d');
+        let merged = _.merge(_.cloneDeep(this.get_default_graph_options()), options);
+        // Store boundaries in the plugin's options namespace
+        merged.plugins = merged.plugins || {};
+        merged.plugins.seasonBoundary = { boundaries: seasonBoundaries };
         let config = {
             type: 'line',
             data: {
                 labels,
                 datasets
             },
-            options: _.merge(_.cloneDeep(this.get_default_graph_options()), options),
+            options: merged,
             plugins: [seasonBoundaryPlugin],
-            seasonBoundaries,
         };
         return new Chart(ctx, config);
     },
@@ -253,8 +252,8 @@ export default () => ({
             let sunrise = epoch_data.season.time.sunrise;
             let sunset = epoch_data.season.time.sunset;
 
-            sunrise_dataset.push({ x: epoch_data, y: precisionRound(sunrise.data, 2) });
-            sunset_dataset.push({ x: epoch_data, y: precisionRound(sunset.data, 2) });
+            sunrise_dataset.push(precisionRound(sunrise.data, 2));
+            sunset_dataset.push(precisionRound(sunset.data, 2));
         }
 
         this.day_length_graph_data = [
@@ -274,33 +273,35 @@ export default () => ({
         ];
 
         if (this.day_length_graph) {
-            this.day_length_graph.config.seasonBoundaries = day_length_boundaries;
+            this.day_length_graph.options.plugins.seasonBoundary.boundaries = day_length_boundaries;
             return this.update_graph(this.day_length_graph, this.day_length_graph_data, labels);
         }
 
         this.day_length_graph = this.create_graph(this.$refs.day_length_canvas, this.day_length_graph_data, labels, {
-            tooltips: {
-                callbacks: {
-                    label: (item, data) => {
-                        let datasetLabel = data.datasets[item.datasetIndex].label || "";
-                        let dataPoint = item.yLabel;
-                        return datasetLabel + ": " + time_data_to_string(this.$store.calendar.static_data, dataPoint);
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: (item) => {
+                            let datasetLabel = item.dataset.label || "";
+                            let dataPoint = item.parsed.y;
+                            return datasetLabel + ": " + time_data_to_string(this.$store.calendar.static_data, dataPoint);
+                        }
                     }
                 }
             },
             scales: {
-                yAxes: [{
+                y: {
+                    suggestedMax: this.$store.calendar.static_data.clock.hours - 1,
+                    grid: {
+                        color: this.color('gridLine'),
+                    },
                     ticks: {
-                        suggestedMax: this.$store.calendar.static_data.clock.hours - 1,
-                        fontColor: this.color('tickText'),
+                        color: this.color('tickText'),
                         callback: function (value, index, values) {
                             return value + ":00";
                         }
                     },
-                    gridLines: {
-                        color: this.color('gridLine'),
-                    }
-                }]
+                }
             }
         }, day_length_boundaries);
 
@@ -362,35 +363,14 @@ export default () => ({
 
                 labels.push([`${day} of ${month_name}, ${year}`]);
 
-                temperature_high_dataset.push({
-                    x: epoch_data,
-                    y: precisionRound(epoch_data.weather.temperature[temp_sys].value[1], 5)
-                });
-                temperature_low_dataset.push({
-                    x: epoch_data,
-                    y: precisionRound(epoch_data.weather.temperature[temp_sys].value[0], 5)
-                });
-                temperature_season_high_dataset.push({
-                    x: epoch_data,
-                    y: precisionRound(epoch_data.weather.temperature[temp_sys].high, 5)
-                });
-                temperature_season_low_dataset.push({
-                    x: epoch_data,
-                    y: precisionRound(epoch_data.weather.temperature[temp_sys].low, 5)
-                });
+                temperature_high_dataset.push(precisionRound(epoch_data.weather.temperature[temp_sys].value[1], 5));
+                temperature_low_dataset.push(precisionRound(epoch_data.weather.temperature[temp_sys].value[0], 5));
+                temperature_season_high_dataset.push(precisionRound(epoch_data.weather.temperature[temp_sys].high, 5));
+                temperature_season_low_dataset.push(precisionRound(epoch_data.weather.temperature[temp_sys].low, 5));
 
-                precipitation_chance_dataset.push({
-                    x: epoch_data,
-                    y: precisionRound(epoch_data.weather.precipitation.chance * 100, 5)
-                });
-                precipitation_intensity_dataset.push({
-                    x: epoch_data,
-                    y: precisionRound(epoch_data.weather.precipitation.intensity * 100, 5)
-                });
-                precipitation_actual_dataset.push({
-                    x: epoch_data,
-                    y: precisionRound(epoch_data.weather.precipitation.actual * 100, 5)
-                });
+                precipitation_chance_dataset.push(precisionRound(epoch_data.weather.precipitation.chance * 100, 5));
+                precipitation_intensity_dataset.push(precisionRound(epoch_data.weather.precipitation.intensity * 100, 5));
+                precipitation_actual_dataset.push(precisionRound(epoch_data.weather.precipitation.actual * 100, 5));
             }
         }
 
@@ -425,7 +405,7 @@ export default () => ({
         ];
 
         if (this.temperature_graph) {
-            this.temperature_graph.config.seasonBoundaries = climate_boundaries;
+            this.temperature_graph.options.plugins.seasonBoundary.boundaries = climate_boundaries;
             return this.update_graph(this.temperature_graph, this.temperature_graph_data, labels);
         } else {
             this.temperature_graph = this.create_graph(this.$refs.temperature_canvas, this.temperature_graph_data, labels, {}, climate_boundaries);
@@ -453,17 +433,15 @@ export default () => ({
         ];
 
         if (this.precipitation_graph) {
-            this.precipitation_graph.config.seasonBoundaries = climate_boundaries;
+            this.precipitation_graph.options.plugins.seasonBoundary.boundaries = climate_boundaries;
             return this.update_graph(this.precipitation_graph, this.precipitation_graph_data, labels);
         } else {
             this.precipitation_graph = this.create_graph(this.$refs.precipitation_canvas, this.precipitation_graph_data, labels, {
                 scales: {
-                    yAxes: [{
-                        ticks: {
-                            suggestedMin: 0,
-                            suggestedMax: 100
-                        }
-                    }]
+                    y: {
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                    }
                 }
             }, climate_boundaries);
         }
