@@ -6,7 +6,16 @@
         <a class="text-white font-semibold" href="{{ route('home') }}"><i class="fa fa-arrow-left"></i> Back To Fantasy-Calendar</a>
     @endguest
 
-    <span>
+    <span class="flex items-center gap-1">
+        <button class="text-white font-semibold py-0.5 px-1.5 rounded-sm hover:bg-primary-900 transition ease-in-out"
+            x-data="{ dark: document.body.classList.contains('dark'), toggle() { this.dark = !this.dark; this.$dispatch('theme-changed', { theme: this.dark ? 'dark' : 'light' }) } }"
+            @click.prevent="toggle"
+            @keydown.window="if ($event.ctrlKey && $event.shiftKey && $event.code === 'Slash') { $event.preventDefault(); toggle() }"
+            title="Toggle theme (Ctrl+Shift+/)"
+        >
+            <i class="fa" :class="dark ? 'fa-sun' : 'fa-moon'"></i>
+        </button>
+
         <button class="text-white font-semibold py-0.5 px-1.5 rounded-sm hover:bg-primary-900 transition ease-in-out"
             @click.prevent="$dispatch('close-sidebar')"
             x-show="!flattened_errors.length"

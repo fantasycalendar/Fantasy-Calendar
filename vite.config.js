@@ -22,7 +22,6 @@ export default defineConfig(({ mode }) => {
                 'resources/js/app.js',
                 'resources/js/app-tw.js',
                 'resources/sass/app.scss',
-                'resources/sass/app-dark.scss',
                 'resources/sass/app-tw.css',
             ])
         ],

@@ -1,0 +1,170 @@
+// =============================================================================
+// Theme Properties
+// =============================================================================
+// CSS custom properties for light/dark theme switching.
+// Light values go in :root, dark overrides go in body.dark.
+//
+// This file should be imported after colors.scss (which provides the $bg-* and
+// $text-* palette variables used here).
+//
+// Pre-computed variants (lighten, rgba, etc.) are included because SCSS
+// functions cannot operate on CSS custom properties at runtime.
+// =============================================================================
+
+// ---------------------------------------------------------------------------
+// :root — light theme (default)
+// ---------------------------------------------------------------------------
+:root {
+    // Calendar chrome
+    --calendar-border-color: rgba(166, 168, 179, 0.32);
+    --calendar-bg-color: #{hsla(150, 5%, 95%, 1)};
+    --card-bg-color: white;
+
+    // Day highlight colors
+    --current-day-color: #{$bg-gray-300};
+    --current-day-color-light10: #{lighten($bg-gray-300, 10%)};
+    --current-day-color-alpha20: #{rgba($bg-gray-300, 0.2)};
+    --current-day-number-color: #2f855a;
+
+    --preview-day-color: #{$bg-amber-300};
+    --preview-day-color-light10: #{lighten($bg-amber-300, 10%)};
+    --preview-day-color-alpha20: #{rgba($bg-amber-300, 0.2)};
+    --preview-day-number-color: #{$bg-amber-600};
+
+    // Text & UI
+    --wiki-link-color: rgba(0, 0, 0, 0.2);
+    --wiki-link-hover-color: black;
+    --main-text-color: #444;
+    --gray-secondary: #e4e4e4;
+    --gray-secondary-alpha55: #{rgba(#e4e4e4, 0.55)};
+    --action-bg-color: #e2e2e2;
+    --action-icon-color: rgba(0, 0, 0, 0.7);
+    --weather-tooltip-bg-color: white;
+    --input-disabled-color: #e9ecef;
+    --input-border-color: #e9ecef;
+    --handle-color: #{$bg-gray-800};
+
+    --input-group-text-bg: #e4e4e4;
+    --input-group-text-color: #{$bg-gray-500};
+
+    --btn-create-event-bg-color: #{$bg-gray-300};
+    --btn-create-event-hover-bg-color: #{$bg-gray-400};
+
+    --sortable-header-color: rgba(166, 168, 179, 0.5);
+
+    // Modal colors
+    --modal-bg-color: #{$bg-gray-100};
+    --modal-overlay-bg-color: #{$bg-gray-600};
+    --modal-overlay-bg-color-alpha80: #{rgba($bg-gray-600, 0.8)};
+    --modal-inlay-bg-color: #{$bg-gray-100};
+    --modal-content-bg-color: white;
+    --modal-content-hover-bg-color: #{$bg-gray-50};
+    --modal-action-color: #{$text-gray-900};
+    --modal-accent-foreground: #379e6b;
+    --modal-accent-background: white;
+    --modal-accent-background-alpha70: #{rgba(white, 0.7)};
+    --modal-accent-hover-foreground: #2f855a;
+    --modal-accent-hover-background: #{$bg-gray-100};
+    --modal-content-border-color: 1px solid rgba(0, 0, 0, 0.1);
+
+    // Minimalist theme
+    --m-even-bg: #f1ffe1;
+    --m-odd-bg: #e8e7c1;
+    --m-day-hover: #d4ffe9;
+    --m-current-day: #fdb44d;
+
+    // SVG image data
+    --disabled-crosshatch: url("data:image/svg+xml;charset=utf-8,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 0H20L0 20m40 20V20L20 40' fill='%23f9f9fa' fill-rule='evenodd'/%3E%3C/svg%3E");
+    --warning-crosshatch: url("data:image/svg+xml;charset=utf-8,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 0H20L0 20m40 20V20L20 40' fill-opacity='0.3' fill='%23e3342f' fill-rule='evenodd'/%3E%3C/svg%3E");
+
+    // Existing :root custom properties (moved from _variables.scss)
+    --stroke-colour: 1px solid rgba(0, 0, 0, 0.1);
+    --fill-colour: 1px solid rgba(0, 0, 0, 0.1);
+    --picker-label-colour: 1px solid rgba(0, 0, 0, 0.1);
+    --editor-placeholder-colour: 1px solid rgba(0, 0, 0, 0.1);
+    --border-color: rgb(31 41 55);
+
+    // Group list colors
+    --group-list-bg-color: #{rgba($bg-gray-800, 0.07)};
+    --not-group-list-bg-color: #{$bg-red-100};
+    --num-group-list-bg-color: #{$bg-sky-100};
+}
+
+// ---------------------------------------------------------------------------
+// body.dark — dark theme overrides
+// ---------------------------------------------------------------------------
+body.dark {
+    // Calendar chrome
+    --calendar-border-color: #{$bg-gray-900};
+    --calendar-bg-color: #111827;
+    --card-bg-color: #{$bg-gray-800};
+
+    // Day highlight colors
+    --current-day-color: #{$bg-gray-500};
+    --current-day-color-light10: #{lighten($bg-gray-500, 10%)};
+    --current-day-color-alpha20: #{rgba($bg-gray-500, 0.2)};
+    --current-day-number-color: #2f855a;
+
+    --preview-day-color: #{$bg-amber-900};
+    --preview-day-color-light10: #{lighten($bg-amber-900, 10%)};
+    --preview-day-color-alpha20: #{rgba($bg-amber-900, 0.2)};
+    --preview-day-number-color: #{$bg-amber-700};
+
+    // Text & UI
+    --wiki-link-color: rgba(255, 255, 255, 0.2);
+    --wiki-link-hover-color: white;
+    --main-text-color: rgba(255, 255, 255, 0.8);
+    --gray-secondary: #{$bg-gray-700};
+    --gray-secondary-alpha55: #{rgba($bg-gray-700, 0.55)};
+    --action-bg-color: rgba(166, 168, 179, 0.32);
+    --action-icon-color: white;
+    --weather-tooltip-bg-color: #{rgba($bg-gray-900, 0.85)};
+    --input-disabled-color: #848484;
+    --input-border-color: #{$bg-gray-600};
+    --handle-color: #{$bg-gray-400};
+
+    --input-group-text-bg: #{$bg-gray-600};
+    --input-group-text-color: #{$text-gray-300};
+
+    --btn-create-event-bg-color: #{$bg-gray-600};
+    --btn-create-event-hover-bg-color: #{$bg-gray-500};
+
+    --sortable-header-color: rgb(220, 220, 220, 0.5);
+
+    // Modal colors
+    --modal-bg-color: #{$bg-gray-900};
+    --modal-overlay-bg-color: #{$bg-gray-900};
+    --modal-overlay-bg-color-alpha80: #{rgba($bg-gray-900, 0.8)};
+    --modal-inlay-bg-color: #{$bg-gray-900};
+    --modal-content-bg-color: #{$text-gray-700};
+    --modal-content-hover-bg-color: #{$text-gray-800};
+    --modal-action-color: #{$text-gray-100};
+    --modal-accent-foreground: #{$bg-gray-600};
+    --modal-accent-background: #{$bg-gray-900};
+    --modal-accent-background-alpha70: #{rgba($bg-gray-900, 0.7)};
+    --modal-accent-hover-foreground: #{$bg-gray-400};
+    --modal-accent-hover-background: #{$bg-gray-800};
+    --modal-content-border-color: #{$text-gray-800};
+
+    // Minimalist theme
+    --m-even-bg: rgba(255, 255, 255, 0.05);
+    --m-odd-bg: initial;
+    --m-day-hover: rgba(255, 255, 255, 0.2);
+    --m-current-day: #fdb44d;
+
+    // SVG image data
+    --disabled-crosshatch: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23111827' fill-opacity='0.3' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+    --warning-crosshatch: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23e3342f' fill-opacity='0.3' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+
+    // Existing :root custom properties (moved from _variables-dark.scss)
+    --stroke-colour: white;
+    --fill-colour: white;
+    --picker-label-colour: white;
+    --editor-placeholder-colour: rgb(107 114 128);
+    --border-color: rgb(31 41 55);
+
+    // Group list colors
+    --group-list-bg-color: #{$bg-gray-800};
+    --not-group-list-bg-color: #{rgba($bg-red-600, 0.2)};
+    --num-group-list-bg-color: #{rgba($bg-sky-700, 0.4)};
+}

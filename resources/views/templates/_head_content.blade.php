@@ -59,11 +59,7 @@
 
     </script>
 
-    @if(!Auth::check() || Auth::user()->setting('dark_theme'))
-        @vite('resources/sass/app-dark.scss')
-    @else
-        @vite('resources/sass/app.scss')
-    @endif
+    @vite('resources/sass/app.scss')
 
     @stack('head')
 </head>

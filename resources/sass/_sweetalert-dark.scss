@@ -1,0 +1,86 @@
+// SweetAlert2 dark mode overrides
+// Replaces the SCSS variable overrides from app-dark.scss with CSS rule overrides
+// scoped under body.dark, so both light and dark can coexist in one bundle.
+
+// Note: calendar/colors is already @imported in app.scss before this file,
+// so all $bg-* and $text-* palette variables are available globally.
+
+// Pre-computed values:
+// lighten($gray-800, 10%)  => ~rgb(56 66 80)
+// lighten($gray-800, 25%)  => ~rgb(93 103 117)
+// lighten(rgba(50,100,150,.4), 10%) => ~rgba(76 126 176 / .4)
+// darken($gray-100, 15%)   => ~$bg-gray-300 as close approximation
+
+$_swal2-dark-outline-color: rgba(76, 126, 176, .4);
+
+body.dark {
+    // Backdrop
+    .swal2-container {
+        background: rgba($bg-gray-900, 0.75);
+    }
+
+    // Popup background
+    .swal2-popup {
+        background: $bg-gray-800;
+    }
+
+    // Title color
+    .swal2-title {
+        color: $bg-gray-100;
+    }
+
+    // HTML container (main content text)
+    .swal2-html-container {
+        color: $bg-gray-100;
+    }
+
+    // Content color
+    .swal2-content {
+        color: $bg-gray-300;
+    }
+
+    // Footer
+    .swal2-footer {
+        border-color: $bg-gray-800;
+        color: $bg-gray-300;
+    }
+
+    // Timer progress bar
+    .swal2-timer-progress-bar {
+        background: rgba($bg-gray-100, 0.6);
+    }
+
+    // Inputs
+    .swal2-input,
+    .swal2-textarea,
+    .swal2-select {
+        color: white;
+        background: $bg-gray-700;
+        border-color: $bg-gray-600;
+    }
+
+    // Validation message
+    .swal2-validation-message {
+        background: rgb(56 66 80); // lighten($gray-800, 10%)
+        color: $bg-gray-100;
+    }
+
+    // Queue / progress steps
+    .swal2-progress-steps .swal2-progress-step {
+        background: rgb(93 103 117); // lighten($gray-800, 25%)
+    }
+
+    // Button focus
+    .swal2-styled:focus {
+        box-shadow: 0 0 0 1px $bg-gray-800, 0 0 0 3px $_swal2-dark-outline-color;
+    }
+
+    // Toast
+    .swal2-popup.swal2-toast {
+        background: $bg-gray-800;
+
+        .swal2-styled:focus {
+            box-shadow: 0 0 0 1px $bg-gray-800, 0 0 0 3px $_swal2-dark-outline-color;
+        }
+    }
+}

@@ -5,7 +5,7 @@
     flex-wrap: wrap;
     align-items: center;
     width: 100%;
-    color: $main-text-color;
+    color: var(--main-text-color);
     justify-content: center;
     flex: 1;
 
@@ -44,7 +44,7 @@
         align-self: flex-start;
         text-align: center;
         position: relative;
-        background-color: $card-bg-color;
+        background-color: var(--card-bg-color);
         border-radius: 4px;
         margin: 12px 8px;
         min-width: calc(100% - 40px);
@@ -56,7 +56,7 @@
         container-type: inline-size;
 
         .week_day_name {
-            background-color: $card-bg-color;
+            background-color: var(--card-bg-color);
             flex: 1 0;
             text-align: center;
             overflow: hidden;
@@ -69,7 +69,7 @@
         }
 
         .week_day_name:not(:last-child) {
-            border-right: 1px solid $calendar-border-color;
+            border-right: 1px solid var(--calendar-border-color);
         }
 
         @media screen and (min-width: 992px) {
@@ -104,7 +104,7 @@
             display: grid;
             grid-auto-columns: 1fr;
             grid-auto-flow: column;
-            background-color: $card-bg-color;
+            background-color: var(--card-bg-color);
         }
 
         &_container {
@@ -112,10 +112,10 @@
             flex-direction: column;
             overflow-x: auto;
             flex: 1;
-            background-image: $disabled-crosshatch;
+            background-image: var(--disabled-crosshatch);
 
             &:not(.intercalary) {
-                border-top: 1px solid $calendar-border-color;
+                border-top: 1px solid var(--calendar-border-color);
             }
         }
     }
@@ -126,18 +126,18 @@
         flex-direction: column;
         min-height: 8rem;
         flex: 1 1 0px;
-        background-color: $card-bg-color;
+        background-color: var(--card-bg-color);
         min-width: 5rem;
         position: relative;
-        border-top: 1px solid $calendar-border-color;
+        border-top: 1px solid var(--calendar-border-color);
         padding: 2px;
 
         &.empty_timespan_day {
-            background-color: $gray-secondary;
+            background-color: var(--gray-secondary);
         }
 
         &:not(:last-child) {
-            border-right: 1px solid $calendar-border-color;
+            border-right: 1px solid var(--calendar-border-color);
         }
 
         &:hover {
@@ -154,7 +154,7 @@
 
     &_intercalary {
         box-sizing: border-box;
-        background-color: $card-bg-color;
+        background-color: var(--card-bg-color);
         display: flex;
         flex-direction: column;
         min-height: 8rem;
@@ -162,7 +162,7 @@
         min-width: 5rem;
 
         &:not(:first-child) {
-            border-left: 1px solid $calendar-border-color;
+            border-left: 1px solid var(--calendar-border-color);
         }
 
         @container (max-width: 768px) {
@@ -183,14 +183,14 @@
         color: rgba(#98a0a6, 0.6);
         cursor: not-allowed;
         min-width: 5rem;
-        border-top: 1px solid $calendar-border-color;
+        border-top: 1px solid var(--calendar-border-color);
 
         &.intercalary {
             min-width: initial;
         }
 
         &:not(:last-child) {
-            border-right: 1px solid $calendar-border-color;
+            border-right: 1px solid var(--calendar-border-color);
             padding-left: 0;
         }
 
@@ -233,7 +233,7 @@
     &.text {
         display: inline;
         text-align: center;
-        border-bottom: 1px solid $calendar-border-color;
+        border-bottom: 1px solid var(--calendar-border-color);
         padding: 4px 5px;
         font-size: 0.8rem;
     }
@@ -279,14 +279,14 @@
     margin: 0 4px 8px;
     min-height: 32px;
     background-color: transparent !important;
-    border: 4px dashed $btn-create-event-bg-color !important;
+    border: 4px dashed var(--btn-create-event-bg-color) !important;
     color: $text-gray-500 !important;
     z-index: 10;
 }
 
 .btn_create_event:hover {
     cursor: pointer;
-    border: 4px dashed $btn-create-event-hover-bg-color !important;
+    border: 4px dashed var(--btn-create-event-hover-bg-color) !important;
 }
 
 .day_row .weather {
@@ -365,7 +365,7 @@
     }
 
     &.hidden_event {
-        background-image: $disabled-crosshatch;
+        background-image: var(--disabled-crosshatch);
     }
 
     &.background {
@@ -410,7 +410,7 @@
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
         width: calc(100% - 5px);
-        border-top: 1px solid $calendar-border-color;
+        border-top: 1px solid var(--calendar-border-color);
     }
 
     &::-webkit-scrollbar-thumb {
@@ -474,7 +474,7 @@
         }
 
         &.week_end {
-            border-bottom: 2px solid $calendar-border-color;
+            border-bottom: 2px solid var(--calendar-border-color);
         }
 
         &.season_color_enabled {
@@ -510,7 +510,7 @@
         padding-left: 7px;
         margin-top: 8px;
         text-align: left;
-        border-left: 1px solid $calendar-border-color;
+        border-left: 1px solid var(--calendar-border-color);
     }
 
     .event_container {
@@ -546,7 +546,7 @@
     flex-direction: row;
     align-content: flex-start;
     justify-content: center;
-    color: $main-text-color;
+    color: var(--main-text-color);
 }
 
 .timespan_outer_container {
@@ -597,8 +597,8 @@
     }
 
     .week_day_name {
-        border-top: 1px solid $calendar-border-color;
-        border-bottom: 2px solid $calendar-border-color;
+        border-top: 1px solid var(--calendar-border-color);
+        border-bottom: 2px solid var(--calendar-border-color);
     }
 
     .has_event {
@@ -607,11 +607,11 @@
 
     .timespan_row {
         &:nth-child(even) .minimalistic_odd_even_colored {
-            background-color: $m-even-bg;
+            background-color: var(--m-even-bg);
         }
 
         &:nth-child(odd) .minimalistic_odd_even_colored {
-            background-color: $m-odd-bg;
+            background-color: var(--m-odd-bg);
         }
 
         .timespan_day {
@@ -623,16 +623,16 @@
             }
 
             &.preview_day:hover:after {
-                background-color: lighten($preview-day-color, 10%);
+                background-color: var(--preview-day-color-light10);
             }
 
             &.current_day {
-                background-color: $m-current-day;
+                background-color: var(--m-current-day);
                 color: #444;
 
                 &:hover {
                     cursor: pointer;
-                    background-color: lighten($current-day-color, 10%);
+                    background-color: var(--current-day-color-light10);
                 }
                 &:after {
                     height: 0px;
@@ -640,11 +640,11 @@
             }
 
             &.empty_timespan_day {
-                background-color: $gray-secondary;
+                background-color: var(--gray-secondary);
             }
 
             &:hover:not(.current_day) {
-                background-color: $m-day-hover;
+                background-color: var(--m-day-hover);
                 cursor: pointer;
             }
         }
@@ -653,18 +653,18 @@
 .current_day {
     background-image: linear-gradient(
         to right,
-        rgba($current-day-color, 0.2),
-        rgba($current-day-color, 0.2)
+        var(--current-day-color-alpha20),
+        var(--current-day-color-alpha20)
     );
 
     & .number:not(.year_day) {
-        background-color: $current-day-number-color;
+        background-color: var(--current-day-number-color);
         color: white;
     }
 }
 
 .current_day:not(.season_color_enabled):after {
-    background-color: $current-day-color;
+    background-color: var(--current-day-color);
     display: block;
     content: " ";
     height: 5px;
@@ -676,7 +676,7 @@
 
 .preview_day {
     &:before {
-        background-color: rgba($preview-day-color, 0.2);
+        background-color: var(--preview-day-color-alpha20);
         content: " ";
         display: block;
         position: absolute;
@@ -689,7 +689,7 @@
     }
 
     & .number:not(.year_day) {
-        background-color: $preview-day-number-color;
+        background-color: var(--preview-day-number-color);
         color: white;
     }
 }

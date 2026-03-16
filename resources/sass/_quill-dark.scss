@@ -1,3 +1,9 @@
+// Dark-mode overrides for the Quill "smoke" theme.
+// Auto-generated from quill.smoke.css, scoped under body.dark so it only
+// applies when dark mode is active.
+
+body.dark {
+
 /*!
  * Quill Editor v1.3.7
  * https://quilljs.com/
@@ -1173,3 +1179,5 @@
 .ql-container.ql-snow {
   border: 1px solid var(--border-color);
 }
+
+} // body.dark

@@ -14,9 +14,9 @@ button:focus,
 }
 
 .input-group-text {
-    background-color: $input-group-text-bg !important;
-    color: $input-group-text-color !important;
-    border-color: $input-border-color !important;
+    background-color: var(--input-group-text-bg) !important;
+    color: var(--input-group-text-color) !important;
+    border-color: var(--input-border-color) !important;
 }
 
 input.invalid {
@@ -55,7 +55,7 @@ select.invalid {
 
 .sortable-header {
     font-style: italic;
-    color: $sortable-header-color;
+    color: var(--sortable-header-color);
 }
 
 .toggle:not(:checked)+.lbl-toggle+.collapsible-content.card-body {
@@ -134,7 +134,7 @@ select.invalid {
     flex-direction: row;
     flex-wrap: wrap;
     transition: height 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-    border: 1px solid $gray-secondary;
+    border: 1px solid var(--gray-secondary);
 }
 
 .inter-month-container {
@@ -158,7 +158,7 @@ select.invalid {
 
 .sortable-container.intercalary,
 .sortable-container.intercalary .visible {
-    background-color: rgba($gray-secondary, 0.55);
+    background-color: var(--gray-secondary-alpha55);
 }
 
 .sortable-container.intercalary .border {
@@ -184,7 +184,7 @@ select.invalid {
 
 .main-container>.handle,
 .main-container>.expand {
-    color: $handle-color;
+    color: var(--handle-color);
     margin: 0 2% 0 0;
     font-size: 15pt;
     min-width: 20px;
@@ -463,14 +463,14 @@ input[type="number"]:not(.spinner) {
 .wiki,
 .setting-question {
     float: right;
-    color: $wiki-link-color;
+    color: var(--wiki-link-color);
     text-decoration: none;
     /* no underline */
 }
 
 .wiki:hover,
 .setting-question:hover {
-    color: $wiki-link-hover-color;
+    color: var(--wiki-link-hover-color);
     text-decoration: none;
     /* no underline */
 }
@@ -559,7 +559,7 @@ input[type="number"]:not(.spinner) {
 }
 
 .disabled {
-    background-color: $input-disabled-color;
+    background-color: var(--input-disabled-color);
 }
 
 .form-check {
@@ -577,7 +577,7 @@ input[type="number"]:not(.spinner) {
     position: fixed;
     top: 0;
     bottom: 0;
-    background-color: rgba($modal-overlay-bg-color, 0.8);
+    background-color: var(--modal-overlay-bg-color-alpha80);
     width: 100%;
     height: 100%;
     z-index: 1000;
@@ -590,14 +590,14 @@ input[type="number"]:not(.spinner) {
     min-width: 650px;
     padding: 15px 35px 45px;
     margin: 0 auto;
-    background-color: $card-bg-color;
+    background-color: var(--card-bg-color);
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 7px;
     z-index: 1000;
 }
 
 .modal-inlay {
-    background: $modal-inlay-bg-color;
+    background: var(--modal-inlay-bg-color);
 }
 
 /* ------------------ Layout forms ----------------- */
@@ -605,15 +605,15 @@ input[type="number"]:not(.spinner) {
 .layout_background .layout-wrapper {
     max-width: 1200px;
     width: 80vw;
-    background-color: $modal-bg-color;
+    background-color: var(--modal-bg-color);
 
     hr {
-        border-color: $modal-content-border-color;
+        border-color: var(--modal-content-border-color);
         margin: 0.5rem 0;
     }
 
     @media screen and (max-width: 768px) {
-        background-color: $modal-bg-color;
+        background-color: var(--modal-bg-color);
         min-height: 100vh;
     }
 }
@@ -623,12 +623,12 @@ input[type="number"]:not(.spinner) {
 .preset_background .preset-wrapper {
     max-width: 1200px;
     width: 80vw;
-    background-color: $modal-bg-color;
+    background-color: var(--modal-bg-color);
 
     input[name="search"] {
-        background-color: $modal-bg-color;
-        color: $modal-action-color;
-        border-color: $modal-content-border-color;
+        background-color: var(--modal-bg-color);
+        color: var(--modal-action-color);
+        border-color: var(--modal-content-border-color);
 
         @media screen and (max-width: 768px) {
             width: calc(100% - 50px);
@@ -636,25 +636,25 @@ input[type="number"]:not(.spinner) {
     }
 
     hr {
-        border-color: $modal-content-border-color;
+        border-color: var(--modal-content-border-color);
         margin: 0.5rem 0;
     }
 
     .search-empty {
-        border: 1px solid $modal-content-bg-color;
+        border: 1px solid var(--modal-content-bg-color);
         opacity: 0.7;
         border-radius: 2px;
     }
 
     @media screen and (max-width: 768px) {
-        background-color: $modal-bg-color;
+        background-color: var(--modal-bg-color);
         min-height: 100vh;
     }
 }
 
 .managed_event {
-    background-color: $modal-content-bg-color;
-    color: $modal-action-color;
+    background-color: var(--modal-content-bg-color);
+    color: var(--modal-action-color);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     display: flex;
     position: relative;
@@ -668,10 +668,10 @@ input[type="number"]:not(.spinner) {
     }
 
     &:hover {
-        background-color: $modal-content-hover-bg-color;
+        background-color: var(--modal-content-hover-bg-color);
 
         .icon {
-            background-color: $modal-content-hover-bg-color;
+            background-color: var(--modal-content-hover-bg-color);
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
     }
@@ -712,17 +712,17 @@ input[type="number"]:not(.spinner) {
         position: relative;
 
         &:hover {
-            background-color: rgba($modal-accent-background, 0.7);
+            background-color: var(--modal-accent-background-alpha70);
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         i {
-            color: $modal-accent-hover-foreground;
+            color: var(--modal-accent-hover-foreground);
         }
     }
 
     .icon {
-        background-color: rgba($modal-accent-background, 0.7);
+        background-color: var(--modal-accent-background-alpha70);
         display: grid;
         place-items: center;
         margin-left: auto;
@@ -731,7 +731,7 @@ input[type="number"]:not(.spinner) {
         padding: 0.5rem 0.8rem;
 
         i:not(.valid) {
-            color: $modal-accent-foreground;
+            color: var(--modal-accent-foreground);
         }
 
         @media screen and (max-width: 768px) {
@@ -745,11 +745,11 @@ input[type="number"]:not(.spinner) {
     border: 0;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
-    background-color: $modal-content-bg-color;
+    background-color: var(--modal-content-bg-color);
     position: relative;
     padding-left: 80px !important;
     overflow: hidden;
-    color: $modal-action-color;
+    color: var(--modal-action-color);
 
     .icon {
         font-size: 30px;
@@ -758,13 +758,13 @@ input[type="number"]:not(.spinner) {
         top: -2px;
         bottom: -2px;
         width: 64px;
-        background-color: rgba($modal-accent-background, 0.7);
+        background-color: var(--modal-accent-background-alpha70);
         display: grid;
         place-items: center;
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 
         i {
-            color: $modal-accent-foreground;
+            color: var(--modal-accent-foreground);
         }
     }
 
@@ -775,13 +775,13 @@ input[type="number"]:not(.spinner) {
     &:hover:not(:disabled) {
         //transform: translateY(-4px);
         filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
-        background-color: $modal-content-hover-bg-color;
+        background-color: var(--modal-content-hover-bg-color);
 
         .icon {
-            background-color: $modal-accent-hover-background;
+            background-color: var(--modal-accent-hover-background);
 
             i {
-                color: $modal-accent-hover-foreground;
+                color: var(--modal-accent-hover-foreground);
             }
         }
     }
@@ -804,7 +804,7 @@ input[type="number"]:not(.spinner) {
         bottom: 0;
         width: 24px;
         background-image: linear-gradient(to left,
-                $modal-content-bg-color,
+                var(--modal-content-bg-color),
                 transparent);
     }
 }
@@ -815,7 +815,7 @@ input[type="number"]:not(.spinner) {
     }
 
     &:not(.disabled):hover {
-        background-color: $modal-accent-hover-background;
+        background-color: var(--modal-accent-hover-background);
         color: white;
     }
 }
@@ -829,7 +829,7 @@ input[type="number"]:not(.spinner) {
 }
 
 .pagination-number-active {
-    border-top: 4px solid $modal-accent-background;
+    border-top: 4px solid var(--modal-accent-background);
 }
 
 /* ------------------ Event forms ----------------- */
@@ -843,7 +843,7 @@ input[type="number"]:not(.spinner) {
 
 #event_comment_mastercontainer .trumbowyg-editor {
     min-height: calc(100% - 37px);
-    background-color: $card-bg-color;
+    background-color: var(--card-bg-color);
 }
 
 .loading {
@@ -867,7 +867,7 @@ input[type="number"]:not(.spinner) {
 
 .event_comment {
     padding: 8px;
-    border: 1px solid $modal-content-bg-color;
+    border: 1px solid var(--modal-content-bg-color);
 }
 
 .event_comment:first-of-type {
@@ -889,7 +889,7 @@ input[type="number"]:not(.spinner) {
 }
 
 .event_comment.comment_owner {
-    background-color: $calendar-bg-color;
+    background-color: var(--calendar-bg-color);
 }
 
 .event_comment:last-child {
@@ -914,7 +914,7 @@ input[type="number"]:not(.spinner) {
 
 .event_comment .date {
     font-style: italic;
-    color: $main-text-color;
+    color: var(--main-text-color);
     font-size: 0.7rem;
 }
 
@@ -998,7 +998,7 @@ body .event_comment .calendar_action {
         min-width: 100vw;
         padding: 0.5rem;
         margin: 0 auto;
-        background-color: $card-bg-color;
+        background-color: var(--card-bg-color);
         border: none;
         border-radius: 0px;
 
@@ -1096,33 +1096,33 @@ ol.example li.placeholder:before {
 }
 
 .group_type[type="normal"]~.group_list {
-    background-color: $group-list-bg-color;
+    background-color: var(--group-list-bg-color);
 }
 
 .group_type[type="normal"] div.normal {
-    background-color: $group-list-bg-color;
+    background-color: var(--group-list-bg-color);
     border: 1px solid black;
     border-radius: 10px;
     margin: -1px 14px -1px -1px;
 }
 
 .group_type[type="not"]~.group_list {
-    background-color: $not-group-list-bg-color;
+    background-color: var(--not-group-list-bg-color);
 }
 
 .group_type[type="not"] div.not {
-    background-color: $not-group-list-bg-color;
+    background-color: var(--not-group-list-bg-color);
     border: 1px solid black;
     border-radius: 10px;
     margin: -1px 14px -1px -1px;
 }
 
 .group_type[type="num"]~.group_list {
-    background-color: $num-group-list-bg-color;
+    background-color: var(--num-group-list-bg-color);
 }
 
 .group_type[type="num"] div.num {
-    background-color: $num-group-list-bg-color;
+    background-color: var(--num-group-list-bg-color);
     border: 1px solid black;
     border-radius: 10px;
     margin: -1px 14px -1px -1px;
@@ -1152,7 +1152,7 @@ ol.example li.placeholder:before {
     padding: 5px;
     margin-bottom: 5px;
     min-height: 34px;
-    background-color: $action-bg-color;
+    background-color: var(--action-bg-color);
 }
 
 .placeholder {
@@ -1185,7 +1185,7 @@ ol.example li.placeholder:before {
 #event_conditions_container.deleting {
     border: 1px solid red;
 
-    background-image: $warning-crosshatch;
+    background-image: var(--warning-crosshatch);
 
     & .condition.hover>.condition_container {
         background-color: $red;
@@ -1333,28 +1333,28 @@ ol.example li.placeholder:before {
 
 .trumbowyg-box {
     margin: 0;
-    border: 1px solid $calendar-border-color;
+    border: 1px solid var(--calendar-border-color);
 }
 
 .trumbowyg-button-pane {
-    background: $card-bg-color;
-    border-bottom: 1px solid $calendar-border-color;
+    background: var(--card-bg-color);
+    border-bottom: 1px solid var(--calendar-border-color);
 }
 
 .trumbowyg-button-pane .trumbowyg-button-group::after,
 .trumbowyg-button-pane::after {
-    background: $calendar-border-color;
+    background: var(--calendar-border-color);
 }
 
 .trumbowyg-box svg,
 .trumbowyg-modal svg {
-    fill: $main-text-color;
+    fill: var(--main-text-color);
 }
 
 .trumbowyg-button-pane button:not(.trumbowyg-disable):hover,
 .trumbowyg-button-pane button:not(.trumbowyg-disable):focus,
 .trumbowyg-button-pane button.trumbowyg-active {
-    background: $action-bg-color;
+    background: var(--action-bg-color);
 }
 
 .event_occurrences {
@@ -1510,10 +1510,10 @@ ol.example li.placeholder:before {
     left: calc(50% - 11rem);
     width: 22rem;
     height: 3.5rem;
-    background-color: $card-bg-color;
+    background-color: var(--card-bg-color);
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
-    border: 1px solid $calendar-border-color;
+    border: 1px solid var(--calendar-border-color);
 }
 
 .sp-replacer {
@@ -1527,7 +1527,7 @@ ol.example li.placeholder:before {
 body .sp-replacer {
     padding: 0;
     height: 100% !important;
-    border: 1px solid $input-border-color;
+    border: 1px solid var(--input-border-color);
     border-radius: 7px;
     background: transparent;
 }

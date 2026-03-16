@@ -4,7 +4,9 @@
 
 @include('templates._head_content_tw')
 
-<body class="scrollbar page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class') @guest dark @else @setting('dark_theme') dark @endsetting @endguest">
+<body class="scrollbar page-{{ str_replace('.', '-', Route::currentRouteName()) }} @stack('page-class') @guest dark @else @setting('dark_theme') dark @endsetting @endguest"
+    @theme-changed.window="$el.classList.toggle('dark', $event.detail.theme === 'dark')"
+>
 
 @env('development')
     <div class="w-full py-1 bg-red-200 dark:bg-red-900 text-red-800 dark:text-red-200 text-center">

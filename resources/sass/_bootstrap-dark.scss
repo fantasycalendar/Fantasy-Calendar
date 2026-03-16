@@ -1,0 +1,585 @@
+// Bootstrap 4 dark mode overrides
+// Replaces Bootswatch Darkly theme variables + _bootswatch.scss post-overrides
+// with CSS rule overrides scoped under body.dark
+//
+// Color reference (Tailwind palette from colors.scss):
+//   $bg-gray-600: rgb(75 85 99)
+//   $bg-gray-700: rgb(55 65 81)
+//   $bg-gray-800: rgb(31 41 55)
+//   $bg-gray-900: rgb(17 24 39)
+//   $bg-emerald-700: rgb(4 120 87)   — primary / success
+//   $bg-blue-600: rgb(37 99 235)     — info
+//   $bg-yellow-500: rgb(234 179 8)   — warning
+//   $bg-red-800: rgb(153 27 27)      — danger
+
+body.dark {
+
+    // =========================================================================
+    // Body & Typography
+    // =========================================================================
+    background-color: $bg-gray-900;
+    color: #fff;
+
+    .blockquote-footer {
+        color: $bg-gray-600;
+    }
+
+    .text-muted {
+        color: $bg-gray-600 !important;
+    }
+
+    // =========================================================================
+    // Tables
+    // =========================================================================
+    .table {
+        color: #fff;
+        border-color: $bg-gray-700;
+    }
+
+    .table-primary,
+    .table-primary > th,
+    .table-primary > td {
+        background-color: $bg-emerald-700;
+    }
+
+    .table-secondary,
+    .table-secondary > th,
+    .table-secondary > td {
+        background-color: $bg-gray-700;
+    }
+
+    .table-light,
+    .table-light > th,
+    .table-light > td {
+        background-color: $bg-gray-600;
+    }
+
+    .table-dark,
+    .table-dark > th,
+    .table-dark > td {
+        background-color: $bg-gray-800;
+    }
+
+    .table-success,
+    .table-success > th,
+    .table-success > td {
+        background-color: $bg-emerald-700;
+    }
+
+    .table-info,
+    .table-info > th,
+    .table-info > td {
+        background-color: $bg-blue-600;
+    }
+
+    .table-danger,
+    .table-danger > th,
+    .table-danger > td {
+        background-color: $bg-red-800;
+    }
+
+    .table-warning,
+    .table-warning > th,
+    .table-warning > td {
+        background-color: $bg-yellow-500;
+    }
+
+    .table-active,
+    .table-active > th,
+    .table-active > td {
+        background-color: rgba(#000, .075);
+    }
+
+    .table-hover {
+        .table-primary:hover,
+        .table-primary:hover > th,
+        .table-primary:hover > td {
+            background-color: darken($bg-emerald-700, 5%);
+        }
+
+        .table-secondary:hover,
+        .table-secondary:hover > th,
+        .table-secondary:hover > td {
+            background-color: darken($bg-gray-700, 5%);
+        }
+
+        .table-light:hover,
+        .table-light:hover > th,
+        .table-light:hover > td {
+            background-color: darken($bg-gray-600, 5%);
+        }
+
+        .table-dark:hover,
+        .table-dark:hover > th,
+        .table-dark:hover > td {
+            background-color: darken($bg-gray-800, 5%);
+        }
+
+        .table-success:hover,
+        .table-success:hover > th,
+        .table-success:hover > td {
+            background-color: darken($bg-emerald-700, 5%);
+        }
+
+        .table-info:hover,
+        .table-info:hover > th,
+        .table-info:hover > td {
+            background-color: darken($bg-blue-600, 5%);
+        }
+
+        .table-danger:hover,
+        .table-danger:hover > th,
+        .table-danger:hover > td {
+            background-color: darken($bg-red-800, 5%);
+        }
+
+        .table-warning:hover,
+        .table-warning:hover > th,
+        .table-warning:hover > td {
+            background-color: darken($bg-yellow-500, 5%);
+        }
+
+        .table-active:hover,
+        .table-active:hover > th,
+        .table-active:hover > td {
+            background-color: rgba(#000, .075);
+        }
+    }
+
+    .table-bordered {
+        border-color: $bg-gray-700;
+
+        th,
+        td {
+            border-color: $bg-gray-700;
+        }
+    }
+
+    // =========================================================================
+    // Forms
+    // =========================================================================
+    .form-control {
+        background-color: $bg-gray-700;
+        border-color: $bg-gray-900;
+        color: #fff;
+    }
+
+    .input-group-addon {
+        color: #fff;
+    }
+
+    .input-group-text {
+        background-color: $bg-gray-700;
+        color: $bg-gray-500;
+    }
+
+    .custom-file-label {
+        background-color: $bg-gray-700;
+        border-color: $bg-gray-900;
+        color: $bg-gray-500;
+    }
+
+    .custom-select {
+        background-color: $bg-gray-700;
+        border-color: $bg-gray-900;
+        color: #fff;
+    }
+
+    // =========================================================================
+    // Dropdowns
+    // =========================================================================
+    .dropdown-menu {
+        background-color: $bg-gray-900;
+        border-color: $bg-gray-700;
+    }
+
+    .dropdown-divider {
+        border-top-color: $bg-gray-700;
+    }
+
+    .dropdown-item {
+        color: #fff;
+
+        &:hover,
+        &:focus {
+            background-color: $bg-emerald-700;
+            color: #fff;
+        }
+    }
+
+    // =========================================================================
+    // Navs & Tabs
+    // =========================================================================
+    .nav-tabs {
+        border-bottom-color: $bg-gray-700;
+
+        .nav-link {
+            color: #fff;
+
+            &:hover,
+            &:focus {
+                border-color: $bg-gray-700 $bg-gray-700 transparent;
+            }
+
+            &.active {
+                color: #fff;
+                background-color: $bg-gray-800;
+                border-color: $bg-gray-700 $bg-gray-700 $bg-gray-800;
+            }
+        }
+    }
+
+    .nav-tabs,
+    .nav-pills {
+        .nav-link,
+        .nav-link.active,
+        .nav-link.active:focus,
+        .nav-link.active:hover,
+        .nav-item.open .nav-link,
+        .nav-item.open .nav-link:focus,
+        .nav-item.open .nav-link:hover {
+            color: #fff;
+        }
+    }
+
+    .nav-link.disabled {
+        color: $bg-gray-500;
+    }
+
+    // =========================================================================
+    // Navbar
+    // =========================================================================
+    .navbar {
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+
+    .navbar-dark .navbar-nav .nav-link {
+        color: rgba(255, 255, 255, .6);
+
+        &:hover,
+        &:focus {
+            color: #fff;
+        }
+    }
+
+    // =========================================================================
+    // Pagination
+    // =========================================================================
+    .page-link {
+        color: #fff;
+        background-color: $bg-emerald-700;
+        border-color: transparent;
+
+        &:hover {
+            color: #fff;
+            background-color: lighten($bg-emerald-700, 10%);
+            border-color: transparent;
+            text-decoration: none;
+        }
+    }
+
+    .page-item {
+        &.active .page-link {
+            background-color: lighten($bg-emerald-700, 10%);
+            border-color: transparent;
+        }
+
+        &.disabled .page-link {
+            color: #fff;
+            background-color: darken($bg-emerald-700, 15%);
+            border-color: transparent;
+        }
+    }
+
+    // =========================================================================
+    // Buttons
+    // =========================================================================
+    .btn-primary {
+        background-color: $bg-emerald-700;
+        border-color: $bg-emerald-700;
+        color: #fff;
+
+        &:hover {
+            background-color: darken($bg-emerald-700, 5%);
+            border-color: darken($bg-emerald-700, 7%);
+        }
+    }
+
+    .btn-secondary {
+        background-color: $bg-gray-600;
+        border-color: $bg-gray-500;
+        color: #fff;
+
+        &:hover {
+            background-color: $bg-gray-500;
+            border-color: $bg-gray-400;
+        }
+    }
+
+    .btn-success {
+        background-color: $bg-emerald-700;
+        border-color: $bg-emerald-700;
+        color: #fff;
+
+        &:hover {
+            background-color: darken($bg-emerald-700, 5%);
+            border-color: darken($bg-emerald-700, 7%);
+        }
+    }
+
+    .btn-info {
+        background-color: $bg-blue-600;
+        border-color: $bg-blue-600;
+        color: #fff;
+
+        &:hover {
+            background-color: darken($bg-blue-600, 5%);
+            border-color: darken($bg-blue-600, 7%);
+        }
+    }
+
+    .btn-warning {
+        background-color: $bg-yellow-600;
+        border-color: $bg-yellow-600;
+        color: #fff;
+
+        &:hover {
+            background-color: darken($bg-yellow-600, 5%);
+            border-color: darken($bg-yellow-600, 7%);
+        }
+    }
+
+    .btn-danger {
+        background-color: $bg-red-800;
+        border-color: $bg-red-800;
+        color: #fff;
+
+        &:hover {
+            background-color: darken($bg-red-800, 5%);
+            border-color: darken($bg-red-800, 7%);
+        }
+    }
+
+    .btn-light {
+        background-color: $bg-gray-600;
+        border-color: $bg-gray-600;
+        color: #fff;
+
+        &:hover {
+            background-color: $bg-gray-500;
+            border-color: $bg-gray-500;
+        }
+    }
+
+    .btn-dark {
+        background-color: $bg-gray-800;
+        border-color: $bg-gray-700;
+        color: #fff;
+
+        &:hover {
+            background-color: $bg-gray-700;
+            border-color: $bg-gray-600;
+        }
+    }
+
+    // =========================================================================
+    // Cards
+    // =========================================================================
+    .card {
+        background-color: $bg-gray-800;
+    }
+
+    .card-header,
+    .card-footer {
+        background-color: $bg-gray-700;
+    }
+
+    // =========================================================================
+    // Modals
+    // =========================================================================
+    .modal-content {
+        background-color: $bg-gray-800;
+        border-color: $bg-gray-700;
+    }
+
+    .modal-header {
+        border-bottom-color: $bg-gray-700;
+    }
+
+    .modal-footer {
+        border-top-color: $bg-gray-700;
+    }
+
+    // =========================================================================
+    // List Groups
+    // =========================================================================
+    .list-group-item {
+        background-color: $bg-gray-800;
+        border-color: $bg-gray-700;
+
+        &:hover {
+            background-color: $bg-gray-700;
+        }
+    }
+
+    .list-group-item-action {
+        color: #fff;
+
+        &:hover,
+        &:focus {
+            color: #fff;
+            background-color: $bg-gray-700;
+        }
+
+        .list-group-item-heading {
+            color: #fff;
+        }
+    }
+
+    // =========================================================================
+    // Popovers
+    // =========================================================================
+    .popover {
+        background-color: $bg-gray-800;
+    }
+
+    .popover-header {
+        background-color: $bg-gray-700;
+    }
+
+    .bs-popover-top > .arrow::after,
+    .bs-popover-auto[x-placement^="top"] > .arrow::after {
+        border-top-color: $bg-gray-800;
+    }
+
+    .bs-popover-bottom > .arrow::after,
+    .bs-popover-auto[x-placement^="bottom"] > .arrow::after {
+        border-bottom-color: $bg-gray-800;
+    }
+
+    .bs-popover-left > .arrow::after,
+    .bs-popover-auto[x-placement^="left"] > .arrow::after {
+        border-left-color: $bg-gray-800;
+    }
+
+    .bs-popover-right > .arrow::after,
+    .bs-popover-auto[x-placement^="right"] > .arrow::after {
+        border-right-color: $bg-gray-800;
+    }
+
+    // =========================================================================
+    // Toasts
+    // =========================================================================
+    .toast {
+        background-color: $bg-gray-700;
+    }
+
+    .toast-header {
+        background-color: $bg-gray-800;
+    }
+
+    // =========================================================================
+    // Progress Bars
+    // =========================================================================
+    .progress {
+        background-color: $bg-gray-700;
+    }
+
+    // =========================================================================
+    // Breadcrumbs
+    // =========================================================================
+    .breadcrumb {
+        background-color: $bg-gray-700;
+
+        a {
+            color: #fff;
+        }
+    }
+
+    // =========================================================================
+    // Close Button
+    // =========================================================================
+    .close {
+        color: #fff;
+        text-shadow: none;
+        opacity: .4;
+
+        &:hover,
+        &:focus {
+            color: #fff;
+            opacity: 1;
+        }
+    }
+
+    // =========================================================================
+    // Jumbotron
+    // =========================================================================
+    .jumbotron {
+        background-color: $bg-gray-800;
+    }
+
+    // =========================================================================
+    // Alerts
+    // =========================================================================
+    .alert {
+        border: none;
+        color: #fff;
+
+        a,
+        .alert-link {
+            color: #fff;
+            text-decoration: underline;
+        }
+    }
+
+    .alert-primary {
+        background-color: $bg-emerald-700;
+    }
+
+    .alert-secondary {
+        background-color: $bg-gray-700;
+    }
+
+    .alert-success {
+        background-color: $bg-emerald-700;
+    }
+
+    .alert-info {
+        background-color: $bg-blue-600;
+    }
+
+    .alert-warning {
+        background-color: $bg-yellow-500;
+    }
+
+    .alert-danger {
+        background-color: $bg-red-800;
+    }
+
+    .alert-light {
+        background-color: $bg-gray-600;
+    }
+
+    .alert-dark {
+        background-color: $bg-gray-800;
+    }
+
+    // =========================================================================
+    // Links
+    // =========================================================================
+    a {
+        color: $bg-emerald-700;
+
+        &:hover {
+            color: darken($bg-emerald-700, 10%);
+        }
+    }
+
+    // =========================================================================
+    // Code
+    // =========================================================================
+    pre {
+        color: inherit;
+    }
+}

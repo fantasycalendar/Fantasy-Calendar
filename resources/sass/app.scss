@@ -4,8 +4,6 @@
 @tailwind components;
 
 // Fonts
-// @import url('https://rsms.me/inter/inter.css');
-
 html {
     font-family: 'Inter', sans-serif;
 }
@@ -16,20 +14,36 @@ html {
     }
 }
 
+// Color palette (Tailwind-equivalent SCSS variables) — must come first,
+// many other imports reference $bg-*, $text-* palette variables.
+@import 'calendar/colors';
+
+// Quill editor (light theme from npm, dark theme scoped under .dark)
 @import 'quill/dist/quill.core';
 @import 'quill/dist/quill.snow';
+@import 'quill-dark';
 
+// Bootstrap (compiled once with light defaults)
 @import 'bootstrap/scss/bootstrap';
 
+// Bootstrap dark overrides (scoped under body.dark)
+@import 'bootstrap-dark';
+
+// FontAwesome
 @import '@fortawesome/fontawesome-free/css/fontawesome';
 @import '@fortawesome/fontawesome-free/css/solid';
 @import '@fortawesome/fontawesome-free/css/regular';
 @import '@fortawesome/fontawesome-free/css/brands';
 
-// Variables
-@import 'calendar/colors';
+// SweetAlert2 (light defaults, then dark overrides)
 @import 'sweetalert2/src/variables';
 @import 'sweetalert2/src/sweetalert2';
+@import 'sweetalert-dark';
+
+// Theme-varying CSS custom properties (light in :root, dark in body.dark)
+@import 'calendar/theme-properties';
+
+// Non-theme variables (accent colors, sidebar width, etc.)
 @import 'calendar/variables';
 
 // Legacy calendar parts
@@ -38,8 +52,10 @@ html {
 // Calendar parts
 @import 'calendar';
 
+// Event colors (light + dark in one file)
 @import 'calendar/event_colors';
 
+// Base styles
 body {
     font-size: $font-size-base;
 }
@@ -49,9 +65,169 @@ body {
 }
 
 mark {
-    background-color: $bg-emerald-200
+    background-color: $bg-emerald-200;
 }
 
 [x-cloak] {
     display: none;
+}
+
+// Dark-only overrides (from app-dark.scss)
+body.dark {
+    color: #{$text-gray-200};
+
+    .form-control:disabled,
+    .form-control[readonly] {
+        background-color: $bg-gray-600 !important;
+        color: $bg-gray-800 !important;
+    }
+
+    .form-control {
+        background-color: $bg-gray-700;
+        border-color: $bg-gray-600;
+        color: white;
+
+        &:focus {
+            background-color: $bg-gray-700;
+            border-color: $accent-color;
+            box-shadow: 0 0 0 0.2rem rgb(55 90 127 / 25%);
+            color: $bg-gray-300;
+            outline: 0;
+        }
+
+        &::placeholder {
+            color: rgba($bg-gray-400, 0.9);
+        }
+
+        &>option {
+            color: $bg-gray-300;
+        }
+    }
+
+    .sortable .list-group-item {
+        border: 1px solid $bg-gray-700;
+    }
+
+    .form-control:disabled,
+    .form-control[readonly] {
+        color: white;
+        background-color: var(--input-disabled-color);
+    }
+
+    .border {
+        border: 1px solid rgb(51, 65, 85) !important;
+    }
+
+    .border-right {
+        border-right: 1px solid rgb(51, 65, 85) !important;
+    }
+
+    input.form-control,
+    textarea.form-control {
+        background-color: $bg-gray-700;
+        border-color: $bg-gray-600;
+        color: white;
+    }
+
+    .btn-secondary {
+        border-color: $bg-gray-600;
+    }
+
+    .btn-outline-secondary {
+        color: $bg-gray-400;
+        border-color: $bg-gray-600 !important;
+        background-color: transparent !important;
+
+        &:hover {
+            background-color: $bg-gray-800 !important;
+        }
+    }
+
+    .current_day {
+        background-image: linear-gradient(to right, var(--current-day-color-alpha20), var(--current-day-color-alpha20));
+    }
+
+    .page-link {
+        color: $accent-color;
+        background-color: transparent;
+        border: 1px solid $accent-color-darker;
+        border-right: 0;
+
+        &:hover {
+            background-color: $accent-color-darker;
+            color: var(--calendar-bg-color);
+        }
+    }
+
+    .page-item:last-child .page-link {
+        border-right: 1px solid $accent-color-darker;
+    }
+
+    .page-item.disabled {
+        background-color: initial;
+
+        .page-link {
+            background-color: #444;
+            color: var(--calendar-bg-color);
+        }
+    }
+
+    .page-item.active .page-link {
+        background-color: $accent-color;
+        border-color: $accent-color;
+        color: white !important;
+    }
+
+    .condition_container.Year {
+        background-color: darken(#FFEBEE, 90%);
+    }
+
+    .condition_container.Month {
+        background-color: darken(#E0F2F1, 80%);
+    }
+
+    .condition_container.Day {
+        background-color: darken(#F1F8E9, 80%);
+    }
+
+    .condition_container.Epoch {
+        background-color: darken(#ECEFF1, 80%);
+    }
+
+    .condition_container.Weekday {
+        background-color: darken(#FFFDE7, 80%);
+    }
+
+    .condition_container.Week {
+        background-color: darken(#FFF3E0, 80%);
+    }
+
+    .condition_container.Moons {
+        background-color: darken(#E3F2FD, 80%);
+    }
+
+    .condition_container.Cycle {
+        background-color: darken(#FAFAFA, 80%);
+    }
+
+    .form-control.disabled,
+    label.disabled,
+    .form-check.disabled {
+        background-color: $bg-gray-600;
+        color: $bg-gray-800;
+    }
+
+    .form-check-input[disabled]~.form-check-label,
+    .form-check-input:disabled~.form-check-label {
+        color: inherit;
+    }
+
+    mark {
+        background-color: $bg-emerald-800;
+        color: white;
+    }
+
+    .dropdown-header {
+        color: $bg-gray-500;
+    }
 }
