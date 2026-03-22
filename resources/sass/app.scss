@@ -72,6 +72,44 @@ mark {
     display: none;
 }
 
+// Percentage slider range input
+.percentage-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 0.5rem;
+    border-radius: 9999px;
+    outline: none;
+    cursor: pointer;
+
+    &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 9999px;
+        background: white;
+        border: 2px solid var(--slider-accent);
+        cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    &::-moz-range-thumb {
+        width: 1rem;
+        height: 1rem;
+        border-radius: 9999px;
+        background: white;
+        border: 2px solid var(--slider-accent);
+        cursor: pointer;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    &::-moz-range-progress {
+        background: var(--slider-accent);
+        border-radius: 9999px;
+        height: 0.5rem;
+    }
+}
+
 // Dark-only overrides (from app-dark.scss)
 body.dark {
     color: #{$text-gray-200};

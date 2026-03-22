@@ -89,33 +89,8 @@
 
                                     <div class='separator'></div>
 
-                                    <div class='flex mt-2'>
-                                        Precipitation chance (%)
-                                    </div>
-                                    <!-- TODO: Maybe make this into a component? -->
-                                    <div class='flex gap-2 mb-2' x-data="{
-                                        value: Math.round(season.weather.precipitation*100),
-                                        change($event){
-                                            season.weather.precipitation = Math.max(0.0, Math.min(1.0, Number($event.target.value)/100.0))
-                                        }
-                                    }">
-                                        <input type='range' class="form-control form-control-sm" step="1" min="0" max="100" x-model.number="value" @change='change'/>
-                                        <input type='number' step="any" class='form-control form-control-sm slider_input basis-[25%]' x-model.number="value" @change='change'/>
-                                    </div>
-
-                                    <div class='flex mt-2'>
-                                        Precipitation intensity (%)
-                                    </div>
-                                    <div class='flex gap-2 mb-2' x-data="{
-                                        value: Math.round(season.weather.precipitation_intensity*100),
-                                        change($event){
-                                            season.weather.precipitation_intensity = Math.max(0.0, Math.min(1.0, Number($event.target.value)/100.0))
-                                        }
-                                    }">
-                                        <!-- TODO: Style these properly -->
-                                        <input type='range' class="form-control form-control-sm"  step="1" min="0" max="100" x-model.number="value" @change='change'/>
-                                        <input type='number' step="any" class='form-control form-control-sm slider_input basis-[25%]' x-model.number="value" @change='change'/>
-                                    </div>
+                                    <x-percentage-slider label="Precipitation chance (%)" x-model="season.weather.precipitation" />
+                                    <x-percentage-slider label="Precipitation intensity (%)" x-model="season.weather.precipitation_intensity" />
 
                                     <div class='separator'></div>
                                 </div>
