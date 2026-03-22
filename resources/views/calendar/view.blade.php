@@ -7,7 +7,7 @@
             return {
                 userId: @js(Auth::user()?->id),
                 owned: @js(!$calendar || $calendar->owned),
-                paymentLevel: @js(strtolower(Auth::user()->paymentLevel() ?? "free")),
+                paymentLevel: @js(strtolower(Auth::user()?->paymentLevel() ?? "free")),
                 userRole: @js($calendar->users->find(Auth::user())?->pivot?->user_role ?? "guest"),
                 darkTheme: @js(auth()->user()?->setting("dark_theme") ?? true),
                 hash: @js($calendar->hash),
