@@ -50,11 +50,20 @@ window.swal = swal;
 
 
 /**
- * Sanitize HTML inputs browser-side using sanitize-html!
+ * Escape HTML entities to prevent XSS when inserting user content via innerHTML.
+ * This replaces the sanitize-html package, which caused Vite console noise
+ * due to Node module externalization.
  */
-
-// import sanitizeHtml from 'sanitize-html';
-// window.sanitizeHtml = sanitizeHtml;
+function escapeHtml(value) {
+    if (typeof value !== 'string') return value;
+    return value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+window.sanitizeHtml = escapeHtml;
 
 
 

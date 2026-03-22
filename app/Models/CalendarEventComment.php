@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Mews\Purifier\Casts\CleanHtml;
 
 /**
  * 
@@ -38,6 +39,10 @@ class CalendarEventComment extends Model
         'event_id',
         'calendar_id',
         'content'
+    ];
+
+    protected $casts = [
+        'content' => CleanHtml::class,
     ];
 
     public function calendar() {

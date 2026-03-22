@@ -79,12 +79,20 @@ import Mustache from 'mustache';
 window.Mustache = Mustache;
 
 /**
- * Sanitize HTML inputs browser-side using sanitize-html!
+ * Escape HTML entities to prevent XSS when inserting user content via innerHTML.
+ * This replaces the sanitize-html package, which caused Vite console noise
+ * due to Node module externalization.
  */
-
-
-// import sanitizeHtml from 'sanitize-html';
-// window.sanitizeHtml = sanitizeHtml;
+function escapeHtml(value) {
+    if (typeof value !== 'string') return value;
+    return value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+window.sanitizeHtml = escapeHtml;
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
@@ -106,14 +114,6 @@ window.Mustache = Mustache;
 import tailwindColors from 'tailwindcss/colors';
 window.tailwindColors = tailwindColors;
 
-// DIRTY, TEMPORARY HACK
-// This is *only* here to stop sanitize-html from barfing a bunch of "Module x has been externalized for browser compatibility"
-// to the JS console _during the massive refactor we're doing to vite_.
-//
-// Either put back sanitize-html before merging in this rework or find a better alternative.
-window.sanitizeHtml = function(value) {
-    return value;
-}
 
 /**
  * Convenient and dependency free wrapper for working with arrays and objects.
