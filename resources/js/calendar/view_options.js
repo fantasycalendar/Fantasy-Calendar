@@ -22,18 +22,13 @@ export default () => ({
     },
 
     switch_to_owner() {
-        // TODO: Change this to an event to the calendar, instead?
-        this.$store.calendar.perms.owner = true;
-
-        this.$dispatch("rebuild-calendar");
+        this.$store.calendar.set_view_as_guest(false);
         this.$dispatch("set-calendar-visible", true);
         this.$dispatch("set-weather-graph-visible", false);
     },
 
     switch_to_guest() {
-        this.$store.calendar.perms.owner = false;
-
-        this.$dispatch("rebuild-calendar");
+        this.$store.calendar.set_view_as_guest(true);
         this.$dispatch("set-calendar-visible", true);
         this.$dispatch("set-weather-graph-visible", false);
     },

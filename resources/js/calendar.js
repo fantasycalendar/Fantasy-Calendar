@@ -311,6 +311,11 @@ export default class Calendar {
         });
     }
 
+    set_view_as_guest(guest) {
+        this.perms.owner = !guest;
+        this.rebuild_calendar();
+    }
+
     get_adjusted_date(date, { years = 0, months = 0, days = 0, hours = 0, minutes = 0 } = {}) {
         let extra_days = 0;
         let hour = date.hour;
