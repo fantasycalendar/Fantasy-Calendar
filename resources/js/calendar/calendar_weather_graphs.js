@@ -62,6 +62,10 @@ function buildPalettes() {
     };
 }
 
+// Chart instances stored outside Alpine's reactive system to prevent
+// proxy-wrapping, which causes infinite recursion in Chart.js internals.
+let _dayLengthChart, _temperatureChart, _precipitationChart;
+
 const seasonBoundaryPlugin = {
     id: 'seasonBoundary',
     afterDraw(chart, args, options) {
@@ -92,10 +96,6 @@ const seasonBoundaryPlugin = {
 
 export default () => ({
     visible: false,
-
-    day_length_graph: undefined,
-    temperature_graph: undefined,
-    precipitation_graph: undefined,
 
     day_length_graph_data: [],
     temperature_graph_data: [],
@@ -163,9 +163,9 @@ export default () => ({
     resize_graphs() {
         if (!this.visible) return;
         setTimeout(() => {
-            this.day_length_graph?.resize();
-            this.temperature_graph?.resize();
-            this.precipitation_graph?.resize();
+            _dayLengthChart?.resize();
+            _temperatureChart?.resize();
+            _precipitationChart?.resize();
         }, 300);
     },
 
@@ -272,12 +272,12 @@ export default () => ({
             }
         ];
 
-        if (this.day_length_graph) {
-            this.day_length_graph.options.plugins.seasonBoundary.boundaries = day_length_boundaries;
-            return this.update_graph(this.day_length_graph, this.day_length_graph_data, labels);
+        if (_dayLengthChart) {
+            _dayLengthChart.options.plugins.seasonBoundary.boundaries = day_length_boundaries;
+            return this.update_graph(_dayLengthChart, this.day_length_graph_data, labels);
         }
 
-        this.day_length_graph = this.create_graph(this.$refs.day_length_canvas, this.day_length_graph_data, labels, {
+        _dayLengthChart = this.create_graph(this.$refs.day_length_canvas, this.day_length_graph_data, labels, {
             plugins: {
                 tooltip: {
                     callbacks: {
@@ -404,11 +404,11 @@ export default () => ({
             }
         ];
 
-        if (this.temperature_graph) {
-            this.temperature_graph.options.plugins.seasonBoundary.boundaries = climate_boundaries;
-            return this.update_graph(this.temperature_graph, this.temperature_graph_data, labels);
+        if (_temperatureChart) {
+            _temperatureChart.options.plugins.seasonBoundary.boundaries = climate_boundaries;
+            this.update_graph(_temperatureChart, this.temperature_graph_data, labels);
         } else {
-            this.temperature_graph = this.create_graph(this.$refs.temperature_canvas, this.temperature_graph_data, labels, {}, climate_boundaries);
+            _temperatureChart = this.create_graph(this.$refs.temperature_canvas, this.temperature_graph_data, labels, {}, climate_boundaries);
         }
 
         this.precipitation_graph_data = [
@@ -432,11 +432,11 @@ export default () => ({
             }
         ];
 
-        if (this.precipitation_graph) {
-            this.precipitation_graph.options.plugins.seasonBoundary.boundaries = climate_boundaries;
-            return this.update_graph(this.precipitation_graph, this.precipitation_graph_data, labels);
+        if (_precipitationChart) {
+            _precipitationChart.options.plugins.seasonBoundary.boundaries = climate_boundaries;
+            return this.update_graph(_precipitationChart, this.precipitation_graph_data, labels);
         } else {
-            this.precipitation_graph = this.create_graph(this.$refs.precipitation_canvas, this.precipitation_graph_data, labels, {
+            _precipitationChart = this.create_graph(this.$refs.precipitation_canvas, this.precipitation_graph_data, labels, {
                 scales: {
                     y: {
                         suggestedMin: 0,
