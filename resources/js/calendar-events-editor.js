@@ -185,6 +185,11 @@ export default () => ({
 
         this.show();
 
+        this.$nextTick(() => {
+            this.initial_working_event = clone(this.working_event);
+            this.initial_working_event.data = this.create_event_data();
+        });
+
     },
 
     save_event() {
@@ -544,25 +549,7 @@ export default () => ({
 
     event_has_changed() {
 
-        if (window.events[this.event_id]) {
-
-            let event_check = clone(window.events[this.event_id])
-
-            let eventid = window.events[this.event_id].id;
-
-            if (eventid !== undefined) {
-                event_check.id = eventid;
-            }
-
-            event_check.data = this.create_event_data();
-
-            event_check.description = this.working_event.description;
-
-            event_check.settings = clone(this.working_event.settings)
-
-            return !Object.compare(event_check, window.events[this.event_id])
-
-        } else if (this.new_event && this.initial_working_event) {
+        if (this.initial_working_event) {
 
             let current_check = clone(this.working_event);
             current_check.data = this.create_event_data();
