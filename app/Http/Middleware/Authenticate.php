@@ -9,7 +9,7 @@ class Authenticate extends Middleware
 {
     protected function authenticate($request, array $guards)
     {
-        if (config('app.local_dev_login') && app()->environment(['local'])) {
+        if (!auth()->check() && config('app.local_dev_login') && app()->environment(['local'])) {
             auth()->loginUsingId(1);
 
             return;
