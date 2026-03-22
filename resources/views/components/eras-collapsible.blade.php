@@ -75,9 +75,11 @@
                         </x-alpine.check-input>
                     </div>
 
-                    {{-- TODO: Make the HTML editor .~=^=~.pretty.~=^=~. --}}
-                    <div class='btn btn-outline-primary w-full' @click="$dispatch('html-editor-modal-edit-html', { era_id: index })" x-show='era.settings.show_as_event'>
-                        Edit event description
+                    <div x-show='era.settings.show_as_event'>
+                        <label class='font-semibold text-sm'>Event description:</label>
+                        <div class='border rounded h-48'>
+                            <x-wysiwyg.editor x-model="era.description" />
+                        </div>
                     </div>
 
                     <div x-show='era.settings.show_as_event'>
