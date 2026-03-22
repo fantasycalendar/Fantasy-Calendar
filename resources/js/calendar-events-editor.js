@@ -138,6 +138,11 @@ export default () => ({
 
         this.show();
 
+        this.$nextTick(() => {
+            this.initial_working_event = clone(this.working_event);
+            this.initial_working_event.data = this.create_event_data();
+        });
+
     },
 
     event_category_changed() {
@@ -308,7 +313,7 @@ export default () => ({
             return false;
         }
 
-        if (this.event_has_changed() || this.new_event) {
+        if (this.event_has_changed()) {
             swal.fire({
                 title: "Close event without saving?",
                 text: 'Any changes to this event will not be saved! Are you sure you want to continue?',
@@ -556,6 +561,12 @@ export default () => ({
             event_check.settings = clone(this.working_event.settings)
 
             return !Object.compare(event_check, window.events[this.event_id])
+
+        } else if (this.new_event && this.initial_working_event) {
+
+            let current_check = clone(this.working_event);
+            current_check.data = this.create_event_data();
+            return !Object.compare(current_check, this.initial_working_event);
 
         } else {
 
