@@ -42,7 +42,7 @@
 
     <div>
         <template x-for="(location, index) in locations">
-            <div class="list-group-item p-2 first-of-type:rounded-t" x-data="{ collapsed: true }">
+            <div class="p-2 first-of-type:rounded-t -mt-px first-of-type:mt-0 !bg-[var(--card-bg-color)] border border-[var(--input-border-color)]" x-data="{ collapsed: true }">
                 <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
                     <div class='cursor-pointer text-xl fa text-gray-900/50 dark:text-white/50'
                          :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"

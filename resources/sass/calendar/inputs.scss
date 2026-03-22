@@ -443,6 +443,10 @@ input[type="number"]:not(.spinner) {
     }
 }
 
+body.dark .lbl-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
 .setting {
     font-size: 0.85rem;
 }
