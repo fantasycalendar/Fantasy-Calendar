@@ -7,7 +7,6 @@ export default (calendar_structure) => ({
     instapoll: false,
     new_dynamic_change: false,
 
-    // NOTE: Placeholders until we get this actually working
     location_select_value: null,
     location_select_options: {},
 

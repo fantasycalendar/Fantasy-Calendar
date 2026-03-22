@@ -55,6 +55,8 @@ export default class Calendar {
             "static_data.moons",
             "static_data.settings",
             "event_categories",
+            "dynamic_data.location",
+            "dynamic_data.custom_location",
         ];
 
         let incomingKeys = Object.keys(incomingChanges);
