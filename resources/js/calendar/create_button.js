@@ -19,6 +19,23 @@ export default () => ({
     user_logged_in: false,
     calendar_step: 0,
 
+    init() {
+        document.addEventListener('visibilitychange', () => {
+            if (!this.user_logged_in && document.visibilityState === 'visible') {
+                this.checkAuth();
+            }
+        });
+    },
+
+    checkAuth() {
+        return axios.get(window.apiurl + '/user')
+            .then(response => {
+                this.user_logged_in = true;
+                this.$store.calendar.perms.userid = response.data.id;
+            })
+            .catch(() => {});
+    },
+
     // Technically duplicated from the calendar error modal, but both do need to know about this
     addErrors($event) {
         this.errors[$event.detail.key] = $event.detail.errors;
@@ -78,7 +95,11 @@ export default () => ({
             clearTimeout(this.timeout);
         }
 
-        if(!this.user_logged_in){
+        if (!this.user_logged_in) {
+            await this.checkAuth();
+        }
+
+        if (!this.user_logged_in) {
             window.onbeforeunload = function () {}
             window.location = '/login?postlogin=/calendars/create?resume=1';
             return;
@@ -88,7 +109,6 @@ export default () => ({
 
         create_calendar()
             .catch((error) => {
-                // TODO: Handle page not knowing that the user had logged on a separate page
                 this.save_status = "error";
                 this.$dispatch('notify', {
                     content: error.response.data.message,
