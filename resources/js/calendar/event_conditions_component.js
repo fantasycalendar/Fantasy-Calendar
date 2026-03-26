@@ -7,6 +7,8 @@ export default () => ({
     condition_tree: [],
     conditionsHashmap: {},
     sortableMap: {},
+    connectedEvents: [],
+    currentEventIndex: -1,
 
     addCondition(add_to_id) {
         let condition = this.processCondition(["Year", "0", [0]], add_to_id);
@@ -179,6 +181,19 @@ export default () => ({
     },
 
     processCondition(data, parent_id) {
+        let values = data[0] === "Moons" ? data[2].slice(1) : data[2];
+
+        // Resolve the connected_events index to a global event index so
+        // that x-model on the select binds to the correct value.
+        // buildConnectedEvents() in the editor remaps back on save.
+        if (data[0] === "Events" && this.connectedEvents.length > 0) {
+            let connectedIndex = Number(values[0]);
+            if (connectedIndex < this.connectedEvents.length) {
+                values = values.slice();
+                values[0] = String(this.connectedEvents[connectedIndex]);
+            }
+        }
+
         return {
             id: _.uniqueId("elem"),
             parent_id,
@@ -186,7 +201,7 @@ export default () => ({
             type: data[0],
             comparison: Number(data[1]),
             moon_index: data[0] === "Moons" ? Number(data[2][0]) : 0,
-            values: data[0] === "Moons" ? data[2].slice(1) : data[2],
+            values,
             operator: false
         };
     },
@@ -309,24 +324,49 @@ export default () => ({
     },
 
     addWeekdaySelect(condition, value_index = 0) {
+        let globalWeek = this.$store.calendar.static_data.year_data.global_week;
+        let storedValue = condition.values[value_index];
+
+        // The stored value may be a weekday name (string) from presets,
+        // or a 0-based index (number/string). Normalize to a numeric index.
+        let selectedIndex = Number(storedValue);
+        if (isNaN(selectedIndex)) {
+            selectedIndex = globalWeek.indexOf(storedValue);
+        }
+
+        // Fall back to 0 if the index is out of bounds or unresolvable
+        if (selectedIndex < 0 || selectedIndex >= globalWeek.length) {
+            selectedIndex = 0;
+        }
+
+        condition.values[value_index] = String(selectedIndex);
+
         return {
             type: "select",
-            values: this.$store.calendar.static_data.year_data.global_week.map((weekday_name, index) => ({
+            values: globalWeek.map((weekday_name, index) => ({
                 label: weekday_name,
                 value: index,
-                selected: Number(condition.values[value_index]) === index
+                selected: selectedIndex === index
             }))
         }
     },
 
     addEventsSelect(condition, value_index = 0) {
+        // condition.values[0] is already a global event index (resolved
+        // from connected_events during processCondition on load, or set
+        // directly by the dropdown on user selection).
+        let selectedGlobalIndex = Number(condition.values[value_index]);
+
         return {
             type: "select",
-            values: this.$store.calendar.events.map((event, index) => ({
-                label: event.name,
-                value: index,
-                selected: Number(condition.values[value_index]) === index
-            }))
+            values: this.$store.calendar.events
+                .map((event, index) => ({ label: event.name, globalIndex: index }))
+                .filter(event => event.globalIndex !== this.currentEventIndex)
+                .map(event => ({
+                    label: event.label,
+                    value: event.globalIndex,
+                    selected: selectedGlobalIndex === event.globalIndex
+                }))
         }
     },
 

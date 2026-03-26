@@ -359,8 +359,16 @@ export default () => ({
     },
 
     create_event_data() {
-        this.working_event.data.connected_events = [];
         let conditions = _.cloneDeep(this.working_event.data.conditions);
+
+        // Rebuild connected_events from Events-type conditions.
+        // The conditions currently store global event indices (as set by
+        // the dropdown), but the evaluation engine expects indices into
+        // the connected_events array. This collects all referenced event
+        // indices and remaps the condition values accordingly.
+        let connectedEvents = [];
+        this.buildConnectedEvents(conditions, connectedEvents);
+        this.working_event.data.connected_events = connectedEvents;
 
         let search_distance = this.get_search_distance(conditions);
 
@@ -489,6 +497,24 @@ export default () => ({
 
         return search_distance;
 
+    },
+
+    buildConnectedEvents(conditions, connectedEvents) {
+        for (let condition of conditions) {
+            if (Array.isArray(condition[1])) {
+                // Group — recurse into children
+                this.buildConnectedEvents(condition[1], connectedEvents);
+            } else if (condition.length === 3 && condition[0] === "Events") {
+                let globalIndex = Number(condition[2][0]);
+                let connectedIndex = connectedEvents.indexOf(globalIndex);
+                if (connectedIndex === -1) {
+                    connectedIndex = connectedEvents.length;
+                    connectedEvents.push(globalIndex);
+                }
+                // Remap from global event index to connected_events index
+                condition[2][0] = connectedIndex.toString();
+            }
+        }
     },
 
     reset_moon_color(index, shadow) {

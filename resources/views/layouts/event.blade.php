@@ -186,6 +186,7 @@
                          x-data="event_conditions_component"
                          x-modelable="source"
                          x-model="working_event.data.conditions"
+                         x-effect="connectedEvents = working_event.data.connected_events ?? []; currentEventIndex = event_id"
                          @add-event-condition.window="addCondition"
                          @add-event-group.window="addGroup"
                     >
