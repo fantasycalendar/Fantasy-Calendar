@@ -45,6 +45,7 @@ class ClockCanvas {
             return;
         }
         this.$nextTick(() => {
+            if (this.clock_face_canvas.parentElement.clientWidth <= 0) return;
             this.updateSize();
         });
     }
