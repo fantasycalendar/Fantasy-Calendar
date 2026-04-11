@@ -85,7 +85,7 @@
 
     <x-calendar-year-header></x-calendar-year-header>
 
-    @include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
+    @include('layouts.calendar')
 
     @if(request()->is('calendars/*/edit'))
         <x-weather-graphs></x-weather-graphs>

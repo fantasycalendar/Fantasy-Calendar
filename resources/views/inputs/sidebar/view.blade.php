@@ -89,5 +89,5 @@
 <div id="calendar_container">
     <x-calendar-year-header></x-calendar-year-header>
 
-    @include('layouts.calendar-' . (isset($calendar) ? $calendar->setting('layout', 'grid') : 'grid'))
+    @include('layouts.calendar')
 </div>

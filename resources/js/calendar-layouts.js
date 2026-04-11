@@ -1,5 +1,3 @@
-import { do_update_all } from "./calendar/calendar_ajax_functions";
-
 export default () => ({
 
     open: false,
@@ -29,39 +27,21 @@ export default () => ({
     },
 
     apply_layout: function(layout) {
+        const layoutName = layout.name.toLowerCase();
+        const validLayouts = this.layouts.map(l => l.name.toLowerCase());
+
+        if (!validLayouts.includes(layoutName)) return;
+
         const store = this.$store.calendar;
 
-        this.$dispatch("app-busy-start");
-
-        let previous_layout = store.static_data.settings.layout;
         store.update({
-            "static_data.settings.layout": layout.name.toLowerCase(),
+            "static_data.settings.layout": layoutName,
         });
 
-        if(window.location.href.endsWith("/edit")) {
-            do_update_all(store.hash)
-                .then(() => {
-                    window.onbeforeunload = function () {
-                    }
-                    window.location.reload(false);
-                })
-                .catch((error) => {
-                    store.update({
-                        "static_data.settings.layout": previous_layout
-                    });
-                    store.static_data.settings.layout = previous_layout;
-                    this.$dispatch("app-busy-end");
-                    this.$dispatch('notify', {
-                        content: error.response.data.message,
-                        type: "error"
-                    });
-                });
-        }else{
-            window.location = window.location.href.split("/create")[0] + "/create?resume=1";
-            // window.onbeforeunload = function () {
-            // }
-            // window.location.reload(false);
-        }
+        store.rebuild_calendar();
+
+        this.current_layout = layout;
+        this.open = false;
     }
 
 })
