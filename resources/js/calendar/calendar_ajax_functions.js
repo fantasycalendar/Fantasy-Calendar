@@ -60,9 +60,9 @@ export async function update_all() {
 
     if (!lastChange) return;
 
-    let new_static_change = new Date(lastChange.last_static_change)
+    let new_static_change = new Date(lastChange.data.last_static_change)
 
-    if (store.last_static_change > new_static_change) {
+    if (new_static_change > store.last_static_change) {
         if (!confirm('The calendar was updated before you saved. Do you want to override your last changes?')) {
             return;
         }

@@ -110,7 +110,7 @@ export default (calendar_structure) => ({
                         .then((result) => {
                             this.$dispatch("calendar-updated", {
                                 calendar: {
-                                    dynamic_data: result.dynamic_data
+                                    dynamic_data: result.data.dynamic_data
                                 }
                             });
                             this.poll_timer = setTimeout(this.check_dates.bind(this), 5000);
