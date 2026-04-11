@@ -137,7 +137,7 @@ export function submit_hide_show_event(event_id) {
         .then(function(result) {
             if (result.data.success) {
                 store.events[event_id].settings.hide = !store.events[event_id].settings.hide;
-                document.dispatchEvent(new CustomEvent("render-calendar"));
+                window.dispatchEvent(new CustomEvent("render-calendar"));
             }
             notify(
                 result.data.message,
