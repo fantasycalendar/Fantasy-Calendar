@@ -628,7 +628,7 @@ export class date_manager {
     cap_timespan() {
 
         if (this.timespan >= this.timespans_in_year.length) {
-            this.timespan = this.last_timespan.length - 1;
+            this.timespan = this.last_timespan;
         }
 
         if (!this.timespans_in_year[this.timespan].result || this.day > this.num_days) {
