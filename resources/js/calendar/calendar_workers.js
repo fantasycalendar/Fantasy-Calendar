@@ -1058,9 +1058,9 @@ export var event_evaluator = {
             if (array[0] === "Epoch") {
 
                 var selected = epoch_data[selector];
-                var cond_1 = Number(values[subcon[2]]) != NaN ? Number(values[subcon[2]]) : values[subcon[2]];
+                var cond_1 = !isNaN(Number(values[subcon[2]])) ? Number(values[subcon[2]]) : values[subcon[2]];
                 var cond_2 = values[subcon[3]] ? values[subcon[3]] : undefined;
-                cond_2 = Number(cond_2) != NaN ? Number(cond_2) : cond_2;
+                cond_2 = !isNaN(Number(cond_2)) ? Number(cond_2) : cond_2;
 
             } else if (array[0] === "Date") {
 
