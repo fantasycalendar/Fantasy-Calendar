@@ -1,4 +1,7 @@
+import Alpine from 'alpinejs';
 import { moon_phases } from "./calendar_variables";
+
+function calendarStore() { return Alpine.store('calendar'); }
 
 export var day_data_tooltip = {
 
@@ -37,6 +40,7 @@ export var day_data_tooltip = {
     },
 
     show: function(day_element, epoch_data){
+        const store = calendarStore();
 
         this.ignore_first = true;
 
@@ -59,11 +63,11 @@ export var day_data_tooltip = {
 
                 if(key == "era"){
                     if(data > -1){
-                        html.push(sanitizeHtml(window.static_data.eras[data].name));
+                        html.push(sanitizeHtml(store.static_data.eras[data].name));
                     }
                 }else if(key.indexOf('moon') > -1){
                     for(var moon_index in data){
-                        var moon = window.static_data.moons[moon_index];
+                        var moon = store.static_data.moons[moon_index];
                         if(key == "moon_phase"){
                             var name_array = Object.keys(moon_phases[moon.granularity]);
                             var moon_data = `${sanitizeHtml(moon.name)}: ${name_array[data[moon_index]]}<br>`;
@@ -100,7 +104,7 @@ export var day_data_tooltip = {
 
                         var cycle_key = data[cycle_index]
 
-                        html.push(`${sanitizeHtml(window.static_data.cycles.data[cycle_index].names[cycle_key])}<br>`);
+                        html.push(`${sanitizeHtml(store.static_data.cycles.data[cycle_index].names[cycle_key])}<br>`);
 
                     }
 

@@ -1,10 +1,14 @@
-window.registered_mousemove_callbacks = {}
+const registeredCallbacks = {};
+
+export function registerMousemoveCallback(id, callback) {
+    registeredCallbacks[id] = callback;
+}
 
 export function bind_calendar_events() {
 
     window.addEventListener('mousemove', function(event) {
-        for (let callback_id in window.registered_mousemove_callbacks) {
-            window.registered_mousemove_callbacks[callback_id](event);
+        for (let callback_id in registeredCallbacks) {
+            registeredCallbacks[callback_id](event);
         }
     });
 

@@ -110,7 +110,7 @@ export default () => ({
         }
         let loader = this;
         let callback = this.populate_presets;
-        axios.get(window.apiurl + '/presets')
+        axios.get(this.$store.calendar.apiurl + '/presets')
             .then(function(result) {
                 if (!result.data.error && result.data != "") {
                     callback(loader, result.data);

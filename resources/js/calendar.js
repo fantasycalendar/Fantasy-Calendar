@@ -29,6 +29,59 @@ export default class Calendar {
     current_date_manager = false;
     selected_date_manager = false;
 
+    // Calendar data
+    perms = null;
+    calendar_name = null;
+    static_data = null;
+    dynamic_data = null;
+    preview_date = null;
+    events = null;
+    _event_categories = null;
+    hash = null;
+    calendar_id = null;
+    advancement = null;
+    evaluated_static_data = null;
+
+    // Calendar metadata
+    is_linked = false;
+    has_parent = false;
+    parent_hash = null;
+    parent_offset = null;
+    last_static_change = null;
+    last_dynamic_change = null;
+    dark_theme = false;
+    baseurl = null;
+    apiurl = null;
+
+    /**
+     * Bulk-set all calendar properties from a data object.
+     */
+    initialize(data) {
+        if ('perms' in data) { this.perms = data.perms; }
+        if ('calendar_name' in data) { this.calendar_name = data.calendar_name; }
+        if ('static_data' in data) { this.static_data = data.static_data; }
+        if ('dynamic_data' in data) { this.dynamic_data = data.dynamic_data; }
+        if ('preview_date' in data) { this.preview_date = data.preview_date; }
+        if ('events' in data) { this.events = data.events; }
+        if ('event_categories' in data) { this._event_categories = data.event_categories; }
+        if ('hash' in data) { this.hash = data.hash; }
+        if ('calendar_id' in data) { this.calendar_id = data.calendar_id; }
+        if ('advancement' in data) { this.advancement = data.advancement; }
+        if ('evaluated_static_data' in data) { this.evaluated_static_data = data.evaluated_static_data; }
+
+        if ('is_linked' in data) { this.is_linked = data.is_linked; }
+        if ('has_parent' in data) { this.has_parent = data.has_parent; }
+        if ('parent_hash' in data) { this.parent_hash = data.parent_hash; }
+        if ('parent_offset' in data) { this.parent_offset = data.parent_offset; }
+        if ('last_static_change' in data) { this.last_static_change = data.last_static_change; }
+        if ('last_dynamic_change' in data) { this.last_dynamic_change = data.last_dynamic_change; }
+        if ('dark_theme' in data) { this.dark_theme = data.dark_theme; }
+        if ('baseurl' in data) { this.baseurl = data.baseurl; }
+        else { this.baseurl = document.querySelector('meta[name="base-url"]')?.content ?? ''; }
+        if ('apiurl' in data) { this.apiurl = data.apiurl; }
+        else { this.apiurl = document.querySelector('meta[name="api-url"]')?.content ?? ''; }
+    }
+
     setup() {
         this.current_date_manager = new date_manager(this.static_data, this.dynamic_data.year, this.dynamic_data.timespan, this.dynamic_data.day);
         this.selected_date_manager = new date_manager(this.static_data, this.preview_date.year, this.preview_date.timespan, this.preview_date.day);
@@ -539,7 +592,7 @@ export default class Calendar {
 
     // Helpers
     api_url(urlstring = "") {
-        return window.apiurl + urlstring.replace(":hash", this.hash);
+        return this.apiurl + urlstring.replace(":hash", this.hash);
     }
 
     base_url(urlstring = "") {
@@ -554,39 +607,16 @@ export default class Calendar {
         return this.event_categories.find(category => category.id == category_id) ?? null;
     }
 
-    // Setters
-    set evaluated_static_data(value) {
-        window.evaluated_static_data = value;
-    }
-
-    set perms(value) {
-        window.Perms = value;
-    }
-
-    set calendar_name(value) {
-        window.calendar_name = value;
-    }
-
-    set static_data(value) {
-        window.static_data = value;
-    }
-
-    set dynamic_data(value) {
-        window.dynamic_data = value;
-    }
-
-    set preview_date(value) {
-        window.preview_date = value;
-    }
-
+    // event_categories setter retains side-effect logic: syncs category
+    // settings onto events and resets orphaned category IDs.
     set event_categories(value) {
         console.log('Setting event categories');
         console.log(JSON.parse(JSON.stringify(value)));
-        window.event_categories = value;
+        this._event_categories = value;
 
-        window.event_categories
+        this._event_categories
             .forEach(category => {
-                window.events
+                this.events
                     .filter(event => event.event_category_id === category.id)
                     .forEach(event => {
                         event.settings = {
@@ -596,68 +626,24 @@ export default class Calendar {
                     })
             });
 
-        window.events.forEach(event => {
-            if (!window.event_categories.some(category => category.id === event.event_category_id)) {
+        this.events.forEach(event => {
+            if (!this._event_categories.some(category => category.id === event.event_category_id)) {
                 event.event_category_id = -1;
             }
         });
     }
 
-    set advancement(value) {
-        window.advancement = value;
-    }
-
-    set events(events) {
-        window.events = events;
-    }
-
-    // Getters
+    // Computed getters
     get active_date() {
         return this.preview_date.follow ? this.dynamic_data : this.preview_date;
     }
 
-    get perms() {
-        return window.Perms;
-    }
-
-    get calendar_name() {
-        return window.calendar_name;
-    }
-
-    get hash() {
-        return window.hash;
-    }
-
-    get static_data() {
-        return window.static_data;
-    }
-
-    get dynamic_data() {
-        return window.dynamic_data;
-    }
-
-    get preview_date() {
-        return window.preview_date;
-    }
-
-    get events() {
-        return window.events;
-    }
-
     get event_categories() {
-        return window.event_categories;
+        return this._event_categories;
     }
 
     get id() {
-        return window.calendar_id;
-    }
-
-    get advancement() {
-        return window.advancement;
-    }
-
-    get evaluated_static_data() {
-        return window.evaluated_static_data;
+        return this.calendar_id;
     }
 
     get average_year_length() {

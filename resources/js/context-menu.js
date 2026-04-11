@@ -1,4 +1,7 @@
-import { copy_link } from "./calendar/calendar_functions.js";
+import { copy_link, valid_preview_date } from "./calendar/calendar_functions.js";
+import { submit_hide_show_event } from "./calendar/calendar_ajax_functions.js";
+
+let hide_copy_warning = false;
 
 export default () => ({
     show: true,
@@ -51,7 +54,7 @@ export default () => ({
 
     activate_for_date($activateEvent) {
         let day = $activateEvent.detail.day;
-        let $store = this.$store;
+        const store = this.$store.calendar;
         let $dispatch = this.$dispatch;
 
         $activateEvent.detail.items = [
@@ -59,9 +62,9 @@ export default () => ({
                 name: 'Set as Current Date',
                 icon: 'fas fa-hourglass-half',
                 callback: function() {
-                    var epoch_data = $store.calendar.evaluated_static_data.epoch_data[day.epoch];
+                    var epoch_data = store.evaluated_static_data.epoch_data[day.epoch];
 
-                    $store.calendar.set_current_date({
+                    store.set_current_date({
                         year: epoch_data.year,
                         month: epoch_data.timespan_number,
                         day: epoch_data.day,
@@ -69,19 +72,19 @@ export default () => ({
                     });
                 },
                 disabled: function() {
-                    return day.epoch == window.dynamic_data.epoch || !Perms.player_at_least('co-owner');
+                    return day.epoch == store.dynamic_data.epoch || !store.perms.player_at_least('co-owner');
                 },
                 visible: function() {
-                    return Perms.player_at_least('co-owner');
+                    return store.perms.player_at_least('co-owner');
                 }
             },
             {
                 name: 'Set as Preview Date',
                 icon: 'fas fa-hourglass',
                 callback: function() {
-                    var epoch_data = $store.calendar.evaluated_static_data.epoch_data[day.epoch];
+                    var epoch_data = store.evaluated_static_data.epoch_data[day.epoch];
 
-                    $store.calendar.set_selected_date({
+                    store.set_selected_date({
                         year: epoch_data.year,
                         month: epoch_data.timespan_number,
                         day: epoch_data.day,
@@ -90,10 +93,10 @@ export default () => ({
                     });
                 },
                 disabled: function() {
-                    return day.epoch == preview_date.epoch || !$store.calendar.static_data.settings.allow_view && !Perms.player_at_least('co-owner');
+                    return day.epoch == store.preview_date.epoch || !store.static_data.settings.allow_view && !store.perms.player_at_least('co-owner');
                 },
                 visible: function() {
-                    return $store.calendar.static_data.settings.allow_view || Perms.player_at_least('co-owner');
+                    return store.static_data.settings.allow_view || store.perms.player_at_least('co-owner');
                 }
             },
             {
@@ -103,19 +106,19 @@ export default () => ({
                     $dispatch('event-editor-modal-new-event', { name: '', epoch: day.epoch });
                 },
                 disabled: function() {
-                    return !Perms.player_at_least('player');
+                    return !store.perms.player_at_least('player');
                 },
                 visible: function() {
-                    return Perms.player_at_least('player');
+                    return store.perms.player_at_least('player');
                 }
             },
             {
                 name: 'Copy link to date',
                 icon: 'fas fa-link',
                 callback: function() {
-                    var epoch_data = $store.calendar.evaluated_static_data.epoch_data[day.epoch];
+                    var epoch_data = store.evaluated_static_data.epoch_data[day.epoch];
 
-                    if (!valid_preview_date(epoch_data.year, epoch_data.timespan_number, epoch_data.day) && !window.hide_copy_warning) {
+                    if (!valid_preview_date(epoch_data.year, epoch_data.timespan_number, epoch_data.day) && !hide_copy_warning) {
                         swal.fire({
                             title: 'Date inaccessible',
                             html: `<p>This date is not visible to guests or players, settings such as 'Allow advancing view in calendar' and 'Show only up to current day' can affect this.</p><p>Are you sure you want to copy a link to it?</p>`,
@@ -130,22 +133,22 @@ export default () => ({
                         })
                             .then((result) => {
                                 if (!result.dismiss) {
-                                    copy_link(epoch_data);
+                                    copy_link(epoch_data, hide_copy_warning);
 
                                     if (result.value) {
-                                        window.hide_copy_warning = true;
+                                        hide_copy_warning = true;
                                     }
                                 }
                             });
                     } else {
-                        copy_link(epoch_data);
+                        copy_link(epoch_data, hide_copy_warning);
                     }
                 },
                 disabled: function() {
-                    return !$store.calendar.static_data.settings.allow_view && !Perms.player_at_least('co-owner');
+                    return !store.static_data.settings.allow_view && !store.perms.player_at_least('co-owner');
                 },
                 visible: function() {
-                    return $store.calendar.static_data.settings.allow_view || Perms.player_at_least('co-owner');
+                    return store.static_data.settings.allow_view || store.perms.player_at_least('co-owner');
                 }
             }
         ];
@@ -157,6 +160,7 @@ export default () => ({
         let calendar_event = $activateEvent.detail.calendar_event;
         let day = $activateEvent.detail.day;
         let $dispatch = this.$dispatch;
+        const store = this.$store.calendar;
 
         $activateEvent.detail.items = [
             {
@@ -174,8 +178,8 @@ export default () => ({
                 callback: function() {
                     $dispatch('event-editor-modal-edit-event', { event_id: calendar_event.index, era: calendar_event.era, epoch: day.epoch });
                 },
-                disabled: (!Perms.can_modify_event(calendar_event.index)) || calendar_event.era,
-                visible: Perms.can_modify_event(calendar_event.index) && !calendar_event.era,
+                disabled: (!store.perms.can_modify_event(calendar_event.index)) || calendar_event.era,
+                visible: store.perms.can_modify_event(calendar_event.index) && !calendar_event.era,
             },
             {
                 name: 'Clone event',
@@ -183,8 +187,8 @@ export default () => ({
                 callback: function() {
                     $dispatch('event-editor-modal-clone-event', { event_id: calendar_event.index, era: calendar_event.era, epoch: day.epoch });
                 },
-                disabled: (!Perms.can_modify_event(calendar_event.index)) || calendar_event.era,
-                visible: Perms.can_modify_event(calendar_event.index) && !calendar_event.era,
+                disabled: (!store.perms.can_modify_event(calendar_event.index)) || calendar_event.era,
+                visible: store.perms.can_modify_event(calendar_event.index) && !calendar_event.era,
             },
             {
                 name: 'View era description',
@@ -202,23 +206,23 @@ export default () => ({
                     $dispatch('html-editor-modal-edit-html', { era_id: calendar_event.index });
                 },
                 disabled: function() {
-                    return !calendar_event.era || !Perms.user_is_owner() || window.location.href.indexOf('/edit') == -1;
+                    return !calendar_event.era || !store.perms.user_is_owner() || window.location.href.indexOf('/edit') == -1;
                 },
                 visible: function() {
-                    return calendar_event.era && Perms.user_is_owner() && window.location.href.indexOf('/edit') != -1;
+                    return calendar_event.era && store.perms.user_is_owner() && window.location.href.indexOf('/edit') != -1;
                 }
             },
             {
-                name: events[calendar_event.index].settings.hide ? 'Show event' : 'Hide event',
+                name: store.events[calendar_event.index].settings.hide ? 'Show event' : 'Hide event',
                 icon: 'fas fa-eye-slash',
                 callback: function() {
-                    window.submit_hide_show_event(calendar_event.index);
+                    submit_hide_show_event(calendar_event.index);
                 },
                 disabled: function() {
-                    return calendar_event.era || !Perms.can_modify_event(calendar_event.index);
+                    return calendar_event.era || !store.perms.can_modify_event(calendar_event.index);
                 },
                 visible: function() {
-                    return !calendar_event.era && Perms.can_modify_event(calendar_event.index);
+                    return !calendar_event.era && store.perms.can_modify_event(calendar_event.index);
                 }
             },
             {
@@ -227,8 +231,8 @@ export default () => ({
                 callback: function() {
                     $dispatch('event-editor-modal-delete-event', { event_id: calendar_event.index });
                 },
-                disabled: calendar_event.era || !Perms.can_modify_event(calendar_event.index),
-                visible: !calendar_event.era && Perms.can_modify_event(calendar_event.index),
+                disabled: calendar_event.era || !store.perms.can_modify_event(calendar_event.index),
+                visible: !calendar_event.era && store.perms.can_modify_event(calendar_event.index),
             }
         ];
 

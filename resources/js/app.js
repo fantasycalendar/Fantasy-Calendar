@@ -111,51 +111,11 @@ window.sanitizeHtml = escapeHtml;
 //     encrypted: true
 // });
 
-import tailwindColors from 'tailwindcss/colors';
-window.tailwindColors = tailwindColors;
-
-
-/**
- * Convenient and dependency free wrapper for working with arrays and objects.
- */
-import collectJS from 'collect.js';
-
-window.Collection = collectJS.Collection;
-window.collect = collectJS.collect;
-
-import Perms from './perms.js';
-window.Perms = Perms;
-
-// Calendar specific modules
-import IntervalsCollection from "./fantasycalendar/Collections/IntervalsCollection.js";
-window.IntervalsCollection = IntervalsCollection;
-
-import { update_dynamic, update_view_dynamic, get_all_data, get_dynamic_data, check_last_change, submit_hide_show_event } from './calendar/calendar_ajax_functions.js';
-window.update_dynamic = update_dynamic;
-window.update_view_dynamic = update_view_dynamic;
-window.get_all_data = get_all_data;
-window.get_dynamic_data = get_dynamic_data;
-window.check_last_change = check_last_change;
-window.submit_hide_show_event = submit_hide_show_event;
-
-import {
-    debounce,
-    date_manager,
-    valid_preview_date,
-    convert_year,
-    linked_popup
-} from './calendar/calendar_functions.js';
-window.debounce = debounce;
-window.date_manager = date_manager;
-window.valid_preview_date = valid_preview_date;
-window.convert_year = convert_year;
-
+import { linked_popup } from './calendar/calendar_functions.js';
 window.linked_popup = linked_popup;
 
-import { bind_calendar_events } from './calendar/calendar_manager.js';
-window.bind_calendar_events = bind_calendar_events;
-
 import Alpine from 'alpinejs'
+window.Alpine = Alpine;
 import sort from '@alpinejs/sort';
 import persist from '@alpinejs/persist';
 Alpine.plugin(sort);

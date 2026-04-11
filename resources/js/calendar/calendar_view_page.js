@@ -1,5 +1,8 @@
 import _ from "lodash";
-import { update_dynamic } from "./calendar_ajax_functions.js";
+import { update_dynamic, get_dynamic_data, check_last_change } from "./calendar_ajax_functions.js";
+import { bind_calendar_events, registerMousemoveCallback } from './calendar_manager.js';
+import { valid_preview_date } from "./calendar_functions.js";
+import Perms from "../perms.js";
 
 export default (calendar_structure) => ({
     last_mouse_move: false,
@@ -11,54 +14,50 @@ export default (calendar_structure) => ({
     location_select_options: {},
 
     init() {
-        window.Perms = new Perms(
-            calendar_structure.userId,
-            calendar_structure.owned,
-            calendar_structure.paymentLevel,
-            calendar_structure.userRole
-        );
+        let preview_date = _.cloneDeep(calendar_structure.dynamic_data);
+        preview_date.follow = true;
+        const store = this.$store.calendar;
 
-        window.evaluated_static_data = {};
+        store.initialize({
+            perms: new Perms(
+                calendar_structure.userId,
+                calendar_structure.owned,
+                calendar_structure.paymentLevel,
+                calendar_structure.userRole
+            ),
+            calendar_name: calendar_structure.calendar_name,
+            static_data: calendar_structure.static_data,
+            dynamic_data: calendar_structure.dynamic_data,
+            events: calendar_structure.events,
+            event_categories: calendar_structure.event_categories,
+            hash: calendar_structure.hash,
+            calendar_id: calendar_structure.calendar_id,
+            preview_date: preview_date,
+            advancement: {
+                advancement_enabled: !!calendar_structure.advancement_enabled,
+                advancement_real_rate: calendar_structure.advancement_real_rate,
+                advancement_real_rate_unit: calendar_structure.advancement_real_rate_unit,
+                advancement_rate: calendar_structure.advancement_rate,
+                advancement_rate_unit: calendar_structure.advancement_rate_unit,
+                advancement_webhook_url: calendar_structure.advancement_webhook_url,
+                advancement_timezone: calendar_structure.advancement_timezone
+            },
+            evaluated_static_data: {},
+            is_linked: calendar_structure.is_linked,
+            has_parent: calendar_structure.has_parent,
+            parent_hash: calendar_structure.parent_hash,
+            parent_offset: calendar_structure.parent_offset,
+            last_static_change: new Date(calendar_structure.last_static_change),
+            last_dynamic_change: new Date(calendar_structure.last_dynamic_change),
+            dark_theme: calendar_structure.dark_theme
+        });
 
-        window.dark_theme = calendar_structure.dark_theme;
-
-        window.hash = calendar_structure.hash;
-
-        window.calendar_name = calendar_structure.calendar_name;
-        window.calendar_id = calendar_structure.calendar_id;
-        window.static_data = calendar_structure.static_data;
-        window.dynamic_data = calendar_structure.dynamic_data;
-
-        window.is_linked = calendar_structure.is_linked;
-        window.has_parent = calendar_structure.has_parent;
-        window.parent_hash = calendar_structure.parent_hash;
-        window.parent_offset = calendar_structure.parent_offset;
-
-        window.events = calendar_structure.events;
-        window.event_categories = calendar_structure.event_categories;
-
-        window.last_static_change = new Date(calendar_structure.last_static_change)
-        window.last_dynamic_change = new Date(calendar_structure.last_dynamic_change)
-
-        window.advancement = {
-            advancement_enabled: !!calendar_structure.advancement_enabled,
-            advancement_real_rate: calendar_structure.advancement_real_rate,
-            advancement_real_rate_unit: calendar_structure.advancement_real_rate_unit,
-            advancement_rate: calendar_structure.advancement_rate,
-            advancement_rate_unit: calendar_structure.advancement_rate_unit,
-            advancement_webhook_url: calendar_structure.advancement_webhook_url,
-            advancement_timezone: calendar_structure.advancement_timezone
-        }
-
-        window.preview_date = _.cloneDeep(calendar_structure.dynamic_data);
-        window.preview_date.follow = true;
-
-        this.$store.calendar.setup();
-        this.$store.calendar.rebuild_calendar();
+        store.setup();
+        store.rebuild_calendar();
 
         bind_calendar_events();
 
-        if (window.has_parent) {
+        if (store.has_parent) {
             this.last_mouse_move = Date.now();
             this.poll_timer = setTimeout(this.check_dates.bind(this), 5000);
             this.instapoll = false;
@@ -67,38 +66,38 @@ export default (calendar_structure) => ({
                 this.check_dates();
             });
 
-            window.registered_mousemove_callbacks['view_update'] = () => {
+            registerMousemoveCallback('view_update', () => {
                 this.last_mouse_move = Date.now();
                 if (this.instapoll) {
                     this.instapoll = false;
                     this.check_dates();
                 }
-            }
+            })
         }
 
         this.evaluate_queryString();
 
         this.$nextTick(
             () => {
-                this.location_select_options = this.$store.calendar.get_location_select_options();
-                this.location_select_value = this.$store.calendar.get_location_select_value();
+                this.location_select_options = store.get_location_select_options();
+                this.location_select_value = store.get_location_select_value();
 
                 this.$dispatch('calendar-loaded', {
-                    hash: window.hash,
+                    hash: store.hash,
                     userId: calendar_structure.userId,
-                    calendar_name: window.calendar_name,
-                    calendar_id: window.calendar_id,
-                    static_data: window.static_data,
-                    dynamic_data: window.dynamic_data,
-                    is_linked: window.is_linked,
-                    has_parent: window.has_parent,
-                    parent_hash: window.parent_hash,
-                    parent_offset: window.parent_offset,
-                    events: window.events,
-                    event_categories: window.event_categories,
-                    last_static_change: window.last_static_change,
-                    last_dynamic_change: window.last_dynamic_change,
-                    advancement: window.advancement
+                    calendar_name: store.calendar_name,
+                    calendar_id: store.calendar_id,
+                    static_data: store.static_data,
+                    dynamic_data: store.dynamic_data,
+                    is_linked: store.is_linked,
+                    has_parent: store.has_parent,
+                    parent_hash: store.parent_hash,
+                    parent_offset: store.parent_offset,
+                    events: store.events,
+                    event_categories: store.event_categories,
+                    last_static_change: store.last_static_change,
+                    last_dynamic_change: store.last_dynamic_change,
+                    advancement: store.advancement
                 })
             }
         );
@@ -107,13 +106,14 @@ export default (calendar_structure) => ({
     },
 
     check_dates() {
-        if ((document.hasFocus() && (Date.now() - this.last_mouse_move) < 10000) || window.advancement.advancement_enabled) {
+        const store = this.$store.calendar;
+        if ((document.hasFocus() && (Date.now() - this.last_mouse_move) < 10000) || store.advancement.advancement_enabled) {
             this.instapoll = false;
-            check_last_change(window.hash).then((result) => {
+            check_last_change(store.hash).then((result) => {
                 this.new_dynamic_change = new Date(result.data.last_dynamic_change)
-                if (this.new_dynamic_change > window.last_dynamic_change) {
-                    window.last_dynamic_change = this.new_dynamic_change
-                    get_dynamic_data(window.hash)
+                if (this.new_dynamic_change > store.last_dynamic_change) {
+                    store.last_dynamic_change = this.new_dynamic_change
+                    get_dynamic_data(store.hash)
                         .then((result) => {
                             this.$dispatch("calendar-updated", {
                                 calendar: {
@@ -147,10 +147,11 @@ export default (calendar_structure) => ({
     },
 
     update_calendar($event) {
-        this.$store.calendar.debounceUpdate($event.detail.calendar)
+        const store = this.$store.calendar;
+        store.debounceUpdate($event.detail.calendar)
 
-        this.location_select_options = this.$store.calendar.get_location_select_options();
-        this.location_select_value = this.$store.calendar.get_location_select_value();
+        this.location_select_options = store.get_location_select_options();
+        this.location_select_value = store.get_location_select_value();
     },
 
     calendar_updated() {
@@ -159,6 +160,7 @@ export default (calendar_structure) => ({
 
     evaluate_queryString() {
         const urlParams = new URLSearchParams(window.location.search);
+        const store = this.$store.calendar;
 
         if (urlParams.has("year") && urlParams.has("month") && urlParams.has("day")) {
             let year = Number(urlParams.get('year'));
@@ -169,9 +171,9 @@ export default (calendar_structure) => ({
                 return false;
             }
 
-            if (valid_preview_date(year, month, day) || window.Perms.player_at_least('co-owner')) {
+            if (valid_preview_date(year, month, day) || store.perms.player_at_least('co-owner')) {
                 this.$nextTick(() => {
-                    this.$store.calendar.set_selected_date({
+                    store.set_selected_date({
                         year, month, day
                     });
                 });

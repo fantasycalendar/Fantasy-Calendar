@@ -2,7 +2,7 @@ import CollapsibleComponent from "./collapsible_component.js";
 import _ from "lodash";
 import { fract, get_colors_for_season, lerp } from "./calendar_functions.js";
 
-function create_season_events(complex) {
+function create_season_events(complex, static_data) {
 
     if (complex) {
 
@@ -108,11 +108,11 @@ function create_season_events(complex) {
 
         var events = [];
 
-        if (window.static_data.seasons.data.length == 4) {
+        if (static_data.seasons.data.length == 4) {
 
-            for (var i = 0; i < window.static_data.seasons.data.length; i++) {
+            for (var i = 0; i < static_data.seasons.data.length; i++) {
 
-                var season = window.static_data.seasons.data[i];
+                var season = static_data.seasons.data[i];
 
                 var season_name = season.name;
 
@@ -164,9 +164,9 @@ function create_season_events(complex) {
 
         } else {
 
-            for (var i = 0; i < window.static_data.seasons.data.length; i++) {
+            for (var i = 0; i < static_data.seasons.data.length; i++) {
 
-                var season = window.static_data.seasons.data[i];
+                var season = static_data.seasons.data[i];
 
                 var season_name = season.name;
 
@@ -231,7 +231,7 @@ function create_season_events(complex) {
                     }
                 });
 
-                if (window.static_data.seasons.global_settings.periodic_seasons) {
+                if (static_data.seasons.global_settings.periodic_seasons) {
 
                     events.push({
                         "name": equinox_name,
@@ -557,7 +557,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
                 .then((result) => {
                     if (result.dismiss === "close") return;
                     let complex = result.dismiss === "cancel";
-                    this.events = this.events.concat(create_season_events(complex));
+                    this.events = this.events.concat(create_season_events(complex, this.$store.calendar.static_data));
                 });
 
         });

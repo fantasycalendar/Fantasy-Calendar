@@ -2,7 +2,6 @@
      x-ref="events-manager"
      @open-events-manager.window="open_modal"
      @events-changed.window="refreshEvents"
-     @events-changed.window="refreshCategories"
      @keydown.escape.window="open = false;"
 >
     <div

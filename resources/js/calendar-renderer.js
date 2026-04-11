@@ -47,12 +47,13 @@ export default () => ({
     },
 
     get_weather_data(day, event) {
-        let epoch_details = window.evaluated_static_data.epoch_data[day.epoch];
-        let has_weather = window.evaluated_static_data.processed_weather;
+        const store = this.$store.calendar;
+        let epoch_details = store.evaluated_static_data.epoch_data[day.epoch];
+        let has_weather = store.evaluated_static_data.processed_weather;
         return {
             element: event.target,
-            static_data: window.static_data,
-            show_moons: window.static_data.settings.layout === "minimalistic",
+            static_data: store.static_data,
+            show_moons: store.static_data.settings.layout === "minimalistic",
             epoch_details,
             has_weather,
             day

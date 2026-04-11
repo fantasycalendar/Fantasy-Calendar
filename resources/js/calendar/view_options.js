@@ -53,9 +53,10 @@ export default () => ({
     },
 
     delete_calendar() {
+        const store = this.$store.calendar;
 
         return swal.fire({
-            text: `If you're sure about deleting this calendar, please type "${this.$store.calendar.calendar_name}" below:`,
+            text: `If you're sure about deleting this calendar, please type "${store.calendar_name}" below:`,
             input: "text",
             icon: "warning",
             showCancelButton: true,
@@ -68,11 +69,11 @@ export default () => ({
 
                 if (result.dismiss || !result.value) throw null;
 
-                if (result.value !== this.$store.calendar.calendar_name) {
-                    throw `"${result.value}" isn't the same as "${this.$store.calendar.calendar_name}"`;
+                if (result.value !== store.calendar_name) {
+                    throw `"${result.value}" isn't the same as "${store.calendar_name}"`;
                 }
 
-                return axios.delete(window.apiurl + '/calendar/' + this.$store.calendar.hash);
+                return axios.delete(store.apiurl + '/calendar/' + store.hash);
 
             })
             .then(results => {
@@ -83,7 +84,7 @@ export default () => ({
                 swal.fire({
                     icon: "success",
                     title: "Deleted!",
-                    text: `The calendar ${this.$store.calendar.calendar_name} has been deleted.`,
+                    text: `The calendar ${store.calendar_name} has been deleted.`,
                     button: true
                 })
                     .then(() => {

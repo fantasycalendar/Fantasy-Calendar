@@ -29,26 +29,27 @@ export default () => ({
     },
 
     apply_layout: function(layout) {
+        const store = this.$store.calendar;
 
         this.$dispatch("app-busy-start");
 
-        let previous_layout = this.$store.calendar.static_data.settings.layout;
-        this.$store.calendar.update({
+        let previous_layout = store.static_data.settings.layout;
+        store.update({
             "static_data.settings.layout": layout.name.toLowerCase(),
         });
 
         if(window.location.href.endsWith("/edit")) {
-            do_update_all(window.hash)
+            do_update_all(store.hash)
                 .then(() => {
                     window.onbeforeunload = function () {
                     }
                     window.location.reload(false);
                 })
                 .catch((error) => {
-                    this.$store.calendar.update({
+                    store.update({
                         "static_data.settings.layout": previous_layout
                     });
-                    this.$store.calendar.static_data.settings.layout = previous_layout;
+                    store.static_data.settings.layout = previous_layout;
                     this.$dispatch("app-busy-end");
                     this.$dispatch('notify', {
                         content: error.response.data.message,

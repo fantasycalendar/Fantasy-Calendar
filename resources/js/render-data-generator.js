@@ -1,22 +1,26 @@
 import { ordinal_suffix_of, get_category } from "./calendar/calendar_functions";
 import { moon_phases } from "./calendar/calendar_variables";
 import { event_evaluator } from "./calendar/calendar_workers";
+import Alpine from 'alpinejs';
+
+function calendarStore() { return Alpine.store('calendar'); }
 
 export var render_data_generator = {
 	get_weather_icon: function(epoch) {
+        const store = calendarStore();
         let epoch_data = this.epoch_data[epoch];
         let weather = epoch_data.weather;
 
         if (weather === undefined ||
-            (!Perms.player_at_least('co-owner')
+            (!store.perms.player_at_least('co-owner')
                 &&
                 (
-                    window.static_data.settings.hide_all_weather
+                    store.static_data.settings.hide_all_weather
                     ||
                     (
-                        window.static_data.settings.hide_future_weather
+                        store.static_data.settings.hide_future_weather
                         &&
-                        epoch > window.dynamic_data.epoch
+                        epoch > store.dynamic_data.epoch
                     )
                 )
             )
@@ -66,12 +70,13 @@ export var render_data_generator = {
 	},
 
     get_moon_data: function(epoch_data, events) {
+        const store = calendarStore();
         let moons = [];
         moon_loop:
-        for (let moon_index = 0; moon_index < window.static_data.moons.length; moon_index++) {
-            let moon = window.static_data.moons[moon_index];
+        for (let moon_index = 0; moon_index < store.static_data.moons.length; moon_index++) {
+            let moon = store.static_data.moons[moon_index];
 
-            if (!moon.hidden || Perms.player_at_least('co-owner')) {
+            if (!moon.hidden || store.perms.player_at_least('co-owner')) {
                 let phase = epoch_data.moon_phase[moon_index];
                 let phase_name = Object.keys(moon_phases[moon.granularity])[phase];
                 let custom_phase_name = "";
@@ -116,9 +121,10 @@ export var render_data_generator = {
 	},
 
 	get_day_data: function(epoch) {
+		const store = calendarStore();
 		let epoch_data = this.epoch_data[epoch];
 
-		if (window.static_data.settings.only_reveal_today && epoch > window.dynamic_data.epoch && !Perms.player_at_least('co-owner')) {
+		if (store.static_data.settings.only_reveal_today && epoch > store.dynamic_data.epoch && !store.perms.player_at_least('co-owner')) {
 			return {
 				"number": "",
 				"text": "",
@@ -141,10 +147,10 @@ export var render_data_generator = {
         let leap_day = undefined;
 		if (epoch_data.leap_day !== undefined) {
 			let index = epoch_data.leap_day;
-            leap_day = window.static_data.year_data.leap_days[index];
+            leap_day = store.static_data.year_data.leap_days[index];
             if (leap_day.show_text) {
                 text = leap_day.name;
-                if (window.static_data.settings.layout === "minimalistic") {
+                if (store.static_data.settings.layout === "minimalistic") {
                     number = "x";
                 }
             }
@@ -158,11 +164,11 @@ export var render_data_generator = {
         let events = this.event_data[epoch] ? this.event_data[epoch] : [];
 
 		let moons = [];
-		if (!window.static_data.settings.hide_moons || (static_data.settings.hide_moons && Perms.player_at_least('co-owner'))) {
+		if (!store.static_data.settings.hide_moons || (store.static_data.settings.hide_moons && store.perms.player_at_least('co-owner'))) {
             moons = this.get_moon_data(epoch_data, events);
 		}
 
-        let year_day = window.static_data.settings.add_year_day_number ? epoch_data.year_day : false;
+        let year_day = store.static_data.settings.add_year_day_number ? epoch_data.year_day : false;
 
 		return {
             "number": number,
@@ -173,7 +179,7 @@ export var render_data_generator = {
 			"year_day": year_day,
 			"weather_icon": weather_icon,
 			"season_color": season_color,
-            "show_event_button": Perms.player_at_least('player'),
+            "show_event_button": store.perms.player_at_least('player'),
             "events": events.filter(event => event.show),
 			"moons": moons,
             "has_events": true
@@ -198,6 +204,7 @@ export var render_data_generator = {
     },
 
     _create_render_data: function(processed_data) {
+        const store = calendarStore();
         if (processed_data !== undefined) {
             this.processed_data = processed_data;
         } else if (this.processed_data === undefined) {
@@ -212,14 +219,14 @@ export var render_data_generator = {
         this.epoch_data = this.processed_data.epoch_data;
 
         this.render_data = {
-            "year": preview_date.year !== window.dynamic_data.year ? preview_date.year : window.dynamic_data.year,
-            "current_epoch": window.dynamic_data.epoch,
-            "preview_epoch": preview_date.epoch,
-            "render_style": window.static_data.settings.layout,
+            "year": store.preview_date.year !== store.dynamic_data.year ? store.preview_date.year : store.dynamic_data.year,
+            "current_epoch": store.dynamic_data.epoch,
+            "preview_epoch": store.preview_date.epoch,
+            "render_style": store.static_data.settings.layout,
             "timespans": [],
             "event_epochs": {},
             "timespan_event_epochs": {},
-            "current_month_only": window.static_data.settings.show_current_month,
+            "current_month_only": store.static_data.settings.show_current_month,
         }
 
         this.create_event_data();
@@ -240,10 +247,10 @@ export var render_data_generator = {
             if (filtered_leap_days_beforestart.length > 0) {
                 let timespan_data = {
                     "title": "",
-                    "id": [renderIndex++, JSON.stringify(timespan), epoch, window.dynamic_data.year, JSON.stringify(filtered_leap_days_beforestart)].join('.'),
+                    "id": [renderIndex++, JSON.stringify(timespan), epoch, store.dynamic_data.year, JSON.stringify(filtered_leap_days_beforestart)].join('.'),
                     "show_title": false,
                     "short_weekdays": timespan.truncated_week,
-                    "weekdays": window.static_data.year_data.global_week,
+                    "weekdays": store.static_data.year_data.global_week,
                     "show_weekdays": false,
                     "days": [[]],
                     "events": []
@@ -273,7 +280,7 @@ export var render_data_generator = {
                 }
 
                 if (this.render_data.render_style !== "vertical") {
-                    for(weekday_number; weekday_number <= window.static_data.year_data.global_week.length; weekday_number++) {
+                    for(weekday_number; weekday_number <= store.static_data.year_data.global_week.length; weekday_number++) {
                         timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                     }
                 }
@@ -286,17 +293,17 @@ export var render_data_generator = {
             let timespan_epoch_data = Object.values(timespan.epochs)[0];
 
             let timespan_data = {
-                "title": window.static_data.settings.add_month_number ? `${timespan.name} - Month ${timespan_epoch_data.timespan_number + 1}` : timespan.name,
-                "id": [renderIndex++, JSON.stringify(timespan), epoch, window.dynamic_data.year].join('.'),
+                "title": store.static_data.settings.add_month_number ? `${timespan.name} - Month ${timespan_epoch_data.timespan_number + 1}` : timespan.name,
+                "id": [renderIndex++, JSON.stringify(timespan), epoch, store.dynamic_data.year].join('.'),
                 "show_title": true,
                 "weekdays": timespan.week,
                 "short_weekdays": timespan.truncated_week,
-                "show_weekdays": !window.static_data.settings.hide_weekdays ? timespan.type === "month" : false,
+                "show_weekdays": !store.static_data.settings.hide_weekdays ? timespan.type === "month" : false,
                 "days": [[]],
                 "events": []
             }
 
-            if (!window.static_data.year_data.overflow) {
+            if (!store.static_data.year_data.overflow) {
                 week_day = 1;
             }
 
@@ -331,9 +338,9 @@ export var render_data_generator = {
 
                             timespan_data = {
                                 "title": "",
-                                "id": [renderIndex++, JSON.stringify(timespan), epoch, window.dynamic_data.year, JSON.stringify(filtered_leap_days)].join('.'),
+                                "id": [renderIndex++, JSON.stringify(timespan), epoch, store.dynamic_data.year, JSON.stringify(filtered_leap_days)].join('.'),
                                 "show_title": false,
-                                "weekdays": window.static_data.year_data.global_week,
+                                "weekdays": store.static_data.year_data.global_week,
                                 "short_weekdays": timespan.truncated_week,
                                 "show_weekdays": false,
                                 "days": [[]],
@@ -364,7 +371,7 @@ export var render_data_generator = {
                             }
 
                             if (this.render_data.render_style !== "vertical") {
-                                for(internal_weekday_number; internal_weekday_number <= window.static_data.year_data.global_week.length; internal_weekday_number++) {
+                                for(internal_weekday_number; internal_weekday_number <= store.static_data.year_data.global_week.length; internal_weekday_number++) {
                                     timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                                 }
                             }
@@ -372,12 +379,12 @@ export var render_data_generator = {
                             this.render_data.timespans.push(timespan_data);
 
                             timespan_data = {
-                                "title": window.static_data.settings.add_month_number ? `${timespan.name} - Month ${index+1}` : timespan.name,
-                                "id": [renderIndex++, JSON.stringify(timespan), epoch, window.dynamic_data.year].join('.'),
+                                "title": store.static_data.settings.add_month_number ? `${timespan.name} - Month ${index+1}` : timespan.name,
+                                "id": [renderIndex++, JSON.stringify(timespan), epoch, store.dynamic_data.year].join('.'),
                                 "show_title": true,
                                 "weekdays": timespan.week,
                                 "short_weekdays": timespan.truncated_week,
-                                "show_weekdays": !window.static_data.settings.hide_weekdays ? timespan.type === "month" : false,
+                                "show_weekdays": !store.static_data.settings.hide_weekdays ? timespan.type === "month" : false,
                                 "days": [[]],
                                 "events": []
                             }
@@ -415,9 +422,9 @@ export var render_data_generator = {
 
             this.render_data.timespans.push(timespan_data);
 
-            if (Perms.player_at_least('co-owner')
-                || !window.static_data.settings.only_reveal_today
-                || (window.static_data.settings.only_reveal_today && epoch > window.dynamic_data.epoch)
+            if (store.perms.player_at_least('co-owner')
+                || !store.static_data.settings.only_reveal_today
+                || (store.static_data.settings.only_reveal_today && epoch > store.dynamic_data.epoch)
             ) {
                 var filtered_leap_days_end = timespan.leap_days.filter(function(features) {
                     return features.intercalary && features.day === timespan.length;
@@ -426,10 +433,10 @@ export var render_data_generator = {
                 if (filtered_leap_days_end.length > 0) {
                     let timespan_data = {
                         "title": "",
-                        "id": [renderIndex++, JSON.stringify(timespan), epoch, window.dynamic_data.year, JSON.stringify(filtered_leap_days_end)].join('.'),
+                        "id": [renderIndex++, JSON.stringify(timespan), epoch, store.dynamic_data.year, JSON.stringify(filtered_leap_days_end)].join('.'),
                         "show_title": false,
                         "short_weekdays": timespan.truncated_week,
-                        "weekdays": window.static_data.year_data.global_week,
+                        "weekdays": store.static_data.year_data.global_week,
                         "show_weekdays": false,
                         "days": [[]],
                         "events": []
@@ -459,7 +466,7 @@ export var render_data_generator = {
                     }
 
                     if (this.render_data.render_style !== "vertical") {
-                        for(weekday_number; weekday_number <= window.static_data.year_data.global_week.length; weekday_number++) {
+                        for(weekday_number; weekday_number <= store.static_data.year_data.global_week.length; weekday_number++) {
                             timespan_data.days[timespan_data.days.length-1].push(this.overflow());
                         }
                     }
@@ -468,7 +475,7 @@ export var render_data_generator = {
                 }
             }
 
-            if (window.static_data.settings.only_reveal_today && epoch > window.dynamic_data.epoch && !Perms.player_at_least('co-owner')) {
+            if (store.static_data.settings.only_reveal_today && epoch > store.dynamic_data.epoch && !store.perms.player_at_least('co-owner')) {
                 break;
             }
         }
@@ -507,6 +514,7 @@ export var render_data_generator = {
     },
 
     _create_event_data: function(evaluated_event_data) {
+        const store = calendarStore();
         if (this.processed_data === undefined) {
             return {
                 success: false,
@@ -525,18 +533,18 @@ export var render_data_generator = {
 
         this.events_to_send = {};
 
-        if (window.static_data.settings.hide_events && !Perms.player_at_least('co-owner')) {
+        if (store.static_data.settings.hide_events && !store.perms.player_at_least('co-owner')) {
             return {
                 success: true,
                 event_data: this.events_to_send
             }
         }
 
-		if (window.static_data.eras.length > 0 && (Perms.player_at_least('co-owner') || !static_data.settings.hide_eras)) {
-			let num_eras = Object.keys(window.static_data.eras).length;
+		if (store.static_data.eras.length > 0 && (store.perms.player_at_least('co-owner') || !store.static_data.settings.hide_eras)) {
+			let num_eras = Object.keys(store.static_data.eras).length;
 
 			for(let era_index = 0; era_index < num_eras; era_index++) {
-				let era = window.static_data.eras[era_index];
+				let era = store.static_data.eras[era_index];
 
 				if (era.settings.show_as_event) {
                     let event_class = ['era_event'];
@@ -558,7 +566,7 @@ export var render_data_generator = {
                     let event_hide = category && category.id !== -1 ? category.event_settings.hide : false;
                     let event_hide_full = category && category.id !== -1 ? category.event_settings.hide_full : false;
 
-                    let hide_era = (event_hide || category_hide || event_hide_full) && !Perms.player_at_least('co-owner');
+                    let hide_era = (event_hide || category_hide || event_hide_full) && !store.perms.player_at_least('co-owner');
 
                     this.add_event_to_epoch(era.date.epoch, {
                         "index": era_index,
@@ -572,8 +580,8 @@ export var render_data_generator = {
             }
         }
 
-        for(let event_index = 0; event_index < window.events.length; event_index++) {
-            let event = window.events[event_index];
+        for(let event_index = 0; event_index < store.events.length; event_index++) {
+            let event = store.events[event_index];
 
             let category = event.event_category_id && event.event_category_id > -1 ?  get_category(event.event_category_id) : false;
 
@@ -591,7 +599,7 @@ export var render_data_generator = {
                 event_class.push(!event.settings.print ? "d-print-none" : "");
                 event_class.push(event.settings.color ? event.settings.color : "");
                 event_class.push(event.settings.text ? event.settings.text : "");
-                event_class.push(event.settings.hide || window.static_data.settings.hide_events || category_hide ? " hidden_event" : "");
+                event_class.push(event.settings.hide || store.static_data.settings.hide_events || category_hide ? " hidden_event" : "");
                 event_class.push(start ? "event_start" : "");
                 event_class.push(end ? "event_end" : "");
 
@@ -628,7 +636,7 @@ export var render_data_generator = {
                     "overrides": event.data.overrides,
                     "class": event_class.join(' '),
                     "era": false,
-                    "show": (Perms.can_modify_event(event_index) || !(event.settings.hide || category_hide)) && !event.settings.hide_full
+                    "show": (store.perms.can_modify_event(event_index) || !(event.settings.hide || category_hide)) && !event.settings.hide_full
                 });
             }
         }
@@ -648,16 +656,17 @@ export var render_data_generator = {
     },
 
 	create_event_data: function() {
+        const store = calendarStore();
         let evaluated_event_data = event_evaluator.init(
-            window.static_data,
-            window.dynamic_data,
-            window.events,
-            window.event_categories,
+            store.static_data,
+            store.dynamic_data,
+            store.events,
+            store.event_categories,
             this.epoch_data,
             undefined,
             this.processed_data.year_data.start_epoch,
             this.processed_data.year_data.end_epoch,
-            Perms.player_at_least('co-owner'),
+            store.perms.player_at_least('co-owner'),
             false
         );
 

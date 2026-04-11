@@ -1,5 +1,6 @@
 import { ordinal_suffix_of, precisionRound, time_data_to_string } from "./calendar_functions.js";
 import _ from "lodash";
+import tailwindColors from "tailwindcss/colors";
 
 function alpha(hex, opacity) {
     return hex + Math.round(opacity * 255).toString(16).padStart(2, '0');
@@ -9,7 +10,7 @@ let _lightColors, _darkColors;
 
 function buildPalettes() {
     if (_lightColors) return;
-    const tc = window.tailwindColors;
+    const tc = tailwindColors;
 
     _lightColors = {
         // Day length

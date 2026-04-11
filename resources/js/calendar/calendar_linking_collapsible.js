@@ -14,10 +14,11 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
     }
 
     retrieveOwnedCalendars() {
-        axios.get(this.$store.calendar.api_url("/calendar/:hash/owned"))
+        const store = this.$store.calendar;
+        axios.get(store.api_url("/calendar/:hash/owned"))
             .then(response => {
                 this.owned = response.data.filter(calendar => {
-                    return calendar.hash !== this.$store.calendar.hash;
+                    return calendar.hash !== store.hash;
                 }).map(calendar => {
                     calendar.locked = !!calendar.parent_hash;
 
@@ -34,6 +35,7 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
 
     linkChildCalendar(hash, inputDate) {
         this.disableInputs = true;
+        const store = this.$store.calendar;
 
         swal.fire({
             title: "Linking Calendar",
@@ -52,12 +54,12 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
                 return;
             }
 
-            axios.patch(this.$store.calendar.base_url(`/calendars/${hash}`), {
-                parent_hash: this.$store.calendar.hash,
+            axios.patch(store.base_url(`/calendars/${hash}`), {
+                parent_hash: store.hash,
                 parent_link_date: [inputDate.year, inputDate.timespan, inputDate.day],
-                parent_offset: evaluate_calendar_start(window.static_data, inputDate.year, inputDate.timespan, inputDate.day).epoch
+                parent_offset: evaluate_calendar_start(store.static_data, inputDate.year, inputDate.timespan, inputDate.day).epoch
             }).then(() => {
-                _update_dynamic(this.$store.calendar.hash)
+                _update_dynamic(store.hash)
                     .then(() => {
                         window.location.reload();
                     })
@@ -72,6 +74,7 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
     }
 
     unlinkChildCalendar(hash) {
+        const store = this.$store.calendar;
         swal.fire({
             title: "Unlinking Calendar",
             html: "<p>Are you sure you want to break the link to this calendar?</p><p>This cannot be undone.</p>",
@@ -87,12 +90,12 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
                     return;
                 }
 
-                axios.patch(this.$store.calendar.base_url(`/calendars/${hash}`), {
+                axios.patch(store.base_url(`/calendars/${hash}`), {
                     parent_hash: null,
                     parent_link_date: null,
                     parent_offset: null,
                 }).then(() => {
-                    _update_dynamic(this.$store.calendar.hash)
+                    _update_dynamic(store.hash)
                         .then(() => {
                             window.location.reload();
                         })

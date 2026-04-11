@@ -28,10 +28,11 @@ export default () => ({
     },
 
     view_event($event) {
+        const store = this.$store.calendar;
         let event_index = $event.detail.event_id;
 
         if ($event.detail.event_db_id !== undefined) {
-            event_index = window.events.findIndex((item) => item.id === $event.detail.event_db_id);
+            event_index = store.events.findIndex((item) => item.id === $event.detail.event_db_id);
         }
 
         this.id = event_index;
@@ -39,9 +40,9 @@ export default () => ({
         this.epoch = $event.detail.epoch;
 
         if (this.era) {
-            this.data = clone(window.static_data.eras[this.id]);
+            this.data = clone(store.static_data.eras[this.id]);
         } else {
-            this.data = clone(window.events[this.id]);
+            this.data = clone(store.events[this.id]);
             this.db_id = this.data.id !== undefined ? this.data.id : false;
         }
         if (this.data.description == "") {
@@ -49,9 +50,9 @@ export default () => ({
         }
 
         this.open = true;
-        this.user_can_comment = Perms.user_can_comment();
+        this.user_can_comment = store.perms.user_can_comment();
         this.can_comment_on_event = this.db_id !== false;
-        this.can_edit = Perms.can_modify_event(this.id);
+        this.can_edit = store.perms.can_modify_event(this.id);
 
         // if (!this.comment_editor) {
         // }
@@ -95,7 +96,7 @@ export default () => ({
                 content: comment.content,
                 username: `${comment.username}${comment.comment_owner ? " (you)" : (comment.calendar_owner ? " (owner)" : "")}`,
                 editing: false,
-                can_delete: Perms.user_can_delete_comment(comment)
+                can_delete: this.$store.calendar.perms.user_can_delete_comment(comment)
             })
         }
         this.loading_comments = false;
@@ -152,7 +153,7 @@ export default () => ({
             return;
         }
 
-        axios.patch(window.apiurl + "/eventcomment/" + comment.id, {
+        axios.patch(this.$store.calendar.apiurl + "/eventcomment/" + comment.id, {
             content: this.editing_comment_content
         })
             .then(function(result) {

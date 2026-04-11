@@ -1,4 +1,9 @@
 import IntervalsCollection from "../fantasycalendar/Collections/IntervalsCollection";
+// NOTE: Alpine is NOT imported at the top level because this file is also
+// loaded in web workers (via calendar_workers.js), where DOM APIs like
+// MutationObserver don't exist and importing Alpine would crash.
+// We use window.Alpine instead, which app.js sets after importing Alpine.
+function calendarStore() { return window.Alpine.store('calendar'); }
 
 export function escapeHtml(unsafe) {
     return unsafe
@@ -195,14 +200,15 @@ function is_roman_numeral(string) {
  * @return {object}                 Returns a reference to the object found
  */
 export function get_calendar_data(data) {
+    const store = calendarStore();
     data = data.split('.')
     if (data[0] !== "") {
-        var current_calendar_data = window.static_data[data[0]];
+        var current_calendar_data = store.static_data[data[0]];
         for (var i = 1; i < data.length; i++) {
             current_calendar_data = current_calendar_data[data[i]];
         }
     } else {
-        var current_calendar_data = window.static_data;
+        var current_calendar_data = store.static_data;
     }
     return current_calendar_data;
 }
@@ -752,37 +758,39 @@ export class date_manager {
 
 export function valid_preview_date(year, timespan, day) {
 
-    if (!window.static_data.settings.allow_view) {
+    const store = calendarStore();
+
+    if (!store.static_data.settings.allow_view) {
         return false;
     }
 
-    if (window.static_data.settings.only_reveal_today) {
+    if (store.static_data.settings.only_reveal_today) {
 
-        if (year > window.dynamic_data.year) {
+        if (year > store.dynamic_data.year) {
             return false;
         }
 
-        if (year === window.dynamic_data.year) {
-            if (timespan > window.dynamic_data.timespan) {
+        if (year === store.dynamic_data.year) {
+            if (timespan > store.dynamic_data.timespan) {
                 return false;
             }
 
-            if (timespan === window.dynamic_data.timespan && day > window.dynamic_data.day) {
+            if (timespan === store.dynamic_data.timespan && day > store.dynamic_data.day) {
                 return false;
             }
         }
 
-    } else if (window.static_data.settings.only_backwards) {
+    } else if (store.static_data.settings.only_backwards) {
 
-        if (!window.static_data.settings.show_current_month && year > window.dynamic_data.year) {
+        if (!store.static_data.settings.show_current_month && year > store.dynamic_data.year) {
             return false;
         }
 
-        if (year >= window.dynamic_data.year) {
-            if (timespan > window.dynamic_data.timespan) {
+        if (year >= store.dynamic_data.year) {
+            if (timespan > store.dynamic_data.timespan) {
                 return false;
             }
-            if (timespan === window.dynamic_data.timespan && day > window.dynamic_data.day) {
+            if (timespan === store.dynamic_data.timespan && day > store.dynamic_data.day) {
                 return false;
             }
         }
@@ -1250,7 +1258,7 @@ export function clone(obj) {
 
 export function time_data_to_string(static_data, time) {
 
-    let clock_minutes = window.static_data.clock.minutes;
+    let clock_minutes = static_data.clock.minutes;
 
     let minutes = (Math.round(fract(time) * clock_minutes)).toString().length < 2 ? "0" + (Math.round(fract(time) * clock_minutes)).toString() : (Math.round(fract(time) * clock_minutes));
 
@@ -1573,18 +1581,19 @@ export function slugify(string) {
 }
 
 export function get_category(search) {
-    if (window.event_categories.length === 0) {
+    const event_categories = calendarStore().event_categories;
+    if (event_categories.length === 0) {
         return { id: -1 };
     }
 
     let results = [];
 
     if (isNaN(search)) {
-        results = window.event_categories.filter(function(element) {
+        results = event_categories.filter(function(element) {
             return slugify(element.name) === search;
         });
     } else {
-        results = window.event_categories.filter(function(element) {
+        results = event_categories.filter(function(element) {
             return element.id === search;
         });
     }
@@ -1608,18 +1617,18 @@ function updateClipboard(newClip) {
 }
 
 
-export function copy_link(epoch_data) {
+export function copy_link(epoch_data, hide_copy_warning = false) {
     let year = epoch_data.year;
     let timespan = epoch_data.timespan_number;
     let day = epoch_data.day;
 
-    let link = `${window.location.origin}/calendars/${window.hash}?year=${year}&month=${timespan}&day=${day}`;
+    let link = `${window.location.origin}/calendars/${calendarStore().hash}?year=${year}&month=${timespan}&day=${day}`;
 
     navigator.permissions.query({ name: "clipboard-write" })
         .then((result) => {
             if (result.state === "granted" || result.state === "prompt") {
                 updateClipboard(link);
-                if (window.hide_copy_warning) {
+                if (hide_copy_warning) {
                     notify(
                         "Quick reminder: The copied date will not be visible to\nguests or players due to your calendar's settings.",
                         "warn"

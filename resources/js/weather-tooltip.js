@@ -22,6 +22,7 @@ export default () => ({
     show_moons: false,
 
     activate: function($event) {
+        const store = this.$store.calendar;
 
         this.day = $event.detail.day;
         this.epoch_details = $event.detail.epoch_details;
@@ -31,7 +32,7 @@ export default () => ({
         let temperature_system = $event.detail.static_data.seasons.global_settings.temp_sys;
 
         this.temperature_ranges = [];
-        if (!$event.detail.static_data.settings.hide_weather_temp || window.Perms.player_at_least('co-owner')) {
+        if (!$event.detail.static_data.settings.hide_weather_temp || store.perms.player_at_least('co-owner')) {
             if (temperature_system !== 'metric') {
                 let temperatures = this.epoch_details.weather.temperature['imperial'].value;
                 this.temperature_ranges.push(`${precisionRound(temperatures[0], 1).toString()}°F to ${precisionRound(temperatures[1], 1).toString()}°F`);
@@ -44,7 +45,7 @@ export default () => ({
 
         this.wind_direction = "";
         this.wind_speeds = [];
-        if (!$event.detail.static_data.settings.hide_wind_velocity || window.Perms.player_at_least('co-owner')) {
+        if (!$event.detail.static_data.settings.hide_wind_velocity || store.perms.player_at_least('co-owner')) {
             this.wind_direction = `${this.epoch_details.weather.wind_speed} (${this.epoch_details.weather.wind_direction})`;
 
             let wind_system = $event.detail.static_data.seasons.global_settings.wind_sys;

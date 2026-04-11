@@ -10,14 +10,15 @@ export default () => ({
     show: false,
 
     update() {
-        this.static_data = this.$store.calendar.static_data;
+        const store = this.$store.calendar;
+        this.static_data = store.static_data;
         this.cycles = this.static_data.cycles;
         this.eras = this.static_data.eras;
-        this.dynamic_data = this.$store.calendar.dynamic_data;
-        this.preview_date = this.$store.calendar.preview_date;
-        this.epoch_data = this.$store.calendar.evaluated_static_data.epoch_data;
-        this.show_current_month = this.$store.calendar.setting('show_current_month');
-        this.show = this.$store.calendar.is_calendar_valid;
+        this.dynamic_data = store.dynamic_data;
+        this.preview_date = store.preview_date;
+        this.epoch_data = store.evaluated_static_data.epoch_data;
+        this.show_current_month = store.setting('show_current_month');
+        this.show = store.is_calendar_valid;
     },
 
     get year_header_text() {
@@ -28,7 +29,7 @@ export default () => ({
         if (currentEra !== -1) {
             let era = this.eras[currentEra];
 
-            if (!this.static_data.settings.hide_eras || Perms.player_at_least('co-owner')) {
+            if (!this.static_data.settings.hide_eras || this.$store.calendar.perms.player_at_least('co-owner')) {
 
                 let format = era.settings.restart
                     ? `Era year {{era_year}} (year {{year}}) - {{{era_name}}}`

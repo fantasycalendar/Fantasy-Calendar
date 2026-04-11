@@ -1,3 +1,8 @@
+import Alpine from 'alpinejs';
+import tailwindColors from 'tailwindcss/colors';
+
+function calendarStore() { return Alpine.store('calendar'); }
+
 class ClockCanvas {
 
     pointer_thickness_tip = 0.72;
@@ -487,7 +492,7 @@ class ClockCanvas {
 
     color(colorName) {
         return (
-            (window.dark_theme ? this.darkColors : this.lightColors)[colorName] ?? "white"
+            (calendarStore().dark_theme ? this.darkColors : this.lightColors)[colorName] ?? "white"
         );
     }
 }

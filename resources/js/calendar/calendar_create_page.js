@@ -1,5 +1,6 @@
 import _ from "lodash";
-
+import { bind_calendar_events } from "./calendar_manager.js";
+import Perms from "../perms.js";
 
 export default (calendar_structure) => ({
 
@@ -17,8 +18,10 @@ export default (calendar_structure) => ({
             return;
         }
 
+        const store = this.$store.calendar;
+
         if (this.current_step >= 1) {
-            if (this.$store.calendar.calendar_name === "") {
+            if (store.calendar_name === "") {
                 this.current_step = 1;
                 this.$dispatch('calendar-step-changed', {
                     step: this.current_step,
@@ -36,7 +39,7 @@ export default (calendar_structure) => ({
         }
 
         if (this.current_step >= 2) {
-            if (this.$store.calendar.static_data.year_data.global_week.length === 0) {
+            if (store.static_data.year_data.global_week.length === 0) {
                 this.$dispatch('calendar-step-changed', {
                     step: this.current_step,
                     steps: this.steps,
@@ -58,7 +61,7 @@ export default (calendar_structure) => ({
         }
 
         if (this.current_step >= 3) {
-            if (this.$store.calendar.static_data.year_data.timespans.length === 0) {
+            if (store.static_data.year_data.timespans.length === 0) {
                 this.$dispatch('calendar-step-changed', {
                     step: this.current_step,
                     steps: this.steps,
@@ -111,48 +114,42 @@ export default (calendar_structure) => ({
 
 
     init() {
+        let preview_date = _.cloneDeep(calendar_structure.dynamic_data);
+        preview_date.follow = true;
 
-        window.Perms = new Perms(
-            calendar_structure.userId,
-            calendar_structure.owned,
-            calendar_structure.paymentLevel,
-            calendar_structure.userRole
-        );
-
-        window.evaluated_static_data = {};
-
-        window.dark_theme = calendar_structure.dark_theme;
-
-        window.hash = calendar_structure.hash;
-
-        window.calendar_name = calendar_structure.calendar_name;
-        window.calendar_id = calendar_structure.calendar_id;
-        window.static_data = calendar_structure.static_data;
-        window.dynamic_data = calendar_structure.dynamic_data;
-
-        window.is_linked = calendar_structure.is_linked;
-        window.has_parent = calendar_structure.has_parent;
-        window.parent_hash = calendar_structure.parent_hash;
-        window.parent_offset = calendar_structure.parent_offset;
-
-        window.events = calendar_structure.events;
-        window.event_categories = calendar_structure.event_categories;
-
-        window.last_static_change = new Date(calendar_structure.last_static_change)
-        window.last_dynamic_change = new Date(calendar_structure.last_dynamic_change)
-
-        window.advancement = {
-            advancement_enabled: !!calendar_structure.advancement_enabled,
-            advancement_real_rate: calendar_structure.advancement_real_rate,
-            advancement_real_rate_unit: calendar_structure.advancement_real_rate_unit,
-            advancement_rate: calendar_structure.advancement_rate,
-            advancement_rate_unit: calendar_structure.advancement_rate_unit,
-            advancement_webhook_url: calendar_structure.advancement_webhook_url,
-            advancement_timezone: calendar_structure.advancement_timezone
-        }
-
-        window.preview_date = _.cloneDeep(calendar_structure.dynamic_data);
-        window.preview_date.follow = true;
+        this.$store.calendar.initialize({
+            perms: new Perms(
+                calendar_structure.userId,
+                calendar_structure.owned,
+                calendar_structure.paymentLevel,
+                calendar_structure.userRole
+            ),
+            calendar_name: calendar_structure.calendar_name,
+            static_data: calendar_structure.static_data,
+            dynamic_data: calendar_structure.dynamic_data,
+            events: calendar_structure.events,
+            event_categories: calendar_structure.event_categories,
+            hash: calendar_structure.hash,
+            calendar_id: calendar_structure.calendar_id,
+            preview_date: preview_date,
+            advancement: {
+                advancement_enabled: !!calendar_structure.advancement_enabled,
+                advancement_real_rate: calendar_structure.advancement_real_rate,
+                advancement_real_rate_unit: calendar_structure.advancement_real_rate_unit,
+                advancement_rate: calendar_structure.advancement_rate,
+                advancement_rate_unit: calendar_structure.advancement_rate_unit,
+                advancement_webhook_url: calendar_structure.advancement_webhook_url,
+                advancement_timezone: calendar_structure.advancement_timezone
+            },
+            evaluated_static_data: {},
+            is_linked: calendar_structure.is_linked,
+            has_parent: calendar_structure.has_parent,
+            parent_hash: calendar_structure.parent_hash,
+            parent_offset: calendar_structure.parent_offset,
+            last_static_change: new Date(calendar_structure.last_static_change),
+            last_dynamic_change: new Date(calendar_structure.last_dynamic_change),
+            dark_theme: calendar_structure.dark_theme
+        });
 
         bind_calendar_events();
 
@@ -175,12 +172,13 @@ export default (calendar_structure) => ({
     },
 
     autosave() {
+        const store = this.$store.calendar;
         let saved_data = JSON.stringify({
-            calendar_name: this.$store.calendar.calendar_name,
-            static_data: this.$store.calendar.static_data,
-            dynamic_data: this.$store.calendar.dynamic_data,
-            events: this.$store.calendar.events,
-            event_categories: this.$store.calendar.event_categories
+            calendar_name: store.calendar_name,
+            static_data: store.static_data,
+            dynamic_data: store.dynamic_data,
+            events: store.events,
+            event_categories: store.event_categories
         })
         localStorage.setItem('autosave', saved_data);
     },
@@ -216,37 +214,32 @@ export default (calendar_structure) => ({
         let saved_data = localStorage.getItem('autosave');
 
         if (saved_data) {
-            // TODO: Change these from window to some unified store
             let data = JSON.parse(saved_data);
-            window.prev_calendar_name = "";
-            window.prev_dynamic_data = {};
-            window.prev_static_data = {};
-            window.prev_events = {};
-            window.prev_event_categories = {};
+            const store = this.$store.calendar;
 
-            window.calendar_name = data.calendar_name;
-            window.static_data = data.static_data;
-            window.dynamic_data = data.dynamic_data;
-            window.events = data.events;
+            store.calendar_name = data.calendar_name;
+            store.static_data = data.static_data;
+            store.dynamic_data = data.dynamic_data;
+            store.events = data.events;
 
             this.evaluate_current_step();
 
             this.$dispatch('calendar-loaded', {
-                hash: window.hash,
+                hash: store.hash,
                 userId: calendar_structure.userId,
-                calendar_name: window.calendar_name,
-                calendar_id: window.calendar_id,
-                static_data: window.static_data,
-                dynamic_data: window.dynamic_data,
-                is_linked: window.is_linked,
-                has_parent: window.has_parent,
-                parent_hash: window.parent_hash,
-                parent_offset: window.parent_offset,
-                events: window.events,
-                event_categories: window.event_categories,
-                last_static_change: window.last_static_change,
-                last_dynamic_change: window.last_dynamic_change,
-                advancement: window.advancement
+                calendar_name: store.calendar_name,
+                calendar_id: store.calendar_id,
+                static_data: store.static_data,
+                dynamic_data: store.dynamic_data,
+                is_linked: store.is_linked,
+                has_parent: store.has_parent,
+                parent_hash: store.parent_hash,
+                parent_offset: store.parent_offset,
+                events: store.events,
+                event_categories: store.event_categories,
+                last_static_change: store.last_static_change,
+                last_dynamic_change: store.last_dynamic_change,
+                advancement: store.advancement
             });
 
             this.$dispatch("rebuild-calendar");
@@ -256,7 +249,7 @@ export default (calendar_structure) => ({
                 swal.fire({
                     icon: "success",
                     title: "Loaded!",
-                    text: "The calendar " + window.calendar_name + " has been loaded."
+                    text: "The calendar " + store.calendar_name + " has been loaded."
                 });
             }
 

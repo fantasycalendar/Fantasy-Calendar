@@ -4,6 +4,8 @@
     <meta name="description" content="Level up your narrative - Track time in your homebrew or pre-made campaign world with the Internet's best fantasy world calendaring tool!">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="base-url" content="{{ config('app.url') }}">
+    <meta name="api-url" content="{{ config('app.url') }}api/v1">
 
     <meta property="og:title" content="{{ $calendar->name ?? $title ?? "Fantasy Calendar" }}">
     <meta property="og:type" content="website">

@@ -1,6 +1,7 @@
 import { submit_new_event, submit_edit_event, submit_delete_event } from "./calendar/calendar_ajax_functions";
 import { ordinal_suffix_of, precisionRound, clone } from "./calendar/calendar_functions";
 import { moon_phases } from "./calendar/calendar_variables";
+
 function createEventTesterWorker() {
     // In dev, the Vite dev server runs on a different port than the app, which
     // violates the browser's same-origin policy for Worker scripts. We load the
@@ -50,7 +51,7 @@ export default () => ({
 
     initialize($event) {
         this.epoch = $event.detail.epoch;
-        this.epoch_data = window.evaluated_static_data.epoch_data[this.epoch];
+        this.epoch_data = this.$store.calendar.evaluated_static_data.epoch_data[this.epoch];
     },
 
     show() {
@@ -60,10 +61,11 @@ export default () => ({
     },
 
     clone_event($event) {
+        const store = this.$store.calendar;
         this.initialize($event);
 
         if ($event.detail.event_data === undefined && $event.detail.event_id) {
-            $event.detail.event_data = clone(window.events[$event.detail.event_id]);
+            $event.detail.event_data = clone(store.events[$event.detail.event_id]);
             $event.detail.event_data.name += " (clone)";
         }
 
@@ -77,12 +79,13 @@ export default () => ({
 
         this.set_up_moon_data();
 
-        this.event_id = Object.keys(window.events).length;
+        this.event_id = Object.keys(store.events).length;
 
         this.show();
     },
 
     create_new_event($event) {
+        const store = this.$store.calendar;
 
         this.initialize($event);
 
@@ -116,7 +119,7 @@ export default () => ({
             },
         };
 
-        let default_category = this.$store.calendar.default_event_category;
+        let default_category = store.default_event_category;
 
         if (default_category) {
             this.working_event.event_category_id = default_category.id;
@@ -129,7 +132,7 @@ export default () => ({
 
         this.set_up_moon_data();
 
-        this.event_id = Object.keys(window.events).length;
+        this.event_id = Object.keys(store.events).length;
 
         this.populate_condition_presets();
 
@@ -164,6 +167,7 @@ export default () => ({
     },
 
     edit_event($event) {
+        const store = this.$store.calendar;
 
         this.initialize($event);
 
@@ -174,12 +178,12 @@ export default () => ({
         let event_index = $event.detail.event_id;
 
         if ($event.detail.event_db_id !== undefined) {
-            event_index = window.events.findIndex((item) => item.id === $event.detail.event_db_id);
+            event_index = store.events.findIndex((item) => item.id === $event.detail.event_db_id);
         }
 
         this.event_id = event_index;
 
-        this.working_event = clone(window.events[this.event_id]);
+        this.working_event = clone(store.events[this.event_id]);
 
         this.set_up_moon_data();
 
@@ -193,14 +197,13 @@ export default () => ({
     },
 
     save_event() {
-
         let working_event = _.cloneDeep(this.working_event);
 
         working_event.data = this.create_event_data();
 
         working_event.name = sanitizeHtml((working_event.name === "") ? "New Event" : working_event.name);
 
-        window.events[this.event_id] = working_event;
+        this.$store.calendar.events[this.event_id] = working_event;
 
         let not_view_page = window.location.pathname.indexOf('/edit') > -1 || window.location.pathname.indexOf('/calendars/create') > -1;
 
@@ -590,12 +593,13 @@ export default () => ({
     },
 
     set_up_moon_data() {
+        const store = this.$store.calendar;
 
-        if (!window.static_data.moons.length) return;
+        if (!store.static_data.moons.length) return;
 
         this.moons = [];
-        for (let index in window.static_data.moons) {
-            let moon = clone(window.static_data.moons[index])
+        for (let index in store.static_data.moons) {
+            let moon = clone(store.static_data.moons[index])
             moon.index = index;
             moon.hidden = false;
             moon.shadow_color = moon.shadow_color ? moon.shadow_color : "#292b4a";
@@ -702,6 +706,7 @@ export default () => ({
     },
 
     populate_condition_presets() {
+        const store = this.$store.calendar;
 
         this.presets.weekly = {
             text: `Weekly on ${this.epoch_data.week_day_name}`,
@@ -737,13 +742,13 @@ export default () => ({
 
         this.moon_presets = [];
 
-        if (!window.static_data.moons.length) return;
+        if (!store.static_data.moons.length) return;
 
         let moon_phase_collection = ''
 
-        for (let moon_index in window.static_data.moons) {
+        for (let moon_index in store.static_data.moons) {
 
-            let moon = window.static_data.moons[moon_index];
+            let moon = store.static_data.moons[moon_index];
 
             const moonName = sanitizeHtml(moon.name);
 
@@ -845,6 +850,7 @@ export default () => ({
     },
 
     apply_preset_conditions(preset, repeats) {
+        const store = this.$store.calendar;
 
         let result;
         let moon_id;
@@ -1051,9 +1057,9 @@ export default () => ({
 
             case 'multimoon_every':
                 result = [];
-                for (let i = 0; i < window.static_data.moons.length; i++) {
+                for (let i = 0; i < store.static_data.moons.length; i++) {
                     result.push(['Moons', '0', [i, this.epoch_data.moon_phase[i]]])
-                    if (i !== window.static_data.moons.length - 1) {
+                    if (i !== store.static_data.moons.length - 1) {
                         result.push(['&&']);
                     }
                 }
@@ -1066,19 +1072,20 @@ export default () => ({
     },
 
     confirm_delete_event($event) {
+        const store = this.$store.calendar;
 
         let delete_event_id = $event.detail.event_id;
 
         if ($event.detail.event_db_id !== undefined) {
-            delete_event_id = window.events.findIndex((item) => item.id === $event.detail.event_db_id);
+            delete_event_id = store.events.findIndex((item) => item.id === $event.detail.event_db_id);
         }
 
         let warnings = [];
 
-        for (let eventId = 0; eventId < window.events.length; eventId++) {
+        for (let eventId = 0; eventId < store.events.length; eventId++) {
             if (eventId === delete_event_id) continue;
-            if (window.events[eventId].data.connected_events !== undefined) {
-                let connected_events = window.events[eventId].data.connected_events;
+            if (store.events[eventId].data.connected_events !== undefined) {
+                let connected_events = store.events[eventId].data.connected_events;
                 if (connected_events.includes(String(delete_event_id)) || connected_events.includes(Number(delete_event_id))) {
                     warnings.push(eventId);
                 }
@@ -1089,14 +1096,14 @@ export default () => ({
 
             let html = [];
             html.push(`<div class='text-left'>`)
-            html.push(`<h5>You trying to delete "${window.events[delete_event_id].name}" which is used in the conditions of the following events:</h5>`)
+            html.push(`<h5>You trying to delete "${store.events[delete_event_id].name}" which is used in the conditions of the following events:</h5>`)
             html.push(`<ul>`);
             for (let i = 0; i < warnings.length; i++) {
                 let warning_event_id = warnings[i];
-                html.push(`<li>${window.events[warning_event_id].name}</li>`);
+                html.push(`<li>${store.events[warning_event_id].name}</li>`);
             }
             html.push(`</ul>`);
-            html.push(`<p>Please remove the conditions using "${window.events[delete_event_id].name}" in these events before trying to delete it.</p>`)
+            html.push(`<p>Please remove the conditions using "${store.events[delete_event_id].name}" in these events before trying to delete it.</p>`)
             html.push(`</div>`);
 
             swal.fire({
@@ -1113,7 +1120,7 @@ export default () => ({
             swal.fire({
 
                 title: "Warning!",
-                html: `Are you sure you want to delete the event<br>"${window.events[delete_event_id].name}"?`,
+                html: `Are you sure you want to delete the event<br>"${store.events[delete_event_id].name}"?`,
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',
@@ -1132,7 +1139,7 @@ export default () => ({
 
                     } else {
 
-                        let event_id = window.events[delete_event_id].id;
+                        let event_id = store.events[delete_event_id].id;
 
                         submit_delete_event(event_id, () => {
                             this.delete_event(delete_event_id);
@@ -1150,20 +1157,21 @@ export default () => ({
     },
 
     delete_event(delete_event_id) {
+        const store = this.$store.calendar;
 
-        for (let eventId = 0; eventId < window.events.length; eventId++) {
-            if (window.events[eventId].data.connected_events !== undefined) {
-                const connectedEvents = window.events[eventId].data.connected_events;
+        for (let eventId = 0; eventId < store.events.length; eventId++) {
+            if (store.events[eventId].data.connected_events !== undefined) {
+                const connectedEvents = store.events[eventId].data.connected_events;
                 for (let connectedIndex = 0; connectedIndex < connectedEvents.length; connectedIndex++) {
                     let connectedIdNumber = Number(connectedEvents[connectedIndex])
                     if (connectedIdNumber > delete_event_id) {
-                        window.events[eventId].data.connected_events[connectedIndex] = connectedIdNumber - 1;
+                        store.events[eventId].data.connected_events[connectedIndex] = connectedIdNumber - 1;
                     }
                 }
             }
         }
 
-        window.events.splice(delete_event_id, 1);
+        store.events.splice(delete_event_id, 1);
 
         this.close();
 
@@ -1220,6 +1228,7 @@ export default () => ({
     },
 
     test_event(years) {
+        const store = this.$store.calendar;
         this.$dispatch("app-busy-start", {
                 show_throbber: false,
                 show_percentage: true,
@@ -1229,30 +1238,30 @@ export default () => ({
 
         if (this.new_event) {
 
-            window.events[this.event_id] = {}
+            store.events[this.event_id] = {}
 
-            window.events[this.event_id].data = this.create_event_data();
+            store.events[this.event_id].data = this.create_event_data();
 
         } else {
 
-            this.backup_event_data = clone(window.events[this.event_id].data);
+            this.backup_event_data = clone(store.events[this.event_id].data);
 
-            window.events[this.event_id].data = this.create_event_data();
+            store.events[this.event_id].data = this.create_event_data();
 
         }
 
-        let start_year = preview_date.year;
-        let end_year = preview_date.year + years;
+        let start_year = store.preview_date.year;
+        let end_year = store.preview_date.year + years;
 
         this.worker_event_tester = createEventTesterWorker()
 
         this.worker_event_tester.postMessage(JSON.parse(JSON.stringify({
-            calendar_name: window.calendar_name,
-            static_data: window.static_data,
-            dynamic_data: window.preview_date,
-            events: window.events,
-            event_categories: window.event_categories,
-            owner: Perms.player_at_least('co-owner'),
+            calendar_name: store.calendar_name,
+            static_data: store.static_data,
+            dynamic_data: store.preview_date,
+            events: store.events,
+            event_categories: store.event_categories,
+            owner: store.perms.player_at_least('co-owner'),
             start_year: start_year,
             end_year: end_year,
             callback: true,
@@ -1277,7 +1286,7 @@ export default () => ({
 
                 if (!this.new_event) {
 
-                    window.events[this.event_id].data = clone(this.backup_event_data)
+                    store.events[this.event_id].data = clone(this.backup_event_data)
                     this.backup_event_data = {}
 
                 }
@@ -1304,6 +1313,7 @@ export default () => ({
     },
 
     set_up_event_text(years) {
+        const store = this.$store.calendar;
 
         let event_has_changed = this.event_has_changed();
 
@@ -1322,7 +1332,7 @@ export default () => ({
 
             let year = occurrence.year;
             let timespan = occurrence.timespan;
-            let timespan_name = sanitizeHtml(window.static_data.year_data.timespans[occurrence.timespan].name);
+            let timespan_name = sanitizeHtml(store.static_data.year_data.timespans[occurrence.timespan].name);
             let day = occurrence.day;
             let intercalary = occurrence.intercalary;
 
@@ -1330,7 +1340,7 @@ export default () => ({
             let post = "";
 
             if (window.location.pathname !== '/calendars/create' && !event_has_changed) {
-                pre = `<a href='${window.baseurl}calendars/${window.hash}?year=${year}&month=${timespan}&day=${day}' target="_blank">`;
+                pre = `<a href='${store.baseurl}calendars/${store.hash}?year=${year}&month=${timespan}&day=${day}' target="_blank">`;
                 post = `</a>`;
             }
 
@@ -1392,12 +1402,11 @@ export default () => ({
     },
 
     check_event_chain(event_id, working_event) {
-
         let current_event = {}
         if (working_event) {
             current_event = clone(this.working_event);
         } else {
-            current_event = window.events[event_id];
+            current_event = this.$store.calendar.events[event_id];
         }
         this.checked_events.push(current_event);
 
@@ -1416,6 +1425,7 @@ export default () => ({
 
 
     look_through_event_chain(child, parent_id) {
+        const store = this.$store.calendar;
 
         if (this.event_chain_looked_at.indexOf(parent_id) === -1) {
             return true;
@@ -1423,16 +1433,16 @@ export default () => ({
 
         this.event_chain_looked_at.push(parent_id);
 
-        if (window.events[parent_id].data.connected_events !== undefined && window.events[parent_id].data.connected_events.length > 0) {
+        if (store.events[parent_id].data.connected_events !== undefined && store.events[parent_id].data.connected_events.length > 0) {
 
-            if (window.events[parent_id].data.connected_events.includes(child)) {
+            if (store.events[parent_id].data.connected_events.includes(child)) {
 
                 return false;
 
             } else {
 
-                for (let id of window.events[parent_id].data.connected_events) {
-                    if (id === null || !isNaN(id) || child === parent_id || !window.events[id]) continue;
+                for (let id of store.events[parent_id].data.connected_events) {
+                    if (id === null || !isNaN(id) || child === parent_id || !store.events[id]) continue;
                     if (!this.look_through_event_chain(child, id)) {
                         return false;
                     }

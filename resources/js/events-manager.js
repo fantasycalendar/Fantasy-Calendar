@@ -5,7 +5,7 @@ export default () => ({
 
     event_categories: [],
     groupFilter: "-1",
-    categorizedEvents: [],
+    categorizedEvents: {},
     categories: [],
     search: "",
     multiselect: false,
@@ -15,9 +15,6 @@ export default () => ({
     showFilters: false,
 
     init() {
-        this.$watch("window.events", () => {
-            this.refreshEvents();
-        });
         this.$watch("search", () => {
             this.refreshEvents();
         });
@@ -33,7 +30,7 @@ export default () => ({
         Object.entries(this.selected)
             .filter((entry) => entry[1])
             .forEach((event) => {
-                let canonicalEvent = window.events.find(
+                let canonicalEvent = this.$store.calendar.events.find(
                     (canonicalEvent) =>
                         canonicalEvent.id.toString() === event[0],
                 );
@@ -83,7 +80,7 @@ export default () => ({
     },
 
     toggleEventPrint(event, $dispatch) {
-        let canonicalEvent = window.events.find(
+        let canonicalEvent = this.$store.calendar.events.find(
             (canonicalEvent) => canonicalEvent.id === event.id,
         );
 
@@ -93,7 +90,7 @@ export default () => ({
     },
 
     toggleEventHidden(event, $dispatch) {
-        let canonicalEvent = window.events.find(
+        let canonicalEvent = this.$store.calendar.events.find(
             (canonicalEvent) => canonicalEvent.id === event.id,
         );
 
@@ -139,7 +136,7 @@ export default () => ({
                 return entry[1];
             })
             .map((entry) =>
-                window.events.find((event) => event.id === +entry[0]),
+                this.$store.calendar.events.find((event) => event.id === +entry[0]),
             );
 
         return selectedEvents.length > 0;
@@ -156,7 +153,7 @@ export default () => ({
         Object.entries(this.selected)
             .filter((entry) => entry[1])
             .forEach((event) => {
-                let canonicalEvent = window.events.find(
+                let canonicalEvent = this.$store.calendar.events.find(
                     (canonicalEvent) =>
                         canonicalEvent.id.toString() === event[0],
                 );
@@ -176,7 +173,7 @@ export default () => ({
     },
     refreshEvents() {
         this.refreshCategories();
-        this.categorizedEvents = (clone(this.$store.calendar.events) ?? []).reduce(
+        const unsorted = (clone(this.$store.calendar.events) ?? []).reduce(
             (categorized, event) => {
                 if (
                     (this.search.length && !this.inSearch(event)) ||
@@ -195,8 +192,7 @@ export default () => ({
             {},
         );
 
-        let unsorted = Object.entries(this.categorizedEvents);
-        this.categorizedEvents = unsorted
+        this.categorizedEvents = Object.entries(unsorted)
             .sort((a, b) => {
                 if (a[0] === "Uncategorized") {
                     return -1;
@@ -246,7 +242,7 @@ export default () => ({
         }
         $dispatch("event-viewer-modal-view-event", {
             event_db_id: event_data.id,
-            epoch: window.dynamic_data.epoch,
+            epoch: this.$store.calendar.dynamic_data.epoch,
         });
     },
 

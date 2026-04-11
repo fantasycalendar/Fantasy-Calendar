@@ -2,6 +2,7 @@ import CollapsibleComponent from "./collapsible_component";
 
 class RealTimeAdvancementCollapsible extends CollapsibleComponent {
     collapsible_name = "Real-Time Advancement";
+    advancement = {};
     clock_enabled = false;
 
     inboundProperties = {
