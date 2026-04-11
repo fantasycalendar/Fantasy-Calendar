@@ -169,7 +169,7 @@
                             <div>
                                 <x-alpine.check-input
                                     id="index + '_ends_year'"
-                                    x-model='era.settings.starting_era'
+                                    x-model='era.settings.ends_year'
                                     disabled-when="!season_settings.periodic_seasons"
                                 >
                                     Ends year prematurely
