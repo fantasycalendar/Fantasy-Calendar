@@ -106,17 +106,19 @@ export default () => ({
                     type: "success"
                 });
             })
-            .catch(() => {
+            .catch((error) => {
                 this.save_status = "error";
                 this.$dispatch('notify', {
-                    content: error.response.data.message,
+                    content: error.response?.data?.message ?? "Failed to save calendar",
                     type: "error"
                 });
             })
             .finally(() => {
                 this.timeout = setTimeout(() => this.save_status = "", 4000);
-                this.has_changes = false;
-                this.prev_calendar_data = this.cloneCalendarData(this.$store.calendar);
+                if (this.save_status !== "error") {
+                    this.has_changes = false;
+                    this.prev_calendar_data = this.cloneCalendarData(this.$store.calendar);
+                }
             })
     }
 })
