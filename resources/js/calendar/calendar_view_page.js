@@ -9,6 +9,7 @@ export default (calendar_structure) => ({
     poll_timer: false,
     instapoll: false,
     new_dynamic_change: false,
+    _applying_server_update: false,
 
     location_select_value: null,
     location_select_options: {},
@@ -115,9 +116,10 @@ export default (calendar_structure) => ({
                     store.last_dynamic_change = this.new_dynamic_change
                     get_dynamic_data(store.hash)
                         .then((result) => {
-                            this.$dispatch("calendar-updated", {
+                            this._applying_server_update = true;
+                            this.$dispatch("calendar-updating", {
                                 calendar: {
-                                    dynamic_data: result.dynamic_data
+                                    dynamic_data: result.data.dynamic_data
                                 }
                             });
                             this.poll_timer = setTimeout(this.check_dates.bind(this), 5000);
@@ -155,6 +157,10 @@ export default (calendar_structure) => ({
     },
 
     calendar_updated() {
+        if (this._applying_server_update) {
+            this._applying_server_update = false;
+            return;
+        }
         update_dynamic(this.$store.calendar.hash);
     },
 
