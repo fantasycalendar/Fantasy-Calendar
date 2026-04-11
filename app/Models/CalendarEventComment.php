@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Mews\Purifier\Casts\CleanHtml;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $user_id
@@ -54,6 +54,6 @@ class CalendarEventComment extends Model
     }
 
     public function event() {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(CalendarEvent::class);
     }
 }
