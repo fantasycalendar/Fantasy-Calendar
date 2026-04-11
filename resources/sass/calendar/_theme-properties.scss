@@ -77,11 +77,11 @@
     --disabled-crosshatch: url("data:image/svg+xml;charset=utf-8,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 0H20L0 20m40 20V20L20 40' fill='%23f9f9fa' fill-rule='evenodd'/%3E%3C/svg%3E");
     --warning-crosshatch: url("data:image/svg+xml;charset=utf-8,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40L40 0H20L0 20m40 20V20L20 40' fill-opacity='0.3' fill='%23e3342f' fill-rule='evenodd'/%3E%3C/svg%3E");
 
-    // Existing :root custom properties (moved from _variables.scss)
-    --stroke-colour: 1px solid rgba(0, 0, 0, 0.1);
-    --fill-colour: 1px solid rgba(0, 0, 0, 0.1);
-    --picker-label-colour: 1px solid rgba(0, 0, 0, 0.1);
-    --editor-placeholder-colour: 1px solid rgba(0, 0, 0, 0.1);
+    // Quill editor colors (light-mode defaults to match quill.snow.css)
+    --stroke-colour: #444;
+    --fill-colour: #444;
+    --picker-label-colour: #444;
+    --editor-placeholder-colour: rgba(0, 0, 0, 0.6);
     --border-color: rgb(31 41 55);
 
     // Group list colors
