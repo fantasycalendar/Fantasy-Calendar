@@ -8,7 +8,7 @@
                 owned: true,
                 paymentLevel: "free",
                 userRole: "guest",
-                darkTheme: @js(auth()->user()?->setting("dark_theme") ?? true),
+                dark_theme: @js(auth()->user()?->setting("dark_theme") ?? true),
                 hash: null,
                 calendar_name: "",
                 calendar_id: null,
