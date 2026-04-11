@@ -33,7 +33,7 @@
             @endif
             <button type='button' onclick="print()" class="btn w-100 btn-sm btn-secondary">
                 Print
-                </a>
+            </button>
         </div>
 
 
