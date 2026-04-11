@@ -611,11 +611,14 @@ export class date_manager {
 
         if (this.year == year || !this.check_max_year(year)) return;
 
+        const originalYear = this._year;
+        const maxSearchDistance = 100;
+
         if (get_timespans_in_year(this.static_data, year, false).length != 0) {
             this._year = year;
             this.timespans_in_year = get_timespans_in_year(this.static_data, this.year, true);
             this.cap_timespan();
-        } else {
+        } else if (Math.abs(year - originalYear) < maxSearchDistance) {
             if (year < this.year) {
                 this.year = year - 1;
             } else if (year > this.year) {
