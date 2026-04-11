@@ -174,12 +174,19 @@ export default () => ({
     refreshEvents() {
         this.refreshCategories();
         const unsorted = (clone(this.$store.calendar.events) ?? []).reduce(
-            (categorized, event) => {
+            (categorized, event, index) => {
                 if (
                     (this.search.length && !this.inSearch(event)) ||
                     !this.matchesVisibility(event)
                 ) {
                     return categorized;
+                }
+
+                // Ensure every event has a unique id for Alpine x-for :key binding.
+                // On the create page, events don't have database IDs yet,
+                // so we fall back to a generated key based on the array index.
+                if (event.id === undefined || event.id === null) {
+                    event.id = `new-${index}`;
                 }
 
                 const categoryName =
