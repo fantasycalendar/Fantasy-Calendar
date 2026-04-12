@@ -1026,6 +1026,7 @@ export var event_evaluator = {
                 return a || b;
                 break;
             case '^':
+            case 'XOR':
                 return a ^ b;
                 break;
         }
