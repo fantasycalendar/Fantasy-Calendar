@@ -104,8 +104,6 @@ class DiscordController extends Controller
 
         $body = $apiClient->webhookAuthTokenExchange(request()->get('code'));
 
-        logger()->debug(json_encode($body));
-
         try {
             if(!session()->has('webhook_calendar')) {
                 return redirect(route('profile.integrations'))
