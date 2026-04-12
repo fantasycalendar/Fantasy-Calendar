@@ -1,9 +1,3 @@
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
 import.meta.glob([
     '../images/**',
 ])
@@ -38,13 +32,6 @@ if (token) {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
-// let authorization = document.head.querySelector('meta[name="api-token"]');
-//
-// if (authorization) {
-//     window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + authorization.content;
-// } else {
-//     console.log('No API token.');
-// }
 
 import Sortable from 'sortablejs';
 window.Sortable = Sortable
@@ -93,23 +80,6 @@ function escapeHtml(value) {
         .replace(/'/g, '&#039;');
 }
 window.sanitizeHtml = escapeHtml;
-
-/**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
- */
-
-// import Echo from 'laravel-echo'
-
-// window.Pusher = require('pusher-js');
-
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: process.env.MIX_PUSHER_APP_KEY,
-//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//     encrypted: true
-// });
 
 import { linked_popup } from './calendar/calendar_functions.js';
 window.linked_popup = linked_popup;
