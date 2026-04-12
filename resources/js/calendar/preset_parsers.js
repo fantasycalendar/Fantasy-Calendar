@@ -109,7 +109,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data) {
 
     var calendar_name = calendar.name;
 
-    console.log("Checking global week")
     if (calendar.static_data.year_data.global_week !== undefined) {
         for (var i = 0; i < calendar.static_data.year_data.global_week.length; i++) {
             static_data.year_data.global_week.push(calendar.static_data.year_data.global_week[i].toString());
@@ -120,7 +119,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data) {
         static_data.year_data.overflow = calendar.static_data.year_data.overflow;
     }
 
-    console.log("Checking timespans")
     if (calendar.static_data.year_data.timespans !== undefined) {
 
         for (var i = 0; i < calendar.static_data.year_data.timespans.length; i++) {
@@ -176,7 +174,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data) {
 
     }
 
-    console.log("Checking leap days")
     if (calendar.static_data.year_data.leap_days !== undefined) {
 
         for (var i = 0; i < calendar.static_data.year_data.leap_days.length; i++) {
@@ -259,7 +256,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data) {
 
     }
 
-    console.log("Checking moons")
     if (calendar.static_data.moons !== undefined) {
 
         for (var i = 0; i < calendar.static_data.moons.length; i++) {
@@ -339,7 +335,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data) {
 
     }
 
-    console.log("Checking clock")
     if (calendar.static_data.clock !== undefined) {
 
         if (calendar.static_data.clock.enabled !== undefined && typeof calendar.static_data.clock.enabled === "boolean") {
@@ -386,7 +381,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data) {
 
     }
 
-    console.log("Checking seasons")
     if (calendar.static_data.seasons !== undefined) {
 
         if (calendar.static_data.seasons.global_settings !== undefined) {
@@ -756,7 +750,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data) {
 
     }
 
-    console.log("Checking eras")
     if (calendar.static_data.eras !== undefined) {
 
         if (Array.isArray(calendar.static_data.eras)) {
@@ -865,7 +858,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data) {
 
     }
 
-    console.log("Checking settings")
     static_data.settings.layout = "grid";
     static_data.settings.comments = "none";
 
@@ -965,7 +957,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data) {
         static_data.settings.year_zero_exists = false;
     }
 
-    console.log("Checking cycles")
     if (calendar.static_data.cycles !== undefined) {
 
         if (calendar.static_data.cycles.format !== undefined) {
@@ -1013,7 +1004,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data) {
 
     let event_categories = []
 
-    console.log("Checking event categories")
     if (calendar.categories !== undefined && Array.isArray(calendar.categories)) {
 
         for (var categoryid in calendar.categories) {
@@ -1100,7 +1090,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data) {
 
     let events = []
 
-    console.log("Checking events")
     if (calendar.events !== undefined && Array.isArray(calendar.events)) {
         for (var eventId in calendar.events) {
 
@@ -1295,7 +1284,6 @@ function process_fantasycalendar(calendar, dynamic_data, static_data) {
 
     }
 
-    console.log("Checking current date")
     if (calendar.dynamic_data.year !== undefined && !isNaN(Number(calendar.dynamic_data.year))) {
         dynamic_data.year = Number(calendar.dynamic_data.year)
     } else {

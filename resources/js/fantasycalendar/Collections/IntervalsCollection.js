@@ -167,7 +167,6 @@ export default class IntervalsCollection extends Collection{
                 case "deny":
                     return acc - 1;
                 default:
-                    console.log("BRUH WHAT");
                     return acc;
             }
         }, 0);
@@ -243,14 +242,11 @@ export default class IntervalsCollection extends Collection{
             let string = intervals.toJsons();
 
             if (unitTest.truth !== string){
-                console.log(unitTest.truth)
-                console.log(string)
                 throw new Error(`${unitTest.interval} failed the parity test`)
             }
 
         }
 
-        console.log("Parity achieved!")
     }
 
 }

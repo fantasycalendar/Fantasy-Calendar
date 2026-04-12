@@ -98,8 +98,6 @@ export default class Calendar {
 
         this.storedChanges = {};
 
-        console.log("Updating calendar...", incomingChanges)
-
         // TODO: Make recalculation more atomic
         let rerenderKeys = [
             "static_data.year_data",
@@ -539,7 +537,6 @@ export default class Calendar {
     };
 
     increment_current_month() {
-        console.log("increment_current_month called");
         this.set_current_date({ month: this.dynamic_data.timespan + 1 });
     };
 
@@ -610,8 +607,6 @@ export default class Calendar {
     // event_categories setter retains side-effect logic: syncs category
     // settings onto events and resets orphaned category IDs.
     set event_categories(value) {
-        console.log('Setting event categories');
-        console.log(JSON.parse(JSON.stringify(value)));
         this._event_categories = value;
 
         this._event_categories

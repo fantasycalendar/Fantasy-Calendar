@@ -132,7 +132,6 @@ export default () => ({
 
         const selectedEvents = Object.entries(this.selected)
             .filter((entry) => {
-                console.log(entry[1]);
                 return entry[1];
             })
             .map((entry) =>
@@ -157,8 +156,6 @@ export default () => ({
                     (canonicalEvent) =>
                         canonicalEvent.id.toString() === event[0],
                 );
-
-                console.log(event, desiredId, canonicalEvent);
 
                 canonicalEvent.event_category_id = desiredId;
             });

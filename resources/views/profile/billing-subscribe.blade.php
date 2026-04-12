@@ -140,7 +140,7 @@
                     );
 
                     if (error) {
-                        console.log(error);
+                        console.error(error);
                         swal.fire("Oops", "Something went wrong: " + error.message, "error");
                         this.errors.stripeError = error.message;
                         this.ready = false;
@@ -153,7 +153,7 @@
                                 location.reload();
                             })
                             .catch(function(error) {
-                                console.log(error);
+                                console.error(error);
                             });
                     }
                 }

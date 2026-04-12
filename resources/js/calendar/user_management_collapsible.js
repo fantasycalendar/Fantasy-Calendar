@@ -52,7 +52,7 @@ class UserManagementCollapsible extends CollapsibleComponent {
                 this.invite_email = "";
             }
         }).catch(error => {
-            console.log(error);
+            console.error(error);
             this.invite_status = '';
             this.invite_error = error.response.data.errors.email[0];
         }).finally(() => {

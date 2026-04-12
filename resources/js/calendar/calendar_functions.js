@@ -423,10 +423,6 @@ export class date_manager {
 
         this.static_data = static_data;
 
-        if (typeof this.static_data.settings === 'undefined') {
-            console.log(this.static_data);
-        }
-
         this._year = convert_year(this.static_data, year);
 
         this._timespan = timespan;

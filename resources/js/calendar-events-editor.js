@@ -1218,7 +1218,7 @@ export default () => ({
         try {
             this.worker_event_tester.terminate();
         } catch (err) {
-            console.log(err)
+            console.error(err)
         }
 
         this.$dispatch("app-busy-end");
