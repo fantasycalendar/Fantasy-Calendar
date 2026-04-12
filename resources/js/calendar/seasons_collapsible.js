@@ -1,6 +1,6 @@
 import CollapsibleComponent from "./collapsible_component.js";
 import _ from "lodash";
-import { fract, get_colors_for_season, lerp } from "./calendar_functions.js";
+import { fract, get_colors_for_season, hslToHex, lerp } from "./calendar_functions.js";
 
 function create_season_events(complex, static_data) {
 
@@ -278,6 +278,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
     collapsible_name = "SeasonsCollapsible"
 
     deleting = -1;
+    colorSeed = 0;
 
     season_name = "";
 
@@ -340,6 +341,10 @@ class SeasonsCollapsible extends CollapsibleComponent {
     }
 
     loaded() {
+        let hash = this.$store.calendar.hash;
+        this.colorSeed ??= hash
+            ? Array.from(hash).reduce((acc, char) => acc + char.charCodeAt(0), 0)
+            : Math.floor(Math.random() * 360);
         this.migrateSeasonTypes();
         this.handleSeasonsChanged();
     }
@@ -361,13 +366,29 @@ class SeasonsCollapsible extends CollapsibleComponent {
         }
     }
 
+    generateSeasonColors(seasonIndex) {
+        // Step 90 degrees each time, so that creating four seasons will wrap a rainbow!
+        // Maybe in the future we'll have some kind of preset or interpolation system or something, but for now this works.
+        let step = 90;
+
+        // On dark theme, we want to nudge the new season colors just a _liiittle_ bit darker.
+        let s = this.$store.calendar.dark_theme ? 65 : 55;
+        let l = this.$store.calendar.dark_theme ? 65 : 50;
+
+        let startHue = (this.colorSeed + seasonIndex * step) % 360;
+        let endHue = (this.colorSeed + (seasonIndex + 1) * step) % 360;
+
+        return [
+            hslToHex(startHue, s, l),
+            hslToHex(endHue, s, l)
+        ];
+    }
+
     addSeason() {
+        let seasonIndex = this.seasons.length;
         let newSeason = {
             "name": this.season_name || "New season",
-            "color": [
-                "#" + Math.floor(Math.random() * 16777215).toString(16).toString(),
-                "#" + Math.floor(Math.random() * 16777215).toString(16).toString()
-            ],
+            "color": this.generateSeasonColors(seasonIndex),
             "time": {
                 "sunrise": {
                     "hour": 6,
