@@ -179,10 +179,10 @@
                     placeholder='Every nth'
                     ></input>
 
-                    <h5 class='mt-3 mb-1 modal-form-heading'>Conditions</h5>
+                    <h5 class='mt-3 mb-1 modal-form-heading' x-show="$store.calendar.perms.player_at_least('co-owner')">Conditions</h5>
 
-                    {{-- TODO: Hide this or change visuals for players and non-co-owners --}}
                     <div class='mt-2'
+                         x-show="$store.calendar.perms.player_at_least('co-owner')"
                          x-data="event_conditions_component"
                          x-modelable="source"
                          x-model="working_event.data.conditions"
