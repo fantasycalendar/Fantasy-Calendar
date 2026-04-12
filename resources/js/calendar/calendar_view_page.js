@@ -114,7 +114,7 @@ export default (calendar_structure) => ({
                 this.new_dynamic_change = new Date(result.data.last_dynamic_change)
                 if (this.new_dynamic_change > store.last_dynamic_change) {
                     store.last_dynamic_change = this.new_dynamic_change
-                    get_dynamic_data(store.hash)
+                    return get_dynamic_data(store.hash)
                         .then((result) => {
                             this._applying_server_update = true;
                             this.$dispatch("calendar-updating", {
@@ -122,17 +122,10 @@ export default (calendar_structure) => ({
                                     dynamic_data: result.data.dynamic_data
                                 }
                             });
-                            this.poll_timer = setTimeout(this.check_dates.bind(this), 5000);
-                        })
-                        .catch(error => {
-                            this.$dispatch('notify', {
-                                content: error.response.data.message,
-                                type: "error"
-                            });
                         });
-                } else {
-                    this.poll_timer = setTimeout(this.check_dates.bind(this), 5000);
                 }
+            }).catch(() => {}).finally(() => {
+                this.poll_timer = setTimeout(this.check_dates.bind(this), 5000);
             });
         } else {
             this.instapoll = true;
