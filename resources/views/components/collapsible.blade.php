@@ -35,7 +35,14 @@
     ])
     >
     <div class="flex justify-between items-center cursor-pointer px-2.5 py-1.5 hover:bg-gray-200/75 hover:dark:bg-gray-600"
+        id="{{ Str::slug($contains_clean) }}-header"
+        role="button"
+        tabindex="0"
+        :aria-expanded="open ? 'true' : 'false'"
+        aria-controls="{{ Str::slug($contains_clean) }}-content"
         @click="toggle"
+        @keydown.enter="toggle"
+        @keydown.space.prevent="toggle"
         :class="{
             'bg-gray-50 dark:bg-gray-700': !open ,
             'bg-gray-100 dark:bg-gray-600/80': open,
@@ -66,6 +73,9 @@
     </div>
 
     <div x-data="{{ Str::snake($contains_clean) }}_collapsible"
+        id="{{ Str::slug($contains_clean) }}-content"
+        role="region"
+        aria-labelledby="{{ Str::slug($contains_clean) }}-header"
         @calendar-loaded.window="load"
         @calendar-updated.window="load"
         x-show="open"

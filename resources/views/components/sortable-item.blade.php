@@ -8,12 +8,22 @@
 
     <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
         <div x-show="reordering"
-             class="handle w-[20px] grid place-items-center self-stretch flex-shrink-0 text-center cursor-move">
+             class="handle w-[20px] grid place-items-center self-stretch flex-shrink-0 text-center cursor-move"
+             role="button"
+             aria-label="Reorder"
+             tabindex="0">
             <i class="fa fa-bars text-xl hover:text-black hover:dark:text-white"></i>
         </div>
         <div class='cursor-pointer text-xl fa text-gray-900/50 dark:text-white/50'
              :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
-             @click="collapsed = !collapsed" x-show="!reordering">
+             :aria-expanded="collapsed ? 'false' : 'true'"
+             role="button"
+             aria-label="Toggle details"
+             tabindex="0"
+             @click="collapsed = !collapsed"
+             @keydown.enter="collapsed = !collapsed"
+             @keydown.space.prevent="collapsed = !collapsed"
+             x-show="!reordering">
         </div>
 
         <div class="flex flex-grow-1 input-group">
