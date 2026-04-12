@@ -1269,6 +1269,23 @@ export default () => ({
             build_seasons: this.build_seasons
         })));
 
+        this.worker_event_tester.onerror = e => {
+            console.error("Event tester worker error:", e.message);
+
+            if (!this.new_event && this.backup_event_data) {
+                store.events[this.event_id].data = clone(this.backup_event_data);
+                this.backup_event_data = {};
+            }
+
+            this.worker_event_tester.terminate();
+            this.worker_event_tester = null;
+            this.$dispatch("app-busy-end");
+            this.$dispatch("notify", {
+                content: "Event testing failed unexpectedly.",
+                type: "error"
+            });
+        };
+
         this.worker_event_tester.onmessage = e => {
             if (e.data.callback) {
                 this.$dispatch("app-update-progress", {
