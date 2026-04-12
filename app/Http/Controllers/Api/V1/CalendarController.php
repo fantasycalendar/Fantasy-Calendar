@@ -69,24 +69,14 @@ class CalendarController extends Controller
 
     public function users(GetCalendarUsersRequest $request, Calendar $calendar)
     {
-        $start = microtime(true);
+        $usersResource = new Collection($calendar->users, new CalendarUserTransformer());
 
-        $users = $calendar->users;
-
-        $usersResource = new Collection($users, new CalendarUserTransformer());
-
-        $result = array_merge(
+        return array_merge(
             $this->manager->createData($usersResource)->toArray()['data'],
             $calendar->invitations()->active()->get()->map(function ($invite) {
                 return $invite->transformForCalendar();
             })->toArray()
         );
-
-        $end = microtime(true);
-
-        logger()->info("Users call took " . ($end - $start) . " microseconds.");
-
-        return $result;
     }
 
     public function inviteUser(InviteCalendarUserRequest $request, Calendar $calendar)
