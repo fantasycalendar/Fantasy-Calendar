@@ -23,7 +23,7 @@ real_deploy_dev:
 	composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
 	rm -rf ./node_modules
 	npm install --legacy-peer-deps
-	npm run production
+	npm run build
 	aws s3 sync ./public s3://fantasy-calendar-dev/
 	date | cat > ./setup/lambda/dev/version.txt
 	chmod -R 775 ./
@@ -39,7 +39,7 @@ real_deploy_prd:
 	composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
 	rm -rf ./node_modules
 	npm install
-	npm run production
+	npm run build
 	aws s3 sync ./public s3://fantasy-calendar-prod/
 	date | cat > ./setup/lambda/dev/version.txt
 	chmod -R 775 ./
@@ -54,7 +54,7 @@ quick_deploy_dev:
 	composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
 	rm -rf ./node_modules
 	npm install
-	npm run production
+	npm run build
 	chmod -R 775 ./
 	aws s3 sync ./public s3://fantasy-calendar-dev/
 	serverless deploy --stage=dev --function=web
@@ -66,7 +66,7 @@ quick_deploy_dev:
 
 quick_deploy_prod:
 	composer install --prefer-dist --optimize-autoloader --no-dev
-	npm run production
+	npm run build
 	chmod -R 775 ./
 	aws s3 sync ./public s3://fantasy-calendar-prod/
 	serverless deploy --stage=prod --function=web
