@@ -61,7 +61,7 @@ export default () => ({
     update_progress($event) {
         let percentage = _.clamp($event.detail.percentage, 0, 100)
         let message = $event.detail?.message ?? "";
-        if(this.percentage === percentage && this.info_text !== message) return;
+        if(this.percentage === percentage && this.info_text === message) return;
         this.info_text = message;
         this.percentage = percentage;
     },
