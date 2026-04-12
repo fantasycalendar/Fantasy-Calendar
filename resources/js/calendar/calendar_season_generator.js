@@ -894,14 +894,17 @@ export class Climate {
 
             let time = this.get_time_data(first_epoch_data);
 
+            let rising_equinox;
+            let falling_equinox;
+
             if (this.low_solstice_epochs.length != 0 || this.high_solstice_epochs.length != 0) {
 
                 if (this.low_solstice_epochs[0] > this.high_solstice_epochs[0]) {
-                    let falling_equinox = false;
-                    let rising_equinox = time.sunset - time.sunrise < this.middle_day_time;
+                    falling_equinox = false;
+                    rising_equinox = time.sunset - time.sunrise < this.middle_day_time;
                 } else {
-                    let falling_equinox = time.sunset - time.sunrise > this.middle_day_time;
-                    let rising_equinox = false;
+                    falling_equinox = time.sunset - time.sunrise > this.middle_day_time;
+                    rising_equinox = false;
                 }
 
             } else {
@@ -918,13 +921,11 @@ export class Climate {
 
                 let next_season_day_length = this.convert_object_to_time(next_sunset) - this.convert_object_to_time(next_sunrise)
 
-                let falling_equinox = next_season_day_length <= curr_season_day_length;
-                let rising_equinox = next_season_day_length > curr_season_day_length;
+                falling_equinox = next_season_day_length <= curr_season_day_length;
+                rising_equinox = next_season_day_length > curr_season_day_length;
 
             }
 
-            let rising_equinox;
-            let falling_equinox;
             for (let epoch = this.start_epoch; epoch < this.end_epoch; epoch++) {
 
                 let epoch_data = this.epoch_data[epoch].season;
