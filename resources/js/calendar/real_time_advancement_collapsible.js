@@ -1,4 +1,5 @@
 import CollapsibleComponent from "./collapsible_component";
+import { notify } from "./calendar_functions";
 
 class RealTimeAdvancementCollapsible extends CollapsibleComponent {
     collapsible_name = "Real-Time Advancement";
@@ -22,9 +23,7 @@ class RealTimeAdvancementCollapsible extends CollapsibleComponent {
         if (!this.clock_enabled && this.advancement.advancement_rate_unit !== 'days') {
             this.advancement.advancement_enabled = false;
 
-            this.$dispatch('notify', {
-                content: `Real-time advancement by ${this.advancement.advancement_rate_unit} is only possible with the clock enabled. Real-time advancement has been disabled.`,
-            })
+            notify(`Real-time advancement by ${this.advancement.advancement_rate_unit} is only possible with the clock enabled. Real-time advancement has been disabled.`)
         }
     }
 }

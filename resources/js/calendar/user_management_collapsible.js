@@ -1,6 +1,7 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 import CollapsibleComponent from "./collapsible_component";
+import { notify } from "./calendar_functions";
 
 class UserManagementCollapsible extends CollapsibleComponent {
     reordering = false;
@@ -27,12 +28,7 @@ class UserManagementCollapsible extends CollapsibleComponent {
                 this.users = response.data;
             }.bind(this))
             .catch(function(error) {
-                this.$dispatch('notify', {
-                    title: 'Oops!',
-                    body: 'An error occurred, please try again later.',
-                    icon: 'fa-exclamation-triangle',
-                    icon_color: 'text-red-500'
-                });
+                notify("An error occurred, please try again later.", "error");
             }).finally(() => {
                 this.loadingUsers = false;
             });
@@ -54,7 +50,7 @@ class UserManagementCollapsible extends CollapsibleComponent {
         }).catch(error => {
             console.error(error);
             this.invite_status = '';
-            this.invite_error = error.response.data.errors.email[0];
+            this.invite_error = error.response?.data?.errors?.email?.[0] ?? error.message ?? "An unknown error occurred";
         }).finally(() => {
             setTimeout(() => {
                 this.invite_status = "";
@@ -95,12 +91,7 @@ class UserManagementCollapsible extends CollapsibleComponent {
                 invite.username = 'Invite cancelled.';
                 this.loadUsers();
             }).catch((error) => {
-                this.$dispatch('notify', {
-                    title: 'Oops!',
-                    body: 'An error occurred, please try again later.',
-                    icon: 'fa-exclamation-triangle',
-                    icon_color: 'text-red-500'
-                });
+                notify("An error occurred, please try again later.", "error");
             });
         });
     }
@@ -136,12 +127,7 @@ class UserManagementCollapsible extends CollapsibleComponent {
             }).then((response) => {
                 this.loadUsers();
             }).catch((error) => {
-                this.$dispatch('notify', {
-                    title: 'Oops!',
-                    body: 'An error occurred, please try again later.',
-                    icon: 'fa-exclamation-triangle',
-                    icon_color: 'text-red-500'
-                });
+                notify("An error occurred, please try again later.", "error");
             });
         });
     }
@@ -153,7 +139,7 @@ class UserManagementCollapsible extends CollapsibleComponent {
         ).then(function(result) {
             output(true, 'Updated permissions!');
         }).catch(function(error) {
-            output(false, error.response.data.message);
+            output(false, error.response?.data?.message ?? error.message ?? "An unknown error occurred");
         });
     }
 
@@ -164,7 +150,7 @@ class UserManagementCollapsible extends CollapsibleComponent {
         ).then(function(result) {
             output(true, 'Resent invitation');
         }).catch(function(error) {
-            output(false, error.response.data.message);
+            output(false, error.response?.data?.message ?? error.message ?? "An unknown error occurred");
         });
     }
 }

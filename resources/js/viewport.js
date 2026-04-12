@@ -1,3 +1,5 @@
+import { notify } from "./calendar/calendar_functions";
+
 export default function () {
     return {
         errors: {},
@@ -25,10 +27,7 @@ export default function () {
         init() {
             this.$nextTick(() => {
                 window.onerror = (error, url, line) => {
-                    this.$dispatch("notify", {
-                        content: "Error:\n " + error + " \nin file " + url + " \non line " + line,
-                        type: "error"
-                    });
+                    notify("Error:\n " + error + " \nin file " + url + " \non line " + line, "error");
                 }
 
                 if (deviceType() == "Mobile Phone") {

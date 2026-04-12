@@ -1,7 +1,7 @@
 import axios from "axios";
 import CollapsibleComponent from "./collapsible_component";
 import { _update_dynamic } from "./calendar_ajax_functions";
-import { evaluate_calendar_start } from "./calendar_functions";
+import { evaluate_calendar_start, notify } from "./calendar_functions";
 
 class CalendarLinkingCollapsible extends CollapsibleComponent {
     _children = [];
@@ -25,12 +25,7 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
                     return calendar;
                 });
             })
-            .catch(error => {
-                this.$dispatch('notify', {
-                    type: "error",
-                    content: error.response.data.message
-                });
-            });
+            .catch(notify);
     }
 
     linkChildCalendar(hash, inputDate) {
@@ -63,13 +58,8 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
                     .then(() => {
                         window.location.reload();
                     })
-                    .catch((error) => {
-                        this.$dispatch('notify', {
-                            content: error.response.data.message,
-                            type: "error"
-                        })
-                    })
-            })
+                    .catch(notify)
+            }).catch(notify)
         })
     }
 
@@ -99,13 +89,8 @@ class CalendarLinkingCollapsible extends CollapsibleComponent {
                         .then(() => {
                             window.location.reload();
                         })
-                        .catch((error) => {
-                            this.$dispatch('notify', {
-                                content: error.response.data.message,
-                                type: "error"
-                            })
-                        })
-                })
+                        .catch(notify)
+                }).catch(notify)
             });
     }
 

@@ -1,5 +1,5 @@
 import { submit_new_event, submit_edit_event, submit_delete_event } from "./calendar/calendar_ajax_functions";
-import { ordinal_suffix_of, precisionRound, clone } from "./calendar/calendar_functions";
+import { ordinal_suffix_of, precisionRound, clone, notify } from "./calendar/calendar_functions";
 import { moon_phases } from "./calendar/calendar_variables";
 
 function createEventTesterWorker() {
@@ -1280,10 +1280,7 @@ export default () => ({
             this.worker_event_tester.terminate();
             this.worker_event_tester = null;
             this.$dispatch("app-busy-end");
-            this.$dispatch("notify", {
-                content: "Event testing failed unexpectedly.",
-                type: "error"
-            });
+            notify("Event testing failed unexpectedly.", "error");
         };
 
         this.worker_event_tester.onmessage = e => {

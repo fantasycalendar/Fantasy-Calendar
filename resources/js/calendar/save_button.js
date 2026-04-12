@@ -1,4 +1,5 @@
 import { _update_dynamic, update_all, update_dynamic, update_name } from "./calendar_ajax_functions.js";
+import { notify } from "./calendar_functions";
 import _ from "lodash";
 
 export default () => ({
@@ -101,17 +102,11 @@ export default () => ({
         updateMethod(...updateParams)
             .then(() => {
                 this.save_status = "success";
-                this.$dispatch('notify', {
-                    content: "Successfully saved calendar!",
-                    type: "success"
-                });
+                notify("Successfully saved calendar!", "success");
             })
             .catch((error) => {
                 this.save_status = "error";
-                this.$dispatch('notify', {
-                    content: error.response?.data?.message ?? "Failed to save calendar",
-                    type: "error"
-                });
+                notify(error);
             })
             .finally(() => {
                 this.timeout = setTimeout(() => this.save_status = "", 4000);
