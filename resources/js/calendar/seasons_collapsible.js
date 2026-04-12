@@ -449,14 +449,6 @@ class SeasonsCollapsible extends CollapsibleComponent {
             return;
         }
 
-        // Currently, we have to do this round-about way because the season data structure may not have colors defined
-        // so if we turn it on before they exist, we risk having Alpine try to access data that may not exist
-        // let seasonColorEnabled = !this.settings.color_enabled;
-
-        // if (!seasonColorEnabled) {
-        //     this.settings.color_enabled = false;
-        // }
-
         let seasons = _.cloneDeep(this.seasons);
 
         let colors = []
@@ -481,10 +473,6 @@ class SeasonsCollapsible extends CollapsibleComponent {
         }
 
         this.seasons = _.cloneDeep(seasons);
-
-        // if (seasonColorEnabled) {
-        //     this.settings.color_enabled = true;
-        // }
     }
 
     switchPeriodicSeason() {
