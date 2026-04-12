@@ -503,7 +503,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
         new Promise((resolve, reject) => {
 
             let found = this.events.some(event => {
-                return ['spring equinox', 'summer solstice', 'autumn equinox', 'winter solstice'].indexOf(event.name.toLowerCase()) > 1;
+                return ['spring equinox', 'summer solstice', 'autumn equinox', 'winter solstice'].indexOf(event.name.toLowerCase()) > -1;
             });
 
             if (found) {
