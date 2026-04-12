@@ -114,12 +114,6 @@ mark {
 body.dark {
     color: #{$text-gray-200};
 
-    .form-control:disabled,
-    .form-control[readonly] {
-        background-color: $bg-gray-600 !important;
-        color: $bg-gray-800 !important;
-    }
-
     .form-control {
         background-color: $bg-gray-700;
         border-color: $bg-gray-600;
