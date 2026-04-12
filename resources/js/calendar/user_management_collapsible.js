@@ -94,7 +94,7 @@ class UserManagementCollapsible extends CollapsibleComponent {
             }).then((response) => {
                 invite.username = 'Invite cancelled.';
                 this.loadUsers();
-            }).catch(function(error) {
+            }).catch((error) => {
                 this.$dispatch('notify', {
                     title: 'Oops!',
                     body: 'An error occurred, please try again later.',
@@ -135,7 +135,7 @@ class UserManagementCollapsible extends CollapsibleComponent {
                 remove_all: result.value == 1,
             }).then((response) => {
                 this.loadUsers();
-            }).catch(function(error) {
+            }).catch((error) => {
                 this.$dispatch('notify', {
                     title: 'Oops!',
                     body: 'An error occurred, please try again later.',
