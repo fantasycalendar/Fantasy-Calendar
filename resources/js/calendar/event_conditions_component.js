@@ -10,7 +10,7 @@ export default () => ({
     connectedEvents: [],
     currentEventIndex: -1,
 
-    addCondition(add_to_id) {
+    addCondition(add_to_id, silent) {
         let condition = this.processCondition(["Year", "0", [0]], add_to_id);
         this.conditionsHashmap[condition.id] = condition;
 
@@ -28,9 +28,13 @@ export default () => ({
 
             this.condition_tree.push(condition);
         }
+
+        if (!silent) {
+            this.$dispatch('conditions-manually-changed');
+        }
     },
 
-    deleteElement(element_id) {
+    deleteElement(element_id, silent) {
         let element = this.conditionsHashmap[element_id];
         let siblings = this.conditionsHashmap[element.parent_id]?.children
             ?? this.condition_tree;
@@ -44,7 +48,11 @@ export default () => ({
         siblings.splice(element_index, 1);
 
         if (element.parent_id && siblings.length === 0) {
-            this.deleteElement(element.parent_id);
+            this.deleteElement(element.parent_id, true);
+        }
+
+        if (!silent) {
+            this.$dispatch('conditions-manually-changed');
         }
     },
 
@@ -67,7 +75,8 @@ export default () => ({
             this.condition_tree.push(group);
         }
 
-        this.addCondition(group.id);
+        this.addCondition(group.id, true);
+        this.$dispatch('conditions-manually-changed');
     },
 
     set source(value) {
@@ -500,9 +509,11 @@ export default () => ({
         this.conditionsHashmap[id].comparison = value;
         this.conditionsHashmap[id].type = optGroupValue;
         this.keepFocus(event.target.dataset.id);
+        this.$dispatch('conditions-manually-changed');
     },
 
     keepFocus(id) {
+        this.$dispatch('conditions-manually-changed');
         this.$nextTick(() => {
             let elem = document.querySelectorAll(`[data-event-conditions-manager-id="${id}"]`)[0];
             if (elem) {
@@ -599,6 +610,8 @@ export default () => ({
         if (type === 'num') {
             this.conditionsHashmap[groupId].minimum ||= 1;
         }
+
+        this.$dispatch('conditions-manually-changed');
     },
 
     renderOperator(element) {

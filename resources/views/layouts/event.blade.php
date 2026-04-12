@@ -112,6 +112,7 @@
     @event-editor-modal-edit-event.window="edit_event"
     @event-editor-modal-clone-event.window="clone_event"
     @event-editor-modal-delete-event.window="confirm_delete_event"
+    @conditions-manually-changed="conditions_changed = true"
     @keyup.escape.window="esc_pressed($event)"
     x-show.immediate='open'
     x-cloak

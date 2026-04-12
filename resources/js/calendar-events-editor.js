@@ -71,6 +71,7 @@ export default () => ({
 
         this.new_event = true;
         this.cloning_event = true;
+        this.conditions_changed = false;
 
         this.working_event = $event.detail.event_data;
         delete this.working_event['id'];
@@ -90,6 +91,7 @@ export default () => ({
         this.initialize($event);
 
         this.new_event = true;
+        this.conditions_changed = false;
         let name = sanitizeHtml($event.detail.name ?? "");
         this.modal_heading = "Creating Event"
 
@@ -172,6 +174,7 @@ export default () => ({
         this.initialize($event);
 
         this.new_event = false;
+        this.conditions_changed = false;
 
         this.modal_heading = "Editing Event"
 
@@ -239,6 +242,7 @@ export default () => ({
 
         this.event_id = -1;
         this.settings_open = false;
+        this.conditions_changed = false;
         this.preset = "once";
         this.previous_preset = "once";
         this.moon_presets = [];
@@ -649,6 +653,7 @@ export default () => ({
         "every_x_inverse_annually_weekday": { text: "", enabled: true, nth: true },
     },
 
+    conditions_changed: false,
     preset: "once",
     previous_preset: "once",
     moon_presets: [],
@@ -683,10 +688,12 @@ export default () => ({
                 confirmButtonText: 'OK',
                 icon: "warning",
             }).then((result) => {
-                if (result.dismiss) {
+                if (result.isConfirmed) {
                     this.update_every_nth_preset_labels();
                     this.apply_preset_conditions(this.preset, this.nth);
                     this.previous_preset = this.preset;
+                } else {
+                    this.preset = this.previous_preset;
                 }
             });
 
