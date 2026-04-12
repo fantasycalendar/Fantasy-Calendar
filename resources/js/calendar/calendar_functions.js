@@ -1649,6 +1649,10 @@ export function copy_link(epoch_data, hide_copy_warning = false) {
 }
 
 export function notify(name, type) {
+    if (name instanceof Error) {
+        name = name.response?.data?.message ?? name.message ?? "An unexpected error occurred";
+        type = type ?? "error";
+    }
     window.dispatchEvent(new CustomEvent('notify', {
         detail: {
             content: name,
