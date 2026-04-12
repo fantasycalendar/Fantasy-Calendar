@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="base-url" content="{{ config('app.url') }}">
-    <meta name="api-url" content="{{ config('app.url') }}api/v1">
+    <meta name="api-url" content="{{ config('app.url') }}/api/v1">
 
     <meta property="og:title" content="{{ $calendar->name ?? $title ?? "Fantasy Calendar" }}">
     <meta property="og:type" content="website">
@@ -54,7 +54,7 @@
     <script>
 
         window.baseurl = '{{ getenv('WEBADDRESS') }}';
-        window.apiurl = '{{ getenv('WEBADDRESS') }}'+'api/v1';
+        window.apiurl = '{{ getenv('WEBADDRESS') }}'+'/api/v1';
 
         function isMobile() {
             try{ document.createEvent("TouchEvent"); return true; }
