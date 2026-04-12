@@ -9,30 +9,70 @@
     <div class="text-center mt-0 mb-3">By {{ $calendar->user->username }}</div>
 
     <div class="accordion mt-3">
-        <div class='d-flex flex-column mx-3 my-2'>
-            <div class="input-group">
-                <input type="text" x-ref="share_url_input" class="form-control form-control-sm share-body" readonly value="{{ url()->current() }}"/>
-                <div class="input-group-append">
-                    <button x-on:click="() => {
-                        $refs.share_url_input.select();
-                        document.execCommand('copy');
-                        $dispatch('notify', {
-                            content: 'Copied to clipboard!',
-                            type: 'success'
-                        });
-                    }" id="btn_share" type="button" class='btn btn-sm btn-secondary btn-block'>Copy URL</button>
-                </div>
-            </div>
-        </div>
+        <div class="flex gap-2 mx-3 my-2"
+            x-data="{
+                label: 'Share',
+                icon: 'fa-share-alt',
+                sharing: false,
+                async share() {
+                    if (this.sharing) return;
 
-        <div class='d-flex my-3 mx-3'>
+                    let url = @js(url()->current());
+                    let shared = false;
+
+                    if (navigator.share) {
+                        try {
+                            await navigator.share({ title: @js($calendar->name), url: url });
+                            this.label = 'Shared!';
+                            shared = true;
+                        } catch (e) {
+                            // User cancelled or share failed, fall back to clipboard
+                        }
+                    }
+
+                    if (!shared && navigator.clipboard) {
+                        try {
+                            await navigator.clipboard.writeText(url);
+                            this.label = 'Copied!';
+                            shared = true;
+                        } catch (e) {}
+                    }
+
+                    if (!shared) {
+                        try {
+                            let input = document.createElement('input');
+                            input.value = url;
+                            document.body.appendChild(input);
+                            input.select();
+                            shared = document.execCommand('copy');
+                            document.body.removeChild(input);
+                            if (shared) this.label = 'Copied!';
+                        } catch (e) {}
+                    }
+
+                    if (shared) {
+                        this.icon = 'fa-check';
+                        this.sharing = true;
+                        $dispatch('notify', { content: this.label.replace('!', '') + ' successfully!', type: 'success' });
+                        setTimeout(() => {
+                            this.label = 'Share';
+                            this.icon = 'fa-share-alt';
+                            this.sharing = false;
+                        }, 2000);
+                    }
+                }
+            }"
+        >
+            <button type="button" class="btn btn-sm btn-secondary w-full" x-on:click="share()">
+                <i class="fa" :class="icon"></i> <span x-text="label"></span>
+            </button>
             @if($calendar->owned)
-            <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}" class="btn w-100 btn-sm btn-success mr-2">
-                Edit
+            <a href="{{ route('calendars.edit', ['calendar'=> $calendar->hash ]) }}" class="btn btn-sm btn-success w-full">
+                <i class="fa fa-edit"></i> Edit
             </a>
             @endif
-            <button type='button' onclick="print()" class="btn w-100 btn-sm btn-secondary">
-                Print
+            <button type="button" onclick="print()" class="btn btn-sm btn-secondary w-full">
+                <i class="fa fa-print"></i> Print
             </button>
         </div>
 
