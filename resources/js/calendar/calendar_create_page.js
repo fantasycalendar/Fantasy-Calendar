@@ -221,6 +221,7 @@ export default (calendar_structure) => ({
             store.static_data = data.static_data;
             store.dynamic_data = data.dynamic_data;
             store.events = data.events;
+            store.event_categories = data.event_categories;
 
             this.evaluate_current_step();
 
