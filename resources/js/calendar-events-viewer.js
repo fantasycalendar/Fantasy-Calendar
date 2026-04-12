@@ -54,11 +54,8 @@ export default () => ({
         this.can_comment_on_event = this.db_id !== false;
         this.can_edit = store.perms.can_modify_event(this.id);
 
-        // if (!this.comment_editor) {
-        // }
-
         if (this.user_can_comment && this.can_comment_on_event) {
-            // this.comment_editor.trumbowyg('html', '');
+            this.new_comment_content = '';
         }
 
         if (this.db_id) {
@@ -266,13 +263,7 @@ export default () => ({
     },
 
     confirm_close: function($event) {
-        const possibleTrumbowyg = [$event.target.id, $event.target.parentElement?.id].concat(
-            Array.from($event.target?.classList),
-            Array.from($event.target?.parentElement?.classList ?? []),
-            Array.from($event.target?.parentElement?.parentElement?.classList ?? []),
-        );
-
-        if (possibleTrumbowyg.some(entry => entry.startsWith('trumbowyg-'))) return false;
+        if ($event.target.closest('.ql-toolbar, .ql-container, .ql-picker-options')) return false;
 
         // Don't do anything if a swal is open.
         if (swal.isVisible()) {
@@ -302,9 +293,5 @@ export default () => ({
         this.data = {};
         this.comments = [];
         this.loading_comments = true;
-        if (this.user_can_comment && this.can_comment_on_event) {
-            // this.comment_editor.trumbowyg('html');
-        }
-
     }
 })

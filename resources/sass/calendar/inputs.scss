@@ -838,18 +838,6 @@ body.dark .lbl-toggle:hover {
 
 /* ------------------ Event forms ----------------- */
 
-#event_comment_mastercontainer .trumbowyg {
-    height: 150px;
-    max-height: 150px;
-    min-height: 150px;
-    overflow: hidden;
-}
-
-#event_comment_mastercontainer .trumbowyg-editor {
-    min-height: calc(100% - 37px);
-    background-color: var(--card-bg-color);
-}
-
 .loading {
     background-image: url("resources/images/icons/loader_black.png");
     height: 35px;
@@ -1333,32 +1321,6 @@ ol.example li.placeholder:before {
     100% {
         transform: rotate(25deg);
     }
-}
-
-.trumbowyg-box {
-    margin: 0;
-    border: 1px solid var(--calendar-border-color);
-}
-
-.trumbowyg-button-pane {
-    background: var(--card-bg-color);
-    border-bottom: 1px solid var(--calendar-border-color);
-}
-
-.trumbowyg-button-pane .trumbowyg-button-group::after,
-.trumbowyg-button-pane::after {
-    background: var(--calendar-border-color);
-}
-
-.trumbowyg-box svg,
-.trumbowyg-modal svg {
-    fill: var(--main-text-color);
-}
-
-.trumbowyg-button-pane button:not(.trumbowyg-disable):hover,
-.trumbowyg-button-pane button:not(.trumbowyg-disable):focus,
-.trumbowyg-button-pane button.trumbowyg-active {
-    background: var(--action-bg-color);
 }
 
 .event_occurrences {
