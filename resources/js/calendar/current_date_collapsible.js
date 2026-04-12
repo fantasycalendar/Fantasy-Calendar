@@ -1,27 +1,6 @@
 import CollapsibleComponent from "./collapsible_component";
 import { ordinal_suffix_of } from "./calendar_functions.js";
 
-/*
-* 1. Just try and hook up the minimum possible to make the current UI work
-*       (Same thing we've done elsewhere, more or less)
-*       (Without jQuery)
-* 2. Think about the flow of data, and responsibility over that data
-*       - `calendar.date`?
-*       - `$store.date`?
-*
-*
-* ----
-*  Options:
-*   - decrement_current_day = () { this.current_date = this.store.calendar.subtract_day_from(year, timespan, day) }
-*       - Have to build out `subtract_day_from`. Discuss what'd be required?
-*       - Follows existing pattern by having the `outboundProperties` be the thing that drives the upstream state
-*       - Data more consistently flows through `outboundProperties`
-*
-*   - decrement_current_day = () { this.$store.calendar.subtract_day(); }
-*       - Minimal effort up-front, leverages existing data structures
-*       - Has two general update paths for data
-*
-*/
 class CurrentDateCollapsible extends CollapsibleComponent {
     collapsible_name = "CurrentDateCollapsible";
 
@@ -41,16 +20,6 @@ class CurrentDateCollapsible extends CollapsibleComponent {
     }
 
     activeDateAdjustment = "current";
-
-    // Commented for now.
-    //  In short: We tell the calendar to update its values,
-    //  and then let those waterfall back down.
-    //
-    //  That's to avoid needing to care about much more than we need to (such as year zero)
-    //
-    // outboundProperties = {
-    //     'current_date': "dynamic_data",
-    // }
 
     /** ------------------- CURRENT DATE ---------------------- **/
 
