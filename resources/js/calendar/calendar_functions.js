@@ -653,7 +653,7 @@ export class date_manager {
 
     get first_timespan() {
 
-        for (var i = 0; i < this.timespans_in_year.length - 1; i++) {
+        for (var i = 0; i < this.timespans_in_year.length; i++) {
             if (this.timespans_in_year[i].result) {
                 return this.timespans_in_year[i].id
             }
