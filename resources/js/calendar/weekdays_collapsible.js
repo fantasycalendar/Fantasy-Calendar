@@ -46,6 +46,7 @@ class WeekdaysCollapsible extends CollapsibleComponent {
     addNewDay() {
         let weekdays = _.clone(this.weekdays);
         weekdays.push(this.new_weekday_name || "New weekday");
+        this.new_weekday_name = '';
         this.weekdays = weekdays;
     }
 

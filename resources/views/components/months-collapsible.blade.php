@@ -44,7 +44,7 @@
 
     <div class='timespan flex input-group'>
 
-        <input type='text' class='form-control' placeholder='New month' x-model="name">
+        <input type='text' class='form-control' placeholder='New month' x-model="name" @keyup.enter="addMonth">
 
         <select class='custom-select form-control' x-model="type">
             <option value='month'>Month</option>
