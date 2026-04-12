@@ -7,7 +7,7 @@
                 <div class="input-group" x-data>
                     <input
                         x-data="{
-                            name: '{{ $calendar->name }}',
+                            name: @js($calendar->name),
                             change() {
                                 this.$dispatch('calendar-updating', {
                                     calendar: {
