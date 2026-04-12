@@ -58,6 +58,7 @@ jobs:
         run: npm run build
       - name: Create env file
         run: |
+          mkdir -p storage/framework/{cache,sessions,views}
           php -r "file_exists('.env') || copy('.env.github', '.env');"
       - name: Generate app_key
         run: php artisan key:generate
