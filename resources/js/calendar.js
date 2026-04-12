@@ -1,4 +1,3 @@
-// TODO: ABSOLUTELY rewrite this
 import _ from "lodash";
 
 import {
