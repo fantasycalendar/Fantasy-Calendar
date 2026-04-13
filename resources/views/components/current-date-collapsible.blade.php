@@ -10,14 +10,23 @@
     </ul>
 
     <div class='date_control mt-3' id='date_inputs' :class="{ 'd-flex flex-column': activeDateAdjustment === 'current', 'd-none': activeDateAdjustment !== 'current' }">
-        <!-- TODO: Revisit childed calendar -->
         @if(isset($calendar) && $calendar?->isChild())
-            <div class='mb-3 text-center calendar_link_explanation'>
-                <p class='m-0'>This calendar follows the date of a parent calendar, <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank">{{ $calendar->parent->name }}</a>.</p>
+            <div class="rounded border border-gray-300 dark:border-gray-600 p-3 mt-2">
+                <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-300 mb-2">
+                    <i class="fa fa-link"></i>
+                    <span>Linked to</span>
+                </div>
+                <div class="mb-3">
+                    <a href='/calendars/{{ $calendar->parent->hash }}' target="_blank" class="text-lg font-semibold hover:underline">
+                        {{ $calendar->parent->name }} <i class="fa fa-external-link-alt text-xs"></i>
+                    </a>
+                </div>
+                <div class="border-t border-gray-200 dark:border-gray-600 pt-3">
+                    <div class="text-lg font-semibold" x-text="current_date_string"></div>
+                    <div class="text-sm text-gray-500 dark:text-gray-300 mt-1" x-text="'Year ' + current_year"></div>
+                    <div class="text-sm text-gray-500 dark:text-gray-300 mt-1" x-show="current_time_string" x-text="current_time_string"></div>
+                </div>
             </div>
-
-            <div class="text-center w-100 text-2xl mb-2" x-text="current_date_string"></div>
-            <div class="text-center w-100 text-xl" x-show="current_time_string" x-text="current_time_string"></div>
         @else
             <div class='input-group mt-2'>
                 <div class='input-group-prepend'>
