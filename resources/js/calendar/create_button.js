@@ -77,9 +77,6 @@ export default () => ({
         if (!this.getErrors().length) {
             return "Create Calendar";
         }
-        if (!this.getErrors().length) {
-            return "No changes to save";
-        }
         return "Calendar has errors";
     },
 
