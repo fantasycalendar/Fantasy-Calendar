@@ -20,16 +20,16 @@ export function getUrlParameter(sParam) {
 };
 
 export function update_name() {
-    const store = calendarStore();
-    return axios.post(store.baseurl + "calendars/" + store.hash, {
+    let store = calendarStore();
+    return axios.post(store.base_url("/calendars/:hash"), {
         _method: 'PATCH', name: store.calendar_name, hash: store.hash
     })
 }
 
 export function update_view_dynamic(calendar_hash) {
-    const store = calendarStore();
+    let store = calendarStore();
 
-    axios.post(store.baseurl + "calendars/" + calendar_hash, {
+    axios.post(store.base_url("/calendars/:hash"), {
         _method: 'PATCH',
         dynamic_data: JSON.stringify(store.dynamic_data)
     }).then(function(result) {
@@ -42,8 +42,8 @@ export function update_view_dynamic(calendar_hash) {
 
 
 export function _update_dynamic(calendar_hash) {
-    const store = calendarStore();
-    return axios.post(store.baseurl + "calendars/" + calendar_hash, {
+    let store = calendarStore();
+    return axios.post(store.base_url("/calendars/:hash"), {
         _method: 'PATCH',
         dynamic_data: JSON.stringify(store.dynamic_data)
     }).then(function(result) {
@@ -54,7 +54,7 @@ export function _update_dynamic(calendar_hash) {
 export const update_dynamic = _.debounce(_update_dynamic, 300);
 
 export async function update_all() {
-    const store = calendarStore();
+    let store = calendarStore();
 
     let lastChange = await check_last_change(store.hash);
 
@@ -73,8 +73,8 @@ export async function update_all() {
 }
 
 export async function do_update_all(calendar_hash) {
-    const store = calendarStore();
-    return axios.post(store.baseurl + "calendars/" + calendar_hash, {
+    let store = calendarStore();
+    return axios.post(store.base_url("/calendars/:hash"), {
         _method: 'PATCH',
         dynamic_data: JSON.stringify(store.dynamic_data),
         static_data: JSON.stringify(store.static_data),
@@ -88,8 +88,7 @@ export async function do_update_all(calendar_hash) {
 }
 
 export function get_all_data(calendar_hash, output) {
-
-    axios.get(calendarStore().apiurl + "/calendar/" + calendar_hash)
+    axios.get(calendarStore().api_url("/calendar/:hash"))
         .then(function(result) {
             output(result.data);
         }).catch(function(error) {
@@ -98,17 +97,17 @@ export function get_all_data(calendar_hash, output) {
 }
 
 export function get_dynamic_data(calendar_hash) {
-    return axios.get(calendarStore().apiurl + "/calendar/" + calendar_hash + "/dynamic_data");
+    return axios.get(calendarStore().api_url("/calendar/:hash/dynamic_data"));
 }
 
 export async function submit_new_event(event_id, callback) {
-    const store = calendarStore();
+    let store = calendarStore();
 
     var new_event = clone(store.events[event_id]);
     new_event.calendar_id = store.id;
     new_event.sort_by = Object.keys(store.events).length;
 
-    axios.post(store.apiurl + '/event', new_event)
+    axios.post(store.api_url("/event"), new_event)
         .then(function(result) {
             if (result.data.data !== undefined) {
                 store.events[event_id] = result.data.data;
@@ -127,13 +126,13 @@ export async function submit_new_event(event_id, callback) {
 }
 
 export function submit_hide_show_event(event_id) {
-    const store = calendarStore();
+    let store = calendarStore();
 
     var edit_event = clone(store.events[event_id]);
     edit_event.calendar_id = store.id;
     edit_event.settings.hide = !edit_event.settings.hide;
 
-    axios.patch(store.apiurl + "/event/" + edit_event.id, edit_event)
+    axios.patch(store.api_url("/event/" + edit_event.id), edit_event)
         .then(function(result) {
             if (result.data.success) {
                 store.events[event_id].settings.hide = !store.events[event_id].settings.hide;
@@ -150,12 +149,12 @@ export function submit_hide_show_event(event_id) {
 }
 
 export function submit_edit_event(event_id, callback) {
-    const store = calendarStore();
+    let store = calendarStore();
 
     var edit_event = clone(store.events[event_id]);
     edit_event.calendar_id = store.id;
 
-    axios.patch(store.apiurl + '/event/' + edit_event.id, edit_event)
+    axios.patch(store.api_url("/event/" + edit_event.id), edit_event)
         .then(function(result) {
             notify(result.data.message, result.data.success !== undefined ? "success" : false);
             callback(result.data.success !== undefined);
@@ -166,8 +165,7 @@ export function submit_edit_event(event_id, callback) {
 }
 
 export function submit_delete_event(event_id, callback) {
-
-    axios.delete(calendarStore().apiurl + "/event/" + event_id)
+    axios.delete(calendarStore().api_url("/event/" + event_id))
         .then(function(result) {
             if (result.data.success) {
                 callback();
@@ -180,9 +178,9 @@ export function submit_delete_event(event_id, callback) {
 }
 
 export function submit_new_comment(content, event_id, callback) {
-    const store = calendarStore();
+    let store = calendarStore();
 
-    axios.post(store.apiurl + "/eventcomment", {
+    axios.post(store.api_url("/eventcomment"), {
         calendar_id: store.id,
         content: content,
         event_id: event_id
@@ -199,8 +197,7 @@ export function submit_new_comment(content, event_id, callback) {
 }
 
 export function submit_delete_comment(comment_id, callback) {
-
-    axios.delete(calendarStore().apiurl + "/eventcomment/" + comment_id)
+    axios.delete(calendarStore().api_url("/eventcomment/" + comment_id))
         .then(function(result) {
             if (!result.data.error && result.data != "") {
                 callback(result.data.message);
@@ -214,12 +211,12 @@ export function submit_delete_comment(comment_id, callback) {
 }
 
 export async function check_last_change(calendar_hash) {
-    return axios.post(calendarStore().apiurl + "/calendar/" + calendar_hash + "/last_changed");
+    return axios.post(calendarStore().api_url("/calendar/:hash/last_changed"));
 }
 
 export function create_calendar() {
-    const store = calendarStore();
-    return axios.post(store.baseurl + "calendars", {
+    let store = calendarStore();
+    return axios.post(store.base_url("/calendars"), {
         name: store.calendar_name,
         dynamic_data: JSON.stringify(store.dynamic_data),
         static_data: JSON.stringify(store.static_data),
@@ -227,14 +224,13 @@ export function create_calendar() {
         event_categories: JSON.stringify(store.event_categories)
     }).then((result) => {
         localStorage.clear();
-        window.location.href = store.baseurl + 'calendars/' + result.data.hash + '/edit';
+        window.location.href = store.base_url("/calendars/" + result.data.hash + "/edit");
     })
 }
 
 
 export function get_event_comments(event_id, callback) {
-
-    axios.get(calendarStore().apiurl + "/eventcomment/event/" + event_id)
+    axios.get(calendarStore().api_url("/eventcomment/event/" + event_id))
         .then(function(result) {
             callback(result.data['data']);
         }).catch(function(error) {
@@ -244,8 +240,7 @@ export function get_event_comments(event_id, callback) {
 }
 
 export function get_preset_data(preset_id, callback) {
-
-    axios.get(calendarStore().apiurl + '/preset/' + preset_id)
+    axios.get(calendarStore().api_url("/preset/" + preset_id))
         .then(function(result) {
             if (!result.data.error && result.data != "") {
                 callback(result.data);
