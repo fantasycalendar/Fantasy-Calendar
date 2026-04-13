@@ -20,7 +20,6 @@
         "fsevents": "^2.3.2"
     },
     "dependencies": {
-        "@alpinejs/intersect": "^3.10.5",
         "@alpinejs/persist": "^3.14.9",
         "@alpinejs/sort": "^3.14.1",
         "@floating-ui/dom": "^1.6.7",
@@ -30,7 +29,6 @@
         "@tailwindcss/typography": "^0.5.9",
         "alpinejs": "^3.12.0",
         "autoprefixer": "^10.4.13",
-        "bootswatch": "^4.6.2",
         "chart.js": "^4",
         "collect.js": "^4.34.3",
         "mustache": "^3.2.1",
