@@ -487,9 +487,10 @@ export class date_manager {
         this._day = data.day;
         this._timespan = data.timespan;
         this._year = convert_year(this.static_data, data.year);
+        this.timespans_in_year = get_timespans_in_year(this.static_data, this.year, true);
 
-        this.cap_day();
         this.cap_timespan();
+        this.cap_day();
 
         return {
             year: this.adjusted_year,
@@ -569,7 +570,7 @@ export class date_manager {
 
     get last_valid_year() {
 
-        if (this.max_year) {
+        if (this.max_year !== false) {
             return unconvert_year(this.static_data, this.max_year);
         } else {
             return false;
@@ -645,6 +646,7 @@ export class date_manager {
             }
         }
 
+        return 0;
     }
 
     get first_timespan() {
@@ -655,6 +657,7 @@ export class date_manager {
             }
         }
 
+        return 0;
     }
 
     set timespan(timespan) {
