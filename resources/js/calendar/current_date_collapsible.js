@@ -47,9 +47,16 @@ class CurrentDateCollapsible extends CollapsibleComponent {
         this.$store.calendar.set_current_year(year);
     }
 
+    get current_month_name(){
+        return this.$store.calendar.static_data.year_data.timespans[this.current_month]?.name ?? '';
+    }
+
     get current_date_string(){
-        let month_name = this.$store.calendar.static_data.year_data.timespans[this.current_month]?.name;
-        return `${ordinal_suffix_of(this.current_day)} of ${month_name}, year ${this.current_year}`;
+        return `${ordinal_suffix_of(this.current_day)} of ${this.current_month_name}`;
+    }
+
+    get current_date_string_full(){
+        return `${this.current_date_string}, year ${this.current_year}`;
     }
 
     get current_time_string(){
