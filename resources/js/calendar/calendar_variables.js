@@ -1437,7 +1437,7 @@ export var condition_mapping = {
         {
             label: "Every nth era year",
             conditions: [
-                ["era_year", "%", 0]
+                ["era_year", "%", 0, 1]
             ],
             elements: [
                 ["number", "nth", "Enter era year interval", "1", "1"],

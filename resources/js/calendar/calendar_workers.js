@@ -1013,7 +1013,7 @@ export var event_evaluator = {
                 return a < b;
                 break;
             case '%':
-                c = (c) % b;
+                c = (c || 0) % b;
                 return (a - c) % b == 0;
                 break;
             case '&&':

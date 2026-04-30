@@ -1578,7 +1578,7 @@ function convert_old_event(event) {
 
         case 'every_x_weekday':
             var conditions = [
-                ['Weekday', '0', [event.data.week_day.toString()]],
+                ['Weekday', '0', [(event.data.week_day + 1).toString()]],
                 ['&&'],
                 ['Week', '20', [event.data.every.toString(), (event.data.modulus + 1).toString()]]
             ];
@@ -1640,7 +1640,7 @@ function convert_old_event(event) {
             var conditions = [
                 ['Moons', '0', [event.data.moon_id.toString(), convert_to_granularity(event.data.moon_phase).toString()]],
                 ['&&'],
-                ['Moons', '7', [event.data.moon_id.toString(), convert_to_granularity(event.data.moon_phase_number).toString()]]
+                ['Moons', '7', [event.data.moon_id.toString(), event.data.moon_phase_number.toString()]]
             ];
             var date = [];
             return [date, conditions];
@@ -1649,7 +1649,7 @@ function convert_old_event(event) {
             var conditions = [
                 ['Moons', '0', [event.data.moon_id.toString(), convert_to_granularity(event.data.moon_phase).toString()]],
                 ['&&'],
-                ['Moons', '7', [event.data.moon_id.toString(), event.data.moon_phase_number]],
+                ['Moons', '7', [event.data.moon_id.toString(), event.data.moon_phase_number.toString()]],
                 ['&&'],
                 ['Month', '0', [(event.data.month - 1).toString()]]
             ];
@@ -1703,6 +1703,9 @@ function convert_to_granularity(cycle) {
     }
 
 }
+
+export { convert_old_event as _convert_old_event_for_testing };
+export { convert_to_granularity as _convert_to_granularity_for_testing };
 
 function isHex(h) {
     return /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(h);

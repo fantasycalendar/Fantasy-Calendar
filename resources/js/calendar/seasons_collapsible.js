@@ -188,11 +188,15 @@ function create_season_events(complex, static_data) {
 
                     var name = "Autumn Equinox";
                     var description = "The autumn equinox is when the day and the night are equally as long, and are getting shorter.";
+                    var equinox_name = "Winter Solstice";
+                    var equinox_description = "The winter solstice marks the shortest day and longest night of the year, when the sun is at its lowest arc in the sky.";
 
                 } else if (season_name.toLowerCase().includes('spring')) {
 
                     var name = "Spring Equinox";
                     var description = "The spring equinox is when the day and the night are equally as long, and are getting longer.";
+                    var equinox_name = "Summer Solstice";
+                    var equinox_description = "At the summer solstice, the Sun travels the longest path through the sky, and that day therefore has the most daylight.";
 
                 } else {
 
@@ -785,5 +789,7 @@ class SeasonsCollapsible extends CollapsibleComponent {
         this.settings.preset_order = false;
     }
 }
+
+export { create_season_events as _create_season_events_for_testing };
 
 export default () => new SeasonsCollapsible();
