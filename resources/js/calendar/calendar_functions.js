@@ -1660,8 +1660,12 @@ export function hslToHex(h, s, l) {
 
 export function notify(name, type) {
     if (name instanceof Error) {
+        console.error(name);
         name = name.response?.data?.message ?? name.message ?? "An unexpected error occurred";
         type = type ?? "error";
+    }
+    if (type === "error") {
+        console.error("Notification:", name);
     }
     window.dispatchEvent(new CustomEvent('notify', {
         detail: {
