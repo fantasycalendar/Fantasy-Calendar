@@ -1,5 +1,5 @@
 @push('head')
-    <script src="{{ mix('js/embed.js') }}"></script>
+    <script src="{{ asset('js/embed.js') }}"></script>
     <script>
         function manageEmbed() {
             return {
