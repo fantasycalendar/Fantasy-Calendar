@@ -31,7 +31,7 @@
                 <select class='form-control' x-model="selectedCalendarHash" :disabled="linkable.length === 0">
                     <option value="" x-text="linkable.length > 0 ? 'Choose an available calendar' : 'No linkable calendars'"></option>
 
-                    <template x-for="calendar in linkable" x-key="calendar.hash">
+                    <template x-for="calendar in linkable" :key="calendar.hash">
                         <option :value="calendar.hash" x-text="calendar.name"></option>
                     </template>
                 </select>
@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <template x-for="child in children">
+            <template x-for="child in children" :key="child.hash">
                 <div x-data="{
                         collapsed: false,
                         date: getRelativeStartDate(child),
@@ -73,6 +73,7 @@
                             </div>
                         </div>
                     </div>
+                </div>
             </template>
 		@endif
 	</div>
