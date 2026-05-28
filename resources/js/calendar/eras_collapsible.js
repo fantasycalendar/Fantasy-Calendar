@@ -109,7 +109,7 @@ class ErasCollapsible extends CollapsibleComponent {
     }
 
     previewEraDate(era) {
-        this.$store.calendar.set_viewed_date({
+        this.$store.calendar.set_selected_date({
             year: era.date.year,
             month: era.date.timespan,
             day: era.date.day,
