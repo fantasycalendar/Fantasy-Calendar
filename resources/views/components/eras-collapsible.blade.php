@@ -51,7 +51,7 @@
 
                 <div class='flex flex-col space-y-2 py-2'>
                     <div>
-                        <x-alpine.check-input id="index + '_use_custom_format'" x-model='era.settings.use_custom_format'>
+                        <x-alpine.check-input id="`${index}_use_custom_format`" x-model='era.settings.use_custom_format'>
                             Custom year header formatting
                         </x-alpine.check-input>
                     </div>
@@ -70,7 +70,7 @@
 
                 <div class='flex flex-col space-y-2 py-2'>
                     <div>
-                        <x-alpine.check-input id="index + '_show_as_event'" x-model='era.settings.show_as_event'>
+                        <x-alpine.check-input id="`${index}_show_as_event`" x-model='era.settings.show_as_event'>
                             Show as event
                         </x-alpine.check-input>
                     </div>
@@ -100,7 +100,7 @@
                 <div class='flex flex-col py-2'>
                     <div>
                         <x-alpine.check-input
-                            id="index + '_starting_era'"
+                            id="`${index}_starting_era`"
                             x-model='era.settings.starting_era'
                             disabled-when="!canBeStartingEra(index)"
                             disabled-wrapper-classes="rounded-t"
@@ -161,14 +161,14 @@
                             <strong class="mt-2">Date settings:</strong>
 
                             <div>
-                                <x-alpine.check-input id="index + '_restart_year'" x-model='era.settings.restart'>
+                                <x-alpine.check-input id="`${index}_restart_year`" x-model='era.settings.restart'>
                                     Restarts year count
                                 </x-alpine.check-input>
                             </div>
 
                             <div>
                                 <x-alpine.check-input
-                                    id="index + '_ends_year'"
+                                    id="`${index}_ends_year`"
                                     x-model='era.settings.ends_year'
                                     disabled-when="!season_settings.periodic_seasons"
                                 >

@@ -22,7 +22,7 @@
 <div>
     <x-alpine.check-input
         wrapper-class="mb-4"
-        id="'season_color_enabled'"
+        id="season_color_enabled"
         x-model="settings.color_enabled"
         @change="$nextTick(() => seasonColorChanged())">
         Enable season day color

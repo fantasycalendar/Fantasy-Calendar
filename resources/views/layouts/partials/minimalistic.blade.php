@@ -29,6 +29,7 @@
                     @click="weather_click(day, $event)"
                     @mouseenter="weather_mouse_enter(day, $event)"
                     @mouseleave="weather_mouse_leave"
+                    @contextmenu.prevent="$dispatch('date-context-menu', { click: $event, element: $el, day })"
                     >
                         <div class="number" x-text="day.number" style="z-index: 10;"></div>
                         <div class="w-100 h-100" x-show="day.type !== 'overflow'" :style="`opacity: 0.2; position:absolute; flex:1; background-color: ${day.season_color};`"></div>

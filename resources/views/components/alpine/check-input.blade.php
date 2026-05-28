@@ -22,14 +22,14 @@
     @endif
     >
     <input type='checkbox'
-        :id='{{ $id }}'
+        :id="{{ $id }}"
         class='form-check-input'
         {{ $inputAttributes }}
         @if($disabledWhen)
             :disabled="{{ $disabledWhen }}"
         @endif
     />
-    <label :for='{{ $id }}' class='form-check-label ml-1'>
+    <label :for="{{ $id }}" class='form-check-label ml-1'>
         {{ $slot }}
     </label>
 </div>
