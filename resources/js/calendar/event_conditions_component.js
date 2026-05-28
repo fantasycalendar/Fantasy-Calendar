@@ -471,7 +471,7 @@ export default () => ({
                 for (let optgroup of input.values) {
                     html += `<optgroup label="${optgroup.label}">`;
                     for (let option of optgroup.values) {
-                        html += `<option ${option.selected ? "selected" : ""} value="${option.value}">${option.label}</option>`;
+                        html += `<option ${option.selected ? "selected" : ""} value="${option.value}">${sanitizeHtml(option.label)}</option>`;
                     }
                     html += `</optgroup>`;
                 }
@@ -479,7 +479,7 @@ export default () => ({
             } else if (input.type === "select") {
                 html += `<select class='form-control order-${index + 3}' data-event-conditions-manager-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionsHashmap['${condition.id}'].values[${index}]">`;
                 input.values.forEach(option => {
-                    html += `<option ${option.selected ? "selected" : ""} value="${option.value}">${option.label}</option>`;
+                    html += `<option ${option.selected ? "selected" : ""} value="${option.value}">${sanitizeHtml(option.label)}</option>`;
                 });
                 html += `</select>`;
             } else {
@@ -537,7 +537,7 @@ export default () => ({
         if (condition.type === "Moons") {
             let moon_options = this.$store.calendar.static_data.moons.reduce((html, moon, index) => {
                 let selected = condition.type === "Moons" && condition.moon_index === index ? "selected" : "";
-                return html + `<option ${selected} value='${index}'>${moon.name}</option>`;
+                return html + `<option ${selected} value='${index}'>${sanitizeHtml(moon.name)}</option>`;
             }, "");
 
             moon_select = `
