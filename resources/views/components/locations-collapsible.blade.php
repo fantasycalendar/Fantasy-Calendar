@@ -41,7 +41,7 @@
     </div>
 
     <div>
-        <template x-for="(location, index) in locations">
+        <template x-for="(location, index) in locations" :key="location.name">
             <div class="p-2 first-of-type:rounded-t -mt-px first-of-type:mt-0 !bg-[var(--card-bg-color)] border border-[var(--input-border-color)]" x-data="{ collapsed: true }">
                 <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
                     <div class='cursor-pointer text-xl fa text-gray-900/50 dark:text-white/50'
@@ -66,7 +66,7 @@
                 </div>
 
                 <div x-show="!collapsed && deleting === -1">
-                    <template x-for="(season, season_index) in location.seasons">
+                    <template x-for="(season, season_index) in location.seasons" :key="season_index">
                         <div class='m-0 my-2 cycle-container' x-data="{ seasonCollapsed: true }">
                             <div class='lbl-toggle' @click="seasonCollapsed = !seasonCollapsed">
                                 <div class='cursor-pointer text-xl fa mr-2 text-gray-900/50 dark:text-white/50'
@@ -218,6 +218,7 @@
                     </div>
                 </div>
 
+            </div>
         </template>
     </div>
 
