@@ -458,3 +458,30 @@ describe('event_evaluator progress callback (callback=true)', () => {
         expect(() => event_evaluator.evaluate_event(0)).not.toThrow();
     });
 });
+
+describe('check_event_chain bounds', () => {
+
+    // Guard/characterization test: the bounds check uses id >= events.length.
+    // An out-of-bounds boundary id (e.g. a dangling connected_events index
+    // equal to events.length) must return harmlessly with no side effects.
+    it('returns harmlessly when id equals events.length', () => {
+        event_evaluator.events = [
+            {
+                name: 'A',
+                data: {
+                    conditions: [],
+                    connected_events: [],
+                    search_distance: 0,
+                    limited_repeat: false,
+                    limited_repeat_num: 0,
+                },
+            },
+        ];
+        event_evaluator.event_data = { valid: {}, starts: {}, ends: {} };
+
+        // id === events.length (1) — the off-by-one boundary.
+        expect(() => event_evaluator.check_event_chain(1)).not.toThrow();
+        // No event was evaluated and no state was created for the bad index.
+        expect(event_evaluator.event_data.valid[1]).toBeUndefined();
+    });
+});

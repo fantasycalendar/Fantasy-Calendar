@@ -1421,7 +1421,7 @@ export var event_evaluator = {
 
     check_event_chain(id, lookback, lookahead) {
 
-        if (id === null || id > event_evaluator.events.length) {
+        if (id === null || id >= event_evaluator.events.length) {
             return;
         }
 
