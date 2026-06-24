@@ -126,7 +126,9 @@ Route::get('/404', [ErrorsController::class, 'error404']);
 // Dev-only: proxy Vite-served JS to the same origin so web workers can load as modules.
 // The Vite dev server runs on a different port, which violates the browser's same-origin
 // policy for Worker scripts. This route proxies those requests through the app server.
-if (app()->environment('local')) {
+// Gated on both local env AND debug mode so a stray APP_ENV=local in a deployed
+// environment can't expose this proxy as long as APP_DEBUG is off.
+if (app()->environment('local') && config('app.debug')) {
     Route::get('__vite_worker/{path}', function (string $path, Request $request) {
         $query = $request->getQueryString();
         $viteUrl = 'http://npm:5173/' . $path . ($query ? '?' . $query : '');
