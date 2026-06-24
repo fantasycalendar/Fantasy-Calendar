@@ -172,29 +172,28 @@ describe('evaluate_event_group', () => {
             const epoch = makeEpochData({ year: 2020, timespan_index: 3 });
             const array = [yearIs(2020), XOR, monthIs(3)];
             const result = event_evaluator.evaluate_event_group(epoch, array);
-            // XOR: true ^ true should be falsy
-            expect(!!result).toBe(false);
+            expect(result).toBe(false);
         });
 
         it('returns true when first is true and second is false', () => {
             const epoch = makeEpochData({ year: 2020, timespan_index: 3 });
             const array = [yearIs(2020), XOR, monthIs(7)];
             const result = event_evaluator.evaluate_event_group(epoch, array);
-            expect(!!result).toBe(true);
+            expect(result).toBe(true);
         });
 
         it('returns true when first is false and second is true', () => {
             const epoch = makeEpochData({ year: 2020, timespan_index: 3 });
             const array = [yearIs(1999), XOR, monthIs(3)];
             const result = event_evaluator.evaluate_event_group(epoch, array);
-            expect(!!result).toBe(true);
+            expect(result).toBe(true);
         });
 
         it('returns false when both are false (false XOR false = false)', () => {
             const epoch = makeEpochData({ year: 2020, timespan_index: 3 });
             const array = [yearIs(1999), XOR, monthIs(7)];
             const result = event_evaluator.evaluate_event_group(epoch, array);
-            expect(!!result).toBe(false);
+            expect(result).toBe(false);
         });
     });
 

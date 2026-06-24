@@ -1027,7 +1027,7 @@ export var event_evaluator = {
                 break;
             case '^':
             case 'XOR':
-                return a ^ b;
+                return !!a !== !!b;
                 break;
         }
     },

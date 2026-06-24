@@ -660,107 +660,108 @@ describe('evaluate_operator', () => {
     });
 
     // ─────────────────────────────────────────────
-    // ^ and XOR (bitwise XOR)
+    // ^ and XOR (logical XOR)
     // ─────────────────────────────────────────────
-    // Note: This is bitwise XOR (a ^ b), not logical XOR.
-    // Both '^' and 'XOR' should produce the same result.
-    describe('^ / XOR (bitwise XOR)', () => {
+    // This is logical XOR over operand truthiness, returning a Boolean
+    // (consistent with the other logical operators). The UI labels it
+    // "only one must be true". Both '^' and 'XOR' produce the same result.
+    describe('^ / XOR (logical XOR)', () => {
 
         describe('^ operator', () => {
 
-            it('returns 0 for identical values (0 ^ 0)', () => {
-                expect(event_evaluator.evaluate_operator('^', 0, 0)).toBe(0);
+            it('returns false for identical falsy values (0 ^ 0)', () => {
+                expect(event_evaluator.evaluate_operator('^', 0, 0)).toBe(false);
             });
 
-            it('returns 0 for identical non-zero values (5 ^ 5)', () => {
-                expect(event_evaluator.evaluate_operator('^', 5, 5)).toBe(0);
+            it('returns false for identical truthy values (5 ^ 5)', () => {
+                expect(event_evaluator.evaluate_operator('^', 5, 5)).toBe(false);
             });
 
-            it('returns non-zero for different values (5 ^ 3)', () => {
-                // 5 = 101, 3 = 011, XOR = 110 = 6
-                expect(event_evaluator.evaluate_operator('^', 5, 3)).toBe(6);
+            it('returns false for two different truthy values (5 ^ 3)', () => {
+                // Both 5 and 3 are truthy -> logical XOR is false
+                expect(event_evaluator.evaluate_operator('^', 5, 3)).toBe(false);
             });
 
-            it('returns b when a is 0 (0 ^ b)', () => {
-                expect(event_evaluator.evaluate_operator('^', 0, 7)).toBe(7);
+            it('returns true when only b is truthy (0 ^ b)', () => {
+                expect(event_evaluator.evaluate_operator('^', 0, 7)).toBe(true);
             });
 
-            it('returns a when b is 0 (a ^ 0)', () => {
-                expect(event_evaluator.evaluate_operator('^', 7, 0)).toBe(7);
+            it('returns true when only a is truthy (a ^ 0)', () => {
+                expect(event_evaluator.evaluate_operator('^', 7, 0)).toBe(true);
             });
 
-            it('1 ^ 1 = 0 (same bits cancel)', () => {
-                expect(event_evaluator.evaluate_operator('^', 1, 1)).toBe(0);
+            it('1 ^ 1 = false (both truthy)', () => {
+                expect(event_evaluator.evaluate_operator('^', 1, 1)).toBe(false);
             });
 
-            it('1 ^ 0 = 1', () => {
-                expect(event_evaluator.evaluate_operator('^', 1, 0)).toBe(1);
+            it('1 ^ 0 = true', () => {
+                expect(event_evaluator.evaluate_operator('^', 1, 0)).toBe(true);
             });
 
-            it('0 ^ 1 = 1', () => {
-                expect(event_evaluator.evaluate_operator('^', 0, 1)).toBe(1);
+            it('0 ^ 1 = true', () => {
+                expect(event_evaluator.evaluate_operator('^', 0, 1)).toBe(true);
             });
 
-            it('handles booleans: true ^ true = 0', () => {
-                // true is coerced to 1: 1 ^ 1 = 0
-                expect(event_evaluator.evaluate_operator('^', true, true)).toBe(0);
+            it('handles booleans: true ^ true = false', () => {
+                expect(event_evaluator.evaluate_operator('^', true, true)).toBe(false);
             });
 
-            it('handles booleans: true ^ false = 1', () => {
-                expect(event_evaluator.evaluate_operator('^', true, false)).toBe(1);
+            it('handles booleans: true ^ false = true', () => {
+                expect(event_evaluator.evaluate_operator('^', true, false)).toBe(true);
             });
 
-            it('handles booleans: false ^ true = 1', () => {
-                expect(event_evaluator.evaluate_operator('^', false, true)).toBe(1);
+            it('handles booleans: false ^ true = true', () => {
+                expect(event_evaluator.evaluate_operator('^', false, true)).toBe(true);
             });
 
-            it('handles booleans: false ^ false = 0', () => {
-                expect(event_evaluator.evaluate_operator('^', false, false)).toBe(0);
+            it('handles booleans: false ^ false = false', () => {
+                expect(event_evaluator.evaluate_operator('^', false, false)).toBe(false);
             });
 
-            it('handles larger numbers (255 ^ 128)', () => {
-                // 255 = 11111111, 128 = 10000000, XOR = 01111111 = 127
-                expect(event_evaluator.evaluate_operator('^', 255, 128)).toBe(127);
+            it('handles larger truthy numbers (255 ^ 128)', () => {
+                // Both truthy -> logical XOR is false
+                expect(event_evaluator.evaluate_operator('^', 255, 128)).toBe(false);
             });
 
             it('handles negative numbers (-1 ^ 0)', () => {
-                // -1 in two's complement is all 1s; -1 ^ 0 = -1
-                expect(event_evaluator.evaluate_operator('^', -1, 0)).toBe(-1);
+                // -1 is truthy, 0 is falsy -> logical XOR is true
+                expect(event_evaluator.evaluate_operator('^', -1, 0)).toBe(true);
             });
 
             it('handles negative numbers (-1 ^ -1)', () => {
-                expect(event_evaluator.evaluate_operator('^', -1, -1)).toBe(0);
+                // Both truthy -> logical XOR is false
+                expect(event_evaluator.evaluate_operator('^', -1, -1)).toBe(false);
             });
         });
 
         describe('XOR operator (string form)', () => {
 
             it('returns same result as ^ for identical values', () => {
-                expect(event_evaluator.evaluate_operator('XOR', 0, 0)).toBe(0);
-                expect(event_evaluator.evaluate_operator('XOR', 5, 5)).toBe(0);
+                expect(event_evaluator.evaluate_operator('XOR', 0, 0)).toBe(false);
+                expect(event_evaluator.evaluate_operator('XOR', 5, 5)).toBe(false);
             });
 
-            it('returns same result as ^ for different values', () => {
-                expect(event_evaluator.evaluate_operator('XOR', 5, 3)).toBe(6);
+            it('returns same result as ^ for two truthy values', () => {
+                expect(event_evaluator.evaluate_operator('XOR', 5, 3)).toBe(false);
             });
 
             it('returns same result as ^ for booleans', () => {
-                expect(event_evaluator.evaluate_operator('XOR', true, false)).toBe(1);
-                expect(event_evaluator.evaluate_operator('XOR', false, true)).toBe(1);
-                expect(event_evaluator.evaluate_operator('XOR', true, true)).toBe(0);
-                expect(event_evaluator.evaluate_operator('XOR', false, false)).toBe(0);
+                expect(event_evaluator.evaluate_operator('XOR', true, false)).toBe(true);
+                expect(event_evaluator.evaluate_operator('XOR', false, true)).toBe(true);
+                expect(event_evaluator.evaluate_operator('XOR', true, true)).toBe(false);
+                expect(event_evaluator.evaluate_operator('XOR', false, false)).toBe(false);
             });
 
-            it('1 XOR 0 = 1', () => {
-                expect(event_evaluator.evaluate_operator('XOR', 1, 0)).toBe(1);
+            it('1 XOR 0 = true', () => {
+                expect(event_evaluator.evaluate_operator('XOR', 1, 0)).toBe(true);
             });
 
-            it('0 XOR 1 = 1', () => {
-                expect(event_evaluator.evaluate_operator('XOR', 0, 1)).toBe(1);
+            it('0 XOR 1 = true', () => {
+                expect(event_evaluator.evaluate_operator('XOR', 0, 1)).toBe(true);
             });
 
-            it('0 XOR 0 = 0', () => {
-                expect(event_evaluator.evaluate_operator('XOR', 0, 0)).toBe(0);
+            it('0 XOR 0 = false', () => {
+                expect(event_evaluator.evaluate_operator('XOR', 0, 0)).toBe(false);
             });
         });
 
@@ -779,6 +780,22 @@ describe('evaluate_operator', () => {
                     let xorResult = event_evaluator.evaluate_operator('XOR', a, b);
                     expect(caretResult).toBe(xorResult);
                 }
+            });
+        });
+
+        describe('returns a real boolean (consistent with other logical operators)', () => {
+
+            it('returns a boolean type, not a number', () => {
+                expect(typeof event_evaluator.evaluate_operator('^', true, false)).toBe('boolean');
+                expect(typeof event_evaluator.evaluate_operator('XOR', true, false)).toBe('boolean');
+            });
+
+            it('is logical XOR over truthiness for non-boolean operands', () => {
+                // Both truthy -> XOR is false
+                expect(event_evaluator.evaluate_operator('^', 5, 3)).toBe(false);
+                // One truthy, one falsy -> XOR is true
+                expect(event_evaluator.evaluate_operator('^', 7, 0)).toBe(true);
+                expect(event_evaluator.evaluate_operator('^', -1, 0)).toBe(true);
             });
         });
     });
