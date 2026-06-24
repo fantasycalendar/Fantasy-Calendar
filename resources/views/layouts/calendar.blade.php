@@ -5,6 +5,7 @@
      }"
      x-ref="calendar_renderer"
      @set-calendar-visible.window="set_calendar_visible($event.detail)"
+     @register-render-callback.window="register_render_callback($event.detail)"
      x-show="visible"
 >
 

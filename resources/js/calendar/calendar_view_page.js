@@ -182,7 +182,9 @@ export default (calendar_structure) => ({
         }
 
         if (urlParams.has('print')) {
-            this.$dispatch('register-render-callback', { detail: () => print() });
+            this.$nextTick(() => {
+                this.$dispatch('register-render-callback', () => print());
+            });
         }
     },
 
