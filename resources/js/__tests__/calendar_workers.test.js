@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
 import { calendar_data_generator, event_evaluator } from '../calendar/calendar_workers';
@@ -364,5 +364,60 @@ describeSubmodule('calendar_data_generator.run_future (submodule Gregorian)', ()
                 );
             }).not.toThrow();
         }
+    });
+});
+
+describe('event_evaluator progress callback (callback=true)', () => {
+
+    let originalPostMessage;
+
+    beforeEach(() => {
+        // The callback branch in evaluate_event calls the worker global
+        // postMessage(), which does not exist in the test environment.
+        // Stub it so the callback path runs without a ReferenceError.
+        originalPostMessage = globalThis.postMessage;
+        globalThis.postMessage = vi.fn();
+    });
+
+    afterEach(() => {
+        globalThis.postMessage = originalPostMessage;
+    });
+
+    it('does not crash when the loop visits an epoch missing from epoch_data', () => {
+
+        // Populate only epochs 0..9; the lookback region (negative epochs) is a gap.
+        const epoch_data = {};
+        for (let epoch = 0; epoch <= 9; epoch++) {
+            epoch_data[epoch] = { year: 2020, epoch };
+        }
+
+        // A search-loop event (no fixed date, no conditions) with a lookback
+        // that pushes begin_epoch to -5 — into the gap. With callback=true the
+        // progress branch reads epoch_data[epoch].year before the existence
+        // guard, throwing "Cannot read properties of undefined (reading 'year')".
+        event_evaluator.events = [
+            {
+                name: 'Gap test',
+                data: {
+                    conditions: [],
+                    connected_events: [],
+                    has_duration: false,
+                    limited_repeat: false,
+                    limited_repeat_num: 0,
+                    search_distance: 0,
+                },
+                lookback: 5,
+                lookahead: 0,
+            },
+        ];
+        event_evaluator.epoch_data = epoch_data;
+        event_evaluator.start_epoch = 0;
+        event_evaluator.end_epoch = 9;
+        event_evaluator.callback = true;
+        event_evaluator.current_number_of_epochs = 0;
+        event_evaluator.total_number_of_epochs = 100;
+        event_evaluator.event_data = { valid: {}, starts: {}, ends: {} };
+
+        expect(() => event_evaluator.evaluate_event(0)).not.toThrow();
     });
 });

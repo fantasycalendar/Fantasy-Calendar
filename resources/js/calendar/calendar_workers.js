@@ -1362,7 +1362,7 @@ export var event_evaluator = {
 
                     postMessage({
                         percentage: percentage,
-                        message: `Testing event conditions against calendar data in year ${event_evaluator.epoch_data[epoch].year}...`,
+                        message: `Testing event conditions against calendar data in year ${event_evaluator.epoch_data[epoch]?.year ?? '...'}...`,
                         callback: true
                     })
 
