@@ -1361,7 +1361,7 @@ export default () => ({
             let post = "";
 
             if (window.location.pathname !== '/calendars/create' && !event_has_changed) {
-                pre = `<a href='${store.baseurl}calendars/${store.hash}?year=${year}&month=${timespan}&day=${day}' target="_blank">`;
+                pre = `<a href='${window.location.origin}/calendars/${store.hash}?year=${year}&month=${timespan}&day=${day}' target="_blank">`;
                 post = `</a>`;
             }
 
