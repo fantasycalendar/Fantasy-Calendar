@@ -43,10 +43,9 @@
         <template x-for="calendar_event in timespan.events">
             <div class="mx-2 my-0 px-1 py-0 text-left event"
                 x-text="calendar_event.name"
-                x-show="calendar_event.print"
                 :class="calendar_event.class"
                 :event_id="calendar_event.index"
-                @click="view_event($event)"
+                @click="$dispatch('event-viewer-modal-view-event', { event_id: calendar_event.index, era: calendar_event.era, epoch: $store.calendar.dynamic_data.epoch })"
             ></div>
         </template>
     </div>

@@ -42,10 +42,6 @@ export default () => ({
         this.render_data = event.detail;
     },
 
-    view_event: function(event) {
-        show_event_ui.clicked_event(event.target);
-    },
-
     get_weather_data(day, event) {
         const store = this.$store.calendar;
         let epoch_details = store.evaluated_static_data.epoch_data[day.epoch];

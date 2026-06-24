@@ -267,6 +267,7 @@ export var render_data_generator = {
                     timespan_data.days[timespan_data.days.length-1].push(day_data);
                     this.render_data.event_epochs[epoch] = day_data;
                     this.render_data.timespan_event_epochs[epoch] = timespan_data;
+                    timespan_data.events.push(...day_data.events);
 
                     weekday_number++;
                     epoch++;
@@ -322,6 +323,7 @@ export var render_data_generator = {
                         timespan_data.days[timespan_data.days.length-1].push(day_data);
                         this.render_data.event_epochs[epoch] = day_data;
                         this.render_data.timespan_event_epochs[epoch] = timespan_data;
+                        timespan_data.events.push(...day_data.events);
 
                         epoch++;
 
@@ -358,6 +360,7 @@ export var render_data_generator = {
                                 timespan_data.days[timespan_data.days.length-1].push(day_data);
                                 this.render_data.event_epochs[epoch] = day_data;
                                 this.render_data.timespan_event_epochs[epoch] = timespan_data;
+                                timespan_data.events.push(...day_data.events);
 
                                 internal_weekday_number++;
                                 epoch++;
@@ -453,6 +456,7 @@ export var render_data_generator = {
                         timespan_data.days[timespan_data.days.length - 1].push(day_data);
                         this.render_data.event_epochs[epoch] = day_data;
                         this.render_data.timespan_event_epochs[epoch] = timespan_data;
+                        timespan_data.events.push(...day_data.events);
 
                         weekday_number++;
                         epoch++;
