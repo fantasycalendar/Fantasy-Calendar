@@ -206,7 +206,7 @@
 
                     <span class='hidden'></span>
 
-                    <div class='event_occurrences' x-show='working_event.data.conditions != []'>
+                    <div class='event_occurrences' x-show='working_event.data.conditions.length'>
 
                         <div class='row no-gutters'>
                             <h5>Test event occurrences for the next:</h5>
