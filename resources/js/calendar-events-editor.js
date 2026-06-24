@@ -1103,14 +1103,14 @@ export default () => ({
 
             let html = [];
             html.push(`<div class='text-left'>`)
-            html.push(`<h5>You trying to delete "${store.events[delete_event_id].name}" which is used in the conditions of the following events:</h5>`)
+            html.push(`<h5>You trying to delete "${sanitizeHtml(store.events[delete_event_id].name)}" which is used in the conditions of the following events:</h5>`)
             html.push(`<ul>`);
             for (let i = 0; i < warnings.length; i++) {
                 let warning_event_id = warnings[i];
-                html.push(`<li>${store.events[warning_event_id].name}</li>`);
+                html.push(`<li>${sanitizeHtml(store.events[warning_event_id].name)}</li>`);
             }
             html.push(`</ul>`);
-            html.push(`<p>Please remove the conditions using "${store.events[delete_event_id].name}" in these events before trying to delete it.</p>`)
+            html.push(`<p>Please remove the conditions using "${sanitizeHtml(store.events[delete_event_id].name)}" in these events before trying to delete it.</p>`)
             html.push(`</div>`);
 
             swal.fire({
@@ -1127,7 +1127,7 @@ export default () => ({
             swal.fire({
 
                 title: "Warning!",
-                html: `Are you sure you want to delete the event<br>"${store.events[delete_event_id].name}"?`,
+                html: `Are you sure you want to delete the event<br>"${sanitizeHtml(store.events[delete_event_id].name)}"?`,
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#3085d6',

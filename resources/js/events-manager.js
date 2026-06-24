@@ -280,16 +280,21 @@ export default () => ({
                 index = Math.max(0, Math.floor(found - lengthLimit / 2));
             }
 
-            output = output
-                .substring(index, index + lengthLimit)
+            // HTML-escape the (possibly-truncated) text BEFORE wrapping matches in <mark>,
+            // since the result is rendered via x-html. Also escape regex metacharacters in
+            // the search term so names like "(foo)" don't throw a SyntaxError.
+            const safeNeedle = this.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            output = sanitizeHtml(output.substring(index, index + lengthLimit))
                 .replace(
-                    new RegExp(this.search, "gi"),
+                    new RegExp(safeNeedle, "gi"),
                     function(str) {
                         return `<mark class='p-0'>${str}</mark>`;
                     },
                 );
         } else if (!this.search.length && ellipses) {
-            output = output.substring(0, lengthLimit);
+            output = sanitizeHtml(output.substring(0, lengthLimit));
+        } else {
+            output = sanitizeHtml(output);
         }
 
         if (ellipses) {

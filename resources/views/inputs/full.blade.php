@@ -65,7 +65,7 @@
 <div x-show="flattened_errors.length" x-cloak class='order-3 h-full w-full bg-gray-900/50 flex flex-col justify-center items-center'>
     <div class="bg-red-300 dark:bg-red-800 w-96 flex flex-col p-[1.25rem] rounded">
         <template x-for="error in flattened_errors">
-            <strong class="text-center border-b-2 border-b-red-500 dark:border-b-red-900 last:border-none mb-[1rem] pb-[1rem] last:mb-0 last:pb-0" x-html="error"></strong>
+            <strong class="text-center border-b-2 border-b-red-500 dark:border-b-red-900 last:border-none mb-[1rem] pb-[1rem] last:mb-0 last:pb-0" x-text="error"></strong>
         </template>
     </div>
 </div>
