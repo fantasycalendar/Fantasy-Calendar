@@ -899,7 +899,15 @@ export class Climate {
 
             if (this.low_solstice_epochs.length != 0 || this.high_solstice_epochs.length != 0) {
 
-                if (this.low_solstice_epochs[0] > this.high_solstice_epochs[0]) {
+                let low_first = this.low_solstice_epochs[0];
+                let high_first = this.high_solstice_epochs[0];
+                // The first solstice in range determines the direction to seed:
+                // a low (shortest day) means we head toward longer days -> seek rising.
+                let low_comes_first =
+                    high_first === undefined ||
+                    (low_first !== undefined && low_first < high_first);
+
+                if (low_comes_first) {
                     falling_equinox = false;
                     rising_equinox = time.sunset - time.sunrise < this.middle_day_time;
                 } else {
