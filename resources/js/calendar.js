@@ -228,6 +228,11 @@ export default class Calendar {
             execution_time.end("Rebuilding calendar took:")
             this.evaluated_static_data = calendar_data;
             this.render_calendar(calendar_data);
+        }).catch(error => {
+            this.dispatch("notify", {
+                message: error?.errors?.join(' ') ?? error,
+                type: "error"
+            });
         });
     }
 

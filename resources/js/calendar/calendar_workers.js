@@ -838,7 +838,7 @@ export const calendar_data_generator = {
 
             let init = this.__init__();
 
-            if (!init.success) reject(init);
+            if (!init.success) return reject(init);
 
             this.callback = true;
             this.build_seasons = build_seasons;
@@ -900,7 +900,7 @@ export const calendar_data_generator = {
 
             let init = this.__init__();
 
-            if (!init.success) reject(init);
+            if (!init.success) return reject(init);
 
             this.timespans[this.current_year] = this.get_timespans_in_year(this.dynamic_data.year);
             let timespans_to_build = this.timespans[this.current_year].filter(timespan => timespan.render)

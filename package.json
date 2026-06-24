@@ -11,6 +11,7 @@
     "devDependencies": {
         "axios": "^1.6.0",
         "bootstrap": "^4.6.2",
+        "happy-dom": "^20.10.6",
         "laravel-vite-plugin": "^2.1.0",
         "lodash": "^4.17.21",
         "sass": "^1.57.1",

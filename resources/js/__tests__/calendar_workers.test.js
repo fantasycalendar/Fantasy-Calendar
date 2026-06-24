@@ -367,6 +367,43 @@ describeSubmodule('calendar_data_generator.run_future (submodule Gregorian)', ()
     });
 });
 
+describe('calendar_data_generator init failure', () => {
+
+    it('run() rejects with the structured payload when there are no timespans', async () => {
+        const static_data = structuredClone(gregorian.static_data);
+        static_data.year_data.timespans = [];
+
+        await expect(calendar_data_generator.run({
+            static_data,
+            dynamic_data: structuredClone(gregorian.dynamic_data),
+            owner: true,
+            events: [],
+            event_categories: [],
+        })).rejects.toEqual({
+            success: false,
+            errors: ['Your calendar needs at least one month in order to have any days.'],
+        });
+    });
+
+    it('run_future() rejects with the structured payload when there are no timespans', async () => {
+        calendar_data_generator.static_data = structuredClone(gregorian.static_data);
+        calendar_data_generator.static_data.year_data.timespans = [];
+        calendar_data_generator.dynamic_data = structuredClone(gregorian.dynamic_data);
+        calendar_data_generator.owner = true;
+        calendar_data_generator.events = [];
+        calendar_data_generator.event_categories = [];
+
+        const startYear = gregorian.dynamic_data.year;
+
+        await expect(
+            calendar_data_generator.run_future(startYear, startYear + 1, false)
+        ).rejects.toEqual({
+            success: false,
+            errors: ['Your calendar needs at least one month in order to have any days.'],
+        });
+    });
+});
+
 describe('event_evaluator progress callback (callback=true)', () => {
 
     let originalPostMessage;
