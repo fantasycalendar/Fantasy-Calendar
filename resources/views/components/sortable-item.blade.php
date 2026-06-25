@@ -31,7 +31,9 @@
         </div>
 
         <div>
-            <i class="fa fa-trash text-lg text-gray-900/50 dark:text-white/50 hover:text-red-500 hover:dark:text-red-600 cursor-pointer" @click="deleting = index" x-show="!reordering || (typeof alwaysReordering !== 'undefined' && alwaysReordering)"></i>
+            <button type="button" class="text-gray-900/50 dark:text-white/50 hover:text-red-500 hover:dark:text-red-600 cursor-pointer bg-transparent border-0 p-0" aria-label="Delete" @click="deleting = index" x-show="!reordering || (typeof alwaysReordering !== 'undefined' && alwaysReordering)">
+                <i class="fa fa-trash text-lg"></i>
+            </button>
         </div>
     </div>
 

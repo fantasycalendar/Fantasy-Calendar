@@ -85,7 +85,7 @@
                     <div x-show='era.settings.show_as_event'>
                         Event category:
 
-                        <select x-model="era.settings.event_category_id" class='form-control mt-0.5' >
+                        <select x-model="era.settings.event_category_id" class='form-control mt-0.5' aria-label="Event category">
                             <option value="-1">No default category</option>
 
                             <template x-for="category in event_categories">
@@ -153,9 +153,9 @@
                             </select>
                         </div>
 
-                        <div class='btn btn-secondary w-full' @click="previewEraDate(era)">
+                        <button type="button" class='btn btn-secondary w-full' @click="previewEraDate(era)">
                             Preview era start date
-                        </div>
+                        </button>
 
                         <div class="flex flex-col space-y-1">
                             <strong class="mt-2">Date settings:</strong>

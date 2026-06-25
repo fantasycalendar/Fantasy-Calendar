@@ -526,8 +526,8 @@
 
                     <div class='separator'></div>
 
-                    <div class='btn btn-lg btn-primary btn-block' @click="save_event">Save</div>
-                <div class='btn btn-sm btn-danger btn-block my-1' x-show='!new_event' @click='confirm_delete_event({detail: {event_id: event_id}})'>Delete</div>
+                    <button type="button" class='btn btn-lg btn-primary btn-block' @click="save_event">Save</button>
+                <button type="button" class='btn btn-sm btn-danger btn-block my-1' x-show='!new_event' @click='confirm_delete_event({detail: {event_id: event_id}})'>Delete</button>
             </form>
         </div>
     </div>
@@ -559,7 +559,7 @@
                     <x-wysiwyg.editor x-model="description" />
                 </div>
 
-                <div class='btn btn-lg btn-primary btn-block' @click="save_html">Save</div>
+                <button type="button" class='btn btn-lg btn-primary btn-block' @click="save_html">Save</button>
             </div>
         </div>
     </div>

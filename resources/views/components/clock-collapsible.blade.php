@@ -11,7 +11,7 @@
                 <span>{{ Arr::get($calendar->static_data, 'clock.enabled') ? "Yes" : "No" }}</span>
             @else
             <label class="custom-control custom-checkbox text-center">
-                <input type="checkbox" class="custom-control-input" x-model="clock.enabled"/>
+                <input type="checkbox" class="custom-control-input" x-model="clock.enabled" aria-label="Enable clock"/>
                 <span class="custom-control-indicator"></span>
             </label>
             @endif
@@ -23,7 +23,7 @@
 
         <div class='text-right'>
             <label class="custom-control custom-checkbox text-center">
-                <input type="checkbox" class="custom-control-input" x-model="clock.render"/>
+                <input type="checkbox" class="custom-control-input" x-model="clock.render" aria-label="Render clock"/>
                 <span class="custom-control-indicator"></span>
             </label>
         </div>

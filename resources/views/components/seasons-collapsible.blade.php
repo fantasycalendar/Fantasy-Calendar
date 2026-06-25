@@ -9,7 +9,7 @@
 
     <div class='sm:col-span-2 text-center'>
         <label class="custom-control custom-checkbox flexible">
-            <input type="checkbox" class="custom-control-input" :checked="settings.periodic_seasons" @click.prevent="switchPeriodicSeason">
+            <input type="checkbox" class="custom-control-input" :checked="settings.periodic_seasons" @click.prevent="switchPeriodicSeason" aria-label="Length-based seasons">
             <span class="custom-control-indicator"></span>
         </label>
     </div>
@@ -62,7 +62,7 @@
             <div class='flex flex-col' x-show="seasons.length === 4 || seasons.length === 2">
                 <div>Type:</div>
 
-                <select class='form-control preset-season-list' @change='ensureMutualTypeExclusivity($event.target.value, index)'>
+                <select class='form-control preset-season-list' @change='ensureMutualTypeExclusivity($event.target.value, index)' aria-label="Type">
                     <option value="winter" :selected="season.type === 'winter'">Winter</option>
                     <option value="spring" :selected="season.type === 'spring'" :disabled="seasons.length < 4">Spring</option>
                     <option value="summer" :selected="season.type === 'summer'">Summer</option>
@@ -77,6 +77,7 @@
                         step='any'
                         class='form-control'
                         x-model.debounce.500='season.transition_length'
+                        aria-label="Duration"
                         min='1' />
                 </div>
                 <div>
@@ -85,6 +86,7 @@
                         step='any'
                         class='form-control'
                         x-model.debounce.500='season.duration'
+                        aria-label="Peak duration"
                         min='0' />
                 </div>
             </div>
@@ -95,13 +97,13 @@
             </div>
 
             <div class="input-group !grid grid-cols-3" x-show="!settings.periodic_seasons">
-                <select class='form-control col-span-2 !w-full' x-model.number='season.timespan'>
+                <select class='form-control col-span-2 !w-full' x-model.number='season.timespan' aria-label="Month">
                     <template x-for="(month, month_index) in months" :key="month_index">
                         <option :value="month_index" :selected="month_index === season.timespan" x-text="month.name"></option>
                     </template>
                 </select>
 
-                <select class='form-control col-span-1 !w-full' x-model.number='season.day'>
+                <select class='form-control col-span-1 !w-full' x-model.number='season.day' aria-label="Day">
                     <template x-for="(day, day_index) in _.range(1, months[season.timespan ?? 0].length + 1)" :key="day_index">
                         <option :value="day"  :selected="day === season.day" x-text="day"></option>
                     </template>

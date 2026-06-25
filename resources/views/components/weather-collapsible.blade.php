@@ -9,7 +9,7 @@
         <div>Enable weather:</div>
 
         <label class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" x-model='weather.enable_weather'>
+            <input type="checkbox" class="custom-control-input" x-model='weather.enable_weather' aria-label="Enable weather">
             <span class="custom-control-indicator"></span>
         </label>
     </div>
@@ -32,14 +32,14 @@
             <div>Temperature:</div>
             <div>Wind:</div>
 
-            <select class='custom-select form-control' x-model='weather.temp_sys'>
+            <select class='custom-select form-control' x-model='weather.temp_sys' aria-label="Temperature">
                 <option selected value='metric'>Metric</option>
                 <option value='imperial'>Imperial</option>
                 <option value='both_m'>Both (inputs metric)</option>
                 <option value='both_i'>Both (inputs imperial)</option>
             </select>
 
-            <select class='custom-select form-control' x-model='weather.wind_sys'>
+            <select class='custom-select form-control' x-model='weather.wind_sys' aria-label="Wind">
                 <option selected value='metric'>Metric</option>
                 <option value='imperial'>Imperial</option>
                 <option value='both'>Both</option>
@@ -50,7 +50,7 @@
             <div>Cinematic temperature description:</div>
 
             <label class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" x-model='weather.cinematic'/>
+                <input type="checkbox" class="custom-control-input" x-model='weather.cinematic' aria-label="Cinematic temperature description"/>
                 <span class="custom-control-indicator"></span>
             </label>
         </div>
@@ -61,7 +61,7 @@
             <div class='flex input-group'>
                 <input type='number' id='seasons_seed' class='form-control' x-model='weather.seed'/>
                 <div class="input-group-append">
-                    <div class='btn btn-primary' id='reseed_seasons'><i class="fa fa-redo"></i></div>
+                    <button type="button" class='btn btn-primary' id='reseed_seasons'><i class="fa fa-redo"></i></button>
                 </div>
             </div>
         </div>

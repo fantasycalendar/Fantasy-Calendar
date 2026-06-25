@@ -53,8 +53,14 @@
                         }">
                         <div class='main-container'>
                             <div class='cursor-pointer px-2 text-xl fa'
+                                 role="button"
+                                 tabindex="0"
+                                 :aria-expanded="collapsed ? 'false' : 'true'"
+                                 aria-label="Toggle child calendar"
                                  :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
                                  @click="collapsed = !collapsed"
+                                 @keydown.enter="collapsed = !collapsed"
+                                 @keydown.space.prevent="collapsed = !collapsed"
                                  x-show="child.locked"
                                  ></div>
                             <div class='name-container'>

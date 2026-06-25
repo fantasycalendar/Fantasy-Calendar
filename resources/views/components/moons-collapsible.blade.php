@@ -34,7 +34,9 @@
                 <input type='text' class='form-control' x-model.debounce.1000="moon.name"/>
 
                 <div class="cursor-pointer w-6 text-center">
-                    <i class="fa fa-trash text-lg hover:text-red-400 hover:dark:text-red-600" @click="deleting = index"></i>
+                    <button type="button" class="hover:text-red-400 hover:dark:text-red-600 cursor-pointer bg-transparent border-0 p-0" aria-label="Delete" @click="deleting = index">
+                        <i class="fa fa-trash text-lg"></i>
+                    </button>
                 </div>
             </div>
 

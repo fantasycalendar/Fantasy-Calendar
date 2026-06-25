@@ -45,8 +45,14 @@
             <div class="p-2 first-of-type:rounded-t -mt-px first-of-type:mt-0 !bg-[var(--card-bg-color)] border border-[var(--input-border-color)]" x-data="{ collapsed: true }">
                 <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
                     <div class='cursor-pointer text-xl fa text-gray-900/50 dark:text-white/50'
+                         role="button"
+                         tabindex="0"
+                         :aria-expanded="collapsed ? 'false' : 'true'"
+                         aria-label="Toggle location"
                          :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
-                         @click="collapsed = !collapsed"></div>
+                         @click="collapsed = !collapsed"
+                         @keydown.enter="collapsed = !collapsed"
+                         @keydown.space.prevent="collapsed = !collapsed"></div>
                     <input type='text' class='name-input small-input form-control location-name' x-model.lazy='location.name'/>
                     <button class="btn btn-danger w-10" @click="deleting = index" :disabled="using_custom_location && current_location == index" :title="(using_custom_location && current_location == index) ? 'Cannot delete the current location' : 'Delete this location'">
                         <i class="fa fa-trash text-lg"></i>
@@ -68,7 +74,14 @@
                 <div x-show="!collapsed && deleting === -1">
                     <template x-for="(season, season_index) in location.seasons" :key="season_index">
                         <div class='m-0 my-2 cycle-container' x-data="{ seasonCollapsed: true }">
-                            <div class='lbl-toggle' @click="seasonCollapsed = !seasonCollapsed">
+                            <div class='lbl-toggle'
+                                 role="button"
+                                 tabindex="0"
+                                 :aria-expanded="seasonCollapsed ? 'false' : 'true'"
+                                 aria-label="Toggle weather details"
+                                 @click="seasonCollapsed = !seasonCollapsed"
+                                 @keydown.enter="seasonCollapsed = !seasonCollapsed"
+                                 @keydown.space.prevent="seasonCollapsed = !seasonCollapsed">
                                 <div class='cursor-pointer text-xl fa mr-2 text-gray-900/50 dark:text-white/50'
                                      :class="{ 'fa-caret-square-up': !seasonCollapsed, 'fa-caret-square-down': seasonCollapsed }"></div>
                                 <span x-text='(seasons?.[season_index]?.name ?? "Unknown") + " weather"'></span>
@@ -78,12 +91,12 @@
                                     <div class='flex gap-2 mb-2'>
                                         <div>
                                             Temperature low
-                                            <input type='number' step="any" class='form-control w-full' x-model.number.debounce.500='season.weather.temp_low'>
+                                            <input type='number' step="any" class='form-control w-full' x-model.number.debounce.500='season.weather.temp_low' aria-label="Temperature low">
                                         </div>
 
                                         <div>
                                             Temperature high
-                                            <input type='number' step="any" class='form-control w-full' x-model.number.debounce.500='season.weather.temp_high'>
+                                            <input type='number' step="any" class='form-control w-full' x-model.number.debounce.500='season.weather.temp_high' aria-label="Temperature high">
                                         </div>
                                     </div>
 
@@ -105,11 +118,11 @@
                                     </div>
 
                                     <div class='flex mb-2 gap-[8px]'>
-                                        <input type='number' step="1.0" class='form-control text-right w-full' x-model.number.debounce.500="season.time.sunrise.hour" :disabled="location.settings.season_based_time ?? false"/>
+                                        <input type='number' step="1.0" class='form-control text-right w-full' x-model.number.debounce.500="season.time.sunrise.hour" aria-label="Sunrise hour" :disabled="location.settings.season_based_time ?? false"/>
 
                                         <div class="basis-[20px] text-center grid items-center">:</div>
 
-                                        <input type='number' step="1.0" class='form-control w-full' x-model.number.debounce.500="season.time.sunrise.minute" :disabled="location.settings.season_based_time ?? false"/>
+                                        <input type='number' step="1.0" class='form-control w-full' x-model.number.debounce.500="season.time.sunrise.minute" aria-label="Sunrise minute" :disabled="location.settings.season_based_time ?? false"/>
                                     </div>
 
                                     <div class='flex gap-[24px] justify-evenly'>
@@ -122,11 +135,11 @@
                                     </div>
 
                                     <div class='flex mb-2 gap-[8px]'>
-                                        <input type='number' step="1.0" class='form-control text-right w-full' x-model.number.debounce.500="season.time.sunset.hour" :disabled="location.settings.season_based_time ?? false"/>
+                                        <input type='number' step="1.0" class='form-control text-right w-full' x-model.number.debounce.500="season.time.sunset.hour" aria-label="Sunset hour" :disabled="location.settings.season_based_time ?? false"/>
 
                                         <div class="basis-[20px] text-center grid items-center">:</div>
 
-                                        <input type='number' step="1.0" class='form-control w-full' x-model.number.debounce.500="season.time.sunset.minute" :disabled="location.settings.season_based_time ?? false"/>
+                                        <input type='number' step="1.0" class='form-control w-full' x-model.number.debounce.500="season.time.sunset.minute" aria-label="Sunset minute" :disabled="location.settings.season_based_time ?? false"/>
                                     </div>
                                 </div>
 
@@ -161,11 +174,11 @@
                         </div>
 
                         <div class='flex mb-2 gap-[8px]'>
-                            <input type='number' step="1.0" class='form-control text-right w-full' x-model.number.debounce.500="location.settings.timezone.hour" />
+                            <input type='number' step="1.0" class='form-control text-right w-full' x-model.number.debounce.500="location.settings.timezone.hour" aria-label="Timezone hour" />
 
                             <div class="basis-[20px] text-center grid items-center">:</div>
 
-                            <input type='number' step="1.0" class='form-control w-full' x-model.number.debounce.500="location.settings.timezone.minute" />
+                            <input type='number' step="1.0" class='form-control w-full' x-model.number.debounce.500="location.settings.timezone.minute" aria-label="Timezone minute" />
                         </div>
                     </div>
 

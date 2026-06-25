@@ -3,13 +3,13 @@
 <x-clock-canvas name="current_date"></x-clock-canvas>
 
 <div>
-    <ul class="nav justify-content-center nav-tabs mt-3">
-        <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'current' }" @click="activeDateAdjustment = 'current'">Current date</a></li>
-        <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'selected' }" @click="activeDateAdjustment = 'selected'">Selected date</a></li>
-        <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" :class="{ 'active': activeDateAdjustment === 'relative' }" @click="activeDateAdjustment = 'relative'">Relative math</a></li>
+    <ul class="nav justify-content-center nav-tabs mt-3" role="tablist">
+        <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" role="tab" id="tab-current" aria-controls="date_inputs" :aria-selected="activeDateAdjustment === 'current'" :class="{ 'active': activeDateAdjustment === 'current' }" @click="activeDateAdjustment = 'current'">Current date</a></li>
+        <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" role="tab" id="tab-selected" aria-controls="panel-selected" :aria-selected="activeDateAdjustment === 'selected'" :class="{ 'active': activeDateAdjustment === 'selected' }" @click="activeDateAdjustment = 'selected'">Selected date</a></li>
+        <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" role="tab" id="tab-relative" aria-controls="panel-relative" :aria-selected="activeDateAdjustment === 'relative'" :class="{ 'active': activeDateAdjustment === 'relative' }" @click="activeDateAdjustment = 'relative'">Relative math</a></li>
     </ul>
 
-    <div class='date_control mt-3' id='date_inputs' :class="{ 'd-flex flex-column': activeDateAdjustment === 'current', 'd-none': activeDateAdjustment !== 'current' }">
+    <div class='date_control mt-3' id='date_inputs' role="tabpanel" aria-labelledby="tab-current" :class="{ 'd-flex flex-column': activeDateAdjustment === 'current', 'd-none': activeDateAdjustment !== 'current' }">
         @if(isset($calendar) && $calendar?->isChild())
             <div class="rounded border border-gray-300 dark:border-gray-600 p-3 mt-2">
                 <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-300 mb-2">
@@ -94,7 +94,7 @@
     </div>
 
 
-    <div class='date_control selected_date_controls mt-3' :class="{ 'd-flex flex-column': activeDateAdjustment === 'selected', 'd-none': activeDateAdjustment !== 'selected' }">
+    <div class='date_control selected_date_controls mt-3' id="panel-selected" role="tabpanel" aria-labelledby="tab-selected" :class="{ 'd-flex flex-column': activeDateAdjustment === 'selected', 'd-none': activeDateAdjustment !== 'selected' }">
         <div class='input-group mt-2'>
             <div class='input-group-prepend'>
                 <button type='button' class='btn btn-danger' @click="decrement_selected_year"><i class="fa fa-minus"></i></button>
@@ -142,11 +142,11 @@
             </div>
         </div>
 
-        <div class='btn btn-success w-full mt-2' :class="{ 'disabled': currentDateSelected }" x-show="selected_date.follow" @click="(!currentDateSelected) && set_selected_date_active(true)" :disabled="currentDateSelected">Select date</div>
-        <div class='btn btn-warning w-full mt-2' x-show="!selected_date.follow" @click="set_selected_date_active(false)">Select current date</div>
+        <button type="button" class='btn btn-success w-full mt-2' :class="{ 'disabled': currentDateSelected }" x-show="selected_date.follow" @click="(!currentDateSelected) && set_selected_date_active(true)" :disabled="currentDateSelected">Select date</button>
+        <button type="button" class='btn btn-warning w-full mt-2' x-show="!selected_date.follow" @click="set_selected_date_active(false)">Select current date</button>
     </div>
 
-    <div class="flex flex-col mt-3" :class="{ 'd-flex flex-column': activeDateAdjustment === 'relative', 'd-none': activeDateAdjustment !== 'relative' }">
+    <div class="flex flex-col mt-3" id="panel-relative" role="tabpanel" aria-labelledby="tab-relative" :class="{ 'd-flex flex-column': activeDateAdjustment === 'relative', 'd-none': activeDateAdjustment !== 'relative' }">
         <div class="input-group">
             <input type='number' class="form-control mt-2 px-2" x-model.number="date_adjustment_units.years" placeholder="Years (+/-)">
             <input type='number' class="form-control mt-2 px-2" x-model.number="date_adjustment_units.months" placeholder="Months (+/-)">
