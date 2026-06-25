@@ -70,9 +70,10 @@
     </div>
 
     <div class="list-group mb-[1rem]" x-ref="months-sortable">
-        <template x-for="(month, index) in months" :key="index" x-ref="months-sortable-template">
+        <template x-for="(month, index) in months" :key="keyFor(month)" x-ref="months-sortable-template">
 
             <x-sortable-item
+                item-key="keyFor(month)"
                 highlight-row-when="month.type == 'intercalary'"
                 delete-function="removeMonth(index)"
                 >

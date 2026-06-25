@@ -156,4 +156,20 @@ export default class CollapsibleComponent {
     reorderSortable() {
         // Nop
     }
+
+    keyFor(item) {
+        if (item === null || typeof item !== 'object') return item;
+
+        if (!this._keyMap) {
+            this._keyMap = new WeakMap();
+            this._keyCounter = 0;
+        }
+
+        let id = this._keyMap.get(item);
+        if (id === undefined) {
+            id = ++this._keyCounter;
+            this._keyMap.set(item, id);
+        }
+        return id;
+    }
 }

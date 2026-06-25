@@ -19,8 +19,8 @@
 
 
 <div class='sortable list-group my-2' x-ref="event-categories-sortable">
-    <template x-for="(category, index) in categories" :key="index" x-ref="event-categories-sortable-template">
-        <x-sortable-item deleteFunction="removeCategory(category.id)">
+    <template x-for="(category, index) in categories" :key="category.id" x-ref="event-categories-sortable-template">
+        <x-sortable-item item-key="category.id" deleteFunction="removeCategory(category.id)">
             <x-slot:inputs>
                 <input type='text' class='name-input small-input form-control' x-model.debounce.1000='category.name'/>
             </x-slot:inputs>

@@ -34,12 +34,8 @@ class MonthsCollapsible extends CollapsibleComponent {
     }
 
     reorderSortable(start, end) {
-        let months = JSON.parse(JSON.stringify(this.months));
-
-        const elem = months.splice(start, 1)[0];
-        months.splice(end, 0, elem);
-
-        this.months = months;
+        const elem = this.months.splice(start, 1)[0];
+        this.months.splice(end, 0, elem);
     }
 
     addMonth() {

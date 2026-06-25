@@ -43,7 +43,7 @@
     </div>
 
     <div class='sortable'>
-        <template x-for="(era, index) in eras">
+        <template x-for="(era, index) in eras" :key="keyFor(era)">
             <x-sortable-item deleteFunction="removeEra(index)">
                 <x-slot:inputs>
                     <input type='text' class='name-input small-input form-control' x-model.debounce.1000='era.name'/>

@@ -53,8 +53,8 @@
 </div>
 
 <div class='sortable list-group my-2' x-ref="seasons-sortable">
-    <template x-for="(season, index) in seasons" x-ref="seasons-sortable-template" :key="index">
-        <x-sortable-item deleteFunction="removeSeason(index)">
+    <template x-for="(season, index) in seasons" x-ref="seasons-sortable-template" :key="keyFor(season)">
+        <x-sortable-item item-key="keyFor(season)" deleteFunction="removeSeason(index)">
             <x-slot:inputs>
                 <input type='text' class='name-input small-input form-control' x-model.lazy='season.name'></input>
             </x-slot:inputs>
