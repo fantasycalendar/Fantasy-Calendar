@@ -1142,13 +1142,13 @@ function process_fantasycalendar(calendar, dynamic_data, static_data) {
                 if (current_event.settings.hide_full !== undefined && typeof current_event.settings.hide_full === "boolean") {
                     event.settings.hide_full = current_event.settings.hide_full;
                 } else {
-                    current_event.settings.hide_full = false;
+                    event.settings.hide_full = false;
                 }
 
                 if (current_event.settings.print !== undefined && typeof current_event.settings.print === "boolean") {
-                    event.print = current_event.print;
+                    event.settings.print = current_event.settings.print;
                 } else {
-                    event.print = false;
+                    event.settings.print = false;
                 }
 
             } else {
@@ -1706,6 +1706,7 @@ function convert_to_granularity(cycle) {
 
 export { convert_old_event as _convert_old_event_for_testing };
 export { convert_to_granularity as _convert_to_granularity_for_testing };
+export { process_fantasycalendar as _process_fantasycalendar_for_testing };
 
 function isHex(h) {
     return /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(h);

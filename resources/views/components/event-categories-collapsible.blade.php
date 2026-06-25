@@ -51,7 +51,7 @@
                         Hide event
                     </x-alpine.check-input>
 
-                    <x-alpine.check-input id="`category_${index}_event_settings_noprint`" x-model='category.event_settings.noprint'>
+                    <x-alpine.check-input id="`category_${index}_event_settings_print`" x-model='category.event_settings.print'>
                         Show event when printing
                     </x-alpine.check-input>
                 </div>

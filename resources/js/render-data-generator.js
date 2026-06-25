@@ -560,7 +560,7 @@ export var render_data_generator = {
                             continue;
                         }
 
-                        event_class.push(!category.event_settings.print ? "" : "d-print-none");
+                        event_class.push(!category.event_settings.print ? "d-print-none" : "");
                         event_class.push(category.event_settings.color ? category.event_settings.color : "");
                         event_class.push(category.event_settings.text ? category.event_settings.text : "");
                         event_class.push(category.event_settings.hide || category.category_settings.hide ? "hidden_event" : "");
