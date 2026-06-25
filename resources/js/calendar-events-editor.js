@@ -1,6 +1,7 @@
 import { submit_new_event, submit_edit_event, submit_delete_event } from "./calendar/calendar_ajax_functions";
 import { ordinal_suffix_of, precisionRound, clone, notify } from "./calendar/calendar_functions";
 import { moon_phases } from "./calendar/calendar_variables";
+import { eventHasChanged } from "./calendar/event_change_detection";
 
 function createEventTesterWorker() {
     // In dev, the Vite dev server runs on a different port than the app, which
@@ -582,17 +583,14 @@ export default () => ({
 
     event_has_changed() {
 
-        if (this.initial_working_event) {
-
-            let current_check = clone(this.working_event);
-            current_check.data = this.create_event_data();
-            return !Object.compare(current_check, this.initial_working_event);
-
-        } else {
-
+        if (!this.initial_working_event) {
             return false;
-
         }
+
+        let current_check = clone(this.working_event);
+        current_check.data = this.create_event_data();
+
+        return eventHasChanged(this.initial_working_event, current_check);
 
     },
 
