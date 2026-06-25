@@ -8,7 +8,7 @@ jobs:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@main
         with:
-          node-version: '14'
+          node-version: '20'
       - name: Extract branch name
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
@@ -32,7 +32,7 @@ jobs:
       - name: Install NPM dependencies
         run: npm install
       - name: Build production assets
-        run: npm run production
+        run: npm run build
       - name: Generate key
         run: php artisan key:generate
       - name: Directory Permissions
