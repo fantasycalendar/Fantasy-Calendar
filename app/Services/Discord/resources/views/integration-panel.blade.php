@@ -269,7 +269,7 @@
                                                @click="$dispatch('modal', {
                                                     name: 'delete_webhook_confirmation',
                                                     title: 'Are you sure?',
-                                                    body: 'Are you sure you want to delete <strong>{{ addslashes($webhook->name) }}</strong>?',
+                                                    body: `Are you sure you want to delete <strong>${sanitizeHtml(@json($webhook->name))}</strong>?`,
                                                     ok_event: { url: '{{ route('discord.webhooks.delete', ['discordWebhook' => $webhook]) }}' },
                                                 })"
                                             ></i>
