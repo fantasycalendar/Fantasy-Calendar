@@ -327,7 +327,7 @@
                                                     name: 'copy_confirmation',
                                                     title: `Copying ${sanitizeHtml(@json($calendar->name))}`,
                                                     form_prefill: {
-                                                        new_name: `{{ addslashes($calendar->name) }} (clone)`
+                                                        new_name: @js($calendar->name) + ' (clone)'
                                                     },
                                                     ok_event: { hash: '{{ $calendar->hash }}' }
                                                 })"
