@@ -406,15 +406,82 @@ class Calendar extends Model
             }
         );
 
-        // Era descriptions are user-authored rich HTML rendered via `x-html`,
-        // so they must be purified like CalendarEvent::description (which uses
-        // the CleanHtml cast). They live inside the static_data JSON, so the
-        // model's `array` cast does not clean them — purify here, at the single
-        // read boundary every consumer (including the frontend store) funnels
-        // through. Only `eras[].description` is touched; names, `formatting`
-        // templates, `interval` syntax, etc. are intentionally left untouched.
-        if (isset($original['eras']) && is_array($original['eras'])) {
+        // Sanitize user-controlled strings at this single read boundary (every
+        // PHP consumer and the @js() frontend store hydration funnel through
+        // here). Names are stripped of tags (strip_tags, not the Purifier cast,
+        // so the frontend stays the single escaper and `&` is not double-encoded).
+        // Format/template/syntax fields (eras[].format, cycles.format,
+        // leap_days[].interval, colors, enums) are deliberately left untouched.
+        $stripName = static function ($value) {
+            return is_string($value) ? strip_tags($value) : $value;
+        };
+
+        if (is_array($original['year_data']['global_week'] ?? null)) {
+            $original['year_data']['global_week'] = array_map($stripName, $original['year_data']['global_week']);
+        }
+        if (is_array($original['year_data']['timespans'] ?? null)) {
+            foreach ($original['year_data']['timespans'] as &$timespan) {
+                if (isset($timespan['name'])) {
+                    $timespan['name'] = $stripName($timespan['name']);
+                }
+                if (is_array($timespan['week'] ?? null)) {
+                    $timespan['week'] = array_map($stripName, $timespan['week']);
+                }
+            }
+            unset($timespan);
+        }
+        if (is_array($original['year_data']['leap_days'] ?? null)) {
+            foreach ($original['year_data']['leap_days'] as &$leapDay) {
+                if (isset($leapDay['name'])) {
+                    $leapDay['name'] = $stripName($leapDay['name']);
+                }
+            }
+            unset($leapDay);
+        }
+
+        if (is_array($original['moons'] ?? null)) {
+            foreach ($original['moons'] as &$moon) {
+                if (isset($moon['name'])) {
+                    $moon['name'] = $stripName($moon['name']);
+                }
+            }
+            unset($moon);
+        }
+
+        if (is_array($original['seasons']['data'] ?? null)) {
+            foreach ($original['seasons']['data'] as &$season) {
+                if (isset($season['name'])) {
+                    $season['name'] = $stripName($season['name']);
+                }
+            }
+            unset($season);
+        }
+        if (is_array($original['seasons']['locations'] ?? null)) {
+            foreach ($original['seasons']['locations'] as &$location) {
+                if (isset($location['name'])) {
+                    $location['name'] = $stripName($location['name']);
+                }
+            }
+            unset($location);
+        }
+
+        if (is_array($original['cycles']['data'] ?? null)) {
+            foreach ($original['cycles']['data'] as &$cycle) {
+                if (is_array($cycle['names'] ?? null)) {
+                    $cycle['names'] = array_map($stripName, $cycle['names']);
+                }
+            }
+            unset($cycle);
+        }
+
+        // Era names are stripped; era descriptions are user-authored rich HTML
+        // rendered via `x-html`, so they are HTML-purified (like
+        // CalendarEvent::description's CleanHtml cast) rather than stripped.
+        if (is_array($original['eras'] ?? null)) {
             foreach ($original['eras'] as &$era) {
+                if (isset($era['name'])) {
+                    $era['name'] = $stripName($era['name']);
+                }
                 if (isset($era['description']) && is_string($era['description'])) {
                     $era['description'] = clean($era['description'], 'default');
                 }
