@@ -108,6 +108,14 @@ class CalendarEvent extends Model
         return html_entity_decode($value);
     }
 
+    // Defense-in-depth: strip tags from user-controlled names on any model-level
+    // write. The primary enforcement is in SaveCalendarEvents (which also covers
+    // the query-builder update path that bypasses this mutator). strip_tags
+    // avoids entity-encoding so the frontend remains the single escaper.
+    public function setNameAttribute($value) {
+        $this->attributes['name'] = is_string($value) ? strip_tags($value) : $value;
+    }
+
     public function oneTime($year, $month, $day)
     {
         $this->data = [
