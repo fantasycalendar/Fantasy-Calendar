@@ -406,6 +406,22 @@ class Calendar extends Model
             }
         );
 
+        // Era descriptions are user-authored rich HTML rendered via `x-html`,
+        // so they must be purified like CalendarEvent::description (which uses
+        // the CleanHtml cast). They live inside the static_data JSON, so the
+        // model's `array` cast does not clean them — purify here, at the single
+        // read boundary every consumer (including the frontend store) funnels
+        // through. Only `eras[].description` is touched; names, `formatting`
+        // templates, `interval` syntax, etc. are intentionally left untouched.
+        if (isset($original['eras']) && is_array($original['eras'])) {
+            foreach ($original['eras'] as &$era) {
+                if (isset($era['description']) && is_string($era['description'])) {
+                    $era['description'] = clean($era['description'], 'default');
+                }
+            }
+            unset($era);
+        }
+
         return $original;
     }
 
