@@ -39,10 +39,19 @@ export default () => ({
         this.era = $event.detail.era ?? false;
         this.epoch = $event.detail.epoch;
 
+        const source = this.era ? store.static_data.eras[this.id] : store.events[this.id];
+
+        // Guard against an unresolvable id (e.g. an events-manager synthetic
+        // `new-${index}` key on the create page that findIndex couldn't match) —
+        // opening the viewer with no event would crash on `this.data.*`.
+        if (source === undefined) {
+            return;
+        }
+
         if (this.era) {
-            this.data = clone(store.static_data.eras[this.id]);
+            this.data = clone(source);
         } else {
-            this.data = clone(store.events[this.id]);
+            this.data = clone(source);
             this.db_id = this.data.id !== undefined ? this.data.id : false;
         }
         if (this.data.description == "") {
