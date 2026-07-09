@@ -104,6 +104,7 @@ export default class Calendar {
             "static_data.seasons",
             "static_data.moons",
             "static_data.settings",
+            "static_data.cycles",
             "event_categories",
             "events",
             "dynamic_data.location",

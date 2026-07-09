@@ -80,4 +80,10 @@ describe('Calendar.update re-render triggers', () => {
 
         expect(calendar.rebuild_calendar).toHaveBeenCalled();
     });
+
+    it('rebuilds the calendar when cycles change (so the cycle subheader appears immediately)', () => {
+        calendar.update({ 'static_data.cycles.data': [{ names: ['Year of the Rat'] }] });
+
+        expect(calendar.rebuild_calendar).toHaveBeenCalled();
+    });
 });
