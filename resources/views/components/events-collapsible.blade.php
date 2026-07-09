@@ -12,7 +12,7 @@
     <div class="input-group-append">
         <button type='button'
             class='btn btn-primary add'
-            @click="$dispatch('event-editor-modal-new-event', { name: new_event_name, epoch: this.dynamic_data.epoch })"
+            @click="$dispatch('event-editor-modal-new-event', { name: new_event_name, epoch: get_current_epoch() })"
         ><i class="fa fa-plus"></i></button>
     </div>
 </div>
