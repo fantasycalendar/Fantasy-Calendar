@@ -42,3 +42,42 @@ describe('Calendar.rebuild_calendar', () => {
         expect(notify.detail.type).toBe('error');
     });
 });
+
+describe('Calendar.update re-render triggers', () => {
+
+    let calendar;
+
+    beforeEach(() => {
+        // A VALID calendar so update() reaches the rebuild/update-epochs branch.
+        calendar = new Calendar();
+        calendar.static_data = structuredClone(gregorian.static_data);
+        calendar.dynamic_data = structuredClone(gregorian.dynamic_data);
+        calendar.preview_date = { follow: true };
+        calendar.events = [];
+        calendar._event_categories = [];
+        calendar.perms = { player_at_least: () => true };
+
+        calendar.dispatch = vi.fn();
+        calendar.rebuild_calendar = vi.fn();
+        calendar.update_epochs = vi.fn();
+
+        // Prime the store: the first update() always rebuilds (initial reconcile
+        // + date-manager setup). Clear the spies so subsequent assertions reflect
+        // only the change under test.
+        calendar.update({});
+        calendar.rebuild_calendar.mockClear();
+        calendar.update_epochs.mockClear();
+    });
+
+    it('does not rebuild on a no-op update once primed (baseline)', () => {
+        calendar.update({});
+
+        expect(calendar.rebuild_calendar).not.toHaveBeenCalled();
+    });
+
+    it('rebuilds the calendar when events change (so new season events render immediately)', () => {
+        calendar.update({ events: [{ name: 'Summer Solstice', sort_by: 0 }] });
+
+        expect(calendar.rebuild_calendar).toHaveBeenCalled();
+    });
+});
