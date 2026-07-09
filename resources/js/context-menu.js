@@ -213,7 +213,7 @@ export default () => ({
                 }
             },
             {
-                name: store.events[calendar_event.index].settings.hide ? 'Show event' : 'Hide event',
+                name: store.events[calendar_event.index]?.settings.hide ? 'Show event' : 'Hide event',
                 icon: 'fas fa-eye-slash',
                 callback: function() {
                     submit_hide_show_event(calendar_event.index);
