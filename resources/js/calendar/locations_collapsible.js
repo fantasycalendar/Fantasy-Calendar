@@ -91,6 +91,27 @@ class LocationsCollapsible extends CollapsibleComponent {
 
     removeLocation(index) {
         this.locations.splice(index, 1);
+
+        // Keep `current_location` (an index into `locations`) pointing at the
+        // right place after removal.
+        if (this.using_custom_location && !isNaN(this.current_location)) {
+            let current = Number(this.current_location);
+
+            if (this.locations.length === 0) {
+                // No custom locations left — fall back to presets.
+                this.using_custom_location = false;
+                this.current_location = "0";
+            } else if (index === current) {
+                // Deleted the current location — move to the previous one, or
+                // the new first location if it was the first.
+                this.current_location = Math.max(0, index - 1).toString();
+            } else if (index < current) {
+                // Deleted a location before the current — shift the index down.
+                this.current_location = (current - 1).toString();
+            }
+            // index > current: current index is unaffected.
+        }
+
         this.deleting = -1;
     }
 

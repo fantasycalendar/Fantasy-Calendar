@@ -54,7 +54,7 @@
                          @keydown.enter="collapsed = !collapsed"
                          @keydown.space.prevent="collapsed = !collapsed"></div>
                     <input type='text' class='name-input small-input form-control location-name' x-model.lazy='location.name'/>
-                    <button class="btn btn-danger w-10" @click="deleting = index" :disabled="using_custom_location && current_location == index" :title="(using_custom_location && current_location == index) ? 'Cannot delete the current location' : 'Delete this location'">
+                    <button class="btn btn-danger w-10" @click="deleting = index" title="Delete this location">
                         <i class="fa fa-trash text-lg"></i>
                     </button>
                 </div>
