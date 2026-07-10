@@ -101,10 +101,12 @@ class ErasCollapsible extends CollapsibleComponent {
         }
 
         this.eras.sort((a, b) => {
-            if (a.settings.starting_era) {
-                return -1;
-            }
-            return a.date.epoch - b.date.epoch;
+            // Starting era always first, then order by epoch. Comparing both
+            // sides' starting_era keeps this a valid, idempotent comparator —
+            // inspecting only `a` made cmp(a,b) and cmp(b,a) both negative when
+            // the starting era wasn't the earliest, oscillating the order.
+            return (Number(b.settings.starting_era) - Number(a.settings.starting_era))
+                || (a.date.epoch - b.date.epoch);
         });
     }
 
