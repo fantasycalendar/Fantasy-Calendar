@@ -86,4 +86,10 @@ describe('Calendar.update re-render triggers', () => {
 
         expect(calendar.rebuild_calendar).toHaveBeenCalled();
     });
+
+    it('rebuilds the calendar when the clock changes (so season day/night is recomputed)', () => {
+        calendar.update({ 'static_data.clock': { enabled: true, render: true } });
+
+        expect(calendar.rebuild_calendar).toHaveBeenCalled();
+    });
 });
