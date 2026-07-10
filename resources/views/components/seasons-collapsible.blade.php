@@ -91,24 +91,28 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-3" x-show="!settings.periodic_seasons">
-                <div class="col-span-2">Month:</div>
-                <div class='col-span-1'>Day:</div>
-            </div>
+            <template x-if="!settings.periodic_seasons">
+                <div>
+                    <div class="grid grid-cols-3">
+                        <div class="col-span-2">Month:</div>
+                        <div class='col-span-1'>Day:</div>
+                    </div>
 
-            <div class="input-group !grid grid-cols-3" x-show="!settings.periodic_seasons">
-                <select class='form-control col-span-2 !w-full' x-model.number='season.timespan' aria-label="Month">
-                    <template x-for="(month, month_index) in months" :key="month_index">
-                        <option :value="month_index" :selected="month_index === season.timespan" x-text="month.name"></option>
-                    </template>
-                </select>
+                    <div class="input-group !grid grid-cols-3">
+                        <select class='form-control col-span-2 !w-full' x-model.number='season.timespan' aria-label="Month">
+                            <template x-for="(month, month_index) in months" :key="month_index">
+                                <option :value="month_index" :selected="month_index === season.timespan" x-text="month.name"></option>
+                            </template>
+                        </select>
 
-                <select class='form-control col-span-1 !w-full' x-model.number='season.day' aria-label="Day">
-                    <template x-for="(day, day_index) in _.range(1, months[season.timespan ?? 0].length + 1)" :key="day_index">
-                        <option :value="day"  :selected="day === season.day" x-text="day"></option>
-                    </template>
-                </select>
-            </div>
+                        <select class='form-control col-span-1 !w-full' x-model.number='season.day' aria-label="Day">
+                            <template x-for="(day, day_index) in _.range(1, months[season.timespan ?? 0].length + 1)" :key="day_index">
+                                <option :value="day"  :selected="day === season.day" x-text="day"></option>
+                            </template>
+                        </select>
+                    </div>
+                </div>
+            </template>
 
             <template x-if="settings.color_enabled && season.color?.length == 2">
                 <div class='grid grid-cols-2 gap-x-2'>
