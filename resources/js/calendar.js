@@ -241,10 +241,6 @@ export default class Calendar {
 
     render_calendar(calendar_data) {
         if (!calendar_data) calendar_data = this.evaluated_static_data;
-        if (this.setting('prompt_for_redraw', false)) {
-            return this.dispatch('display-redraw-warning');
-        }
-        this.dispatch('hide-redraw-warning');
         execution_time.start("Rendering calendar...")
         return render_data_generator.create_render_data(calendar_data).then((result) => {
             this.dispatch('render-data-change', result);
@@ -257,10 +253,6 @@ export default class Calendar {
     }
 
     update_epochs() {
-        if (this.setting('prompt_for_redraw', false)) {
-            return this.dispatch('display-redraw-warning');
-        }
-        this.dispatch('hide-redraw-warning');
         this.dispatch('update-epochs', {
             current_epoch: this.dynamic_data.epoch,
             preview_epoch: this.active_date.epoch

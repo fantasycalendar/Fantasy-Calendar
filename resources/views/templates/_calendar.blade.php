@@ -9,8 +9,6 @@
         @close-sidebar.window="close_sidebar"
         @calendar-validation-failed.window="add_errors"
         @calendar-validation-succeeded.window="remove_errors"
-        @display-redraw-warning.window='display_redraw_warning'
-        @hide-redraw-warning.window='hide_redraw_warning'
         @keydown.ctrl.slash.window='toggle_sidebar'
         @theme-changed.window="$el.classList.toggle('dark', $event.detail.theme === 'dark')"
         >

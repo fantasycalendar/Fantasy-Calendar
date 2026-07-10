@@ -4,7 +4,6 @@ export default function () {
     return {
         errors: {},
         sidebar_open: this.$persist(true),
-        show_redraw_warning: false,
 
         toggle_sidebar() {
             this.sidebar_open = !this.sidebar_open;
@@ -15,13 +14,6 @@ export default function () {
         },
         close_sidebar() {
             this.sidebar_open = false;
-        },
-
-        display_redraw_warning() {
-            this.show_redraw_warning = true;
-        },
-        hide_redraw_warning() {
-            this.show_redraw_warning = false;
         },
 
         init() {
