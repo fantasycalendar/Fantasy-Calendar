@@ -339,15 +339,31 @@ class Calendar extends Model
             return true;
         }
 
-        if (Arr::get($this->static_data, 'year_data') != Arr::get($static_data, 'year_data')) {
+        if ($this->withoutSyntheticIds(Arr::get($this->static_data, 'year_data')) != $this->withoutSyntheticIds(Arr::get($static_data, 'year_data'))) {
             return true;
         }
 
-        if (Arr::get($this->static_data, 'eras') != Arr::get($static_data, 'eras')) {
+        if ($this->withoutSyntheticIds(Arr::get($this->static_data, 'eras')) != $this->withoutSyntheticIds(Arr::get($static_data, 'eras'))) {
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Recursively strips the editor's synthetic `_id` keys so they don't count
+     * as structural differences (list items carry an `_id` only for stable
+     * front-end keys; it is not part of the calendar's structure).
+     */
+    private function withoutSyntheticIds($value)
+    {
+        if (!is_array($value)) {
+            return $value;
+        }
+
+        unset($value['_id']);
+
+        return array_map(fn ($item) => $this->withoutSyntheticIds($item), $value);
     }
 
     public function isLinkable(): bool

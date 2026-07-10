@@ -64,9 +64,9 @@
     </div>
 
     <div class="sortable list-group" x-ref="leap-days-sortable">
-        <template x-for="(leap_day, index) in leap_days" :key="keyFor(leap_day)" x-ref="leap-days-sortable-template">
+        <template x-for="(leap_day, index) in leap_days" :key="leap_day._id" x-ref="leap-days-sortable-template">
             <x-sortable-item
-                item-key="keyFor(leap_day)"
+                item-key="leap_day._id"
                 highlight-row-when="leap_day.intercalary"
                 delete-function="removeLeapDay(index)"
                 >

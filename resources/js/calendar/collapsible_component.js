@@ -47,7 +47,16 @@ export default class CollapsibleComponent {
         this.calendar_settings = this.$store.calendar.static_data.settings;
 
         for (let [localKey, globalKey] of Object.entries(this.inboundProperties)) {
-            let incoming = _.cloneDeep(_.get(this.$store.calendar, globalKey));
+            let storeValue = _.get(this.$store.calendar, globalKey);
+
+            // Backfill stable ids onto the STORE objects before cloning, so the
+            // cloned local copy carries the same ids. This keeps store and local
+            // `_.isEqual` (no perpetual reclone) and gives list rows a `:key`
+            // that survives the cloneDeep round-trip (so the open row doesn't
+            // collapse on every edit).
+            this.ensureStableIds(storeValue);
+
+            let incoming = _.cloneDeep(storeValue);
             let current = this[localKey];
 
             if (!_.isEqual(incoming, current)) {
@@ -59,6 +68,20 @@ export default class CollapsibleComponent {
 
         if (!this.initialized) {
             this.setupWatchers();
+        }
+    }
+
+    // Assigns a stable synthetic `_id` to each object element of an array, in
+    // place. Used for static_data list items (eras/months/leap_days/seasons)
+    // which have no real database id. No-op for non-arrays and primitive
+    // elements (e.g. weekday name strings).
+    ensureStableIds(value) {
+        if (!Array.isArray(value)) return;
+
+        for (let item of value) {
+            if (item !== null && typeof item === 'object' && item._id === undefined) {
+                item._id = _.uniqueId('row');
+            }
         }
     }
 
@@ -155,21 +178,5 @@ export default class CollapsibleComponent {
 
     reorderSortable() {
         // Nop
-    }
-
-    keyFor(item) {
-        if (item === null || typeof item !== 'object') return item;
-
-        if (!this._keyMap) {
-            this._keyMap = new WeakMap();
-            this._keyCounter = 0;
-        }
-
-        let id = this._keyMap.get(item);
-        if (id === undefined) {
-            id = ++this._keyCounter;
-            this._keyMap.set(item, id);
-        }
-        return id;
     }
 }
