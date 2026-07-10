@@ -46,16 +46,6 @@
             </select>
         </div>
 
-        <div class='flex justify-between'>
-            <div>Cinematic temperature description:</div>
-
-            <label class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" x-model='weather.cinematic' aria-label="Cinematic temperature description"/>
-                <span class="custom-control-indicator"></span>
-            </label>
-        </div>
-
-
         <div>
             <div>Weather generation seed:</div>
             <div class='flex input-group'>
