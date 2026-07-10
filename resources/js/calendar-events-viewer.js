@@ -33,6 +33,12 @@ export default () => ({
 
         if ($event.detail.event_db_id !== undefined) {
             event_index = store.events.findIndex((item) => item.id === $event.detail.event_db_id);
+
+            // On the create page events have no id; the events manager addresses
+            // them by a synthetic `new-${index}` id that encodes the array index.
+            if (event_index === -1 && typeof $event.detail.event_db_id === "string" && $event.detail.event_db_id.startsWith("new-")) {
+                event_index = Number($event.detail.event_db_id.slice("new-".length));
+            }
         }
 
         this.id = event_index;

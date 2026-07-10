@@ -3,17 +3,14 @@ import { describe, it, expect, vi } from 'vitest';
 import eventViewerFactory from '../calendar-events-viewer.js';
 
 /**
- * Regression test: opening an event from the events manager on the CREATE page
- * must not crash.
+ * Opening an event from the events manager on the CREATE page.
  *
  * On the create page, events have no DB id, so the manager assigns a synthetic
- * string id `new-${index}` (for Alpine `:key`) and dispatches it as
- * `event_db_id`. `view_event` then did
- * `store.events.findIndex(item => item.id === "new-0")` → -1 →
- * `clone(store.events[-1])` (undefined) → `this.data.id` throws.
- *
- * The viewer must resolve the synthetic id to the correct event (and never
- * dereference an undefined event).
+ * `new-${index}` id (on its own cloned copy, for Alpine `:key`) and dispatches
+ * it as `event_db_id`. The store's events still have no id, so a findIndex by id
+ * fails; `view_event` must resolve the `new-${index}` id back to that array
+ * index so the unsaved event still opens (and never dereference an undefined
+ * event).
  */
 function makeViewer(events) {
     return Object.assign(eventViewerFactory(), {
@@ -59,6 +56,22 @@ describe('CalendarEventViewer.view_event', () => {
 
         expect(viewer.open).toBe(true);
         expect(viewer.data.name).toBe('Other');
+    });
+
+    it('opens an unsaved event on the create page (store events have no id)', () => {
+        // The real create-page shape: store events have no id; the synthetic
+        // `new-${index}` id only exists on the manager's clone and encodes the
+        // array index.
+        const events = [
+            { name: 'First', description: 'x' },
+            { name: 'Second', description: 'y' },
+        ];
+        const viewer = makeViewer(events);
+
+        viewer.view_event({ detail: { event_db_id: 'new-1', epoch: 0 } });
+
+        expect(viewer.open).toBe(true);
+        expect(viewer.data.name).toBe('Second');
     });
 
     it('does not crash when the id cannot be resolved at all', () => {
