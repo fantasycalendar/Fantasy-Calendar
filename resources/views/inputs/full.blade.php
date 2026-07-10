@@ -87,9 +87,7 @@
 
     @include('layouts.calendar')
 
-    @if(request()->is('calendars/*/edit'))
-        <x-weather-graphs></x-weather-graphs>
-    @endif
+    <x-weather-graphs></x-weather-graphs>
 
 </div>
 <div id='html_edit'></div>
