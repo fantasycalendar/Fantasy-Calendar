@@ -2,6 +2,7 @@
      x-data="CalendarYearHeader"
      @calendar-loaded.window="update"
      @render-data-change.window="update"
+     @update-epochs.window="update"
      x-show="show"
      x-cloak
 >
