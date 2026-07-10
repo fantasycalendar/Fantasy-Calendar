@@ -68,7 +68,9 @@ return [
 
         'testing' => [
             'driver' => 'mysql',
-            'host' => env('TESTING_DB_HOST', '127.0.0.1'),
+            // Same server as the main connection by default, separate database.
+            // Override with TESTING_DB_* to use a different server.
+            'host' => env('TESTING_DB_HOST', env('DB_HOST', '127.0.0.1')),
             'port' => env('TESTING_DB_PORT', env('DB_PORT', '3306')),
             'database' => env('TESTING_DB_DATABASE', 'fantasy-calendar-testing'),
             'username' => env('TESTING_DB_USERNAME', env('DB_USERNAME','forge')),
