@@ -71,11 +71,11 @@ class CurrentDateCollapsible extends CollapsibleComponent {
     }
 
     get current_minute() {
-        return this.current_date.minute;
+        return this.current_date.minute ?? 0;
     }
 
     get current_hour() {
-        return this.current_date.hour;
+        return this.current_date.hour ?? 0;
     }
 
     get current_day() {

@@ -72,6 +72,8 @@
                     "year": 1,
                     "timespan": 0,
                     "day": 1,
+                    "hour": 0,
+                    "minute": 0,
                     "epoch": 0,
                     "custom_location": false,
                     "location": "Equatorial"
