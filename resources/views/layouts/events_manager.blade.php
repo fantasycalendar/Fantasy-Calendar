@@ -220,7 +220,7 @@
                                             <button class="managed_event_action_icon" :style="(multiselect || event.settings.hide_full) ? 'pointer-events: none;' : ''" @click.stop="toggleEventHidden(event, $dispatch)">
                                                 <i class="fa" :title="eventVisibilityTooltip(event)" :class="{  'fa-eye-slash opacity-60': event.settings.hide || event.settings.hide_full, 'fa-eye': !event.settings.hide, 'opacity-50 pointer-events-none' : event.settings.hide_full }"></i>
                                             </button>
-                                            <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-edit-event', { event_db_id: event.id, epoch: window.dynamic_data.epoch })">
+                                            <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-edit-event', { event_db_id: event.id, epoch: $store.calendar.dynamic_data.epoch })">
                                                 <i class="fa fa-edit"></i>
                                             </button>
                                             <button class="managed_event_action_icon" x-show="!multiselect" @click.stop="$dispatch('event-editor-modal-delete-event', { event_db_id: event.id })">
@@ -236,7 +236,7 @@
                     <div class="flex mt-4">
                         <div class="px-md-3 flex justify-content-end">
                             <button class="btn btn-outline-secondary mr-2" @click="open = false; search = ''">Cancel</button>
-                            <button class="btn btn-primary" @click="$dispatch('event-editor-modal-new-event', { epoch: dynamic_data.epoch })">Create new</button>
+                            <button class="btn btn-primary" @click="$dispatch('event-editor-modal-new-event', { epoch: $store.calendar.dynamic_data.epoch })">Create new</button>
                         </div>
                     </div>
                 </div>
