@@ -90,7 +90,7 @@
         <select type='number'
             class='form-control'
             title='This sets the first weekday of the first year.'
-            x-model="first_day">
+            x-model.number="first_day">
             <template x-for="(weekday, index) in weekdays" :key="index">
                 <option :value="index + 1" x-text="weekday" :selected="(index + 1) === first_day"></option>
             </template>
