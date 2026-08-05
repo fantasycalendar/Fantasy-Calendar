@@ -91,7 +91,7 @@ custom:
       LOG_LEVEL: 'info'
       DISCORD_COMMAND: 'fc'
     dev:
-      APP_DEBUG: 'true'
+      APP_DEBUG: 'false'
       APP_ENV: 'development'
       LOG_LEVEL: 'debug'
       DISCORD_COMMAND: 'fc-beta'
