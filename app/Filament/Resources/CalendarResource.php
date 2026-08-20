@@ -127,9 +127,9 @@ class CalendarResource extends Resource
             ])->actions([
                 Tables\Actions\Action::make('edit_page')
                     ->label('')
-                    ->tooltip(fn (Calendar $record) => 'Open edit page')
-                    ->icon(fn (Calendar $record) => 'heroicon-o-calendar-days')
-                    ->color(fn (Calendar $record) => 'primary')
+                    ->tooltip('Open edit page')
+                    ->icon('heroicon-o-calendar-days')
+                    ->color('primary')
                     ->url(fn (Calendar $record) => route('calendars.edit', ['calendar' => $record]), shouldOpenInNewTab: true),
                 Tables\Actions\Action::make('promote')
                     ->label('')
