@@ -127,10 +127,10 @@ class CalendarResource extends Resource
             ])->actions([
                 Tables\Actions\Action::make('edit_page')
                     ->label('')
-                    ->tooltip(fn (Calendar $record) => $record->preset ? 'Demote from preset' : 'Promote to preset')
+                    ->tooltip(fn (Calendar $record) => 'Open edit page')
                     ->icon(fn (Calendar $record) => 'heroicon-o-calendar-days')
                     ->color(fn (Calendar $record) => 'primary')
-                    ->url(fn (Calendar $record) => route('calendars.edit', ['calendar' => $record])),
+                    ->url(fn (Calendar $record) => route('calendars.edit', ['calendar' => $record]), shouldOpenInNewTab: true),
                 Tables\Actions\Action::make('promote')
                     ->label('')
                     ->tooltip(fn (Calendar $record) => $record->preset ? 'Demote from preset' : 'Promote to preset')
