@@ -101,9 +101,15 @@ class CalendarResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('user.username')->label('Owner'),
-                Tables\Columns\TextColumn::make('events_count')->counts('events'),
-                Tables\Columns\TextColumn::make('date_created')->label('Created at')->date('Y-m-d'),
-                Tables\Columns\TextColumn::make('last_dynamic_change')->label('Last Updated')->date('Y-m-d'),
+                Tables\Columns\TextColumn::make('events_count')
+                    ->sortable()
+                    ->counts('events'),
+                Tables\Columns\TextColumn::make('date_created')
+                    ->sortable()
+                    ->label('Created at')->date('Y-m-d'),
+                Tables\Columns\TextColumn::make('last_dynamic_change')
+                    ->sortable()
+                    ->label('Last Dynamic Change')->date('Y-m-d'),
                 Tables\Columns\BooleanColumn::make('deleted_at')
                     ->label('Active')
                     ->getStateUsing(fn ($record) => is_null($record->deleted_at))
