@@ -125,6 +125,12 @@ class CalendarResource extends Resource
                     ->default(false)
                     ->query(fn (Builder $query): Builder => $query->has('preset'))
             ])->actions([
+                Tables\Actions\Action::make('edit_page')
+                    ->label('')
+                    ->tooltip(fn (Calendar $record) => $record->preset ? 'Demote from preset' : 'Promote to preset')
+                    ->icon(fn (Calendar $record) => 'heroicon-o-calendar-days')
+                    ->color(fn (Calendar $record) => 'primary')
+                    ->url(fn (Calendar $record) => route('calendars.edit', ['calendar' => $record])),
                 Tables\Actions\Action::make('promote')
                     ->label('')
                     ->tooltip(fn (Calendar $record) => $record->preset ? 'Demote from preset' : 'Promote to preset')
