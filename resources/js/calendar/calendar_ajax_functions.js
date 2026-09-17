@@ -82,8 +82,8 @@ export async function do_update_all(calendar_hash) {
         event_categories: JSON.stringify(store.event_categories),
         advancement: JSON.stringify(store.advancement)
     }).then(function(result) {
-        store.last_dynamic_change = new Date(result.data.last_changed.last_dynamic_change)
-        store.last_static_change = new Date(result.data.last_changed.last_static_change)
+        store.last_dynamic_change = new Date(result.data.last_dynamic_change)
+        store.last_static_change = new Date(result.data.last_static_change)
     });
 }
 
