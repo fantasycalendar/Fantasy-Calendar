@@ -287,7 +287,7 @@ export default () => ({
     addCycleSelect(condition, value_index = 0) {
         return {
             type: "select-optgroup",
-            values: this.$store.calendar.static_data.cycles.map((cycle, cycle_index) => ({
+            values: this.$store.calendar.static_data.cycles.data.map((cycle, cycle_index) => ({
                 label: `${ordinal_suffix_of(cycle_index + 1)} cycle group`,
                 value: cycle_index,
                 values: cycle.names.map((name, name_index) => ({
