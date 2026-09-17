@@ -45,13 +45,12 @@ class SaveCalendarEvents
                 $event['event_category_id'] = $this->resolveCategoryId(Arr::get($event, 'event_category_id'));
                 $event['sort_by'] = $sortBy;
 
-                // Strip HTML tags from the user-controlled name here so it is
-                // enforced on BOTH the create (Eloquent) and update (query
-                // builder) paths below — the latter bypasses model casts. Use
-                // strip_tags rather than the Purifier cast so the name is not
-                // entity-encoded (the frontend escapes exactly once).
                 if (isset($event['name']) && is_string($event['name'])) {
                     $event['name'] = strip_tags($event['name']);
+                }
+
+                if (isset($event['description']) && is_string($event['description'])) {
+                    $event['description'] = Purifier::clean($event['description'], 'default');
                 }
 
                 if (array_key_exists('id', $event)) {

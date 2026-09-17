@@ -104,10 +104,6 @@ class CalendarEvent extends Model
         return false;
     }
 
-    public function getDescriptionAttribute($value) {
-        return html_entity_decode($value);
-    }
-
     // Defense-in-depth: strip tags from user-controlled names on any model-level
     // write. The primary enforcement is in SaveCalendarEvents (which also covers
     // the query-builder update path that bypasses this mutator). strip_tags
