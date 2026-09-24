@@ -61,6 +61,8 @@ use Stripe\StripeClient;
  * @property string|null $last_interaction
  * @property string|null $last_login
  * @property string|null $last_visit
+ * @property string|null $banned_at
+ * @property string|null $banned_reason
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Calendar> $calendars
  * @property-read int|null $calendars_count
  * @property-read DiscordAuthToken|null $discord_auth
@@ -167,6 +169,8 @@ class User extends Authenticatable implements
         'last_interaction',
         'last_login',
         'last_visit',
+        'banned_at',
+        'banned_reason'
     ];
 
     /**
@@ -200,6 +204,7 @@ class User extends Authenticatable implements
         'agreed_at' => 'datetime',
         'delete_requested_at' => 'datetime',
         'date_register' => 'datetime',
+        'banned_at' => 'datetime'
     ];
 
     protected $dateFormat = 'Y-m-d H:i:s';
@@ -500,5 +505,15 @@ class User extends Authenticatable implements
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->isAdmin();
+    }
+
+    public function isBanned(): bool
+    {
+        return $this->banned_at !== null;
+    }
+
+    public function bannedReason(): string
+    {
+        return $this->banned_reason;
     }
 }
