@@ -112,8 +112,16 @@ class Handler extends ExceptionHandler
             }
         }
 
+        // Must be a non-2xx: XHR callers (e.g. "Save Calendar") treat any 200 as
+        // success, which silently discarded failed saves.
         if ($exception instanceof QueryException) {
-            return response()->view('errors.default');
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Something went wrong while saving. Please try again.',
+                ], 500);
+            }
+
+            return response()->view('errors.default', [], 500);
         }
 
         if ($this->isHttpException($exception)) {

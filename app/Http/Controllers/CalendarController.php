@@ -13,6 +13,7 @@ use App\Models\Calendar;
 
 use App\Jobs\SaveEventCategories;
 use App\Jobs\SaveCalendarEvents;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -264,10 +265,8 @@ class CalendarController extends Controller
             }
         }
 
-        if (array_key_exists('event_categories', $update_data)) {
-            $categoryids = SaveEventCategories::dispatchSync(json_decode($update_data['event_categories'], true), $calendar->id);
-        }
-
+        // Validation (no writes) happens above this point, so that every early
+        // return leaves the calendar untouched.
         if (array_key_exists('advancement', $update_data)) {
             $update_data = array_merge($update_data, json_decode($update_data['advancement'], true));
 
@@ -283,14 +282,30 @@ class CalendarController extends Controller
             unset($update_data['advancement']);
         }
 
-        if (array_key_exists('events', $update_data)) {
-            SaveCalendarEvents::dispatchSync(json_decode($update_data['events'], true), $categoryids, $calendar->id);
-        }
+        // Categories, events and the calendar row are saved as one unit: a
+        // failure partway through must not leave the calendar half-saved.
+        DB::beginTransaction();
 
-        $calendar_was_updated = $calendar->update($update_data);
+        try {
+            if (array_key_exists('event_categories', $update_data)) {
+                $categoryids = SaveEventCategories::dispatchSync(json_decode($update_data['event_categories'], true), $calendar->id);
+            }
 
-        if ($calendar_was_updated == 0) {
-            return response()->json(['message' => 'Unable to update calendar. Please try again later.'], 403);
+            if (array_key_exists('events', $update_data)) {
+                SaveCalendarEvents::dispatchSync(json_decode($update_data['events'], true), $categoryids, $calendar->id);
+            }
+
+            if (!$calendar->update($update_data)) {
+                DB::rollBack();
+
+                return response()->json(['message' => 'Unable to update calendar. Please try again later.'], 403);
+            }
+
+            DB::commit();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            throw $e;
         }
 
         if (isset($parent_calendar) && $parent_hash_exists && $parent_link_date_exists && $parent_offset_exists) {
