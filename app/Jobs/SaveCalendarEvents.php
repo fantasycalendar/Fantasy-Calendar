@@ -13,6 +13,8 @@ use Illuminate\Support\Collection;
 
 class SaveCalendarEvents
 {
+    private const UPDATABLE = ['name', 'description', 'event_category_id', 'data', 'settings', 'sort_by'];
+
     /**
      * Create a new job instance.
      *
@@ -54,9 +56,12 @@ class SaveCalendarEvents
                 }
 
                 if (array_key_exists('id', $event)) {
+                    // Query-builder update has no fillable guard: client-only keys
+                    // (e.g. the editor's synthetic `_id`) would be unknown columns,
+                    // and calendar_id/creator_id must not be reassignable here.
                     $calendar->events()
                         ->where('id', $event['id'])
-                        ->update($event);
+                        ->update(Arr::only($event, self::UPDATABLE));
 
                     return $event['id'];
                 }

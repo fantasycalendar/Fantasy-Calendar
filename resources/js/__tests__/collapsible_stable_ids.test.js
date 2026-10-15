@@ -93,6 +93,24 @@ describe('CollapsibleComponent.load stable-id symmetry', () => {
         expect(afterSecond[0]).toBe(afterFirst[0]);
     });
 
+    it('does NOT stamp _id onto top-level store arrays (events, categories)', () => {
+        // These are DB-backed rows sent back verbatim on save; a synthetic
+        // `_id` becomes an unknown column there. They key on their real id.
+        class EventsCollapsible extends CollapsibleComponent {
+            events = [];
+            inboundProperties = { events: 'events' };
+        }
+        const storeEvents = [{ id: 1, name: 'A' }];
+        const component = new EventsCollapsible();
+        component.$store = { calendar: { static_data: { settings: {} }, events: storeEvents } };
+        component.setupWatchers = vi.fn();
+
+        component.load();
+
+        expect(storeEvents[0]._id).toBeUndefined();
+        expect(component.events[0]._id).toBeUndefined();
+    });
+
     it('local items carry the same _id values as the store items', () => {
         const storeItems = [{ name: 'A' }];
         const component = makeComponent(storeItems);

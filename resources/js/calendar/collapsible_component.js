@@ -54,7 +54,13 @@ export default class CollapsibleComponent {
             // `_.isEqual` (no perpetual reclone) and gives list rows a `:key`
             // that survives the cloneDeep round-trip (so the open row doesn't
             // collapse on every edit).
-            this.ensureStableIds(storeValue);
+            //
+            // static_data only: top-level arrays like `events`/`event_categories`
+            // are DB rows with real ids that get sent back column-for-column on
+            // save, where a synthetic `_id` is an unknown column.
+            if (globalKey.startsWith('static_data.')) {
+                this.ensureStableIds(storeValue);
+            }
 
             let incoming = _.cloneDeep(storeValue);
             let current = this[localKey];

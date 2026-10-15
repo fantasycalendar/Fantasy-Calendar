@@ -4,9 +4,12 @@ namespace App\Jobs;
 
 use App\Models\Calendar;
 use App\Models\EventCategory;
+use Illuminate\Support\Arr;
 
 class SaveEventCategories
 {
+    private const UPDATABLE = ['name', 'category_settings', 'event_settings', 'sort_by'];
+
     /**
      * Create a new job instance.
      *
@@ -47,9 +50,10 @@ class SaveEventCategories
 
                 // This category has an ID, so we just need to update it
                 if (array_key_exists('id', $event) && $existingCategories->has($event['id'])) {
+                    // Query-builder update has no fillable guard; see SaveCalendarEvents.
                     $calendar->event_categories()
                         ->where('id', $event['id'])
-                        ->update($event);
+                        ->update(Arr::only($event, self::UPDATABLE));
 
                     return [$event['id'] => $event['id']];
                 }
