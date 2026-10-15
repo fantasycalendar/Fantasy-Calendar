@@ -285,18 +285,39 @@ export default () => ({
     },
 
     addCycleSelect(condition, value_index = 0) {
+        let cycles = this.$store.calendar.static_data.cycles.data;
+
+        // A freshly-switched condition has no values yet; the browser shows the
+        // first option as selected, so make the data agree with it.
+        if (condition.values[value_index] === undefined && cycles[0]?.names.length) {
+            condition.values[value_index] = "0";
+            condition.values[value_index + 1] = "0";
+        }
+
+        // Each option encodes the full "cycle_index,name_index" pair, since a
+        // single select drives both values. setCycleValue() splits it back.
         return {
             type: "select-optgroup",
-            values: this.$store.calendar.static_data.cycles.data.map((cycle, cycle_index) => ({
+            values: cycles.map((cycle, cycle_index) => ({
                 label: `${ordinal_suffix_of(cycle_index + 1)} cycle group`,
                 value: cycle_index,
                 values: cycle.names.map((name, name_index) => ({
                     label: name,
-                    value: name_index,
+                    value: `${cycle_index},${name_index}`,
                     selected: Number(condition.values[value_index]) === cycle_index && Number(condition.values[value_index + 1]) === name_index
                 }))
             }))
         }
+    },
+
+    setCycleValue(id, value, value_index = 0) {
+        let [cycle_index, name_index] = String(value).split(",");
+        let condition = this.conditionsHashmap[id];
+
+        condition.values[value_index] = cycle_index;
+        condition.values[value_index + 1] = name_index;
+
+        this.$dispatch('conditions-manually-changed');
     },
 
     addEraSelect(condition, value_index = 0) {
@@ -467,7 +488,7 @@ export default () => ({
 
         return inputs.reduce((html, input, index) => {
             if (input.type === "select-optgroup") {
-                html += `<select class='form-control order-${index + 3}' data-event-conditions-manager-id="${condition.id}-${index}" @change="keepFocus('${condition.id}-${index}')" x-model.lazy="conditionsHashmap['${condition.id}'].values[${index}].value">`;
+                html += `<select class='form-control order-${index + 3}' data-event-conditions-manager-id="${condition.id}-${index}" @change="setCycleValue('${condition.id}', $event.target.value, ${index}); keepFocus('${condition.id}-${index}')">`;
                 for (let optgroup of input.values) {
                     html += `<optgroup label="${optgroup.label}">`;
                     for (let option of optgroup.values) {
@@ -503,7 +524,9 @@ export default () => ({
         let select = event.target;
         let value = Number(select.value);
         let optGroupValue = select.options[select.selectedIndex].parentElement.label;
-        if (this.conditionsHashmap[id].comparison !== value) {
+        // Values only carry meaning within one type + comparison; e.g. "Date is
+        // exactly" and "Cycle is exactly" share comparison index 0.
+        if (this.conditionsHashmap[id].comparison !== value || this.conditionsHashmap[id].type !== optGroupValue) {
             this.conditionsHashmap[id].values = []
         }
         this.conditionsHashmap[id].comparison = value;
