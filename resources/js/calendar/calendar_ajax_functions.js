@@ -33,7 +33,7 @@ export function update_view_dynamic(calendar_hash) {
         _method: 'PATCH',
         dynamic_data: JSON.stringify(store.dynamic_data)
     }).then(function(result) {
-        store.last_dynamic_change = new Date(result.data.last_changed.last_dynamic_change)
+        store.last_dynamic_change = new Date(result.data.last_dynamic_change)
     }).catch(function(error) {
         notify(error);
     });
@@ -47,7 +47,7 @@ export function _update_dynamic(calendar_hash) {
         _method: 'PATCH',
         dynamic_data: JSON.stringify(store.dynamic_data)
     }).then(function(result) {
-        store.last_dynamic_change = new Date(result.data.last_changed.last_dynamic_change)
+        store.last_dynamic_change = new Date(result.data.last_dynamic_change)
     })
 }
 

@@ -297,12 +297,13 @@ class CalendarController extends Controller
             DateChanged::dispatch($parent_calendar, $parent_calendar->dynamic('epoch'));
         }
 
-        $last_changed = [
+        // Flat, matching /api/v1/calendar/{hash}/last_changed so every
+        // frontend reader of these timestamps uses one shape.
+        return [
+            'success' => true,
             'last_dynamic_change' => $calendar->last_dynamic_change,
             'last_static_change' => $calendar->last_static_change,
         ];
-
-        return ['success' => true, 'data' => true, 'last_changed' => $last_changed];
     }
 
     /**
