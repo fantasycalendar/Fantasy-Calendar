@@ -2,6 +2,7 @@ import { submit_new_event, submit_edit_event, submit_delete_event } from "./cale
 import { ordinal_suffix_of, precisionRound, clone, notify } from "./calendar/calendar_functions";
 import { moon_phases } from "./calendar/calendar_variables";
 import { eventHasChanged } from "./calendar/event_change_detection";
+import { resolveEventIndex } from "./calendar/event_index";
 
 function createEventTesterWorker() {
     // In dev, the Vite dev server runs on a different port than the app, which
@@ -179,10 +180,10 @@ export default () => ({
 
         this.modal_heading = "Editing Event"
 
-        let event_index = $event.detail.event_id;
+        let event_index = resolveEventIndex(store.events, $event.detail);
 
-        if ($event.detail.event_db_id !== undefined) {
-            event_index = store.events.findIndex((item) => item.id === $event.detail.event_db_id);
+        if (event_index === -1) {
+            return;
         }
 
         this.event_id = event_index;
@@ -1080,10 +1081,10 @@ export default () => ({
     confirm_delete_event($event) {
         const store = this.$store.calendar;
 
-        let delete_event_id = $event.detail.event_id;
+        let delete_event_id = resolveEventIndex(store.events, $event.detail);
 
-        if ($event.detail.event_db_id !== undefined) {
-            delete_event_id = store.events.findIndex((item) => item.id === $event.detail.event_db_id);
+        if (delete_event_id === -1) {
+            return;
         }
 
         let warnings = [];

@@ -1,6 +1,7 @@
 import Quill from "quill";
 import { submit_new_comment, submit_delete_comment, get_event_comments } from "./calendar/calendar_ajax_functions";
 import { clone, notify } from "./calendar/calendar_functions";
+import { resolveEventIndex } from "./calendar/event_index";
 
 export default () => ({
     open: false,
@@ -29,17 +30,9 @@ export default () => ({
 
     view_event($event) {
         const store = this.$store.calendar;
-        let event_index = $event.detail.event_id;
-
-        if ($event.detail.event_db_id !== undefined) {
-            event_index = store.events.findIndex((item) => item.id === $event.detail.event_db_id);
-
-            // On the create page events have no id; the events manager addresses
-            // them by a synthetic `new-${index}` id that encodes the array index.
-            if (event_index === -1 && typeof $event.detail.event_db_id === "string" && $event.detail.event_db_id.startsWith("new-")) {
-                event_index = Number($event.detail.event_db_id.slice("new-".length));
-            }
-        }
+        let event_index = $event.detail.era
+            ? $event.detail.event_id
+            : resolveEventIndex(store.events, $event.detail);
 
         this.id = event_index;
         this.era = $event.detail.era ?? false;
@@ -47,9 +40,7 @@ export default () => ({
 
         const source = this.era ? store.static_data.eras[this.id] : store.events[this.id];
 
-        // Guard against an unresolvable id (e.g. an events-manager synthetic
-        // `new-${index}` key on the create page that findIndex couldn't match) —
-        // opening the viewer with no event would crash on `this.data.*`.
+        // Opening the viewer with no event would crash on `this.data.*`.
         if (source === undefined) {
             return;
         }
