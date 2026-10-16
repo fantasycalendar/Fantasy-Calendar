@@ -36,14 +36,25 @@ class EventsCollapsible extends CollapsibleComponent {
         const elem = this.events.splice(start, 1)[0];
         this.events.splice(end, 0, elem);
 
-        for (let i = 0; i < this.events.length; i++) {
-            const event = this.events[i];
-            if (event.data.connected_events?.length) {
-                for (let connected_id = 0; connected_id < event.data.connected_events.length; connected_id++) {
-                    const old_index = event.data.connected_events[connected_id];
-                    if (old_index === null) continue;
-                    event.data.connected_events[connected_id] = this.events.findIndex(event => event.sort_by === old_index);
+        // connected_events holds array indices (legacy data stores them as
+        // strings); shift each one to where its event moved.
+        const new_index = (old_index) => {
+            if (old_index === start) return end;
+            if (start < end && old_index > start && old_index <= end) return old_index - 1;
+            if (end < start && old_index >= end && old_index < start) return old_index + 1;
+            return old_index;
+        };
+
+        for (const event of this.events) {
+            const connected = event.data.connected_events;
+            if (!connected?.length) continue;
+
+            for (let i = 0; i < connected.length; i++) {
+                const old_index = Number(connected[i]);
+                if (connected[i] === null || !Number.isInteger(old_index) || this.events[old_index] === undefined) {
+                    continue;
                 }
+                connected[i] = new_index(old_index);
             }
         }
 
