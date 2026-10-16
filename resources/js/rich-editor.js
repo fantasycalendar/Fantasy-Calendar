@@ -1,22 +1,19 @@
 import Quill from "quill"
-import _ from "lodash"
 
 export default () => ({
     quill: null,
     _value: '',
-    _debouncedSync: null,
     init() {
         this.quill = new Quill(this.$refs.quill, {
             theme: 'snow',
             placeholder: 'Compose an epic...',
         })
 
-        this._debouncedSync = _.debounce(() => {
-            this._value = this.quill.root.innerHTML;
-        }, 500);
-
+        // `value` is entangled with the parent's model via x-modelable, so it
+        // must always match the editor contents: if it lags, a save drops the
+        // latest keystrokes, or the stale value gets synced back over the model.
         this.quill.on('text-change', () => {
-            this._debouncedSync();
+            this._value = this.quill.root.innerHTML;
         })
     },
     get value() {
@@ -24,5 +21,6 @@ export default () => ({
     },
     set value(newVal) {
         this.quill.root.innerHTML = newVal;
+        this._value = newVal;
     }
 })
