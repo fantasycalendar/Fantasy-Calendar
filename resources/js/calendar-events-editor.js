@@ -2219,6 +2219,10 @@ const calendar_events_editor = {
 
 	confirm_delete_event($event) {
 
+		// Event names are inserted into swal `html:` below, so they must be
+		// escaped as text (stored names may contain raw `<`, `&`, quotes).
+		const escape_name = (name) => sanitizeHtml(name, { allowedTags: [], allowedAttributes: {} });
+
 		let delete_event_id = $event.detail.event_id;
 
         if ($event.detail.event_db_id !== undefined) {
@@ -2241,14 +2245,14 @@ const calendar_events_editor = {
 
 			let html = [];
 			html.push(`<div class='text-left'>`)
-			html.push(`<h5>You trying to delete "${events[delete_event_id].name}" which is used in the conditions of the following events:</h5>`)
+			html.push(`<h5>You trying to delete "${escape_name(events[delete_event_id].name)}" which is used in the conditions of the following events:</h5>`)
 			html.push(`<ul>`);
 			for (let i = 0; i < warnings.length; i++) {
 				let warning_event_id = warnings[i];
-				html.push(`<li>${events[warning_event_id].name}</li>`);
+				html.push(`<li>${escape_name(events[warning_event_id].name)}</li>`);
 			}
 			html.push(`</ul>`);
-			html.push(`<p>Please remove the conditions using "${events[delete_event_id].name}" in these events before trying to delete it.</p>`)
+			html.push(`<p>Please remove the conditions using "${escape_name(events[delete_event_id].name)}" in these events before trying to delete it.</p>`)
 			html.push(`</div>`);
 
 			swal.fire({
@@ -2265,7 +2269,7 @@ const calendar_events_editor = {
 			swal.fire({
 
 				title: "Warning!",
-				html: `Are you sure you want to delete the event<br>"${events[delete_event_id].name}"?`,
+				html: `Are you sure you want to delete the event<br>"${escape_name(events[delete_event_id].name)}"?`,
 				showCancelButton: true,
 				confirmButtonColor: '#d33',
 				cancelButtonColor: '#3085d6',

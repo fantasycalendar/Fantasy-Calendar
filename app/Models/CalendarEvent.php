@@ -6,6 +6,7 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
+use App\Support\EventName;
 use Mews\Purifier\Casts\CleanHtml;
 
 /**
@@ -106,6 +107,12 @@ class CalendarEvent extends Model
 
     public function getDescriptionAttribute($value) {
         return html_entity_decode($value);
+    }
+
+    // Names are stored as decoded plain text on every Eloquent write (API v1,
+    // Discord, the save job's create path). See EventName::normalize().
+    public function setNameAttribute($value) {
+        $this->attributes['name'] = EventName::normalize($value);
     }
 
     public function oneTime($year, $month, $day)

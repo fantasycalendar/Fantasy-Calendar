@@ -9,10 +9,13 @@ use Illuminate\Support\Facades\Auth;
 use Mews\Purifier\Facades\Purifier;
 
 use App\Models\CalendarEvent;
+use App\Support\EventName;
 use Illuminate\Support\Collection;
 
 class SaveCalendarEvents
 {
+    private const UPDATABLE = ['name', 'description', 'event_category_id', 'data', 'settings', 'sort_by'];
+
     /**
      * Create a new job instance.
      *
@@ -46,9 +49,17 @@ class SaveCalendarEvents
                 $event['sort_by'] = $sortBy;
 
                 if (array_key_exists('id', $event)) {
+                    // Query-builder update bypasses model mutators, so normalize
+                    // the name here too. It also has no fillable guard: only
+                    // write known columns, so a request can't reassign
+                    // calendar_id/creator_id (or hit unknown columns).
+                    if (array_key_exists('name', $event)) {
+                        $event['name'] = EventName::normalize($event['name']);
+                    }
+
                     $calendar->events()
                         ->where('id', $event['id'])
-                        ->update($event);
+                        ->update(Arr::only($event, self::UPDATABLE));
 
                     return $event['id'];
                 }
