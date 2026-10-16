@@ -2,6 +2,9 @@ import Quill from "quill";
 import { submit_new_comment, submit_delete_comment, get_event_comments } from "./calendar/calendar_ajax_functions";
 import { clone, notify } from "./calendar/calendar_functions";
 import { resolveEventIndex } from "./calendar/event_index";
+import { normalizeDescription } from "./calendar/event_change_detection";
+
+const is_empty_comment = (content) => content === "" || content === "<p><br></p>";
 
 export default () => ({
     open: false,
@@ -142,6 +145,7 @@ export default () => ({
         );
 
         this.event_editor.root.innerHTML = comment.content;
+        this.editing_comment_content = comment.content;
 
         this.event_editor.on('text-change', () => {
             this.editing_comment_content = this.event_editor.root.innerHTML;
@@ -149,8 +153,9 @@ export default () => ({
     },
 
     submit_edit_comment(comment) {
+        this.editing_comment_content = this.event_editor?.root.innerHTML ?? this.editing_comment_content;
 
-        if (this.editing_comment_content == "" || this.editing_comment_content == "<p><br></p>") {
+        if (is_empty_comment(this.editing_comment_content)) {
             this.delete_comment(comment);
 
             return;
@@ -184,6 +189,7 @@ export default () => ({
 
     cancel_edit_comment() {
         this.event_editor = null;
+        this.editing_comment_content = '';
 
         for (let entry in this.comments) {
             this.comments[entry].editing = false;
@@ -215,27 +221,33 @@ export default () => ({
         });
     },
 
-    confirm_clone: function() {
-        if (!this.user_can_comment && !this.can_comment_on_event) {
-            this.dispatch_clone();
-
-            return;
+    has_unsaved_comment() {
+        if (!this.user_can_comment || !this.can_comment_on_event) {
+            return false;
         }
 
-        if (
-            this.new_comment_content == "" ||
-            this.new_comment_content == "<p><br></p>" ||
-            this.edit_comment_content == "" ||
-            this.edit_comment_content == "<p><br></p>"
-        ) {
-            this.dispatch_clone();
+        const editing = this.comments.find((comment) => comment.editing);
+        const edit_changed = editing !== undefined
+            && normalizeDescription(this.editing_comment_content) !== normalizeDescription(editing.content);
+
+        return !is_empty_comment(this.new_comment_content) || edit_changed;
+    },
+
+    confirm_discarding_comment(then) {
+        if (!this.has_unsaved_comment()) {
+            then();
+            return;
         }
 
         swal.fire(this.swal_content).then((result) => {
             if (!result.dismiss) {
-                this.dispatch_clone();
+                then();
             }
         });
+    },
+
+    confirm_clone: function() {
+        this.confirm_discarding_comment(() => this.dispatch_clone());
     },
 
     dispatch_clone() {
@@ -244,19 +256,7 @@ export default () => ({
     },
 
     confirm_edit: function() {
-        if (this.user_can_comment && this.can_comment_on_event) {
-            if (this.new_comment_content != "" && this.new_comment_content != "<p><br></p>" && this.edit_comment_content != "" && this.edit_comment_content != "<p><br></p>") {
-                swal.fire(this.swal_content).then((result) => {
-                    if (!result.dismiss) {
-                        this.dispatch_edit();
-                    }
-                });
-            } else {
-                this.dispatch_edit();
-            }
-        } else {
-            this.dispatch_edit();
-        }
+        this.confirm_discarding_comment(() => this.dispatch_edit());
     },
 
     dispatch_edit: function() {
@@ -276,19 +276,7 @@ export default () => ({
             return false;
         }
 
-        if (this.user_can_comment && this.can_comment_on_event) {
-            if (this.new_comment_content != "" && this.new_comment_content != "<p><br></p>" && this.edit_comment_content != "" && this.edit_comment_content != "<p><br></p>") {
-                swal.fire(this.swal_content).then((result) => {
-                    if (!result.dismiss) {
-                        this.close();
-                    }
-                });
-            } else {
-                this.close();
-            }
-        } else {
-            this.close();
-        }
+        this.confirm_discarding_comment(() => this.close());
     },
 
     close() {
