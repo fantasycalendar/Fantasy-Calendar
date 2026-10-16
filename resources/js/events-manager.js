@@ -255,10 +255,9 @@ export default () => ({
     },
 
     highlight_match: function(string, offset = 0) {
-        let element = document.createElement("div");
-        element.innerHTML = string;
-
-        let output = element.textContent;
+        // DOMParser documents are inert: unlike innerHTML on a detached div,
+        // parsing here never fires `onerror`-style handlers in the markup.
+        let output = new DOMParser().parseFromString(string, "text/html").body.textContent;
 
         let index = 0;
         if (output.length < 1) return;

@@ -5,24 +5,8 @@ import IntervalsCollection from "../fantasycalendar/Collections/IntervalsCollect
 // We use window.Alpine instead, which app.js sets after importing Alpine.
 function calendarStore() { return window.Alpine.store('calendar'); }
 
-export function escapeHtml(unsafe) {
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-export function unescapeHtml(safe) {
-    if (!isNaN(safe)) return safe;
-    return safe
-        .replace(/&amp;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&quot;/g, '"')
-        .replace(/&#039;/g, `'`)
-}
+// Re-exported for existing importers; see escape-html.js.
+export { escapeHtml, unescapeHtml } from "../escape-html.js";
 
 export class execution {
 

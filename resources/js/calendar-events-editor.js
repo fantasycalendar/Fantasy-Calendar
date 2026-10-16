@@ -93,7 +93,7 @@ export default () => ({
 
         this.new_event = true;
         this.conditions_changed = false;
-        let name = sanitizeHtml($event.detail.name ?? "");
+        let name = $event.detail.name ?? "";
         this.modal_heading = "Creating Event"
 
         this.working_event = {
@@ -205,7 +205,8 @@ export default () => ({
 
         working_event.data = this.create_event_data();
 
-        working_event.name = sanitizeHtml((working_event.name === "") ? "New Event" : working_event.name);
+        // Names are stored as plain text; sinks escape at render time.
+        working_event.name = (working_event.name === "") ? "New Event" : working_event.name;
 
         this.$store.calendar.events[this.event_id] = working_event;
 
@@ -309,7 +310,7 @@ export default () => ({
             if (!result.dismiss) {
                 let new_event = clone(this.working_event);
                 new_event.data = this.create_event_data();
-                new_event.name = sanitizeHtml(((new_event.name === "") ? "New Event" : new_event.name) + " (clone)");
+                new_event.name = ((new_event.name === "") ? "New Event" : new_event.name) + " (clone)";
                 this.close();
                 this.$dispatch('event-editor-modal-clone-event', { event_data: new_event, epoch: this.epoch });
             }
