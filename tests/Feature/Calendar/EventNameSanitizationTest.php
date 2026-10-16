@@ -16,9 +16,10 @@ use Tests\TestCase;
  * the create AND update paths — the update path uses a query-builder `update()`
  * that bypasses model casts/mutators, so a model mutator alone is insufficient.
  *
- * `strip_tags` (not the CleanHtml/Purifier cast) is used so names are not
- * entity-encoded on the backend — the frontend escapes exactly once, and
- * backend entity-encoding would produce double-encoded `&amp;` artifacts.
+ * EventName::normalize() (not the CleanHtml/Purifier cast) is used so names are
+ * stored as decoded plain text — render sites escape, and backend
+ * entity-encoding would show up literally as `&amp;` in text bindings. See
+ * also EventNameNormalizationTest and tests/Unit/EventNameTest.
  */
 class EventNameSanitizationTest extends TestCase
 {

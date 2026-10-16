@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Mews\Purifier\Facades\Purifier;
 
 use App\Models\CalendarEvent;
+use App\Support\EventName;
 use Illuminate\Support\Collection;
 
 class SaveCalendarEvents
@@ -47,8 +48,11 @@ class SaveCalendarEvents
                 $event['event_category_id'] = $this->resolveCategoryId(Arr::get($event, 'event_category_id'));
                 $event['sort_by'] = $sortBy;
 
-                if (isset($event['name']) && is_string($event['name'])) {
-                    $event['name'] = strip_tags($event['name']);
+                // Done here rather than relying on the model mutator, because
+                // the update path below is a query-builder update that bypasses
+                // mutators (and casts — hence the description purify too).
+                if (array_key_exists('name', $event)) {
+                    $event['name'] = EventName::normalize($event['name']);
                 }
 
                 if (isset($event['description']) && is_string($event['description'])) {
