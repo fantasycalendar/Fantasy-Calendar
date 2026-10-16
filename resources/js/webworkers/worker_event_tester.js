@@ -1,6 +1,17 @@
 import { calendar_data_generator, event_evaluator } from "../calendar/calendar_workers";
 
+// onmessage is async, so anything thrown here is an unhandled rejection that
+// never reaches the page's Worker.onerror: report it as a message instead.
 onmessage = async (e) => {
+	try {
+		postMessage(await test_event(e));
+	} catch (error) {
+		console.error(error);
+		postMessage({ error: error?.message ?? String(error) });
+	}
+};
+
+async function test_event(e) {
 
 	calendar_data_generator.calendar_name = e.data.calendar_name;
 	calendar_data_generator.static_data = e.data.static_data;
@@ -44,7 +55,7 @@ onmessage = async (e) => {
         }
     }
 
-	postMessage({
+	return {
         occurrences: valid_occurrences
-	});
+	};
 }

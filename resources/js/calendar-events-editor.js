@@ -1233,17 +1233,18 @@ export default () => ({
     },
 
     cancel_event_test() {
+        this.finish_event_test();
+    },
 
+    finish_event_test() {
         try {
-            this.worker_event_tester.terminate();
+            this.worker_event_tester?.terminate();
         } catch (err) {
             console.error(err)
         }
 
-        this.$dispatch("app-busy-end");
-
         this.worker_event_tester = null;
-
+        this.$dispatch("app-busy-end");
     },
 
     test_event(years) {
@@ -1255,19 +1256,13 @@ export default () => ({
                 cancel_callback: this.cancel_event_test.bind(this)
         });
 
-        if (this.new_event) {
-
-            store.events[this.event_id] = {}
-
-            store.events[this.event_id].data = this.create_event_data();
-
-        } else {
-
-            this.backup_event_data = clone(store.events[this.event_id].data);
-
-            store.events[this.event_id].data = this.create_event_data();
-
-        }
+        // The worker evaluates the calendar's events with this one swapped in
+        // (or appended, when new). The reactive store is left alone.
+        const events = clone(store.events);
+        events[this.event_id] = {
+            ...clone(this.working_event),
+            data: this.create_event_data({ update_working_event: false }),
+        };
 
         let start_year = store.preview_date.year;
         let end_year = store.preview_date.year + years;
@@ -1278,7 +1273,7 @@ export default () => ({
             calendar_name: store.calendar_name,
             static_data: store.static_data,
             dynamic_data: store.preview_date,
-            events: store.events,
+            events: events,
             event_categories: store.event_categories,
             owner: store.perms.player_at_least('co-owner'),
             start_year: start_year,
@@ -1288,19 +1283,13 @@ export default () => ({
             build_seasons: this.build_seasons
         })));
 
-        this.worker_event_tester.onerror = e => {
-            console.error("Event tester worker error:", e.message);
-
-            if (!this.new_event && this.backup_event_data) {
-                store.events[this.event_id].data = clone(this.backup_event_data);
-                this.backup_event_data = {};
-            }
-
-            this.worker_event_tester.terminate();
-            this.worker_event_tester = null;
-            this.$dispatch("app-busy-end");
+        const failed = (message) => {
+            console.error("Event tester worker error:", message);
+            this.finish_event_test();
             notify("Event testing failed unexpectedly.", "error");
         };
+
+        this.worker_event_tester.onerror = e => failed(e.message);
 
         this.worker_event_tester.onmessage = e => {
             if (e.data.callback) {
@@ -1309,30 +1298,16 @@ export default () => ({
                         percentage: precisionRound(e.data.percentage * 100, 2),
 
                 });
+            } else if (e.data.error !== undefined) {
+                failed(e.data.error);
             } else {
-
                 this.event_testing.occurrences = e.data.occurrences;
-
-                this.worker_event_tester.terminate()
-
                 this.set_up_event_text(years);
-
-                if (!this.new_event) {
-
-                    store.events[this.event_id].data = clone(this.backup_event_data)
-                    this.backup_event_data = {}
-
-                }
-
-                this.$dispatch("app-busy-end");
-
-                this.worker_event_tester = null;
-
+                this.finish_event_test();
             }
         }
     },
 
-    backup_event_data: {},
 
     event_testing: {
         occurrences: [],

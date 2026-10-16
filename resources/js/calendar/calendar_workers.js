@@ -855,8 +855,16 @@ export const calendar_data_generator = {
             end_year = unconvert_year(this.static_data, end_year)
             this.timespans = this.get_timespans_in_year_range(start_year, end_year);
 
-            // Capture the core year keys before pre/post padding extends them
-            const coreYears = Object.keys(this.timespans).map(Number).sort((a, b) => a - b);
+            // Capture the core year keys before pre/post padding extends them.
+            // Years can have no months at all, so only keep those that do.
+            const coreYears = Object.keys(this.timespans)
+                .filter((year) => this.timespans[year].length > 0)
+                .map(Number)
+                .sort((a, b) => a - b);
+
+            if (!coreYears.length) {
+                return reject({ success: false, message: "None of the requested years have any months." });
+            }
 
             this.evaluate_pre_calculation(start_year);
             this.evaluate_post_calculation(end_year);
