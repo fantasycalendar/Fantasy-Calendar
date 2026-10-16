@@ -7,7 +7,6 @@ export default () => ({
     condition_tree: [],
     conditionsHashmap: {},
     sortableMap: {},
-    connectedEvents: [],
     currentEventIndex: -1,
 
     addCondition(add_to_id, silent) {
@@ -190,18 +189,9 @@ export default () => ({
     },
 
     processCondition(data, parent_id) {
+        // Events conditions arrive with global event indices; the editor
+        // converts from (and back to) the stored connected_events form.
         let values = data[0] === "Moons" ? data[2].slice(1) : data[2];
-
-        // Resolve the connected_events index to a global event index so
-        // that x-model on the select binds to the correct value.
-        // buildConnectedEvents() in the editor remaps back on save.
-        if (data[0] === "Events" && this.connectedEvents.length > 0) {
-            let connectedIndex = Number(values[0]);
-            if (connectedIndex < this.connectedEvents.length) {
-                values = values.slice();
-                values[0] = String(this.connectedEvents[connectedIndex]);
-            }
-        }
 
         return {
             id: _.uniqueId("elem"),
@@ -382,9 +372,7 @@ export default () => ({
     },
 
     addEventsSelect(condition, value_index = 0) {
-        // condition.values[0] is already a global event index (resolved
-        // from connected_events during processCondition on load, or set
-        // directly by the dropdown on user selection).
+        // condition.values[0] is a global event index (see processCondition).
         let selectedGlobalIndex = Number(condition.values[value_index]);
 
         return {

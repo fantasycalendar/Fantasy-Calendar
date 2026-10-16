@@ -20,3 +20,30 @@ export function resolveEventIndex(events, detail) {
 
     return events[index] === undefined ? -1 : index;
 }
+
+/**
+ * Stored events reference other events indirectly: an `Events` condition's
+ * first value is an index into `data.connected_events`, which holds the global
+ * event index. The editor works on global indices; this converts stored
+ * conditions to that form (recursing into groups), without mutating them.
+ */
+export function conditionsWithGlobalEventIndices(conditions, connectedEvents = []) {
+    return (conditions ?? []).map((condition) => {
+        if (Array.isArray(condition[1])) {
+            return [condition[0], conditionsWithGlobalEventIndices(condition[1], connectedEvents)];
+        }
+
+        if (condition.length === 3 && condition[0] === "Events") {
+            const values = [...condition[2]];
+            const connectedIndex = Number(values[0]);
+
+            if (connectedIndex < connectedEvents.length) {
+                values[0] = String(connectedEvents[connectedIndex]);
+            }
+
+            return [condition[0], condition[1], values];
+        }
+
+        return condition;
+    });
+}

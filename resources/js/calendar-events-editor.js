@@ -2,7 +2,7 @@ import { submit_new_event, submit_edit_event, submit_delete_event } from "./cale
 import { ordinal_suffix_of, precisionRound, clone, notify } from "./calendar/calendar_functions";
 import { moon_phases } from "./calendar/calendar_variables";
 import { eventHasChanged } from "./calendar/event_change_detection";
-import { resolveEventIndex } from "./calendar/event_index";
+import { resolveEventIndex, conditionsWithGlobalEventIndices } from "./calendar/event_index";
 
 function createEventTesterWorker() {
     // In dev, the Vite dev server runs on a different port than the app, which
@@ -75,7 +75,7 @@ export default () => ({
         this.cloning_event = true;
         this.conditions_changed = false;
 
-        this.working_event = $event.detail.event_data;
+        this.working_event = this.editable_copy($event.detail.event_data);
         delete this.working_event['id'];
 
         this.modal_heading = "Cloning Event"
@@ -85,6 +85,8 @@ export default () => ({
         this.event_id = Object.keys(store.events).length;
 
         this.show();
+
+        this.$nextTick(() => this.take_snapshot());
     },
 
     create_new_event($event) {
@@ -145,10 +147,7 @@ export default () => ({
 
         this.show();
 
-        this.$nextTick(() => {
-            this.initial_working_event = clone(this.working_event);
-            this.initial_working_event.data = this.create_event_data();
-        });
+        this.$nextTick(() => this.take_snapshot());
 
     },
 
@@ -188,17 +187,27 @@ export default () => ({
 
         this.event_id = event_index;
 
-        this.working_event = clone(store.events[this.event_id]);
+        this.working_event = this.editable_copy(store.events[this.event_id]);
 
         this.set_up_moon_data();
 
         this.show();
 
-        this.$nextTick(() => {
-            this.initial_working_event = clone(this.working_event);
-            this.initial_working_event.data = this.create_event_data();
-        });
+        this.$nextTick(() => this.take_snapshot());
 
+    },
+
+    // Stored Events conditions point into data.connected_events; the editor
+    // (conditions UI, create_event_data) works with global event indices.
+    editable_copy(event) {
+        const copy = clone(event);
+        copy.data.conditions = conditionsWithGlobalEventIndices(copy.data.conditions, copy.data.connected_events);
+        return copy;
+    },
+
+    take_snapshot() {
+        this.initial_working_event = clone(this.working_event);
+        this.initial_working_event.data = this.create_event_data({ update_working_event: false });
     },
 
     save_event() {
@@ -252,6 +261,7 @@ export default () => ({
         this.nth = 1;
         this.show_nth = false;
         this.cloning_event = false;
+        this.initial_working_event = null;
 
         this.working_event = {
             'name': '',
@@ -368,7 +378,7 @@ export default () => ({
         }
     },
 
-    create_event_data() {
+    create_event_data({ update_working_event = true } = {}) {
         let conditions = _.cloneDeep(this.working_event.data.conditions);
 
         // Rebuild connected_events from Events-type conditions.
@@ -378,7 +388,9 @@ export default () => ({
         // indices and remaps the condition values accordingly.
         let connectedEvents = [];
         this.buildConnectedEvents(conditions, connectedEvents);
-        this.working_event.data.connected_events = connectedEvents;
+        if (update_working_event) {
+            this.working_event.data.connected_events = connectedEvents;
+        }
 
         let search_distance = this.get_search_distance(conditions);
 
@@ -463,7 +475,7 @@ export default () => ({
             limited_repeat: this.working_event.data.limited_repeat,
             limited_repeat_num: this.working_event.data.limited_repeat_num | 0,
             conditions: conditions,
-            connected_events: this.working_event.data.connected_events,
+            connected_events: connectedEvents,
             date: date,
             search_distance: search_distance,
             overrides: {
@@ -590,7 +602,7 @@ export default () => ({
         }
 
         let current_check = clone(this.working_event);
-        current_check.data = this.create_event_data();
+        current_check.data = this.create_event_data({ update_working_event: false });
 
         return eventHasChanged(this.initial_working_event, current_check);
 
