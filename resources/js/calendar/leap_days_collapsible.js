@@ -8,7 +8,7 @@ class LeapDaysCollapsible extends CollapsibleComponent {
     type = "";
     deleting = -1;
 
-    interval_wide_regex = /[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/g;
+    interval_wide_regex = /[ `~@#$%^&*()_|\-=?;:'".<>\{\}\[\]\\\/A-Za-z]/;
     interval_internal_regex = /^\+*\!*[1-9]+[0-9]{0,}$/;
     interval_numbers_regex = /([1-9]+[0-9]{0,})/;
     interval_zero_regex = /(0|\-0|\+0|\+\!0|\!0)/;
