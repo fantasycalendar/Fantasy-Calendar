@@ -1582,7 +1582,7 @@ function convert_old_event(event) {
             var conditions = [
                 ['Weekday', '0', [(event.data.week_day + 1).toString()]],
                 ['&&'],
-                ['Week', '20', [event.data.every.toString(), (event.data.modulus + 1).toString()]]
+                ['Week', '32', [event.data.every.toString(), (event.data.modulus + 1).toString()]]
             ];
             var date = [];
             return [date, conditions];

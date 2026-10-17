@@ -1,4 +1,5 @@
 import { calendar_data_generator, event_evaluator } from "../calendar/calendar_workers";
+import { convert_year } from "../calendar/calendar_functions";
 
 // onmessage is async, so anything thrown here is an unhandled rejection that
 // never reaches the page's Worker.onerror: report it as a message instead.
@@ -44,7 +45,10 @@ async function test_event(e) {
         let epoch = occurrences[index];
         let epoch_data = calendar_data.epoch_data[epoch];
 
-        if(epoch_data.year >= e.data.start_year && epoch_data.year < e.data.end_year){
+        // start_year/end_year are absolute years; epoch_data has display years.
+        let year = convert_year(e.data.static_data, epoch_data.year);
+
+        if(year >= e.data.start_year && year < e.data.end_year){
 
             valid_occurrences.push({
                 year: epoch_data.year,

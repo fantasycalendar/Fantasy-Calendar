@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { readFileSync, existsSync } from 'fs';
 import { resolve } from 'path';
 import { calendar_data_generator, event_evaluator } from '../calendar/calendar_workers';
+import { convert_year } from '../calendar/calendar_functions';
 
 /**
  * Load and parse a JSON file, returning null if the file doesn't exist.
@@ -45,7 +46,8 @@ describe('calendar_data_generator.run_future', () => {
         calendar_data_generator.events = structuredClone(gregorianEvents);
         calendar_data_generator.event_categories = [];
 
-        startYear = gregorian.dynamic_data.year;
+        // run_future takes absolute (0-based) years.
+        startYear = convert_year(gregorian.static_data, gregorian.dynamic_data.year);
         endYear = startYear + 10;
     });
 
@@ -115,7 +117,8 @@ describe('Easter occurrence evaluation (seeder Gregorian)', () => {
         calendar_data_generator.events = structuredClone(gregorianEvents);
         calendar_data_generator.event_categories = [];
 
-        startYear = gregorian.dynamic_data.year;  // 2020
+        // run_future takes absolute (0-based) years: display 2020-2029.
+        startYear = convert_year(gregorian.static_data, gregorian.dynamic_data.year);
         endYear = startYear + 10;
     });
 
@@ -231,7 +234,8 @@ describe('Easter occurrence evaluation (seeder Gregorian)', () => {
 
         for (const epoch of occurrences) {
             const epochData = calendarData.epoch_data[epoch];
-            if (epochData && epochData.year >= startYear && epochData.year < endYear) {
+            const year = epochData && convert_year(gregorian.static_data, epochData.year);
+            if (epochData && year >= startYear && year < endYear) {
                 validOccurrences.push({
                     year: epochData.year,
                     timespan: epochData.timespan_index,
@@ -240,11 +244,8 @@ describe('Easter occurrence evaluation (seeder Gregorian)', () => {
             }
         }
 
-        // The calendar's current date is Sep 20, 2020 — after Easter 2020.
-        // run_future generates from that point forward, so we get Easters
-        // for 2021-2030 (10 raw), but the year < endYear filter excludes
-        // 2030, leaving 9.
-        expect(validOccurrences.length, `Expected 9 Easter occurrences in years ${startYear}-${endYear}, got ${validOccurrences.length}. Raw epochs: ${occurrences.length}`).toBe(9);
+        // One Easter a year, 2020-2029.
+        expect(validOccurrences.map(o => o.year)).toEqual([2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029]);
     });
 });
 
@@ -323,7 +324,7 @@ describeSubmodule('calendar_data_generator.run_future (submodule Gregorian)', ()
         calendar_data_generator.events = structuredClone(submoduleGregorianEvents);
         calendar_data_generator.event_categories = [];
 
-        startYear = submoduleGregorian.dynamic_data.year;
+        startYear = convert_year(submoduleGregorian.static_data, submoduleGregorian.dynamic_data.year);
         endYear = startYear + 10;
     });
 

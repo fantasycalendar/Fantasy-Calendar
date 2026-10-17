@@ -44,8 +44,8 @@ const eventData = (overrides = {}) => ({
 function makeEditor() {
     const store = {
         calendar_name: 'Test',
-        static_data: {},
-        preview_date: { year: 2020 },
+        static_data: { settings: { year_zero_exists: false } },
+        preview_date: { year: 2026 },
         event_categories: [],
         perms: { player_at_least: () => true },
         evaluated_static_data: { epoch_data: { 0: {} } },
@@ -91,6 +91,15 @@ describe('event editor test runs', () => {
 
         workers[0].reply({ occurrences: [] });
         expect(store.events).toEqual(before);
+    });
+
+    it('sends the worker absolute years (display 2026 is absolute 2025 without a year zero)', () => {
+        const { editor } = makeEditor();
+
+        editor.edit_event({ detail: { event_id: 0, epoch: 0 } });
+        editor.test_event(10);
+
+        expect(workers[0].payload).toMatchObject({ start_year: 2025, end_year: 2035 });
     });
 
     it('tests a new event without adding it to the store, before or after', () => {

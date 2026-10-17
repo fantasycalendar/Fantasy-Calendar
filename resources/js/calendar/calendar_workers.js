@@ -335,10 +335,10 @@ export const calendar_data_generator = {
     },
 
     /**
-     * Returns a number of timespans based on a given year range
+     * Returns the timespans of each year in a range, keyed by absolute year
      *
-     * @param start_year
-     * @param end_year
+     * @param start_year absolute (0-based) year, inclusive
+     * @param end_year absolute (0-based) year, exclusive
      * @returns timespans object
      */
     get_timespans_in_year_range: function(start_year, end_year) {
@@ -347,7 +347,7 @@ export const calendar_data_generator = {
 
         for (let year = start_year; year < end_year; year++) {
 
-            timespans[convert_year(this.static_data, year)] = this.get_timespans_in_year(year);
+            timespans[year] = this.get_timespans_in_year(unconvert_year(this.static_data, year));
 
         }
 
@@ -851,8 +851,6 @@ export const calendar_data_generator = {
             this.pre_search = effectiveSearch;
             this.post_search = effectiveSearch;
 
-            start_year = unconvert_year(this.static_data, start_year)
-            end_year = unconvert_year(this.static_data, end_year)
             this.timespans = this.get_timespans_in_year_range(start_year, end_year);
 
             // Capture the core year keys before pre/post padding extends them.
@@ -866,8 +864,10 @@ export const calendar_data_generator = {
                 return reject({ success: false, message: "None of the requested years have any months." });
             }
 
-            this.evaluate_pre_calculation(start_year);
-            this.evaluate_post_calculation(end_year);
+            // The padding steps take display years and pad outward from the
+            // given (included) year.
+            this.evaluate_pre_calculation(unconvert_year(this.static_data, start_year));
+            this.evaluate_post_calculation(unconvert_year(this.static_data, end_year - 1));
 
             this.evaluate_years();
 

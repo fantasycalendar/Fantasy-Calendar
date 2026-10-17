@@ -345,7 +345,7 @@ describe('convert_old_event', () => {
             expect(conditions).toEqual([
                 ['Weekday', '0', ['3']],         // week_day + 1 = 3
                 ['&&'],
-                ['Week', '20', ['4', '4']]       // modulus + 1 = 4
+                ['Week', '32', ['4', '4']]       // "Every nth total week"; modulus + 1 = 4
             ]);
         });
 
@@ -961,13 +961,13 @@ describe('convert_old_event', () => {
             expect(conditions[2][1]).toBe('13');
         });
 
-        it('"every_x_weekday" uses Weekday=0, Week=20', () => {
+        it('"every_x_weekday" uses Weekday=0, Week=32 (every nth total week)', () => {
             let event = { repeats: 'every_x_weekday', data: { week_day: 0, every: 1, modulus: 0 } };
             let [, conditions] = convert_old_event(event);
             expect(conditions[0][0]).toBe('Weekday');
             expect(conditions[0][1]).toBe('0');
             expect(conditions[2][0]).toBe('Week');
-            expect(conditions[2][1]).toBe('20');
+            expect(conditions[2][1]).toBe('32');
         });
 
         it('"every_x_monthly_date" uses Day=0, Month=13', () => {

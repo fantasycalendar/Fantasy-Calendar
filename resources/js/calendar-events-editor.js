@@ -1,5 +1,5 @@
 import { submit_new_event, submit_edit_event, submit_delete_event } from "./calendar/calendar_ajax_functions";
-import { ordinal_suffix_of, precisionRound, clone, notify } from "./calendar/calendar_functions";
+import { ordinal_suffix_of, precisionRound, clone, notify, convert_year } from "./calendar/calendar_functions";
 import { moon_phases } from "./calendar/calendar_variables";
 import { eventHasChanged } from "./calendar/event_change_detection";
 import { resolveEventIndex, conditionsWithGlobalEventIndices } from "./calendar/event_index";
@@ -968,7 +968,7 @@ export default () => ({
                 result = [
                     ['Weekday', '0', [this.epoch_data.week_day_name]],
                     ['&&'],
-                    ['Week', '20', [repeats, (this.epoch_data.total_week_num) % repeats]]
+                    ['Week', '32', [repeats, (this.epoch_data.total_week_num) % repeats]]
                 ];
                 break;
 
@@ -1264,8 +1264,10 @@ export default () => ({
             data: this.create_event_data({ update_working_event: false }),
         };
 
-        let start_year = store.preview_date.year;
-        let end_year = store.preview_date.year + years;
+        // The worker takes absolute (0-based) years; years without a year
+        // zero skip 0 when displayed.
+        let start_year = convert_year(store.static_data, store.preview_date.year);
+        let end_year = start_year + years;
 
         this.worker_event_tester = createEventTesterWorker()
 
@@ -1389,48 +1391,26 @@ export default () => ({
 
     },
 
-    checked_events: [],
-
+    // Whether the edited event, or any event it depends on (directly or
+    // through other events), has a Season condition.
     evaluation_has_season_event() {
+        const events = this.$store.calendar.events;
+        const visited = new Set();
 
-        this.check_event_chain(this.event_id, true)
+        const uses_seasons = (event_id, data) => {
+            if (visited.has(event_id)) return false;
+            visited.add(event_id);
 
-        for (let index in this.checked_events) {
+            if (JSON.stringify(data.conditions ?? []).includes(`["Season",`)) return true;
 
-            let event = this.checked_events[index];
+            return (data.connected_events ?? []).some((parent_id) => {
+                const parent = events[Number(parent_id)];
+                return parent_id !== null && parent !== undefined && uses_seasons(Number(parent_id), parent.data);
+            });
+        };
 
-            if (JSON.stringify(event.data.conditions).indexOf(`["Season",`) > -1) {
-                return true;
-            }
-
-        }
-
-        return false;
-
+        return uses_seasons(this.event_id, this.create_event_data({ update_working_event: false }));
     },
-
-    check_event_chain(event_id, working_event) {
-        let current_event = {}
-        if (working_event) {
-            current_event = clone(this.working_event);
-        } else {
-            current_event = this.$store.calendar.events[event_id];
-        }
-        this.checked_events.push(current_event);
-
-        if (current_event.data.connected_events !== undefined && current_event.data.connected_events !== "false") {
-
-            for (let parent_id of current_event.data.connected_events) {
-                if (parent_id !== null && parent_id === event_id) {
-                    this.check_event_chain(parent_id, false);
-                }
-            }
-
-        }
-
-    },
-
-
 
     look_through_event_chain(child, parent_id) {
         const store = this.$store.calendar;
