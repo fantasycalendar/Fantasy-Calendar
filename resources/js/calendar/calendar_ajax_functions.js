@@ -51,7 +51,7 @@ export function _update_dynamic(calendar_hash) {
     })
 }
 
-export const update_dynamic = _.debounce(_update_dynamic, 300);
+export const update_dynamic = _.debounce(update_view_dynamic, 300);
 
 export async function update_all() {
     let store = calendarStore();

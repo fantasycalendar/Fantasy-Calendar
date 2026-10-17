@@ -10,6 +10,7 @@ export default (calendar_structure) => ({
     instapoll: false,
     new_dynamic_change: false,
     _applying_server_update: false,
+    _saved_dynamic_data: null,
 
     location_select_value: null,
     location_select_options: {},
@@ -54,6 +55,7 @@ export default (calendar_structure) => ({
         });
 
         store.setup();
+        this.remember_saved_dynamic_data();
         store.rebuild_calendar();
 
         bind_calendar_events();
@@ -149,12 +151,27 @@ export default (calendar_structure) => ({
         this.location_select_value = store.get_location_select_value();
     },
 
+    remember_saved_dynamic_data() {
+        this._saved_dynamic_data = _.cloneDeep(this.$store.calendar.dynamic_data);
+    },
+
+    // calendar-updated also fires for preview navigation, so only save when
+    // dynamic_data itself changed, and only for users allowed to change it.
     calendar_updated() {
+        const store = this.$store.calendar;
+
         if (this._applying_server_update) {
             this._applying_server_update = false;
+            this.remember_saved_dynamic_data();
             return;
         }
-        update_dynamic(this.$store.calendar.hash);
+
+        if (!store.perms.player_at_least('co-owner') || _.isEqual(store.dynamic_data, this._saved_dynamic_data)) {
+            return;
+        }
+
+        this.remember_saved_dynamic_data();
+        update_dynamic(store.hash);
     },
 
     evaluate_queryString() {
