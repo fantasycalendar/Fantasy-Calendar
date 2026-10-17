@@ -48,15 +48,21 @@ class SaveCalendarEvents
                 $event['event_category_id'] = $this->resolveCategoryId(Arr::get($event, 'event_category_id'));
                 $event['sort_by'] = $sortBy;
 
-                if (array_key_exists('id', $event)) {
-                    // Query-builder update bypasses model mutators, so normalize
-                    // the name here too. It also has no fillable guard: only
-                    // write known columns, so a request can't reassign
-                    // calendar_id/creator_id (or hit unknown columns).
-                    if (array_key_exists('name', $event)) {
-                        $event['name'] = EventName::normalize($event['name']);
-                    }
+                // Done here rather than relying on the model mutator, because
+                // the update path below is a query-builder update that bypasses
+                // mutators (and casts — hence the description purify too).
+                if (array_key_exists('name', $event)) {
+                    $event['name'] = EventName::normalize($event['name']);
+                }
 
+                if (isset($event['description']) && is_string($event['description'])) {
+                    $event['description'] = Purifier::clean($event['description'], 'default');
+                }
+
+                if (array_key_exists('id', $event)) {
+                    // Query-builder update has no fillable guard: client-only keys
+                    // (e.g. the editor's synthetic `_id`) would be unknown columns,
+                    // and calendar_id/creator_id must not be reassignable here.
                     $calendar->events()
                         ->where('id', $event['id'])
                         ->update(Arr::only($event, self::UPDATABLE));

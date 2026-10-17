@@ -1,4 +1,4 @@
-const calendar_layouts = {
+export default () => ({
 
     open: false,
     current_layout: undefined,
@@ -7,46 +7,41 @@ const calendar_layouts = {
         {
             "name": "Grid",
             "description": "A familiar detailed view that resembles a traditional wall-hung calendar.",
-            "image": "/resources/layouts/light-grid.png"
+            "image": "/images/layouts/light-grid.png"
         },
         {
             "name": "Vertical",
             "description": "A single column view for focusing on each day or for use on mobile devices.",
-            "image": "/resources/layouts/light-vertical.png"
+            "image": "/images/layouts/light-vertical.png"
         },
         {
             "name": "Minimalistic",
             "description": "Beautiful minimalism that zooms out a bit to fit the whole calendar on one page.",
-            "image": "/resources/layouts/light-minimal.png"
+            "image": "/images/layouts/light-minimal.png"
         }
     ],
 
-    open_modal: function($event){
-
-        if(evaluate_save_button()){
-            this.open = true;
-            this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() === static_data.settings.layout);
-        }else{
-            $('#btn_layouts').notify(
-                "Please save your calendar before applying a preset.",
-                { position: "top-center" }
-            )
-        }
+    open_modal: function($event) {
+        this.open = true;
+        this.current_layout = this.layouts.find(layout => layout.name.toLowerCase() === this.$store.calendar.static_data.settings.layout);
     },
 
-    apply_layout: function(layout){
-        show_loading_screen();
-        let previous_layout = static_data.settings.layout;
-        static_data.settings.layout = layout.name.toLowerCase();
-        do_update_all(hash, function(){
-            window.onbeforeunload = function () {}
-            window.location.reload(false);
-        }, function(){
-            static_data.settings.layout = previous_layout;
-            hide_loading_screen();
+    apply_layout: function(layout) {
+        const layoutName = layout.name.toLowerCase();
+        const validLayouts = this.layouts.map(l => l.name.toLowerCase());
+
+        if (!validLayouts.includes(layoutName)) return;
+
+        const store = this.$store.calendar;
+
+        store.update({
+            "static_data.settings.layout": layoutName,
         });
+
+        store.rebuild_calendar();
+
+        this.current_layout = layout;
+        this.open = false;
     }
 
-}
-
-module.exports = calendar_layouts;
+})

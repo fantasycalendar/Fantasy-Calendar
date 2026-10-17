@@ -1,37 +1,3 @@
-body.page {
-    min-height: 100vh;
-    max-height: initial;
-    height: initial;
-}
-
-body.page #content {
-    flex-grow: 1;
-}
-
-.user_calendar {
-	border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    margin-bottom: 1.5rem;
-    transition: all .2s ease-in-out;
-
-    &:hover {
-        transform: scale(1.2);
-    }
-}
-
-.user_calendar .card-header {
-    background-color: $accent-color;
-    color: white;
-}
-
-.icon_container
-{
-    display: flex;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-}
-
 .calendar_action {
     i {
         opacity: 0.70;
@@ -45,6 +11,7 @@ body.page #content {
     }
 
     &.dropdown-toggle:after {
+        font-weight: 900;
         content: "\f142";
         font-family: "Font Awesome 5 Free";
         margin: 0;
@@ -69,27 +36,6 @@ body.page #content {
     }
 }
 
-.calendar__list {
-    padding-top: 3rem;
-}
-
-.calendar-disabled {
-    pointer-events: none;
-    opacity: 0.3;
-    background-color: $calendar-bg-color;
-}
-
-.calendar-name {
-    color: $accent-color-light;
-    font-weight: bold;
-
-    .creator_name {
-        color: $wiki-link-hover-color;
-        font-weight: normal;
-        font-size: 80%;
-    }
-}
-
 .page-link {
     color: $accent-color;
 }
@@ -100,40 +46,6 @@ body.page #content {
     color: white !important;
 }
 
-.calendars-list-title {
-    font-size: 2.2rem;
-
-    @media screen and (min-width: 768px) {
-        font-size: 3rem;
-    }
-}
-
 a:hover {
     text-decoration: none;
-}
-
-.search-clear {
-    position: absolute;
-    right: 46px;
-    height: 100%;
-    width: 28px;
-    display: -webkit-box;
-    display: flex;
-    -webkit-box-pack: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    align-items: center;
-    line-height: 42px;
-    color: #858585;
-    cursor: pointer;
-    z-index: 4;
-}
-
-section.promos .inner {
-    background-color: $gray-secondary;
-    padding: 10px 14px;
-}
-
-.bg-grey {
-    background-color: $gray-secondary;
 }

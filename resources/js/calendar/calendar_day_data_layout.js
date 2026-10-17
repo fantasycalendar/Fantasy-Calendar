@@ -1,14 +1,19 @@
-day_data_tooltip = {
+import Alpine from 'alpinejs';
+import { moon_phases } from "./calendar_variables";
+
+function calendarStore() { return Alpine.store('calendar'); }
+
+export var day_data_tooltip = {
 
     elements: {},
 
     set_up: function(){
         if(Object.keys(this.elements).length === 0){
-            this.tooltip_box = $('#day_data_tooltip_box');
-            this.tooltip_box.find('.hidden').each(function(){
-                day_data_tooltip.elements[$(this).attr('data_key')] = {
-                    self: $(this),
-                    container: $(this).find('.data_container')
+            this.tooltip_box = document.getElementById('day_data_tooltip_box');
+            this.tooltip_box.querySelectorAll('.hidden').forEach(function(el){
+                day_data_tooltip.elements[el.getAttribute('data_key')] = {
+                    self: el,
+                    container: el.querySelector('.data_container')
                 };
             })
         }
@@ -23,18 +28,19 @@ day_data_tooltip = {
 
 
 
-        if($(event.target).closest(day_data_tooltip.tooltip_box[0]).length){
+        if(event.target.closest('#day_data_tooltip_box')){
             return;
         }
 
         document.removeEventListener('click', day_data_tooltip.hide);
 
-        day_data_tooltip.tooltip_box.hide();
-        day_data_tooltip.tooltip_box.children().first().children().addClass('hidden');
+        day_data_tooltip.tooltip_box.style.display = 'none';
+        Array.from(day_data_tooltip.tooltip_box.children[0].children).forEach(function(child){ child.classList.add('hidden'); });
 
     },
 
     show: function(day_element, epoch_data){
+        const store = calendarStore();
 
         this.ignore_first = true;
 
@@ -57,11 +63,11 @@ day_data_tooltip = {
 
                 if(key == "era"){
                     if(data > -1){
-                        html.push(sanitizeHtml(static_data.eras[data].name));
+                        html.push(sanitizeHtml(store.static_data.eras[data].name));
                     }
                 }else if(key.indexOf('moon') > -1){
                     for(var moon_index in data){
-                        var moon = static_data.moons[moon_index];
+                        var moon = store.static_data.moons[moon_index];
                         if(key == "moon_phase"){
                             var name_array = Object.keys(moon_phases[moon.granularity]);
                             var moon_data = `${sanitizeHtml(moon.name)}: ${name_array[data[moon_index]]}<br>`;
@@ -84,11 +90,11 @@ day_data_tooltip = {
                             continue;
                         }
 
-                        element.self.removeClass("hidden");
+                        element.self.classList.remove("hidden");
 
                         html.push(season_data);
 
-                        element.container.html(html.join(''));
+                        element.container.innerHTML = html.join('');
 
                     }
 
@@ -98,7 +104,7 @@ day_data_tooltip = {
 
                         var cycle_key = data[cycle_index]
 
-                        html.push(`${sanitizeHtml(static_data.cycles.data[cycle_index].names[cycle_key])}<br>`);
+                        html.push(`${sanitizeHtml(store.static_data.cycles.data[cycle_index].names[cycle_key])}<br>`);
 
                     }
 
@@ -109,8 +115,8 @@ day_data_tooltip = {
 
                 if(key != "season" && html.length > 0){
                     var element = this.elements[key];
-                    element.self.removeClass("hidden");
-                    element.container.html(html.join(''));
+                    element.self.classList.remove("hidden");
+                    element.container.innerHTML = html.join('');
                 }
 
             }
@@ -121,7 +127,7 @@ day_data_tooltip = {
             placement: 'right',
             modifiers: {
                 preventOverflow: {
-                    boundariesElement: $('#calendar')[0],
+                    boundariesElement: document.getElementById('calendar'),
                 },
                 offset: {
                     enabled: true,
@@ -130,7 +136,7 @@ day_data_tooltip = {
             }
         });
 
-        this.tooltip_box.show()
+        this.tooltip_box.style.display = ''
 
         document.addEventListener('click', this.hide)
 

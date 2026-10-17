@@ -2,10 +2,14 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-(new class() {
-    use \Tests\CreatesApplication;
-})->createApplication()[\Illuminate\Contracts\Console\Kernel::class]->call('db:create');
+use Illuminate\Contracts\Console\Kernel;
 
-(new class() {
+// CreatesApplication forces the testing connection, so these run against the
+// test database, not dev.
+$createApplication = fn () => (new class() {
     use \Tests\CreatesApplication;
-})->createApplication()[\Illuminate\Contracts\Console\Kernel::class]->call('migrate:fresh --seed');
+})->createApplication();
+
+$createApplication()[Kernel::class]->call('db:create');
+
+$createApplication()[Kernel::class]->call('migrate:fresh --seed');

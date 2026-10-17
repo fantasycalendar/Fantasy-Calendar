@@ -325,9 +325,9 @@
                                         <span class="cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 block px-4 py-2 text-md @if($calendar->disabled) pointer-events-none opacity-50 @endif" href="javascript:" data-hash="{{ $calendar->hash }}" data-name="{{ $calendar->name }}" role="menuitem"
                                               @click="$dispatch('modal', {
                                                     name: 'copy_confirmation',
-                                                    title: `Copying {{ addslashes($calendar->name) }}`,
+                                                    title: `Copying ${sanitizeHtml(@js($calendar->name))}`,
                                                     form_prefill: {
-                                                        new_name: `{{ addslashes($calendar->name) }} (clone)`
+                                                        new_name: @js($calendar->name) + ' (clone)'
                                                     },
                                                     ok_event: { hash: '{{ $calendar->hash }}' }
                                                 })"
@@ -353,7 +353,7 @@
                                               @click="$dispatch('modal', {
                                                     name: 'delete_confirmation',
                                                     title: 'Are you sure?',
-                                                    body: 'Are you sure you want to delete <strong>{{ addslashes($calendar->name) }}</strong>?',
+                                                    body: `Are you sure you want to delete <strong>${sanitizeHtml(@js($calendar->name))}</strong>?`,
                                                     ok_event: { hash: '{{ $calendar->hash }}' },
                                                 })">
                                             Delete

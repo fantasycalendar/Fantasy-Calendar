@@ -1,4 +1,4 @@
-const colors = require('tailwindcss/colors')
+import colors from 'tailwindcss/colors';
 
 module.exports = {
     darkMode: 'class',

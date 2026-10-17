@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Mews\Purifier\Casts\CleanHtml;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property int $user_id
@@ -40,6 +41,10 @@ class CalendarEventComment extends Model
         'content'
     ];
 
+    protected $casts = [
+        'content' => CleanHtml::class,
+    ];
+
     public function calendar() {
         return $this->belongsTo(Calendar::class);
     }
@@ -49,6 +54,6 @@ class CalendarEventComment extends Model
     }
 
     public function event() {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(CalendarEvent::class);
     }
 }

@@ -134,7 +134,6 @@ window.FantasyCalendar = window.FantasyCalendar || function(params = {}) {
             this._setSettings(params);
             this._config('element', this._determineReplaceElement());
 
-            console.log(this._config('embedNow'));
             (this._config('embedNow') === false) || this.embed();
 
             return this;

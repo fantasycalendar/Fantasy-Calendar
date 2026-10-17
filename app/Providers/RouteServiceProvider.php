@@ -80,12 +80,8 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapApiRoutes()
     {
         Route::prefix('api/v1')
-             ->middleware(['api', 'api_version:v1'])
-             ->group(base_path('routes/api_v1.php'));
-
-        Route::prefix('api/v2')
-            ->middleware(['api', 'api_version:v2', 'auth:sanctum'])
-            ->group(base_path('routes/api_v2.php'));
+              ->middleware(['api', 'api_version:v1'])
+              ->group(base_path('routes/api_v1.php'));
     }
 
     protected function configureRateLimiting()

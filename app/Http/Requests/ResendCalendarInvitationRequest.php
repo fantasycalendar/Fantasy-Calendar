@@ -28,7 +28,7 @@ class ResendCalendarInvitationRequest extends FormRequest
      */
     public function authorize()
     {
-        $this->calendar = Calendar::active()->hash($this->route('id'))->firstOrFail();
+        $this->calendar = $this->route('calendar');
         $this->email = $this->input('email');
         $this->invitation = $this->calendar->invitations()->where('email', $this->email)->firstOrFail();
 

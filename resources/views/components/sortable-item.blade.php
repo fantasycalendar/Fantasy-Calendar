@@ -1,0 +1,56 @@
+@props(['deleteFunction' => null, 'highlightRowWhen' => null, 'itemKey' => 'index'])
+
+<div class="dark:border-white/10 border-x border-t last-of-type:border-b px-2 !py-0.5 first-of-type:rounded-t last-of-type:rounded-b draggable-source" :data-id="{{ $itemKey }}"
+     @if($highlightRowWhen)
+         :class="{ 'bg-gray-100 dark:bg-white/5': {{ $highlightRowWhen }}}"
+     @endif
+     x-data="{ collapsed: (typeof season == 'undefined') }">
+
+    <div class='flex items-center w-full gap-x-2' x-show="deleting !== index">
+        <div x-show="reordering"
+             class="handle w-[20px] grid place-items-center self-stretch flex-shrink-0 text-center cursor-move"
+             role="button"
+             aria-label="Reorder"
+             tabindex="0">
+            <i class="fa fa-bars text-xl hover:text-black hover:dark:text-white"></i>
+        </div>
+        <div class='cursor-pointer text-xl fa text-gray-900/50 dark:text-white/50'
+             :class="{ 'fa-caret-square-up': !collapsed, 'fa-caret-square-down': collapsed }"
+             :aria-expanded="collapsed ? 'false' : 'true'"
+             role="button"
+             aria-label="Toggle details"
+             tabindex="0"
+             @click="collapsed = !collapsed"
+             @keydown.enter="collapsed = !collapsed"
+             @keydown.space.prevent="collapsed = !collapsed"
+             x-show="!reordering">
+        </div>
+
+        <div class="flex flex-grow-1 input-group">
+            {{ $inputs }}
+        </div>
+
+        <div>
+            <button type="button" class="text-gray-900/50 dark:text-white/50 hover:text-red-500 hover:dark:text-red-600 cursor-pointer bg-transparent border-0 p-0" aria-label="Delete" @click="deleting = index" x-show="!reordering || (typeof alwaysReordering !== 'undefined' && alwaysReordering)">
+                <i class="fa fa-trash text-lg"></i>
+            </button>
+        </div>
+    </div>
+
+    <div x-show="deleting === index" class="flex items-center w-full gap-x-2.5" x-cloak>
+        <button class="btn btn-success w-10 !px-0 text-center" @if($deleteFunction) @click="{{ $deleteFunction }}" @endif>
+            <i class="fa fa-check text-lg"></i>
+        </button>
+
+        <div class="flex-grow">Are you sure?</div>
+
+        <button class="btn btn-danger w-10 !px-0 text-center" @click="deleting = -1">
+            <i class="fa fa-times text-lg"></i>
+        </button>
+    </div>
+
+    <div class="flex flex-col px-2.5 py-2.5 space-y-2" x-show="!collapsed && !reordering && deleting === -1" {{ $attributes->whereDoesntStartWith('wrapper') }}>
+        {{ $slot }}
+    </div>
+
+</div>

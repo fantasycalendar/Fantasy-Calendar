@@ -6,8 +6,8 @@ const intervalCache = {
 
     _cache: {},
 
-    get(intervals, offset){
-        return this._cache[`${intervals}-${offset}`];
+    get(intervals, offset, cyclic){
+        return this._cache[`${intervals}-${offset}-${cyclic ? "yes" : "no"}`];
     },
 
     set(intervalsCollection, intervals, offset, cyclic){
@@ -21,7 +21,7 @@ export default class IntervalsCollection extends Collection{
 
     static fromIntervalString(intervalString, offset) {
 
-        const cachedIntervalsCollection = intervalCache.get(intervalString, offset);
+        const cachedIntervalsCollection = intervalCache.get(intervalString, offset, false);
         if (cachedIntervalsCollection) return cachedIntervalsCollection;
 
         const intervals = intervalString.toString()
@@ -45,7 +45,7 @@ export default class IntervalsCollection extends Collection{
 
         length = Math.max(length, Math.min(...cycleString.split(",").map(n => Number(n))));
 
-        const cachedIntervalsCollection = intervalCache.get(cycleString, length);
+        const cachedIntervalsCollection = intervalCache.get(cycleString, length, true);
         if (cachedIntervalsCollection) return cachedIntervalsCollection;
 
         const intervals = cycleString.toString()
@@ -80,7 +80,7 @@ export default class IntervalsCollection extends Collection{
 
         intervals = intervals.clone();
 
-        if (intervals.count() === 1) {
+        if (intervals.count() <= 1) {
             return intervals;
         }
 
@@ -167,7 +167,6 @@ export default class IntervalsCollection extends Collection{
                 case "deny":
                     return acc - 1;
                 default:
-                    console.log("BRUH WHAT");
                     return acc;
             }
         }, 0);
@@ -243,14 +242,11 @@ export default class IntervalsCollection extends Collection{
             let string = intervals.toJsons();
 
             if (unitTest.truth !== string){
-                console.log(unitTest.truth)
-                console.log(string)
                 throw new Error(`${unitTest.interval} failed the parity test`)
             }
 
         }
 
-        console.log("Parity achieved!")
     }
 
 }

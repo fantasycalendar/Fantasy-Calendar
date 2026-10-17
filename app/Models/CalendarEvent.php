@@ -105,10 +105,6 @@ class CalendarEvent extends Model
         return false;
     }
 
-    public function getDescriptionAttribute($value) {
-        return html_entity_decode($value);
-    }
-
     // Names are stored as decoded plain text on every Eloquent write (API v1,
     // Discord, the save job's create path). See EventName::normalize().
     public function setNameAttribute($value) {

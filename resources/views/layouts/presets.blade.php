@@ -1,4 +1,4 @@
-<div class='preset_background clickable_background hidden' :class="{ 'hidden':!open }" x-show='open' x-cloak>
+<div x-data="CalendarPresets" @open-presets.window="load" class='preset_background clickable_background hidden' :class="{ 'hidden':!open }" x-show='open' x-cloak>
     <div class='modal-basic-container'>
         <div class='modal-basic-wrapper'>
             <form id="preset-form" class="modal-wrapper preset-wrapper container" action="post">
@@ -24,7 +24,7 @@
                     </div>
                     <template x-for="feature in featured" :key="feature.id">
                         <div class="col-12 col-md-6">
-                            <button type="button" @click="fetch_preset(feature.id, feature.name)" class="full rounded my-1 py-2 px-3 preset flex-grow text-left">
+                            <button type="button" @click="fetch_preset(feature.id, feature.name)" class="w-full rounded my-1 py-2 px-3 preset flex-grow text-left">
                                 <div class="icon">
                                     <i class="fa fa-globe" :class="{
                                     ['fa-'+feature.icon]: feature.icon != false,
@@ -51,7 +51,7 @@
                 <div class='row justify-content-start' x-show="loaded">
                     <template x-for="preset in filteredPresets" :key="preset.id">
                         <div class="col-12 col-md-6 pb-2 d-flex">
-                            <button type="button" @click="fetch_preset(preset.id, preset.name)" class="full rounded my-1 py-2 px-3 preset flex-grow text-left">
+                            <button type="button" @click="fetch_preset(preset.id, preset.name)" class="w-full rounded my-1 py-2 px-3 preset flex-grow text-left">
                                 <div class="icon">
                                     <i class="fa fa-globe" :class="{
                                         ['fa-'+preset.icon]: preset.icon != false,

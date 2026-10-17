@@ -23,7 +23,7 @@ real_deploy_dev:
 	composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
 	rm -rf ./node_modules
 	npm install --legacy-peer-deps
-	npm run production
+	npm run build
 	aws s3 sync ./public s3://fantasy-calendar-dev/
 	date | cat > ./setup/lambda/dev/version.txt
 	chmod -R 775 ./
@@ -39,7 +39,7 @@ real_deploy_prd:
 	composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
 	rm -rf ./node_modules
 	npm install
-	npm run production
+	npm run build
 	aws s3 sync ./public s3://fantasy-calendar-prod/
 	date | cat > ./setup/lambda/dev/version.txt
 	chmod -R 775 ./
@@ -54,7 +54,7 @@ quick_deploy_dev:
 	composer install --prefer-dist --optimize-autoloader --no-dev --ignore-platform-reqs
 	rm -rf ./node_modules
 	npm install
-	npm run production
+	npm run build
 	chmod -R 775 ./
 	aws s3 sync ./public s3://fantasy-calendar-dev/
 	serverless deploy --stage=dev --function=web
@@ -66,7 +66,7 @@ quick_deploy_dev:
 
 quick_deploy_prod:
 	composer install --prefer-dist --optimize-autoloader --no-dev
-	npm run production
+	npm run build
 	chmod -R 775 ./
 	aws s3 sync ./public s3://fantasy-calendar-prod/
 	serverless deploy --stage=prod --function=web
@@ -77,7 +77,7 @@ quick_deploy_prod:
   	fi;
 
 install_dev:
-	cp ./setup/docker.example.env .env || true                                                     # Copy env file, don't overwrite
+	cp .env.example .env || true                                                                    # Copy env file, don't overwrite
 	docker compose build                                                                           # Gotta build our images before we can use them
 	docker run -it -u $(id -u):$(id -g) -v "${PWD}/:/app" -w /app node:20 npm install --legacy-peer-deps                # NPM install inside docker container to avoid installing on host
 	docker run -it -u $(id -u):$(id -g) -v "${PWD}/:/var/task" -e COMPOSER_CACHE_DIR=/tmp/composer-cache -w /var/task fc-bref-composer composer install  # Composer install inside docker container (it has all our required PHP modules)

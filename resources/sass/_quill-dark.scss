@@ -1,0 +1,76 @@
+// Dark-mode overrides for the Quill "snow" theme.
+// Only includes rules that differ from the base quill.snow.css, scoped under
+// body.dark so they only apply when dark mode is active.
+
+body.dark {
+
+  // ── Editor placeholder text ──────────────────────────────────────────
+  .ql-editor.ql-blank::before {
+    color: var(--editor-placeholder-colour);
+  }
+
+  // ── SVG icon stroke & fill colours ───────────────────────────────────
+  .ql-snow .ql-stroke {
+    stroke: var(--stroke-colour);
+  }
+
+  .ql-snow .ql-fill,
+  .ql-snow .ql-stroke.ql-fill {
+    fill: var(--fill-colour);
+  }
+
+  // ── Picker label text colour ─────────────────────────────────────────
+  .ql-snow .ql-picker-label {
+    color: var(--picker-label-colour);
+  }
+
+  // ── Expanded picker (label + icon colours) ───────────────────────────
+  .ql-snow .ql-picker.ql-expanded .ql-picker-label {
+    color: var(--border-color);
+  }
+
+  .ql-snow .ql-picker.ql-expanded .ql-picker-label .ql-fill {
+    fill: var(--border-color);
+  }
+
+  .ql-snow .ql-picker.ql-expanded .ql-picker-label .ql-stroke {
+    stroke: var(--border-color);
+  }
+
+  // ── Blockquote border ────────────────────────────────────────────────
+  .ql-snow .ql-editor blockquote {
+    border-left: 4px solid var(--border-color);
+  }
+
+  // ── Toolbar border ───────────────────────────────────────────────────
+  .ql-toolbar.ql-snow {
+    border: 1px solid var(--border-color);
+  }
+
+  .ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-label {
+    border-color: var(--border-color);
+  }
+
+  .ql-toolbar.ql-snow .ql-picker.ql-expanded .ql-picker-options {
+    border-color: var(--border-color);
+  }
+
+  // ── Tooltip ──────────────────────────────────────────────────────────
+  .ql-snow .ql-tooltip {
+    border: 1px solid var(--border-color);
+  }
+
+  .ql-snow .ql-tooltip input[type=text] {
+    border: 1px solid var(--border-color);
+  }
+
+  .ql-snow .ql-tooltip a.ql-action::after {
+    border-right: 1px solid var(--border-color);
+  }
+
+  // ── Container border ─────────────────────────────────────────────────
+  .ql-container.ql-snow {
+    border: 1px solid var(--border-color);
+  }
+
+} // body.dark

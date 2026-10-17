@@ -123,5 +123,41 @@ Route::get('/error/unavailable', [ErrorsController::class, 'calendarUnavailable'
 Route::get('/403', [ErrorsController::class, 'error403']);
 Route::get('/404', [ErrorsController::class, 'error404']);
 
+// Dev-only: proxy Vite-served JS to the same origin so web workers can load as modules.
+// The Vite dev server runs on a different port, which violates the browser's same-origin
+// policy for Worker scripts. This route proxies those requests through the app server.
+// Gated on both local env AND debug mode so a stray APP_ENV=local in a deployed
+// environment can't expose this proxy as long as APP_DEBUG is off.
+if (app()->environment('local') && config('app.debug')) {
+    Route::get('__vite_worker/{path}', function (string $path, Request $request) {
+        $query = $request->getQueryString();
+        $viteUrl = 'http://npm:5173/' . $path . ($query ? '?' . $query : '');
+
+        $context = stream_context_create(['http' => [
+            'timeout' => 10,
+            'ignore_errors' => true,
+        ]]);
+
+        $content = @file_get_contents($viteUrl, false, $context);
+
+        if ($content === false) {
+            abort(502, "Could not reach Vite dev server at $viteUrl");
+        }
+
+        // Rewrite absolute paths in import statements so subsequent module imports
+        // also go through this proxy instead of hitting the Vite dev server directly.
+        // Vite uses paths like /node_modules/.vite/deps/..., /resources/js/..., etc.
+        $content = preg_replace(
+            '#(from\s+["\']|import\s+["\']|import\(["\'])/#',
+            '$1/__vite_worker/',
+            $content
+        );
+
+        return response($content)
+            ->header('Content-Type', 'text/javascript')
+            ->header('Cache-Control', 'no-store');
+    })->where('path', '.*');
+}
+
 Route::get('/{path}', [CalendarController::class, 'legacy'])->where(['url' => 'calendar.php|calendar']);
 Route::get('{path}', [ErrorsController::class, 'error404']);

@@ -73,18 +73,18 @@
 
 <x-app-fullwidth-layout>
     <div>
-        <section class="px-6 min-h-screen pt-16 h-full border-b-4 border-b-primary-600 flex flex-col justify-center items-center relative" style="background-color: #edf2f7; background-image: url({{ asset('resources/discord/integration-bg-1.png') }}); background-size: cover; background-position: center center; background-attachment: fixed;">
+        <section class="px-6 min-h-screen pt-16 h-full border-b-4 border-b-primary-600 flex flex-col justify-center items-center relative" style="background-color: #edf2f7; background-image: url({{ Vite::asset('resources/images/discord/integration-bg-1.png') }}); background-size: cover; background-position: center center; background-attachment: fixed;">
             <div class="flex flex-col md:flex-row justify-center items-center max-w-7xl">
                 <div class="grid place-items-center">
-                    <img class="max-h-60" src="{{ asset('resources/fc_logo_white_padding.png') }}">
+                    <img class="max-h-60" src="{{ Vite::asset('resources/images/fc_logo_white_padding.png') }}">
                 </div>
 
                 <div class="grid place-items-center">
-                    <img class="max-h-60" style="max-width:3rem;" src="{{ asset('resources/discord_fc_plus_white.svg') }}">
+                    <img class="max-h-60" style="max-width:3rem;" src="{{ Vite::asset('resources/images/discord_fc_plus_white.svg') }}">
                 </div>
 
                 <div class="grid place-items-center">
-                    <img class="max-h-60" src="{{ asset('resources/discord/discord_white_padding.png') }}">
+                    <img class="max-h-60" src="{{ Vite::asset('resources/images/discord/discord_white_padding.png') }}">
                 </div>
 
             </div>
@@ -100,7 +100,7 @@
             <h4 class="absolute bottom-4 w-full text-center z-index-10 font-semibold text-xl md:text-2xl"><x-app-link class="inline-block hover:-translate-y-1 leading-loose transition duration-200" href="#section2"><i class="fa fa-chevron-circle-down"></i> Show me more! <i class="fa fa-chevron-circle-down"></i></x-app-link></h4>
         </section>
 
-        <section class="px-6 min-h-screen max-h-screen h-full border-b-4 border-b-primary-600 flex flex-col justify-center items-center relative text-white" id="section2" style="background-image: url({{ asset('resources/discord/plugin_pattern.png') }}); background-repeat: repeat;">
+        <section class="px-6 min-h-screen max-h-screen h-full border-b-4 border-b-primary-600 flex flex-col justify-center items-center relative text-white" id="section2" style="background-image: url({{ Vite::asset('resources/images/discord/plugin_pattern.png') }}); background-repeat: repeat;">
             <div class="max-h-5/6 max-w-full w-full pt-10 px-10 flex justify-center">
                 <div class="absolute top-8 left-0 right-0">
                     <h3 class="px-4 w-full text-center text-lg md:text-2xl"
@@ -113,24 +113,24 @@
                     </h3>
                     <h5 class="px-4 w-full text-center text-md md:text-lg">Track campaign time for your players right from Discord. Yeah, <span class="font-italic">we like it too.</span></h5>
                 </div>
-                <img class="hidden md:block" src="{{ asset('resources/discord/integration-bg-2.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 76vh">
-                <img class="md:hidden mx-auto" src="{{ asset('resources/discord/integration-bg-mobile.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 60vh;">
+                <img class="hidden md:block" src="{{ Vite::asset('resources/images/discord/integration-bg-2.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 76vh">
+                <img class="md:hidden mx-auto" src="{{ Vite::asset('resources/images/discord/integration-bg-mobile.png') }}" alt="" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); max-height: 60vh;">
             </div>
             <h4 class="absolute bottom-4 w-full text-center z-index-10 font-semibold text-xl md:text-2xl"><x-app-link class="inline-block hover:-translate-y-1 leading-loose transition duration-200" href="#section3"><i class="fa fa-chevron-circle-down"></i> There's more?! <i class="fa fa-chevron-circle-down"></i></x-app-link></h4>
         </section>
 
-        <section class="px-6 grid place-items-center py-10" id="section3" style="background-color: #303136; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
+        <section class="px-6 grid place-items-center py-10" id="section3" style="background-color: #303136; background-image: url('{{ Vite::asset('resources/images/gray-square-bg.png') }}');">
             <div class="max-w-5xl my-5 py-5 grid md:grid-cols-12 gap-10">
                 <div class="md:col-span-7 text-center md:text-left flex flex-col items-start justify-center">
                     <h3 class="text-white text-2xl font-semibold">The information you need, just a command away.</h3>
                 </div>
 
                 <div class="md:col-span-5 text-center md:text-right">
-                    <img src="{{ asset('resources/discord/discord_show_month.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
+                    <img src="{{ Vite::asset('resources/images/discord/discord_show_month.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
                 </div>
 
                 <div class="md:col-span-5 text-center md:text-left">
-                    <img src="{{ asset('resources/discord/discord_add_days.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
+                    <img src="{{ Vite::asset('resources/images/discord/discord_add_days.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
                 </div>
 
                 <div class="md:col-span-7 text-center md:text-right flex flex-col md:items-end items-center justify-center">
@@ -140,23 +140,23 @@
         </section>
 
         <section class="px-6 py-16" style="position: relative; overflow: hidden; background-color: rgb(44, 47, 51);">
-            <div class="background z-10" style="background-image: url('{{ asset('resources/discord/webb-dark.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; transform: scale(1.5, 1.5)"></div>
+            <div class="background z-10" style="background-image: url('{{ Vite::asset('resources/images/discord/webb-dark.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.25; transform: scale(1.5, 1.5)"></div>
             <div class="max-w-5xl mx-auto grid md:grid-cols-2 py-5 z-20 relative gap-10">
                 <div class="text-center md:text-left flex flex-col md:items-start items-center justify-center text-white">
                     <h3 class="text-white text-2xl font-semibold pb-8">Image or text, your choice.</h3>
                     <h4 class="text-white text-xl">Prefer something you can paste into a text editor, wiki, or markdown page? The text-renderer will let you do just that.</h4>
                 </div>
                 <div class="text-center md:text-right flex flex-col md:flex-row items-center md:justify-end">
-                    <img src="{{ asset('resources/discord/discord_show_month_text.png') }}" style="min-height: 100%; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2)">
+                    <img src="{{ Vite::asset('resources/images/discord/discord_show_month_text.png') }}" style="min-height: 100%; box-shadow: 0 0 10px rgba(0, 0, 0, 0.2)">
                 </div>
             </div>
         </section>
 
         <section class="px-6 py-5" style="position: relative; overflow: hidden; background-color: rgb(44, 47, 51);">
-            <div class="background z-10" style="background-image: url({{ asset('/resources/discord/gray-cubic-bg.png') }});position: absolute;top: 0;left: 0;right: 0;bottom: 0;opacity: 0.03;transform: scale(1.2);"></div>
+            <div class="background z-10" style="background-image: url({{ Vite::asset('resources/images/discord/gray-cubic-bg.png') }});position: absolute;top: 0;left: 0;right: 0;bottom: 0;opacity: 0.03;transform: scale(1.2);"></div>
             <div class="max-w-5xl m-auto py-5 grid md:grid-cols-2 z-20 relative gap-10">
                 <div class="text-center md:text-left">
-                    <img src="{{ asset('resources/discord/detailed_day_info.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2)">
+                    <img src="{{ Vite::asset('resources/images/discord/detailed_day_info.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2)">
                 </div>
                 <div class="text-center md:text-right flex flex-col md:items-end items-center justify-center text-white">
                     <h3 class="text-white text-2xl font-semibold pb-8">Stats-nerds, we've got you covered.</h3>
@@ -165,7 +165,7 @@
             </div>
         </section>
 
-        <section class="px-6 py-5 darkmode" style="background-color: #222222; background-image: url('{{ asset('resources/gray-square-bg.png') }}');">
+        <section class="px-6 py-5 darkmode" style="background-color: #222222; background-image: url('{{ Vite::asset('resources/images/gray-square-bg.png') }}');">
             <div class="max-w-5xl m-auto py-5 grid md:grid-cols-2 gap-10">
                 <div class="text-center md:text-left flex flex-col md:items-start items-center justify-center">
                     <h3 class="text-white text-2xl font-semibold pb-8">Privacy: Respected</h3>
@@ -176,13 +176,13 @@
                     </h4>
                 </div>
                 <div class="text-center md:text-right flex flex-col md:items-end items-center justify-center text-white">
-                    <img src="{{ asset('resources/discord/slash_commands.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
+                    <img src="{{ Vite::asset('resources/images/discord/slash_commands.png') }}" style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);">
                 </div>
             </div>
         </section>
 
         <section class="px-6 py-5"  style="position: relative; overflow: hidden; background-color: rgb(44, 47, 51);">
-            <div class="background z-10" style="background-image: url('{{ asset('resources/discord/double-bubble-dark.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; transform: scale(1.5, 1.5)"></div>
+            <div class="background z-10" style="background-image: url('{{ Vite::asset('resources/images/discord/double-bubble-dark.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.15; transform: scale(1.5, 1.5)"></div>
             <div class="max-w-5xl m-auto py-5 grid md:grid-cols-2 gap-10 text-white relative z-20">
                 <div class="flex justify-center md:justify-start text-center md:text-left">
                     <iframe src="https://discord.com/widget?id=399974878134140939&theme=dark" width="350" height="400" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
@@ -195,7 +195,7 @@
         </section>
 
         <section class="px-6 py-5" style="position: relative; overflow: hidden; background-color: #222222;">
-            <div class="background z-10" style="background-image: url('{{ asset('resources/discord/webb-dark.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.08; transform: scale(1.5, 1.5)"></div>
+            <div class="background z-10" style="background-image: url('{{ Vite::asset('resources/images/discord/webb-dark.png') }}'); position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.08; transform: scale(1.5, 1.5)"></div>
             <div class="max-w-5xl mx-auto py-16 px-4 md:px-6 lg:py-24 lg:px-8 relative z-20" style="max-width: 1300px;">
                 <div class="max-w-3xl mx-auto text-center">
                     <h2 class="text-3xl font-extrabold text-gray-200">Quick-fire FAQs</h2>

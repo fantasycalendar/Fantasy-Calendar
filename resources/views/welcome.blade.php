@@ -15,14 +15,14 @@
             <div class="flex-1 w-full bg-gray-900"></div>
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6">
-            <img class="relative rounded-lg shadow-lg shadow-slate-800" src="{{ asset('/resources/screenshots/taldorei-never-lose-track.webp') }}" alt="App screenshot">
+            <img class="relative rounded-lg shadow-lg shadow-slate-800" src="{{ Vite::asset('resources/images/screenshots/taldorei-never-lose-track.webp') }}" alt="App screenshot">
         </div>
     </div>
 
     <div class="bg-gray-900">
         <div class="relative pb-32 bg-gray-800">
             <div class="absolute inset-0">
-                <img class="w-full h-full object-cover" src="{{ asset('/resources/homepage/castle.webp') }}" alt="">
+                <img class="w-full h-full object-cover" src="{{ Vite::asset('resources/images/homepage/castle.webp') }}" alt="">
                 <div class="absolute inset-0 bg-gray-700 mix-blend-multiply" aria-hidden="true"></div>
             </div>
             <div class="relative max-w-7xl mx-auto py-24 px-4 sm:py-32 sm:px-6 lg:px-8">
@@ -159,7 +159,7 @@
                 </div>
                 <div class="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1">
                     <div class="pr-4 -ml-48 sm:pr-6 md:-ml-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
-                        <img class="w-full rounded-xl shadow-xl shadow-slate-800 ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none" src="{{ asset('/resources/screenshots/weather-zoom.png') }}" alt="Weather for the year">
+                        <img class="w-full rounded-xl shadow-xl shadow-slate-800 ring-1 ring-black ring-opacity-5 lg:absolute lg:right-0 lg:h-full lg:w-auto lg:max-w-none" src="{{ Vite::asset('resources/images/screenshots/weather-zoom.png') }}" alt="Weather for the year">
                     </div>
                 </div>
             </div>
@@ -194,7 +194,7 @@
                             <footer class="mt-3">
                                 <div class="flex items-center space-x-3">
                                     <div class="flex-shrink-0">
-                                        <img class="h-6 w-6 rounded-full" src="{{ asset('/resources/homepage/dwarf-profile-photo.webp') }}" alt="">
+                                        <img class="h-6 w-6 rounded-full" src="{{ Vite::asset('resources/images/homepage/dwarf-profile-photo.webp') }}" alt="">
                                     </div>
                                     <div class="text-base font-medium text-gray-500">Nimoor Mithtel, leader of the Greycross Dwarves</div>
                                 </div>
@@ -204,7 +204,7 @@
                 </div>
                 <div class="mt-12 sm:mt-16 lg:mt-0">
                     <div class="pl-4 -mr-48 sm:pl-6 md:-mr-16 lg:px-0 lg:m-0 lg:relative lg:h-full">
-                        <img class="w-full rounded-xl shadow-xl shadow-slate-900 ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none" src="{{ asset('/resources/screenshots/forgotten-realms-homepage-screenshot.png') }}" alt="Inbox user interface">
+                        <img class="w-full rounded-xl shadow-xl shadow-slate-900 ring-1 ring-black ring-opacity-5 lg:absolute lg:left-0 lg:h-full lg:w-auto lg:max-w-none" src="{{ Vite::asset('resources/images/screenshots/forgotten-realms-homepage-screenshot.png') }}" alt="Inbox user interface">
                     </div>
                 </div>
             </div>
@@ -219,7 +219,7 @@
                 <p class="mt-5 max-w-prose mx-auto text-xl text-gray-300">Character birthdays? Easy. Monthly meeting with the queen? Track it. A moon that turns purple during summer, on Fridays, only when the other two moons are new moons? Yep, <strong>you can do that, too</strong>.</p>
             </div>
             <div class="mt-12 -mb-10 sm:-mb-24 lg:-mb-56">
-                <img class="rounded-lg shadow-xl ring-1 ring-black ring-opacity-5" src="{{ asset('/resources/screenshots/event-conditions.png') }}" alt="">
+                <img class="rounded-lg shadow-xl ring-1 ring-black ring-opacity-5" src="{{ Vite::asset('resources/images/screenshots/event-conditions.png') }}" alt="">
             </div>
         </div>
     </div>
@@ -239,7 +239,7 @@
                     </div>
                 </div>
                 <div class="-mt-6 aspect-w-5 aspect-h-3 md:aspect-w-2 md:aspect-h-1">
-                    <img class="transform translate-x-6 translate-y-6 rounded-md object-cover object-left-top sm:translate-x-16 lg:translate-y-20" src="{{ asset('/resources/screenshots/calendar-creation.png') }}" alt="App screenshot">
+                    <img class="transform translate-x-6 translate-y-6 rounded-md object-cover object-left-top sm:translate-x-16 lg:translate-y-20" src="{{ Vite::asset('resources/images/screenshots/calendar-creation.png') }}" alt="App screenshot">
                 </div>
             </div>
         </div>

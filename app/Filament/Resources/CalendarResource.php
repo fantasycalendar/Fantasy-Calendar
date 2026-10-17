@@ -101,9 +101,15 @@ class CalendarResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('user.username')->label('Owner'),
-                Tables\Columns\TextColumn::make('events_count')->counts('events'),
-                Tables\Columns\TextColumn::make('date_created')->label('Created at')->date('Y-m-d'),
-                Tables\Columns\TextColumn::make('last_dynamic_change')->label('Last Updated')->date('Y-m-d'),
+                Tables\Columns\TextColumn::make('events_count')
+                    ->sortable()
+                    ->counts('events'),
+                Tables\Columns\TextColumn::make('date_created')
+                    ->sortable()
+                    ->label('Created at')->date('Y-m-d'),
+                Tables\Columns\TextColumn::make('last_dynamic_change')
+                    ->sortable()
+                    ->label('Last Dynamic Change')->date('Y-m-d'),
                 Tables\Columns\BooleanColumn::make('deleted_at')
                     ->label('Active')
                     ->getStateUsing(fn ($record) => is_null($record->deleted_at))
@@ -119,6 +125,12 @@ class CalendarResource extends Resource
                     ->default(false)
                     ->query(fn (Builder $query): Builder => $query->has('preset'))
             ])->actions([
+                Tables\Actions\Action::make('edit_page')
+                    ->label('')
+                    ->tooltip('Open edit page')
+                    ->icon('heroicon-o-calendar-days')
+                    ->color('primary')
+                    ->url(fn (Calendar $record) => route('calendars.edit', ['calendar' => $record]), shouldOpenInNewTab: true),
                 Tables\Actions\Action::make('promote')
                     ->label('')
                     ->tooltip(fn (Calendar $record) => $record->preset ? 'Demote from preset' : 'Promote to preset')

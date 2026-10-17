@@ -140,7 +140,7 @@
                     );
 
                     if (error) {
-                        console.log(error);
+                        console.error(error);
                         swal.fire("Oops", "Something went wrong: " + error.message, "error");
                         this.errors.stripeError = error.message;
                         this.ready = false;
@@ -153,7 +153,7 @@
                                 location.reload();
                             })
                             .catch(function(error) {
-                                console.log(error);
+                                console.error(error);
                             });
                     }
                 }
@@ -221,7 +221,7 @@
                 </div>
 
                 <div class="px-10">
-                    <div class="border-t border-gray-100 dark:border-gray-700 w-full sm:hidden mt-8 w-full"></div>
+                    <div class="border-t border-gray-100 dark:border-gray-700 w-full sm:hidden mt-8"></div>
                 </div>
             </aside>
 

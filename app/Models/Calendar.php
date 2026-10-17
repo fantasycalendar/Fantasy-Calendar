@@ -29,7 +29,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
- * 
+ *
  *
  * @property mixed static_data Calendar static data
  * @property mixed dynamic_data Calendar dynamic data
@@ -197,7 +197,8 @@ class Calendar extends Model
     protected $casts = [
         'dynamic_data' => 'array',
         'static_data' => 'array',
-        'advancement_next_due' => 'datetime'
+        'advancement_next_due' => 'datetime',
+        'parent_link_date' => 'array',
     ];
 
     public $timestamps = false;
@@ -338,15 +339,31 @@ class Calendar extends Model
             return true;
         }
 
-        if (Arr::get($this->static_data, 'year_data') != Arr::get($static_data, 'year_data')) {
+        if ($this->withoutSyntheticIds(Arr::get($this->static_data, 'year_data')) != $this->withoutSyntheticIds(Arr::get($static_data, 'year_data'))) {
             return true;
         }
 
-        if (Arr::get($this->static_data, 'eras') != Arr::get($static_data, 'eras')) {
+        if ($this->withoutSyntheticIds(Arr::get($this->static_data, 'eras')) != $this->withoutSyntheticIds(Arr::get($static_data, 'eras'))) {
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Recursively strips the editor's synthetic `_id` keys so they don't count
+     * as structural differences (list items carry an `_id` only for stable
+     * front-end keys; it is not part of the calendar's structure).
+     */
+    private function withoutSyntheticIds($value)
+    {
+        if (!is_array($value)) {
+            return $value;
+        }
+
+        unset($value['_id']);
+
+        return array_map(fn ($item) => $this->withoutSyntheticIds($item), $value);
     }
 
     public function isLinkable(): bool
@@ -404,6 +421,89 @@ class Calendar extends Model
                 }
             }
         );
+
+        // Sanitize user-controlled strings at this single read boundary (every
+        // PHP consumer and the @js() frontend store hydration funnel through
+        // here). Names are stripped of tags (strip_tags, not the Purifier cast,
+        // so the frontend stays the single escaper and `&` is not double-encoded).
+        // Format/template/syntax fields (eras[].format, cycles.format,
+        // leap_days[].interval, colors, enums) are deliberately left untouched.
+        $stripName = static function ($value) {
+            return is_string($value) ? strip_tags($value) : $value;
+        };
+
+        if (is_array($original['year_data']['global_week'] ?? null)) {
+            $original['year_data']['global_week'] = array_map($stripName, $original['year_data']['global_week']);
+        }
+        if (is_array($original['year_data']['timespans'] ?? null)) {
+            foreach ($original['year_data']['timespans'] as &$timespan) {
+                if (isset($timespan['name'])) {
+                    $timespan['name'] = $stripName($timespan['name']);
+                }
+                if (is_array($timespan['week'] ?? null)) {
+                    $timespan['week'] = array_map($stripName, $timespan['week']);
+                }
+            }
+            unset($timespan);
+        }
+        if (is_array($original['year_data']['leap_days'] ?? null)) {
+            foreach ($original['year_data']['leap_days'] as &$leapDay) {
+                if (isset($leapDay['name'])) {
+                    $leapDay['name'] = $stripName($leapDay['name']);
+                }
+            }
+            unset($leapDay);
+        }
+
+        if (is_array($original['moons'] ?? null)) {
+            foreach ($original['moons'] as &$moon) {
+                if (isset($moon['name'])) {
+                    $moon['name'] = $stripName($moon['name']);
+                }
+            }
+            unset($moon);
+        }
+
+        if (is_array($original['seasons']['data'] ?? null)) {
+            foreach ($original['seasons']['data'] as &$season) {
+                if (isset($season['name'])) {
+                    $season['name'] = $stripName($season['name']);
+                }
+            }
+            unset($season);
+        }
+        if (is_array($original['seasons']['locations'] ?? null)) {
+            foreach ($original['seasons']['locations'] as &$location) {
+                if (isset($location['name'])) {
+                    $location['name'] = $stripName($location['name']);
+                }
+            }
+            unset($location);
+        }
+
+        if (is_array($original['cycles']['data'] ?? null)) {
+            foreach ($original['cycles']['data'] as &$cycle) {
+                if (is_array($cycle['names'] ?? null)) {
+                    $cycle['names'] = array_map($stripName, $cycle['names']);
+                }
+            }
+            unset($cycle);
+        }
+
+        // Era names are stripped; era descriptions are user-authored rich HTML
+        // rendered via `x-html`, so they are HTML-purified (like
+        // CalendarEvent::description's CleanHtml cast) rather than stripped.
+        if (is_array($original['eras'] ?? null)) {
+            foreach ($original['eras'] as &$era) {
+                if (isset($era['name'])) {
+                    $era['name'] = $stripName($era['name']);
+                }
+                if (isset($era['description']) && is_string($era['description'])) {
+                    $era['description'] = clean($era['description'], 'default');
+                }
+            }
+            unset($era);
+        }
 
         return $original;
     }
@@ -467,9 +567,9 @@ class Calendar extends Model
      */
     public function getCurrentEraValidAttribute(): bool
     {
-        return (count($this->static_data['eras'] ?? []) > 0
-
-            && ($this->dynamic_data['current_era'] ?? -1) > -1
+        return Arr::has(
+            Arr::get($this->static_data, 'eras', []),
+            Arr::get($this->dynamic_data, 'current_era')
         );
     }
 

@@ -1,323 +1,291 @@
-const calendar_events_viewer = {
+import Quill from "quill";
+import { submit_new_comment, submit_delete_comment, get_event_comments } from "./calendar/calendar_ajax_functions";
+import { clone, notify } from "./calendar/calendar_functions";
+import { resolveEventIndex } from "./calendar/event_index";
+import { normalizeDescription } from "./calendar/event_change_detection";
 
-	open: false,
-	can_edit: false,
-	era: false,
-	user_can_comment: false,
-	can_comment_on_event: false,
-	loading_comments: true,
-	comment_editor: undefined,
-	id: -1,
-	db_id: false,
-	data: {},
-	comments: [],
+const is_empty_comment = (content) => content === "" || content === "<p><br></p>";
 
-	swal_content: {
-		title: "Cancel comment?",
-		text: "You haven't posted your comment yet, are you sure you want to continue?",
-		icon: "warning",
-		showCancelButton: true,
-		confirmButtonColor: '#d33',
-		cancelButtonColor: '#3085d6',
-		confirmButtonText: 'OK',
-	},
+export default () => ({
+    open: false,
+    can_edit: false,
+    era: false,
+    user_can_comment: false,
+    can_comment_on_event: false,
+    loading_comments: true,
+    editing_comment_content: '',
+    new_comment_content: '',
+    event_editor: null,
+    id: -1,
+    db_id: false,
+    data: {},
+    comments: [],
 
-	view_event($event){
-        let event_index = $event.detail.event_id;
-
-        if ($event.detail.event_db_id !== undefined) {
-            event_index = events.findIndex((item) => item.id === $event.detail.event_db_id);
-        }
-
-		this.id = event_index;
-		this.era = $event.detail.era ?? false;
-		this.epoch = $event.detail.epoch;
-
-		if(this.era){
-			this.data = clone(static_data.eras[this.id]);
-		}else{
-			this.data = clone(events[this.id]);
-			this.db_id = this.data.id !== undefined ? this.data.id : false;
-		}
-		if(this.data.description == ""){
-			this.data.description = "<i>No description.</i>"
-		}
-
-		this.open = true;
-		this.user_can_comment = Perms.user_can_comment();
-		this.can_comment_on_event = this.db_id !== false;
-		this.can_edit = Perms.can_modify_event(this.id);
-
-		if (!this.comment_editor){
-			this.comment_editor = $(this.$refs.trumbowyg_comment_input);
-			this.comment_editor.trumbowyg({
-				btns: [
-					['strong', 'em', 'del'],
-					['superscript', 'subscript'],
-					['link'],
-					['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-					['unorderedList', 'orderedList'],
-					['removeformat']
-				]
-			});
-		}
-
-		if (this.user_can_comment && this.can_comment_on_event){
-			this.comment_editor.trumbowyg('html', '');
-		}
-
-		if(this.db_id) {
-			this.get_event_comments();
-		}else{
-			this.loading_comments = false;
-		}
-
-	},
-
-	get_event_comments(){
-
-		if(this.era){
-			return;
-		}
-
-		get_event_comments(this.db_id, function(comments){
-			if (comments) {
-				window.dispatchEvent(new CustomEvent('event-viewer-modal-load-comments', { detail: { comments: comments }}));
-				this.loading_comments = false;
-			} else {
-				this.loading_comments = false;
-			}
-		});
-
-	},
-
-	load_comments($event) {
-		let comments = $event.detail.comments;
-		this.comments = []
-		for(let index in comments){
-			let comment = comments[index];
-			this.comments.push({
-                index: index,
-				id: comment.id,
-				date: comment.date,
-				comment_owner: comment.comment_owner,
-				calendar_owner: comment.calendar_owner,
-				content: comment.content,
-				username: `${comment.username}${comment.comment_owner ? " (you)" : (comment.calendar_owner ? " (owner)" : "")}`,
-				editing: false,
-				can_delete: Perms.user_can_delete_comment(comment)
-			})
-		}
-		this.loading_comments = false;
-	},
-
-	add_comment($event) {
-		let comment = $event.detail.comment;
-		this.comments.push({
-            index: this.comments.length,
-			id: comment.id,
-			date: comment.date,
-			comment_owner: comment.comment_owner,
-			calendar_owner: comment.calendar_owner,
-			content: comment.content,
-			username: `${comment.username}${comment.comment_owner ? " (you)" : (comment.calendar_owner ? " (owner)" : "")}`,
-			editing: false,
-			editor: undefined
-		})
-	},
-
-	submit_comment() {
-		let comment_content = this.comment_editor.trumbowyg('html');
-		submit_new_comment(comment_content, this.db_id, function(comment){
-			window.dispatchEvent(new CustomEvent('event-viewer-modal-add-comment', { detail: { comment: comment } }));
-		});
-		this.comment_editor.trumbowyg('html', '');
-	},
-
-	start_edit_comment(comment) {
-		this.cancel_edit_comment();
-		comment.editing = true;
-        const element = $(document.getElementById(`comment-editor-${comment.index}`))
-		element.trumbowyg({
-			btns: [
-				['strong', 'em', 'del'],
-				['superscript', 'subscript'],
-				['link'],
-				['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
-				['unorderedList', 'orderedList'],
-				['removeformat']
-			]
-		}).trumbowyg('html', comment.content);
-        comment.editor = element;
+    swal_content: {
+        title: "Cancel comment?",
+        text: "You haven't posted your comment yet, are you sure you want to continue?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'OK',
     },
 
-	submit_edit_comment(comment) {
+    view_event($event) {
+        const store = this.$store.calendar;
+        let event_index = $event.detail.era
+            ? $event.detail.event_id
+            : resolveEventIndex(store.events, $event.detail);
 
-        let comment_content = comment.editor.trumbowyg('html');
+        this.id = event_index;
+        this.era = $event.detail.era ?? false;
+        this.epoch = $event.detail.epoch;
 
-		if(comment_content == "" || comment_content == "<p><br></p>"){
-			$.notify("Comment cannot be empty.");
-			return;
-		}
+        const source = this.era ? store.static_data.eras[this.id] : store.events[this.id];
 
-        axios.patch(window.apiurl+"/eventcomment/"+comment.id, {
-            content: comment_content
+        // Opening the viewer with no event would crash on `this.data.*`.
+        if (source === undefined) {
+            return;
+        }
+
+        if (this.era) {
+            this.data = clone(source);
+        } else {
+            this.data = clone(source);
+            this.db_id = this.data.id !== undefined ? this.data.id : false;
+        }
+        if (this.data.description == "") {
+            this.data.description = "<i>No description.</i>"
+        }
+
+        this.open = true;
+        this.user_can_comment = store.perms.user_can_comment();
+        this.can_comment_on_event = this.db_id !== false;
+        this.can_edit = store.perms.can_modify_event(this.id);
+
+        if (this.user_can_comment && this.can_comment_on_event) {
+            this.new_comment_content = '';
+        }
+
+        if (this.db_id) {
+            this.get_event_comments();
+        } else {
+            this.loading_comments = false;
+        }
+    },
+
+    get_event_comments() {
+        if (this.era) {
+            return;
+        }
+
+        get_event_comments(this.db_id, function(comments) {
+            if (comments) {
+                this.$dispatch('event-viewer-modal-load-comments', { comments: comments });
+            }
+
+            this.loading_comments = false;
+        }.bind(this));
+    },
+
+    load_comments($event) {
+        let comments = $event.detail.comments;
+        this.comments = []
+        for (let index in comments) {
+            let comment = comments[index];
+            this.comments.push({
+                index: index,
+                id: comment.id,
+                date: comment.date,
+                comment_owner: comment.comment_owner,
+                calendar_owner: comment.calendar_owner,
+                content: comment.content,
+                username: `${comment.username}${comment.comment_owner ? " (you)" : (comment.calendar_owner ? " (owner)" : "")}`,
+                editing: false,
+                can_delete: this.$store.calendar.perms.user_can_delete_comment(comment)
+            })
+        }
+        this.loading_comments = false;
+    },
+
+    add_comment($event) {
+        let comment = $event.detail.comment;
+        this.comments.push({
+            index: this.comments.length,
+            id: comment.id,
+            date: comment.date,
+            comment_owner: comment.comment_owner,
+            calendar_owner: comment.calendar_owner,
+            content: comment.content,
+            username: `${comment.username}${comment.comment_owner ? " (you)" : (comment.calendar_owner ? " (owner)" : "")}`,
+            editing: false,
+            editor: undefined,
+            can_delete: true,
         })
-            .then(function (result){
-                if(result.data.success && result.data != "") {
-                    $.notify(
+    },
+
+    submit_comment() {
+        submit_new_comment(this.new_comment_content, this.db_id, function(comment) {
+            this.$dispatch('event-viewer-modal-add-comment', { comment: comment });
+        }.bind(this));
+
+        this.new_comment_content = '';
+    },
+
+    start_edit_comment(comment) {
+        this.cancel_edit_comment();
+        comment.editing = true;
+
+        this.event_editor = new Quill(
+            document.querySelector(`#comment-editor-${comment.index} > div`),
+            {
+                theme: 'snow',
+                placeholder: 'Compose an epic...',
+            },
+        );
+
+        this.event_editor.root.innerHTML = comment.content;
+        this.editing_comment_content = comment.content;
+
+        this.event_editor.on('text-change', () => {
+            this.editing_comment_content = this.event_editor.root.innerHTML;
+        })
+    },
+
+    submit_edit_comment(comment) {
+        this.editing_comment_content = this.event_editor?.root.innerHTML ?? this.editing_comment_content;
+
+        if (is_empty_comment(this.editing_comment_content)) {
+            this.delete_comment(comment);
+
+            return;
+        }
+
+        axios.patch(this.$store.calendar.apiurl + "/eventcomment/" + comment.id, {
+            content: this.editing_comment_content
+        })
+            .then(function(result) {
+                if (result.data.success && result.data != "") {
+                    notify(
                         "Comment edited.",
                         "success"
                     );
-                } else if(result.data === ""){
-                    $.notify(
+                } else if (result.data === "") {
+                    notify(
                         "Error editing comment."
                     );
                 } else {
-                    $.notify(
+                    notify(
                         result.data.message
                     );
                 }
-            }).then(() => { this.edit_comment_success(comment, comment_content) });
-	},
+            }).then(() => { this.edit_comment_success(comment, this.editing_comment_content) });
+    },
 
-    edit_comment_success(comment, comment_content) {
-        comment.content = comment_content;
+    edit_comment_success(comment, editing_comment_content) {
+        comment.content = editing_comment_content;
         this.cancel_edit_comment();
     },
 
-	cancel_edit_comment() {
-        for (let entry in this.comments){
-            if(this.comments[entry].editor){
-				this.comments[entry].editor.trumbowyg('destroy');
-				this.comments[entry].editor = undefined;
-			};
+    cancel_edit_comment() {
+        this.event_editor = null;
+        this.editing_comment_content = '';
+
+        for (let entry in this.comments) {
             this.comments[entry].editing = false;
+            document.querySelector(`#comment-editor-${this.comments[entry].index}`).innerHTML = "<div></div>";
         }
     },
 
-	delete_comment(comment) {
-		let index = this.comments.indexOf(comment);
-		let event_viewer_ui = this;
-		swal.fire({
-			title: "Delete comment?",
-			text: "Are you sure you want to delete this comment? This is irreversible.",
-			icon: "warning",
-			showCancelButton: true,
-			confirmButtonColor: '#d33',
-			cancelButtonColor: '#3085d6',
-			confirmButtonText: 'OK',
-		}).then((result) => {
-			if (!result.dismiss) {
-				submit_delete_comment(comment.id, function() {
-					$.notify(
-						"Removed comment.",
-						"success"
-					);
-					event_viewer_ui.comments.splice(index, 1);
-				});
-			}
-		});
-	},
-
-	confirm_clone: function() {
-
-		if (this.user_can_comment && this.can_comment_on_event) {
-			let comment_content = this.comment_editor.trumbowyg('html');
-			if (comment_content != "" && comment_content != "<p><br></p>") {
-				swal.fire(this.swal_content).then((result) => {
-					if (!result.dismiss) {
-						this.dispatch_clone();
-					}
-				});
-			} else {
-				this.dispatch_clone();
-			}
-		}else{
-			this.dispatch_clone();
-		}
-
-	},
-
-    dispatch_clone(){
-	    window.dispatchEvent(new CustomEvent('event-editor-modal-clone-event', { detail: { event_id: this.id, epoch: this.epoch } }));
-        this.close();
+    delete_comment(comment) {
+        let index = this.comments.indexOf(comment);
+        let event_viewer_ui = this;
+        swal.fire({
+            title: "Delete comment?",
+            text: "Are you sure you want to delete this comment? This is irreversible.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'OK',
+        }).then((result) => {
+            if (!result.dismiss) {
+                submit_delete_comment(comment.id, function() {
+                    notify(
+                        "Removed comment.",
+                        "success"
+                    );
+                    event_viewer_ui.comments.splice(index, 1);
+                });
+            }
+        });
     },
 
-	confirm_edit: function() {
-
-		if (this.user_can_comment && this.can_comment_on_event) {
-			let comment_content = this.comment_editor.trumbowyg('html');
-			if (comment_content != "" && comment_content != "<p><br></p>") {
-				swal.fire(this.swal_content).then((result) => {
-					if (!result.dismiss) {
-						this.dispatch_edit();
-					}
-				});
-			} else {
-				this.dispatch_edit();
-			}
-		}else{
-			this.dispatch_edit();
-		}
-
-	},
-
-	dispatch_edit: function(){
-		if (this.era) {
-			window.dispatchEvent(new CustomEvent('html-editor-modal-edit-html', { detail: { era_id: this.id } }));
-		} else {
-			window.dispatchEvent(new CustomEvent('event-editor-modal-edit-event', { detail: { event_id: this.id, epoch: this.epoch } }));
-		}
-		this.close();
-	},
-
-	confirm_close: function($event) {
-        const possibleTrumbowyg = [$event.target.id, $event.target.parentElement?.id].concat(
-            Array.from($event.target?.classList),
-            Array.from($event.target?.parentElement?.classList ?? []),
-            Array.from($event.target?.parentElement?.parentElement?.classList ?? []),
-        );
-
-        if(possibleTrumbowyg.some(entry => entry.startsWith('trumbowyg-'))) return false;
-
-        // Don't do anything if a swal is open.
-        if(swal.isVisible()) {
+    has_unsaved_comment() {
+        if (!this.user_can_comment || !this.can_comment_on_event) {
             return false;
         }
 
-        if (this.user_can_comment && this.can_comment_on_event) {
-			let comment_content = this.comment_editor.trumbowyg('html');
-			if (comment_content != "" && comment_content != "<p><br></p>") {
-				swal.fire(this.swal_content).then((result) => {
-					if (!result.dismiss) {
-						this.close();
-					}
-				});
-			} else {
-				this.close();
-			}
-		} else {
-			this.close();
-		}
+        const editing = this.comments.find((comment) => comment.editing);
+        const edit_changed = editing !== undefined
+            && normalizeDescription(this.editing_comment_content) !== normalizeDescription(editing.content);
 
-	},
+        return !is_empty_comment(this.new_comment_content) || edit_changed;
+    },
 
-	close() {
+    confirm_discarding_comment(then) {
+        if (!this.has_unsaved_comment()) {
+            then();
+            return;
+        }
 
-		this.open = false;
-		this.era = false;
-		this.id = -1;
-		this.db_id = false;
-		this.data = {};
-		this.comments = [];
-		this.loading_comments = true;
-		if(this.user_can_comment && this.can_comment_on_event) {
-			this.comment_editor.trumbowyg('html');
-		}
+        swal.fire(this.swal_content).then((result) => {
+            if (!result.dismiss) {
+                then();
+            }
+        });
+    },
 
-	}
+    confirm_clone: function() {
+        this.confirm_discarding_comment(() => this.dispatch_clone());
+    },
 
-}
+    dispatch_clone() {
+        this.$dispatch('event-editor-modal-clone-event', { event_id: this.id, epoch: this.epoch });
+        this.close();
+    },
 
-module.exports = calendar_events_viewer;
+    confirm_edit: function() {
+        this.confirm_discarding_comment(() => this.dispatch_edit());
+    },
+
+    dispatch_edit: function() {
+        if (this.era) {
+            this.$dispatch('html-editor-modal-edit-html', { era_id: this.id });
+        } else {
+            this.$dispatch('event-editor-modal-edit-event', { event_id: this.id, epoch: this.epoch });
+        }
+        this.close();
+    },
+
+    confirm_close: function($event) {
+        if ($event.target.closest('.ql-toolbar, .ql-container, .ql-picker-options')) return false;
+
+        // Don't do anything if a swal is open.
+        if (swal.isVisible()) {
+            return false;
+        }
+
+        this.confirm_discarding_comment(() => this.close());
+    },
+
+    close() {
+        this.open = false;
+        this.era = false;
+        this.id = -1;
+        this.db_id = false;
+        this.data = {};
+        this.comments = [];
+        this.loading_comments = true;
+    }
+})

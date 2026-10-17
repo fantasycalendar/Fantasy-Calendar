@@ -91,7 +91,7 @@ jobs:
       - name: Install NPM dependencies
         run: npm install --legacy-peer-deps
       - name: Build production assets
-        run: npm run production
+        run: npm run build
       - name: Copy assets into S3
         run: |
           aws s3 sync ./public s3://fantasy-calendar-prod/

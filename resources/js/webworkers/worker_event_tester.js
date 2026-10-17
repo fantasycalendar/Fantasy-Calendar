@@ -1,11 +1,18 @@
-var version = new Date().getTime();
+import { calendar_data_generator, event_evaluator } from "../calendar/calendar_workers";
+import { convert_year } from "../calendar/calendar_functions";
 
-importScripts('/js/calendar/calendar_functions.js?v='+version);
-importScripts('/js/calendar/calendar_variables.js?v='+version);
-importScripts('/js/calendar/calendar_season_generator.js?v='+version);
-importScripts('/js/calendar/calendar_workers.js?v='+version);
-
+// onmessage is async, so anything thrown here is an unhandled rejection that
+// never reaches the page's Worker.onerror: report it as a message instead.
 onmessage = async (e) => {
+	try {
+		postMessage(await test_event(e));
+	} catch (error) {
+		console.error(error);
+		postMessage({ error: error?.message ?? String(error) });
+	}
+};
+
+async function test_event(e) {
 
 	calendar_data_generator.calendar_name = e.data.calendar_name;
 	calendar_data_generator.static_data = e.data.static_data;
@@ -38,7 +45,10 @@ onmessage = async (e) => {
         let epoch = occurrences[index];
         let epoch_data = calendar_data.epoch_data[epoch];
 
-        if(epoch_data.year >= e.data.start_year && epoch_data.year < e.data.end_year){
+        // start_year/end_year are absolute years; epoch_data has display years.
+        let year = convert_year(e.data.static_data, epoch_data.year);
+
+        if(year >= e.data.start_year && year < e.data.end_year){
 
             valid_occurrences.push({
                 year: epoch_data.year,
@@ -49,7 +59,7 @@ onmessage = async (e) => {
         }
     }
 
-	postMessage({
+	return {
         occurrences: valid_occurrences
-	});
+	};
 }

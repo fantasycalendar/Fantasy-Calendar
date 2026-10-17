@@ -1,4 +1,8 @@
-class Perms {
+import Alpine from 'alpinejs';
+
+function calendarStore() { return Alpine.store('calendar'); }
+
+export default class Perms {
     constructor(userid, owner, level, playerLevel) {
 
         this.userid = userid;
@@ -30,7 +34,7 @@ class Perms {
     }
 
     can_modify_event(event_id){
-        return this.player_at_least('co-owner') || (this.player_at_least('player') && this.userid == events[event_id].creator_id);
+        return this.player_at_least('co-owner') || (this.player_at_least('player') && this.userid == calendarStore().events[event_id].creator_id);
     }
 
     user_is_owner(){
@@ -38,7 +42,7 @@ class Perms {
     }
 
     user_can_comment(){
-        if(!static_data.settings.comments){
+        if(!calendarStore().static_data.settings.comments){
             return this.owner;
         }
         return this.player_at_least('player');
@@ -49,8 +53,7 @@ class Perms {
     }
 
     user_can_see_clock(){
-        return static_data.clock.enabled && static_data.clock.render && !isNaN(static_data.clock.hours) && !isNaN(static_data.clock.minutes) && !isNaN(static_data.clock.offset) && (this.player_at_least('co-owner') || !static_data.settings.hide_clock);
+        const store = calendarStore();
+        return store.static_data.clock.enabled && store.static_data.clock.render && !isNaN(store.static_data.clock.hours) && !isNaN(store.static_data.clock.minutes) && !isNaN(store.static_data.clock.offset) && (this.player_at_least('co-owner') || !store.static_data.settings.hide_clock);
     }
 }
-
-module.exports = Perms;

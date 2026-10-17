@@ -1,5 +1,6 @@
 import * as utils from "../utils.js";
 import IntervalsCollection from "./Collections/IntervalsCollection.js";
+import collect from "collect.js";
 
 export default class Interval {
 

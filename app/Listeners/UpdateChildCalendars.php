@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Bus;
 class UpdateChildCalendars implements ShouldQueue
 {
     /**
+     * DateChanged fires from the observer's `saving` hook, which can run inside
+     * the calendar-save transaction: don't sync children from uncommitted (or
+     * rolled-back) parent state.
+     */
+    public $afterCommit = true;
+
+    /**
      * Create the event listener.
      *
      * @return void

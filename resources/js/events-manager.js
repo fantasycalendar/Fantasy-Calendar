@@ -1,9 +1,11 @@
-const events_manager = {
+import { clone, get_category } from "./calendar/calendar_functions";
+
+export default () => ({
     open: false,
 
     event_categories: [],
     groupFilter: "-1",
-    categorizedEvents: [],
+    categorizedEvents: {},
     categories: [],
     search: "",
     multiselect: false,
@@ -13,9 +15,6 @@ const events_manager = {
     showFilters: false,
 
     init() {
-        this.$watch("window.events", () => {
-            this.refreshEvents();
-        });
         this.$watch("search", () => {
             this.refreshEvents();
         });
@@ -31,7 +30,7 @@ const events_manager = {
         Object.entries(this.selected)
             .filter((entry) => entry[1])
             .forEach((event) => {
-                let canonicalEvent = window.events.find(
+                let canonicalEvent = this.$store.calendar.events.find(
                     (canonicalEvent) =>
                         canonicalEvent.id.toString() === event[0],
                 );
@@ -42,7 +41,6 @@ const events_manager = {
         this.selected = {};
 
         $dispatch("events-changed");
-        evaluate_save_button();
     },
 
     hideSelected($dispatch) {
@@ -82,25 +80,23 @@ const events_manager = {
     },
 
     toggleEventPrint(event, $dispatch) {
-        let canonicalEvent = window.events.find(
+        let canonicalEvent = this.$store.calendar.events.find(
             (canonicalEvent) => canonicalEvent.id === event.id,
         );
 
         canonicalEvent.settings.print = !canonicalEvent.settings.print;
 
         $dispatch("events-changed");
-        evaluate_save_button();
     },
 
     toggleEventHidden(event, $dispatch) {
-        let canonicalEvent = window.events.find(
+        let canonicalEvent = this.$store.calendar.events.find(
             (canonicalEvent) => canonicalEvent.id === event.id,
         );
 
         canonicalEvent.settings.hide = !canonicalEvent.settings.hide;
 
         $dispatch("events-changed");
-        evaluate_save_button();
     },
 
     get numberSelected() {
@@ -136,11 +132,10 @@ const events_manager = {
 
         const selectedEvents = Object.entries(this.selected)
             .filter((entry) => {
-                console.log(entry[1]);
                 return entry[1];
             })
             .map((entry) =>
-                window.events.find((event) => event.id === +entry[0]),
+                this.$store.calendar.events.find((event) => event.id === +entry[0]),
             );
 
         return selectedEvents.length > 0;
@@ -157,12 +152,10 @@ const events_manager = {
         Object.entries(this.selected)
             .filter((entry) => entry[1])
             .forEach((event) => {
-                let canonicalEvent = window.events.find(
+                let canonicalEvent = this.$store.calendar.events.find(
                     (canonicalEvent) =>
                         canonicalEvent.id.toString() === event[0],
                 );
-
-                console.log(event, desiredId, canonicalEvent);
 
                 canonicalEvent.event_category_id = desiredId;
             });
@@ -171,20 +164,26 @@ const events_manager = {
         this.updateCategoryTo = null;
 
         $dispatch("events-changed");
-        evaluate_save_button();
     },
     refreshCategories() {
-        this.categories = clone(window.event_categories) ?? [];
+        this.categories = clone(this.$store.calendar.event_categories) ?? [];
     },
     refreshEvents() {
         this.refreshCategories();
-        this.categorizedEvents = (clone(window.events) ?? []).reduce(
-            (categorized, event) => {
+        const unsorted = (clone(this.$store.calendar.events) ?? []).reduce(
+            (categorized, event, index) => {
                 if (
                     (this.search.length && !this.inSearch(event)) ||
                     !this.matchesVisibility(event)
                 ) {
                     return categorized;
+                }
+
+                // Ensure every event has a unique id for Alpine x-for :key binding.
+                // On the create page, events don't have database IDs yet,
+                // so we fall back to a generated key based on the array index.
+                if (event.id === undefined || event.id === null) {
+                    event.id = `new-${index}`;
                 }
 
                 const categoryName =
@@ -197,8 +196,7 @@ const events_manager = {
             {},
         );
 
-        let unsorted = Object.entries(this.categorizedEvents);
-        this.categorizedEvents = unsorted
+        this.categorizedEvents = Object.entries(unsorted)
             .sort((a, b) => {
                 if (a[0] === "Uncategorized") {
                     return -1;
@@ -248,7 +246,7 @@ const events_manager = {
         }
         $dispatch("event-viewer-modal-view-event", {
             event_db_id: event_data.id,
-            epoch: window.dynamic_data.epoch,
+            epoch: this.$store.calendar.dynamic_data.epoch,
         });
     },
 
@@ -257,7 +255,10 @@ const events_manager = {
     },
 
     highlight_match: function(string, offset = 0) {
-        let output = sanitizeHtml(string, { allowedTags: [] });
+        // DOMParser documents are inert: unlike innerHTML on a detached div,
+        // parsing here never fires `onerror`-style handlers in the markup.
+        let output = new DOMParser().parseFromString(string, "text/html").body.textContent;
+
         let index = 0;
         if (output.length < 1) return;
         let lengthLimit = 110 - offset;
@@ -278,14 +279,21 @@ const events_manager = {
                 index = Math.max(0, Math.floor(found - lengthLimit / 2));
             }
 
-            output = output
-                .substring(index, index + lengthLimit)
+            // HTML-escape the (possibly-truncated) text BEFORE wrapping matches in <mark>,
+            // since the result is rendered via x-html. Also escape regex metacharacters in
+            // the search term so names like "(foo)" don't throw a SyntaxError.
+            const safeNeedle = this.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            output = sanitizeHtml(output.substring(index, index + lengthLimit))
                 .replace(
-                new RegExp(this.search, "gi"),
-                function(str) {
-                    return `<mark>${str}</mark>`;
-                },
-            );
+                    new RegExp(safeNeedle, "gi"),
+                    function(str) {
+                        return `<mark class='p-0'>${str}</mark>`;
+                    },
+                );
+        } else if (!this.search.length && ellipses) {
+            output = sanitizeHtml(output.substring(0, lengthLimit));
+        } else {
+            output = sanitizeHtml(output);
         }
 
         if (ellipses) {
@@ -300,6 +308,7 @@ const events_manager = {
     },
 
     open_modal: function($event) {
+        this.refreshEvents()
         this.open = true;
         setTimeout(() => {
             document.getElementById("eventManagerSearch")?.focus();
@@ -309,6 +318,4 @@ const events_manager = {
     close_modal: function($event) {
         this.open = false;
     },
-};
-
-module.exports = events_manager;
+});

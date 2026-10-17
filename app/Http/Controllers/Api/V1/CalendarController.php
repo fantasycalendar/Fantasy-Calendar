@@ -64,23 +64,19 @@ class CalendarController extends Controller
     {
         CalendarCollection::withoutWrapping();
 
-        return new CalendarCollection($calendar->user->calendars->keyBy('hash'));
+        return new CalendarCollection($calendar->user->calendars);
     }
 
     public function users(GetCalendarUsersRequest $request, Calendar $calendar)
     {
-        $users = $calendar->users;
+        $usersResource = new Collection($calendar->users, new CalendarUserTransformer());
 
-        $usersResource = new Collection($users, new CalendarUserTransformer());
-
-        $result = array_merge(
+        return array_merge(
             $this->manager->createData($usersResource)->toArray()['data'],
             $calendar->invitations()->active()->get()->map(function ($invite) {
                 return $invite->transformForCalendar();
             })->toArray()
         );
-
-        return $result;
     }
 
     public function inviteUser(InviteCalendarUserRequest $request, Calendar $calendar)
@@ -92,7 +88,7 @@ class CalendarController extends Controller
         return response()->json(['message' => 'Invite sent.']);
     }
 
-    public function resend_invite(ResendCalendarInvitationRequest $request)
+    public function resendInvite(ResendCalendarInvitationRequest $request)
     {
         if (!$request->invitation->canBeResent()) {
             return response()->json(['error' => true, 'message' => "You're doing that too much. Try again later."], 422);
