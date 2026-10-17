@@ -1,14 +1,25 @@
 @props(['calendar' => null])
 
+@php
+    // No calendar yet means the create page, where the user is the owner.
+    $canAdvanceDate = !$calendar || auth()->user()?->can('advance-date', $calendar);
+@endphp
+
 <x-clock-canvas name="current_date"></x-clock-canvas>
 
-<div>
+<div
+    x-show="$store.calendar.perms?.player_at_least('co-owner') || $store.calendar.static_data?.settings?.allow_view"
+    @unless($canAdvanceDate) x-init="activeDateAdjustment = 'selected'" @endunless
+>
     <ul class="nav justify-content-center nav-tabs mt-3" role="tablist">
+        @if($canAdvanceDate)
         <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" role="tab" id="tab-current" aria-controls="date_inputs" :aria-selected="activeDateAdjustment === 'current'" :class="{ 'active': activeDateAdjustment === 'current' }" @click="activeDateAdjustment = 'current'">Current date</a></li>
+        @endif
         <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" role="tab" id="tab-selected" aria-controls="panel-selected" :aria-selected="activeDateAdjustment === 'selected'" :class="{ 'active': activeDateAdjustment === 'selected' }" @click="activeDateAdjustment = 'selected'">Selected date</a></li>
         <li class="nav-item"><a href="javascript:;" class="nav-link px-2 small" role="tab" id="tab-relative" aria-controls="panel-relative" :aria-selected="activeDateAdjustment === 'relative'" :class="{ 'active': activeDateAdjustment === 'relative' }" @click="activeDateAdjustment = 'relative'">Relative math</a></li>
     </ul>
 
+    @if($canAdvanceDate)
     <div class='date_control mt-3' id='date_inputs' role="tabpanel" aria-labelledby="tab-current" :class="{ 'd-flex flex-column': activeDateAdjustment === 'current', 'd-none': activeDateAdjustment !== 'current' }">
         @if(isset($calendar) && $calendar?->isChild())
             <div class="rounded border border-gray-300 dark:border-gray-600 p-3 mt-2">
@@ -92,6 +103,7 @@
             </div>
         @endif
     </div>
+    @endif
 
 
     <div class='date_control selected_date_controls mt-3' id="panel-selected" role="tabpanel" aria-labelledby="tab-selected" :class="{ 'd-flex flex-column': activeDateAdjustment === 'selected', 'd-none': activeDateAdjustment !== 'selected' }">
@@ -162,7 +174,7 @@
         <span class="w-full text-center">Apply to</span>
 
         <div class="flex space-x-2">
-            @if(request()->is('calendars/*/edit') && $calendar?->parent == null)
+            @if($calendar && $calendar->parent == null && $canAdvanceDate)
                 <button type="button" class="btn btn-primary btn-block mt-2" @click="adjust_current_date" :disabled="dateAdjustmentDisabled">Current date</button>
             @endif
 
