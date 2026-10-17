@@ -455,26 +455,19 @@ class SeasonsCollapsible extends CollapsibleComponent {
 
         let seasons = _.cloneDeep(this.seasons);
 
-        let colors = []
-        for (let index = 0; index < seasons.length; index++) {
-            if (!this.settings.color_enabled) {
-                delete seasons[index].color;
-                continue;
-            }
-            colors.push([])
-            if (index === 0) {
-                colors[index][0] = get_colors_for_season(seasons[index].name);
-                colors[index][1] = get_colors_for_season(seasons[index + 1].name);
-            } else if (index === seasons.length - 1) {
-                colors[index][0] = _.cloneDeep(colors[index - 1][1]);
-                colors[index][1] = _.cloneDeep(colors[0][0]);
-            } else {
-                colors[index][0] = _.cloneDeep(colors[index - 1][1])
-                colors[index][1] = get_colors_for_season(seasons[index + 1].name);
-            }
-
-            seasons[index].color = _.cloneDeep(colors[index]);
+        if (!this.settings.color_enabled) {
+            seasons.forEach(season => delete season.color);
+            this.seasons = seasons;
+            return;
         }
+
+        // Each season blends from its own color into the next one's, wrapping
+        // around. Custom names get random colors, so pick each one once.
+        const colors = seasons.map(season => get_colors_for_season(season.name));
+
+        seasons.forEach((season, index) => {
+            season.color = [colors[index], colors[(index + 1) % colors.length]];
+        });
 
         this.seasons = _.cloneDeep(seasons);
     }
@@ -719,9 +712,11 @@ class SeasonsCollapsible extends CollapsibleComponent {
 
     ensureMutualTypeExclusivity(selectedType, season_index) {
         let changedSeason = this.seasons[season_index];
-        let conflictingSeason = this.seasons.find(season => season.type === selectedType);
+        let conflictingSeason = this.seasons.find((season, index) => index !== season_index && season.type === selectedType);
 
-        conflictingSeason.type = changedSeason.type;
+        if (conflictingSeason) {
+            conflictingSeason.type = changedSeason.type;
+        }
         changedSeason.type = selectedType;
     }
 
