@@ -60,7 +60,7 @@ jobs:
         id: extract_branch
       - uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "8.1"
+          php-version-file: ".php-version"
       - uses: "ramsey/composer-install@v2"
         if: steps.cache-composer.outputs.cache-hit != 'true'
       - name: Install NPM dependencies

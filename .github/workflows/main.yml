@@ -54,7 +54,7 @@ jobs:
           node-version: '20'
       - uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "8.1"
+          php-version-file: ".php-version"
       - uses: "ramsey/composer-install@v2"
       - name: Create env file
         run: |
