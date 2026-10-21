@@ -519,16 +519,16 @@
         },
         {
             "name": "bref/bref",
-            "version": "2.1.25",
+            "version": "2.4.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brefphp/bref.git",
-                "reference": "71765be3b539ed2000f3610fed7dcdce23a24268"
+                "reference": "1552c6056a2943efbe85fb0e96bc27160d395a1b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brefphp/bref/zipball/71765be3b539ed2000f3610fed7dcdce23a24268",
-                "reference": "71765be3b539ed2000f3610fed7dcdce23a24268",
+                "url": "https://api.github.com/repos/brefphp/bref/zipball/1552c6056a2943efbe85fb0e96bc27160d395a1b",
+                "reference": "1552c6056a2943efbe85fb0e96bc27160d395a1b",
                 "shasum": ""
             },
             "require": {
@@ -542,7 +542,7 @@
                 "psr/http-message": "^1.0|^2.0",
                 "psr/http-server-handler": "^1.0",
                 "riverline/multipart-parser": "^2.1.2",
-                "symfony/process": "^4.4|^5.0|^6.0|^7.0"
+                "symfony/process": "^4.4|^5.0|^6.0|^7.0|^8.0"
             },
             "require-dev": {
                 "async-aws/core": "^1.0",
@@ -554,8 +554,8 @@
                 "guzzlehttp/guzzle": "^7.5",
                 "phpstan/phpstan": "^1.10.26",
                 "phpunit/phpunit": "^9.6.10",
-                "symfony/console": "^4.4|^5.0|^6.0|^7.0",
-                "symfony/yaml": "^4.4|^5.0|^6.0|^7.0"
+                "symfony/console": "^4.4|^5.0|^6.0|^7.0|^8.0",
+                "symfony/yaml": "^4.4|^5.0|^6.0|^7.0|^8.0"
             },
             "bin": [
                 "bref",
@@ -582,11 +582,11 @@
             ],
             "support": {
                 "issues": "https://github.com/brefphp/bref/issues",
-                "source": "https://github.com/brefphp/bref/tree/2.1.25"
+                "source": "https://github.com/brefphp/bref/tree/2.4.22"
             },
             "funding": [
                 {
-                    "url": "https://bref.sh/#enterprise",
+                    "url": "https://bref.sh/support",
                     "type": "custom"
                 },
                 {
@@ -594,7 +594,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-06-18T09:51:26+00:00"
+            "time": "2026-10-21T14:34:56+00:00"
         },
         {
             "name": "bref/extra-php-extensions",
@@ -14430,7 +14430,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
@@ -14440,6 +14440,6 @@
         "ext-json": "*",
         "ext-sodium": "*"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }
