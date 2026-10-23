@@ -93,13 +93,32 @@
 
     }
 
+    // Only one polling loop may run at a time. check_dates() is called from the
+    // timer, on window focus and on mouse move, so each call cancels the pending
+    // timer and claims a new generation. A request from an older generation
+    // finishes without scheduling another poll.
+    var poll_generation = 0;
+
+    function schedule_poll(generation){
+        if(generation === poll_generation){
+            poll_timer = setTimeout(check_dates, 5000);
+        }
+    }
+
     function check_dates(){
+
+        clearTimeout(poll_timer);
+        const generation = ++poll_generation;
 
         if((document.hasFocus() && (Date.now() - last_mouse_move) < 10000) || advancement.advancement_enabled){
 
             instapoll = false;
 
             check_last_change(hash, function(result){
+
+                if(generation !== poll_generation){
+                    return;
+                }
 
                 new_dynamic_change = new Date(result.last_dynamic_change)
                 new_static_change = new Date(result.last_static_change)
@@ -121,7 +140,7 @@
                         check_update(true);
                         evaluate_settings();
                         eval_clock();
-                        poll_timer = setTimeout(check_dates, 5000);
+                        schedule_poll(generation);
 
                     });
 
@@ -139,13 +158,13 @@
                         check_update(false);
                         evaluate_settings();
                         eval_clock();
-                        poll_timer = setTimeout(check_dates, 5000);
+                        schedule_poll(generation);
 
                     });
 
                 }else{
 
-                    poll_timer = setTimeout(check_dates, 5000);
+                    schedule_poll(generation);
 
                 }
 
