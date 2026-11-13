@@ -44,37 +44,26 @@ class SyncCalendarChild implements ShouldQueue
 
         if($this->needsTimeCompensation()) {
 
-            $hour = $this->parent->dynamic_data['hour'];
-            $minute = $this->parent->dynamic_data['minute'];
+            $childDailyMinutes = $this->child->daily_minutes;
+            $childMinutesPerHour = (int) $this->child->clock['minutes'];
 
-            $dayScalingRatio = $this->parent->daily_minutes / $this->child->daily_minutes;
+            // Days on both calendars are measured in minutes of equal length, so the parent's
+            // elapsed days convert to a fractional number of child days.
+            $dayScalingRatio = $this->parent->daily_minutes / $childDailyMinutes;
+            $scaledEpoch = $this->targetEpoch * $dayScalingRatio;
+            $wholeDays = floor($scaledEpoch);
 
-            // First, calculate the current date/time of the child based on the epoch of the parent
-            // Taking into account difference in day scaling ratio
-            $this->targetEpoch = $this->targetEpoch * $dayScalingRatio;
+            $minutesIntoChildDay = (int) round(($scaledEpoch - $wholeDays) * $childDailyMinutes);
 
-            $hoursIntoTargetDay = fmod($this->targetEpoch, 1) * $this->child->clock['hours'];
-            $minutesIntoTargetHour = (int) round(fmod($hoursIntoTargetDay, 1) * $this->child->clock['minutes']);
+            $parentMinuteInDay = $this->parent->dynamic_data['hour'] * $this->parent->clock['minutes'] + $this->parent->dynamic_data['minute'];
 
-            $parentMinuteInDay = $hour * $this->parent->clock['minutes'] + $minute;
+            $totalMinutes = $minutesIntoChildDay + $parentMinuteInDay;
 
-            $targetHour = $parentMinuteInDay / $this->child->clock['minutes'];
-            $targetMinute = (int) round(fmod($targetHour, 1) * $this->child->clock['minutes']);
+            $this->targetEpoch = (int) $wholeDays + intdiv($totalMinutes, $childDailyMinutes);
 
-            // Take into account time, irrespective of epoch
-            $hour = (int) floor($hoursIntoTargetDay) + floor($targetHour);
-            $minute = $minutesIntoTargetHour + $targetMinute;
-
-
-            if($minute >= $this->child->clock['minutes']){
-                $hour++;
-                $minute -= $this->child->clock['minutes'];
-            }
-
-            if($hour >= $this->child->clock['hours']){
-                $this->targetEpoch++;
-                $hour -= $this->child->clock['hours'];
-            }
+            $minutesIntoDay = $totalMinutes % $childDailyMinutes;
+            $hour = intdiv($minutesIntoDay, $childMinutesPerHour);
+            $minute = $minutesIntoDay % $childMinutesPerHour;
         }
 
         $epoch = EpochCalculator::forCalendar($this->child)->calculate($this->targetEpoch);
